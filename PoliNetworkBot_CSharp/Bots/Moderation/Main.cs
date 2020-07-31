@@ -49,7 +49,35 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void AntiSpamMeasure(TelegramBotClient telegramBotClient, MessageEventArgs e, SpamType check_spam)
         {
-            throw new NotImplementedException();
+            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+
+            switch (check_spam)
+            {
+                case SpamType.SPAM_LINK:
+                    {
+                        Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
+                        string language = e.Message.From.LanguageCode.ToLower();
+                        string text = language switch
+                        {
+                            "en" => "You sent a message with spam, and you were muted for 5 minutes",
+                            _ => "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti",
+                        };
+                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        break;
+                    }
+                case SpamType.NOT_ALLOWED_WORDS:
+                    {
+                        Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
+                        string language = e.Message.From.LanguageCode.ToLower();
+                        string text = language switch
+                        {
+                            "en" => "You sent a message with banned words, and you were muted for 5 minutes",
+                            _ => "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti",
+                        };
+                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        break;
+                    }
+            }
         }
 
         private static SpamType CheckSpam(TelegramBotClient telegramBotClient, MessageEventArgs e)
@@ -84,6 +112,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
             Utils.SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
             Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e);
+            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
         private static Tuple<bool, bool> CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
@@ -134,7 +163,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.BotId } });
         }
 
-        private static bool CheckIfToExit(TelegramBotClient sender, MessageEventArgs e, object v)
+        private static bool CheckIfToExit(TelegramBotClient telegramBotClient, MessageEventArgs e, object v)
         {
             if (v == null || v is System.DBNull)
             {

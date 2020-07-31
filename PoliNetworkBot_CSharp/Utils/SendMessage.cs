@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using System;
+using Telegram.Bot;
 using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Utils
@@ -32,6 +33,11 @@ namespace PoliNetworkBot_CSharp.Utils
             string name = e.Message.From.FirstName + " " + e.Message.From.LastName;
             name = name.Trim();
             return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
+        }
+
+        internal static void SendMessageInPrivate(TelegramBotClient telegramBotClient, MessageEventArgs e, string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }
