@@ -212,17 +212,30 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
         {
             if (v == null || v is System.DBNull)
             {
-                //todo: check if admins are allowed and set valid column
-            }
-            else if (v is bool b)
-            {
-                return !b;
-            }
-            else
-            {
-                ;
+                return CheckIfToExit_NullValue(telegramBotClient, e);
             }
 
+            if (v is char b)
+            {
+                return b != 'Y';
+            }
+            
+            if (v is string s)
+            {
+                if (string.IsNullOrEmpty(s))
+                {
+                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                }
+
+                return s != "Y";
+            }
+
+            return CheckIfToExit_NullValue(telegramBotClient, e);
+        }
+
+        private static bool CheckIfToExit_NullValue(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        {
+            //todo: check if admins are allowed and set valid column
             return false;
         }
 
