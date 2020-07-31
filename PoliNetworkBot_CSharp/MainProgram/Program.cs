@@ -18,6 +18,7 @@ namespace PoliNetworkBot_CSharp
                 if (read_choice.StartsWith("n"))
                 {
                     MainProgram.NewConfig.NewConfigMethod();
+                    Console.WriteLine("Reset done!");
                     return;
                 }
             }
@@ -25,7 +26,29 @@ namespace PoliNetworkBot_CSharp
             List<BotInfo> botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
             if (botInfos == null || botInfos.Count == 0)
             {
-                return;
+                Console.WriteLine("It seems that the configuration isn't available. Do you want to reset it? (Y/N)");
+                var read_choice2 = Console.ReadLine();
+                if (!string.IsNullOrEmpty(read_choice2) && read_choice2.ToLower().StartsWith("y"))
+                {
+                    MainProgram.NewConfig.NewConfigMethod();
+
+                    Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                    var read_choice3 = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(read_choice3) && read_choice3.ToLower().StartsWith("y"))
+                    {
+                        //ok, keep going
+                        botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ok, bye!");
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
 
             Data.GlobalVariables.Bots = new List<TelegramBotAbstract>();
