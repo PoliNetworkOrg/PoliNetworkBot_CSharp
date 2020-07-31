@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Data.Constants
@@ -11,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Data.Constants
 
         internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
         {
-            switch(s)
+            switch (s)
             {
                 case moderation:
                     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PoliNetworkBot_CSharp.Data.Constants
+﻿namespace PoliNetworkBot_CSharp.Data.Constants
 {
     public class Paths
     {
