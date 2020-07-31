@@ -200,6 +200,33 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
         {
             string q1 = "INSERT INTO Groups (id, bot_id) VALUES (@id, @botid)";
             Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.BotId } });
+            _ = CreateInviteLinkAsync(sender, e);
+        }
+
+        private static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(TelegramBotClient sender, MessageEventArgs e)
+        {
+            string r = null;
+            try
+            {
+                r = await sender.ExportChatInviteLinkAsync(e.Message.Chat.Id);
+            }
+            catch
+            {
+                ;
+            }
+
+            if (string.IsNullOrEmpty(r))
+                return false;
+
+            string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
+            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>()
+            {
+                { "@link", r},
+                {"@lul" , DateTime.Now },
+                {"@id", e.Message.Chat.Id }
+            });
+
+            return true;
         }
 
         private static bool CheckIfToExit(TelegramBotClient telegramBotClient, MessageEventArgs e, object v)

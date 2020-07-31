@@ -43,7 +43,9 @@ namespace PoliNetworkBot_CSharp.MainProgram
             string q1 = "CREATE TABLE Groups (" +
                 "id INT(12) PRIMARY KEY, " +
                 "bot_id INT(12)," +
-                "valid CHAR(1)" +
+                "valid CHAR(1)," +
+                "link VARCHAR(250)," +
+                "last_update_link DATETIME" +
                 ") ";
 
             Utils.SQLite.Execute(q1);
