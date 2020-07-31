@@ -33,11 +33,18 @@ namespace PoliNetworkBot_CSharp.Utils
         /// <returns>Returns a new instance of the object read from the binary file.</returns>
         public static T ReadFromBinaryFile<T>(string filePath)
         {
-            using Stream stream = File.Open(filePath, FileMode.Open);
-            var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
             try
             {
-                return (T)binaryFormatter.Deserialize(stream);
+                using Stream stream = File.Open(filePath, FileMode.Open);
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                try
+                {
+                    return (T)binaryFormatter.Deserialize(stream);
+                }
+                catch
+                {
+                    return default;
+                }
             }
             catch
             {
