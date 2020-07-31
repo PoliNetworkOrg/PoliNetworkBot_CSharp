@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Utils
             return numberOfRowsAffected;
         }
 
-        public static DataTable ExecuteSelect(string query, Dictionary<string, object> args)
+        public static DataTable ExecuteSelect(string query, Dictionary<string, object> args = null)
         {
             if (string.IsNullOrEmpty(query.Trim()))
                 return null;
@@ -41,9 +41,12 @@ namespace PoliNetworkBot_CSharp.Utils
             using var con = new SQLiteConnection(Data.Constants.Paths.db);
             con.Open();
             using var cmd = new SQLiteCommand(query, con);
-            foreach (KeyValuePair<string, object> entry in args)
+            if (args != null)
             {
-                cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+                foreach (KeyValuePair<string, object> entry in args)
+                {
+                    cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+                }
             }
 
             var da = new SQLiteDataAdapter(cmd);

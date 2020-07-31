@@ -50,6 +50,8 @@ namespace PoliNetworkBot_CSharp
                 }
             }
 
+            Data.GlobalVariables.LoadToRam();
+
             Data.GlobalVariables.Bots = new List<TelegramBotAbstract>();
             foreach (var bot in botInfos)
             {

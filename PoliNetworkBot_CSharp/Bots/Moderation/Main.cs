@@ -205,28 +205,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(TelegramBotClient sender, MessageEventArgs e)
         {
-            string r = null;
-            try
-            {
-                r = await sender.ExportChatInviteLinkAsync(e.Message.Chat.Id);
-            }
-            catch
-            {
-                ;
-            }
-
-            if (string.IsNullOrEmpty(r))
-                return false;
-
-            string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>()
-            {
-                { "@link", r},
-                {"@lul" , DateTime.Now },
-                {"@id", e.Message.Chat.Id }
-            });
-
-            return true;
+            return await Utils.InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
         }
 
         private static bool CheckIfToExit(TelegramBotClient telegramBotClient, MessageEventArgs e, object v)
@@ -256,7 +235,22 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         Start(sender, e);
                         return;
                     }
+
+                case "/force_check_invite_links":
+                    {
+                        if (Data.GlobalVariables.Creators.Contains(e.Message.Chat.Id))
+                        {
+                            _ = ForceCheckInviteLinksAsync(sender, e);
+                        }
+                        return;
+                    }
             }
+        }
+
+        private static async System.Threading.Tasks.Task ForceCheckInviteLinksAsync(TelegramBotClient sender, MessageEventArgs e)
+        {
+            int n = await Utils.InviteLinks.FillMissingLinksIntoDB_Async(sender);
+            Utils.SendMessage.SendMessageInPrivate(sender, e, "I have updated n=" + n.ToString() + " links");
         }
 
         private static void Start(TelegramBotClient telegramBotClient, MessageEventArgs e)
