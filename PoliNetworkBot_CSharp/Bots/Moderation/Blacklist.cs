@@ -1,4 +1,6 @@
-﻿namespace PoliNetworkBot_CSharp.Bots.Moderation
+﻿using System.Data;
+
+namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
     internal class Blacklist
     {
@@ -42,7 +44,11 @@
                     return false;
                 }
 
-                return true;
+                bool? is_our_link = CheckIfIsOurTgLink(text);
+                if (is_our_link == null || is_our_link.Value == true)
+                    return false;
+                else
+                    return true;
             }
 
             if (
@@ -60,6 +66,39 @@
                 return true;
 
             return false;
+        }
+
+        private static bool? CheckIfIsOurTgLink(string text)
+        {
+            string q1 = "SELECT id FROM Groups WHERE link = @link";
+            string link = GetTelegramLink(text);
+
+            if (string.IsNullOrEmpty(link))
+                return null;
+
+            DataTable dt = Utils.SQLite.ExecuteSelect(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@link", link } });
+            var value = Utils.SQLite.GetFirstValueFromDataTable(dt);
+            if (value == null)
+                return false;
+            string s = value.ToString();
+            if (string.IsNullOrEmpty(s))
+                return false;
+
+            return true;
+        }
+
+        private static string GetTelegramLink(string text)
+        {
+            var s = text.Split(' ');
+            foreach (var s2 in s)
+            {
+                if (s2.Contains("t.me/"))
+                {
+                    return s2;
+                }
+            }
+
+            return null;
         }
     }
 }
