@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -49,14 +50,15 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void AntiSpamMeasure(TelegramBotClient telegramBotClient, MessageEventArgs e, SpamType check_spam)
         {
-            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+            if (check_spam == SpamType.ALL_GOOD)
+                return;
 
+            Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
+            string language = e.Message.From.LanguageCode.ToLower();
             switch (check_spam)
             {
                 case SpamType.SPAM_LINK:
                     {
-                        Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
-                        string language = e.Message.From.LanguageCode.ToLower();
                         string text = language switch
                         {
                             "en" => "You sent a message with spam, and you were muted for 5 minutes",
@@ -67,8 +69,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     }
                 case SpamType.NOT_ALLOWED_WORDS:
                     {
-                        Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
-                        string language = e.Message.From.LanguageCode.ToLower();
                         string text = language switch
                         {
                             "en" => "You sent a message with banned words, and you were muted for 5 minutes",
@@ -77,7 +77,25 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
                         break;
                     }
+
+                case SpamType.ALL_GOOD:
+                    {
+                        return;
+                    }
+
+                case SpamType.FOREIGN:
+                    {
+                        string text = language switch
+                        {
+                            "en" => "You sent a message with banned characters, and you were muted for 5 minutes",
+                            _ => "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti",
+                        };
+                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        break;
+                    }
             }
+
+            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
         private static SpamType CheckSpam(TelegramBotClient telegramBotClient, MessageEventArgs e)
@@ -91,7 +109,29 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
+            bool is_foreign = DetectForeignLanguage(telegramBotClient, e);
+            if (is_foreign)
+                return SpamType.FOREIGN;
+
             return Blacklist.IsSpam(e.Message.Text);
+        }
+
+        private static bool DetectForeignLanguage(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        {
+            if (e.Message.Chat.Id == -1001394018284)
+                return false;
+
+
+            if (
+                Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
+                Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
+                Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success
+                )
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static void SendUsernameWarning(TelegramBotClient telegramBotClient, MessageEventArgs e, bool username, bool name)
