@@ -35,9 +35,17 @@ namespace PoliNetworkBot_CSharp.Utils
             return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
         }
 
-        internal static void SendMessageInPrivate(TelegramBotClient telegramBotClient, MessageEventArgs e, string text)
+        internal static bool SendMessageInPrivate(TelegramBotClient telegramBotClient, MessageEventArgs e, string text)
         {
-            throw new NotImplementedException();
+            try
+            {
+                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
