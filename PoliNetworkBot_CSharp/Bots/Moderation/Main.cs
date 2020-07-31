@@ -94,14 +94,24 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static bool CheckIfToExitAndUpdateGroupList(TelegramBotClient sender, MessageEventArgs e)
         {
+            switch (e.Message.Chat.Type)
+            {
+                case Telegram.Bot.Types.Enums.ChatType.Private:
+                    return false;
+            }
+
             string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = Utils.SQLite.ExecuteSelect(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)
             {
-                InsertGroup(sender, e);
                 return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
             }
-            return CheckIfToExit(sender, e, null);
+            else
+            {
+                InsertGroup(sender, e);
+                return CheckIfToExit(sender, e, null);
+            }
+
         }
 
         private static void InsertGroup(TelegramBotClient sender, MessageEventArgs e)
@@ -112,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static bool CheckIfToExit(TelegramBotClient sender, MessageEventArgs e, object v)
         {
-            if (v == null)
+            if (v == null || v is System.DBNull)
             {
                 //todo: check if admins are allowed and set valid column
             }
