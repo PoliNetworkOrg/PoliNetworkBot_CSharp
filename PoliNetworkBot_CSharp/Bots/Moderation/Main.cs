@@ -121,7 +121,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (e.Message.Chat.Id == -1001394018284)
                 return false;
 
-
             if (
                 Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
                 Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
@@ -247,7 +246,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 }
             }
             telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, "Ciao!");
-
         }
     }
 }
