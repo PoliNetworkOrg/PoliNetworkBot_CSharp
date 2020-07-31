@@ -24,10 +24,10 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 return;
             }
 
-            bool check_username = CheckUsername(telegramBotClient, e);
-            if (check_username)
+            Tuple<bool,bool> check_username = CheckUsername(telegramBotClient, e);
+            if (check_username.Item1 || check_username.Item2)
             {
-                SendUsernameWarning(telegramBotClient, e);
+                SendUsernameWarning(telegramBotClient, e, check_username.Item1, check_username.Item2);
                 return;
             }
 
@@ -66,22 +66,40 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             return Moderation.Blacklist.IsSpam(e.Message.Text);
         }
 
-        private static void SendUsernameWarning(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static void SendUsernameWarning(TelegramBotClient telegramBotClient, MessageEventArgs e, bool username, bool name)
         {
-            throw new NotImplementedException();
+            string s1 = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n\n" +
+                          "Set an username and a longer first name from telegram settings";
+            if (username && !name)
+            {
+                s1 = "Imposta un username dalle impostazioni di telegram\n\n" +
+                          "Set an username from telegram settings";
+            }
+            else if (!username && name)
+            {
+                s1 = "Imposta un nome più lungo " +
+                          "dalle impostazioni di telegram\n\n" +
+                          "Set a longer first name from telegram settings";
+            }
+
+            Utils.SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
+            Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e);
         }
 
-        private static bool CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static Tuple<bool,bool> CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
+            bool username = false;
+            bool name = false;
+
             if (string.IsNullOrEmpty(e.Message.From.Username))
             {
-                return true;
+                username = true;
             }
 
             if (e.Message.From.FirstName.Length < 2)
-                return true;
+                name = true;
 
-            return false;
+            return new Tuple<bool, bool>(username,name);
         }
 
         private static void ExitFromChat(TelegramBotClient sender, MessageEventArgs e)
