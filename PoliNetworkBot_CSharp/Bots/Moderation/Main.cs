@@ -195,7 +195,19 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void Start(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
-            telegramBotClient.SendTextMessageAsync(e.Message.From.Id, "Ciao!");
+            if (e.Message.Chat.Type != Telegram.Bot.Types.Enums.ChatType.Private)
+            {
+                try
+                {
+                    telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+                }
+                catch
+                {
+                    ;
+                }
+            }
+            telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, "Ciao!");
+
         }
     }
 }
