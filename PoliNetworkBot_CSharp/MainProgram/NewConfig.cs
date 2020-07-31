@@ -32,6 +32,8 @@ namespace PoliNetworkBot_CSharp.MainProgram
 
         private static void DestroyDB_And_Redo_it()
         {
+            Utils.DirectoryUtils.CreateDirectory("data");
+
             string db_path = Data.Constants.Paths.db;
             db_path = db_path.Split('=')[1];
             File.WriteAllText(db_path, "");
