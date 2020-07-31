@@ -5,10 +5,9 @@ using Telegram.Bot;
 
 namespace PoliNetworkBot_CSharp
 {
-    class Program
+    internal class Program
     {
-
-        static void Main()
+        private static void Main()
         {
             Console.WriteLine("Hello World! Welcome to our bots system!\n" +
                 "If you want to reset everything, write 'n'. If not, write another character");
@@ -74,14 +73,10 @@ namespace PoliNetworkBot_CSharp
                 {
                     //todo: userbots
                 }
-
             }
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
-
         }
-
-
     }
 }

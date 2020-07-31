@@ -4,7 +4,7 @@ using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
-    class Main
+    internal class Main
     {
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
@@ -45,8 +45,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     CommandDispatcher(telegramBotClient, e);
                 }
             }
-
-
         }
 
         private static void AntiSpamMeasure(TelegramBotClient telegramBotClient, MessageEventArgs e, SpamType check_spam)
@@ -56,12 +54,11 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static SpamType CheckSpam(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
-            if (string.IsNullOrEmpty( e.Message.Text))
+            if (string.IsNullOrEmpty(e.Message.Text))
             {
                 //todo
                 return SpamType.ALL_GOOD;
             }
-
 
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
@@ -76,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static bool CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
-            if ( string.IsNullOrEmpty(e.Message.From.Username))
+            if (string.IsNullOrEmpty(e.Message.From.Username))
             {
                 return true;
             }
@@ -89,7 +86,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void ExitFromChat(TelegramBotClient sender, MessageEventArgs e)
         {
-            throw new NotImplementedException();
+            sender.LeaveChatAsync(e.Message.Chat.Id);
         }
 
         private static bool CheckIfToExitAndUpdateGroupList(TelegramBotClient sender, MessageEventArgs e)
@@ -111,13 +108,12 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 InsertGroup(sender, e);
                 return CheckIfToExit(sender, e, null);
             }
-
         }
 
         private static void InsertGroup(TelegramBotClient sender, MessageEventArgs e)
         {
             string q1 = "INSERT INTO Groups (id, bot_id) VALUES (@id, @botid)";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { {"@id", e.Message.Chat.Id }, { "@botid", sender.BotId } });
+            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.BotId } });
         }
 
         private static bool CheckIfToExit(TelegramBotClient sender, MessageEventArgs e, object v)
@@ -140,7 +136,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void CommandDispatcher(TelegramBotClient sender, MessageEventArgs e)
         {
-            switch(e.Message.Text)
+            switch (e.Message.Text)
             {
                 case "/start":
                     {
@@ -152,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void Start(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
-            telegramBotClient.SendTextMessageAsync(e.Message.From.Id, "Ciao!");     
+            telegramBotClient.SendTextMessageAsync(e.Message.From.Id, "Ciao!");
         }
     }
 }

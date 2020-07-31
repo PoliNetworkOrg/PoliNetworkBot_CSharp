@@ -1,12 +1,10 @@
 ﻿using PoliNetworkBot_CSharp.Objects;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace PoliNetworkBot_CSharp.MainProgram
 {
-    class NewConfig
+    internal class NewConfig
     {
         public static void NewConfigMethod()
         {
@@ -27,7 +25,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.config_bot, botInfos);
 
             DestroyDB_And_Redo_it();
-
         }
 
         private static void DestroyDB_And_Redo_it()

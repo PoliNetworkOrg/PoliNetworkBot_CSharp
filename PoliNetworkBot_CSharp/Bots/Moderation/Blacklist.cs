@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PoliNetworkBot_CSharp.Bots.Moderation
+﻿namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
-    class Blacklist
+    internal class Blacklist
     {
         internal static SpamType IsSpam(string text)
         {
@@ -25,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             var s = text.Split(' ');
             foreach (var s2 in s)
             {
-                switch(s2)
+                switch (s2)
                 {
                     case "porcodio":
                     case "dioporco":
@@ -36,8 +32,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
             return SpamType.ALL_GOOD;
         }
-
-
 
         private static bool CheckSpamLink(string text)
         {
@@ -61,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     text.Contains("goo.gl") ||
                     text.Contains("forms.gle") ||
                     text.Contains("docs.google.com") ||
-                    text.Contains("discord.gg") 
+                    text.Contains("discord.gg")
                 )
                 return true;
 

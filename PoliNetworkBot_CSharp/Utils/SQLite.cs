@@ -1,9 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Text;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
@@ -14,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Utils
             int numberOfRowsAffected;
 
             //setup the connection to the database
-            using (var con = new SQLiteConnection(Data.Constants.Paths.db ))
+            using (var con = new SQLiteConnection(Data.Constants.Paths.db))
             {
                 con.Open();
 
