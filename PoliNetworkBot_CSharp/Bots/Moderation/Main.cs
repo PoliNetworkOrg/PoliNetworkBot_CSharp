@@ -25,14 +25,14 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 return;
             }
 
-            Tuple<bool, bool> check_username = CheckUsername(telegramBotClient, e);
+            Tuple<bool, bool> check_username = CheckUsername(e);
             if (check_username.Item1 || check_username.Item2)
             {
                 SendUsernameWarning(telegramBotClient, e, check_username.Item1, check_username.Item2);
                 return;
             }
 
-            SpamType check_spam = CheckSpam(telegramBotClient, e);
+            SpamType check_spam = CheckSpam(e);
             if (check_spam != SpamType.ALL_GOOD)
             {
                 AntiSpamMeasure(telegramBotClient, e, check_spam);
@@ -98,7 +98,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
-        private static SpamType CheckSpam(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static SpamType CheckSpam(MessageEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Message.Text))
             {
@@ -109,14 +109,14 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
-            bool is_foreign = DetectForeignLanguage(telegramBotClient, e);
+            bool is_foreign = DetectForeignLanguage(e);
             if (is_foreign)
                 return SpamType.FOREIGN;
 
             return Blacklist.IsSpam(e.Message.Text);
         }
 
-        private static bool DetectForeignLanguage(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static bool DetectForeignLanguage(MessageEventArgs e)
         {
             if (e.Message.Chat.Id == -1001394018284)
                 return false;
@@ -154,7 +154,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
-        private static Tuple<bool, bool> CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static Tuple<bool, bool> CheckUsername(MessageEventArgs e)
         {
             bool username = false;
             bool name = false;
@@ -219,7 +219,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             {
                 return b != 'Y';
             }
-            
+
             if (v is string s)
             {
                 if (string.IsNullOrEmpty(s))
