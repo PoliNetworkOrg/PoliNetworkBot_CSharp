@@ -12,11 +12,10 @@ namespace PoliNetworkBot_CSharp.Utils
                 CanInviteUsers = true,
                 CanSendOtherMessages = false,
                 CanSendPolls = false,
-                CanAddWebPagePreviews= false,
+                CanAddWebPagePreviews = false,
                 CanChangeInfo = false,
-                CanPinMessages = false, 
+                CanPinMessages = false,
                 CanSendMediaMessages = false
-                    
             };
             DateTime untilDate = DateTime.Now.AddSeconds(time);
             telegramBotClient.RestrictChatMemberAsync(e.Message.Chat.Id, e.Message.From.Id, permissions, untilDate);

@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 return;
             }
 
-            Tuple<bool,bool> check_username = CheckUsername(telegramBotClient, e);
+            Tuple<bool, bool> check_username = CheckUsername(telegramBotClient, e);
             if (check_username.Item1 || check_username.Item2)
             {
                 SendUsernameWarning(telegramBotClient, e, check_username.Item1, check_username.Item2);
@@ -63,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
-            return Moderation.Blacklist.IsSpam(e.Message.Text);
+            return Blacklist.IsSpam(e.Message.Text);
         }
 
         private static void SendUsernameWarning(TelegramBotClient telegramBotClient, MessageEventArgs e, bool username, bool name)
@@ -86,7 +86,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e);
         }
 
-        private static Tuple<bool,bool> CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static Tuple<bool, bool> CheckUsername(TelegramBotClient telegramBotClient, MessageEventArgs e)
         {
             bool username = false;
             bool name = false;
@@ -99,7 +99,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (e.Message.From.FirstName.Length < 2)
                 name = true;
 
-            return new Tuple<bool, bool>(username,name);
+            return new Tuple<bool, bool>(username, name);
         }
 
         private static void ExitFromChat(TelegramBotClient sender, MessageEventArgs e)
@@ -146,7 +146,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             }
             else
             {
-                throw new NotImplementedException();
+                ;
             }
 
             return false;
