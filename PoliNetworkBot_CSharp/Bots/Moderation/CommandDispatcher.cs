@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Args;
+﻿using System;
+using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
@@ -29,12 +30,46 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/help":
+                    {
+                        Help(sender, e);
+                        return;
+                    }
+
                 default:
                     {
                         Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
                         return;
                     }
             }
+        }
+
+        private static void Help(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            if (e.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Private)
+            {
+                HelpPrivate(sender, e);
+            }
+            else
+            {
+                Utils.SendMessage.SendMessageInPrivateOrAGroup(sender, e, "Questo messaggio funziona solo in chat privata");
+            }
+        }
+
+        private static void HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            string text = "<i>Lista di funzioni</i>:\n"+
+                                      "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n"+
+                                      "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n"+
+                                      "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>"+
+                                      "FAQ (domande frequenti)</a>\n"+
+                                      "\n🏫 Bot ricerca aule libere @AulePolimiBot\n"+
+                                      "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n"+
+                                      "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n"+
+                                      "\n👥 Gruppo consigliati e utili /groups\n"+
+                                      "\n⚠ Hai già letto le regole del network? /rules\n"+
+                                      "\n✍ Per contattarci /contact";
+            Utils.SendMessage.SendMessageInPrivate(sender, e, text, Telegram.Bot.Types.Enums.ParseMode.Html);
         }
 
         private static void ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)

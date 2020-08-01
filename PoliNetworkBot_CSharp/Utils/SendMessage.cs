@@ -33,11 +33,11 @@ namespace PoliNetworkBot_CSharp.Utils
             return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
         }
 
-        internal static bool SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text)
+        internal static bool SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text, Telegram.Bot.Types.Enums.ParseMode html = Telegram.Bot.Types.Enums.ParseMode.Default)
         {
             try
             {
-                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text);
+                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, html);
                 return true;
             }
             catch
