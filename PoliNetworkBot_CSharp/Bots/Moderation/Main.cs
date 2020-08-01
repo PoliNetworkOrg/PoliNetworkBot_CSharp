@@ -46,6 +46,10 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 {
                     CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                 }
+                else
+                {
+                    TextConversation.DetectMessage(telegramBotClient, e);
+                }
             }
         }
     }

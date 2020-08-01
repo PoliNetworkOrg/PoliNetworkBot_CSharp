@@ -7,6 +7,8 @@ namespace PoliNetworkBot_CSharp
 {
     internal class Program
     {
+        public static List<BotInfo> botInfos = null;
+
         private static void Main()
         {
             Console.WriteLine("Hello World! Welcome to our bots system!\n" +
@@ -22,7 +24,7 @@ namespace PoliNetworkBot_CSharp
                 }
             }
 
-            List<BotInfo> botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
+            botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
             if (botInfos == null || botInfos.Count == 0)
             {
                 Console.WriteLine("It seems that the configuration isn't available. Do you want to reset it? (Y/N)");
@@ -52,7 +54,21 @@ namespace PoliNetworkBot_CSharp
 
             Data.GlobalVariables.LoadToRam();
 
+            StartBots();
+
+            Console.WriteLine("\nTo kill this process, you have to check the process list");
+            while (true)
+            {
+                Console.ReadKey();
+            }
+        }
+
+        private static void StartBots()
+        {
             Data.GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
+            if (botInfos == null)
+                return;
+
             foreach (var bot in botInfos)
             {
                 if (bot.IsBot())
@@ -76,9 +92,6 @@ namespace PoliNetworkBot_CSharp
                     //todo: userbots
                 }
             }
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
     }
 }

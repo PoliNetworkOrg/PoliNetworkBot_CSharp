@@ -19,7 +19,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
 
                     if (!string.IsNullOrEmpty(line))
                     {
-
                         var line_info = line.Split("| _:c:_ |");
 
                         var bot = new BotInfo();
