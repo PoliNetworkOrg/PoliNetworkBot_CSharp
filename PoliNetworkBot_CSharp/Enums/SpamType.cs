@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp.Bots.Moderation
+﻿namespace PoliNetworkBot_CSharp.Bots.Enums
 {
     internal enum SpamType
     {

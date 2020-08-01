@@ -1,5 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
+using System;
+using System.IO;
 using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
@@ -24,6 +26,10 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         {
                             _ = ForceCheckInviteLinksAsync(sender, e);
                         }
+                        else
+                        {
+                            DefaultCommand(sender, e);
+                        }
                         return;
                     }
 
@@ -43,19 +49,60 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         {
-                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1]);
+                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1], true);
                             Utils.SendMessage.SendMessageInPrivate(sender, e,
                                 "Target banned from " + done.Count.ToString() + " groups");
+                        }
+                        else
+                        {
+                            DefaultCommand(sender, e);
+                        }
+                        return;
+                    }
+
+                case "/unbanAll":
+                    {
+                        if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                        {
+                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1], false);
+                            Utils.SendMessage.SendMessageInPrivate(sender, e,
+                                "Target unbanned from " + done.Count.ToString() + " groups");
+                        }
+                        else
+                        {
+                            DefaultCommand(sender, e);
+                        }
+                        return;
+                    }
+
+                case "/getGroups":
+                    {
+                        if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Private)
+                        {
+                            var groups = Utils.Groups.GetAllGroups(sender);
+                            SendMessage.SendFile(File: groups, chat_id: e.Message.Chat.Id,
+                                text: "Here are all groups:", text_as_caption : Enums.TextAsCaption.BEFORE_FILE,
+                                TelegramBot_Abstract: sender, "Groups.datatable");
+                        }
+                        else
+                        {
+                            DefaultCommand(sender, e);
                         }
                         return;
                     }
 
                 default:
                     {
-                        Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
+                        DefaultCommand(sender, e);
                         return;
                     }
             }
+        }
+
+        private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
+
         }
 
         private static void Help(TelegramBotAbstract sender, MessageEventArgs e)

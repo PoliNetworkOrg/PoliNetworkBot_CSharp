@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Utils
             telegramBotClient.RestrictChatMemberAsync(chat_id, user_id, permissions, untilDate);
         }
 
-        internal static List<DataRow> BanAll(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        internal static List<DataRow> BanAll(TelegramBotAbstract sender, MessageEventArgs e, string target, bool ban_target)
         {
             int? target_id = Info.GetTargetUserId(target, sender);
             if (target_id == null)
@@ -45,22 +45,47 @@ namespace PoliNetworkBot_CSharp.Utils
 
             List<DataRow> done = new List<DataRow>();
 
-            foreach (DataRow dr in dt.Rows)
+            if (ban_target)
             {
-                try
+                foreach (DataRow dr in dt.Rows)
                 {
-                    long group_chat_id = (long)dr["id"];
-                    bool success = BanUserFromGroup(sender, e, target_id.Value, group_chat_id);
-                    if (success)
-                        done.Add(dr);
+                    try
+                    {
+                        long group_chat_id = (long)dr["id"];
+                        bool success = BanUserFromGroup(sender, e, target_id.Value, group_chat_id);
+                        if (success)
+                            done.Add(dr);
+                    }
+                    catch
+                    {
+                        ;
+                    }
                 }
-                catch
+            }
+            else
+            {
+                foreach (DataRow dr in dt.Rows)
                 {
-                    ;
+                    try
+                    {
+                        long group_chat_id = (long)dr["id"];
+                        bool success = UnBanUserFromGroup(sender, e, target_id.Value, group_chat_id);
+                        if (success)
+                            done.Add(dr);
+                    }
+                    catch
+                    {
+                        ;
+                    }
                 }
             }
 
             return done;
+        }
+
+        private static bool UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target, long group_chat_id)
+        {
+            return sender.UnBanUserFromGroup(target, group_chat_id, e);
         }
 
         private static bool BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target, long group_chat_id)

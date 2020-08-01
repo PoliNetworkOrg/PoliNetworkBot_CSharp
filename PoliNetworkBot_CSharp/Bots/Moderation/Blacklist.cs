@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using PoliNetworkBot_CSharp.Bots.Enums;
+using System.Data;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {

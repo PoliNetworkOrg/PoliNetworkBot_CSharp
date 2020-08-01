@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Bots.Enums;
+using System;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Args;
 
