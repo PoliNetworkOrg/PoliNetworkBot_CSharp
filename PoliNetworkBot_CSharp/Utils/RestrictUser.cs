@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Utils
 {
     internal class RestrictUser
     {
-        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, Telegram.Bot.Args.MessageEventArgs e)
+        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, long chat_id, int user_id)
         {
             Telegram.Bot.Types.ChatPermissions permissions = new Telegram.Bot.Types.ChatPermissions
             {
@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Utils
                 CanSendMediaMessages = false
             };
             DateTime untilDate = DateTime.Now.AddSeconds(time);
-            telegramBotClient.RestrictChatMemberAsync(e.Message.Chat.Id, e.Message.From.Id, permissions, untilDate);
+            telegramBotClient.RestrictChatMemberAsync(chat_id, user_id, permissions, untilDate);
         }
 
         internal static List<DataRow> BanAll(TelegramBotAbstract sender, MessageEventArgs e, string target)

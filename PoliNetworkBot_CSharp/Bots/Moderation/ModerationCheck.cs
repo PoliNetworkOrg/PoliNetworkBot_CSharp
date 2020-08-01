@@ -139,7 +139,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             }
 
             Utils.SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
-            Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e);
+            Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
@@ -148,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             if (check_spam == SpamType.ALL_GOOD)
                 return;
 
-            Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e);
+            Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             string language = e.Message.From.LanguageCode.ToLower();
             switch (check_spam)
             {
