@@ -1,9 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
-using System;
 using System.IO;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types.InputFiles;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
@@ -105,7 +103,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
         private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
             Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
-
         }
 
         private static void Help(TelegramBotAbstract sender, MessageEventArgs e)

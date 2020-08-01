@@ -103,7 +103,6 @@ namespace PoliNetworkBot_CSharp
                             return true;
                         }
                 }
-
             }
             else
             {

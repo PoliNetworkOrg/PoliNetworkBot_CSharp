@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization;
 
 namespace PoliNetworkBot_CSharp.Utils
@@ -13,6 +12,5 @@ namespace PoliNetworkBot_CSharp.Utils
             formatter.Serialize(stream, o);
             return stream;
         }
-
     }
 }

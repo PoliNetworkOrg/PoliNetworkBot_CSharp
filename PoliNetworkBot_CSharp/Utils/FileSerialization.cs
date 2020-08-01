@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using System.IO;
+﻿using System.IO;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
