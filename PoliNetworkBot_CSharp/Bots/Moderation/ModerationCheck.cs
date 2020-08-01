@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
     internal class ModerationCheck
     {
-        public static bool CheckIfToExitAndUpdateGroupList(TelegramBotClient sender, MessageEventArgs e)
+        public static bool CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
         {
             switch (e.Message.Chat.Type)
             {
@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             }
         }
 
-        public static bool CheckIfToExit(TelegramBotClient telegramBotClient, MessageEventArgs e, object v)
+        public static bool CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
         {
             if (v == null || v is System.DBNull)
             {
@@ -53,21 +53,21 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             return CheckIfToExit_NullValue(telegramBotClient, e);
         }
 
-        private static bool CheckIfToExit_NullValue(TelegramBotClient telegramBotClient, MessageEventArgs e)
+        private static bool CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             //todo: check if admins are allowed and set valid column
             telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
             return false;
         }
 
-        private static void InsertGroup(TelegramBotClient sender, MessageEventArgs e)
+        private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
         {
             string q1 = "INSERT INTO Groups (id, bot_id) VALUES (@id, @botid)";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.BotId } });
+            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.GetBotID() } });
             _ = CreateInviteLinkAsync(sender, e);
         }
 
-        private static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(TelegramBotClient sender, MessageEventArgs e)
+        private static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             return await Utils.InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
         }
@@ -123,7 +123,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             return false;
         }
 
-        public static void SendUsernameWarning(TelegramBotClient telegramBotClient, MessageEventArgs e, bool username, bool name)
+        public static void SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username, bool name)
         {
             string s1 = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n\n" +
                           "Set an username and a longer first name from telegram settings";
@@ -144,7 +144,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
         }
 
-        public static void AntiSpamMeasure(TelegramBotClient telegramBotClient, MessageEventArgs e, SpamType check_spam)
+        public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e, SpamType check_spam)
         {
             if (check_spam == SpamType.ALL_GOOD)
                 return;

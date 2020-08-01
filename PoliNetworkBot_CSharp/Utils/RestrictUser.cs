@@ -4,7 +4,7 @@ namespace PoliNetworkBot_CSharp.Utils
 {
     internal class RestrictUser
     {
-        internal static void Mute(int time, Telegram.Bot.TelegramBotClient telegramBotClient, Telegram.Bot.Args.MessageEventArgs e)
+        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, Telegram.Bot.Args.MessageEventArgs e)
         {
             Telegram.Bot.Types.ChatPermissions permissions = new Telegram.Bot.Types.ChatPermissions
             {

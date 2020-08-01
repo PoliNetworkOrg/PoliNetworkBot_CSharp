@@ -5,7 +5,7 @@ namespace PoliNetworkBot_CSharp.Utils
 {
     internal class InviteLinks
     {
-        internal static async System.Threading.Tasks.Task<int> FillMissingLinksIntoDB_Async(Telegram.Bot.TelegramBotClient sender)
+        internal static async System.Threading.Tasks.Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender)
         {
             string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
             DataTable dt = Utils.SQLite.ExecuteSelect(q1);
@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Utils
             return n;
         }
 
-        internal static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(long chat_id, Telegram.Bot.TelegramBotClient sender)
+        internal static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(long chat_id, TelegramBotAbstract sender)
         {
             string r = null;
             try

@@ -1,11 +1,10 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Args;
+﻿using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
     internal class SendMessage
     {
-        internal static void SendMessageInPrivateOrAGroup(TelegramBotClient telegramBotClient, MessageEventArgs e, string text)
+        internal static void SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text)
         {
             try
             {
@@ -34,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Utils
             return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
         }
 
-        internal static bool SendMessageInPrivate(TelegramBotClient telegramBotClient, MessageEventArgs e, string text)
+        internal static bool SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text)
         {
             try
             {

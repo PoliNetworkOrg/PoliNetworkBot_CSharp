@@ -8,17 +8,21 @@ namespace PoliNetworkBot_CSharp.MainProgram
     {
         public static void NewConfigMethod()
         {
-            var lines = File.ReadAllLines(Data.Constants.Paths.config_tokens);
+            var lines = File.ReadAllLines(Data.Constants.Paths.config_bots_info);
             List<BotInfo> botInfos = new List<BotInfo>();
             foreach (var line in lines)
             {
                 if (!string.IsNullOrEmpty(line))
                 {
+                    var line_info = line.Split("_:::_");
+
                     var bot = new BotInfo();
-                    bot.SetToken(line);
+                    bot.SetToken(line_info[0]);
+                    bot.SetWebsite(line_info[1]);
                     bot.SetIsBot(true);
                     bot.SetAcceptMessages(true);
-                    bot.SetOnMessages(Data.Constants.BotStartMethods.moderation);
+                    bot.SetOnMessages(line_info[2]);
+
                     botInfos.Add(bot);
                 }
             }
