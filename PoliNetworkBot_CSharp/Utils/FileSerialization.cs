@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Data;
+using System.IO;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
@@ -15,9 +17,8 @@ namespace PoliNetworkBot_CSharp.Utils
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
-            using Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
-            var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            binaryFormatter.Serialize(stream, objectToWrite);
+            Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
+            SerializeFile(objectToWrite, ref stream);
         }
 
         /// <summary>
@@ -45,6 +46,12 @@ namespace PoliNetworkBot_CSharp.Utils
             {
                 return default;
             }
+        }
+
+        internal static void SerializeFile<T>(T objectToWrite, ref Stream stream)
+        {
+            var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            binaryFormatter.Serialize(stream, objectToWrite);
         }
     }
 }

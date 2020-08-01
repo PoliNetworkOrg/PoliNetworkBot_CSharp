@@ -1,6 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Bots.Enums;
 using System;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.InputFiles;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
@@ -48,9 +49,9 @@ namespace PoliNetworkBot_CSharp.Utils
             }
         }
 
-        internal static void SendFile(object File, long chat_id, string text, TextAsCaption text_as_caption, TelegramBotAbstract TelegramBot_Abstract, string fileName)
+        internal static async System.Threading.Tasks.Task<bool> SendFileAsync(TelegramFile File, long chat_id, string text, TextAsCaption text_as_caption, TelegramBotAbstract TelegramBot_Abstract, string fileName)
         {
-            TelegramBot_Abstract.SendFile(File, chat_id, text, text_as_caption, fileName);
+            return await TelegramBot_Abstract.SendFileAsync(File, chat_id, text, text_as_caption, fileName);
         }
     }
 }

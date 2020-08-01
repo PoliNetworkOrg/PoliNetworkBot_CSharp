@@ -3,6 +3,7 @@ using PoliNetworkBot_CSharp.Utils;
 using System;
 using System.IO;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.InputFiles;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
@@ -79,9 +80,11 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Private)
                         {
-                            var groups = Utils.Groups.GetAllGroups(sender);
-                            SendMessage.SendFile(File: groups, chat_id: e.Message.Chat.Id,
-                                text: "Here are all groups:", text_as_caption : Enums.TextAsCaption.BEFORE_FILE,
+                            System.Data.DataTable groups = Utils.Groups.GetAllGroups(sender);
+                            Stream stream = new MemoryStream();
+                            Utils.FileSerialization.SerializeFile(groups, ref stream);
+                            _ = SendMessage.SendFileAsync(File: new TelegramFile(stream, "groups.bin"), chat_id: e.Message.Chat.Id,
+                                text: "Here are all groups:", text_as_caption: Enums.TextAsCaption.BEFORE_FILE,
                                 TelegramBot_Abstract: sender, "Groups.datatable");
                         }
                         else

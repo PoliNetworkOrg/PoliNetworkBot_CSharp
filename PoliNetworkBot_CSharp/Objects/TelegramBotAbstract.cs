@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 
 namespace PoliNetworkBot_CSharp
 {
@@ -75,32 +76,30 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal bool SendFile(object file, long chat_id, string text, TextAsCaption text_as_caption, string fileName)
+        internal async Task<bool> SendFileAsync(TelegramFile document_input, long chat_id, string text, TextAsCaption text_as_caption, string fileName)
         {
             if (isbot)
             {
-                System.IO.Stream stream_content = Utils.StreamSerialization.SerializeToStream(file);
-                Telegram.Bot.Types.InputFiles.InputOnlineFile document_input = new Telegram.Bot.Types.InputFiles.InputOnlineFile(content: stream_content, fileName);
+                InputOnlineFile inputOnlineFile = document_input.GetOnlineFile();
                 switch (text_as_caption)
                 {
                     case TextAsCaption.AS_CAPTION:
                         {
-
-                            this.botClient.SendDocumentAsync(chat_id, document_input, caption: text);
+                            var message = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile, caption: text);
                             return true;
                         }
 
                     case TextAsCaption.BEFORE_FILE:
                         {
-                            this.botClient.SendTextMessageAsync(chat_id, text);
-                            this.botClient.SendDocumentAsync(chat_id, document_input);
+                            var m1 = await this.botClient.SendTextMessageAsync(chat_id, text);
+                            var m2 = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
                             return true;
                         }
 
                     case TextAsCaption.AFTER_FILE:
                         {
-                            this.botClient.SendDocumentAsync(chat_id, document_input);
-                            this.botClient.SendTextMessageAsync(chat_id, text);
+                            var m1 = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
+                            var m2 = await this.botClient.SendTextMessageAsync(chat_id, text);
                             return true;
                         }
                 }
