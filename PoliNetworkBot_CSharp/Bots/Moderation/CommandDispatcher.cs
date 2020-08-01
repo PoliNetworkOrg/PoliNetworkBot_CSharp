@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Data;
+using PoliNetworkBot_CSharp.Utils;
 using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
@@ -7,7 +8,9 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
     {
         public static void CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            switch (e.Message.Text)
+            var cmd_lines = e.Message.Text.Split(' ');
+            string cmd = cmd_lines[0];
+            switch (cmd)
             {
                 case "/start":
                     {
@@ -36,6 +39,17 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/banAll":
+                    {
+                        if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                        {
+                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1]);
+                            Utils.SendMessage.SendMessageInPrivate(sender, e,
+                                "Target banned from " + done.Count.ToString() + " groups");
+                        }
+                        return;
+                    }
+
                 default:
                     {
                         Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
@@ -58,16 +72,16 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            string text = "<i>Lista di funzioni</i>:\n"+
-                                      "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n"+
-                                      "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n"+
-                                      "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>"+
-                                      "FAQ (domande frequenti)</a>\n"+
-                                      "\n🏫 Bot ricerca aule libere @AulePolimiBot\n"+
-                                      "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n"+
-                                      "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n"+
-                                      "\n👥 Gruppo consigliati e utili /groups\n"+
-                                      "\n⚠ Hai già letto le regole del network? /rules\n"+
+            string text = "<i>Lista di funzioni</i>:\n" +
+                                      "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
+                                      "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
+                                      "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                                      "FAQ (domande frequenti)</a>\n" +
+                                      "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
+                                      "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+                                      "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+                                      "\n👥 Gruppo consigliati e utili /groups\n" +
+                                      "\n⚠ Hai già letto le regole del network? /rules\n" +
                                       "\n✍ Per contattarci /contact";
             Utils.SendMessage.SendMessageInPrivate(sender, e, text, Telegram.Bot.Types.Enums.ParseMode.Html);
         }

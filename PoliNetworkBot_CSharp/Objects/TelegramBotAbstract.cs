@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp
@@ -35,6 +36,20 @@ namespace PoliNetworkBot_CSharp
             if (isbot)
             {
                 this.botClient.DeleteMessageAsync(id, messageId);
+            }
+        }
+
+        internal int? GetIDFromUsername(string target)
+        {
+            if (isbot)
+            {
+                //bot api does not allow that
+                return null;
+            }
+            else
+            {
+                //todo
+                return null;
             }
         }
 
@@ -77,6 +92,27 @@ namespace PoliNetworkBot_CSharp
             }
 
             return null;
+        }
+
+        internal bool BanUserFromGroup(int target, long group_chat_id, MessageEventArgs e)
+        {
+            if (isbot)
+            {
+                try
+                {
+                    this.botClient.KickChatMemberAsync(group_chat_id, target);
+                }
+                catch
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         internal Task<Telegram.Bot.Types.ChatMember[]> GetChatAdministratorsAsync(long id)
