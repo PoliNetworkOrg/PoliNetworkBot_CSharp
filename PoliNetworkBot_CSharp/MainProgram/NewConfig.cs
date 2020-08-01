@@ -8,22 +8,30 @@ namespace PoliNetworkBot_CSharp.MainProgram
     {
         public static void NewConfigMethod()
         {
-            var lines = File.ReadAllLines(Data.Constants.Paths.config_bots_info);
+            var lines = File.ReadAllText(Data.Constants.Paths.config_bots_info).Split("| _:r:_ |");
             List<BotInfo> botInfos = new List<BotInfo>();
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
+                string line = lines[i];
                 if (!string.IsNullOrEmpty(line))
                 {
-                    var line_info = line.Split("_:::_");
+                    line = line.Trim();
 
-                    var bot = new BotInfo();
-                    bot.SetToken(line_info[0]);
-                    bot.SetWebsite(line_info[1]);
-                    bot.SetIsBot(true);
-                    bot.SetAcceptMessages(true);
-                    bot.SetOnMessages(line_info[2]);
+                    if (!string.IsNullOrEmpty(line))
+                    {
 
-                    botInfos.Add(bot);
+                        var line_info = line.Split("| _:c:_ |");
+
+                        var bot = new BotInfo();
+                        bot.SetToken(line_info[0].Trim());
+                        bot.SetWebsite(line_info[1].Trim());
+                        bot.SetIsBot(true);
+                        bot.SetAcceptMessages(true);
+                        bot.SetOnMessages(line_info[2].Trim());
+                        bot.SetContactString(line_info[3].Trim());
+
+                        botInfos.Add(bot);
+                    }
                 }
             }
             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.config_bot, botInfos);

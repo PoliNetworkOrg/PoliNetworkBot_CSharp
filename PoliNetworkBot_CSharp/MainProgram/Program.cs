@@ -58,7 +58,7 @@ namespace PoliNetworkBot_CSharp
                 if (bot.IsBot())
                 {
                     TelegramBotClient botClient = new TelegramBotClient(bot.GetToken());
-                    Data.GlobalVariables.Bots[botClient.BotId] = new TelegramBotAbstract(botClient, bot.GetWebsite());
+                    Data.GlobalVariables.Bots[botClient.BotId] = new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
                     var me = botClient.GetMeAsync().Result;
                     Console.WriteLine(me.Id);
                     if (bot.AcceptsMessages())

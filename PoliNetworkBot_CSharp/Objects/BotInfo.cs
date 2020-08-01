@@ -19,6 +19,7 @@ namespace PoliNetworkBot_CSharp.Objects
         public const string accepts_messages = "a";
         public const string on_messages = "o";
         public const string website = "w";
+        public const string contactString = "c";
 
         internal string GetToken()
         {
@@ -28,6 +29,11 @@ namespace PoliNetworkBot_CSharp.Objects
         internal void SetWebsite(string v)
         {
             this.keyValuePairs[website] = v;
+        }
+
+        internal void SetContactString(string v)
+        {
+            this.keyValuePairs[contactString] = v;
         }
 
         internal bool IsBot()
@@ -69,6 +75,11 @@ namespace PoliNetworkBot_CSharp.Objects
         internal string GetWebsite()
         {
             return this.keyValuePairs[website].ToString();
+        }
+
+        internal string GetContactString()
+        {
+            return this.keyValuePairs[contactString].ToString();
         }
     }
 }

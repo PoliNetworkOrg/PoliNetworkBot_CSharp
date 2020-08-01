@@ -10,12 +10,14 @@ namespace PoliNetworkBot_CSharp
         private readonly TelegramBotClient botClient;
         private readonly bool isbot;
         private readonly string website;
+        private readonly string contactString;
 
-        public TelegramBotAbstract(TelegramBotClient botClient, string website)
+        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString)
         {
             this.botClient = botClient;
             this.isbot = true;
             this.website = website;
+            this.contactString = contactString;
         }
 
         internal string GetWebSite()
@@ -50,6 +52,11 @@ namespace PoliNetworkBot_CSharp
             {
                 this.botClient.SendTextMessageAsync(chatid, text, v);
             }
+        }
+
+        internal string GetContactString()
+        {
+            return this.contactString;
         }
 
         internal async Task<string> ExportChatInviteLinkAsync(long chat_id)

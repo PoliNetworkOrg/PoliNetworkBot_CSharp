@@ -23,12 +23,26 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/contact":
+                    {
+                        ContactUs(sender, e);
+                        return;
+                    }
+
                 default:
                     {
                         Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
-                        break;
+                        return;
                     }
             }
+        }
+
+        private static void ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
+                    telegramBotClient.GetContactString()
+                );
         }
 
         private static async System.Threading.Tasks.Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
