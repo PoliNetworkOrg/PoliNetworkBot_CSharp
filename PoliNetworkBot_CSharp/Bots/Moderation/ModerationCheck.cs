@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Telegram.Bot;
 using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
@@ -192,11 +191,6 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             }
 
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
-        }
-
-        public static void ExitFromChat(TelegramBotClient sender, MessageEventArgs e)
-        {
-            sender.LeaveChatAsync(e.Message.Chat.Id);
         }
     }
 }

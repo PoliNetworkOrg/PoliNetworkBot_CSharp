@@ -4,7 +4,7 @@ namespace PoliNetworkBot_CSharp.Data
 {
     public class GlobalVariables
     {
-        public static List<TelegramBotAbstract> Bots;
+        public static Dictionary<long, TelegramBotAbstract> Bots;
         public static List<long> Creators;
 
         internal static void LoadToRam()

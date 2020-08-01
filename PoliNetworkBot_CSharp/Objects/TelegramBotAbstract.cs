@@ -23,6 +23,11 @@ namespace PoliNetworkBot_CSharp
             return this.website;
         }
 
+        internal static TelegramBotAbstract GetFromRam(TelegramBotClient telegramBotClient_bot)
+        {
+            return Data.GlobalVariables.Bots[telegramBotClient_bot.BotId];
+        }
+
         internal void DeleteMessageAsync(long id, int messageId)
         {
             if (isbot)
@@ -75,6 +80,14 @@ namespace PoliNetworkBot_CSharp
             }
 
             return null;
+        }
+
+        internal void LeaveChatAsync(long id)
+        {
+            if (isbot)
+            {
+                this.botClient.LeaveChatAsync(id);
+            }
         }
     }
 }

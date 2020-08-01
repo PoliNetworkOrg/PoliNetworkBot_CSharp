@@ -52,13 +52,13 @@ namespace PoliNetworkBot_CSharp
 
             Data.GlobalVariables.LoadToRam();
 
-            Data.GlobalVariables.Bots = new List<TelegramBotAbstract>();
+            Data.GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
             foreach (var bot in botInfos)
             {
                 if (bot.IsBot())
                 {
                     TelegramBotClient botClient = new TelegramBotClient(bot.GetToken());
-                    Data.GlobalVariables.Bots.Add(new TelegramBotAbstract(botClient, bot.GetWebsite()));
+                    Data.GlobalVariables.Bots[botClient.BotId] = new TelegramBotAbstract(botClient, bot.GetWebsite());
                     var me = botClient.GetMeAsync().Result;
                     Console.WriteLine(me.Id);
                     if (bot.AcceptsMessages())

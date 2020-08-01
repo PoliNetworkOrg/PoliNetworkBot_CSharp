@@ -8,19 +8,21 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
     {
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
-            TelegramBotClient telegramBotClient = null;
+            TelegramBotClient telegramBotClient_bot = null;
             if (sender is TelegramBotClient tmp)
             {
-                telegramBotClient = tmp;
+                telegramBotClient_bot = tmp;
             }
 
-            if (telegramBotClient == null)
+            if (telegramBotClient_bot == null)
                 return;
+
+            TelegramBotAbstract telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClient_bot);
 
             bool to_exit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (to_exit)
             {
-                ModerationCheck.ExitFromChat(telegramBotClient, e);
+                Utils.LeaveChat.ExitFromChat(telegramBotClient, e);
                 return;
             }
 
