@@ -5,8 +5,8 @@ namespace PoliNetworkBot_CSharp
 {
     internal class TelegramFile
     {
-        private Stream stream;
-        private string fileName;
+        private readonly Stream stream;
+        private readonly string fileName;
 
         public TelegramFile(Stream stream, string fileName)
         {
@@ -16,7 +16,8 @@ namespace PoliNetworkBot_CSharp
 
         internal InputOnlineFile GetOnlineFile()
         {
-            return new InputOnlineFile(this.stream, this.fileName);
+            stream.Seek(0, SeekOrigin.Begin);
+            return new InputOnlineFile(stream, this.fileName);
         }
     }
 }

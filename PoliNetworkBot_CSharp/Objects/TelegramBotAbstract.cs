@@ -76,7 +76,7 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal async Task<bool> SendFileAsync(TelegramFile document_input, long chat_id, string text, TextAsCaption text_as_caption, string fileName)
+        internal async Task<bool> SendFileAsync(TelegramFile document_input, long chat_id, string text, TextAsCaption text_as_caption)
         {
             if (isbot)
             {
@@ -85,21 +85,21 @@ namespace PoliNetworkBot_CSharp
                 {
                     case TextAsCaption.AS_CAPTION:
                         {
-                            var message = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile, caption: text);
+                            _ = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile, caption: text);
                             return true;
                         }
 
                     case TextAsCaption.BEFORE_FILE:
                         {
-                            var m1 = await this.botClient.SendTextMessageAsync(chat_id, text);
-                            var m2 = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
+                            _ = await this.botClient.SendTextMessageAsync(chat_id, text);
+                            _ = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
                             return true;
                         }
 
                     case TextAsCaption.AFTER_FILE:
                         {
-                            var m1 = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
-                            var m2 = await this.botClient.SendTextMessageAsync(chat_id, text);
+                            _ = await this.botClient.SendDocumentAsync(chat_id, inputOnlineFile);
+                            _ = await this.botClient.SendTextMessageAsync(chat_id, text);
                             return true;
                         }
                 }
