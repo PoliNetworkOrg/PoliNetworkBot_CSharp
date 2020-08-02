@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp
             {
                 if (read_choice.StartsWith("n"))
                 {
-                    MainProgram.NewConfig.NewConfigMethod();
+                    MainProgram.NewConfig.NewConfigMethod(true, true);
                     Console.WriteLine("Reset done!");
                     return;
                 }
@@ -30,22 +30,55 @@ namespace PoliNetworkBot_CSharp
             if (to_exit == ToExit.EXIT)
                 return;
 
-            LoadUserBotConfig();
+            var to_exit2 = LoadUserBotConfig();
+            if (to_exit2 == ToExit.EXIT)
+                return;
 
             Data.GlobalVariables.LoadToRam();
 
-            StartBotsAsync();
-
             Console.WriteLine("\nTo kill this process, you have to check the process list");
+
+
+            _ = StartBotsAsync();
+
+
             while (true)
             {
                 Console.ReadKey();
             }
         }
 
-        private static void LoadUserBotConfig()
+        private static ToExit LoadUserBotConfig()
         {
-            throw new NotImplementedException();
+            userBots = Utils.FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Data.Constants.Paths.config_userbot);
+            if (userBots == null || userBots.Count == 0)
+            {
+                Console.WriteLine("It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
+                var read_choice2 = Console.ReadLine();
+                if (!string.IsNullOrEmpty(read_choice2) && read_choice2.ToLower().StartsWith("y"))
+                {
+                    MainProgram.NewConfig.NewConfigMethod(false, true);
+
+                    Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                    var read_choice3 = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(read_choice3) && read_choice3.ToLower().StartsWith("y"))
+                    {
+                        //ok, keep going
+                        userBots = Utils.FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Data.Constants.Paths.config_userbot);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ok, bye!");
+                        return ToExit.EXIT;
+                    }
+                }
+                else
+                {
+                    return ToExit.EXIT;
+                }
+            }
+
+            return ToExit.STAY;
         }
 
         private static ToExit LoadBotConfig()
@@ -53,11 +86,11 @@ namespace PoliNetworkBot_CSharp
             botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
             if (botInfos == null || botInfos.Count == 0)
             {
-                Console.WriteLine("It seems that the configuration isn't available. Do you want to reset it? (Y/N)");
+                Console.WriteLine("It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
                 var read_choice2 = Console.ReadLine();
                 if (!string.IsNullOrEmpty(read_choice2) && read_choice2.ToLower().StartsWith("y"))
                 {
-                    MainProgram.NewConfig.NewConfigMethod();
+                    MainProgram.NewConfig.NewConfigMethod(true, false);
 
                     Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                     var read_choice3 = Console.ReadLine();
@@ -109,7 +142,22 @@ namespace PoliNetworkBot_CSharp
                 foreach (var userbot in userBots)
                 {
                     TLSharp.Core.TelegramClient client = await Utils.UserbotConnect.ConnectAsync(userbot);
-                    Data.GlobalVariables.Bots[userbot.GetUserId()] = new TelegramBotAbstract(client, userbot.GetWebsite(), userbot.GetContactString());
+                    var user_id = userbot.GetUserId();
+                    if (user_id != null)
+                    {
+                        Data.GlobalVariables.Bots[user_id.Value] = new TelegramBotAbstract(client, userbot.GetWebsite(), userbot.GetContactString());
+                    }
+                    else
+                    {
+                        try
+                        {
+                            client.Dispose();
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
                 }
             }
         }

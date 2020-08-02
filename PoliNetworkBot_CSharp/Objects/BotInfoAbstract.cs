@@ -4,6 +4,7 @@ using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Objects
 {
+    [Serializable]
     public class BotInfoAbstract
     {
         protected readonly Dictionary<string, object> keyValuePairs;
@@ -15,6 +16,11 @@ namespace PoliNetworkBot_CSharp.Objects
         public const string website = "w";
         public const string contactString = "c";
         public const string api_id = "ai";
+        public const string api_hash = "ah";
+        public const string user_id = "u";
+        public const string number_contry = "nc";
+        public const string number_number = "nn";
+        public const string password_to_authenticate = "pta";
 
         public BotInfoAbstract()
         {
@@ -75,12 +81,26 @@ namespace PoliNetworkBot_CSharp.Objects
 
         internal string GetWebsite()
         {
-            return this.keyValuePairs[website].ToString();
+            try
+            {
+                return this.keyValuePairs[website].ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         internal string GetContactString()
         {
-            return this.keyValuePairs[contactString].ToString();
+            try
+            {
+                return this.keyValuePairs[contactString].ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
