@@ -56,7 +56,9 @@ namespace PoliNetworkBot_CSharp.MainProgram
                 "bot_id INT(12)," +
                 "valid CHAR(1)," +
                 "link VARCHAR(250)," +
-                "last_update_link DATETIME" +
+                "last_update_link DATETIME," +
+                "type VARCHAR(250)," +
+                "title VARCHAR(250)" +
                 ") ";
 
             Utils.SQLite.Execute(q1);

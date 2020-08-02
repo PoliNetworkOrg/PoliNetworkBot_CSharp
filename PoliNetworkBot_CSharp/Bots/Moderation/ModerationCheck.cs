@@ -62,8 +62,13 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            string q1 = "INSERT INTO Groups (id, bot_id) VALUES (@id, @botid)";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id }, { "@botid", sender.GetBotID() } });
+            string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
+            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() {
+                { "@id", e.Message.Chat.Id }, 
+                { "@botid", sender.GetBotID() } ,
+                { "@type", e.Message.Chat.Type.ToString() },
+                { "@title", e.Message.Chat.Title }
+            });
             _ = CreateInviteLinkAsync(sender, e);
         }
 
