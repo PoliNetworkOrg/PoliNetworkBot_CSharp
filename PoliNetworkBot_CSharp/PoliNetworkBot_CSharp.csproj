@@ -12,8 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="TeleSharp.TL">
+      <HintPath>..\..\TLSharp\TLSharp.Core\bin\Debug\TeleSharp.TL.dll</HintPath>
+    </Reference>
     <Reference Include="TLSharp.Core">
-      <HintPath>..\TLSharp\TLSharp.Core\bin\Debug\TLSharp.Core.dll</HintPath>
+      <HintPath>..\..\TLSharp\TLSharp.Core\bin\Debug\TLSharp.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

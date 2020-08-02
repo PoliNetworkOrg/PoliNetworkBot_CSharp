@@ -24,9 +24,9 @@ namespace PoliNetworkBot_CSharp.Utils
             telegramBotClient.RestrictChatMemberAsync(chat_id, user_id, permissions, untilDate);
         }
 
-        internal static List<DataRow> BanAll(TelegramBotAbstract sender, MessageEventArgs e, string target, bool ban_target)
+        internal static async System.Threading.Tasks.Task<List<DataRow>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target, bool ban_target)
         {
-            int? target_id = Info.GetTargetUserId(target, sender);
+            int? target_id = await Info.GetTargetUserIdAsync(target, sender);
             if (target_id == null)
             {
                 Utils.SendMessage.SendMessageInPrivate(sender, e,

@@ -1,5 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
+using System;
 using System.IO;
 using Telegram.Bot.Args;
 
@@ -48,9 +49,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         {
-                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1], true);
-                            Utils.SendMessage.SendMessageInPrivate(sender, e,
-                                "Target banned from " + done.Count.ToString() + " groups");
+                            _ = BanAllAsync(sender, e, target: cmd_lines[1]);
                         }
                         else
                         {
@@ -63,9 +62,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         {
-                            var done = RestrictUser.BanAll(sender, e, cmd_lines[1], false);
-                            Utils.SendMessage.SendMessageInPrivate(sender, e,
-                                "Target unbanned from " + done.Count.ToString() + " groups");
+                            _ = UnbanAllAsync(sender, e, target: cmd_lines[1]);
                         }
                         else
                         {
@@ -98,6 +95,20 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async System.Threading.Tasks.Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        {
+            var done = await RestrictUser.BanAllAsync(sender, e, target, false);
+            Utils.SendMessage.SendMessageInPrivate(sender, e,
+                "Target unbanned from " + done.Count.ToString() + " groups");
+        }
+
+        private static async System.Threading.Tasks.Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        {
+            var done = await RestrictUser.BanAllAsync(sender, e, target, true);
+            Utils.SendMessage.SendMessageInPrivate(sender, e,
+                "Target banned from " + done.Count.ToString() + " groups");
         }
 
         private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
@@ -137,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
         {
             Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
             telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
-                    telegramBotClient.GetContactString()
+                    telegramBotClient.GetContactString(), e.Message.Chat.Type
                 );
         }
 
@@ -153,7 +164,8 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
                     "Ciao! 👋\n" +
                     "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
-                    "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite()
+                    "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite(),
+                     e.Message.Chat.Type
                 );
         }
     }

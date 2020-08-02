@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Utils
         {
             try
             {
-                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ParseMode.Html);
+                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ChatType.Private, Telegram.Bot.Types.Enums.ParseMode.Html);
             }
             catch
             {
@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Utils
                         break;
                 }
                 string text2 = "[" + message_for + " " + message_to + "]\n\n" + text;
-                telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, Telegram.Bot.Types.Enums.ParseMode.Html);
+                telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html);
             }
         }
 
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Utils
         {
             try
             {
-                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, html);
+                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ChatType.Private, html);
                 return true;
             }
             catch

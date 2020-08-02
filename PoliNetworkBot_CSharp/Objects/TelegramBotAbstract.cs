@@ -5,12 +5,15 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.InputFiles;
+using TeleSharp.TL;
+using TLSharp.Core;
 
 namespace PoliNetworkBot_CSharp
 {
     public class TelegramBotAbstract
     {
         private readonly TelegramBotClient botClient;
+        private readonly TelegramClient userbotClient;
         private readonly bool isbot;
         private readonly string website;
         private readonly string contactString;
@@ -19,6 +22,14 @@ namespace PoliNetworkBot_CSharp
         {
             this.botClient = botClient;
             this.isbot = true;
+            this.website = website;
+            this.contactString = contactString;
+        }
+
+        public TelegramBotAbstract(TelegramClient client, string website, string contactString)
+        {
+            this.userbotClient = client;
+            this.isbot = false;
             this.website = website;
             this.contactString = contactString;
         }
@@ -41,7 +52,7 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal int? GetIDFromUsername(string target)
+        internal async Task<int?> GetIDFromUsernameAsync(string target)
         {
             if (isbot)
             {
@@ -50,7 +61,14 @@ namespace PoliNetworkBot_CSharp
             }
             else
             {
-                //todo
+                var r = await this.userbotClient.ResolveUsernameAsync(target);   
+                if (r.Peer != null)
+                {
+                    if (r.Peer is TLPeerUser tLPeerUser)
+                    {
+                        return tLPeerUser.UserId;
+                    }
+                }
                 return null;
             }
         }
@@ -63,7 +81,7 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default)
+        internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ChatType chatType, Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default)
         {
             if (isbot)
             {
@@ -72,7 +90,30 @@ namespace PoliNetworkBot_CSharp
             }
             else
             {
-                return false;
+                switch (chatType)
+                {
+                    case Telegram.Bot.Types.Enums.ChatType.Private:
+                        {
+                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerUser() { UserId = (int)chatid };
+                            this.userbotClient.SendMessageAsync(peer, text);
+                            break;
+                        }
+
+                    case Telegram.Bot.Types.Enums.ChatType.Channel:
+                        {
+                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerChannel() { ChannelId = (int)chatid };
+                            this.userbotClient.SendMessageAsync(peer, text);
+                            break;
+                        }
+
+                    default:
+                        {
+                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerChat() { ChatId = (int)chatid };
+                            this.userbotClient.SendMessageAsync(peer, text);
+                            break;
+                        }
+                }
+                return true;
             }
         }
 

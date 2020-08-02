@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp
 {
     internal class Program
     {
         public static List<BotInfo> botInfos = null;
+        public static List<UserBotInfo> userBots = null;
 
         private static void Main()
         {
@@ -24,6 +26,30 @@ namespace PoliNetworkBot_CSharp
                 }
             }
 
+            var to_exit = LoadBotConfig();
+            if (to_exit == ToExit.EXIT)
+                return;
+
+            LoadUserBotConfig();
+
+            Data.GlobalVariables.LoadToRam();
+
+            StartBotsAsync();
+
+            Console.WriteLine("\nTo kill this process, you have to check the process list");
+            while (true)
+            {
+                Console.ReadKey();
+            }
+        }
+
+        private static void LoadUserBotConfig()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static ToExit LoadBotConfig()
+        {
             botInfos = Utils.FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Data.Constants.Paths.config_bot);
             if (botInfos == null || botInfos.Count == 0)
             {
@@ -43,35 +69,24 @@ namespace PoliNetworkBot_CSharp
                     else
                     {
                         Console.WriteLine("Ok, bye!");
-                        return;
+                        return ToExit.EXIT;
                     }
                 }
                 else
                 {
-                    return;
+                    return ToExit.EXIT;
                 }
             }
 
-            Data.GlobalVariables.LoadToRam();
-
-            StartBots();
-
-            Console.WriteLine("\nTo kill this process, you have to check the process list");
-            while (true)
-            {
-                Console.ReadKey();
-            }
+            return ToExit.STAY;
         }
 
-        private static void StartBots()
+        private static async System.Threading.Tasks.Task StartBotsAsync()
         {
             Data.GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
-            if (botInfos == null)
-                return;
-
-            foreach (var bot in botInfos)
+            if (botInfos != null)
             {
-                if (bot.IsBot())
+                foreach (var bot in botInfos)
                 {
                     TelegramBotClient botClient = new TelegramBotClient(bot.GetToken());
                     Data.GlobalVariables.Bots[botClient.BotId] = new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
@@ -87,9 +102,14 @@ namespace PoliNetworkBot_CSharp
                         }
                     }
                 }
-                else
+            }
+
+            if (userBots != null)
+            {
+                foreach (var userbot in userBots)
                 {
-                    //todo: userbots
+                    TLSharp.Core.TelegramClient client = await Utils.UserbotConnect.ConnectAsync(userbot);
+                    Data.GlobalVariables.Bots[userbot.GetUserId()] = new TelegramBotAbstract(client, userbot.GetWebsite(), userbot.GetContactString());
                 }
             }
         }
