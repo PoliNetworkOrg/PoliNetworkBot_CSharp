@@ -14,6 +14,7 @@ namespace PoliNetworkBot_CSharp.Objects
         public const string on_messages = "o";
         public const string website = "w";
         public const string contactString = "c";
+        public const string api_id = "ai";
 
         public BotInfoAbstract()
         {

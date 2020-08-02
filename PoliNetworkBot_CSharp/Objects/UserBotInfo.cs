@@ -16,14 +16,28 @@ namespace PoliNetworkBot_CSharp
             return false;
         }
 
-        internal int GetApiId()
+        internal int? GetApiId()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Convert.ToInt32(this.keyValuePairs[api_id]);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        internal string GetApiHash()
+        internal string? GetApiHash()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return this.keyValuePairs[api_hash].ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         internal string GetSessionUserId()
