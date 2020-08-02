@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetworkBot_CSharp", "PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj", "{64A1A96C-D78E-4EA7-993B-3E4C36ABE339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoliNetworkBot_CSharp", "PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj", "{64A1A96C-D78E-4EA7-993B-3E4C36ABE339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TLSharp.Core", "TLSharp\TLSharp.Core\TLSharp.Core.csproj", "{400D2544-1CC6-4D8A-A62C-2292D9947A16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeleSharp.TL", "TLSharp\TeleSharp.TL\TeleSharp.TL.csproj", "{D6144517-91D2-4880-86DF-E9FF5D7F383A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TLSharp.Tests", "TLSharp\TLSharp.Tests\TLSharp.Tests.csproj", "{DE5C0467-EE99-4734-95F2-EFF7A0B99924}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{64A1A96C-D78E-4EA7-993B-3E4C36ABE339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64A1A96C-D78E-4EA7-993B-3E4C36ABE339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64A1A96C-D78E-4EA7-993B-3E4C36ABE339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400D2544-1CC6-4D8A-A62C-2292D9947A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400D2544-1CC6-4D8A-A62C-2292D9947A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400D2544-1CC6-4D8A-A62C-2292D9947A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400D2544-1CC6-4D8A-A62C-2292D9947A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6144517-91D2-4880-86DF-E9FF5D7F383A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6144517-91D2-4880-86DF-E9FF5D7F383A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6144517-91D2-4880-86DF-E9FF5D7F383A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6144517-91D2-4880-86DF-E9FF5D7F383A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5C0467-EE99-4734-95F2-EFF7A0B99924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5C0467-EE99-4734-95F2-EFF7A0B99924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5C0467-EE99-4734-95F2-EFF7A0B99924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5C0467-EE99-4734-95F2-EFF7A0B99924}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
