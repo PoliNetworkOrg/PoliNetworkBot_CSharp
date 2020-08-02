@@ -9,6 +9,7 @@ namespace PoliNetworkBot_CSharp
         public string session_user_id = null;
 
 #pragma warning disable IDE0060 // Rimuovere il parametro inutilizzato
+
         internal new bool SetIsBot(bool v)
 #pragma warning restore IDE0060 // Rimuovere il parametro inutilizzato
         {

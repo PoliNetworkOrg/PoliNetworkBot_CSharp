@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp
 {
@@ -38,9 +37,7 @@ namespace PoliNetworkBot_CSharp
 
             Console.WriteLine("\nTo kill this process, you have to check the process list");
 
-
             _ = StartBotsAsync();
-
 
             while (true)
             {
@@ -123,8 +120,6 @@ namespace PoliNetworkBot_CSharp
                 {
                     TelegramBotClient botClient = new TelegramBotClient(bot.GetToken());
                     Data.GlobalVariables.Bots[botClient.BotId] = new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
-                    var me = botClient.GetMeAsync().Result;
-                    Console.WriteLine(me.Id);
                     if (bot.AcceptsMessages())
                     {
                         var onmessage_method = bot.GetOnMessage();

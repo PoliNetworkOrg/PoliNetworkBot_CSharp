@@ -1,5 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Objects;
-using System;
 using System.Collections.Generic;
 using System.IO;
 

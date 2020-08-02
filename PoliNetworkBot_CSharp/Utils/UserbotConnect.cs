@@ -1,5 +1,4 @@
 ﻿using System;
-using Telegram.Bot.Types;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
 
@@ -13,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Utils
             if (api_id == null)
                 return null;
 
-            TelegramClient telegramClient =  new TLSharp.Core.TelegramClient(api_id.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
+            TelegramClient telegramClient = new TLSharp.Core.TelegramClient(api_id.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
             await telegramClient.ConnectAsync();
 
             if (telegramClient.IsUserAuthorized())

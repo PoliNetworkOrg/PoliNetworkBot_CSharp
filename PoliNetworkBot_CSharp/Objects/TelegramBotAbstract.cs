@@ -61,7 +61,7 @@ namespace PoliNetworkBot_CSharp
             }
             else
             {
-                var r = await this.userbotClient.ResolveUsernameAsync(target);   
+                var r = await this.userbotClient.ResolveUsernameAsync(target);
                 if (r.Peer != null)
                 {
                     if (r.Peer is TLPeerUser tLPeerUser)
@@ -69,6 +69,7 @@ namespace PoliNetworkBot_CSharp
                         return tLPeerUser.UserId;
                     }
                 }
+
                 return null;
             }
         }

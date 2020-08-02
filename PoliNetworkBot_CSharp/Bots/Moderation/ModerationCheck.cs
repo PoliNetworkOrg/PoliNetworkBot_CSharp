@@ -64,7 +64,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
         {
             string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
             Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() {
-                { "@id", e.Message.Chat.Id }, 
+                { "@id", e.Message.Chat.Id },
                 { "@botid", sender.GetBotID() } ,
                 { "@type", e.Message.Chat.Type.ToString() },
                 { "@title", e.Message.Chat.Title }
