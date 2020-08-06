@@ -49,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         {
-                            _ = BanAllAsync(sender, e, target: cmd_lines[1]);
+                            _ = BanAllAsync(sender, e, target: cmd_lines);
                         }
                         else
                         {
@@ -139,11 +139,27 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 "Target unbanned from " + done.Count.ToString() + " groups");
         }
 
-        private static async System.Threading.Tasks.Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        private static async System.Threading.Tasks.Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target)
         {
-            var done = await RestrictUser.BanAllAsync(sender, e, target, true);
-            Utils.SendMessage.SendMessageInPrivate(sender, e,
-                "Target banned from " + done.Count.ToString() + " groups");
+            if (e.Message.ReplyToMessage == null)
+            {
+                if (target.Length < 2)
+                {
+                    sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", Telegram.Bot.Types.Enums.ChatType.Private);
+                }
+                else
+                {
+                    var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
+                    Utils.SendMessage.SendMessageInPrivate(sender, e,
+                        "Target banned from " + done.Count.ToString() + " groups");
+                }
+            }
+            else
+            {
+                var done = await RestrictUser.BanAllAsync(sender, e, target: e.Message.ReplyToMessage.From.Id.ToString(), true);
+                Utils.SendMessage.SendMessageInPrivate(sender, e,
+                    "Target banned from " + done.Count.ToString() + " groups");
+            }
         }
 
         private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
