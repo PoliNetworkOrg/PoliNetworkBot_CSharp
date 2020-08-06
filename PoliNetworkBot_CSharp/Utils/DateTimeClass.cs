@@ -42,49 +42,83 @@ namespace PoliNetworkBot_CSharp.Utils
             if (string.IsNullOrEmpty(v))
                 return null;
 
+            v = v.ToLower();
+
             switch(v)
             {
+                case "y":
+                case "year":
+                case "years":
+                case "anni":
                 case "anno":
                     {
                         return 60 * 60 * 24 * 365;
                     }
 
+                case "stagioni":
                 case "stagione":
                     {
                         return 60 * 60 * 24 * 91;
                     }
 
+                case "mo":
+                case "month":
+                case "months":
+                case "mesi":
                 case "mese":
                     {
                         return 60 * 60 * 24 * 30;
                     }
 
+                case "w":
+                case "week":
+                case "weeks":
+                case "settimane":
                 case "settimana":
                     {
                         return 60 * 60 * 24 * 7;
                     }
 
+                case "d":
+                case "day":
+                case "days":
+                case "giorni":
                 case "giorno":
                     {
                         return 60 * 60 * 24;
                     }
 
+                case "h":
+                case "hour":
+                case "hours":
+                case "ore":
                 case "ora":
                     {
                         return 60 * 60;
                     }
 
+                case "m":
+                case "min":
+                case "mins":
+                case "minute":
+                case "minutes":
+                case "minuti":
                 case "minuto":
                     {
                         return 60;
                     }
 
                 default:
-                case "secondo":
                     {
                         return 1;
                     }
             }
+        }
+
+        internal static string NowAsStringAmericanFormat()
+        {
+            var dt = DateTime.Now;
+            return String.Format("{0:s}", dt) + ":" + dt.Millisecond.ToString().PadLeft(3,'0');
         }
     }
 }

@@ -95,6 +95,12 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/time":
+                    {
+                        Utils.SendMessage.SendMessageInPrivate(sender, e, Utils.DateTimeClass.NowAsStringAmericanFormat());
+                        return;
+                    }
+
                 default:
                     {
                         DefaultCommand(sender, e);
