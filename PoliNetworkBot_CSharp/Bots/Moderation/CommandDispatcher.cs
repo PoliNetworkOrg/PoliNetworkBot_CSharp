@@ -1,5 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
+using System;
 using System.IO;
 using Telegram.Bot.Args;
 
@@ -57,6 +58,12 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/ban":
+                    {
+                        _ = BanUserAsync(sender, e, cmd_lines);
+                        return;
+                    }
+
                 case "/unbanAll":
                     {
                         if (GlobalVariables.Creators.Contains(e.Message.From.Id))
@@ -94,6 +101,29 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async System.Threading.Tasks.Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] string_info)
+        {
+            bool r = await Groups.CheckIfAdminAsync(e.Message.From.Id, chat_id: e.Message.Chat.Id, sender);
+            if (r)
+            {
+                if (e.Message.ReplyToMessage == null)
+                {
+                    var target_int = await Utils.Info.GetTargetUserIdAsync(string_info[1], sender);
+                    if (target_int == null)
+                        return false;
+
+                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, time:null);
+                }
+                else
+                {
+                    var target_int = e.Message.ReplyToMessage.From.Id;
+                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, time:string_info);
+                }
+            }
+
+            return false;
         }
 
         private static async System.Threading.Tasks.Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)

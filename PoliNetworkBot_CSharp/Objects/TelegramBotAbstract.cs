@@ -1,11 +1,14 @@
 ﻿using PoliNetworkBot_CSharp.Bots.Enums;
 using System;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using TeleSharp.TL;
+using TeleSharp.TL.Messages;
 using TLSharp.Core;
 
 namespace PoliNetworkBot_CSharp
@@ -15,23 +18,28 @@ namespace PoliNetworkBot_CSharp
         private readonly TelegramBotClient botClient;
         private readonly TelegramClient userbotClient;
         private readonly bool isbot;
+
+
+
         private readonly string website;
         private readonly string contactString;
+        private readonly int id;
 
-        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString)
+        public TelegramBotAbstract(TelegramBotClient bot_client, string website, string contactString)
         {
-            this.botClient = botClient;
+            this.botClient = bot_client;
             this.isbot = true;
             this.website = website;
             this.contactString = contactString;
         }
 
-        public TelegramBotAbstract(TelegramClient client, string website, string contactString)
+        public TelegramBotAbstract(TelegramClient userbot_client, string website, string contactString, long id)
         {
-            this.userbotClient = client;
+            this.userbotClient = userbot_client;
             this.isbot = false;
             this.website = website;
             this.contactString = contactString;
+            this.id = (int)id;
         }
 
         internal string GetWebSite()
@@ -44,11 +52,15 @@ namespace PoliNetworkBot_CSharp
             return Data.GlobalVariables.Bots[telegramBotClient_bot.BotId];
         }
 
-        internal void DeleteMessageAsync(long id, int messageId)
+        internal void DeleteMessageAsync(long chat_id, int messageId, ChatType chatType)
         {
             if (isbot)
             {
-                this.botClient.DeleteMessageAsync(id, messageId);
+                this.botClient.DeleteMessageAsync(chat_id, messageId);
+            }
+            else
+            {
+                this.userbotClient.ChannelsDeleteMessageAsync(Utils.UserbotPeer.GetPeerChannelFromIdAndType(chat_id), new TLVector<int>() { messageId});
             }
         }
 
@@ -82,6 +94,18 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
+        internal int GetID()
+        {
+            if (isbot)
+            {
+                return this.botClient.BotId;
+            }
+            else
+            {
+                return this.id;
+            }
+        }
+
         internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ChatType chatType, Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default)
         {
             if (isbot)
@@ -91,29 +115,8 @@ namespace PoliNetworkBot_CSharp
             }
             else
             {
-                switch (chatType)
-                {
-                    case Telegram.Bot.Types.Enums.ChatType.Private:
-                        {
-                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerUser() { UserId = (int)chatid };
-                            this.userbotClient.SendMessageAsync(peer, text);
-                            break;
-                        }
-
-                    case Telegram.Bot.Types.Enums.ChatType.Channel:
-                        {
-                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerChannel() { ChannelId = (int)chatid };
-                            this.userbotClient.SendMessageAsync(peer, text);
-                            break;
-                        }
-
-                    default:
-                        {
-                            TeleSharp.TL.TLAbsInputPeer peer = new TLInputPeerChat() { ChatId = (int)chatid };
-                            this.userbotClient.SendMessageAsync(peer, text);
-                            break;
-                        }
-                }
+                var peer = Utils.UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                this.userbotClient.SendMessageAsync(peer, text);
                 return true;
             }
         }
@@ -159,6 +162,32 @@ namespace PoliNetworkBot_CSharp
             return this.contactString;
         }
 
+        internal async Task<bool> IsAdminAsync(int user_id, long chat_id)
+        {
+            if (isbot)
+            {
+                ChatMember[] admins = await this.botClient.GetChatAdministratorsAsync(chat_id);
+                foreach (var admin in admins )
+                {
+                    if (admin.User.Id == user_id)
+                        return true;
+                }
+                return false;
+            }
+            else
+            {
+                TeleSharp.TL.Channels.TLChannelParticipant r = await this.userbotClient.ChannelsGetParticipant(
+                    channel: Utils.UserbotPeer.GetPeerChannelFromIdAndType(chat_id),
+                    user: Utils.UserbotPeer.GetPeerUserFromdId(user_id));
+
+                if (r.Participant is TLChannelParticipantModerator   || r.Participant is TLChannelParticipantCreator )
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
         internal async Task<string> ExportChatInviteLinkAsync(long chat_id)
         {
             if (isbot)
@@ -169,23 +198,39 @@ namespace PoliNetworkBot_CSharp
             return null;
         }
 
-        internal long? GetBotID()
+        internal async Task<bool> SendMessageReactionAsync(int chatId, string emojiReaction, int messageId, Telegram.Bot.Types.Enums.ChatType chatType)
         {
             if (isbot)
             {
-                return this.botClient.BotId;
+                //api does not allow that
+                return false;
             }
+            else
+            {
+                var updates = await this.userbotClient.SendMessageReactionAsync(Utils.UserbotPeer.GetPeerFromIdAndType(chatId, chatType), messageId, emojiReaction);
+                if (updates == null)
+                    return false;
 
-            return null;
+                return true;
+            }
         }
 
-        internal bool BanUserFromGroup(int target, long group_chat_id, MessageEventArgs e)
+        internal bool BanUserFromGroup(int target, long group_chat_id, MessageEventArgs e, string[] time)
         {
             if (isbot)
             {
+                DateTime? untilDate = Utils.DateTimeClass.GetUntilDate(time);
+
                 try
                 {
-                    this.botClient.KickChatMemberAsync(group_chat_id, target);
+                    if (untilDate == null)
+                    {
+                        this.botClient.KickChatMemberAsync(group_chat_id, target);
+                    }
+                    else
+                    {
+                        this.botClient.KickChatMemberAsync(group_chat_id, target, untilDate: untilDate.Value);
+                    }
                 }
                 catch
                 {
@@ -197,6 +242,18 @@ namespace PoliNetworkBot_CSharp
             else
             {
                 return false;
+            }
+        }
+
+        internal async Task<TLAbsDialogs> GetLastDialogsAsync()
+        {
+            if (isbot)
+            {
+                return null;
+            }
+            else 
+            {
+                return await this.userbotClient.GetUserDialogsAsync(limit: 100);       
             }
         }
 

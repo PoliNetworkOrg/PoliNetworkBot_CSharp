@@ -65,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
             Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() {
                 { "@id", e.Message.Chat.Id },
-                { "@botid", sender.GetBotID() } ,
+                { "@botid", sender.GetID() } ,
                 { "@type", e.Message.Chat.Type.ToString() },
                 { "@title", e.Message.Chat.Title }
             });
@@ -146,7 +146,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
             Utils.SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
             Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
-            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
         }
 
         public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e, SpamType check_spam)
@@ -196,7 +196,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     }
             }
 
-            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Utils
             {
                 try
                 {
-                    telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId);
+                    telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
                 }
                 catch
                 {

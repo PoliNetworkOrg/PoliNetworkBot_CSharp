@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Utils
                     try
                     {
                         long group_chat_id = (long)dr["id"];
-                        bool success = BanUserFromGroup(sender, e, target_id.Value, group_chat_id);
+                        bool success = BanUserFromGroup(sender, e, target_id.Value, group_chat_id, time: null);
                         if (success)
                             done.Add(dr);
                     }
@@ -88,9 +88,10 @@ namespace PoliNetworkBot_CSharp.Utils
             return sender.UnBanUserFromGroup(target, group_chat_id, e);
         }
 
-        private static bool BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target, long group_chat_id)
+        public static bool BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target, long group_chat_id, string[] time)
         {
-            return sender.BanUserFromGroup(target, group_chat_id, e);
+            return sender.BanUserFromGroup(target, group_chat_id, e, time);
         }
+
     }
 }

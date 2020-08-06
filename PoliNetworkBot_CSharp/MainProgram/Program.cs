@@ -140,7 +140,10 @@ namespace PoliNetworkBot_CSharp
                     var user_id = userbot.GetUserId();
                     if (user_id != null)
                     {
-                        Data.GlobalVariables.Bots[user_id.Value] = new TelegramBotAbstract(client, userbot.GetWebsite(), userbot.GetContactString());
+                        Data.GlobalVariables.Bots[user_id.Value] = new TelegramBotAbstract(userbot_client: client,
+                            userbot.GetWebsite(), userbot.GetContactString(), id: user_id.Value);
+
+                        _ = TestThingsAsync(user_id.Value);
                     }
                     else
                     {
@@ -155,6 +158,16 @@ namespace PoliNetworkBot_CSharp
                     }
                 }
             }
+        }
+
+#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+        private static async System.Threading.Tasks.Task TestThingsAsync(long user_id)
+#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+        {
+            /*
+            _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group
+                emojiReaction: "😎", messageId: 8, Telegram.Bot.Types.Enums.ChatType.Group);
+            */
         }
     }
 }
