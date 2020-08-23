@@ -2,7 +2,7 @@
 
 
 Table Groups {
-  id int [pk]
+  id int(12) [pk]
   bot_id int(12)
   valid varchar(1)
   last_update datetime
@@ -35,6 +35,8 @@ Table Messages {
   message_text longtext
   sent_date datetime
   has_been_sent boolean
+  message_id_tg int(12)
+  id_chat_sent_into int(12) [ref: > Groups.id]
 }
 
 Table MessageTypes {
