@@ -1,6 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Bots.Enums;
 using System;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -18,8 +17,6 @@ namespace PoliNetworkBot_CSharp
         private readonly TelegramBotClient botClient;
         private readonly TelegramClient userbotClient;
         private readonly bool isbot;
-
-
 
         private readonly string website;
         private readonly string contactString;
@@ -60,7 +57,7 @@ namespace PoliNetworkBot_CSharp
             }
             else
             {
-                this.userbotClient.ChannelsDeleteMessageAsync(Utils.UserbotPeer.GetPeerChannelFromIdAndType(chat_id), new TLVector<int>() { messageId});
+                this.userbotClient.ChannelsDeleteMessageAsync(Utils.UserbotPeer.GetPeerChannelFromIdAndType(chat_id), new TLVector<int>() { messageId });
             }
         }
 
@@ -167,7 +164,7 @@ namespace PoliNetworkBot_CSharp
             if (isbot)
             {
                 ChatMember[] admins = await this.botClient.GetChatAdministratorsAsync(chat_id);
-                foreach (var admin in admins )
+                foreach (var admin in admins)
                 {
                     if (admin.User.Id == user_id)
                         return true;
@@ -180,7 +177,7 @@ namespace PoliNetworkBot_CSharp
                     channel: Utils.UserbotPeer.GetPeerChannelFromIdAndType(chat_id),
                     user: Utils.UserbotPeer.GetPeerUserFromdId(user_id));
 
-                if (r.Participant is TLChannelParticipantModerator   || r.Participant is TLChannelParticipantCreator )
+                if (r.Participant is TLChannelParticipantModerator || r.Participant is TLChannelParticipantCreator)
                 {
                     return true;
                 }
@@ -188,6 +185,7 @@ namespace PoliNetworkBot_CSharp
                 return false;
             }
         }
+
         internal async Task<string> ExportChatInviteLinkAsync(long chat_id)
         {
             if (isbot)
@@ -251,9 +249,9 @@ namespace PoliNetworkBot_CSharp
             {
                 return null;
             }
-            else 
+            else
             {
-                return await this.userbotClient.GetUserDialogsAsync(limit: 100);       
+                return await this.userbotClient.GetUserDialogsAsync(limit: 100);
             }
         }
 

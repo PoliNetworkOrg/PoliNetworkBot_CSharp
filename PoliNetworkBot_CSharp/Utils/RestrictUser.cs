@@ -92,6 +92,5 @@ namespace PoliNetworkBot_CSharp.Utils
         {
             return sender.BanUserFromGroup(target, group_chat_id, e, time);
         }
-
     }
 }

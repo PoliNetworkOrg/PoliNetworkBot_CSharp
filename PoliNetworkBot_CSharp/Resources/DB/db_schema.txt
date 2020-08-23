@@ -1,0 +1,24 @@
+// https://dbdiagram.io/d
+
+
+Table Groups {
+  id int [pk]
+  bot_id int(12)
+  valid varchar(1)
+  last_update datetime
+  type varchar(250)
+  title varchar(250)
+  
+}
+
+Table PeopleInEntities {
+  id_entity int [ref: > Entities.id]
+  id_person int
+  
+}
+
+Table Entities {
+  id int
+  name varchar
+}
+

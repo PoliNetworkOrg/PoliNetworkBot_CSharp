@@ -44,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Utils
 
             v = v.ToLower();
 
-            switch(v)
+            switch (v)
             {
                 case "y":
                 case "year":
@@ -118,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Utils
         internal static string NowAsStringAmericanFormat()
         {
             var dt = DateTime.Now;
-            return String.Format("{0:s}", dt) + ":" + dt.Millisecond.ToString().PadLeft(3,'0');
+            return String.Format("{0:s}", dt) + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
     }
 }

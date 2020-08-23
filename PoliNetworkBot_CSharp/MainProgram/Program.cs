@@ -161,6 +161,7 @@ namespace PoliNetworkBot_CSharp
         }
 
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+
         private static async System.Threading.Tasks.Task TestThingsAsync(long user_id)
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {

@@ -22,12 +22,12 @@ namespace PoliNetworkBot_CSharp.Utils
 
                 default:
                     {
-                        return  new TLInputPeerChat() { ChatId = (int)chatid };
+                        return new TLInputPeerChat() { ChatId = (int)chatid };
                     }
             }
             throw new NotImplementedException();
         }
-        
+
         internal static TLAbsInputChannel GetPeerChannelFromIdAndType(long chatid)
         {
             try
@@ -38,7 +38,6 @@ namespace PoliNetworkBot_CSharp.Utils
             {
                 return null;
             }
-
         }
 
         internal static TLAbsInputUser GetPeerUserFromdId(int user_id)

@@ -1,6 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
-using System;
 using System.IO;
 using Telegram.Bot.Args;
 
@@ -120,12 +119,12 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                     if (target_int == null)
                         return false;
 
-                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, time:null);
+                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, time: null);
                 }
                 else
                 {
                     var target_int = e.Message.ReplyToMessage.From.Id;
-                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, time:string_info);
+                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, time: string_info);
                 }
             }
 
