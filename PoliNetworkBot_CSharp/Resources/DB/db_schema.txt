@@ -8,6 +8,7 @@ Table Groups {
   last_update datetime
   type varchar(250)
   title varchar(250)
+  invite_link varchar(250)
   
 }
 
