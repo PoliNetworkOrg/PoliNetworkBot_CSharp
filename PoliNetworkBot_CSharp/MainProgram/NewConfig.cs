@@ -91,9 +91,40 @@ namespace PoliNetworkBot_CSharp.MainProgram
 
             string db_path = Data.Constants.Paths.db;
             db_path = db_path.Split('=')[1];
-            File.WriteAllText(db_path, "");
+            try
+            {
+                File.WriteAllText(db_path, "");
+            }
+            catch
+            {
+                ;
+            }
+
+            CleanDB();
 
             Redo_DB();
+        }
+
+        private static void CleanDB()
+        {
+            string s = "SELECT name FROM sqlite_master WHERE type='table'";
+            var r1 = Utils.SQLite.ExecuteSelect(s);
+            if (r1 == null)
+                return;
+
+            foreach(DataRow dr in r1.Rows)
+            {
+                var name = dr.ItemArray[0].ToString();
+                if (name.StartsWith("sqlite_"))
+                {
+                    ;
+                }
+                else
+                {
+                    string q = "DROP TABLE IF EXISTS " + name;
+                    Utils.SQLite.Execute(q);
+                }
+            }
         }
 
         private static void Redo_DB()
