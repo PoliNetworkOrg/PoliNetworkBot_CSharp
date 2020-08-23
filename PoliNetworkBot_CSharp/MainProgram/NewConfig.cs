@@ -226,7 +226,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
                         JToken r5 = r4.Value;
                         if (r5 is JArray r6)
                         {
-                            ;
                             List<Int64> users = new List<Int64>();
                             foreach (JToken r7 in r6)
                             {
