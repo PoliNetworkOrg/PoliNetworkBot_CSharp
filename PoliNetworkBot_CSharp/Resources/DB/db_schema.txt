@@ -32,7 +32,7 @@ Table Messages {
   id_file int [ref: > Files.id_file]
   id_voice int [ref: > Voices.id_voice]
   id_audio int [ref: > Audios.id_audio]
-  message_text longtext
+  message_text text
   sent_date datetime
   has_been_sent boolean
   message_id_tg int(12)
