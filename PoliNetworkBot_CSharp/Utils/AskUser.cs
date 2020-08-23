@@ -12,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Utils
         internal static string Ask(int id, Dictionary<string, string> dictionary, TelegramBotAbstract sender, string lang)
         {
             string to_send = dictionary[lang];
-            sender.SendTextMessageAsync(id, to_send, Telegram.Bot.Types.Enums.ChatType.Private);
+            sender.SendTextMessageAsync(id, to_send, Telegram.Bot.Types.Enums.ChatType.Private,  v:default, force_reply : true);
             userAnswers[id] = new AnswerTelegram();
             while (userAnswers[id].GetState() == AnswerTelegram.State.WaitingForAnswer)
             {

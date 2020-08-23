@@ -103,11 +103,17 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ChatType chatType, Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default)
+        internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ChatType chatType,
+            Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default, bool force_reply = false)
         {
             if (isbot)
             {
-                this.botClient.SendTextMessageAsync(chatid, text, v);
+                Telegram.Bot.Types.ReplyMarkups.IReplyMarkup reply = null;
+                if (force_reply)
+                {
+                    reply = new Telegram.Bot.Types.ReplyMarkups.ForceReplyMarkup();
+                }
+                this.botClient.SendTextMessageAsync(chatid, text, v, replyMarkup: reply);
                 return true;
             }
             else
