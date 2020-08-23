@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Utils
     internal class MessageDB
     {
         internal static bool AddMessage(MessageType type, string message_text,
-            int message_from_id_person, int? message_from_id_entity, 
+            int message_from_id_person, int? message_from_id_entity,
             int photo_id, long id_chat_sent_into, DateTime? sent_date)
         {
             string q = "INSERT INTO Messages " +
@@ -36,7 +36,6 @@ namespace PoliNetworkBot_CSharp.Utils
                 {"@sent_date", sent_date }
             });
 
-
             return true;
         }
 
@@ -46,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Utils
                 return null;
 
             string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
-            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>() { { "@name", type.ToString()} };
+            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>() { { "@name", type.ToString() } };
             var r1 = Utils.SQLite.ExecuteSelect(q1, keyValuePairs);
             var r2 = Utils.SQLite.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)

@@ -2,9 +2,7 @@
 using PoliNetworkBot_CSharp.Utils;
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -135,12 +133,10 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 if (photo_id_db == null)
                     return false;
 
-
                 Utils.MessageDB.AddMessage(type: Telegram.Bot.Types.Enums.MessageType.Photo,
                     message_text: reply_to.Caption, message_from_id_person: e.Message.From.Id,
                     message_from_id_entity: message_from_id_entity, photo_id: photo_id_db.Value,
                     id_chat_sent_into: id_chat_sent_into, sent_date: sent_date);
-
             }
             else
             {

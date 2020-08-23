@@ -12,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Utils
             PhotoSize r = null;
             foreach (var p in photo)
             {
-                if (p.Height> max)
+                if (p.Height > max)
                 {
                     max = p.Height;
                     r = p;

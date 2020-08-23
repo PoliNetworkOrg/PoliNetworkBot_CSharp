@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliNetworkBot_CSharp.Utils
+﻿namespace PoliNetworkBot_CSharp.Utils
 {
     internal class Assoc
     {

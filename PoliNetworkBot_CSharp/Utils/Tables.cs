@@ -21,12 +21,11 @@ namespace PoliNetworkBot_CSharp.Utils
                 string q3 = "UPDATE " + table_name + " SET " + column_id_name + "=" + r4.ToString() + " WHERE " + unique_column + "='" + value_unique + "'";
                 Utils.SQLite.Execute(q3);
             }
-            
         }
 
         internal static int GetMaxID(string table_name, string column_id_name)
         {
-            string q = "SELECT MAX("+column_id_name+") FROM " + table_name;
+            string q = "SELECT MAX(" + column_id_name + ") FROM " + table_name;
             var r = Utils.SQLite.ExecuteSelect(q);
             var r2 = Utils.SQLite.GetFirstValueFromDataTable(r);
             if (r2 == null)

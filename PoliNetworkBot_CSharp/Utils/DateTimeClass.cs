@@ -178,7 +178,6 @@ namespace PoliNetworkBot_CSharp.Utils
                 return GetDateTimeFromString2(reply);
             }
 
-
             if (reply.StartsWith("entro "))
             {
                 reply = reply.Substring(5).Trim();
@@ -188,7 +187,7 @@ namespace PoliNetworkBot_CSharp.Utils
             if (reply.Contains("/"))
             {
                 if (reply.Contains(":"))
-                { 
+                {
                     if (reply.Contains(" "))
                     {
                         var s = reply.Split(' ');
@@ -208,8 +207,8 @@ namespace PoliNetworkBot_CSharp.Utils
                                     }
 
                                     return new DateTime(year: Convert.ToInt32(s2[2]),
-                                        month: Convert.ToInt32(s2[1]), day: Convert.ToInt32(s2[0]), 
-                                        hour: Convert.ToInt32(s3[0]), minute: Convert.ToInt32(s3[1]), 
+                                        month: Convert.ToInt32(s2[1]), day: Convert.ToInt32(s2[0]),
+                                        hour: Convert.ToInt32(s3[0]), minute: Convert.ToInt32(s3[1]),
                                         second: seconds);
                                 }
                                 catch
@@ -260,7 +259,7 @@ namespace PoliNetworkBot_CSharp.Utils
             if (string.IsNullOrEmpty(reply))
                 return null;
 
-            switch(reply)
+            switch (reply)
             {
                 case "un'ora":
                 case "hour":

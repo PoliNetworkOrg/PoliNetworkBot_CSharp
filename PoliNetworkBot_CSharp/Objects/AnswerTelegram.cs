@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliNetworkBot_CSharp.Objects
+﻿namespace PoliNetworkBot_CSharp.Objects
 {
     internal class AnswerTelegram
     {
@@ -9,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Objects
             WaitingForAnswer, Answered
         }
 
-        AnswerTelegram.State current_state = State.WaitingForAnswer;
+        private AnswerTelegram.State current_state = State.WaitingForAnswer;
         private string answer = null;
 
         public AnswerTelegram()
@@ -28,8 +26,10 @@ namespace PoliNetworkBot_CSharp.Objects
             {
                 case State.WaitingForAnswer:
                     return null;
+
                 case State.Answered:
                     return answer;
+
                 default:
                     return null;
             }

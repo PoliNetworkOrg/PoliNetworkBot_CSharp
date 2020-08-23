@@ -112,7 +112,7 @@ namespace PoliNetworkBot_CSharp.MainProgram
             if (r1 == null)
                 return;
 
-            foreach(DataRow dr in r1.Rows)
+            foreach (DataRow dr in r1.Rows)
             {
                 var name = dr.ItemArray[0].ToString();
                 if (name.StartsWith("sqlite_"))
@@ -181,7 +181,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
                 "height INT(12)," +
                 "width INT(12)" +
                 ");");
-
         }
 
         private static void FillAssoc()
@@ -240,7 +239,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
 
             return true;
         }
-
 
         private static List<Int64> GetUsersFromAssocJson(JToken r1)
         {
