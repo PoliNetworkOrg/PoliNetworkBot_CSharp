@@ -18,7 +18,50 @@ Table PeopleInEntities {
 }
 
 Table Entities {
-  id int
+  id int [pk]
   name varchar
 }
 
+Table Messages {
+  id int [pk]
+  from_id_person int [ref: > PeopleInEntities.id_person]
+  from_id_entity int [ref: > Entities.id]
+  type int [ref: > MessageTypes.id]
+  id_photo int [ref: > Photos.id_photo]
+  id_video int [ref: > Videos.id_video]
+  id_file int [ref: > Files.id_file]
+  id_voice int [ref: > Voices.id_voice]
+  id_audio int [ref: > Audios.id_audio]
+  message_text longtext
+  sent_date datetime
+  has_been_sent boolean
+}
+
+Table MessageTypes {
+  id int [pk]
+  name varchar(250)
+}
+
+Table Photos {
+  id_photo int [pk]
+  file_id varchar(250)
+  file_size int
+  height int
+  width int
+}
+
+Table Videos {
+  id_video int [pk]
+}
+
+Table Files {
+  id_file int [pk]
+}
+
+Table Voices {
+  id_voice int [pk]
+}
+
+Table Audios {
+  id_audio int [pk]
+}
