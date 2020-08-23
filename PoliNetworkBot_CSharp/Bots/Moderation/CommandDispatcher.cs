@@ -1,7 +1,12 @@
 ﻿using PoliNetworkBot_CSharp.Data;
 using PoliNetworkBot_CSharp.Utils;
+using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
@@ -100,12 +105,51 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                         return;
                     }
 
+                case "/assoc_send":
+                    {
+                        var t = new Thread(() => Assoc_Send(sender, e));
+                        t.Start();
+                        return;
+                    }
+
                 default:
                     {
                         DefaultCommand(sender, e);
                         return;
                     }
             }
+        }
+
+        private static bool Assoc_Send(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var reply_to = e.Message.ReplyToMessage;
+
+            int? message_from_id_entity = Utils.Assoc.GetIDEntityFromPerson(e.Message.From.Id);
+            DateTime? sent_date = Utils.DateTimeClass.AskDate(e.Message.From.Id, e.Message.Text, e.Message.From.LanguageCode, sender);
+            long id_chat_sent_into = Data.Constants.Channels.PoliAssociazioni;
+
+            if (reply_to.Photo != null)
+            {
+                Telegram.Bot.Types.PhotoSize photo_large = Utils.Photo.GetLargest(reply_to.Photo);
+                int? photo_id_db = Utils.Photo.AddPhotoToDB(photo_large);
+                if (photo_id_db == null)
+                    return false;
+
+
+                Utils.MessageDB.AddMessage(type: Telegram.Bot.Types.Enums.MessageType.Photo,
+                    message_text: reply_to.Caption, message_from_id_person: e.Message.From.Id,
+                    message_from_id_entity: message_from_id_entity, photo_id: photo_id_db.Value,
+                    id_chat_sent_into: id_chat_sent_into, sent_date: sent_date);
+
+            }
+            else
+            {
+                sender.SendTextMessageAsync(e.Message.From.Id, "You have to attach something! (A photo, for example)", ChatType.Private);
+                return false;
+            }
+
+            sender.SendTextMessageAsync(e.Message.From.Id, "The message has been submitted correctly", ChatType.Private);
+            return true;
         }
 
         private static async System.Threading.Tasks.Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] string_info)

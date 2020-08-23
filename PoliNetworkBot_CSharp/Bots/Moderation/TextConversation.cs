@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Args;
+﻿using PoliNetworkBot_CSharp.Utils;
+using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Bots.Moderation
 {
@@ -18,6 +19,18 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
         private static void PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
+            if (AskUser.userAnswers.ContainsKey(e.Message.From.Id))
+            {
+                if (AskUser.userAnswers[e.Message.From.Id] != null)
+                {
+                    if (AskUser.userAnswers[e.Message.From.Id].GetState() == Objects.AnswerTelegram.State.WaitingForAnswer)
+                    {
+                        AskUser.userAnswers[e.Message.From.Id].RecordAnswer(e.Message.Text);
+                        return;
+                    }
+                }
+            }
+
             //todo: check user state
             Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e,
                 "Ciao, al momento non è possibile fare conversazione col bot.\nTi consigliamo di premere /help per vedere le funzioni disponibili");

@@ -151,6 +151,37 @@ namespace PoliNetworkBot_CSharp.MainProgram
                 ");");
 
             FillAssoc();
+
+            Utils.SQLite.Execute("CREATE TABLE Messages (" +
+                "id INT(12) PRIMARY KEY," +
+                "from_id_person INT(12)," +
+                "from_id_entity INT(12)," +
+                "type int INT(12)," +
+                "id_photo INT(12)," +
+                "id_video INT(12)," +
+                "id_file INT(12)," +
+                "id_voice INT(12)," +
+                "id_audio INT(12)," +
+                "message_text TEXT," +
+                "sent_date DATETIME," +
+                "has_been_sent BOOLEAN," +
+                "message_id_tg INT(12)," +
+                "id_chat_sent_into INT(12)" +
+                ");");
+
+            Utils.SQLite.Execute("CREATE TABLE MessageTypes (" +
+                "id INT(12) PRIMARY KEY," +
+                "name VARCHAR(250)" +
+                ");");
+
+            Utils.SQLite.Execute("CREATE TABLE Photos (" +
+                "id_photo INT(12) PRIMARY KEY," +
+                "file_id VARCHAR(250)," +
+                "file_size INT(12)," +
+                "height INT(12)," +
+                "width INT(12)" +
+                ");");
+
         }
 
         private static void FillAssoc()
@@ -176,7 +207,7 @@ namespace PoliNetworkBot_CSharp.MainProgram
             string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
             int i = Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@name", name } });
 
-            FixIDTable(table_name: "Entities", column_id_name: "id", unique_column: "name");
+            Utils.Tables.FixIDTable(table_name: "Entities", column_id_name: "id", unique_column: "name");
 
             string q2 = "SELECT id FROM Entities WHERE Name = @name";
             var r2 = Utils.SQLite.ExecuteSelect(q2, new System.Collections.Generic.Dictionary<string, object>() { { "@name", name } });
@@ -210,40 +241,6 @@ namespace PoliNetworkBot_CSharp.MainProgram
             return true;
         }
 
-        private static void FixIDTable(string table_name, string column_id_name, string unique_column)
-        {
-            string q1 = "SELECT MAX(" + column_id_name + ") FROM " + table_name;
-            var r2 = Utils.SQLite.ExecuteSelect(q1);
-            object r3 = Utils.SQLite.GetFirstValueFromDataTable(r2);
-            int? r4 = null;
-            try
-            {
-                r4 = Convert.ToInt32(r3);
-            }
-            catch
-            {
-                ;
-            }
-
-            if (r4 == null)
-            {
-                r4 = 0;
-            }
-
-            string q2 = "SELECT * FROM " + table_name + " WHERE " + column_id_name + " IS NULL";
-            var r5 = Utils.SQLite.ExecuteSelect(q2);
-            if (r5 == null)
-                return;
-
-            foreach (DataRow dr in r5.Rows)
-            {
-                r4++;
-
-                string value_unique = dr[unique_column].ToString();
-                string q3 = "UPDATE " + table_name + " SET " + column_id_name + "=" + r4.Value.ToString() + " WHERE " + unique_column + "='" + value_unique + "'";
-                Utils.SQLite.Execute(q3);
-            }
-        }
 
         private static List<Int64> GetUsersFromAssocJson(JToken r1)
         {
