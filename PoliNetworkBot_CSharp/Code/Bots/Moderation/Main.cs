@@ -1,10 +1,11 @@
-﻿using PoliNetworkBot_CSharp.Bots.Enums;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
-namespace PoliNetworkBot_CSharp.Bots.Moderation
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal class Main
     {

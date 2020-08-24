@@ -1,7 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Bots.Enums;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
 using System.Data;
 
-namespace PoliNetworkBot_CSharp.Bots.Moderation
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal class Blacklist
     {

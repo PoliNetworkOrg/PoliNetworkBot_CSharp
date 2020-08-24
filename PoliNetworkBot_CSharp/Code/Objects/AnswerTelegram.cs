@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp.Objects
+﻿namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class AnswerTelegram
     {

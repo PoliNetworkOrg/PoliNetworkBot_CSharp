@@ -1,9 +1,10 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Assoc
     {

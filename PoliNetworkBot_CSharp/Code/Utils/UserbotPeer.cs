@@ -2,7 +2,7 @@
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class UserbotPeer
     {

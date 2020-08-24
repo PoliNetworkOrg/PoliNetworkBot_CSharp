@@ -1,10 +1,10 @@
-﻿using PoliNetworkBot_CSharp.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class AskUser
     {

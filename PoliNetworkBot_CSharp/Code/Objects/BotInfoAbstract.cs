@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Telegram.Bot.Args;
 
-namespace PoliNetworkBot_CSharp.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     public class BotInfoAbstract

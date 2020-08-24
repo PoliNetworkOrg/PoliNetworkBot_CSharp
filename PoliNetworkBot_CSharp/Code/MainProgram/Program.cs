@@ -1,9 +1,10 @@
-﻿using PoliNetworkBot_CSharp.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using Telegram.Bot;
 
-namespace PoliNetworkBot_CSharp
+namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
     internal class Program
     {

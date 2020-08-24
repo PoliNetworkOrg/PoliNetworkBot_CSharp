@@ -1,7 +1,6 @@
-﻿using PoliNetworkBot_CSharp.Objects;
-using System;
+﻿using System;
 
-namespace PoliNetworkBot_CSharp
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     public class UserBotInfo : BotInfoAbstract

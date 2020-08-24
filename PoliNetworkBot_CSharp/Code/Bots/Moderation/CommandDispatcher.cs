@@ -1,11 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Data;
-using PoliNetworkBot_CSharp.Utils;
+﻿using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.IO;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
-namespace PoliNetworkBot_CSharp.Bots.Moderation
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal class CommandDispatcher
     {

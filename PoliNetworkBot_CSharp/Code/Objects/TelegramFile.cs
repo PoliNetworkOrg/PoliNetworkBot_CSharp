@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Telegram.Bot.Types.InputFiles;
 
-namespace PoliNetworkBot_CSharp
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class TelegramFile
     {

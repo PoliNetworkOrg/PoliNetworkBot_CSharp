@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public class FileSerialization
     {

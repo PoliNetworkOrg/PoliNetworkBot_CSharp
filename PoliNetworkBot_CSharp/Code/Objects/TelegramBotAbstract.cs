@@ -1,4 +1,4 @@
-﻿using PoliNetworkBot_CSharp.Bots.Enums;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
 
-namespace PoliNetworkBot_CSharp
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class TelegramBotAbstract
     {

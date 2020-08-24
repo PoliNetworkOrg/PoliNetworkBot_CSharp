@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
 
-namespace PoliNetworkBot_CSharp.Data
+namespace PoliNetworkBot_CSharp.Code.Data
 {
     public class GlobalVariables
     {

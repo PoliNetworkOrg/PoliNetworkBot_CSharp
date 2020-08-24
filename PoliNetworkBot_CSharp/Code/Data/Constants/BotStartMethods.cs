@@ -1,7 +1,7 @@
 ﻿using System;
 using Telegram.Bot.Args;
 
-namespace PoliNetworkBot_CSharp.Data.Constants
+namespace PoliNetworkBot_CSharp.Code.Data.Constants
 {
     public class BotStartMethods
     {

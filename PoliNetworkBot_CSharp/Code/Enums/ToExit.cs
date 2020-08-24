@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp
+﻿namespace PoliNetworkBot_CSharp.Code.Enums
 {
     internal enum ToExit
     {

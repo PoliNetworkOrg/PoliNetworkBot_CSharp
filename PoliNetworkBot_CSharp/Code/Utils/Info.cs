@@ -1,6 +1,7 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Info
     {

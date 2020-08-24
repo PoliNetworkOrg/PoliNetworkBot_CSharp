@@ -1,8 +1,9 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class UserbotConnect
     {

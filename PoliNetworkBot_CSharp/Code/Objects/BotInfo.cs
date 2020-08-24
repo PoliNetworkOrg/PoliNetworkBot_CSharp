@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PoliNetworkBot_CSharp.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     public class BotInfo : BotInfoAbstract

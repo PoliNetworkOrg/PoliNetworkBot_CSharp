@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public class SQLite
     {

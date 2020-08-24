@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp.Errors
+﻿namespace PoliNetworkBot_CSharp.Code.Errors
 {
     internal class ErrorCodes
     {

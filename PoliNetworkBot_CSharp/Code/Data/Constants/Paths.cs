@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp.Data.Constants
+﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants
 {
     public class Paths
     {

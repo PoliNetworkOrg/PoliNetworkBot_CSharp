@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Objects;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 
-namespace PoliNetworkBot_CSharp.MainProgram
+namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
     internal class NewConfig
     {

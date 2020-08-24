@@ -1,7 +1,8 @@
-﻿using PoliNetworkBot_CSharp.Utils;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Args;
 
-namespace PoliNetworkBot_CSharp.Bots.Moderation
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal class TextConversation
     {

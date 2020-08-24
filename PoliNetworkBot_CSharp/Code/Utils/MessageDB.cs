@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Telegram.Bot.Types.Enums;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class MessageDB
     {

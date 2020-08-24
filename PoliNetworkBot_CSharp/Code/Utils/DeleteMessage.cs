@@ -1,6 +1,7 @@
-﻿using Telegram.Bot.Args;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Args;
 
-namespace PoliNetworkBot_CSharp.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class DeleteMessage
     {
