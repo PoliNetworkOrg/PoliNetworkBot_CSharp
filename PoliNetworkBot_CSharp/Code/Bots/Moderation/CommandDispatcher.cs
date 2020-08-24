@@ -105,8 +105,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
 
                 case "/assoc_send":
                     {
-                        var t = new Thread(() => Assoc_Send(sender, e));
-                        t.Start();
+                        _ = Assoc_SendAsync(sender, e);
                         return;
                     }
 
@@ -118,12 +117,16 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
             }
         }
 
-        private static bool Assoc_Send(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async System.Threading.Tasks.Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var reply_to = e.Message.ReplyToMessage;
 
-            int? message_from_id_entity = Utils.Assoc.GetIDEntityFromPerson(e.Message.From.Id);
-            DateTime? sent_date = Utils.DateTimeClass.AskDate(e.Message.From.Id, e.Message.Text, e.Message.From.LanguageCode, sender);
+            System.Collections.Generic.Dictionary<string, string> language_list = new System.Collections.Generic.Dictionary<string, string>() {
+                {"it", "Scegli l'entità per il quale stai componendo il messaggio" },
+                {"en", "Choose the entity you are writing this message for" }
+            };
+            int? message_from_id_entity = await Utils.Assoc.GetIDEntityFromPersonAsync(e.Message.From.Id, language_list, sender, e.Message.From.LanguageCode);
+            DateTime? sent_date = await Utils.DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text, e.Message.From.LanguageCode, sender);
             long id_chat_sent_into = Data.Constants.Channels.PoliAssociazioni;
 
             if (reply_to.Photo != null)
@@ -133,7 +136,7 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
                 if (photo_id_db == null)
                     return false;
 
-                Utils.MessageDB.AddMessage(type: Telegram.Bot.Types.Enums.MessageType.Photo,
+                MessageDB.AddMessage(type: MessageType.Photo,
                     message_text: reply_to.Caption, message_from_id_person: e.Message.From.Id,
                     message_from_id_entity: message_from_id_entity, photo_id: photo_id_db.Value,
                     id_chat_sent_into: id_chat_sent_into, sent_date: sent_date);

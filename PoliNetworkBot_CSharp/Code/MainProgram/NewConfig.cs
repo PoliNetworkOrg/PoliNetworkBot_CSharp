@@ -179,7 +179,8 @@ namespace PoliNetworkBot_CSharp.MainProgram
                 "file_id VARCHAR(250)," +
                 "file_size INT(12)," +
                 "height INT(12)," +
-                "width INT(12)" +
+                "width INT(12)," +
+                "unique_id VARCHAR(250)" +
                 ");");
         }
 

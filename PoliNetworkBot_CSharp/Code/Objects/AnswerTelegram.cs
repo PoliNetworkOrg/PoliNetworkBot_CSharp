@@ -8,7 +8,7 @@
         }
 
         private AnswerTelegram.State current_state = State.WaitingForAnswer;
-        private string answer = null;
+        internal System.Action<object> WorkCompleted;
 
         public AnswerTelegram()
         {
@@ -20,25 +20,13 @@
             return this.current_state;
         }
 
-        internal string GetAnswer()
-        {
-            switch (current_state)
-            {
-                case State.WaitingForAnswer:
-                    return null;
-
-                case State.Answered:
-                    return answer;
-
-                default:
-                    return null;
-            }
-        }
-
         internal void RecordAnswer(string text)
         {
-            this.answer = text;
-            this.current_state = State.Answered;
+            if (this.current_state == State.WaitingForAnswer)
+            {
+                this.current_state = State.Answered;
+                this.WorkCompleted.Invoke(text);
+            }
         }
     }
 }

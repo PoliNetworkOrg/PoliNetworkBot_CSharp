@@ -122,17 +122,17 @@ namespace PoliNetworkBot_CSharp.Utils
             return String.Format("{0:s}", dt) + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static DateTime? AskDate(int id, string text, string lang, TelegramBotAbstract sender)
+        internal static async System.Threading.Tasks.Task<DateTime?> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender)
         {
             if (string.IsNullOrEmpty(text))
             {
-                return AskDate2(id, lang, sender);
+                return await AskDate2Async(id, lang, sender);
             }
 
             var s = text.Split(' ');
             if (s.Length == 1)
             {
-                return AskDate2(id, lang, sender);
+                return await AskDate2Async(id, lang, sender);
             }
 
             switch (s[1])
@@ -144,12 +144,12 @@ namespace PoliNetworkBot_CSharp.Utils
                     }
             }
 
-            return AskDate2(id, lang, sender);
+            return await AskDate2Async(id, lang, sender);
         }
 
-        private static DateTime? AskDate2(int id, string lang, TelegramBotAbstract sender)
+        private static async System.Threading.Tasks.Task<DateTime?> AskDate2Async(int id, string lang, TelegramBotAbstract sender)
         {
-            string reply = Utils.AskUser.Ask(id, new Dictionary<string, string>() {
+            string reply = await Utils.AskUser.AskAsync(id, new Dictionary<string, string>() {
                 { "it", "Inserisci una data (puoi scrivere anche 'fra un'ora')" },
                 { "en", "Insert a date (you can also write 'in an hour'" } },
                 sender, lang);
@@ -246,7 +246,15 @@ namespace PoliNetworkBot_CSharp.Utils
                 }
                 else
                 {
-                    ;
+                    if (reply.StartsWith("un'"))
+                    {
+                        reply = reply.Substring(3).Trim();
+                        return GetDateTimeFromString2(reply);
+                    }
+                    else
+                    {
+                        ;
+                    }
                 }
             }
 

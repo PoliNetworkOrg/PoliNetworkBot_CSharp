@@ -1,11 +1,13 @@
 ﻿using PoliNetworkBot_CSharp.Bots.Enums;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
@@ -103,17 +105,23 @@ namespace PoliNetworkBot_CSharp
             }
         }
 
-        internal bool SendTextMessageAsync(long chatid, string text, Telegram.Bot.Types.Enums.ChatType chatType,
-            Telegram.Bot.Types.Enums.ParseMode v = Telegram.Bot.Types.Enums.ParseMode.Default, bool force_reply = false)
+        internal bool SendTextMessageAsync(long chatid, string text,
+            ChatType chatType, ParseMode parseMode = ParseMode.Default,
+            bool force_reply = false, List<List<KeyboardButton>> reply_markup_keyboard = null)
         {
             if (isbot)
             {
-                Telegram.Bot.Types.ReplyMarkups.IReplyMarkup reply = null;
-                if (force_reply)
+                IReplyMarkup reply = null;
+                if (force_reply && reply_markup_keyboard != null)
                 {
-                    reply = new Telegram.Bot.Types.ReplyMarkups.ForceReplyMarkup();
+                    reply = new ReplyKeyboardMarkup(reply_markup_keyboard);
                 }
-                this.botClient.SendTextMessageAsync(chatid, text, v, replyMarkup: reply);
+                else if (force_reply)
+                {
+                    reply = new ForceReplyMarkup();
+                }
+
+                this.botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                 return true;
             }
             else
