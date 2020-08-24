@@ -1,5 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Bots.Enums;
 using System;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -8,6 +9,12 @@ namespace PoliNetworkBot_CSharp.Bots.Moderation
     internal class Main
     {
         internal static void MainMethod(object sender, MessageEventArgs e)
+        {
+            var t = new Thread(() => MainMethod2(sender, e));
+            t.Start();
+        }
+
+        private static void MainMethod2(object sender, MessageEventArgs e)
         {
             TelegramBotClient telegramBotClient_bot = null;
             if (sender is TelegramBotClient tmp)
