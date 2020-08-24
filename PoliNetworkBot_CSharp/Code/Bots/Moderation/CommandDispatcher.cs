@@ -2,7 +2,6 @@
 using PoliNetworkBot_CSharp.Utils;
 using System;
 using System.IO;
-using System.Threading;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 

@@ -1,10 +1,8 @@
 ﻿using PoliNetworkBot_CSharp.Objects;
-using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
-using System.Linq;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
@@ -27,13 +25,13 @@ namespace PoliNetworkBot_CSharp.Utils
             return await tcs.Task;
         }
 
-        internal static async Task<string> AskBetweenRangeAsync(int id, Dictionary<string,string> language,
+        internal static async Task<string> AskBetweenRangeAsync(int id, Dictionary<string, string> language,
             TelegramBotAbstract sender, string lang, List<List<string>> options)
         {
             string to_send = language[lang];
             userAnswers[id] = new AnswerTelegram();
-            sender.SendTextMessageAsync(id, to_send, Telegram.Bot.Types.Enums.ChatType.Private, parseMode: default, 
-                force_reply: true, reply_markup_keyboard : OptionsStringToKeyboard(options));
+            sender.SendTextMessageAsync(id, to_send, Telegram.Bot.Types.Enums.ChatType.Private, parseMode: default,
+                force_reply: true, reply_markup_keyboard: OptionsStringToKeyboard(options));
             return await WaitForAnswer(id);
         }
 

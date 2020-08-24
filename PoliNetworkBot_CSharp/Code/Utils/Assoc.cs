@@ -7,10 +7,10 @@ namespace PoliNetworkBot_CSharp.Utils
 {
     internal class Assoc
     {
-        internal static async System.Threading.Tasks.Task<int?> GetIDEntityFromPersonAsync(int id, Dictionary<string,string> language_list, TelegramBotAbstract sender, string lang)
+        internal static async System.Threading.Tasks.Task<int?> GetIDEntityFromPersonAsync(int id, Dictionary<string, string> language_list, TelegramBotAbstract sender, string lang)
         {
             string q = "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
-            var r = Utils.SQLite.ExecuteSelect(q, new System.Collections.Generic.Dictionary<string, object>() { {"@idp", id } });
+            var r = Utils.SQLite.ExecuteSelect(q, new System.Collections.Generic.Dictionary<string, object>() { { "@idp", id } });
             if (r == null || r.Rows.Count == 0)
             {
                 return null;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Utils
 {
@@ -110,12 +109,12 @@ namespace PoliNetworkBot_CSharp.Utils
                 lines++;
             }
 
-            for (int i=0; i< lines; i++)
+            for (int i = 0; i < lines; i++)
             {
                 r.Add(new List<string>());
             }
 
-            for (int i=0; i<list.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
                 r[i / 3].Add(list[i]);
             }
