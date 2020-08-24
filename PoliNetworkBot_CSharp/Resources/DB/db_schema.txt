@@ -50,6 +50,7 @@ Table Photos {
   file_size int
   height int
   width int
+  unique_id varchar(250)
 }
 
 Table Videos {
