@@ -48,7 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async System.Threading.Tasks.Task<bool> SendFileAsync(TelegramFile File, long chat_id, 
+        internal static async System.Threading.Tasks.Task<bool> SendFileAsync(TelegramFile File, long chat_id,
             string text, TextAsCaption text_as_caption, TelegramBotAbstract TelegramBot_Abstract)
         {
             return await TelegramBot_Abstract.SendFileAsync(File, chat_id, text, text_as_caption);
