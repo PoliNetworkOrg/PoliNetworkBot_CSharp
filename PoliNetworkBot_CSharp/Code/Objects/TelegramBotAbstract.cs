@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -94,15 +93,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool SendTextMessageAsync(long chatid, string text,
             ChatType chatType, ParseMode parseMode = ParseMode.Default,
-            Objects.ReplyMarkupObject replyMarkupObject = null)
+            ReplyMarkupObject replyMarkupObject = null)
         {
             if (_isbot)
             {
                 IReplyMarkup reply = null;
-                if (replyMarkupObject != null)
-                {
-                    reply = replyMarkupObject.GetReplyMarkup();
-                }
+                if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkup();
 
                 _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                 return true;

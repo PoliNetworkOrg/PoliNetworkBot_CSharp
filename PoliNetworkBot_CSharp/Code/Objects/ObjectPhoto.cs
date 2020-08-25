@@ -16,13 +16,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     public class ObjectPhoto
     {
         private readonly string _fileId;
+        private readonly string _uniqueId;
+        private readonly long chatId;
+        private readonly ChatType chatType;
         private int _fileSize;
         private int _height;
         private int _idPhotoDb;
-        private readonly string _uniqueId;
         private int _width;
-        private readonly long chatId;
-        private readonly ChatType chatType;
         private int? messageIdFrom;
 
         public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,

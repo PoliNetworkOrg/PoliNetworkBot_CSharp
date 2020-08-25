@@ -151,7 +151,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
                     {"en", "Insert a date (you can also write 'in an hour'"}
                 },
-                sender, lang, false);
+                sender, lang);
 
             var replyDatetime = GetDateTimeFromString(reply);
             return replyDatetime;

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -21,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var toSend = dictionary[lang];
             UserAnswers[idUser] = new AnswerTelegram();
             sender.SendTextMessageAsync(idUser, toSend, ChatType.Private, default,
-                new ReplyMarkupObject(Enums.ReplyMarkupEnum.FORCED));
+                new ReplyMarkupObject(ReplyMarkupEnum.FORCED));
             return await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender);
         }
 
@@ -33,25 +34,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 if (sendMessageConfirmationChoice)
                 {
-                    var replyMarkup = new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE);
+                    var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
                     telegramBotAbstract.SendTextMessageAsync(idUser,
-                        "You choose [" + result.ToString() + "]",
-                        ChatType.Private, parseMode: default, replyMarkupObject: replyMarkup);
+                        "You choose [" + result + "]",
+                        ChatType.Private, default, replyMarkup);
                 }
+
                 tcs.SetResult(result.ToString());
             };
             return await tcs.Task;
         }
 
         internal static async Task<string> AskBetweenRangeAsync(int id, Language question,
-            TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options, 
+            TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options,
             bool sendMessageConfirmationChoice = true)
         {
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
             var replyMarkupObject = new ReplyMarkupObject(OptionsStringToKeyboard(options, lang));
-            
-            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject: replyMarkupObject);
+
+            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);
         }
 

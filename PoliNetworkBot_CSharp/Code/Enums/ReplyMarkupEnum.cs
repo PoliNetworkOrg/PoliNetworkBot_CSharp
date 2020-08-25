@@ -2,6 +2,8 @@
 {
     public enum ReplyMarkupEnum
     {
-        FORCED, REMOVE, CHOICE
+        FORCED,
+        REMOVE,
+        CHOICE
     }
 }
