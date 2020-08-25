@@ -38,7 +38,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return "+" + KeyValuePairs[ConstConfigBot.NumberCountry] + " " + KeyValuePairs[ConstConfigBot.NumberNumber];
+                return "+" + KeyValuePairs[ConstConfigBot.NumberCountry] + " " +
+                       KeyValuePairs[ConstConfigBot.NumberNumber];
             }
             catch
             {

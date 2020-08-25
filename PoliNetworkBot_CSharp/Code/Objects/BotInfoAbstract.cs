@@ -12,22 +12,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class BotInfoAbstract
     {
-        public class ConstConfigBot
-        {
-            public const string Token = "t";
-            public const string IsBot = "b";
-            public const string AcceptsMessages = "a";
-            public const string OnMessages = "o";
-            public const string Website = "w";
-            public const string ContactString = "c";
-            public const string ApiId = "ai";
-            public const string ApiHash = "ah";
-            public const string UserId = "u";
-            public const string NumberCountry = "nc";
-            public const string NumberNumber = "nn";
-            public const string PasswordToAuthenticate = "pta";
-        }
-        
         protected readonly Dictionary<string, object> KeyValuePairs;
 
         public BotInfoAbstract()
@@ -109,6 +93,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 return null;
             }
+        }
+
+        public class ConstConfigBot
+        {
+            public const string Token = "t";
+            public const string IsBot = "b";
+            public const string AcceptsMessages = "a";
+            public const string OnMessages = "o";
+            public const string Website = "w";
+            public const string ContactString = "c";
+            public const string ApiId = "ai";
+            public const string ApiHash = "ah";
+            public const string UserId = "u";
+            public const string NumberCountry = "nc";
+            public const string NumberNumber = "nn";
+            public const string PasswordToAuthenticate = "pta";
         }
     }
 }
