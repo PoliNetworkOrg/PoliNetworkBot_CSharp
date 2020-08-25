@@ -22,45 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fdcea6a8-d80f-40bf-9dc7-32089e00f4ca" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.PoliNetworkBot_CSharp/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PoliNetworkBot_CSharp/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Blacklist.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Blacklist.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/CommandDispatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/CommandDispatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Main.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Main.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/ModerationCheck.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/ModerationCheck.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/TextConversation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/TextConversation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Data/Constants/BotStartMethods.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Data/Constants/BotStartMethods.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Data/Constants/Paths.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Data/Constants/Paths.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Errors/ErrorCodes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Errors/ErrorCodes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/NewConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/NewConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/AnswerTelegram.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/AnswerTelegram.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/BotInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/BotInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/BotInfoAbstract.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/BotInfoAbstract.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/TelegramBotAbstract.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/TelegramBotAbstract.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/TelegramFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/TelegramFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/UserBotInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/UserBotInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/AskUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/AskUser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Assoc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Assoc.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DateTimeClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DateTimeClass.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DeleteMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DeleteMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DirectoryUtils.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/DirectoryUtils.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/FileSerialization.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/FileSerialization.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Groups.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Groups.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Info.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Info.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/InviteLinks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/InviteLinks.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/KeyboardMarkup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/KeyboardMarkup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/LeaveChat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/LeaveChat.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/MessageDB.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/MessageDB.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Photo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Photo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/RestrictUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/RestrictUser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/SQLite.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/SQLite.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/SendMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/SendMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Tables.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/Tables.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotConnect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotConnect.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotPeer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotPeer.cs" afterDir="false" />
-    </list>
+    <list default="true" id="fdcea6a8-d80f-40bf-9dc7-32089e00f4ca" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,7 +51,6 @@
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/BotInfo.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Objects/AnswerTelegram.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/Program.cs" />
-        <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/NewConfig.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Errors/ErrorCodes.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/RestrictUser.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/MessageDB.cs" />
@@ -107,6 +68,7 @@
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Main.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/CommandDispatcher.cs" />
         <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Bots/Moderation/Blacklist.cs" />
+        <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/MainProgram/NewConfig.cs" />
       </list>
     </option>
   </component>
@@ -152,7 +114,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1598344198818</updated>
-      <workItem from="1598344204684" duration="2839000" />
+      <workItem from="1598344204684" duration="3662000" />
     </task>
     <servers />
   </component>
