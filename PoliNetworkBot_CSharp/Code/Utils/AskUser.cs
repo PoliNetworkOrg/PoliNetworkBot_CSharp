@@ -1,12 +1,10 @@
 ﻿#region
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -51,12 +49,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
-            var replyMarkupObject = new ReplyMarkupObject(Utils.KeyboardMarkup.OptionsStringToKeyboard(options, lang));
+            var replyMarkupObject = new ReplyMarkupObject(KeyboardMarkup.OptionsStringToKeyboard(options, lang));
 
             sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);
         }
-
-     
     }
 }

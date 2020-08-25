@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             ).ToList()).ToList();
         }
-        
+
         internal static IEnumerable<List<Language>> ArrayToMatrixString(List<Language> list)
         {
             if (list == null || list.Count == 0)
