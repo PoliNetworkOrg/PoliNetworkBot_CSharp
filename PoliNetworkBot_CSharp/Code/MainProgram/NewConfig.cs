@@ -168,7 +168,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "sent_date DATETIME," +
                            "has_been_sent BOOLEAN," +
                            "message_id_tg INT(12)," +
-                           "id_chat_sent_into INT(12)" +
+                           "id_chat_sent_into INT(12)," +
+                           "from_id_bot INT(12)" +
                            ");");
 
             SqLite.Execute("CREATE TABLE MessageTypes (" +

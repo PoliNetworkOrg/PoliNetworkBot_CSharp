@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -161,6 +162,21 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     }
                 }
+
+            if (GlobalVariables.Bots.Keys.Count > 0)
+            {
+                var t = new Thread(CheckMessagesToSend);
+                t.Start();
+            }
+        }
+
+        private static void CheckMessagesToSend()
+        {
+            while (true)
+            {
+                Utils.MessageDb.CheckMessagesToSend();
+                Thread.Sleep(10 * 1000); //10 sec
+            }
         }
 
 

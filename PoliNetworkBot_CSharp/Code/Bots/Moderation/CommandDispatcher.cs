@@ -138,7 +138,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, e.Message.From.Id,
                     messageFromIdEntity, photoIdDb.Value,
-                    idChatSentInto, sentDate);
+                    idChatSentInto, sentDate, hasBeenSent:false,
+                    messageFromIdBot: sender.GetId());
             }
             else
             {

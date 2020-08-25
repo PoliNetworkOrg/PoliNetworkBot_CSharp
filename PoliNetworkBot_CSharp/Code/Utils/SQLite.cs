@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -53,6 +54,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static object GetFirstValueFromDataTable(DataTable dt)
         {
+            if (dt == null)
+                return null;
+
             try
             {
                 return dt.Rows[0].ItemArray[0];
@@ -61,6 +65,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return null;
             }
+        }
+
+        public static int? GetIntFromColumn(DataRow dr, string columnName)
+        {
+            var o = dr[columnName];
+            if (o == null || o is DBNull)
+                return null;
+
+            try
+            {
+                return Convert.ToInt32(o);
+            }
+            catch
+            {
+                return null;
+            }
+            
         }
     }
 }
