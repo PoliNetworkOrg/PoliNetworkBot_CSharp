@@ -172,11 +172,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     break;
                 }
 
-                case SpamType.ALL_GOOD:
-                {
-                    return;
-                }
-
                 case SpamType.FOREIGN:
                 {
                     var text = language switch
@@ -187,6 +182,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
                     break;
                 }
+                
+                // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
+                case SpamType.ALL_GOOD:
+                    return;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }

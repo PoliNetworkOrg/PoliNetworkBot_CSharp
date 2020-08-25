@@ -126,7 +126,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 sender, e.Message.From.LanguageCode);
             var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                 e.Message.From.LanguageCode, sender);
-            var idChatSentInto = Channels.PoliAssociazioni;
+            const long idChatSentInto = Channels.PoliAssociazioni;
 
             if (replyTo.Photo != null)
             {

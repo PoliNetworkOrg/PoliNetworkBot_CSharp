@@ -34,17 +34,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             _botClient = botClient;
             _isbot = true;
-            this._website = website;
-            this._contactString = contactString;
+            _website = website;
+            _contactString = contactString;
         }
 
         public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id)
         {
             _userbotClient = userbotClient;
             _isbot = false;
-            this._website = website;
-            this._contactString = contactString;
-            this._id = (int) id;
+            _website = website;
+            _contactString = contactString;
+            _id = (int) id;
         }
 
         internal string GetWebSite()
