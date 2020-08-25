@@ -1,9 +1,13 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using System;
+﻿#region
+
 using System.Threading;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -18,31 +22,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static void MainMethod2(object sender, MessageEventArgs e)
         {
             TelegramBotClient telegramBotClient_bot = null;
-            if (sender is TelegramBotClient tmp)
-            {
-                telegramBotClient_bot = tmp;
-            }
+            if (sender is TelegramBotClient tmp) telegramBotClient_bot = tmp;
 
             if (telegramBotClient_bot == null)
                 return;
 
-            TelegramBotAbstract telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClient_bot);
+            var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClient_bot);
 
-            bool to_exit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+            var to_exit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (to_exit)
             {
-                Utils.LeaveChat.ExitFromChat(telegramBotClient, e);
+                LeaveChat.ExitFromChat(telegramBotClient, e);
                 return;
             }
 
-            Tuple<bool, bool> check_username = ModerationCheck.CheckUsername(e);
+            var check_username = ModerationCheck.CheckUsername(e);
             if (check_username.Item1 || check_username.Item2)
             {
                 ModerationCheck.SendUsernameWarning(telegramBotClient, e, check_username.Item1, check_username.Item2);
                 return;
             }
 
-            SpamType check_spam = ModerationCheck.CheckSpam(e);
+            var check_spam = ModerationCheck.CheckSpam(e);
             if (check_spam != SpamType.ALL_GOOD)
             {
                 ModerationCheck.AntiSpamMeasure(telegramBotClient, e, check_spam);
@@ -52,13 +53,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (!string.IsNullOrEmpty(e.Message.Text))
             {
                 if (e.Message.Text.StartsWith("/"))
-                {
                     CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-                }
                 else
-                {
                     TextConversation.DetectMessage(telegramBotClient, e);
-                }
             }
         }
     }

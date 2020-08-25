@@ -2,6 +2,8 @@
 {
     public enum TextAsCaption
     {
-        AFTER_FILE, BEFORE_FILE, AS_CAPTION
+        AFTER_FILE,
+        BEFORE_FILE,
+        AS_CAPTION
     }
 }

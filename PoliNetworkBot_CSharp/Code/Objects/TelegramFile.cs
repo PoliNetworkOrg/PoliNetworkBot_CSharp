@@ -1,12 +1,16 @@
-﻿using System.IO;
+﻿#region
+
+using System.IO;
 using Telegram.Bot.Types.InputFiles;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class TelegramFile
     {
-        private readonly Stream stream;
         private readonly string fileName;
+        private readonly Stream stream;
 
         public TelegramFile(Stream stream, string fileName)
         {
@@ -17,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal InputOnlineFile GetOnlineFile()
         {
             stream.Seek(0, SeekOrigin.Begin);
-            return new InputOnlineFile(stream, this.fileName);
+            return new InputOnlineFile(stream, fileName);
         }
     }
 }

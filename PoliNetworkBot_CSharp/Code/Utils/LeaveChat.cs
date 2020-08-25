@@ -1,5 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {

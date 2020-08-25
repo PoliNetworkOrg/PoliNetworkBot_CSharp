@@ -1,5 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using Telegram.Bot.Args;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Data.Constants
 {
@@ -12,9 +17,9 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
             switch (s)
             {
                 case moderation:
-                    {
-                        return Bots.Moderation.Main.MainMethod;
-                    }
+                {
+                    return Main.MainMethod;
+                }
             }
 
             return null;

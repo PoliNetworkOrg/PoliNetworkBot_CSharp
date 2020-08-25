@@ -1,5 +1,10 @@
-﻿using System.IO;
+﻿#region
+
+using System.IO;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -7,8 +12,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         public static MemoryStream SerializeToStream(object o)
         {
-            MemoryStream stream = new MemoryStream();
-            IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            var stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(stream, o);
             return stream;
         }

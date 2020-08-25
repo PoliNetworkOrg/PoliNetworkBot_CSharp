@@ -1,31 +1,38 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
+using TeleSharp.TL;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class UserbotConnect
     {
-        internal static async System.Threading.Tasks.Task<TelegramClient> ConnectAsync(UserBotInfo userbot)
+        internal static async Task<TelegramClient> ConnectAsync(UserBotInfo userbot)
         {
             var api_id = userbot.GetApiId();
             if (api_id == null)
                 return null;
 
-            TelegramClient telegramClient = new TLSharp.Core.TelegramClient(api_id.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
+            var telegramClient = new TelegramClient(api_id.Value, userbot.GetApiHash(),
+                sessionUserId: userbot.GetSessionUserId());
             await telegramClient.ConnectAsync();
 
             if (telegramClient.IsUserAuthorized())
                 return telegramClient;
 
-            string NumberToAuthenticate = userbot.GetPhoneNumber();
+            var NumberToAuthenticate = userbot.GetPhoneNumber();
             var hash = await telegramClient.SendCodeRequestAsync(NumberToAuthenticate);
-            string code = "";
-            string PasswordToAuthenticate = userbot.GetPasswordToAuthenticate();
+            var code = "";
+            var PasswordToAuthenticate = userbot.GetPasswordToAuthenticate();
             ;
 
-            TeleSharp.TL.TLUser user;
+            TLUser user;
             try
             {
                 user = await telegramClient.MakeAuthAsync(NumberToAuthenticate, hash, code);
@@ -41,8 +48,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (InvalidPhoneCodeException ex)
             {
-                throw new Exception("CodeToAuthenticate is wrong in the app.config file, fill it with the code you just got now by SMS/Telegram",
-                                    ex);
+                throw new Exception(
+                    "CodeToAuthenticate is wrong in the app.config file, fill it with the code you just got now by SMS/Telegram",
+                    ex);
             }
 
             if (user != null && telegramClient.IsUserAuthorized())

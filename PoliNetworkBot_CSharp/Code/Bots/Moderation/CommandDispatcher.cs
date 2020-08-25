@@ -1,10 +1,17 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿#region
+
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.IO;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -13,253 +20,245 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static void CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var cmd_lines = e.Message.Text.Split(' ');
-            string cmd = cmd_lines[0];
+            var cmd = cmd_lines[0];
             switch (cmd)
             {
                 case "/start":
-                    {
-                        Start(sender, e);
-                        return;
-                    }
+                {
+                    Start(sender, e);
+                    return;
+                }
 
                 case "/force_check_invite_links":
-                    {
-                        if (Data.GlobalVariables.Creators.Contains(e.Message.Chat.Id))
-                        {
-                            _ = ForceCheckInviteLinksAsync(sender, e);
-                        }
-                        else
-                        {
-                            DefaultCommand(sender, e);
-                        }
-                        return;
-                    }
+                {
+                    if (GlobalVariables.Creators.Contains(e.Message.Chat.Id))
+                        _ = ForceCheckInviteLinksAsync(sender, e);
+                    else
+                        DefaultCommand(sender, e);
+                    return;
+                }
 
                 case "/contact":
-                    {
-                        ContactUs(sender, e);
-                        return;
-                    }
+                {
+                    ContactUs(sender, e);
+                    return;
+                }
 
                 case "/help":
-                    {
-                        Help(sender, e);
-                        return;
-                    }
+                {
+                    Help(sender, e);
+                    return;
+                }
 
                 case "/banAll":
-                    {
-                        if (GlobalVariables.Creators.Contains(e.Message.From.Id))
-                        {
-                            _ = BanAllAsync(sender, e, target: cmd_lines);
-                        }
-                        else
-                        {
-                            DefaultCommand(sender, e);
-                        }
-                        return;
-                    }
+                {
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                        _ = BanAllAsync(sender, e, cmd_lines);
+                    else
+                        DefaultCommand(sender, e);
+                    return;
+                }
 
                 case "/ban":
-                    {
-                        _ = BanUserAsync(sender, e, cmd_lines);
-                        return;
-                    }
+                {
+                    _ = BanUserAsync(sender, e, cmd_lines);
+                    return;
+                }
 
                 case "/unbanAll":
-                    {
-                        if (GlobalVariables.Creators.Contains(e.Message.From.Id))
-                        {
-                            _ = UnbanAllAsync(sender, e, target: cmd_lines[1]);
-                        }
-                        else
-                        {
-                            DefaultCommand(sender, e);
-                        }
-                        return;
-                    }
+                {
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                        _ = UnbanAllAsync(sender, e, cmd_lines[1]);
+                    else
+                        DefaultCommand(sender, e);
+                    return;
+                }
 
                 case "/getGroups":
+                {
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == ChatType.Private)
                     {
-                        if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Private)
-                        {
-                            System.Data.DataTable groups = Utils.Groups.GetAllGroups();
-                            Stream stream = new MemoryStream();
-                            Utils.FileSerialization.SerializeFile(groups, ref stream);
-                            _ = SendMessage.SendFileAsync(File: new TelegramFile(stream, "groups.bin"), chat_id: e.Message.Chat.Id,
-                                text: "Here are all groups:", text_as_caption: Enums.TextAsCaption.BEFORE_FILE,
-                                TelegramBot_Abstract: sender);
-                        }
-                        else
-                        {
-                            DefaultCommand(sender, e);
-                        }
-                        return;
+                        var groups = Groups.GetAllGroups();
+                        Stream stream = new MemoryStream();
+                        FileSerialization.SerializeFile(groups, ref stream);
+                        _ = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin"), e.Message.Chat.Id,
+                            "Here are all groups:", TextAsCaption.BEFORE_FILE,
+                            sender);
                     }
-
-                case "/time":
-                    {
-                        Utils.SendMessage.SendMessageInPrivate(sender, e, Utils.DateTimeClass.NowAsStringAmericanFormat());
-                        return;
-                    }
-
-                case "/assoc_send":
-                    {
-                        _ = Assoc_SendAsync(sender, e);
-                        return;
-                    }
-
-                default:
+                    else
                     {
                         DefaultCommand(sender, e);
-                        return;
                     }
+
+                    return;
+                }
+
+                case "/time":
+                {
+                    SendMessage.SendMessageInPrivate(sender, e, DateTimeClass.NowAsStringAmericanFormat());
+                    return;
+                }
+
+                case "/assoc_send":
+                {
+                    _ = Assoc_SendAsync(sender, e);
+                    return;
+                }
+
+                default:
+                {
+                    DefaultCommand(sender, e);
+                    return;
+                }
             }
         }
 
-        private static async System.Threading.Tasks.Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var reply_to = e.Message.ReplyToMessage;
 
-            System.Collections.Generic.Dictionary<string, string> language_list = new System.Collections.Generic.Dictionary<string, string>() {
-                {"it", "Scegli l'entità per il quale stai componendo il messaggio" },
-                {"en", "Choose the entity you are writing this message for" }
+            var language_list = new Dictionary<string, string>
+            {
+                {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
+                {"en", "Choose the entity you are writing this message for"}
             };
-            int? message_from_id_entity = await Utils.Assoc.GetIDEntityFromPersonAsync(e.Message.From.Id, language_list, sender, e.Message.From.LanguageCode);
-            DateTime? sent_date = await Utils.DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text, e.Message.From.LanguageCode, sender);
-            long id_chat_sent_into = Data.Constants.Channels.PoliAssociazioni;
+            var message_from_id_entity = await Assoc.GetIDEntityFromPersonAsync(e.Message.From.Id, language_list,
+                sender, e.Message.From.LanguageCode);
+            var sent_date = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+                e.Message.From.LanguageCode, sender);
+            var id_chat_sent_into = Channels.PoliAssociazioni;
 
             if (reply_to.Photo != null)
             {
-                Telegram.Bot.Types.PhotoSize photo_large = Utils.Photo.GetLargest(reply_to.Photo);
-                int? photo_id_db = Utils.Photo.AddPhotoToDB(photo_large);
+                var photo_large = Photo.GetLargest(reply_to.Photo);
+                var photo_id_db = Photo.AddPhotoToDB(photo_large);
                 if (photo_id_db == null)
                     return false;
 
-                MessageDB.AddMessage(type: MessageType.Photo,
-                    message_text: reply_to.Caption, message_from_id_person: e.Message.From.Id,
-                    message_from_id_entity: message_from_id_entity, photo_id: photo_id_db.Value,
-                    id_chat_sent_into: id_chat_sent_into, sent_date: sent_date);
+                MessageDB.AddMessage(MessageType.Photo,
+                    reply_to.Caption, e.Message.From.Id,
+                    message_from_id_entity, photo_id_db.Value,
+                    id_chat_sent_into, sent_date);
             }
             else
             {
-                sender.SendTextMessageAsync(e.Message.From.Id, "You have to attach something! (A photo, for example)", ChatType.Private);
+                sender.SendTextMessageAsync(e.Message.From.Id, "You have to attach something! (A photo, for example)",
+                    ChatType.Private);
                 return false;
             }
 
-            sender.SendTextMessageAsync(e.Message.From.Id, "The message has been submitted correctly", ChatType.Private);
+            sender.SendTextMessageAsync(e.Message.From.Id, "The message has been submitted correctly",
+                ChatType.Private);
             return true;
         }
 
-        private static async System.Threading.Tasks.Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] string_info)
+        private static async Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
+            string[] string_info)
         {
-            bool r = await Groups.CheckIfAdminAsync(e.Message.From.Id, chat_id: e.Message.Chat.Id, sender);
+            var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.Chat.Id, sender);
             if (r)
             {
                 if (e.Message.ReplyToMessage == null)
                 {
-                    var target_int = await Utils.Info.GetTargetUserIdAsync(string_info[1], sender);
+                    var target_int = await Info.GetTargetUserIdAsync(string_info[1], sender);
                     if (target_int == null)
                         return false;
 
-                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, time: null);
+                    return RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, null);
                 }
                 else
                 {
                     var target_int = e.Message.ReplyToMessage.From.Id;
-                    return Utils.RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, time: string_info);
+                    return RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, string_info);
                 }
             }
 
             return false;
         }
 
-        private static async System.Threading.Tasks.Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
             var done = await RestrictUser.BanAllAsync(sender, e, target, false);
-            Utils.SendMessage.SendMessageInPrivate(sender, e,
-                "Target unbanned from " + done.Count.ToString() + " groups");
+            SendMessage.SendMessageInPrivate(sender, e,
+                "Target unbanned from " + done.Count + " groups");
         }
 
-        private static async System.Threading.Tasks.Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target)
+        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target)
         {
             if (e.Message.ReplyToMessage == null)
             {
                 if (target.Length < 2)
                 {
-                    sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", Telegram.Bot.Types.Enums.ChatType.Private);
+                    sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", ChatType.Private);
                 }
                 else
                 {
                     var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
-                    Utils.SendMessage.SendMessageInPrivate(sender, e,
-                        "Target banned from " + done.Count.ToString() + " groups");
+                    SendMessage.SendMessageInPrivate(sender, e,
+                        "Target banned from " + done.Count + " groups");
                 }
             }
             else
             {
-                var done = await RestrictUser.BanAllAsync(sender, e, target: e.Message.ReplyToMessage.From.Id.ToString(), true);
-                Utils.SendMessage.SendMessageInPrivate(sender, e,
-                    "Target banned from " + done.Count.ToString() + " groups");
+                var done = await RestrictUser.BanAllAsync(sender, e, e.Message.ReplyToMessage.From.Id.ToString(), true);
+                SendMessage.SendMessageInPrivate(sender, e,
+                    "Target banned from " + done.Count + " groups");
             }
         }
 
         private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            Utils.SendMessage.SendMessageInPrivate(sender, e, "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
+            SendMessage.SendMessageInPrivate(sender, e,
+                "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
         }
 
         private static void Help(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            if (e.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Private)
-            {
+            if (e.Message.Chat.Type == ChatType.Private)
                 HelpPrivate(sender, e);
-            }
             else
-            {
-                Utils.SendMessage.SendMessageInPrivateOrAGroup(sender, e, "Questo messaggio funziona solo in chat privata");
-            }
+                SendMessage.SendMessageInPrivateOrAGroup(sender, e, "Questo messaggio funziona solo in chat privata");
         }
 
         private static void HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            string text = "<i>Lista di funzioni</i>:\n" +
-                                      "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
-                                      "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
-                                      "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
-                                      "FAQ (domande frequenti)</a>\n" +
-                                      "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
-                                      "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                                      "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
-                                      "\n👥 Gruppo consigliati e utili /groups\n" +
-                                      "\n⚠ Hai già letto le regole del network? /rules\n" +
-                                      "\n✍ Per contattarci /contact";
-            Utils.SendMessage.SendMessageInPrivate(sender, e, text, Telegram.Bot.Types.Enums.ParseMode.Html);
+            var text = "<i>Lista di funzioni</i>:\n" +
+                       "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
+                       "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
+                       "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                       "FAQ (domande frequenti)</a>\n" +
+                       "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
+                       "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+                       "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+                       "\n👥 Gruppo consigliati e utili /groups\n" +
+                       "\n⚠ Hai già letto le regole del network? /rules\n" +
+                       "\n✍ Per contattarci /contact";
+            SendMessage.SendMessageInPrivate(sender, e, text, ParseMode.Html);
         }
 
         private static void ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
             telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
-                    telegramBotClient.GetContactString(), e.Message.Chat.Type
-                );
+                telegramBotClient.GetContactString(), e.Message.Chat.Type
+            );
         }
 
-        private static async System.Threading.Tasks.Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            int n = await Utils.InviteLinks.FillMissingLinksIntoDB_Async(sender);
-            Utils.SendMessage.SendMessageInPrivate(sender, e, "I have updated n=" + n.ToString() + " links");
+            var n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
+            SendMessage.SendMessageInPrivate(sender, e, "I have updated n=" + n + " links");
         }
 
         private static void Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
             telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
-                    "Ciao! 👋\n" +
-                    "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
-                    "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite(),
-                     e.Message.Chat.Type
-                );
+                "Ciao! 👋\n" +
+                "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
+                "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite(),
+                e.Message.Chat.Type
+            );
         }
     }
 }

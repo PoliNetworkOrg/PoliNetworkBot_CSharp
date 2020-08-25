@@ -1,11 +1,15 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     public class UserBotInfo : BotInfoAbstract
     {
-        public string session_user_id = null;
+        public string session_user_id;
 
 #pragma warning disable IDE0060 // Rimuovere il parametro inutilizzato
 
@@ -24,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return Convert.ToInt32(this.keyValuePairs[api_id]);
+                return Convert.ToInt32(keyValuePairs[api_id]);
             }
             catch
             {
@@ -36,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return "+" + this.keyValuePairs[number_contry].ToString() + " " + this.keyValuePairs[number_number].ToString();
+                return "+" + keyValuePairs[number_contry] + " " + keyValuePairs[number_number];
             }
             catch
             {
@@ -46,14 +50,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal string GetPasswordToAuthenticate()
         {
-            return this.keyValuePairs[password_to_authenticate].ToString();
+            return keyValuePairs[password_to_authenticate].ToString();
         }
 
         internal string GetApiHash()
         {
             try
             {
-                return this.keyValuePairs[api_hash].ToString();
+                return keyValuePairs[api_hash].ToString();
             }
             catch
             {
@@ -63,39 +67,36 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void SetNumberNumber(string v)
         {
-            this.keyValuePairs[number_number] = v;
+            keyValuePairs[number_number] = v;
         }
 
         internal void SetPasswordToAuthenticate(string v)
         {
-            this.keyValuePairs[password_to_authenticate] = v;
+            keyValuePairs[password_to_authenticate] = v;
         }
 
         internal void SetNumberCountry(string v)
         {
-            this.keyValuePairs[number_contry] = v;
+            keyValuePairs[number_contry] = v;
         }
 
         internal string GetSessionUserId()
         {
-            if (string.IsNullOrEmpty(this.session_user_id))
-            {
-                this.session_user_id = GenerateSessionUserId_From_UserId();
-            }
+            if (string.IsNullOrEmpty(session_user_id)) session_user_id = GenerateSessionUserId_From_UserId();
 
-            return this.session_user_id;
+            return session_user_id;
         }
 
         internal void SetApiHash(string v)
         {
-            this.keyValuePairs[api_hash] = v;
+            keyValuePairs[api_hash] = v;
         }
 
         internal bool SetUserId(string v)
         {
             try
             {
-                this.keyValuePairs[user_id] = Convert.ToInt32(v);
+                keyValuePairs[user_id] = Convert.ToInt32(v);
                 return true;
             }
             catch
@@ -110,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                this.keyValuePairs[api_id] = Convert.ToInt32(v);
+                keyValuePairs[api_id] = Convert.ToInt32(v);
                 return true;
             }
             catch
@@ -123,18 +124,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private string GenerateSessionUserId_From_UserId()
         {
-            var id = this.GetUserId();
+            var id = GetUserId();
             if (id == null)
                 return null;
 
-            return Convert.ToString(id.Value, 16).ToString().ToLower();
+            return Convert.ToString(id.Value, 16).ToLower();
         }
 
         internal long? GetUserId()
         {
             try
             {
-                return Convert.ToInt32(this.keyValuePairs[user_id]);
+                return Convert.ToInt32(keyValuePairs[user_id]);
             }
             catch
             {

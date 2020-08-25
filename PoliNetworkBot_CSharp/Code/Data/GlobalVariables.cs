@@ -1,5 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Data
 {
@@ -10,7 +14,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
         internal static void LoadToRam()
         {
-            Creators = new List<long>() {
+            Creators = new List<long>
+            {
                 5651789 // @ArmeF97
             };
         }

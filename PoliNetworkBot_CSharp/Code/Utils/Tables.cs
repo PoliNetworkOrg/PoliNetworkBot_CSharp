@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Data;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -7,9 +11,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         public static void FixIDTable(string table_name, string column_id_name, string unique_column)
         {
-            int r4 = Tables.GetMaxID(table_name, column_id_name);
-            string q2 = "SELECT * FROM " + table_name + " WHERE " + column_id_name + " IS NULL";
-            var r5 = Utils.SQLite.ExecuteSelect(q2);
+            var r4 = GetMaxID(table_name, column_id_name);
+            var q2 = "SELECT * FROM " + table_name + " WHERE " + column_id_name + " IS NULL";
+            var r5 = SQLite.ExecuteSelect(q2);
             if (r5 == null)
                 return;
 
@@ -17,21 +21,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 r4++;
 
-                string value_unique = dr[unique_column].ToString();
-                string q3 = "UPDATE " + table_name + " SET " + column_id_name + "=" + r4.ToString() + " WHERE " + unique_column + "='" + value_unique + "'";
-                Utils.SQLite.Execute(q3);
+                var value_unique = dr[unique_column].ToString();
+                var q3 = "UPDATE " + table_name + " SET " + column_id_name + "=" + r4 + " WHERE " + unique_column +
+                         "='" + value_unique + "'";
+                SQLite.Execute(q3);
             }
         }
 
         internal static int GetMaxID(string table_name, string column_id_name)
         {
-            string q = "SELECT MAX(" + column_id_name + ") FROM " + table_name;
-            var r = Utils.SQLite.ExecuteSelect(q);
-            var r2 = Utils.SQLite.GetFirstValueFromDataTable(r);
-            if (r2 == null)
-            {
-                return 0;
-            }
+            var q = "SELECT MAX(" + column_id_name + ") FROM " + table_name;
+            var r = SQLite.ExecuteSelect(q);
+            var r2 = SQLite.GetFirstValueFromDataTable(r);
+            if (r2 == null) return 0;
 
             try
             {

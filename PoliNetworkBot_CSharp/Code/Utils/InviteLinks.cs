@@ -1,30 +1,37 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class InviteLinks
     {
-        internal static async System.Threading.Tasks.Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender)
+        internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender)
         {
-            string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
-            DataTable dt = Utils.SQLite.ExecuteSelect(q1);
+            var q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
+            var dt = SQLite.ExecuteSelect(q1);
 
-            int n = 0;
+            var n = 0;
             if (dt == null || dt.Rows.Count == 0)
                 return n;
 
             foreach (DataRow dr in dt.Rows)
             {
-                bool success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
+                var success = await CreateInviteLinkAsync((long) dr.ItemArray[0], sender);
                 if (success)
                     n++;
             }
+
             return n;
         }
 
-        internal static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(long chat_id, TelegramBotAbstract sender)
+        internal static async Task<bool> CreateInviteLinkAsync(long chat_id, TelegramBotAbstract sender)
         {
             string r = null;
             try
@@ -39,12 +46,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(r))
                 return false;
 
-            string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>()
+            var q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
+            SQLite.Execute(q1, new Dictionary<string, object>
             {
-                { "@link", r},
-                {"@lul" , DateTime.Now },
-                {"@id", chat_id }
+                {"@link", r},
+                {"@lul", DateTime.Now},
+                {"@id", chat_id}
             });
 
             return true;

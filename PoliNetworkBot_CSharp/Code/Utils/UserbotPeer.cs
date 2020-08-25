@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -10,21 +14,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             switch (chatType)
             {
-                case Telegram.Bot.Types.Enums.ChatType.Private:
-                    {
-                        return new TLInputPeerUser() { UserId = (int)chatid };
-                    }
+                case ChatType.Private:
+                {
+                    return new TLInputPeerUser {UserId = (int) chatid};
+                }
 
-                case Telegram.Bot.Types.Enums.ChatType.Channel:
-                    {
-                        return new TLInputPeerChannel() { ChannelId = (int)chatid };
-                    }
+                case ChatType.Channel:
+                {
+                    return new TLInputPeerChannel {ChannelId = (int) chatid};
+                }
 
                 default:
-                    {
-                        return new TLInputPeerChat() { ChatId = (int)chatid };
-                    }
+                {
+                    return new TLInputPeerChat {ChatId = (int) chatid};
+                }
             }
+
             throw new NotImplementedException();
         }
 
@@ -32,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                return new TLInputChannel() { ChannelId = (int)chatid };
+                return new TLInputChannel {ChannelId = (int) chatid};
             }
             catch
             {
@@ -44,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                return new TLInputUser() { UserId = user_id };
+                return new TLInputUser {UserId = user_id};
             }
             catch
             {

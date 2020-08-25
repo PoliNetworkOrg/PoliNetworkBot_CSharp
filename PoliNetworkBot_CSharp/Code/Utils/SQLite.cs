@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -11,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             int numberOfRowsAffected;
 
             //setup the connection to the database
-            using var con = new SQLiteConnection(Data.Constants.Paths.db);
+            using var con = new SQLiteConnection(Paths.db);
             con.Open();
 
             //open a new command
@@ -19,12 +24,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 //set the arguments given in the query
                 if (args != null)
-                {
                     foreach (var pair in args)
-                    {
                         cmd.Parameters.AddWithValue(pair.Key, pair.Value);
-                    }
-                }
 
                 //execute the query and get the number of row affected
                 numberOfRowsAffected = cmd.ExecuteNonQuery();
@@ -38,16 +39,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(query.Trim()))
                 return null;
 
-            using var con = new SQLiteConnection(Data.Constants.Paths.db);
+            using var con = new SQLiteConnection(Paths.db);
             con.Open();
             using var cmd = new SQLiteCommand(query, con);
             if (args != null)
-            {
-                foreach (KeyValuePair<string, object> entry in args)
-                {
+                foreach (var entry in args)
                     cmd.Parameters.AddWithValue(entry.Key, entry.Value);
-                }
-            }
 
             var da = new SQLiteDataAdapter(cmd);
 

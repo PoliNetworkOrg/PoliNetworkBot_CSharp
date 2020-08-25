@@ -1,5 +1,10 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -7,8 +12,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static void DeleteIfMessageIsNotInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e.Message.Chat.Type != Telegram.Bot.Types.Enums.ChatType.Private)
-            {
+            if (e.Message.Chat.Type != ChatType.Private)
                 try
                 {
                     telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
@@ -17,7 +21,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     ;
                 }
-            }
         }
     }
 }

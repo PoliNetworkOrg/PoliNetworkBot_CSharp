@@ -1,8 +1,16 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -12,41 +20,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             switch (e.Message.Chat.Type)
             {
-                case Telegram.Bot.Types.Enums.ChatType.Private:
+                case ChatType.Private:
                     return false;
             }
 
-            string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
-            var dt = Utils.SQLite.ExecuteSelect(q1, new System.Collections.Generic.Dictionary<string, object>() { { "@id", e.Message.Chat.Id } });
+            var q1 = "SELECT id, valid FROM Groups WHERE id = @id";
+            var dt = SQLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
             if (dt != null && dt.Rows.Count > 0)
             {
                 return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
             }
-            else
-            {
-                InsertGroup(sender, e);
-                return CheckIfToExit(sender, e, null);
-            }
+
+            InsertGroup(sender, e);
+            return CheckIfToExit(sender, e, null);
         }
 
         public static bool CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
         {
-            if (v == null || v is System.DBNull)
-            {
-                return CheckIfToExit_NullValue(telegramBotClient, e);
-            }
+            if (v == null || v is DBNull) return CheckIfToExit_NullValue(telegramBotClient, e);
 
-            if (v is char b)
-            {
-                return b != 'Y';
-            }
+            if (v is char b) return b != 'Y';
 
             if (v is string s)
             {
-                if (string.IsNullOrEmpty(s))
-                {
-                    return CheckIfToExit_NullValue(telegramBotClient, e);
-                }
+                if (string.IsNullOrEmpty(s)) return CheckIfToExit_NullValue(telegramBotClient, e);
 
                 return s != "Y";
             }
@@ -63,30 +60,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
-            Utils.SQLite.Execute(q1, new System.Collections.Generic.Dictionary<string, object>() {
-                { "@id", e.Message.Chat.Id },
-                { "@botid", sender.GetID() } ,
-                { "@type", e.Message.Chat.Type.ToString() },
-                { "@title", e.Message.Chat.Title }
+            var q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
+            SQLite.Execute(q1, new Dictionary<string, object>
+            {
+                {"@id", e.Message.Chat.Id},
+                {"@botid", sender.GetID()},
+                {"@type", e.Message.Chat.Type.ToString()},
+                {"@title", e.Message.Chat.Title}
             });
             _ = CreateInviteLinkAsync(sender, e);
         }
 
-        private static async System.Threading.Tasks.Task<bool> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<bool> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            return await Utils.InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
+            return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
         }
 
         public static Tuple<bool, bool> CheckUsername(MessageEventArgs e)
         {
-            bool username = false;
-            bool name = false;
+            var username = false;
+            var name = false;
 
-            if (string.IsNullOrEmpty(e.Message.From.Username))
-            {
-                username = true;
-            }
+            if (string.IsNullOrEmpty(e.Message.From.Username)) username = true;
 
             if (e.Message.From.FirstName.Length < 2)
                 name = true;
@@ -97,15 +92,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static SpamType CheckSpam(MessageEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Message.Text))
-            {
                 //todo
                 return SpamType.ALL_GOOD;
-            }
 
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
-            bool is_foreign = DetectForeignLanguage(e);
+            var is_foreign = DetectForeignLanguage(e);
             if (is_foreign)
                 return SpamType.FOREIGN;
 
@@ -121,80 +114,76 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
                 Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
                 Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success
-                )
-            {
+            )
                 return true;
-            }
 
             return false;
         }
 
-        public static void SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username, bool name)
+        public static void SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username,
+            bool name)
         {
-            string s1 = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n\n" +
-                          "Set an username and a longer first name from telegram settings";
+            var s1 = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n\n" +
+                     "Set an username and a longer first name from telegram settings";
             if (username && !name)
-            {
                 s1 = "Imposta un username dalle impostazioni di telegram\n\n" +
-                          "Set an username from telegram settings";
-            }
+                     "Set an username from telegram settings";
             else if (!username && name)
-            {
                 s1 = "Imposta un nome più lungo " +
-                          "dalle impostazioni di telegram\n\n" +
-                          "Set a longer first name from telegram settings";
-            }
+                     "dalle impostazioni di telegram\n\n" +
+                     "Set a longer first name from telegram settings";
 
-            Utils.SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
-            Utils.RestrictUser.Mute(time: 60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
+            SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
+            RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
         }
 
-        public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e, SpamType check_spam)
+        public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+            SpamType check_spam)
         {
             if (check_spam == SpamType.ALL_GOOD)
                 return;
 
-            Utils.RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
-            string language = e.Message.From.LanguageCode.ToLower();
+            RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
+            var language = e.Message.From.LanguageCode.ToLower();
             switch (check_spam)
             {
                 case SpamType.SPAM_LINK:
+                {
+                    var text = language switch
                     {
-                        string text = language switch
-                        {
-                            "en" => "You sent a message with spam, and you were muted for 5 minutes",
-                            _ => "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti",
-                        };
-                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
-                        break;
-                    }
+                        "en" => "You sent a message with spam, and you were muted for 5 minutes",
+                        _ => "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti"
+                    };
+                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                    break;
+                }
                 case SpamType.NOT_ALLOWED_WORDS:
+                {
+                    var text = language switch
                     {
-                        string text = language switch
-                        {
-                            "en" => "You sent a message with banned words, and you were muted for 5 minutes",
-                            _ => "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti",
-                        };
-                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
-                        break;
-                    }
+                        "en" => "You sent a message with banned words, and you were muted for 5 minutes",
+                        _ => "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"
+                    };
+                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                    break;
+                }
 
                 case SpamType.ALL_GOOD:
-                    {
-                        return;
-                    }
+                {
+                    return;
+                }
 
                 case SpamType.FOREIGN:
+                {
+                    var text = language switch
                     {
-                        string text = language switch
-                        {
-                            "en" => "You sent a message with banned characters, and you were muted for 5 minutes",
-                            _ => "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti",
-                        };
-                        Utils.SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
-                        break;
-                    }
+                        "en" => "You sent a message with banned characters, and you were muted for 5 minutes",
+                        _ => "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
+                    };
+                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                    break;
+                }
             }
 
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
