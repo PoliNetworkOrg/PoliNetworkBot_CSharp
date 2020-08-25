@@ -12,6 +12,12 @@ namespace TestBot.Code.Utils
         [Test]
         public void Test1()
         {
+            PoliNetworkBot_CSharp.Code.MainProgram.NewConfig.NewConfigMethod(true,true);
+            
+            var r = PoliNetworkBot_CSharp.Code.Utils.MessageDb.GetMessageTypeClassById(1);
+            if (r == null)
+                Assert.Fail();
+            
             Assert.Pass();
         }
     }

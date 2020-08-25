@@ -17,4 +17,8 @@
       <Folder Include="Code\Enums" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj" />
+    </ItemGroup>
+
 </Project>

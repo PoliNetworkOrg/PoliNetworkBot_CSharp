@@ -14,7 +14,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
-    internal static class NewConfig
+    public static class NewConfig
     {
         public static void NewConfigMethod(bool resetBot, bool resetUserbot)
         {

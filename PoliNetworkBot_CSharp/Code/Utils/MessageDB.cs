@@ -12,7 +12,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal static class MessageDb
+    public static class MessageDb
     {
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
@@ -108,26 +108,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var botClass = GlobalVariables.Bots[botId];
 
             var typeI = Convert.ToInt32((dr["type"]));
-            var typeS = GetMessageTypeById(typeI);
-
-            if (string.IsNullOrEmpty((typeS)))
-                return false;
-            
-            var messageType = Enum.TryParse(typeof(MessageType),typeS,  out var typeT);
-            if (messageType == false || typeT == null)
+            var typeT = GetMessageTypeClassById(typeI);
+            if (typeT == null)
                 return false;
 
-            MessageType typeT2;
-            if (typeT is MessageType t)
-            {
-                typeT2 = t;
-            }
-            else
-            {
-                return false;
-            }
-
-            switch (typeT2)
+            switch (typeT.Value)
             {
                 case MessageType.Unknown:
                     break;
@@ -199,6 +184,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return false;
         }
 
+        public static MessageType? GetMessageTypeClassById(in int typeI)
+        {
+            var typeS = GetMessageTypeNameById(typeI);
+
+            if (string.IsNullOrEmpty((typeS)))
+                return null;
+            
+            var messageType = Enum.TryParse(typeof(MessageType), typeS,  out var typeT);
+            if (messageType == false || typeT == null)
+                return null;
+
+            MessageType typeT2;
+            if (typeT is MessageType t)
+            {
+                return t;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private static void SendTextFromDataRow(DataRow dr, TelegramBotAbstract botClass)
         {
             throw new NotImplementedException();
@@ -206,7 +213,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         static Dictionary<int, string> MessageTypesInRam = new Dictionary<int, string>();
         
-        private static string GetMessageTypeById(in int typeI)
+        private static string GetMessageTypeNameById(in int typeI)
         {
             if (MessageTypesInRam.ContainsKey(typeI))
                 return MessageTypesInRam[typeI];
