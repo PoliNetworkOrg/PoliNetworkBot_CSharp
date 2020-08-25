@@ -112,37 +112,35 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, long chatId, string text,
             TextAsCaption textAsCaption)
         {
-            if (_isbot)
+            if (!_isbot) 
+                return false; //todo
+            
+            var inputOnlineFile = documentInput.GetOnlineFile();
+            switch (textAsCaption)
             {
-                var inputOnlineFile = documentInput.GetOnlineFile();
-                switch (textAsCaption)
+                case TextAsCaption.AS_CAPTION:
                 {
-                    case TextAsCaption.AS_CAPTION:
-                    {
-                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile, text);
-                        return true;
-                    }
-
-                    case TextAsCaption.BEFORE_FILE:
-                    {
-                        _ = await _botClient.SendTextMessageAsync(chatId, text);
-                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
-                        return true;
-                    }
-
-                    case TextAsCaption.AFTER_FILE:
-                    {
-                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
-                        _ = await _botClient.SendTextMessageAsync(chatId, text);
-                        return true;
-                    }
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile, text);
+                    return true;
                 }
-            }
 
-            return false;
+                case TextAsCaption.BEFORE_FILE:
+                {
+                    _ = await _botClient.SendTextMessageAsync(chatId, text);
+                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
+                    return true;
+                }
+
+                case TextAsCaption.AFTER_FILE:
+                {
+                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
+                    _ = await _botClient.SendTextMessageAsync(chatId, text);
+                    return true;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+            }
 
             return false;
         }

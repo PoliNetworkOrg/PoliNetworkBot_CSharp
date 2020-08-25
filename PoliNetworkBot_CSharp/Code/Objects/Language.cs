@@ -9,32 +9,32 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class Language
     {
-        public readonly Dictionary<string, string> Dict;
+        private readonly Dictionary<string, string> _dict;
 
         public Language(Dictionary<string, string> dict)
         {
-            Dict = dict;
+            _dict = dict;
         }
 
         public string Select(string lang)
         {
-            if (Dict == null)
+            if (_dict == null)
                 return null;
 
-            if (Dict.ContainsKey(lang))
-                return Dict[lang];
+            if (_dict.ContainsKey(lang))
+                return _dict[lang];
 
-            if (Dict.Keys.Count == 0)
+            if (_dict.Keys.Count == 0)
                 return null;
 
-            var d = Dict.Keys.First();
-            return Dict[d];
+            var d = _dict.Keys.First();
+            return _dict[d];
         }
 
-        public static bool EqualsLang(string Avalue, Language BLanguage, string languageOfB)
+        public static bool EqualsLang(string aValue, Language bLanguage, string languageOfB)
         {
-            var Bvalue = BLanguage.Select(languageOfB);
-            return Avalue == Bvalue;
+            var bValue = bLanguage.Select(languageOfB);
+            return aValue == bValue;
         }
     }
 }
