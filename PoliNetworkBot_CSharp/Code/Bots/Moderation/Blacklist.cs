@@ -39,24 +39,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static bool CheckSpamLink(string text)
         {
-            if (text.Contains("t.me/"))
-            {
-                if (text.Contains("t.me/c/")) return false;
+            if (!text.Contains("t.me/"))
+                return text.Contains("facebook.com") ||
+                       text.Contains("whatsapp.com") ||
+                       text.Contains("instagram.com") ||
+                       text.Contains("bit.ly") ||
+                       text.Contains("is.gd") ||
+                       text.Contains("amzn.to") ||
+                       text.Contains("goo.gl") ||
+                       text.Contains("forms.gle") ||
+                       text.Contains("docs.google.com") ||
+                       text.Contains("discord.gg");
+            
+            if (text.Contains("t.me/c/")) return false;
 
-                var isOurLink = CheckIfIsOurTgLink(text);
-                return isOurLink != null && !isOurLink.Value;
-            }
+            var isOurLink = CheckIfIsOurTgLink(text);
+            return isOurLink != null && !isOurLink.Value;
 
-            return text.Contains("facebook.com") ||
-                   text.Contains("whatsapp.com") ||
-                   text.Contains("instagram.com") ||
-                   text.Contains("bit.ly") ||
-                   text.Contains("is.gd") ||
-                   text.Contains("amzn.to") ||
-                   text.Contains("goo.gl") ||
-                   text.Contains("forms.gle") ||
-                   text.Contains("docs.google.com") ||
-                   text.Contains("discord.gg");
         }
 
         private static bool? CheckIfIsOurTgLink(string text)

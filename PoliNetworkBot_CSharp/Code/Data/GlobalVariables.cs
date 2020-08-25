@@ -7,7 +7,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Data
 {
-    public class GlobalVariables
+    public static class GlobalVariables
     {
         public static Dictionary<long, TelegramBotAbstract> Bots;
         public static List<long> Creators;

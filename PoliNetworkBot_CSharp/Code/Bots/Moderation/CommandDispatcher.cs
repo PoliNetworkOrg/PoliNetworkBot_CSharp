@@ -179,11 +179,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 "Target unbanned from " + done.Count + " groups");
         }
 
-        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target)
+        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, IReadOnlyList<string> target)
         {
             if (e.Message.ReplyToMessage == null)
             {
-                if (target.Length < 2)
+                if (target.Count < 2)
                 {
                     sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", ChatType.Private);
                 }

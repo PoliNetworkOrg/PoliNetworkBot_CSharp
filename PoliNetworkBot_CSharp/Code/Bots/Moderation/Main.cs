@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Threading;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -36,10 +37,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var check_username = ModerationCheck.CheckUsername(e);
-            if (check_username.Item1 || check_username.Item2)
+            var (item1, item2) = ModerationCheck.CheckUsername(e);
+            if (item1 || item2)
             {
-                ModerationCheck.SendUsernameWarning(telegramBotClient, e, check_username.Item1, check_username.Item2);
+                ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1, item2);
                 return;
             }
 
