@@ -130,7 +130,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static void Redo_DB()
         {
             Utils.SQLite.Execute("CREATE TABLE Groups (" +
-                "id INT(12) PRIMARY KEY, " +
+                "id BIGINT PRIMARY KEY, " +
                 "bot_id INT(12)," +
                 "valid CHAR(1)," +
                 "link VARCHAR(250)," +
