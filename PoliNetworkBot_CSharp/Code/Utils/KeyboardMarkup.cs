@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -8,17 +9,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class KeyboardMarkup
     {
-        internal static IEnumerable<List<string>> ArrayToMatrixString(List<string> list)
+        internal static IEnumerable<List<Language>> ArrayToMatrixString(List<Language> list)
         {
             if (list == null || list.Count == 0)
                 return null;
 
-            var r = new List<List<string>>();
+            var r = new List<List<Language>>();
             switch (list.Count)
             {
                 case 1:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0]
                     };
@@ -28,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case 2:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0],
                         list[1]
@@ -39,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case 3:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0],
                         list[1],
@@ -51,14 +52,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case 4:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0],
                         list[1]
                     };
                     r.Add(r2);
 
-                    var r3 = new List<string>
+                    var r3 = new List<Language>
                     {
                         list[2],
                         list[3]
@@ -69,14 +70,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case 5:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0],
                         list[1]
                     };
                     r.Add(r2);
 
-                    var r3 = new List<string>
+                    var r3 = new List<Language>
                     {
                         list[2],
                         list[3],
@@ -88,7 +89,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case 6:
                 {
-                    var r2 = new List<string>
+                    var r2 = new List<Language>
                     {
                         list[0],
                         list[1],
@@ -96,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     };
                     r.Add(r2);
 
-                    var r3 = new List<string>
+                    var r3 = new List<Language>
                     {
                         list[3],
                         list[4],
@@ -110,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var lines = list.Count / 3;
             if (list.Count % 3 != 0) lines++;
 
-            for (var i = 0; i < lines; i++) r.Add(new List<string>());
+            for (var i = 0; i < lines; i++) r.Add(new List<Language>());
 
             for (var i = 0; i < list.Count; i++) r[i / 3].Add(list[i]);
 

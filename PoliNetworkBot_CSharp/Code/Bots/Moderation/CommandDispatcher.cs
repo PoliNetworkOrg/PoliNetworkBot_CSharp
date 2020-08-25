@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -117,15 +118,42 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var replyTo = e.Message.ReplyToMessage;
 
-            var languageList = new Dictionary<string, string>
-            {
+            var languageList = new Language(new Dictionary<string, string>() {
                 {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
                 {"en", "Choose the entity you are writing this message for"}
-            };
+            });
+            
             var messageFromIdEntity = await Assoc.GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
                 sender, e.Message.From.LanguageCode);
-            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
-                e.Message.From.LanguageCode, sender);
+
+            var languageList2 = new Language( new Dictionary<string, string>() {
+                    {"it", "Data di pubblicazione?"},
+                    {"en", "Date of pubblication?"}
+                }
+            );
+
+            var opt1 = new Language( new Dictionary<string, string>() { {"it", "Metti in coda"}, {"en", "Place in queue"}});
+            var opt2 = new Language( new Dictionary<string, string>(){ {"it", "Scegli la data"}, {"en", "Choose the date"}});
+            var options = new List<List<Language>>()
+            {
+                new List<Language>() {opt1, opt2}
+            };
+            
+            var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
+                languageList2, sender, e.Message.From.LanguageCode, options);
+
+            DateTime? sentDate = null;
+            if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
+            {
+                sentDate = null;
+            }
+            else
+            {
+                sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+                    e.Message.From.LanguageCode, sender);
+            }
+            
+
             const long idChatSentInto = Channels.PoliAssociazioni;
 
             if (replyTo.Photo != null)

@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Assoc
     {
-        internal static async Task<int?> GetIdEntityFromPersonAsync(int id, Dictionary<string, string> languageList,
+        internal static async Task<int?> GetIdEntityFromPersonAsync(int id, Language question,
             TelegramBotAbstract sender, string lang)
         {
             const string q =
@@ -28,11 +28,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var s = dr.ItemArray[1].ToString();
                 if (!string.IsNullOrEmpty(s))
+                {
                     l[s] = Convert.ToInt32(dr.ItemArray[0]);
+                }
             }
-
-            var r2 = await AskUser.AskBetweenRangeAsync(id, languageList, sender, lang,
-                KeyboardMarkup.ArrayToMatrixString(l.Keys.ToList()));
+            
+            var l3 = l.Keys.Select(
+                    l2 => new Language( 
+                        new  Dictionary<string, string>()
+                        {
+                            {"en", l2}
+                        })
+                ).ToList();
+            
+            var options = KeyboardMarkup.ArrayToMatrixString(l3);
+            var r2 = await AskUser.AskBetweenRangeAsync(id, question, sender, lang,
+                options:options);
+            
             return l[r2];
         }
     }

@@ -31,19 +31,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await tcs.Task;
         }
 
-        internal static async Task<string> AskBetweenRangeAsync(int id, Dictionary<string, string> language,
-            TelegramBotAbstract sender, string lang, IEnumerable<List<string>> options)
+        internal static async Task<string> AskBetweenRangeAsync(int id, Language question,
+            TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options)
         {
-            var toSend = language[lang];
+            var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
             sender.SendTextMessageAsync(id, toSend, ChatType.Private, default,
-                true, OptionsStringToKeyboard(options));
+                true, OptionsStringToKeyboard(options, lang));
             return await WaitForAnswer(id);
         }
 
-        private static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<string>> options)
+        private static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>> options,
+            string lang)
         {
-            return options.Select(o => o.Select(o2 => new KeyboardButton(o2)).ToList()).ToList();
+            return options.Select(o => o.Select(
+                o2 =>
+                {
+                    var o3 = o2.Select(lang);
+                    return new KeyboardButton(o3);
+                }
+                    ).ToList()).ToList();
         }
     }
 }
