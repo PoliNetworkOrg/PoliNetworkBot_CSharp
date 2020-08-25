@@ -177,6 +177,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 await MessageDb.CheckMessagesToSend();
                 Thread.Sleep(10 * 1000); //10 sec
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private static async Task TestThingsAsync(long userId)

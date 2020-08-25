@@ -94,14 +94,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool SendTextMessageAsync(long chatid, string text,
             ChatType chatType, ParseMode parseMode = ParseMode.Default,
-            bool forceReply = false, List<List<KeyboardButton>> replyMarkupKeyboard = null)
+            Objects.ReplyMarkupObject replyMarkupObject = null)
         {
             if (_isbot)
             {
                 IReplyMarkup reply = null;
-                if (forceReply && replyMarkupKeyboard != null)
-                    reply = new ReplyKeyboardMarkup(replyMarkupKeyboard);
-                else if (forceReply) reply = new ForceReplyMarkup();
+                if (replyMarkupObject != null)
+                {
+                    reply = replyMarkupObject.GetReplyMarkup();
+                }
 
                 _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                 return true;

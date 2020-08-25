@@ -13,32 +13,46 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class AskUser
     {
-        public static readonly Dictionary<int, AnswerTelegram> UserAnswers = new Dictionary<int, AnswerTelegram>();
+        public static readonly Dictionary<long, AnswerTelegram> UserAnswers = new Dictionary<long, AnswerTelegram>();
 
-        internal static async Task<string> AskAsync(int id, Dictionary<string, string> dictionary,
-            TelegramBotAbstract sender, string lang)
+        internal static async Task<string> AskAsync(long idUser, Dictionary<string, string> dictionary,
+            TelegramBotAbstract sender, string lang, bool sendMessageConfirmationChoice = false)
         {
             var toSend = dictionary[lang];
-            UserAnswers[id] = new AnswerTelegram();
-            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, true);
-            return await WaitForAnswer(id);
+            UserAnswers[idUser] = new AnswerTelegram();
+            sender.SendTextMessageAsync(idUser, toSend, ChatType.Private, default,
+                new ReplyMarkupObject(Enums.ReplyMarkupEnum.FORCED));
+            return await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender);
         }
 
-        private static async Task<string> WaitForAnswer(int id)
+        private static async Task<string> WaitForAnswer(long idUser, bool sendMessageConfirmationChoice,
+            TelegramBotAbstract telegramBotAbstract)
         {
             var tcs = new TaskCompletionSource<string>();
-            UserAnswers[id].WorkCompleted += result => tcs.SetResult(result.ToString());
+            UserAnswers[idUser].WorkCompleted += result =>
+            {
+                if (sendMessageConfirmationChoice)
+                {
+                    var replyMarkup = new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE);
+                    telegramBotAbstract.SendTextMessageAsync(idUser,
+                        "You choose [" + result.ToString() + "]",
+                        ChatType.Private, parseMode: default, replyMarkupObject: replyMarkup);
+                }
+                tcs.SetResult(result.ToString());
+            };
             return await tcs.Task;
         }
 
         internal static async Task<string> AskBetweenRangeAsync(int id, Language question,
-            TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options)
+            TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options, 
+            bool sendMessageConfirmationChoice = true)
         {
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
-            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default,
-                true, OptionsStringToKeyboard(options, lang));
-            return await WaitForAnswer(id);
+            var replyMarkupObject = new ReplyMarkupObject(OptionsStringToKeyboard(options, lang));
+            
+            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject: replyMarkupObject);
+            return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);
         }
 
         private static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>> options,
