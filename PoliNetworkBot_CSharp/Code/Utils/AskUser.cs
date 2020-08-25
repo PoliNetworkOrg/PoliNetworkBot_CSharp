@@ -51,22 +51,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
-            var replyMarkupObject = new ReplyMarkupObject(OptionsStringToKeyboard(options, lang));
+            var replyMarkupObject = new ReplyMarkupObject(Utils.KeyboardMarkup.OptionsStringToKeyboard(options, lang));
 
             sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);
         }
 
-        private static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>> options,
-            string lang)
-        {
-            return options.Select(o => o.Select(
-                o2 =>
-                {
-                    var o3 = o2.Select(lang);
-                    return new KeyboardButton(o3);
-                }
-            ).ToList()).ToList();
-        }
+     
     }
 }

@@ -1,7 +1,9 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -9,6 +11,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class KeyboardMarkup
     {
+        public static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>> options,
+            string lang)
+        {
+            return options.Select(o => o.Select(
+                o2 =>
+                {
+                    var o3 = o2.Select(lang);
+                    return new KeyboardButton(o3);
+                }
+            ).ToList()).ToList();
+        }
+        
         internal static IEnumerable<List<Language>> ArrayToMatrixString(List<Language> list)
         {
             if (list == null || list.Count == 0)
