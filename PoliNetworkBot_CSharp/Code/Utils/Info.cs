@@ -25,9 +25,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return null;
                 }
 
-            if (target[0] < '0' || target[0] > '9') 
+            if (target[0] < '0' || target[0] > '9')
                 return await GetIdFromUsernameAsync(target, telegramBotAbstract);
-            
+
             try
             {
                 return Convert.ToInt32(target);

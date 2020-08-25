@@ -13,10 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         internal static void DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e.Message.Chat.Type == ChatType.Private)
-            {
-                PrivateMessage(telegramBotClient, e);
-            }
+            if (e.Message.Chat.Type == ChatType.Private) PrivateMessage(telegramBotClient, e);
         }
 
         private static void PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)

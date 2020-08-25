@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (string.IsNullOrEmpty(e.Message.Text))
                 return;
-            
+
             if (e.Message.Text.StartsWith("/"))
                 CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             else

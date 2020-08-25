@@ -233,10 +233,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             else
             {
-                if (reply[0] >= '0' && reply[0] <= '9')
-                {
-                    return GetDateTimeFromString2(reply);
-                }
+                if (reply[0] >= '0' && reply[0] <= '9') return GetDateTimeFromString2(reply);
 
                 if (reply.StartsWith("un'"))
                 {

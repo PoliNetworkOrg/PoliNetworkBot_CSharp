@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static void DeleteIfMessageIsNotInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e.Message.Chat.Type == ChatType.Private) 
+            if (e.Message.Chat.Type == ChatType.Private)
                 return;
-            
+
             try
             {
                 telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);

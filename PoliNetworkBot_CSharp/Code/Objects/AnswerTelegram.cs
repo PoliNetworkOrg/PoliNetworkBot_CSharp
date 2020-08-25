@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal void RecordAnswer(string text)
         {
             if (_currentState != State.WAITING_FOR_ANSWER) return;
-            
+
             _currentState = State.ANSWERED;
             WorkCompleted.Invoke(text);
         }

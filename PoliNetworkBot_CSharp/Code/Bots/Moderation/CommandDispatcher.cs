@@ -156,20 +156,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string[] stringInfo)
         {
             var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.Chat.Id, sender);
-            if (!r) 
+            if (!r)
                 return false;
-            
+
             if (e.Message.ReplyToMessage == null)
             {
                 var targetInt = await Info.GetTargetUserIdAsync(stringInfo[1], sender);
-                return targetInt != null && RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
+                return targetInt != null &&
+                       RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
             }
             else
             {
                 var targetInt = e.Message.ReplyToMessage.From.Id;
                 return RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo);
             }
-
         }
 
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
@@ -179,7 +179,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 "Target unbanned from " + done.Count + " groups");
         }
 
-        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, IReadOnlyList<string> target)
+        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+            IReadOnlyList<string> target)
         {
             if (e.Message.ReplyToMessage == null)
             {

@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             _userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
             if (_userBots != null && _userBots.Count != 0)
                 return ToExit.STAY;
-            
+
             Console.WriteLine(
                 "It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
             var readChoice2 = Console.ReadLine();
@@ -86,9 +86,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static ToExit LoadBotConfig()
         {
             _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.ConfigBot);
-            if (_botInfos != null && _botInfos.Count != 0) 
+            if (_botInfos != null && _botInfos.Count != 0)
                 return ToExit.STAY;
-            
+
             Console.WriteLine(
                 "It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
             var readChoice2 = Console.ReadLine();
@@ -128,11 +128,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
                     if (!bot.AcceptsMessages())
                         continue;
-                    
+
                     var onmessageMethod = bot.GetOnMessage();
                     if (onmessageMethod == null)
                         continue;
-                    
+
                     botClient.OnMessage += onmessageMethod;
                     botClient.StartReceiving();
                 }

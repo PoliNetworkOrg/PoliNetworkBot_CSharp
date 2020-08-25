@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     public class UserBotInfo : BotInfoAbstract
     {
         public string SessionUserId;
-        
+
 
         internal new bool SetIsBot(bool v)
         {

@@ -50,12 +50,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                        text.Contains("forms.gle") ||
                        text.Contains("docs.google.com") ||
                        text.Contains("discord.gg");
-            
+
             if (text.Contains("t.me/c/")) return false;
 
             var isOurLink = CheckIfIsOurTgLink(text);
             return isOurLink != null && !isOurLink.Value;
-
         }
 
         private static bool? CheckIfIsOurTgLink(string text)

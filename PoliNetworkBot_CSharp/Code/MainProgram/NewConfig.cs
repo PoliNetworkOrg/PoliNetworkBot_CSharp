@@ -34,12 +34,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 var line = t;
                 if (string.IsNullOrEmpty(line))
                     continue;
-                
+
                 line = line.Trim();
 
-                if (string.IsNullOrEmpty(line)) 
+                if (string.IsNullOrEmpty(line))
                     continue;
-                
+
                 var lineInfo = line.Split("| _:c:_ |");
 
                 var bot = new UserBotInfo();
@@ -63,14 +63,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             foreach (var t in lines)
             {
                 var line = t;
-                if (string.IsNullOrEmpty(line)) 
+                if (string.IsNullOrEmpty(line))
                     continue;
-                
+
                 line = line.Trim();
 
-                if (string.IsNullOrEmpty(line)) 
+                if (string.IsNullOrEmpty(line))
                     continue;
-                
+
                 var lineInfo = line.Split("| _:c:_ |");
 
                 var bot = new BotInfo();
@@ -251,7 +251,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         var r5 = r4.Value;
                         if (!(r5 is JArray r6))
                             continue;
-                        
+
                         var users = new List<long>();
                         foreach (var r7 in r6)
                             if (r7 is JValue r8)

@@ -16,7 +16,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<int?> GetIdEntityFromPersonAsync(int id, Dictionary<string, string> languageList,
             TelegramBotAbstract sender, string lang)
         {
-            const string q = "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
+            const string q =
+                "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
             var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> {{"@idp", id}});
             if (r == null || r.Rows.Count == 0) return null;
 

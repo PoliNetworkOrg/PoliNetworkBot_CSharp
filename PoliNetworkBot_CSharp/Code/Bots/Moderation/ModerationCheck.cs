@@ -34,10 +34,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
-            }
+            if (dt != null && dt.Rows.Count > 0) return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
 
             InsertGroup(sender, e);
             return CheckIfToExit(sender, e, null);
@@ -109,7 +106,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.ALL_GOOD;
 
             var isForeign = DetectForeignLanguage(e);
-            
+
             return isForeign ? SpamType.FOREIGN : Blacklist.IsSpam(e.Message.Text);
         }
 
@@ -182,11 +179,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
                     break;
                 }
-                
+
                 // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                 case SpamType.ALL_GOOD:
                     return;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }

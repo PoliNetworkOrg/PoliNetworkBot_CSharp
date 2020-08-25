@@ -29,7 +29,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var photoId = GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId);
             if (photoId != null) return photoId.Value;
 
-            const string q = "INSERT INTO Photos (file_id, file_size, height, width, unique_id) VALUES (@fi, @fs, @h, @w, @u)";
+            const string q =
+                "INSERT INTO Photos (file_id, file_size, height, width, unique_id) VALUES (@fi, @fs, @h, @w, @u)";
             var keyValuePairs = new Dictionary<string, object>
             {
                 {"@fi", photoLarge.FileId},

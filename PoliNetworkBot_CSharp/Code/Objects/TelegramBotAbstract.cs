@@ -69,10 +69,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<int?> GetIdFromUsernameAsync(string target)
         {
             if (_isbot)
-            {
                 //bot api does not allow that
                 return null;
-            }
 
             var r = await _userbotClient.ResolveUsernameAsync(target);
             return r.Peer switch
@@ -141,15 +139,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         _ = await _botClient.SendTextMessageAsync(chatId, text);
                         return true;
                     }
-                    
+
                     default:
                         throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
                 }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
 
             return false;
         }
@@ -186,10 +182,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             ChatType chatType)
         {
             if (_isbot)
-            {
                 //api does not allow that
                 return false;
-            }
 
             var updates =
                 await _userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
@@ -200,7 +194,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal bool BanUserFromGroup(int target, long groupChatId, MessageEventArgs e, string[] time)
         {
             if (!_isbot) return false;
-            
+
             var untilDate = DateTimeClass.GetUntilDate(time);
 
             try
@@ -216,7 +210,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
 
             return true;
-
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()
@@ -233,9 +226,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
         {
-            if (!_isbot) 
+            if (!_isbot)
                 return false;
-            
+
             try
             {
                 _botClient.UnbanChatMemberAsync(groupChatId, target);
@@ -246,7 +239,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
 
             return true;
-
         }
 
         internal void LeaveChatAsync(long id)
