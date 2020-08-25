@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return Convert.ToInt32(KeyValuePairs[ApiId]);
+                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.ApiId]);
             }
             catch
             {
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return "+" + KeyValuePairs[NumberCountry] + " " + KeyValuePairs[NumberNumber];
+                return "+" + KeyValuePairs[ConstConfigBot.NumberCountry] + " " + KeyValuePairs[ConstConfigBot.NumberNumber];
             }
             catch
             {
@@ -48,14 +48,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal string GetPasswordToAuthenticate()
         {
-            return KeyValuePairs[PasswordToAuthenticate].ToString();
+            return KeyValuePairs[ConstConfigBot.PasswordToAuthenticate].ToString();
         }
 
         internal string GetApiHash()
         {
             try
             {
-                return KeyValuePairs[ApiHash].ToString();
+                return KeyValuePairs[ConstConfigBot.ApiHash].ToString();
             }
             catch
             {
@@ -65,17 +65,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void SetNumberNumber(string v)
         {
-            KeyValuePairs[NumberNumber] = v;
+            KeyValuePairs[ConstConfigBot.NumberNumber] = v;
         }
 
         internal void SetPasswordToAuthenticate(string v)
         {
-            KeyValuePairs[PasswordToAuthenticate] = v;
+            KeyValuePairs[ConstConfigBot.PasswordToAuthenticate] = v;
         }
 
         internal void SetNumberCountry(string v)
         {
-            KeyValuePairs[NumberCountry] = v;
+            KeyValuePairs[ConstConfigBot.NumberCountry] = v;
         }
 
         internal string GetSessionUserId()
@@ -87,14 +87,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void SetApiHash(string v)
         {
-            KeyValuePairs[ApiHash] = v;
+            KeyValuePairs[ConstConfigBot.ApiHash] = v;
         }
 
         internal bool SetUserId(string v)
         {
             try
             {
-                KeyValuePairs[UserId] = Convert.ToInt32(v);
+                KeyValuePairs[ConstConfigBot.UserId] = Convert.ToInt32(v);
                 return true;
             }
             catch
@@ -109,7 +109,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                KeyValuePairs[ApiId] = Convert.ToInt32(v);
+                KeyValuePairs[ConstConfigBot.ApiId] = Convert.ToInt32(v);
                 return true;
             }
             catch
@@ -130,7 +130,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return Convert.ToInt32(KeyValuePairs[UserId]);
+                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.UserId]);
             }
             catch
             {
