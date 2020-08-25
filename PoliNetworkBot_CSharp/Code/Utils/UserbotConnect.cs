@@ -11,38 +11,38 @@ using TLSharp.Core.Exceptions;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class UserbotConnect
+    internal static class UserbotConnect
     {
         internal static async Task<TelegramClient> ConnectAsync(UserBotInfo userbot)
         {
-            var api_id = userbot.GetApiId();
-            if (api_id == null)
+            var apiId = userbot.GetApiId();
+            if (apiId == null)
                 return null;
 
-            var telegramClient = new TelegramClient(api_id.Value, userbot.GetApiHash(),
+            var telegramClient = new TelegramClient(apiId.Value, userbot.GetApiHash(),
                 sessionUserId: userbot.GetSessionUserId());
             await telegramClient.ConnectAsync();
 
             if (telegramClient.IsUserAuthorized())
                 return telegramClient;
 
-            var NumberToAuthenticate = userbot.GetPhoneNumber();
-            var hash = await telegramClient.SendCodeRequestAsync(NumberToAuthenticate);
+            var numberToAuthenticate = userbot.GetPhoneNumber();
+            var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
             var code = "";
-            var PasswordToAuthenticate = userbot.GetPasswordToAuthenticate();
+            var passwordToAuthenticate = userbot.GetPasswordToAuthenticate();
             ;
 
             TLUser user;
             try
             {
-                user = await telegramClient.MakeAuthAsync(NumberToAuthenticate, hash, code);
+                user = await telegramClient.MakeAuthAsync(numberToAuthenticate, hash, code);
             }
             catch (CloudPasswordNeededException ex)
             {
                 Console.WriteLine(ex.Message);
 
                 var passwordSetting = await telegramClient.GetPasswordSetting();
-                var password = PasswordToAuthenticate;
+                var password = passwordToAuthenticate;
 
                 user = await telegramClient.MakeAuthWithPasswordAsync(passwordSetting, password);
             }

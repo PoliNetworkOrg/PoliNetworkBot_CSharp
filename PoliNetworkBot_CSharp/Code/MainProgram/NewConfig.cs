@@ -207,7 +207,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var q1 = "INSERT INTO Entities (Name) VALUES (@name)";
             var i = SQLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
 
-            Tables.FixIDTable("Entities", "id", "name");
+            Tables.FixIdTable("Entities", "id", "name");
 
             var q2 = "SELECT id FROM Entities WHERE Name = @name";
             var r2 = SQLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});

@@ -4,7 +4,10 @@
     <projectFile>PoliNetworkBot_CSharp/PoliNetworkBot_CSharp.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fdcea6a8-d80f-40bf-9dc7-32089e00f4ca" name="Default Changelist" comment="" />
+    <list default="true" id="fdcea6a8-d80f-40bf-9dc7-32089e00f4ca" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotConnect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotConnect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotPeer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotPeer.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,6 +15,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotPeer.cs" />
+        <option value="$PROJECT_DIR$/PoliNetworkBot_CSharp/Code/Utils/UserbotConnect.cs" />
+      </list>
+    </option>
   </component>
   <component name="ProjectId" id="1gaEF67tWnXP0c2qxZiSYC3Jfua" />
   <component name="ProjectViewState">
@@ -51,7 +62,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1598344198818</updated>
-      <workItem from="1598344204684" duration="134000" />
+      <workItem from="1598344204684" duration="439000" />
     </task>
     <servers />
   </component>
@@ -68,9 +79,25 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="736" y="371" key="#Code_Cleanup_Options/0.0.1920.1050@0.0.1920.1050" timestamp="1598344336131" />
-    <state x="718" y="405" key="ANALYSIS_DLG_com.jetbrains.rider.actions.impl.cleanup.RiderCodeCleanupAction$actionPerformed$dlg$1" timestamp="1598344338668">
+    <state x="718" y="405" key="ANALYSIS_DLG_com.jetbrains.rider.actions.impl.cleanup.RiderCodeCleanupAction$actionPerformed$dlg$1" timestamp="1598344343171">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="718" y="405" key="ANALYSIS_DLG_com.jetbrains.rider.actions.impl.cleanup.RiderCodeCleanupAction$actionPerformed$dlg$1/0.0.1920.1050@0.0.1920.1050" timestamp="1598344338668" />
+    <state x="718" y="405" key="ANALYSIS_DLG_com.jetbrains.rider.actions.impl.cleanup.RiderCodeCleanupAction$actionPerformed$dlg$1/0.0.1920.1050@0.0.1920.1050" timestamp="1598344343171" />
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1598344521853">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1598344521853" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1598344521853">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1598344521853" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1598344521852">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1598344521852" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1598344521853">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1598344521853" />
   </component>
 </project>

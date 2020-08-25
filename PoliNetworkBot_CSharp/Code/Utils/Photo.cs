@@ -40,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
 
             SQLite.Execute(q, keyValuePairs);
-            Tables.FixIDTable("Photos", "id_photo", "file_id");
+            Tables.FixIdTable("Photos", "id_photo", "file_id");
 
             return GetPhotoId_From_FileId_OR_UniqueFileId(photo_large.FileId, photo_large.FileUniqueId);
         }

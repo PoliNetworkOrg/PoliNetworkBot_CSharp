@@ -8,29 +8,16 @@ using TeleSharp.TL;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class UserbotPeer
+    internal static class UserbotPeer
     {
         internal static TLAbsInputPeer GetPeerFromIdAndType(long chatid, ChatType chatType)
         {
-            switch (chatType)
+            return chatType switch
             {
-                case ChatType.Private:
-                {
-                    return new TLInputPeerUser {UserId = (int) chatid};
-                }
-
-                case ChatType.Channel:
-                {
-                    return new TLInputPeerChannel {ChannelId = (int) chatid};
-                }
-
-                default:
-                {
-                    return new TLInputPeerChat {ChatId = (int) chatid};
-                }
-            }
-
-            throw new NotImplementedException();
+                ChatType.Private => new TLInputPeerUser {UserId = (int) chatid},
+                ChatType.Channel => new TLInputPeerChannel {ChannelId = (int) chatid},
+                _ => new TLInputPeerChat {ChatId = (int) chatid}
+            };
         }
 
         internal static TLAbsInputChannel GetPeerChannelFromIdAndType(long chatid)
@@ -45,11 +32,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static TLAbsInputUser GetPeerUserFromdId(int user_id)
+        internal static TLAbsInputUser GetPeerUserFromdId(int userId)
         {
             try
             {
-                return new TLInputUser {UserId = user_id};
+                return new TLInputUser {UserId = userId};
             }
             catch
             {

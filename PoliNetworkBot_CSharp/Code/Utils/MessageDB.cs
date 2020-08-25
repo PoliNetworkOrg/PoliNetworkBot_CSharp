@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var type_i = GetMessageTypeByName(type);
             if (type_i == null) return false;
 
-            var id = Tables.GetMaxID("Messages", "id");
+            var id = Tables.GetMaxId("Messages", "id");
             id++;
 
             SQLite.Execute(q, new Dictionary<string, object>
@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var q = "INSERT INTO MessageTypes (name) VALUES (@name)";
             var keyValuePairs = new Dictionary<string, object> {{"@name", type.ToString()}};
             SQLite.Execute(q, keyValuePairs);
-            Tables.FixIDTable("MessageTypes", "id", "name");
+            Tables.FixIdTable("MessageTypes", "id", "name");
         }
     }
 }
