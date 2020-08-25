@@ -12,82 +12,82 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class BotInfoAbstract
     {
-        public const string token = "t";
+        public const string Token = "t";
         public const string is_bot = "b";
         public const string accepts_messages = "a";
-        public const string on_messages = "o";
-        public const string website = "w";
-        public const string contactString = "c";
-        public const string api_id = "ai";
-        public const string api_hash = "ah";
-        public const string user_id = "u";
-        public const string number_contry = "nc";
-        public const string number_number = "nn";
-        public const string password_to_authenticate = "pta";
-        protected readonly Dictionary<string, object> keyValuePairs;
+        public const string OnMessages = "o";
+        public const string Website = "w";
+        public const string ContactString = "c";
+        public const string ApiId = "ai";
+        public const string ApiHash = "ah";
+        public const string UserId = "u";
+        public const string NumberCountry = "nc";
+        public const string NumberNumber = "nn";
+        public const string PasswordToAuthenticate = "pta";
+        protected readonly Dictionary<string, object> KeyValuePairs;
 
         public BotInfoAbstract()
         {
-            keyValuePairs = new Dictionary<string, object>();
+            KeyValuePairs = new Dictionary<string, object>();
         }
 
         internal bool IsBot()
         {
-            return (bool) keyValuePairs[is_bot];
+            return (bool) KeyValuePairs[is_bot];
         }
 
         internal bool SetIsBot(bool v)
         {
-            keyValuePairs[is_bot] = v;
+            KeyValuePairs[is_bot] = v;
             return true;
         }
 
         internal string GetToken()
         {
-            return keyValuePairs[token].ToString();
+            return KeyValuePairs[Token].ToString();
         }
 
         internal void SetWebsite(string v)
         {
-            keyValuePairs[website] = v;
+            KeyValuePairs[Website] = v;
         }
 
         internal void SetContactString(string v)
         {
-            keyValuePairs[contactString] = v;
+            KeyValuePairs[ContactString] = v;
         }
 
         internal void SetOnMessages(string v)
         {
-            keyValuePairs[on_messages] = v;
+            KeyValuePairs[OnMessages] = v;
         }
 
         internal void SetAcceptMessages(bool v)
         {
-            keyValuePairs[accepts_messages] = v;
+            KeyValuePairs[accepts_messages] = v;
         }
 
         internal void SetToken(string v)
         {
-            keyValuePairs[token] = v;
+            KeyValuePairs[Token] = v;
         }
 
         internal EventHandler<MessageEventArgs> GetOnMessage()
         {
-            var s = keyValuePairs[on_messages].ToString();
+            var s = KeyValuePairs[OnMessages].ToString();
             return BotStartMethods.GetMethodFromString(s);
         }
 
         internal bool AcceptsMessages()
         {
-            return (bool) keyValuePairs[accepts_messages];
+            return (bool) KeyValuePairs[accepts_messages];
         }
 
         internal string GetWebsite()
         {
             try
             {
-                return keyValuePairs[website].ToString();
+                return KeyValuePairs[Website].ToString();
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             try
             {
-                return keyValuePairs[contactString].ToString();
+                return KeyValuePairs[ContactString].ToString();
             }
             catch
             {

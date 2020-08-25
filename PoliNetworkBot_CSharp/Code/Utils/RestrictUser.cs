@@ -13,9 +13,9 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class RestrictUser
+    internal static class RestrictUser
     {
-        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, long chat_id, int user_id)
+        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId)
         {
             var permissions = new ChatPermissions
             {
@@ -29,39 +29,39 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 CanSendMediaMessages = false
             };
             var untilDate = DateTime.Now.AddSeconds(time);
-            telegramBotClient.RestrictChatMemberAsync(chat_id, user_id, permissions, untilDate);
+            telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
         }
 
         internal static async Task<List<DataRow>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
-            string target, bool ban_target)
+            string target, bool banTarget)
         {
-            var target_id = await Info.GetTargetUserIdAsync(target, sender);
-            if (target_id == null)
+            var targetId = await Info.GetTargetUserIdAsync(target, sender);
+            if (targetId == null)
             {
                 SendMessage.SendMessageInPrivate(sender, e,
                     "We were not able to BanAll the target '" + target + "', error code " +
-                    ErrorCodes.target_invalid_when_banall);
+                    ErrorCodes.TargetInvalidWhenBanAll);
                 return null;
             }
 
-            var q1 = "SELECT id FROM Groups";
-            var dt = SQLite.ExecuteSelect(q1);
+            const string q1 = "SELECT id FROM Groups";
+            var dt = SqLite.ExecuteSelect(q1);
             if (dt == null || dt.Rows.Count == 0)
             {
                 SendMessage.SendMessageInPrivate(sender, e,
                     "We were not able to BanAll the target '" + target + "', error code " +
-                    ErrorCodes.datatable_empty_when_banall);
+                    ErrorCodes.DatatableEmptyWhenBanAll);
                 return null;
             }
 
             var done = new List<DataRow>();
 
-            if (ban_target)
+            if (banTarget)
                 foreach (DataRow dr in dt.Rows)
                     try
                     {
-                        var group_chat_id = (long) dr["id"];
-                        var success = BanUserFromGroup(sender, e, target_id.Value, group_chat_id, null);
+                        var groupChatId = (long) dr["id"];
+                        var success = BanUserFromGroup(sender, e, targetId.Value, groupChatId, null);
                         if (success)
                             done.Add(dr);
                     }
@@ -73,8 +73,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 foreach (DataRow dr in dt.Rows)
                     try
                     {
-                        var group_chat_id = (long) dr["id"];
-                        var success = UnBanUserFromGroup(sender, e, target_id.Value, group_chat_id);
+                        var groupChatId = (long) dr["id"];
+                        var success = UnBanUserFromGroup(sender, e, targetId.Value, groupChatId);
                         if (success)
                             done.Add(dr);
                     }
@@ -87,15 +87,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static bool UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
-            long group_chat_id)
+            long groupChatId)
         {
-            return sender.UnBanUserFromGroup(target, group_chat_id, e);
+            return sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
         public static bool BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
-            long group_chat_id, string[] time)
+            long groupChatId, string[] time)
         {
-            return sender.BanUserFromGroup(target, group_chat_id, e, time);
+            return sender.BanUserFromGroup(target, groupChatId, e, time);
         }
     }
 }

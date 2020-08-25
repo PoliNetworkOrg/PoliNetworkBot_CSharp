@@ -9,27 +9,23 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    public class SQLite
+    public static class SqLite
     {
         public static int Execute(string query, Dictionary<string, object> args = null)
         {
-            int numberOfRowsAffected;
-
             //setup the connection to the database
-            using var con = new SQLiteConnection(Paths.db);
+            using var con = new SQLiteConnection(Paths.Db);
             con.Open();
 
             //open a new command
-            using (var cmd = new SQLiteCommand(query, con))
-            {
-                //set the arguments given in the query
-                if (args != null)
-                    foreach (var pair in args)
-                        cmd.Parameters.AddWithValue(pair.Key, pair.Value);
+            using var cmd = new SQLiteCommand(query, con);
+            //set the arguments given in the query
+            if (args != null)
+                foreach (var (key, value) in args)
+                    cmd.Parameters.AddWithValue(key, value);
 
-                //execute the query and get the number of row affected
-                numberOfRowsAffected = cmd.ExecuteNonQuery();
-            }
+            //execute the query and get the number of row affected
+            var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
             return numberOfRowsAffected;
         }
@@ -39,12 +35,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(query.Trim()))
                 return null;
 
-            using var con = new SQLiteConnection(Paths.db);
+            using var con = new SQLiteConnection(Paths.Db);
             con.Open();
             using var cmd = new SQLiteCommand(query, con);
             if (args != null)
-                foreach (var entry in args)
-                    cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+                foreach (var (key, value) in args)
+                    cmd.Parameters.AddWithValue(key, value);
 
             var da = new SQLiteDataAdapter(cmd);
 

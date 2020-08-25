@@ -15,12 +15,12 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class CommandDispatcher
+    internal static class CommandDispatcher
     {
         public static void CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var cmd_lines = e.Message.Text.Split(' ');
-            var cmd = cmd_lines[0];
+            var cmdLines = e.Message.Text.Split(' ');
+            var cmd = cmdLines[0];
             switch (cmd)
             {
                 case "/start":
@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case "/banAll":
                 {
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id))
-                        _ = BanAllAsync(sender, e, cmd_lines);
+                        _ = BanAllAsync(sender, e, cmdLines);
                     else
                         DefaultCommand(sender, e);
                     return;
@@ -61,14 +61,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/ban":
                 {
-                    _ = BanUserAsync(sender, e, cmd_lines);
+                    _ = BanUserAsync(sender, e, cmdLines);
                     return;
                 }
 
                 case "/unbanAll":
                 {
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id))
-                        _ = UnbanAllAsync(sender, e, cmd_lines[1]);
+                        _ = UnbanAllAsync(sender, e, cmdLines[1]);
                     else
                         DefaultCommand(sender, e);
                     return;
@@ -115,30 +115,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var reply_to = e.Message.ReplyToMessage;
+            var replyTo = e.Message.ReplyToMessage;
 
-            var language_list = new Dictionary<string, string>
+            var languageList = new Dictionary<string, string>
             {
                 {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
                 {"en", "Choose the entity you are writing this message for"}
             };
-            var message_from_id_entity = await Assoc.GetIDEntityFromPersonAsync(e.Message.From.Id, language_list,
+            var messageFromIdEntity = await Assoc.GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
                 sender, e.Message.From.LanguageCode);
-            var sent_date = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                 e.Message.From.LanguageCode, sender);
-            var id_chat_sent_into = Channels.PoliAssociazioni;
+            var idChatSentInto = Channels.PoliAssociazioni;
 
-            if (reply_to.Photo != null)
+            if (replyTo.Photo != null)
             {
-                var photo_large = Photo.GetLargest(reply_to.Photo);
-                var photo_id_db = Photo.AddPhotoToDB(photo_large);
-                if (photo_id_db == null)
+                var photoLarge = Photo.GetLargest(replyTo.Photo);
+                var photoIdDb = Photo.AddPhotoToDb(photoLarge);
+                if (photoIdDb == null)
                     return false;
 
-                MessageDB.AddMessage(MessageType.Photo,
-                    reply_to.Caption, e.Message.From.Id,
-                    message_from_id_entity, photo_id_db.Value,
-                    id_chat_sent_into, sent_date);
+                MessageDb.AddMessage(MessageType.Photo,
+                    replyTo.Caption, e.Message.From.Id,
+                    messageFromIdEntity, photoIdDb.Value,
+                    idChatSentInto, sentDate);
             }
             else
             {
@@ -153,27 +153,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         private static async Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
-            string[] string_info)
+            string[] stringInfo)
         {
             var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.Chat.Id, sender);
-            if (r)
+            if (!r) 
+                return false;
+            
+            if (e.Message.ReplyToMessage == null)
             {
-                if (e.Message.ReplyToMessage == null)
-                {
-                    var target_int = await Info.GetTargetUserIdAsync(string_info[1], sender);
-                    if (target_int == null)
-                        return false;
-
-                    return RestrictUser.BanUserFromGroup(sender, e, target_int.Value, e.Message.Chat.Id, null);
-                }
-                else
-                {
-                    var target_int = e.Message.ReplyToMessage.From.Id;
-                    return RestrictUser.BanUserFromGroup(sender, e, target_int, e.Message.Chat.Id, string_info);
-                }
+                var targetInt = await Info.GetTargetUserIdAsync(stringInfo[1], sender);
+                return targetInt != null && RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
+            }
+            else
+            {
+                var targetInt = e.Message.ReplyToMessage.From.Id;
+                return RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo);
             }
 
-            return false;
         }
 
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
@@ -222,17 +218,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var text = "<i>Lista di funzioni</i>:\n" +
-                       "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
-                       "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
-                       "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
-                       "FAQ (domande frequenti)</a>\n" +
-                       "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
-                       "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                       "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
-                       "\n👥 Gruppo consigliati e utili /groups\n" +
-                       "\n⚠ Hai già letto le regole del network? /rules\n" +
-                       "\n✍ Per contattarci /contact";
+            const string text = "<i>Lista di funzioni</i>:\n" +
+                                "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
+                                "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
+                                "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                                "FAQ (domande frequenti)</a>\n" +
+                                "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
+                                "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+                                "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+                                "\n👥 Gruppo consigliati e utili /groups\n" +
+                                "\n⚠ Hai già letto le regole del network? /rules\n" +
+                                "\n✍ Per contattarci /contact";
             SendMessage.SendMessageInPrivate(sender, e, text, ParseMode.Html);
         }
 

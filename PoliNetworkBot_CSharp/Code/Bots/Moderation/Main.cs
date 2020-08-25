@@ -11,7 +11,7 @@ using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class Main
+    internal static class Main
     {
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
@@ -21,16 +21,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void MainMethod2(object sender, MessageEventArgs e)
         {
-            TelegramBotClient telegramBotClient_bot = null;
-            if (sender is TelegramBotClient tmp) telegramBotClient_bot = tmp;
+            TelegramBotClient telegramBotClientBot = null;
+            if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
-            if (telegramBotClient_bot == null)
+            if (telegramBotClientBot == null)
                 return;
 
-            var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClient_bot);
+            var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
-            var to_exit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
-            if (to_exit)
+            var toExit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+            if (toExit)
             {
                 LeaveChat.ExitFromChat(telegramBotClient, e);
                 return;
@@ -43,20 +43,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var check_spam = ModerationCheck.CheckSpam(e);
-            if (check_spam != SpamType.ALL_GOOD)
+            var checkSpam = ModerationCheck.CheckSpam(e);
+            if (checkSpam != SpamType.ALL_GOOD)
             {
-                ModerationCheck.AntiSpamMeasure(telegramBotClient, e, check_spam);
+                ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(e.Message.Text))
-            {
-                if (e.Message.Text.StartsWith("/"))
-                    CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-                else
-                    TextConversation.DetectMessage(telegramBotClient, e);
-            }
+            if (string.IsNullOrEmpty(e.Message.Text))
+                return;
+            
+            if (e.Message.Text.StartsWith("/"))
+                CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+            else
+                TextConversation.DetectMessage(telegramBotClient, e);
         }
     }
 }

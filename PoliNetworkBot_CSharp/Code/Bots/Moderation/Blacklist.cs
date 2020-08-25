@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
 
@@ -8,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class Blacklist
+    internal static class Blacklist
     {
         internal static SpamType IsSpam(string text)
         {
@@ -16,10 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.ALL_GOOD;
 
             var isSpamLink = CheckSpamLink(text);
-            if (isSpamLink)
-                return SpamType.SPAM_LINK;
-
-            return CheckNotAllowedWords(text);
+            return isSpamLink ? SpamType.SPAM_LINK : CheckNotAllowedWords(text);
         }
 
         private static SpamType CheckNotAllowedWords(string text)
@@ -45,56 +43,42 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 if (text.Contains("t.me/c/")) return false;
 
-                var is_our_link = CheckIfIsOurTgLink(text);
-                if (is_our_link == null || is_our_link.Value)
-                    return false;
-                return true;
+                var isOurLink = CheckIfIsOurTgLink(text);
+                return isOurLink != null && !isOurLink.Value;
             }
 
-            if (
-                text.Contains("facebook.com") ||
-                text.Contains("whatsapp.com") ||
-                text.Contains("instagram.com") ||
-                text.Contains("bit.ly") ||
-                text.Contains("is.gd") ||
-                text.Contains("amzn.to") ||
-                text.Contains("goo.gl") ||
-                text.Contains("forms.gle") ||
-                text.Contains("docs.google.com") ||
-                text.Contains("discord.gg")
-            )
-                return true;
-
-            return false;
+            return text.Contains("facebook.com") ||
+                   text.Contains("whatsapp.com") ||
+                   text.Contains("instagram.com") ||
+                   text.Contains("bit.ly") ||
+                   text.Contains("is.gd") ||
+                   text.Contains("amzn.to") ||
+                   text.Contains("goo.gl") ||
+                   text.Contains("forms.gle") ||
+                   text.Contains("docs.google.com") ||
+                   text.Contains("discord.gg");
         }
 
         private static bool? CheckIfIsOurTgLink(string text)
         {
-            var q1 = "SELECT id FROM Groups WHERE link = @link";
+            const string q1 = "SELECT id FROM Groups WHERE link = @link";
             var link = GetTelegramLink(text);
 
             if (string.IsNullOrEmpty(link))
                 return null;
 
-            var dt = SQLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@link", link}});
-            var value = SQLite.GetFirstValueFromDataTable(dt);
+            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@link", link}});
+            var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
                 return false;
             var s = value.ToString();
-            if (string.IsNullOrEmpty(s))
-                return false;
-
-            return true;
+            return !string.IsNullOrEmpty(s);
         }
 
         private static string GetTelegramLink(string text)
         {
             var s = text.Split(' ');
-            foreach (var s2 in s)
-                if (s2.Contains("t.me/"))
-                    return s2;
-
-            return null;
+            return s.FirstOrDefault(s2 => s2.Contains("t.me/"));
         }
     }
 }

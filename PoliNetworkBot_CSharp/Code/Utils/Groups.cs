@@ -9,21 +9,21 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class Groups
+    internal static class Groups
     {
         internal static DataTable GetAllGroups()
         {
-            var q1 = "SELECT * FROM Groups";
-            return SQLite.ExecuteSelect(q1);
+            const string q1 = "SELECT * FROM Groups";
+            return SqLite.ExecuteSelect(q1);
         }
 
-        internal static async Task<bool> CheckIfAdminAsync(int user_id, long chat_id,
+        internal static async Task<bool> CheckIfAdminAsync(int userId, long chatId,
             TelegramBotAbstract telegramBotAbstract)
         {
-            if (GlobalVariables.Creators.Contains(user_id))
+            if (GlobalVariables.Creators.Contains(userId))
                 return true;
 
-            return await telegramBotAbstract.IsAdminAsync(user_id, chat_id);
+            return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
     }
 }

@@ -10,12 +10,12 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class InviteLinks
+    internal static class InviteLinks
     {
         internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender)
         {
-            var q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
-            var dt = SQLite.ExecuteSelect(q1);
+            const string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
+            var dt = SqLite.ExecuteSelect(q1);
 
             var n = 0;
             if (dt == null || dt.Rows.Count == 0)
@@ -31,27 +31,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return n;
         }
 
-        internal static async Task<bool> CreateInviteLinkAsync(long chat_id, TelegramBotAbstract sender)
+        internal static async Task<bool> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
             string r = null;
             try
             {
-                r = await sender.ExportChatInviteLinkAsync(chat_id);
+                r = await sender.ExportChatInviteLinkAsync(chatId);
             }
             catch
             {
-                ;
+                // ignored
             }
 
             if (string.IsNullOrEmpty(r))
                 return false;
 
-            var q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
-            SQLite.Execute(q1, new Dictionary<string, object>
+            const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
+            SqLite.Execute(q1, new Dictionary<string, object>
             {
                 {"@link", r},
                 {"@lul", DateTime.Now},
-                {"@id", chat_id}
+                {"@id", chatId}
             });
 
             return true;

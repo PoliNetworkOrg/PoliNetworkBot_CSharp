@@ -10,7 +10,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class SendMessage
+    internal static class SendMessage
     {
         internal static void SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             string text)
@@ -21,17 +21,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                var message_to = GetMessageTo(e);
-                var message_for = "Messaggio per";
+                var messageTo = GetMessageTo(e);
+                var messageFor = "Messaggio per";
                 var language = e.Message.From.LanguageCode.ToLower();
-                switch (language)
+                messageFor = language switch
                 {
-                    case "en":
-                        message_for = "Message for";
-                        break;
-                }
+                    "en" => "Message for",
+                    _ => messageFor
+                };
 
-                var text2 = "[" + message_for + " " + message_to + "]\n\n" + text;
+                var text2 = "[" + messageFor + " " + messageTo + "]\n\n" + text;
                 telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, e.Message.Chat.Type, ParseMode.Html);
             }
         }
@@ -57,10 +56,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task<bool> SendFileAsync(TelegramFile File, long chat_id,
-            string text, TextAsCaption text_as_caption, TelegramBotAbstract TelegramBot_Abstract)
+        internal static async Task<bool> SendFileAsync(TelegramFile file, long chatId,
+            string text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract)
         {
-            return await TelegramBot_Abstract.SendFileAsync(File, chat_id, text, text_as_caption);
+            return await telegramBotAbstract.SendFileAsync(file, chatId, text, textAsCaption);
         }
     }
 }

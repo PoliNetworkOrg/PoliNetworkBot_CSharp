@@ -14,124 +14,124 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
-    internal class NewConfig
+    internal static class NewConfig
     {
-        public static void NewConfigMethod(bool reset_bot, bool reset_userbot)
+        public static void NewConfigMethod(bool resetBot, bool resetUserbot)
         {
-            if (reset_bot) ResetBotMethod();
+            if (resetBot) ResetBotMethod();
 
-            if (reset_userbot) ResetUserbotMethod();
+            if (resetUserbot) ResetUserbotMethod();
 
             DestroyDB_And_Redo_it();
         }
 
         private static void ResetUserbotMethod()
         {
-            var lines = File.ReadAllText(Paths.config_user_bots_info).Split("| _:r:_ |");
+            var lines = File.ReadAllText(Paths.ConfigUserBotsInfo).Split("| _:r:_ |");
             var botInfos = new List<UserBotInfo>();
-            for (var i = 0; i < lines.Length; i++)
+            foreach (var t in lines)
             {
-                var line = lines[i];
-                if (!string.IsNullOrEmpty(line))
-                {
-                    line = line.Trim();
+                var line = t;
+                if (string.IsNullOrEmpty(line))
+                    continue;
+                
+                line = line.Trim();
 
-                    if (!string.IsNullOrEmpty(line))
-                    {
-                        var line_info = line.Split("| _:c:_ |");
+                if (string.IsNullOrEmpty(line)) 
+                    continue;
+                
+                var lineInfo = line.Split("| _:c:_ |");
 
-                        var bot = new UserBotInfo();
-                        bot.SetApiId(line_info[0].Trim());
-                        bot.SetApiHash(line_info[1].Trim());
-                        bot.SetUserId(line_info[2].Trim());
-                        bot.SetNumberCountry(line_info[3].Trim());
-                        bot.SetNumberNumber(line_info[4].Trim());
-                        bot.SetPasswordToAuthenticate(line_info[5].Trim());
+                var bot = new UserBotInfo();
+                bot.SetApiId(lineInfo[0].Trim());
+                bot.SetApiHash(lineInfo[1].Trim());
+                bot.SetUserId(lineInfo[2].Trim());
+                bot.SetNumberCountry(lineInfo[3].Trim());
+                bot.SetNumberNumber(lineInfo[4].Trim());
+                bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
 
-                        botInfos.Add(bot);
-                    }
-                }
+                botInfos.Add(bot);
             }
 
-            FileSerialization.WriteToBinaryFile(Paths.config_userbot, botInfos);
+            FileSerialization.WriteToBinaryFile(Paths.ConfigUserbot, botInfos);
         }
 
         private static void ResetBotMethod()
         {
-            var lines = File.ReadAllText(Paths.config_bots_info).Split("| _:r:_ |");
+            var lines = File.ReadAllText(Paths.ConfigBotsInfo).Split("| _:r:_ |");
             var botInfos = new List<BotInfo>();
-            for (var i = 0; i < lines.Length; i++)
+            foreach (var t in lines)
             {
-                var line = lines[i];
-                if (!string.IsNullOrEmpty(line))
-                {
-                    line = line.Trim();
+                var line = t;
+                if (string.IsNullOrEmpty(line)) 
+                    continue;
+                
+                line = line.Trim();
 
-                    if (!string.IsNullOrEmpty(line))
-                    {
-                        var line_info = line.Split("| _:c:_ |");
+                if (string.IsNullOrEmpty(line)) 
+                    continue;
+                
+                var lineInfo = line.Split("| _:c:_ |");
 
-                        var bot = new BotInfo();
-                        bot.SetToken(line_info[0].Trim());
-                        bot.SetWebsite(line_info[1].Trim());
-                        bot.SetIsBot(true);
-                        bot.SetAcceptMessages(true);
-                        bot.SetOnMessages(line_info[2].Trim());
-                        bot.SetContactString(line_info[3].Trim());
+                var bot = new BotInfo();
+                bot.SetToken(lineInfo[0].Trim());
+                bot.SetWebsite(lineInfo[1].Trim());
+                bot.SetIsBot(true);
+                bot.SetAcceptMessages(true);
+                bot.SetOnMessages(lineInfo[2].Trim());
+                bot.SetContactString(lineInfo[3].Trim());
 
-                        botInfos.Add(bot);
-                    }
-                }
+                botInfos.Add(bot);
             }
 
-            FileSerialization.WriteToBinaryFile(Paths.config_bot, botInfos);
+            FileSerialization.WriteToBinaryFile(Paths.ConfigBot, botInfos);
         }
 
         private static void DestroyDB_And_Redo_it()
         {
             DirectoryUtils.CreateDirectory("data");
 
-            var db_path = Paths.db;
-            db_path = db_path.Split('=')[1];
+            var dbPath = Paths.Db;
+            dbPath = dbPath.Split('=')[1];
             try
             {
-                File.WriteAllText(db_path, "");
+                File.WriteAllText(dbPath, "");
             }
             catch
             {
                 ;
             }
 
-            CleanDB();
+            CleanDb();
 
             Redo_DB();
         }
 
-        private static void CleanDB()
+        private static void CleanDb()
         {
-            var s = "SELECT name FROM sqlite_master WHERE type='table'";
-            var r1 = SQLite.ExecuteSelect(s);
+            const string s = "SELECT name FROM sqlite_master WHERE type='table'";
+            var r1 = SqLite.ExecuteSelect(s);
             if (r1 == null)
                 return;
 
             foreach (DataRow dr in r1.Rows)
             {
                 var name = dr.ItemArray[0].ToString();
-                if (name.StartsWith("sqlite_"))
+                if (name != null && name.StartsWith("sqlite_"))
                 {
                     ;
                 }
                 else
                 {
                     var q = "DROP TABLE IF EXISTS " + name;
-                    SQLite.Execute(q);
+                    SqLite.Execute(q);
                 }
             }
         }
 
         private static void Redo_DB()
         {
-            SQLite.Execute("CREATE TABLE Groups (" +
+            SqLite.Execute("CREATE TABLE Groups (" +
                            "id BIGINT PRIMARY KEY, " +
                            "bot_id INT(12)," +
                            "valid CHAR(1)," +
@@ -141,20 +141,20 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "title VARCHAR(250)" +
                            ") ");
 
-            SQLite.Execute("CREATE TABLE PeopleInEntities (" +
+            SqLite.Execute("CREATE TABLE PeopleInEntities (" +
                            "id_entity INT(12)," +
                            "id_person INT(12)," +
                            "CONSTRAINT PK_Person PRIMARY KEY (id_entity,id_person)" +
                            ");");
 
-            SQLite.Execute("CREATE TABLE Entities (" +
+            SqLite.Execute("CREATE TABLE Entities (" +
                            "id INT(12) PRIMARY KEY," +
                            "name VARCHAR(250)" +
                            ");");
 
             FillAssoc();
 
-            SQLite.Execute("CREATE TABLE Messages (" +
+            SqLite.Execute("CREATE TABLE Messages (" +
                            "id INT(12) PRIMARY KEY," +
                            "from_id_person INT(12)," +
                            "from_id_entity INT(12)," +
@@ -171,12 +171,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "id_chat_sent_into INT(12)" +
                            ");");
 
-            SQLite.Execute("CREATE TABLE MessageTypes (" +
+            SqLite.Execute("CREATE TABLE MessageTypes (" +
                            "id INT(12) PRIMARY KEY," +
                            "name VARCHAR(250)" +
                            ");");
 
-            SQLite.Execute("CREATE TABLE Photos (" +
+            SqLite.Execute("CREATE TABLE Photos (" +
                            "id_photo INT(12) PRIMARY KEY," +
                            "file_id VARCHAR(250)," +
                            "file_size INT(12)," +
@@ -198,21 +198,21 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     var name = r4.Name;
                     var r5 = r4.Value;
                     var users = GetUsersFromAssocJson(r5);
-                    AddAssocToDB(name, users);
+                    AddAssocToDb(name, users);
                 }
         }
 
-        private static bool AddAssocToDB(string name, List<long> users)
+        private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
-            var q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            var i = SQLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
+            const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
+            var i = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
 
             Tables.FixIdTable("Entities", "id", "name");
 
-            var q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SQLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
+            const string q2 = "SELECT id FROM Entities WHERE Name = @name";
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
 
-            var r3 = SQLite.GetFirstValueFromDataTable(r2);
+            var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
             try
             {
@@ -234,8 +234,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             foreach (var u in users)
             {
-                var q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                var i2 = SQLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
+                const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
+                var i2 = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
             }
 
             return true;
@@ -249,14 +249,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (r4.Name == "users")
                     {
                         var r5 = r4.Value;
-                        if (r5 is JArray r6)
-                        {
-                            var users = new List<long>();
-                            foreach (var r7 in r6)
-                                if (r7 is JValue r8)
-                                    users.Add(Convert.ToInt64(r8.Value));
-                            return users;
-                        }
+                        if (!(r5 is JArray r6))
+                            continue;
+                        
+                        var users = new List<long>();
+                        foreach (var r7 in r6)
+                            if (r7 is JValue r8)
+                                users.Add(Convert.ToInt64(r8.Value));
+                        return users;
                     }
 
             return null;

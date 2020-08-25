@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class DateTimeClass
+    internal static class DateTimeClass
     {
         internal static DateTime? GetUntilDate(string[] time)
         {
@@ -31,14 +31,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
             }
 
-            var how_may_seconds = GetHowManySeconds(time[2]);
+            var howMaySeconds = GetHowManySeconds(time[2]);
 
-            if (number == null || how_may_seconds == null)
+            if (howMaySeconds == null)
                 return null;
 
-            var time_seconds_elapsed = number.Value * how_may_seconds.Value;
+            var timeSecondsElapsed = number.Value * howMaySeconds.Value;
 
-            return DateTime.Now.AddSeconds(time_seconds_elapsed);
+            return DateTime.Now.AddSeconds(timeSecondsElapsed);
         }
 
         private static int? GetHowManySeconds(string v)
@@ -122,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static string NowAsStringAmericanFormat()
         {
             var dt = DateTime.Now;
-            return string.Format("{0:s}", dt) + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
+            return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
         internal static async Task<DateTime?> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender)
@@ -153,8 +153,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 },
                 sender, lang);
 
-            var reply_Datetime = GetDateTimeFromString(reply);
-            return reply_Datetime;
+            var replyDatetime = GetDateTimeFromString(reply);
+            return replyDatetime;
         }
 
         private static DateTime? GetDateTimeFromString(string reply)

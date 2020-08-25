@@ -9,19 +9,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class TelegramFile
     {
-        private readonly string fileName;
-        private readonly Stream stream;
+        private readonly string _fileName;
+        private readonly Stream _stream;
 
         public TelegramFile(Stream stream, string fileName)
         {
-            this.stream = stream;
-            this.fileName = fileName;
+            _stream = stream;
+            _fileName = fileName;
         }
 
         internal InputOnlineFile GetOnlineFile()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-            return new InputOnlineFile(stream, fileName);
+            _stream.Seek(0, SeekOrigin.Begin);
+            return new InputOnlineFile(_stream, _fileName);
         }
     }
 }

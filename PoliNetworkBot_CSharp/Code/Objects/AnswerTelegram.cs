@@ -10,30 +10,29 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         public enum State
         {
-            WaitingForAnswer,
-            Answered
+            WAITING_FOR_ANSWER,
+            ANSWERED
         }
 
-        private State current_state = State.WaitingForAnswer;
+        private State _currentState;
         internal Action<object> WorkCompleted;
 
         public AnswerTelegram()
         {
-            current_state = State.WaitingForAnswer;
+            _currentState = State.WAITING_FOR_ANSWER;
         }
 
         internal State GetState()
         {
-            return current_state;
+            return _currentState;
         }
 
         internal void RecordAnswer(string text)
         {
-            if (current_state == State.WaitingForAnswer)
-            {
-                current_state = State.Answered;
-                WorkCompleted.Invoke(text);
-            }
+            if (_currentState != State.WAITING_FOR_ANSWER) return;
+            
+            _currentState = State.ANSWERED;
+            WorkCompleted.Invoke(text);
         }
     }
 }

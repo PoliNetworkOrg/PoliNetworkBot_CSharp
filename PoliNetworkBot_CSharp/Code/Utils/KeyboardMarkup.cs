@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class KeyboardMarkup
+    internal static class KeyboardMarkup
     {
-        internal static List<List<string>> ArrayToMatrixString(List<string> list)
+        internal static IEnumerable<List<string>> ArrayToMatrixString(List<string> list)
         {
             if (list == null || list.Count == 0)
                 return null;

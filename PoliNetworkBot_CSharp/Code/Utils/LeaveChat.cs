@@ -7,7 +7,7 @@ using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class LeaveChat
+    internal static class LeaveChat
     {
         internal static void ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
         {

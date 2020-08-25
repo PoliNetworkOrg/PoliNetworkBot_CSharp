@@ -9,7 +9,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class TextConversation
+    internal static class TextConversation
     {
         internal static void DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
@@ -21,11 +21,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (AskUser.userAnswers.ContainsKey(e.Message.From.Id))
-                if (AskUser.userAnswers[e.Message.From.Id] != null)
-                    if (AskUser.userAnswers[e.Message.From.Id].GetState() == AnswerTelegram.State.WaitingForAnswer)
+            if (AskUser.UserAnswers.ContainsKey(e.Message.From.Id))
+                if (AskUser.UserAnswers[e.Message.From.Id] != null)
+                    if (AskUser.UserAnswers[e.Message.From.Id].GetState() == AnswerTelegram.State.WAITING_FOR_ANSWER)
                     {
-                        AskUser.userAnswers[e.Message.From.Id].RecordAnswer(e.Message.Text);
+                        AskUser.UserAnswers[e.Message.From.Id].RecordAnswer(e.Message.Text);
                         return;
                     }
 

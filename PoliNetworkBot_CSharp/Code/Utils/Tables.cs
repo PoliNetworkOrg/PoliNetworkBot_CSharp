@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var r4 = GetMaxId(tableName, columnIdName);
             var q2 = "SELECT * FROM " + tableName + " WHERE " + columnIdName + " IS NULL";
-            var r5 = SQLite.ExecuteSelect(q2);
+            var r5 = SqLite.ExecuteSelect(q2);
             if (r5 == null)
                 return;
 
@@ -24,15 +24,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var valueUnique = dr[uniqueColumn].ToString();
                 var q3 = "UPDATE " + tableName + " SET " + columnIdName + "=" + r4 + " WHERE " + uniqueColumn +
                          "='" + valueUnique + "'";
-                SQLite.Execute(q3);
+                SqLite.Execute(q3);
             }
         }
 
         internal static int GetMaxId(string tableName, string columnIdName)
         {
             var q = "SELECT MAX(" + columnIdName + ") FROM " + tableName;
-            var r = SQLite.ExecuteSelect(q);
-            var r2 = SQLite.GetFirstValueFromDataTable(r);
+            var r = SqLite.ExecuteSelect(q);
+            var r2 = SqLite.GetFirstValueFromDataTable(r);
             if (r2 == null) return 0;
 
             try

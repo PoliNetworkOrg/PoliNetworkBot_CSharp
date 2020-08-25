@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
             var code = "";
             var passwordToAuthenticate = userbot.GetPasswordToAuthenticate();
-            ;
+            
 
             TLUser user;
             try

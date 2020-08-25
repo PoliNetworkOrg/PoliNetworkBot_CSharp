@@ -14,30 +14,30 @@ using Telegram.Bot;
 
 namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
-    internal class Program
+    internal static class Program
     {
-        public static List<BotInfo> botInfos;
-        public static List<UserBotInfo> userBots;
+        private static List<BotInfo> _botInfos;
+        private static List<UserBotInfo> _userBots;
 
         private static void Main()
         {
             Console.WriteLine("Hello World! Welcome to our bots system!\n" +
                               "If you want to reset everything, write 'n'. If not, write another character");
-            var read_choice = Console.ReadLine();
-            if (!string.IsNullOrEmpty(read_choice))
-                if (read_choice.StartsWith("n"))
+            var readChoice = Console.ReadLine();
+            if (!string.IsNullOrEmpty(readChoice))
+                if (readChoice.StartsWith("n"))
                 {
                     NewConfig.NewConfigMethod(true, true);
                     Console.WriteLine("Reset done!");
                     return;
                 }
 
-            var to_exit = LoadBotConfig();
-            if (to_exit == ToExit.EXIT)
+            var toExit = LoadBotConfig();
+            if (toExit == ToExit.EXIT)
                 return;
 
-            var to_exit2 = LoadUserBotConfig();
-            if (to_exit2 == ToExit.EXIT)
+            var toExit2 = LoadUserBotConfig();
+            if (toExit2 == ToExit.EXIT)
                 return;
 
             GlobalVariables.LoadToRam();
@@ -51,33 +51,33 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadUserBotConfig()
         {
-            userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.config_userbot);
-            if (userBots == null || userBots.Count == 0)
+            _userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
+            if (_userBots != null && _userBots.Count != 0)
+                return ToExit.STAY;
+            
+            Console.WriteLine(
+                "It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
+            var readChoice2 = Console.ReadLine();
+            if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                Console.WriteLine(
-                    "It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
-                var read_choice2 = Console.ReadLine();
-                if (!string.IsNullOrEmpty(read_choice2) && read_choice2.ToLower().StartsWith("y"))
-                {
-                    NewConfig.NewConfigMethod(false, true);
+                NewConfig.NewConfigMethod(false, true);
 
-                    Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
-                    var read_choice3 = Console.ReadLine();
-                    if (!string.IsNullOrEmpty(read_choice3) && read_choice3.ToLower().StartsWith("y"))
-                    {
-                        //ok, keep going
-                        userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.config_userbot);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ok, bye!");
-                        return ToExit.EXIT;
-                    }
+                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                var readChoice3 = Console.ReadLine();
+                if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
+                {
+                    //ok, keep going
+                    _userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
                 }
                 else
                 {
+                    Console.WriteLine("Ok, bye!");
                     return ToExit.EXIT;
                 }
+            }
+            else
+            {
+                return ToExit.EXIT;
             }
 
             return ToExit.STAY;
@@ -85,33 +85,33 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadBotConfig()
         {
-            botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.config_bot);
-            if (botInfos == null || botInfos.Count == 0)
+            _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.ConfigBot);
+            if (_botInfos != null && _botInfos.Count != 0) 
+                return ToExit.STAY;
+            
+            Console.WriteLine(
+                "It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
+            var readChoice2 = Console.ReadLine();
+            if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                Console.WriteLine(
-                    "It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
-                var read_choice2 = Console.ReadLine();
-                if (!string.IsNullOrEmpty(read_choice2) && read_choice2.ToLower().StartsWith("y"))
-                {
-                    NewConfig.NewConfigMethod(true, false);
+                NewConfig.NewConfigMethod(true, false);
 
-                    Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
-                    var read_choice3 = Console.ReadLine();
-                    if (!string.IsNullOrEmpty(read_choice3) && read_choice3.ToLower().StartsWith("y"))
-                    {
-                        //ok, keep going
-                        botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.config_bot);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ok, bye!");
-                        return ToExit.EXIT;
-                    }
+                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                var readChoice3 = Console.ReadLine();
+                if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
+                {
+                    //ok, keep going
+                    _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.ConfigBot);
                 }
                 else
                 {
+                    Console.WriteLine("Ok, bye!");
                     return ToExit.EXIT;
                 }
+            }
+            else
+            {
+                return ToExit.EXIT;
             }
 
             return ToExit.STAY;
@@ -120,34 +120,34 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static async Task StartBotsAsync()
         {
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
-            if (botInfos != null)
-                foreach (var bot in botInfos)
+            if (_botInfos != null)
+                foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
                     GlobalVariables.Bots[botClient.BotId] =
                         new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
-                    if (bot.AcceptsMessages())
-                    {
-                        var onmessage_method = bot.GetOnMessage();
-                        if (onmessage_method != null)
-                        {
-                            botClient.OnMessage += onmessage_method;
-                            botClient.StartReceiving();
-                        }
-                    }
+                    if (!bot.AcceptsMessages())
+                        continue;
+                    
+                    var onmessageMethod = bot.GetOnMessage();
+                    if (onmessageMethod == null)
+                        continue;
+                    
+                    botClient.OnMessage += onmessageMethod;
+                    botClient.StartReceiving();
                 }
 
-            if (userBots != null)
-                foreach (var userbot in userBots)
+            if (_userBots != null)
+                foreach (var userbot in _userBots)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
-                    var user_id = userbot.GetUserId();
-                    if (user_id != null)
+                    var userId = userbot.GetUserId();
+                    if (userId != null)
                     {
-                        GlobalVariables.Bots[user_id.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), user_id.Value);
+                        GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value);
 
-                        _ = TestThingsAsync(user_id.Value);
+                        _ = TestThingsAsync(userId.Value);
                     }
                     else
                     {
@@ -163,10 +163,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 }
         }
 
-#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
 
-        private static async Task TestThingsAsync(long user_id)
-#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+        private static async Task TestThingsAsync(long userId)
         {
             /*
             _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group

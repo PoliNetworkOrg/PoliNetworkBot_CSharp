@@ -14,7 +14,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class ModerationCheck
+    internal static class ModerationCheck
     {
         public static bool CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
         {
@@ -22,10 +22,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 case ChatType.Private:
                     return false;
+                case ChatType.Group:
+                    break;
+                case ChatType.Channel:
+                    break;
+                case ChatType.Supergroup:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            var q1 = "SELECT id, valid FROM Groups WHERE id = @id";
-            var dt = SQLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
+            const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
+            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
             if (dt != null && dt.Rows.Count > 0)
             {
                 return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
@@ -35,20 +43,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return CheckIfToExit(sender, e, null);
         }
 
-        public static bool CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
+        private static bool CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
         {
-            if (v == null || v is DBNull) return CheckIfToExit_NullValue(telegramBotClient, e);
-
-            if (v is char b) return b != 'Y';
-
-            if (v is string s)
+            switch (v)
             {
-                if (string.IsNullOrEmpty(s)) return CheckIfToExit_NullValue(telegramBotClient, e);
-
-                return s != "Y";
+                case null:
+                case DBNull _:
+                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                case char b:
+                    return b != 'Y';
+                case string s when string.IsNullOrEmpty(s):
+                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                case string s:
+                    return s != "Y";
+                default:
+                    return CheckIfToExit_NullValue(telegramBotClient, e);
             }
-
-            return CheckIfToExit_NullValue(telegramBotClient, e);
         }
 
         private static bool CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
@@ -60,11 +70,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
-            SQLite.Execute(q1, new Dictionary<string, object>
+            const string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
+            SqLite.Execute(q1, new Dictionary<string, object>
             {
                 {"@id", e.Message.Chat.Id},
-                {"@botid", sender.GetID()},
+                {"@botid", sender.GetId()},
                 {"@type", e.Message.Chat.Type.ToString()},
                 {"@title", e.Message.Chat.Title}
             });
@@ -98,11 +108,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
-            var is_foreign = DetectForeignLanguage(e);
-            if (is_foreign)
-                return SpamType.FOREIGN;
-
-            return Blacklist.IsSpam(e.Message.Text);
+            var isForeign = DetectForeignLanguage(e);
+            
+            return isForeign ? SpamType.FOREIGN : Blacklist.IsSpam(e.Message.Text);
         }
 
         private static bool DetectForeignLanguage(MessageEventArgs e)
@@ -110,14 +118,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.Chat.Id == -1001394018284)
                 return false;
 
-            if (
-                Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
-                Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
-                Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success
-            )
-                return true;
-
-            return false;
+            return Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
+                   Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
+                   Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
         }
 
         public static void SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username,
@@ -139,14 +142,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
-            SpamType check_spam)
+            SpamType checkSpam)
         {
-            if (check_spam == SpamType.ALL_GOOD)
+            if (checkSpam == SpamType.ALL_GOOD)
                 return;
 
             RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             var language = e.Message.From.LanguageCode.ToLower();
-            switch (check_spam)
+            switch (checkSpam)
             {
                 case SpamType.SPAM_LINK:
                 {
@@ -184,6 +187,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
                     break;
                 }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }
 
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);

@@ -11,37 +11,37 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class AskUser
+    internal static class AskUser
     {
-        public static Dictionary<int, AnswerTelegram> userAnswers = new Dictionary<int, AnswerTelegram>();
+        public static readonly Dictionary<int, AnswerTelegram> UserAnswers = new Dictionary<int, AnswerTelegram>();
 
         internal static async Task<string> AskAsync(int id, Dictionary<string, string> dictionary,
             TelegramBotAbstract sender, string lang)
         {
-            var to_send = dictionary[lang];
-            userAnswers[id] = new AnswerTelegram();
-            sender.SendTextMessageAsync(id, to_send, ChatType.Private, default, true);
+            var toSend = dictionary[lang];
+            UserAnswers[id] = new AnswerTelegram();
+            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, true);
             return await WaitForAnswer(id);
         }
 
         private static async Task<string> WaitForAnswer(int id)
         {
             var tcs = new TaskCompletionSource<string>();
-            userAnswers[id].WorkCompleted += result => tcs.SetResult(result.ToString());
+            UserAnswers[id].WorkCompleted += result => tcs.SetResult(result.ToString());
             return await tcs.Task;
         }
 
         internal static async Task<string> AskBetweenRangeAsync(int id, Dictionary<string, string> language,
-            TelegramBotAbstract sender, string lang, List<List<string>> options)
+            TelegramBotAbstract sender, string lang, IEnumerable<List<string>> options)
         {
-            var to_send = language[lang];
-            userAnswers[id] = new AnswerTelegram();
-            sender.SendTextMessageAsync(id, to_send, ChatType.Private, default,
+            var toSend = language[lang];
+            UserAnswers[id] = new AnswerTelegram();
+            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default,
                 true, OptionsStringToKeyboard(options));
             return await WaitForAnswer(id);
         }
 
-        private static List<List<KeyboardButton>> OptionsStringToKeyboard(List<List<string>> options)
+        private static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<string>> options)
         {
             return options.Select(o => o.Select(o2 => new KeyboardButton(o2)).ToList()).ToList();
         }

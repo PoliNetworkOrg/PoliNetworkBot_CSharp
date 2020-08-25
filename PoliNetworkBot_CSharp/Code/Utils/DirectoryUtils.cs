@@ -6,7 +6,7 @@ using System.IO;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal class DirectoryUtils
+    internal static class DirectoryUtils
     {
         internal static void CreateDirectory(string v)
         {
@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                ;
+                // ignored
             }
         }
     }

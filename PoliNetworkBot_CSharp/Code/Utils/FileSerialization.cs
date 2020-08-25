@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    public class FileSerialization
+    public static class FileSerialization
     {
         /// <summary>
         ///     Writes the given object instance to a binary file.

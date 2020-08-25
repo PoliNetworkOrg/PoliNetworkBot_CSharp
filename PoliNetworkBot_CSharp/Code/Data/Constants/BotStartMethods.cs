@@ -8,21 +8,17 @@ using Telegram.Bot.Args;
 
 namespace PoliNetworkBot_CSharp.Code.Data.Constants
 {
-    public class BotStartMethods
+    public static class BotStartMethods
     {
-        public const string moderation = "m";
+        private const string Moderation = "m";
 
         internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
         {
-            switch (s)
+            return s switch
             {
-                case moderation:
-                {
-                    return Main.MainMethod;
-                }
-            }
-
-            return null;
+                Moderation => Main.MainMethod,
+                _ => null
+            };
         }
     }
 }

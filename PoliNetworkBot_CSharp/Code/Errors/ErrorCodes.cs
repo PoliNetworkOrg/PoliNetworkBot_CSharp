@@ -1,8 +1,8 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Errors
 {
-    internal class ErrorCodes
+    internal static class ErrorCodes
     {
-        public static int datatable_empty_when_banall = 1;
-        public static int target_invalid_when_banall = 2;
+        public const int DatatableEmptyWhenBanAll = 1;
+        public const int TargetInvalidWhenBanAll = 2;
     }
 }

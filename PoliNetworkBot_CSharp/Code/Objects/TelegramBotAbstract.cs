@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -21,126 +22,128 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class TelegramBotAbstract
     {
-        private readonly TelegramBotClient botClient;
-        private readonly string contactString;
-        private readonly int id;
-        private readonly bool isbot;
-        private readonly TelegramClient userbotClient;
+        private readonly TelegramBotClient _botClient;
+        private readonly string _contactString;
+        private readonly int _id;
+        private readonly bool _isbot;
+        private readonly TelegramClient _userbotClient;
 
-        private readonly string website;
+        private readonly string _website;
 
-        public TelegramBotAbstract(TelegramBotClient bot_client, string website, string contactString)
+        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString)
         {
-            botClient = bot_client;
-            isbot = true;
-            this.website = website;
-            this.contactString = contactString;
+            _botClient = botClient;
+            _isbot = true;
+            this._website = website;
+            this._contactString = contactString;
         }
 
-        public TelegramBotAbstract(TelegramClient userbot_client, string website, string contactString, long id)
+        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id)
         {
-            userbotClient = userbot_client;
-            isbot = false;
-            this.website = website;
-            this.contactString = contactString;
-            this.id = (int) id;
+            _userbotClient = userbotClient;
+            _isbot = false;
+            this._website = website;
+            this._contactString = contactString;
+            this._id = (int) id;
         }
 
         internal string GetWebSite()
         {
-            return website;
+            return _website;
         }
 
-        internal static TelegramBotAbstract GetFromRam(TelegramBotClient telegramBotClient_bot)
+        internal static TelegramBotAbstract GetFromRam(TelegramBotClient telegramBotClientBot)
         {
-            return GlobalVariables.Bots[telegramBotClient_bot.BotId];
+            return GlobalVariables.Bots[telegramBotClientBot.BotId];
         }
 
-        internal void DeleteMessageAsync(long chat_id, int messageId, ChatType chatType)
+        internal void DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
         {
-            if (isbot)
-                botClient.DeleteMessageAsync(chat_id, messageId);
+            if (_isbot)
+                _botClient.DeleteMessageAsync(chatId, messageId);
             else
-                userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chat_id),
+                _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
                     new TLVector<int> {messageId});
         }
 
-        internal async Task<int?> GetIDFromUsernameAsync(string target)
+        internal async Task<int?> GetIdFromUsernameAsync(string target)
         {
-            if (isbot)
+            if (_isbot)
             {
                 //bot api does not allow that
                 return null;
             }
 
-            var r = await userbotClient.ResolveUsernameAsync(target);
-            if (r.Peer != null)
-                if (r.Peer is TLPeerUser tLPeerUser)
-                    return tLPeerUser.UserId;
-
-            return null;
+            var r = await _userbotClient.ResolveUsernameAsync(target);
+            return r.Peer switch
+            {
+                null => null,
+                TLPeerUser tLPeerUser => tLPeerUser.UserId,
+                _ => null
+            };
         }
 
-        internal void RestrictChatMemberAsync(long chat_id, int user_id, ChatPermissions permissions,
+        internal void RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
             DateTime untilDate)
         {
-            if (isbot) botClient.RestrictChatMemberAsync(chat_id, user_id, permissions, untilDate);
+            if (_isbot) _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
         }
 
-        internal int GetID()
+        internal int GetId()
         {
-            if (isbot)
-                return botClient.BotId;
-            return id;
+            return _isbot ? _botClient.BotId : _id;
         }
 
         internal bool SendTextMessageAsync(long chatid, string text,
             ChatType chatType, ParseMode parseMode = ParseMode.Default,
-            bool force_reply = false, List<List<KeyboardButton>> reply_markup_keyboard = null)
+            bool forceReply = false, List<List<KeyboardButton>> replyMarkupKeyboard = null)
         {
-            if (isbot)
+            if (_isbot)
             {
                 IReplyMarkup reply = null;
-                if (force_reply && reply_markup_keyboard != null)
-                    reply = new ReplyKeyboardMarkup(reply_markup_keyboard);
-                else if (force_reply) reply = new ForceReplyMarkup();
+                if (forceReply && replyMarkupKeyboard != null)
+                    reply = new ReplyKeyboardMarkup(replyMarkupKeyboard);
+                else if (forceReply) reply = new ForceReplyMarkup();
 
-                botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
+                _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                 return true;
             }
 
             var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-            userbotClient.SendMessageAsync(peer, text);
+            _userbotClient.SendMessageAsync(peer, text);
             return true;
         }
 
-        internal async Task<bool> SendFileAsync(TelegramFile document_input, long chat_id, string text,
-            TextAsCaption text_as_caption)
+        internal async Task<bool> SendFileAsync(TelegramFile documentInput, long chatId, string text,
+            TextAsCaption textAsCaption)
         {
-            if (isbot)
+            if (_isbot)
             {
-                var inputOnlineFile = document_input.GetOnlineFile();
-                switch (text_as_caption)
+                var inputOnlineFile = documentInput.GetOnlineFile();
+                switch (textAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
-                        _ = await botClient.SendDocumentAsync(chat_id, inputOnlineFile, text);
+                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile, text);
                         return true;
                     }
 
                     case TextAsCaption.BEFORE_FILE:
                     {
-                        _ = await botClient.SendTextMessageAsync(chat_id, text);
-                        _ = await botClient.SendDocumentAsync(chat_id, inputOnlineFile);
+                        _ = await _botClient.SendTextMessageAsync(chatId, text);
+                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
                         return true;
                     }
 
                     case TextAsCaption.AFTER_FILE:
                     {
-                        _ = await botClient.SendDocumentAsync(chat_id, inputOnlineFile);
-                        _ = await botClient.SendTextMessageAsync(chat_id, text);
+                        _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
+                        _ = await _botClient.SendTextMessageAsync(chatId, text);
                         return true;
                     }
+                    
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
                 }
             }
             else
@@ -153,33 +156,28 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal string GetContactString()
         {
-            return contactString;
+            return _contactString;
         }
 
-        internal async Task<bool> IsAdminAsync(int user_id, long chat_id)
+        internal async Task<bool> IsAdminAsync(int userId, long chatId)
         {
-            if (isbot)
+            if (_isbot)
             {
-                var admins = await botClient.GetChatAdministratorsAsync(chat_id);
-                foreach (var admin in admins)
-                    if (admin.User.Id == user_id)
-                        return true;
-                return false;
+                var admins = await _botClient.GetChatAdministratorsAsync(chatId);
+                return admins.Any(admin => admin.User.Id == userId);
             }
 
-            var r = await userbotClient.ChannelsGetParticipant(
-                UserbotPeer.GetPeerChannelFromIdAndType(chat_id),
-                UserbotPeer.GetPeerUserFromdId(user_id));
+            var r = await _userbotClient.ChannelsGetParticipant(
+                UserbotPeer.GetPeerChannelFromIdAndType(chatId),
+                UserbotPeer.GetPeerUserFromdId(userId));
 
-            if (r.Participant is TLChannelParticipantModerator ||
-                r.Participant is TLChannelParticipantCreator) return true;
-
-            return false;
+            return r.Participant is TLChannelParticipantModerator ||
+                   r.Participant is TLChannelParticipantCreator;
         }
 
-        internal async Task<string> ExportChatInviteLinkAsync(long chat_id)
+        internal async Task<string> ExportChatInviteLinkAsync(long chatId)
         {
-            if (isbot) return await botClient.ExportChatInviteLinkAsync(chat_id);
+            if (_isbot) return await _botClient.ExportChatInviteLinkAsync(chatId);
 
             return null;
         }
@@ -187,81 +185,73 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<bool> SendMessageReactionAsync(int chatId, string emojiReaction, int messageId,
             ChatType chatType)
         {
-            if (isbot)
+            if (_isbot)
             {
                 //api does not allow that
                 return false;
             }
 
             var updates =
-                await userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
+                await _userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
                     messageId, emojiReaction);
-            if (updates == null)
-                return false;
-
-            return true;
+            return updates != null;
         }
 
-        internal bool BanUserFromGroup(int target, long group_chat_id, MessageEventArgs e, string[] time)
+        internal bool BanUserFromGroup(int target, long groupChatId, MessageEventArgs e, string[] time)
         {
-            if (isbot)
+            if (!_isbot) return false;
+            
+            var untilDate = DateTimeClass.GetUntilDate(time);
+
+            try
             {
-                var untilDate = DateTimeClass.GetUntilDate(time);
-
-                try
-                {
-                    if (untilDate == null)
-                        botClient.KickChatMemberAsync(group_chat_id, target);
-                    else
-                        botClient.KickChatMemberAsync(group_chat_id, target, untilDate.Value);
-                }
-                catch
-                {
-                    return false;
-                }
-
-                return true;
+                if (untilDate == null)
+                    _botClient.KickChatMemberAsync(groupChatId, target);
+                else
+                    _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
+            }
+            catch
+            {
+                return false;
             }
 
-            return false;
+            return true;
+
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()
         {
-            if (isbot)
+            if (_isbot)
                 return null;
-            return await userbotClient.GetUserDialogsAsync(limit: 100);
+            return await _userbotClient.GetUserDialogsAsync(limit: 100);
         }
 
         internal Task<ChatMember[]> GetChatAdministratorsAsync(long id)
         {
-            if (isbot) return botClient.GetChatAdministratorsAsync(id);
-
-            return null;
+            return _isbot ? _botClient.GetChatAdministratorsAsync(id) : null;
         }
 
-        internal bool UnBanUserFromGroup(int target, long group_chat_id, MessageEventArgs e)
+        internal bool UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
         {
-            if (isbot)
+            if (!_isbot) 
+                return false;
+            
+            try
             {
-                try
-                {
-                    botClient.UnbanChatMemberAsync(group_chat_id, target);
-                }
-                catch
-                {
-                    return false;
-                }
-
-                return true;
+                _botClient.UnbanChatMemberAsync(groupChatId, target);
+            }
+            catch
+            {
+                return false;
             }
 
-            return false;
+            return true;
+
         }
 
         internal void LeaveChatAsync(long id)
         {
-            if (isbot) botClient.LeaveChatAsync(id);
+            if (_isbot) _botClient.LeaveChatAsync(id);
         }
     }
 }
