@@ -116,6 +116,14 @@
             </e>
           </e>
         </e>
+        <e p="Old" t="Include">
+          <e p="config" t="Include">
+            <e p="assoc.json" t="Include" />
+          </e>
+          <e p="Data" t="Include">
+            <e p="groups.json" t="Include" />
+          </e>
+        </e>
         <e p="TestBot.csproj" t="IncludeRecursive" />
       </e>
     </e>

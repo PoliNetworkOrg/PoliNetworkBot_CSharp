@@ -219,7 +219,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return MessageTypesInRam[typeI];
 
             var q = "SELECT name FROM MessageTypes WHERE id = " + typeI.ToString();
-            var value = Utils.SqLite.GetFirstValueFromDataTable(Utils.SqLite.ExecuteSelect(q)).ToString();
+            var dt = Utils.SqLite.ExecuteSelect(q);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                return null;
+            }
+            
+            var value = Utils.SqLite.GetFirstValueFromDataTable(dt).ToString();
             if (string.IsNullOrEmpty(value))
             {
                 return null;
