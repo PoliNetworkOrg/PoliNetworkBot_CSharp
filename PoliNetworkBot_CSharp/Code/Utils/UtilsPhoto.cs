@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -101,19 +100,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static ObjectPhoto GetPhotoByIdFromDb(int photoIdFromFb, int? messageIdFrom, long chatId, ChatType chatType)
+        public static ObjectPhoto GetPhotoByIdFromDb(int photoIdFromFb, int? messageIdFrom, long chatId,
+            ChatType chatType)
         {
-            var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb.ToString();
-            var dt = Utils.SqLite.ExecuteSelect(q);
+            var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;
+            var dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
                 return null;
 
             var dr = dt.Rows[0];
 
-            return new ObjectPhoto(idPhotoDb: Convert.ToInt32(dr["id_photo"]), fileId: dr["file_id"].ToString(),
-                fileSize: Convert.ToInt32(dr["file_size"]), height: Convert.ToInt32(dr["height"]),
-                width: Convert.ToInt32(dr["width"]), uniqueId: dr["unique_id"].ToString(),
-                messageIdFrom: messageIdFrom, chatId: chatId, chatType: chatType);
+            return new ObjectPhoto(Convert.ToInt32(dr["id_photo"]), dr["file_id"].ToString(),
+                Convert.ToInt32(dr["file_size"]), Convert.ToInt32(dr["height"]),
+                Convert.ToInt32(dr["width"]), dr["unique_id"].ToString(),
+                messageIdFrom, chatId, chatType);
         }
     }
 }

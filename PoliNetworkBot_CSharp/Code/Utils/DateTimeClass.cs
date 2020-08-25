@@ -159,11 +159,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static DateTime? GetDateTimeFromString(string reply)
         {
-            if (string.IsNullOrEmpty(reply)) 
+            if (string.IsNullOrEmpty(reply))
                 return null;
-            
+
             reply = reply.ToLower();
-            
+
             if (reply == "now")
                 return DateTime.Now;
 

@@ -50,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     var o3 = o2.Select(lang);
                     return new KeyboardButton(o3);
                 }
-                    ).ToList()).ToList();
+            ).ToList()).ToList();
         }
     }
 }

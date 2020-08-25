@@ -15,7 +15,6 @@ using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
-using TLSharp.Core.Utils;
 
 #endregion
 
@@ -247,31 +246,27 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (_isbot) _botClient.LeaveChatAsync(id);
         }
 
-        public async Task<bool> SendPhotoAsync(long chatIdToSendTo, Objects.ObjectPhoto objectPhoto, string caption)
+        public async Task<bool> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto objectPhoto, string caption)
         {
             if (_isbot)
             {
- 
-                var m = await this._botClient.SendPhotoAsync(chatId: chatIdToSendTo,
-                    photo: objectPhoto.GetTelegramBotInputOnlineFile(), caption);
+                var m = await _botClient.SendPhotoAsync(chatIdToSendTo,
+                    objectPhoto.GetTelegramBotInputOnlineFile(), caption);
                 return m != null;
             }
             else
             {
-                
-                var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(this._userbotClient);
+                var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
                 if (photoFile == null)
                     return false;
-                
-                var m = await this._userbotClient.SendUploadedPhoto(
+
+                var m = await _userbotClient.SendUploadedPhoto(
                     UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private),
-                    file: photoFile, caption: caption);
+                    photoFile, caption);
                 return m != null;
             }
 
             return false;
         }
     }
-
-
 }

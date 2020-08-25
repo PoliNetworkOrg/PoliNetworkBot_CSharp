@@ -174,7 +174,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             while (true)
             {
-                await Utils.MessageDb.CheckMessagesToSend();
+                await MessageDb.CheckMessagesToSend();
                 Thread.Sleep(10 * 1000); //10 sec
             }
         }

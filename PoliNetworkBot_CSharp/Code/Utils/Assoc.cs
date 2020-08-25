@@ -27,24 +27,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in r.Rows)
             {
                 var s = dr.ItemArray[1].ToString();
-                if (!string.IsNullOrEmpty(s))
-                {
-                    l[s] = Convert.ToInt32(dr.ItemArray[0]);
-                }
+                if (!string.IsNullOrEmpty(s)) l[s] = Convert.ToInt32(dr.ItemArray[0]);
             }
-            
+
             var l3 = l.Keys.Select(
-                    l2 => new Language( 
-                        new  Dictionary<string, string>()
-                        {
-                            {"en", l2}
-                        })
-                ).ToList();
-            
+                l2 => new Language(
+                    new Dictionary<string, string>
+                    {
+                        {"en", l2}
+                    })
+            ).ToList();
+
             var options = KeyboardMarkup.ArrayToMatrixString(l3);
             var r2 = await AskUser.AskBetweenRangeAsync(id, question, sender, lang,
-                options:options);
-            
+                options);
+
             return l[r2];
         }
     }

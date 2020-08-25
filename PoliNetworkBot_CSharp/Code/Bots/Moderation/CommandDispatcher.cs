@@ -118,56 +118,55 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var replyTo = e.Message.ReplyToMessage;
 
-            var languageList = new Language(new Dictionary<string, string>() {
+            var languageList = new Language(new Dictionary<string, string>
+            {
                 {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
                 {"en", "Choose the entity you are writing this message for"}
             });
-            
+
             var messageFromIdEntity = await Assoc.GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
                 sender, e.Message.From.LanguageCode);
 
-            var languageList2 = new Language( new Dictionary<string, string>() {
+            var languageList2 = new Language(new Dictionary<string, string>
+                {
                     {"it", "Data di pubblicazione?"},
                     {"en", "Date of pubblication?"}
                 }
             );
 
-            var opt1 = new Language( new Dictionary<string, string>() { {"it", "Metti in coda"}, {"en", "Place in queue"}});
-            var opt2 = new Language( new Dictionary<string, string>(){ {"it", "Scegli la data"}, {"en", "Choose the date"}});
-            var options = new List<List<Language>>()
+            var opt1 = new Language(new Dictionary<string, string> {{"it", "Metti in coda"}, {"en", "Place in queue"}});
+            var opt2 = new Language(
+                new Dictionary<string, string> {{"it", "Scegli la data"}, {"en", "Choose the date"}});
+            var options = new List<List<Language>>
             {
-                new List<Language>() {opt1, opt2}
+                new List<Language> {opt1, opt2}
             };
-            
+
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
                 languageList2, sender, e.Message.From.LanguageCode, options);
 
             DateTime? sentDate = null;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
-            {
                 sentDate = null;
-            }
             else
-            {
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender);
-            }
-            
+
 
             const long idChatSentInto = Channels.PoliAssociazioni;
 
             if (replyTo.Photo != null)
             {
-                var photoLarge = Utils.UtilsPhoto.GetLargest(replyTo.Photo);
-                var photoIdDb = Utils.UtilsPhoto.AddPhotoToDb(photoLarge);
+                var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
+                var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
                     return false;
 
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, e.Message.From.Id,
                     messageFromIdEntity, photoIdDb.Value,
-                    idChatSentInto, sentDate, hasBeenSent: false,
-                    messageFromIdBot: sender.GetId(), messageIdTgFrom: replyTo.MessageId);
+                    idChatSentInto, sentDate, false,
+                    sender.GetId(), replyTo.MessageId);
             }
             else
             {

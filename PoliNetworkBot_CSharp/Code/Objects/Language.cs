@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -9,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public Language(Dictionary<string, string> dict)
         {
-            this.Dict = dict;
+            Dict = dict;
         }
 
         public string Select(string lang)

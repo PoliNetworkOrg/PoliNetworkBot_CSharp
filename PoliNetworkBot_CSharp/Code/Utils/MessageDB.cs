@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -15,6 +14,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public static class MessageDb
     {
+        private static readonly Dictionary<int, string> MessageTypesInRam = new Dictionary<int, string>();
+
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
             int photoId, long idChatSentInto, DateTime? sentDate,
@@ -89,13 +90,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public static async Task CheckMessagesToSend()
         {
-            const string q = "SELECT * FROM Messages WHERE Messages.has_been_sent IS FALSE AND Messages.sent_date IS NOT NULL AND julianday('now') - julianday(Messages.sent_date) <= 0";
-            var dt = Utils.SqLite.ExecuteSelect(q);
+            const string q =
+                "SELECT * FROM Messages WHERE Messages.has_been_sent IS FALSE AND Messages.sent_date IS NOT NULL AND julianday('now') - julianday(Messages.sent_date) <= 0";
+            var dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
                 return;
 
             foreach (DataRow dr in dt.Rows)
-            {
                 try
                 {
                     await SendMessageToSend(dr);
@@ -104,7 +105,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     //ignored
                 }
-            }
         }
 
         private static async Task SendMessageToSend(DataRow dr)
@@ -112,9 +112,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var done = await SendMessageFromDataRow(dr);
             if (!done)
                 return;
-            
-            var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"].ToString();
-            Utils.SqLite.Execute(q2);
+
+            var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
+            SqLite.Execute(q2);
         }
 
         private static async Task<bool> SendMessageFromDataRow(DataRow dr)
@@ -122,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var botId = Convert.ToInt32(dr["from_id_bot"]);
             var botClass = GlobalVariables.Bots[botId];
 
-            var typeI = Convert.ToInt32((dr["type"]));
+            var typeI = Convert.ToInt32(dr["type"]);
             var typeT = GetMessageTypeClassById(typeI);
             if (typeT == null)
                 return false;
@@ -202,22 +202,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var typeS = GetMessageTypeNameById(typeI);
 
-            if (string.IsNullOrEmpty((typeS)))
+            if (string.IsNullOrEmpty(typeS))
                 return null;
-            
-            var messageType = Enum.TryParse(typeof(MessageType), typeS,  out var typeT);
+
+            var messageType = Enum.TryParse(typeof(MessageType), typeS, out var typeT);
             if (messageType == false || typeT == null)
                 return null;
 
             MessageType typeT2;
             if (typeT is MessageType t)
-            {
                 return t;
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         private static void SendTextFromDataRow(DataRow dr, TelegramBotAbstract botClass)
@@ -225,25 +220,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             throw new NotImplementedException();
         }
 
-        private static readonly Dictionary<int, string> MessageTypesInRam = new Dictionary<int, string>();
-        
         private static string GetMessageTypeNameById(in int typeI)
         {
             if (MessageTypesInRam.ContainsKey(typeI))
                 return MessageTypesInRam[typeI];
 
-            var q = "SELECT name FROM MessageTypes WHERE id = " + typeI.ToString();
-            var dt = Utils.SqLite.ExecuteSelect(q);
-            if (dt == null || dt.Rows.Count == 0)
-            {
-                return null;
-            }
-            
-            var value = Utils.SqLite.GetFirstValueFromDataTable(dt).ToString();
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
+            var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
+            var dt = SqLite.ExecuteSelect(q);
+            if (dt == null || dt.Rows.Count == 0) return null;
+
+            var value = SqLite.GetFirstValueFromDataTable(dt).ToString();
+            if (string.IsNullOrEmpty(value)) return null;
 
             MessageTypesInRam[typeI] = value;
             return value;
@@ -256,13 +243,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task<bool> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass)
         {
-            var photoId = Utils.SqLite.GetIntFromColumn(dr, "id_photo");
+            var photoId = SqLite.GetIntFromColumn(dr, "id_photo");
             if (photoId == null)
                 return false;
 
             var chatIdToSendTo = (long) dr["id_chat_sent_into"];
             var caption = dr["message_text"].ToString();
-            var chatIdFromIdPerson = Convert.ToInt64( dr["from_id_person"]);
+            var chatIdFromIdPerson = Convert.ToInt64(dr["from_id_person"]);
             int? messageIdFrom = null;
             try
             {
@@ -273,13 +260,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 //ignored
             }
 
-            var photo = Utils.UtilsPhoto.GetPhotoByIdFromDb(
-                photoId.Value, 
-                messageIdFrom:messageIdFrom, 
-                chatId: chatIdFromIdPerson,
+            var photo = UtilsPhoto.GetPhotoByIdFromDb(
+                photoId.Value,
+                messageIdFrom,
+                chatIdFromIdPerson,
                 ChatType.Private);
-            
-            var done =  await botClass.SendPhotoAsync(chatIdToSendTo, photo, caption);
+
+            var done = await botClass.SendPhotoAsync(chatIdToSendTo, photo, caption);
             return done;
         }
     }
