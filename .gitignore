@@ -9,3 +9,5 @@ TLSharp/
 .idea/.idea.PoliNetworkBot_CSharp/.idea/workspace.xml
 
 TestBot/bin/Debug/
+
+TestBot/obj/Debug/
