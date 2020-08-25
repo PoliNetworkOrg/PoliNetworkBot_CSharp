@@ -130,16 +130,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (replyTo.Photo != null)
             {
-                var photoLarge = Photo.GetLargest(replyTo.Photo);
-                var photoIdDb = Photo.AddPhotoToDb(photoLarge);
+                var photoLarge = Utils.UtilsPhoto.GetLargest(replyTo.Photo);
+                var photoIdDb = Utils.UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
                     return false;
 
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, e.Message.From.Id,
                     messageFromIdEntity, photoIdDb.Value,
-                    idChatSentInto, sentDate, hasBeenSent:false,
-                    messageFromIdBot: sender.GetId());
+                    idChatSentInto, sentDate, hasBeenSent: false,
+                    messageFromIdBot: sender.GetId(), messageIdTgFrom: replyTo.MessageId);
             }
             else
             {

@@ -35,8 +35,9 @@ Table Messages {
   message_text text
   sent_date datetime
   has_been_sent boolean
-  message_id_tg int(12)
-  id_chat_sent_into int(12) [ref: > Groups.id]
+  message_id_tg_from int(12)
+  message_id_tg_to int(12)
+  id_chat_sent_into bigint [ref: > Groups.id]
   from_id_bot int
 }
 

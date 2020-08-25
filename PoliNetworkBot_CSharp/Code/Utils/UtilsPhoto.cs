@@ -2,13 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
-    internal static class Photo
+    internal static class UtilsPhoto
     {
         internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
         {
@@ -96,6 +99,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return null;
             }
+        }
+
+        public static ObjectPhoto GetPhotoByIdFromDb(int photoIdFromFb, int? messageIdFrom, long chatId, ChatType chatType)
+        {
+            var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb.ToString();
+            var dt = Utils.SqLite.ExecuteSelect(q);
+            if (dt == null || dt.Rows.Count == 0)
+                return null;
+
+            var dr = dt.Rows[0];
+
+            return new ObjectPhoto(idPhotoDb: Convert.ToInt32(dr["id_photo"]), fileId: dr["file_id"].ToString(),
+                fileSize: Convert.ToInt32(dr["file_size"]), height: Convert.ToInt32(dr["height"]),
+                width: Convert.ToInt32(dr["width"]), uniqueId: dr["unique_id"].ToString(),
+                messageIdFrom: messageIdFrom, chatId: chatId, chatType: chatType);
         }
     }
 }

@@ -170,15 +170,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static void CheckMessagesToSend()
+        private static async void CheckMessagesToSend()
         {
             while (true)
             {
-                Utils.MessageDb.CheckMessagesToSend();
+                await Utils.MessageDb.CheckMessagesToSend();
                 Thread.Sleep(10 * 1000); //10 sec
             }
         }
-
 
         private static async Task TestThingsAsync(long userId)
         {

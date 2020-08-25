@@ -15,8 +15,8 @@ namespace TestBot.Code.Utils
             var r = PoliNetworkBot_CSharp.Code.Utils.MessageDb.GetMessageTypeClassById(1);
             if (r == null)
                 Assert.Fail();
-            
-            Assert.Pass();
+            else
+                Assert.Pass();
         }
     }
 }

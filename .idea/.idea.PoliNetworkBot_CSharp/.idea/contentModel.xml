@@ -50,6 +50,7 @@
             <e p="AnswerTelegram.cs" t="Include" />
             <e p="BotInfo.cs" t="Include" />
             <e p="BotInfoAbstract.cs" t="Include" />
+            <e p="ObjectPhoto.cs" t="Include" />
             <e p="TelegramBotAbstract.cs" t="Include" />
             <e p="TelegramFile.cs" t="Include" />
             <e p="UserBotInfo.cs" t="Include" />
@@ -67,7 +68,6 @@
             <e p="KeyboardMarkup.cs" t="Include" />
             <e p="LeaveChat.cs" t="Include" />
             <e p="MessageDB.cs" t="Include" />
-            <e p="Photo.cs" t="Include" />
             <e p="RestrictUser.cs" t="Include" />
             <e p="SendMessage.cs" t="Include" />
             <e p="SQLite.cs" t="Include" />
@@ -75,6 +75,7 @@
             <e p="Tables.cs" t="Include" />
             <e p="UserbotConnect.cs" t="Include" />
             <e p="UserbotPeer.cs" t="Include" />
+            <e p="UtilsPhoto.cs" t="Include" />
           </e>
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -106,7 +107,7 @@
           <e p="Bots" t="Include" />
           <e p="Enums" t="Include" />
           <e p="Utils" t="Include">
-            <e p="MessageDB.cs" t="Include" />
+            <e p="Test_MessageDb.cs" t="Include" />
           </e>
         </e>
         <e p="obj" t="ExcludeRecursive">

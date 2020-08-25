@@ -167,8 +167,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "message_text TEXT," +
                            "sent_date DATETIME," +
                            "has_been_sent BOOLEAN," +
-                           "message_id_tg INT(12)," +
-                           "id_chat_sent_into INT(12)," +
+                           "message_id_tg_from INT(12)," +
+                           "message_id_tg_to INT(12)," +
+                           "id_chat_sent_into BIGINT," +
                            "from_id_bot INT(12)" +
                            ");");
 
