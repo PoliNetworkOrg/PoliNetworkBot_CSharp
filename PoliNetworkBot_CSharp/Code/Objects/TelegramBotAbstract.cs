@@ -112,9 +112,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, long chatId, string text,
             TextAsCaption textAsCaption)
         {
-            if (!_isbot) 
+            if (!_isbot)
                 return false; //todo
-            
+
             var inputOnlineFile = documentInput.GetOnlineFile();
             switch (textAsCaption)
             {
