@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
@@ -41,9 +40,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             return _replyMarkupEnum switch
             {
-                ReplyMarkupEnum.FORCED => new TeleSharp.TL.TLReplyKeyboardForceReply(),
+                ReplyMarkupEnum.FORCED => new TLReplyKeyboardForceReply(),
                 ReplyMarkupEnum.REMOVE => new TLReplyKeyboardHide(),
-                ReplyMarkupEnum.CHOICE => new TLReplyKeyboardMarkup() { Rows = _list.GetMatrixTlKeyboardButton()},
+                ReplyMarkupEnum.CHOICE => new TLReplyKeyboardMarkup {Rows = _list.GetMatrixTlKeyboardButton()},
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

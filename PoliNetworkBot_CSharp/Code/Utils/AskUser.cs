@@ -50,10 +50,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
             var replyMarkupObject = new ReplyMarkupObject(
-                new ReplyMarkupOptions( 
+                new ReplyMarkupOptions(
                     KeyboardMarkup.OptionsStringToKeyboard(options, lang)
-                    )
-                );
+                )
+            );
 
             await sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);

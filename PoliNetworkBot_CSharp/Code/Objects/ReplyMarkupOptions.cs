@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -10,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public ReplyMarkupOptions(List<List<KeyboardButton>> list)
         {
-            this._list = list;
+            _list = list;
         }
 
         public IEnumerable<IEnumerable<KeyboardButton>> GetMatrixKeyboardButton()
@@ -22,18 +26,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             if (_list == null)
                 return null;
-            
+
             var r = new TLVector<TLKeyboardButtonRow>();
             foreach (var v1 in _list)
             {
                 var buttons = new TLVector<TLAbsKeyboardButton>();
 
-                foreach (var v2 in v1)
-                {
-                    buttons.Add(new TLKeyboardButton() { Text = v2.Text});
-                }
-                
-                var row = new TLKeyboardButtonRow() { Buttons = buttons};
+                foreach (var v2 in v1) buttons.Add(new TLKeyboardButton {Text = v2.Text});
+
+                var row = new TLKeyboardButtonRow {Buttons = buttons};
                 r.Add(row);
             }
 

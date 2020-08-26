@@ -53,13 +53,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                     Console.WriteLine("\nTo kill this process, you have to check the process list");
 
-                    _ = StartBotsAsync(advancedModeDebugDisguised: readChoice == '3');
+                    _ = StartBotsAsync(readChoice == '3');
 
                     while (true) Console.ReadKey();
                     return;
                 }
             }
-            
         }
 
         private static void ResetEverything()
@@ -247,7 +246,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised == true)
+            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised)
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -284,9 +283,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             var done = true;
             var bot = GlobalVariables.Bots[userId];
-            var replyMarkupObject = new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE);
-            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private, 
-                parseMode: default, replyMarkupObject: replyMarkupObject);
+            var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
+            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private,
+                default, replyMarkupObject);
             done &= await bot.CreateGroup("Gruppo test by bot", null, new List<long> {5651789});
 
             return done;
