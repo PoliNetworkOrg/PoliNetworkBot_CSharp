@@ -5,7 +5,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 {
     [Serializable]
     public class BotDisguisedAsUserBotInfo : BotInfoAbstract

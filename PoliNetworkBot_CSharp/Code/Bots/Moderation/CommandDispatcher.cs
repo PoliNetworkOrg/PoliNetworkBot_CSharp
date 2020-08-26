@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;

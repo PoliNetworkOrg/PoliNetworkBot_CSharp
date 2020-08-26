@@ -8,7 +8,7 @@ using Telegram.Bot.Args;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 {
     [Serializable]
     public class BotInfoAbstract

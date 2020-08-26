@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion

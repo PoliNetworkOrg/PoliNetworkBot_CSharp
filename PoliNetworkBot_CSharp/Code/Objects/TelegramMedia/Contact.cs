@@ -1,7 +1,9 @@
 ﻿#region
 
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+using TLSharp.Core;
 
 #endregion
 
@@ -27,13 +29,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return MessageType.Contact;
         }
 
-        public override TLAbsInputMedia GetMediaTl()
+        public override async Task<TlFileToSend> GetMediaTl(TelegramClient telegramClient)
         {
-            return new TLInputMediaContact
+            var r = new TLInputMediaContact
             {
                 FirstName = _firstName,
                 LastName = _lastName, PhoneNumber = _phoneNumber
             };
+            
+            return new TlFileToSend(r);
         }
     }
 }

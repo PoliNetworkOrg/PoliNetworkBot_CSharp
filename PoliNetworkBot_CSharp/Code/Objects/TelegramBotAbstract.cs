@@ -171,7 +171,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> SendMedia(Media media, long chatid, ChatType chatType, string username = null)
+        internal async Task<bool> SendMedia(Media media, long chatid, ChatType chatType, string username = null, string caption = null)
         {
             switch (_isbot)
             {
@@ -249,9 +249,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
                 {
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    var media2 = await media.GetMediaTl(this._userbotClient);
+                    
                     try
                     {
-                        var r = await _userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                        var r = await media2.SendMedia(peer, this._userbotClient, caption);
                         return r != null;
                     }
                     catch (Exception e)
@@ -262,7 +264,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         try
                         {
                             peer = await UserbotPeer.GetPeerUserWithAccessHash(username, _userbotClient);
-                            var r = await _userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                            var r = await media2.SendMedia(peer, this._userbotClient, caption);
                             return r != null;
                         }
                         catch (Exception e2)
