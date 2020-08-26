@@ -81,21 +81,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == ChatType.Private)
                     {
-                        var groups = Groups.GetAllGroups();
-                        Stream stream = new MemoryStream();
-                        FileSerialization.SerializeFile(groups, ref stream);
-                        TLAbsInputPeer peer2 = new TLInputPeerUser() { UserId = (int)e.Message.Chat.Id};
-                        var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.Chat.Id);
                         string username = null;
                         if (!string.IsNullOrEmpty(e.Message.From.Username))
                         {
                             username = e.Message.From.Username;
                         }
-                        
-                        _ = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin", 
-                                caption: null, mimeType: "application/octet-stream"), peer,
-                            "Here are all groups:", TextAsCaption.BEFORE_FILE,
-                            sender, username);
+                        _ = GetAllGroups(e.Message.From.Id, username, sender);
+                        return;
                     }
                     else
                     {
@@ -123,6 +115,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
             }
+        }
+
+        private static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender)
+        {
+            var groups = Groups.GetAllGroups();
+            Stream stream = new MemoryStream();
+            FileSerialization.SerializeFile(groups, ref stream);
+            TLAbsInputPeer peer2 = new TLInputPeerUser() { UserId = (int)chatId};
+            var peer = new Tuple<TLAbsInputPeer, long>(peer2, chatId);
+ 
+                        
+            return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin", 
+                    caption: null, mimeType: "application/octet-stream"), peer,
+                "Here are all groups:", TextAsCaption.BEFORE_FILE,
+                sender, username);
         }
 
         private static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
