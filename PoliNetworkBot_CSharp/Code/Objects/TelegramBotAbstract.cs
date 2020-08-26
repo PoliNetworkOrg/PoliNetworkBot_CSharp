@@ -160,7 +160,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
 
                     return false;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -444,14 +444,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
                 case BotTypeApi.DISGUISED_BOT:
                     var users = new TLVector<TLAbsInputUser>();
-                    foreach (var userId in membersToInvite)
-                    {
-                        users.Add(new TLInputUser() { UserId = (int)userId});
-                    }
+                    foreach (var userId in membersToInvite) users.Add(new TLInputUser {UserId = (int) userId});
 
                     try
                     {
-                        var r = await this._userbotClient.Messages_CreateChat(name, users);
+                        var r = await _userbotClient.Messages_CreateChat(name, users);
                         return r != null;
                     }
                     catch (Exception e)

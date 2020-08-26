@@ -246,7 +246,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var done = true;
             var bot = GlobalVariables.Bots[userId];
             await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
-            done &=  await bot.CreateGroup(name: "Gruppo test by bot", description: null, new List<long>(){5651789});
+            done &= await bot.CreateGroup("Gruppo test by bot", null, new List<long> {5651789});
 
             return done;
         }
