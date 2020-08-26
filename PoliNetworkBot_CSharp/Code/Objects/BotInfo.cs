@@ -9,14 +9,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class BotInfo : BotInfoAbstract
     {
-        internal new bool SetIsBot(bool v)
+        internal new bool SetIsBot(Enums.BotTypeApi v)
         {
             return false;
         }
 
-        internal new bool IsBot()
+        internal new Enums.BotTypeApi? IsBot()
         {
-            return true;
+            return Enums.BotTypeApi.REAL_BOT;
         }
     }
 }

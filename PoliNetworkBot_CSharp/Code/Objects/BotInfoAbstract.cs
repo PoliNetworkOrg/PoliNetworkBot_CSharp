@@ -19,12 +19,23 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             KeyValuePairs = new Dictionary<string, object>();
         }
 
-        internal bool IsBot()
+        internal Enums.BotTypeApi? IsBot()
         {
-            return (bool) KeyValuePairs[ConstConfigBot.IsBot];
+            var done = Enum.TryParse(typeof(Enums.BotTypeApi),   KeyValuePairs[ConstConfigBot.IsBot].ToString(), out var result);
+            if (!done || result == null)
+            {
+                return null;
+            }
+
+            if (result is Enums.BotTypeApi r)
+            {
+                return r;
+            }
+
+            return null;
         }
 
-        internal bool SetIsBot(bool v)
+        internal bool SetIsBot(Enums.BotTypeApi v)
         {
             KeyValuePairs[ConstConfigBot.IsBot] = v;
             return true;

@@ -59,6 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 bot.SetNumberCountry(lineInfo[3].Trim());
                 bot.SetNumberNumber(lineInfo[4].Trim());
                 bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
+                bot.SetIsBot(Enums.BotTypeApi.USER_BOT);
 
                 botInfos.Add(bot);
             }
@@ -86,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 var bot = new BotInfo();
                 bot.SetToken(lineInfo[0].Trim());
                 bot.SetWebsite(lineInfo[1].Trim());
-                bot.SetIsBot(true);
+                bot.SetIsBot(Enums.BotTypeApi.REAL_BOT);
                 bot.SetAcceptMessages(true);
                 bot.SetOnMessages(lineInfo[2].Trim());
                 bot.SetContactString(lineInfo[3].Trim());

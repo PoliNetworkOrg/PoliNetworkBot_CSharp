@@ -58,5 +58,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return null;
         }
+
+        public static async Task<TelegramClient> ConnectAsync(BotDisguisedAsUserBotInfo userbot)
+        {   
+            var apiId = userbot.GetApiId();
+            var t = new TelegramClient(apiId: apiId, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId() );
+            await t.ConnectAsync();
+
+            if (t.IsUserAuthorized())
+                return t;
+
+            var r = await t.AuthImportBotAuthorization(userbot.GetToken());
+
+            if (t.IsUserAuthorized() && r?.User != null)
+                return t;
+
+            return null;
+        }
     }
 }

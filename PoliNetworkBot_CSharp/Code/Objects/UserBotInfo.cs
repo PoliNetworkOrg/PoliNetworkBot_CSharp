@@ -12,14 +12,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public string SessionUserId;
 
 
-        internal new bool SetIsBot(bool v)
+        internal new bool SetIsBot(Enums.BotTypeApi v)
         {
             return false;
         }
 
-        internal new bool IsBot()
+        internal new Enums.BotTypeApi? IsBot()
         {
-            return false;
+            return Enums.BotTypeApi.USER_BOT;
         }
 
         internal int? GetApiId()

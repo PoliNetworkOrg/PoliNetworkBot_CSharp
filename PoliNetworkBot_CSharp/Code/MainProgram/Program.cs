@@ -173,6 +173,33 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
+            if (_botDisguisedAsUserBotInfos != null)
+            {
+                foreach (var userbot in _botDisguisedAsUserBotInfos)
+                {
+                    var client = await UserbotConnect.ConnectAsync(userbot);
+                    int? userId = userbot.GetUserId();
+                    if (userId != null)
+                    {
+                        GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value);
+
+                        _ = TestThingsAsync(userId.Value);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            client.Dispose();
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
+                }
+            }
+
             if (GlobalVariables.Bots.Keys.Count > 0)
             {
                 var t = new Thread(CheckMessagesToSend);
