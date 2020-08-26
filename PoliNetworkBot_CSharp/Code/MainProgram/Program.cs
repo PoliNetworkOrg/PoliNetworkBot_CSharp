@@ -75,8 +75,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 Console.WriteLine("Welcome to our bots system!\n" +
                                   "What do you want to do?\n" +
                                   "1) Reset everything\n" +
-                                  "2) Normal mode\n" +
-                                  "3) Disguised bot test\n");
+                                  "2) Normal mode (no disguised)\n" +
+                                  "3) Only Disguised bot\n");
 
                 var reply = Console.ReadLine();
 
@@ -247,7 +247,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_botDisguisedAsUserBotInfos != null)
+            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised == true)
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
