@@ -57,9 +57,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         {
             if (this._tlInputFile != null)
             {
-                var r = await telegramClient.SendUploadedDocument(peer, this._tlInputFile, 
-                    caption: caption, mimeType: mimeType, attributes: attributes);
-                return r;
+                try
+                {
+                    var r = await telegramClient.SendUploadedDocument(peer, this._tlInputFile,
+                        caption: caption, mimeType: mimeType, attributes: attributes);
+                    return r;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
             }
             else if (this._tlAbsInputMedia != null)
             {
