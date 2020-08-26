@@ -241,9 +241,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static async Task TestThingsDisguisedAsync(long userId)
+        private static async Task<bool> TestThingsDisguisedAsync(long userId)
         {
-            GlobalVariables.Bots[userId].SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
+            var done = true;
+            var bot = GlobalVariables.Bots[userId];
+            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
+            done &=  await bot.CreateGroup(name: "Gruppo test by bot", description: null, new List<long>(){5651789});
+
+            return done;
         }
 
         private static async void CheckMessagesToSend()

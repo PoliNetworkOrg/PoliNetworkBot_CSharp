@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -429,6 +430,37 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
+
+            return false;
+        }
+
+        public async Task<bool> CreateGroup(string name, string description, List<long> membersToInvite)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    return false;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    var users = new TLVector<TLAbsInputUser>();
+                    foreach (var userId in membersToInvite)
+                    {
+                        users.Add(new TLInputUser() { UserId = (int)userId});
+                    }
+
+                    try
+                    {
+                        var r = await this._userbotClient.Messages_CreateChat(name, users);
+                        return r != null;
+                    }
+                    catch (Exception e)
+                    {
+                        return false;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             return false;
         }
