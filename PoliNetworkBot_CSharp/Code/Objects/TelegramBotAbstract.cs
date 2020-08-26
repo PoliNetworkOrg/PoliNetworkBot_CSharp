@@ -146,12 +146,20 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var m1 = await _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                     return m1 != null;
                 case BotTypeApi.USER_BOT:
-
-                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-                    var m2 = await _userbotClient.SendMessageAsync(peer, text);
-                    return m2 != null;
                 case BotTypeApi.DISGUISED_BOT:
-                    break;
+                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    try
+                    {
+                        var m2 = await _userbotClient.SendMessageAsync(peer, text);
+                        return m2 != null;
+                    }
+                    catch (Exception e)
+                    {
+                        ;
+                    }
+
+                    return false;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
