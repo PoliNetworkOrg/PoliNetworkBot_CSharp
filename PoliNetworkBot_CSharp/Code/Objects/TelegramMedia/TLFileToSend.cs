@@ -1,28 +1,32 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
 using TeleSharp.TL;
 using TLSharp.Core;
 
+#endregion
+
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
     public class TlFileToSend
     {
-        private readonly TLInputFile _tlInputFile;
         private readonly TLAbsInputMedia _tlAbsInputMedia;
-        private string mimeType;
-        private TLVector<TLAbsDocumentAttribute> attributes;
-        
+        private readonly TLInputFile _tlInputFile;
+        private readonly TLVector<TLAbsDocumentAttribute> attributes;
+        private readonly string mimeType;
+
         public TlFileToSend(TLInputFile r2, string mimeType, TLVector<TLAbsDocumentAttribute> attributes)
         {
-            this._tlInputFile = r2;
+            _tlInputFile = r2;
             this.mimeType = mimeType;
             this.attributes = attributes;
         }
 
         public TlFileToSend(TLAbsInputMedia r2)
         {
-            this._tlAbsInputMedia = r2;
+            _tlAbsInputMedia = r2;
         }
 
         public async Task<TLAbsUpdates> SendMedia(TLAbsInputPeer peer, TelegramClient telegramClient,
@@ -40,9 +44,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 
             if (r2 != null)
                 return r2;
-            
+
             if (string.IsNullOrEmpty(username))
-                    return null;
+                return null;
 
             try
             {
@@ -56,30 +60,25 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             }
 
             return null;
-            
         }
 
         private async Task<TLAbsUpdates> SendMedia2(TLAbsInputPeer peer, TelegramClient telegramClient, string caption)
         {
-            if (this._tlInputFile != null)
-            {
+            if (_tlInputFile != null)
                 try
                 {
                     caption ??= "";
-                    
-                    var r = await telegramClient.SendUploadedDocument(peer, this._tlInputFile,
-                        caption: caption, mimeType: mimeType, attributes: attributes);
+
+                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile,
+                        caption, mimeType, attributes);
                     return r;
                 }
                 catch (Exception e)
                 {
                     return null;
                 }
-            }
-            else if (this._tlAbsInputMedia != null)
-            {
-                return await telegramClient.Messages_SendMedia(peer, this._tlAbsInputMedia);
-            }
+
+            if (_tlAbsInputMedia != null) return await telegramClient.Messages_SendMedia(peer, _tlAbsInputMedia);
 
             return null;
         }

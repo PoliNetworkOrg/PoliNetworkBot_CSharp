@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
                 FirstName = _firstName,
                 LastName = _lastName, PhoneNumber = _phoneNumber
             };
-            
+
             return new TlFileToSend(r);
         }
     }

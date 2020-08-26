@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username);
         }
 
-        public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient, 
+        public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
             TLAbsInputPeer peer, string text, string username)
         {
             TLAbsUpdates r2 = null;
@@ -81,11 +81,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                if (string.IsNullOrEmpty(username))
-                {
-                    return null;
-                }
-         
+                if (string.IsNullOrEmpty(username)) return null;
+
                 var peerBetter = await UserbotPeer.GetPeerUserWithAccessHash(username, userbotClient);
 
                 try
@@ -96,7 +93,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     return null;
                 }
-                                
             }
 
             return r2;

@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using TeleSharp.TL;
 using TLSharp.Core;

@@ -82,17 +82,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == ChatType.Private)
                     {
                         string username = null;
-                        if (!string.IsNullOrEmpty(e.Message.From.Username))
-                        {
-                            username = e.Message.From.Username;
-                        }
+                        if (!string.IsNullOrEmpty(e.Message.From.Username)) username = e.Message.From.Username;
                         _ = GetAllGroups(e.Message.From.Id, username, sender);
                         return;
                     }
-                    else
-                    {
-                        await DefaultCommand(sender, e);
-                    }
+
+                    await DefaultCommand(sender, e);
 
                     return;
                 }
@@ -122,12 +117,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var groups = Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);
-            TLAbsInputPeer peer2 = new TLInputPeerUser() { UserId = (int)chatId};
+            TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) chatId};
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, chatId);
- 
-                        
-            return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin", 
-                    caption: null, mimeType: "application/octet-stream"), peer,
+
+
+            return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
+                    null, "application/octet-stream"), peer,
                 "Here are all groups:", TextAsCaption.BEFORE_FILE,
                 sender, username);
         }

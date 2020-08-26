@@ -12,19 +12,19 @@ using TLSharp.Core.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public class TelegramFile : Objects.TelegramMedia.Media
+    public class TelegramFile : Media
     {
-        private readonly string _fileName;
-        private readonly Stream _stream;
         private readonly string _caption;
+        private readonly string _fileName;
         private readonly string _mimeType;
+        private readonly Stream _stream;
 
         public TelegramFile(Stream stream, string fileName, string caption, string mimeType)
         {
             _stream = stream;
             _fileName = fileName;
-            this._caption = caption;
-            this._mimeType = mimeType;
+            _caption = caption;
+            _mimeType = mimeType;
         }
 
         internal InputOnlineFile GetOnlineFile()
@@ -38,14 +38,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return MessageType.Document;
         }
 
-        public override async Task<Objects.TelegramMedia.TlFileToSend> GetMediaTl(TelegramClient client)
+        public override async Task<TlFileToSend> GetMediaTl(TelegramClient client)
         {
             _stream.Seek(0, SeekOrigin.Begin);
-            var streamReader = new StreamReader(this._stream);
-            var r = await client.UploadFile(this._fileName, streamReader);
+            var streamReader = new StreamReader(_stream);
+            var r = await client.UploadFile(_fileName, streamReader);
 
             var attributes = new TLVector<TLAbsDocumentAttribute>();
-            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename() {FileName = this._fileName};
+            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename {FileName = _fileName};
             attributes.Add(att1);
             return r switch
             {

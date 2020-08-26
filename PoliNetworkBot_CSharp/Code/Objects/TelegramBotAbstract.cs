@@ -171,7 +171,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> SendMedia(Media media, long chatid, ChatType chatType, string username = null, string caption = null)
+        internal async Task<bool> SendMedia(Media media, long chatid, ChatType chatType, string username = null,
+            string caption = null)
         {
             switch (_isbot)
             {
@@ -249,11 +250,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
                 {
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-                    var media2 = await media.GetMediaTl(this._userbotClient);
+                    var media2 = await media.GetMediaTl(_userbotClient);
 
                     var r = await media2.SendMedia(peer, _userbotClient, caption, username);
                     return r != null;
-                    
+
                     break;
                 }
                 case BotTypeApi.DISGUISED_BOT:
@@ -301,30 +302,30 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
 
                     return false;
-                
+
                 case BotTypeApi.USER_BOT:
                     switch (textAsCaption)
                     {
                         case TextAsCaption.AS_CAPTION:
                         {
-                            var tlFileToSend = await documentInput.GetMediaTl(this._userbotClient);
+                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, text, username);
                             return r != null;
                         }
 
                         case TextAsCaption.BEFORE_FILE:
                         {
-                            var r2 = await Utils.SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
-                            var tlFileToSend = await (documentInput).GetMediaTl(this._userbotClient);
+                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
+                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
-                            return r!= null && r2 != null;
+                            return r != null && r2 != null;
                         }
 
                         case TextAsCaption.AFTER_FILE:
                         {
-                            var tlFileToSend = await documentInput.GetMediaTl(this._userbotClient);
+                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
-                            var r2 = await Utils.SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
+                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
                             return r != null && r2 != null;
                         }
 

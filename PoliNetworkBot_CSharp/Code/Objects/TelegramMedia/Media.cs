@@ -2,7 +2,6 @@
 
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
-using TeleSharp.TL;
 using TLSharp.Core;
 
 #endregion
