@@ -125,12 +125,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<DateTime?> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender)
+        internal static async Task<DateTime?> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender,
+            string username)
         {
-            if (string.IsNullOrEmpty(text)) return await AskDate2Async(id, lang, sender);
+            if (string.IsNullOrEmpty(text)) return await AskDate2Async(id, lang, sender, username);
 
             var s = text.Split(' ');
-            if (s.Length == 1) return await AskDate2Async(id, lang, sender);
+            if (s.Length == 1) return await AskDate2Async(id, lang, sender, username);
 
             switch (s[1])
             {
@@ -141,18 +142,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             }
 
-            return await AskDate2Async(id, lang, sender);
+            return await AskDate2Async(id, lang, sender, username);
         }
 
-        private static async Task<DateTime?> AskDate2Async(int id, string lang, TelegramBotAbstract sender)
+        private static async Task<DateTime?> AskDate2Async(int id, string lang, TelegramBotAbstract sender,
+            string username)
         {
-            var reply = await AskUser.AskAsync(id, new Dictionary<string, string>
-                {
-                    {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
-                    {"en", "Insert a date (you can also write 'in an hour'"}
-                },
-                sender, lang);
-
+            var lang2 = new Language(new Dictionary<string, string>
+            {
+                {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
+                {"en", "Insert a date (you can also write 'in an hour'"}
+            });
+            
+            var reply = await AskUser.AskAsync( id, lang2, sender, lang, username);
             var replyDatetime = GetDateTimeFromString(reply);
             return replyDatetime;
         }

@@ -41,14 +41,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var (item1, item2) = ModerationCheck.CheckUsername(e);
             if (item1 || item2)
             {
-                ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1, item2);
+                await ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1, 
+                    item2, lang:e.Message.From.LanguageCode, e.Message.From.Username);
                 return;
             }
 
             var checkSpam = ModerationCheck.CheckSpam(e);
             if (checkSpam != SpamType.ALL_GOOD)
             {
-                ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                 return;
             }
 

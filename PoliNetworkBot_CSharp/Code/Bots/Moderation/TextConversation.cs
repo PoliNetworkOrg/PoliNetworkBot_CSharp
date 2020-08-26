@@ -1,5 +1,7 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Args;
@@ -11,12 +13,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class TextConversation
     {
-        internal static void DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        internal static async Task DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e.Message.Chat.Type == ChatType.Private) PrivateMessage(telegramBotClient, e);
+            if (e.Message.Chat.Type == ChatType.Private) await PrivateMessage(telegramBotClient, e);
         }
 
-        private static void PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             if (AskUser.UserAnswers.ContainsKey(e.Message.From.Id))
                 if (AskUser.UserAnswers[e.Message.From.Id] != null)
@@ -27,9 +29,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
             //todo: check user state
-            SendMessage.SendMessageInPrivate(telegramBotClient, e,
-                "Ciao, al momento non è possibile fare conversazione col bot.\n" +
-                "Ti consigliamo di premere /help per vedere le funzioni disponibili");
+            var text2 = new Language(dict: new Dictionary<string, string>()
+            {
+                {"en", 
+                    "Hi, at the moment is not possible to have conversation with the bot.\n" +
+                    "We advice you to write /help to see what this bot can do"},
+                {"it", 
+                    "Ciao, al momento non è possibile fare conversazione col bot.\n" +
+                    "Ti consigliamo di premere /help per vedere le funzioni disponibili"}
+            });
+            await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
         }
     }
 }

@@ -27,6 +27,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (_dict.Keys.Count == 0)
                 return null;
 
+            if (_dict.ContainsKey("en"))
+                return _dict["en"];
+
             var d = _dict.Keys.First();
             return _dict[d];
         }

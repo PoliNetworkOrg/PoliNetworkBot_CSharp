@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -18,12 +19,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async Task<bool> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
             MessageEventArgs e,
-            string text)
+            Language text, string lang, string username)
         {
             try
             {
-                var r = await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                    ParseMode.Html);
+                var r = await telegramBotClient.SendTextMessageAsync(chatid: e.Message.From.Id,
+                    text: text, chatType: ChatType.Private, parseMode: ParseMode.Html, 
+                    lang: lang, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE) );
                 if (r) return true;
             }
             catch
@@ -32,17 +35,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var messageTo = GetMessageTo(e);
-            var messageFor = "Messaggio per";
             var language = e.Message.From.LanguageCode.ToLower();
-            messageFor = language switch
+            var text3 = new Language(dict: new Dictionary<string, string>()
             {
-                "en" => "Message for",
-                _ => messageFor
-            };
+                {"en" , "[Message for " + messageTo + "]\n\n" + text.Select("en")},
+                {"it" , "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")},
+            });
 
-            var text2 = "[" + messageFor + " " + messageTo + "]\n\n" + text;
-            return await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, e.Message.Chat.Type,
-                ParseMode.Html);
+            
+            return await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text3, e.Message.Chat.Type,
+                 lang: lang,  parseMode: ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username: username );
         }
 
         private static string GetMessageTo(MessageEventArgs e)
@@ -53,11 +55,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
-            string text, ParseMode html = ParseMode.Default)
+            Language text, ParseMode html = ParseMode.Default)
         {
             try
             {
-                return await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, html);
+                return await telegramBotClient.SendTextMessageAsync(chatid: e.Message.From.Id, text: text, 
+                    chatType:ChatType.Private, parseMode: html, 
+                    lang: e.Message.From.LanguageCode, username: e.Message.From.Username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
             }
             catch
             {
@@ -66,18 +71,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,
-            string text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract, string username)
+            Language text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract,
+            string username, string lang)
         {
-            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username);
+            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang);
         }
 
         public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
-            TLAbsInputPeer peer, string text, string username)
+            TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang)
         {
             TLAbsUpdates r2 = null;
             try
             {
-                r2 = await userbotClient.SendMessageAsync(peer, text);
+                r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang));
             }
             catch
             {
@@ -87,7 +93,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 try
                 {
-                    r2 = await userbotClient.SendMessageAsync(peerBetter, text);
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang));
                 }
                 catch
                 {

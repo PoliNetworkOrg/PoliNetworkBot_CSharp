@@ -123,63 +123,78 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                    Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
         }
 
-        public static void SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username,
-            bool name)
+        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username,
+            bool name, string lang, string usernameOfUser)
         {
-            var s1 = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n\n" +
-                     "Set an username and a longer first name from telegram settings";
+            var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n";
             if (username && !name)
-                s1 = "Imposta un username dalle impostazioni di telegram\n\n" +
-                     "Set an username from telegram settings";
+                s1I = "Imposta un username dalle impostazioni di telegram\n";
             else if (!username && name)
-                s1 = "Imposta un nome più lungo " +
-                     "dalle impostazioni di telegram\n\n" +
-                     "Set a longer first name from telegram settings";
+                s1I = "Imposta un nome più lungo " +
+                     "dalle impostazioni di telegram\n";
 
-            SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s1);
-            RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
+            
+            
+            var s1E = "Set an username and a longer first name from telegram settings";
+            if (username && !name)
+                s1E = "Set an username from telegram settings";
+            else if (!username && name)
+                s1E = "Set a longer first name from telegram settings";
+            
+            
+            var s2 = new Language(dict: new Dictionary<string, string>()
+            {
+                {"it", s1I},
+                {"en", s1E}
+            });
+            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, text: s2, lang, usernameOfUser);
+            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
         }
 
-        public static void AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        public static async Task AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             SpamType checkSpam)
         {
             if (checkSpam == SpamType.ALL_GOOD)
                 return;
 
-            RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
+            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             var language = e.Message.From.LanguageCode.ToLower();
             switch (checkSpam)
             {
                 case SpamType.SPAM_LINK:
                 {
-                    var text = language switch
+                    Language text2 = new Language(dict:new Dictionary<string, string>()
                     {
-                        "en" => "You sent a message with spam, and you were muted for 5 minutes",
-                        _ => "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti"
-                    };
-                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        {"en", "You sent a message with spam, and you were muted for 5 minutes"},
+                        {"it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti"}
+                    });
+     
+                    
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }
                 case SpamType.NOT_ALLOWED_WORDS:
                 {
-                    var text = language switch
+                    Language text2 = new Language(dict: new Dictionary<string, string>()
                     {
-                        "en" => "You sent a message with banned words, and you were muted for 5 minutes",
-                        _ => "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"
-                    };
-                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        {"en","You sent a message with banned words, and you were muted for 5 minutes" },
+                        {"it", "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"}
+                    });
+                    
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }
 
                 case SpamType.FOREIGN:
                 {
-                    var text = language switch
+                    Language text2 = new Language(dict: new Dictionary<string, string>()
                     {
-                        "en" => "You sent a message with banned characters, and you were muted for 5 minutes",
-                        _ => "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
-                    };
-                    SendMessage.SendMessageInPrivate(telegramBotClient, e, text);
+                        {"en", "You sent a message with banned characters, and you were muted for 5 minutes"},
+                        {"it","Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti" }
+                    });
+                    
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }
 

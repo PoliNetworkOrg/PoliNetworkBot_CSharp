@@ -282,14 +282,20 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static async Task<bool> TestThingsDisguisedAsync(long userId)
+        private static async Task<bool> TestThingsDisguisedAsync(long userbotId)
         {
             var done = true;
-            var bot = GlobalVariables.Bots[userId];
+            var bot = GlobalVariables.Bots[userbotId];
             var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private,
-                default, replyMarkupObject);
-            done &= await bot.CreateGroup("Gruppo test by bot", null, new List<long> {5651789});
+            var text = new Language(dict: new Dictionary<string, string>()
+            {
+                {"en", "ciao test"},
+                {"it", "ciao test"}
+            });
+            await bot.SendTextMessageAsync(5651789, text:text, ChatType.Private,
+                 lang: "", default, replyMarkupObject: replyMarkupObject, username: "@ArmeF97");
+            done &= await bot.CreateGroup("Gruppo test by bot", 
+                null, new List<long> {5651789});
 
             return done;
         }
@@ -317,8 +323,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var bot = GlobalVariables.Bots[userId];
             Media media = new Contact("+39 1234567890",
                 "Mario", "Rossi", null);
-            done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97");
-            done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot);
+            done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
+            done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot, "it");
             return done;
         }
     }

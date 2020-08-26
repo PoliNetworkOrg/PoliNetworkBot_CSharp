@@ -30,12 +30,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         }
 
         public async Task<TLAbsUpdates> SendMedia(TLAbsInputPeer peer, TelegramClient telegramClient,
-            string caption, string username)
+            Language caption, string username, string lang)
         {
             TLAbsUpdates r2 = null;
             try
             {
-                r2 = await SendMedia2(peer, telegramClient, caption);
+                r2 = await SendMedia2(peer, telegramClient, caption, lang);
             }
             catch (Exception e)
             {
@@ -51,7 +51,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             try
             {
                 peer = await UserbotPeer.GetPeerUserWithAccessHash(username, telegramClient);
-                var r = await SendMedia2(peer, telegramClient, caption);
+                var r = await SendMedia2(peer, telegramClient, caption, lang);
                 return r;
             }
             catch (Exception e2)
@@ -62,15 +62,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return null;
         }
 
-        private async Task<TLAbsUpdates> SendMedia2(TLAbsInputPeer peer, TelegramClient telegramClient, string caption)
+        private async Task<TLAbsUpdates> SendMedia2(TLAbsInputPeer peer, TelegramClient telegramClient,
+            Language caption, string lang)
         {
             if (_tlInputFile != null)
                 try
                 {
-                    caption ??= "";
+                    string caption2 = null;
+                    if (caption == null)
+                    {
+                        caption2 = "";
+                    }
+                    else
+                    {
+                        caption2 = caption.Select(lang);
+                    }
 
                     var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile,
-                        caption, mimeType, attributes);
+                        caption2, mimeType, attributes);
                     return r;
                 }
                 catch (Exception e)
