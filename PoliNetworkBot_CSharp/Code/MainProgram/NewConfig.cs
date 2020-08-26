@@ -7,6 +7,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 
@@ -18,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
     {
         private const string RowSeparator = "| _:r:_ |";
         private const string ColumnSeparator = "| _:c:_ |";
-        
+
         public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot)
         {
             if (resetBot) ResetBotMethod();
@@ -31,7 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         }
 
         private static void ResetBotDisguisedAsUserBotMethod()
-        {           
+        {
             var lines = File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
             var botInfos = new List<BotDisguisedAsUserBotInfo>();
             foreach (var t in lines)
@@ -52,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 bot.SetApiHash(lineInfo[1].Trim());
                 bot.SetUserId(lineInfo[2].Trim());
                 bot.SetToken(lineInfo[3].Trim());
-                bot.SetIsBot(Enums.BotTypeApi.DISGUISED_BOT);
+                bot.SetIsBot(BotTypeApi.DISGUISED_BOT);
 
                 botInfos.Add(bot);
             }
@@ -84,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 bot.SetNumberCountry(lineInfo[3].Trim());
                 bot.SetNumberNumber(lineInfo[4].Trim());
                 bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
-                bot.SetIsBot(Enums.BotTypeApi.USER_BOT);
+                bot.SetIsBot(BotTypeApi.USER_BOT);
 
                 botInfos.Add(bot);
             }
@@ -112,7 +113,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 var bot = new BotInfo();
                 bot.SetToken(lineInfo[0].Trim());
                 bot.SetWebsite(lineInfo[1].Trim());
-                bot.SetIsBot(Enums.BotTypeApi.REAL_BOT);
+                bot.SetIsBot(BotTypeApi.REAL_BOT);
                 bot.SetAcceptMessages(true);
                 bot.SetOnMessages(lineInfo[2].Trim());
                 bot.SetContactString(lineInfo[3].Trim());

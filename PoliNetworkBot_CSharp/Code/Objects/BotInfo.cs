@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -9,14 +10,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class BotInfo : BotInfoAbstract
     {
-        internal new bool SetIsBot(Enums.BotTypeApi v)
+        internal new bool SetIsBot(BotTypeApi v)
         {
             return false;
         }
 
-        internal new Enums.BotTypeApi? IsBot()
+        internal new BotTypeApi? IsBot()
         {
-            return Enums.BotTypeApi.REAL_BOT;
+            return BotTypeApi.REAL_BOT;
         }
     }
 }

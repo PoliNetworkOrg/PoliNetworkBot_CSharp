@@ -24,23 +24,23 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly TelegramBotClient _botClient;
         private readonly string _contactString;
         private readonly int _id;
-        private readonly bool _isbot;
+        private readonly Enums.BotTypeApi _isbot;
         private readonly TelegramClient _userbotClient;
 
         private readonly string _website;
 
-        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString)
+        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString, Enums.BotTypeApi botTypeApi)
         {
             _botClient = botClient;
-            _isbot = true;
+            _isbot = botTypeApi;
             _website = website;
             _contactString = contactString;
         }
 
-        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id)
+        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id, Enums.BotTypeApi botTypeApi)
         {
             _userbotClient = userbotClient;
-            _isbot = false;
+            _isbot = botTypeApi;
             _website = website;
             _contactString = contactString;
             _id = (int) id;
@@ -58,63 +58,128 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
         {
-            if (_isbot)
-                _botClient.DeleteMessageAsync(chatId, messageId);
-            else
-                _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
-                    new TLVector<int> {messageId});
+
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    _botClient.DeleteMessageAsync(chatId, messageId);
+                    break;
+                case BotTypeApi.USER_BOT:
+                    _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
+                        new TLVector<int> {messageId});
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         internal async Task<int?> GetIdFromUsernameAsync(string target)
         {
-            if (_isbot)
-                //bot api does not allow that
-                return null;
-
-            var r = await _userbotClient.ResolveUsernameAsync(target);
-            return r.Peer switch
+            switch (_isbot)
             {
-                null => null,
-                TLPeerUser tLPeerUser => tLPeerUser.UserId,
-                _ => null
-            };
+                case BotTypeApi.REAL_BOT:
+                    return null; //bot api does not allow that
+                case BotTypeApi.USER_BOT:
+                    var r = await _userbotClient.ResolveUsernameAsync(target);
+                    return r.Peer switch
+                    {
+                        null => null,
+                        TLPeerUser tLPeerUser => tLPeerUser.UserId,
+                        _ => null
+                    };
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return null;
         }
 
-        internal void RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
+        internal async Task RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
             DateTime untilDate)
         {
-            if (_isbot) _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    await _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+                    break;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
         }
 
         internal int GetId()
         {
-            return _isbot ? _botClient.BotId : _id;
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    return _botClient.BotId;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return _id;
         }
 
-        internal bool SendTextMessageAsync(long chatid, string text,
+        internal async Task<bool> SendTextMessageAsync(long chatid, string text,
             ChatType chatType, ParseMode parseMode = ParseMode.Default,
             ReplyMarkupObject replyMarkupObject = null)
         {
-            if (_isbot)
-            {
-                IReplyMarkup reply = null;
-                if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkup();
 
-                _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
-                return true;
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    IReplyMarkup reply = null;
+                    if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkup();
+
+                    var m1 = await _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
+                    return m1 != null;
+                case BotTypeApi.USER_BOT:
+                    
+                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    var m2 = await _userbotClient.SendMessageAsync(peer, text);
+                    return m2!= null;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-            _userbotClient.SendMessageAsync(peer, text);
-            return true;
+            return false;
         }
 
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, long chatId, string text,
             TextAsCaption textAsCaption)
         {
-            if (!_isbot)
-                return false; //todo
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    return await SendFileRealBot(documentInput, chatId, text, textAsCaption);
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
+            return false;
+        }
+
+        private async Task<bool> SendFileRealBot(TelegramFile documentInput, long chatId, string text, TextAsCaption textAsCaption)
+        {
+            
             var inputOnlineFile = documentInput.GetOnlineFile();
             switch (textAsCaption)
             {
@@ -142,7 +207,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
             }
 
-            return false;
         }
 
         internal string GetContactString()
@@ -152,23 +216,41 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<bool> IsAdminAsync(int userId, long chatId)
         {
-            if (_isbot)
+            switch (_isbot)
             {
-                var admins = await _botClient.GetChatAdministratorsAsync(chatId);
-                return admins.Any(admin => admin.User.Id == userId);
+                case BotTypeApi.REAL_BOT:
+                    var admins = await _botClient.GetChatAdministratorsAsync(chatId);
+                    return admins.Any(admin => admin.User.Id == userId);;
+                case BotTypeApi.USER_BOT:
+                    var r = await _userbotClient.ChannelsGetParticipant(
+                        UserbotPeer.GetPeerChannelFromIdAndType(chatId),
+                        UserbotPeer.GetPeerUserFromdId(userId));
+
+                    return r.Participant is TLChannelParticipantModerator ||
+                           r.Participant is TLChannelParticipantCreator;;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            var r = await _userbotClient.ChannelsGetParticipant(
-                UserbotPeer.GetPeerChannelFromIdAndType(chatId),
-                UserbotPeer.GetPeerUserFromdId(userId));
-
-            return r.Participant is TLChannelParticipantModerator ||
-                   r.Participant is TLChannelParticipantCreator;
+            return false;
         }
 
         internal async Task<string> ExportChatInviteLinkAsync(long chatId)
         {
-            if (_isbot) return await _botClient.ExportChatInviteLinkAsync(chatId);
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    return await _botClient.ExportChatInviteLinkAsync(chatId);
+                    ;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             return null;
         }
@@ -176,90 +258,164 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<bool> SendMessageReactionAsync(int chatId, string emojiReaction, int messageId,
             ChatType chatType)
         {
-            if (_isbot)
-                //api does not allow that
-                return false;
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+                case BotTypeApi.USER_BOT:
+                    var updates =
+                        await _userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
+                            messageId, emojiReaction);
+                    return updates != null;;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-            var updates =
-                await _userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
-                    messageId, emojiReaction);
-            return updates != null;
+            return false;
         }
 
-        internal bool BanUserFromGroup(int target, long groupChatId, MessageEventArgs e, string[] time)
+        internal async Task<bool> BanUserFromGroup(int target, long groupChatId, MessageEventArgs e, string[] time)
         {
-            if (!_isbot) return false;
-
-            var untilDate = DateTimeClass.GetUntilDate(time);
-
-            try
+            switch (_isbot)
             {
-                if (untilDate == null)
-                    _botClient.KickChatMemberAsync(groupChatId, target);
-                else
-                    _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
-            }
-            catch
-            {
-                return false;
+                case BotTypeApi.REAL_BOT:
+                    
+                    var untilDate = DateTimeClass.GetUntilDate(time);
+
+                    try
+                    {
+                        if (untilDate == null)
+                        {
+                            await _botClient.KickChatMemberAsync(groupChatId, target);
+                            return true;
+                        }
+                        else
+                        {
+                            await _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
+                            return true;
+                        }
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                    return true;;
+                case BotTypeApi.USER_BOT:
+                    return false;
+                case BotTypeApi.DISGUISED_BOT:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            return true;
+            return false;
+
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()
         {
-            if (_isbot)
-                return null;
-            return await _userbotClient.GetUserDialogsAsync(limit: 100);
-        }
-
-        internal Task<ChatMember[]> GetChatAdministratorsAsync(long id)
-        {
-            return _isbot ? _botClient.GetChatAdministratorsAsync(id) : null;
-        }
-
-        internal bool UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
-        {
-            if (!_isbot)
-                return false;
-
-            try
+            switch (_isbot)
             {
-                _botClient.UnbanChatMemberAsync(groupChatId, target);
-            }
-            catch
-            {
-                return false;
+                case BotTypeApi.REAL_BOT:
+                    return null;
+                case BotTypeApi.USER_BOT:
+                    return await _userbotClient.GetUserDialogsAsync(limit: 100);;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            return true;
+            return null;
         }
 
-        internal void LeaveChatAsync(long id)
+        internal async Task<ChatMember[]> GetChatAdministratorsAsync(long id)
         {
-            if (_isbot) _botClient.LeaveChatAsync(id);
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    return await this._botClient.GetChatAdministratorsAsync(id);
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            return null;
+        }
+
+        internal async Task<bool> UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    try
+                    {
+                        await _botClient.UnbanChatMemberAsync(groupChatId, target);
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    };
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            return false;
+        }
+
+        internal async Task<bool> LeaveChatAsync(long id)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    await _botClient.LeaveChatAsync(id);
+                    return true;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
         }
 
         public async Task<bool> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto objectPhoto, string caption)
         {
-            if (_isbot)
+            switch (_isbot)
             {
-                var m = await _botClient.SendPhotoAsync(chatIdToSendTo,
-                    objectPhoto.GetTelegramBotInputOnlineFile(), caption);
-                return m != null;
-            }
-            else
-            {
-                var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
-                if (photoFile == null)
-                    return false;
+                case BotTypeApi.REAL_BOT:
+                    var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
+                        objectPhoto.GetTelegramBotInputOnlineFile(), caption);
+                    return m1 != null;;
+                case BotTypeApi.USER_BOT:
+                    
+                    var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
+                    if (photoFile == null)
+                        return false;
 
-                var m = await _userbotClient.SendUploadedPhoto(
-                    UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private),
-                    photoFile, caption);
-                return m != null;
+                    var m2 = await _userbotClient.SendUploadedPhoto(
+                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private),
+                        photoFile, caption);
+                    return m2 != null;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+            
 
             return false;
         }

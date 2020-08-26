@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var toSend = dictionary[lang];
             UserAnswers[idUser] = new AnswerTelegram();
-            sender.SendTextMessageAsync(idUser, toSend, ChatType.Private, default,
+            await sender.SendTextMessageAsync(idUser, toSend, ChatType.Private, default,
                 new ReplyMarkupObject(ReplyMarkupEnum.FORCED));
             return await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender);
         }

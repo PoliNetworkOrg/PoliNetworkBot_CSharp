@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -41,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var toExit2 = LoadUserBotConfig();
             if (toExit2 == ToExit.EXIT)
                 return;
-            
+
             var toExit3 = LoadBotDisguisedAsUserBotConfig();
             if (toExit3 == ToExit.EXIT)
                 return;
@@ -57,7 +58,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadBotDisguisedAsUserBotConfig()
         {
-            _botDisguisedAsUserBotInfos = FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin.ConfigBotDisguisedAsUserbot);
+            _botDisguisedAsUserBotInfos =
+                FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin
+                    .ConfigBotDisguisedAsUserbot);
             if (_botDisguisedAsUserBotInfos != null && _botDisguisedAsUserBotInfos.Count != 0)
                 return ToExit.STAY;
 
@@ -73,7 +76,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _botDisguisedAsUserBotInfos = FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin.ConfigBotDisguisedAsUserbot);
+                    _botDisguisedAsUserBotInfos =
+                        FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin
+                            .ConfigBotDisguisedAsUserbot);
                 }
                 else
                 {
@@ -165,7 +170,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
                     GlobalVariables.Bots[botClient.BotId] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString());
+                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(), Enums.BotTypeApi.REAL_BOT);
                     if (!bot.AcceptsMessages())
                         continue;
 
@@ -185,7 +190,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (userId != null)
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value);
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, Enums.BotTypeApi.USER_BOT);
 
                         _ = TestThingsAsync(userId.Value);
                     }
@@ -203,7 +208,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 }
 
             if (_botDisguisedAsUserBotInfos != null)
-            {
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -211,9 +215,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (userId != null)
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value);
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value,
+                            Enums.BotTypeApi.DISGUISED_BOT);
 
-                        _ = TestThingsAsync(userId.Value);
+                        _ = TestThingsDisguisedAsync(userId.Value);
                     }
                     else
                     {
@@ -227,13 +232,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     }
                 }
-            }
 
             if (GlobalVariables.Bots.Keys.Count > 0)
             {
                 var t = new Thread(CheckMessagesToSend);
                 t.Start();
             }
+        }
+
+        private static async Task TestThingsDisguisedAsync(long userId)
+        {
+            Data.GlobalVariables.Bots[userId].SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
         }
 
         private static async void CheckMessagesToSend()

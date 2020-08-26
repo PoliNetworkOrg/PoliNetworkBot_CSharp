@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -12,14 +13,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public string SessionUserId;
 
 
-        internal new bool SetIsBot(Enums.BotTypeApi v)
+        internal new bool SetIsBot(BotTypeApi v)
         {
             return false;
         }
 
-        internal new Enums.BotTypeApi? IsBot()
+        internal new BotTypeApi? IsBot()
         {
-            return Enums.BotTypeApi.USER_BOT;
+            return BotTypeApi.USER_BOT;
         }
 
         internal int? GetApiId()

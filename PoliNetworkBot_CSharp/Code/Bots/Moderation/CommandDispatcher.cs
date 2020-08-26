@@ -191,12 +191,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var targetInt = await Info.GetTargetUserIdAsync(stringInfo[1], sender);
                 return targetInt != null &&
-                       RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
+                       await RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
             }
             else
             {
                 var targetInt = e.Message.ReplyToMessage.From.Id;
-                return RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo);
+                return await RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo);
             }
         }
 

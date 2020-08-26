@@ -61,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var groupChatId = (long) dr["id"];
-                        var success = BanUserFromGroup(sender, e, targetId.Value, groupChatId, null);
+                        var success = await BanUserFromGroup(sender, e, targetId.Value, groupChatId, null);
                         if (success)
                             done.Add(dr);
                     }
@@ -74,7 +74,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var groupChatId = (long) dr["id"];
-                        var success = UnBanUserFromGroup(sender, e, targetId.Value, groupChatId);
+                        var success = await UnBanUserFromGroup(sender, e, targetId.Value, groupChatId);
                         if (success)
                             done.Add(dr);
                     }
@@ -86,16 +86,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return done;
         }
 
-        private static bool UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
+        private static async Task<bool> UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
             long groupChatId)
         {
-            return sender.UnBanUserFromGroup(target, groupChatId, e);
+            return await sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
-        public static bool BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
+        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
             long groupChatId, string[] time)
         {
-            return sender.BanUserFromGroup(target, groupChatId, e, time);
+            return await sender.BanUserFromGroup(target, groupChatId, e, time);
         }
     }
 }

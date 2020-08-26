@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 
@@ -9,9 +10,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class LeaveChat
     {
-        internal static void ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
+        internal static async Task ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            sender.LeaveChatAsync(e.Message.Chat.Id);
+            await sender.LeaveChatAsync(e.Message.Chat.Id);
         }
     }
 }

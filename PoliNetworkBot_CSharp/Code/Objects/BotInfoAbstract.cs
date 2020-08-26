@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Args;
 
 #endregion
@@ -19,23 +20,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             KeyValuePairs = new Dictionary<string, object>();
         }
 
-        internal Enums.BotTypeApi? IsBot()
+        internal BotTypeApi? IsBot()
         {
-            var done = Enum.TryParse(typeof(Enums.BotTypeApi),   KeyValuePairs[ConstConfigBot.IsBot].ToString(), out var result);
-            if (!done || result == null)
-            {
-                return null;
-            }
+            var done = Enum.TryParse(typeof(BotTypeApi), KeyValuePairs[ConstConfigBot.IsBot].ToString(),
+                out var result);
+            if (!done || result == null) return null;
 
-            if (result is Enums.BotTypeApi r)
-            {
-                return r;
-            }
+            if (result is BotTypeApi r) return r;
 
             return null;
         }
 
-        internal bool SetIsBot(Enums.BotTypeApi v)
+        internal bool SetIsBot(BotTypeApi v)
         {
             KeyValuePairs[ConstConfigBot.IsBot] = v;
             return true;

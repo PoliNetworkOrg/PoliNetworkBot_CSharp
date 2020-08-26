@@ -1,18 +1,25 @@
-﻿using System;
+﻿#region
+
+using System;
+using PoliNetworkBot_CSharp.Code.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     public class BotDisguisedAsUserBotInfo : BotInfoAbstract
     {
-        internal new bool SetIsBot(Enums.BotTypeApi v)
+        public string? SessionUserId { get; set; }
+
+        internal new bool SetIsBot(BotTypeApi v)
         {
             return false;
         }
 
-        internal new Enums.BotTypeApi? IsBot()
+        internal new BotTypeApi? IsBot()
         {
-            return Enums.BotTypeApi.DISGUISED_BOT;
+            return BotTypeApi.DISGUISED_BOT;
         }
 
         internal long? GetUserId()
@@ -80,15 +87,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return SessionUserId;
         }
 
-        public string? SessionUserId { get; set; }
-
 
         internal void SetApiHash(string v)
         {
             KeyValuePairs[ConstConfigBot.ApiHash] = v;
         }
 
-        
+
         internal bool SetUserId(string v)
         {
             try

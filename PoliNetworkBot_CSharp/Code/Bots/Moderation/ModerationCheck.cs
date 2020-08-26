@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class ModerationCheck
     {
-        public static bool CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
+        public static async Task<bool> CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
         {
             switch (e.Message.Chat.Type)
             {
@@ -34,34 +34,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
-            if (dt != null && dt.Rows.Count > 0) return CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
+            if (dt != null && dt.Rows.Count > 0) return await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
 
             InsertGroup(sender, e);
-            return CheckIfToExit(sender, e, null);
+            return await CheckIfToExit(sender, e, null);
         }
 
-        private static bool CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
+        private static async Task<bool> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
         {
             switch (v)
             {
                 case null:
                 case DBNull _:
-                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValue(telegramBotClient, e);
                 case char b:
                     return b != 'Y';
                 case string s when string.IsNullOrEmpty(s):
-                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValue(telegramBotClient, e);
                 case string s:
                     return s != "Y";
                 default:
-                    return CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValue(telegramBotClient, e);
             }
         }
 
-        private static bool CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task<bool> CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
+            var r = await telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
+            
             //todo: check if admins are allowed and set valid column
-            telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
             return false;
         }
 

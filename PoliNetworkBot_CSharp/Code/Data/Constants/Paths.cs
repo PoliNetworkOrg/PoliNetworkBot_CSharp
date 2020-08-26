@@ -2,6 +2,8 @@
 {
     public static class Paths
     {
+        public const string Db = "Data Source=data/db.db";
+
         public static class Info
         {
             public const string ConfigBotsInfo = "config/bots_info.txt";
@@ -15,7 +17,5 @@
             public const string ConfigUserbot = "config/userbots.bin";
             public const string ConfigBotDisguisedAsUserbot = "config/botdisguisedasuserbots.bin";
         }
-
-        public const string Db = "Data Source=data/db.db";
     }
 }

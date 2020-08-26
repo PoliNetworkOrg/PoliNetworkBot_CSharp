@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -16,11 +17,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
-            var t = new Thread(() => MainMethod2(sender, e));
+            var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
         }
 
-        private static void MainMethod2(object sender, MessageEventArgs e)
+        private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
             TelegramBotClient telegramBotClientBot = null;
             if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
@@ -30,10 +31,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
-            var toExit = ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+            var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (toExit)
             {
-                LeaveChat.ExitFromChat(telegramBotClient, e);
+                await LeaveChat.ExitFromChat(telegramBotClient, e);
                 return;
             }
 
