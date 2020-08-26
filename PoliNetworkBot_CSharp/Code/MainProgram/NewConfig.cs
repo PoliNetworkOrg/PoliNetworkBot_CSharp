@@ -31,13 +31,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         }
 
         private static void ResetBotDisguisedAsUserBotMethod()
-        {
-            throw new NotImplementedException();
+        {           
+            throw  new NotImplementedException();
         }
 
         private static void ResetUserbotMethod()
         {
-            var lines = File.ReadAllText(Paths.ConfigUserBotsInfo).Split(RowSeparator);
+            var lines = File.ReadAllText(Paths.Info.ConfigUserBotsInfo).Split(RowSeparator);
             var botInfos = new List<UserBotInfo>();
             foreach (var t in lines)
             {
@@ -64,12 +64,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 botInfos.Add(bot);
             }
 
-            FileSerialization.WriteToBinaryFile(Paths.ConfigUserbot, botInfos);
+            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigUserbot, botInfos);
         }
 
         private static void ResetBotMethod()
         {
-            var lines = File.ReadAllText(Paths.ConfigBotsInfo).Split(RowSeparator);
+            var lines = File.ReadAllText(Paths.Info.ConfigBotsInfo).Split(RowSeparator);
             var botInfos = new List<BotInfo>();
             foreach (var t in lines)
             {
@@ -95,7 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 botInfos.Add(bot);
             }
 
-            FileSerialization.WriteToBinaryFile(Paths.ConfigBot, botInfos);
+            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigBot, botInfos);
         }
 
         private static void DestroyDB_And_Redo_it()

@@ -62,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadUserBotConfig()
         {
-            _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
+            _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.Bin.ConfigUserbot);
             if (_userBotsInfos != null && _userBotsInfos.Count != 0)
                 return ToExit.STAY;
 
@@ -78,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
+                    _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.Bin.ConfigUserbot);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadBotConfig()
         {
-            _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.ConfigBot);
+            _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.Bin.ConfigBot);
             if (_botInfos != null && _botInfos.Count != 0)
                 return ToExit.STAY;
 
@@ -112,7 +112,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.ConfigBot);
+                    _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.Bin.ConfigBot);
                 }
                 else
                 {
