@@ -1,5 +1,9 @@
-﻿using Telegram.Bot.Types.Enums;
+﻿#region
+
+using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {

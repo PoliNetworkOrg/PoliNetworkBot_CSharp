@@ -45,7 +45,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static async Task<TLAbsInputPeer> GetPeerUserWithAccessHash(string username, TelegramClient telegramClient)
+        public static async Task<TLAbsInputPeer> GetPeerUserWithAccessHash(string username,
+            TelegramClient telegramClient)
         {
             var r = await telegramClient.ResolveUsernameAsync(username);
             if (r?.Users == null)
@@ -54,8 +55,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var user = r.Users[0];
             if (!(user is TLUser user2))
                 return null;
-            
-            return user2.AccessHash != null ? new TLInputPeerUser() {AccessHash = user2.AccessHash.Value, UserId = user2.Id} : null;
+
+            return user2.AccessHash != null
+                ? new TLInputPeerUser {AccessHash = user2.AccessHash.Value, UserId = user2.Id}
+                : null;
         }
     }
 }

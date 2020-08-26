@@ -243,6 +243,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     break;
                 }
                 case BotTypeApi.USER_BOT:
@@ -250,18 +251,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
                     try
                     {
-                        var r = await this._userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                        var r = await _userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
                         return r != null;
                     }
                     catch (Exception e)
                     {
-                        if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username)) 
+                        if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username))
                             return false;
-                        
+
                         try
                         {
-                            peer = await UserbotPeer.GetPeerUserWithAccessHash(username, this._userbotClient);
-                            var r = await this._userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                            peer = await UserbotPeer.GetPeerUserWithAccessHash(username, _userbotClient);
+                            var r = await _userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
                             return r != null;
                         }
                         catch (Exception e2)

@@ -309,11 +309,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group
                 emojiReaction: "😎", messageId: 8, Telegram.Bot.Types.Enums.ChatType.Group);
             */
-            
-            
+
+
             var done = true;
             var bot = GlobalVariables.Bots[userId];
-            Media media = new Objects.TelegramMedia.Contact("+39 1234567890", 
+            Media media = new Contact("+39 1234567890",
                 "Mario", "Rossi", null);
             done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97");
             return done;
