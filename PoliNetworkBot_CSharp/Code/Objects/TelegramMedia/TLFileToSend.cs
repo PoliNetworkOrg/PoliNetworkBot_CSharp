@@ -28,29 +28,35 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         public async Task<TLAbsUpdates> SendMedia(TLAbsInputPeer peer, TelegramClient telegramClient,
             string caption, string username)
         {
+            TLAbsUpdates r2 = null;
             try
             {
-                var r = await SendMedia2(peer, telegramClient, caption);
-                return r;
+                r2 = await SendMedia2(peer, telegramClient, caption);
             }
             catch (Exception e)
             {
-                if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username))
+                ;
+            }
+
+            if (r2 != null)
+                return r2;
+            
+            if (string.IsNullOrEmpty(username))
                     return null;
 
-                try
-                {
-                    peer = await UserbotPeer.GetPeerUserWithAccessHash(username, telegramClient);
-                    var r = await SendMedia2(peer, telegramClient, caption);
-                    return r;
-                }
-                catch (Exception e2)
-                {
-                    return null;
-                }
-
+            try
+            {
+                peer = await UserbotPeer.GetPeerUserWithAccessHash(username, telegramClient);
+                var r = await SendMedia2(peer, telegramClient, caption);
+                return r;
+            }
+            catch (Exception e2)
+            {
                 return null;
             }
+
+            return null;
+            
         }
 
         private async Task<TLAbsUpdates> SendMedia2(TLAbsInputPeer peer, TelegramClient telegramClient, string caption)
