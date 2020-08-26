@@ -83,7 +83,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var groups = Groups.GetAllGroups();
                         Stream stream = new MemoryStream();
                         FileSerialization.SerializeFile(groups, ref stream);
-                        _ = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin"), e.Message.Chat.Id,
+                        _ = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin", 
+                                caption: null, mimeType: "application/octet-stream"), e.Message.Chat.Id,
                             "Here are all groups:", TextAsCaption.BEFORE_FILE,
                             sender);
                     }
