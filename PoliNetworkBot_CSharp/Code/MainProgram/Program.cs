@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -302,12 +303,20 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             // ReSharper disable once FunctionNeverReturns
         }
 
-        private static async Task TestThingsAsync(long userId)
+        private static async Task<bool> TestThingsAsync(long userId)
         {
             /*
             _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group
                 emojiReaction: "😎", messageId: 8, Telegram.Bot.Types.Enums.ChatType.Group);
             */
+            
+            
+            var done = true;
+            var bot = GlobalVariables.Bots[userId];
+            Media media = new Objects.TelegramMedia.Contact("+39 1234567890", 
+                "Mario", "Rossi", null);
+            done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97");
+            return done;
         }
     }
 }

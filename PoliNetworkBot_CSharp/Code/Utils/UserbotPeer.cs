@@ -1,7 +1,9 @@
 ﻿#region
 
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+using TLSharp.Core;
 
 #endregion
 
@@ -41,6 +43,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return null;
             }
+        }
+
+        public static async Task<TLAbsInputPeer> GetPeerUserWithAccessHash(string username, TelegramClient telegramClient)
+        {
+            var r = await telegramClient.ResolveUsernameAsync(username);
+            if (r?.Users == null)
+                return null;
+
+            var user = r.Users[0];
+            if (!(user is TLUser user2))
+                return null;
+            
+            return user2.AccessHash != null ? new TLInputPeerUser() {AccessHash = user2.AccessHash.Value, UserId = user2.Id} : null;
         }
     }
 }

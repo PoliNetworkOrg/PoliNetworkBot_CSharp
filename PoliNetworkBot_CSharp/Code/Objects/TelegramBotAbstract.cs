@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -163,6 +164,118 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                     return false;
 
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
+        }
+
+        internal async Task<bool> SendMedia(Media media, long chatid, ChatType chatType, string username = null)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                {
+                    var messageType = media.GetMediaBotType();
+                    switch (messageType)
+                    {
+                        case MessageType.Unknown:
+                            break;
+                        case MessageType.Text:
+                            break;
+                        case MessageType.Photo:
+                            break;
+                        case MessageType.Audio:
+                            break;
+                        case MessageType.Video:
+                            break;
+                        case MessageType.Voice:
+                            break;
+                        case MessageType.Document:
+                            break;
+                        case MessageType.Sticker:
+                            break;
+                        case MessageType.Location:
+                            break;
+                        case MessageType.Contact:
+                            break;
+                        case MessageType.Venue:
+                            break;
+                        case MessageType.Game:
+                            break;
+                        case MessageType.VideoNote:
+                            break;
+                        case MessageType.Invoice:
+                            break;
+                        case MessageType.SuccessfulPayment:
+                            break;
+                        case MessageType.WebsiteConnected:
+                            break;
+                        case MessageType.ChatMembersAdded:
+                            break;
+                        case MessageType.ChatMemberLeft:
+                            break;
+                        case MessageType.ChatTitleChanged:
+                            break;
+                        case MessageType.ChatPhotoChanged:
+                            break;
+                        case MessageType.MessagePinned:
+                            break;
+                        case MessageType.ChatPhotoDeleted:
+                            break;
+                        case MessageType.GroupCreated:
+                            break;
+                        case MessageType.SupergroupCreated:
+                            break;
+                        case MessageType.ChannelCreated:
+                            break;
+                        case MessageType.MigratedToSupergroup:
+                            break;
+                        case MessageType.MigratedFromGroup:
+                            break;
+                        case MessageType.Animation:
+                            break;
+                        case MessageType.Poll:
+                            break;
+                        case MessageType.Dice:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                }
+                case BotTypeApi.USER_BOT:
+                {
+                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    try
+                    {
+                        var r = await this._userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                        return r != null;
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username)) 
+                            return false;
+                        
+                        try
+                        {
+                            peer = await UserbotPeer.GetPeerUserWithAccessHash(username, this._userbotClient);
+                            var r = await this._userbotClient.Messages_SendMedia(peer, media.GetMediaTl());
+                            return r != null;
+                        }
+                        catch (Exception e2)
+                        {
+                            return false;
+                        }
+
+                        return false;
+                    }
+
+                    break;
+                }
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
