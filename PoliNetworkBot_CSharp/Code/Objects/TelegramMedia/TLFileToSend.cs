@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils;
 using TeleSharp.TL;
 using TLSharp.Core;
 
@@ -24,7 +26,34 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         }
 
         public async Task<TLAbsUpdates> SendMedia(TLAbsInputPeer peer, TelegramClient telegramClient,
-            string caption)
+            string caption, string username)
+        {
+            try
+            {
+                var r = await SendMedia2(peer, telegramClient, caption);
+                return r;
+            }
+            catch (Exception e)
+            {
+                if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username))
+                    return null;
+
+                try
+                {
+                    peer = await UserbotPeer.GetPeerUserWithAccessHash(username, telegramClient);
+                    var r = await SendMedia2(peer, telegramClient, caption);
+                    return r;
+                }
+                catch (Exception e2)
+                {
+                    return null;
+                }
+
+                return null;
+            }
+        }
+
+        private async Task<TLAbsUpdates> SendMedia2(TLAbsInputPeer peer, TelegramClient telegramClient, string caption)
         {
             if (this._tlInputFile != null)
             {

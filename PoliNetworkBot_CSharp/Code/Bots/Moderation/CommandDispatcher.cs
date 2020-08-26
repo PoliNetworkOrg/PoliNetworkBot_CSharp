@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
+using TeleSharp.TL;
 
 #endregion
 
@@ -83,10 +84,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var groups = Groups.GetAllGroups();
                         Stream stream = new MemoryStream();
                         FileSerialization.SerializeFile(groups, ref stream);
+                        TLAbsInputPeer peer2 = new TLInputPeerUser() { UserId = (int)e.Message.Chat.Id};
+                        var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.Chat.Id);
+                        string username = null;
+                        if (!string.IsNullOrEmpty(e.Message.From.Username))
+                        {
+                            username = e.Message.From.Username;
+                        }
+                        
                         _ = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin", 
-                                caption: null, mimeType: "application/octet-stream"), e.Message.Chat.Id,
+                                caption: null, mimeType: "application/octet-stream"), peer,
                             "Here are all groups:", TextAsCaption.BEFORE_FILE,
-                            sender);
+                            sender, username);
                     }
                     else
                     {

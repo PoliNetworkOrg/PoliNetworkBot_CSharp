@@ -1,11 +1,13 @@
 ﻿#region
 
+using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
+using TeleSharp.TL;
 
 #endregion
 
@@ -62,10 +64,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task<bool> SendFileAsync(TelegramFile file, long chatId,
-            string text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract)
+        internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,
+            string text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract, string username)
         {
-            return await telegramBotAbstract.SendFileAsync(file, chatId, text, textAsCaption);
+            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username);
         }
     }
 }

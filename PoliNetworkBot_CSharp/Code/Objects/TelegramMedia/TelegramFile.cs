@@ -12,7 +12,7 @@ using TLSharp.Core.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    internal class TelegramFile : Objects.TelegramMedia.Media
+    public class TelegramFile : Objects.TelegramMedia.Media
     {
         private readonly string _fileName;
         private readonly Stream _stream;

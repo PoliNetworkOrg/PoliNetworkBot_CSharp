@@ -250,31 +250,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 {
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
                     var media2 = await media.GetMediaTl(this._userbotClient);
+
+                    var r = await media2.SendMedia(peer, _userbotClient, caption, username);
+                    return r != null;
                     
-                    try
-                    {
-                        var r = await media2.SendMedia(peer, this._userbotClient, caption);
-                        return r != null;
-                    }
-                    catch (Exception e)
-                    {
-                        if (e.Message != "PEER_ID_INVALID" || string.IsNullOrEmpty(username))
-                            return false;
-
-                        try
-                        {
-                            peer = await UserbotPeer.GetPeerUserWithAccessHash(username, _userbotClient);
-                            var r = await media2.SendMedia(peer, this._userbotClient, caption);
-                            return r != null;
-                        }
-                        catch (Exception e2)
-                        {
-                            return false;
-                        }
-
-                        return false;
-                    }
-
                     break;
                 }
                 case BotTypeApi.DISGUISED_BOT:
@@ -286,15 +265,73 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> SendFileAsync(TelegramFile documentInput, long chatId, string text,
-            TextAsCaption textAsCaption)
+        internal async Task<bool> SendFileAsync(TelegramFile documentInput, Tuple<TLAbsInputPeer, long> peer,
+            string text,
+            TextAsCaption textAsCaption, string username)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    return await SendFileRealBot(documentInput, chatId, text, textAsCaption);
+                    var inputOnlineFile = documentInput.GetOnlineFile();
+                    switch (textAsCaption)
+                    {
+                        case TextAsCaption.AS_CAPTION:
+                        {
+                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile, text);
+                            return true;
+                        }
+
+                        case TextAsCaption.BEFORE_FILE:
+                        {
+                            _ = await _botClient.SendTextMessageAsync(peer.Item2, text);
+                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                            return true;
+                        }
+
+                        case TextAsCaption.AFTER_FILE:
+                        {
+                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                            _ = await _botClient.SendTextMessageAsync(peer.Item2, text);
+                            return true;
+                        }
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                    }
+
+
+                    return false;
+                
                 case BotTypeApi.USER_BOT:
-                    break;
+                    switch (textAsCaption)
+                    {
+                        case TextAsCaption.AS_CAPTION:
+                        {
+                            var tlFileToSend = await documentInput.GetMediaTl(this._userbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, text, username);
+                            return r != null;
+                        }
+
+                        case TextAsCaption.BEFORE_FILE:
+                        {
+                            var r2 = await _userbotClient.SendMessageAsync(peer.Item1, text);
+                            var tlFileToSend = await (documentInput).GetMediaTl(this._userbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
+                            return r!= null && r2 != null;
+                        }
+
+                        case TextAsCaption.AFTER_FILE:
+                        {
+                            var tlFileToSend = await documentInput.GetMediaTl(this._userbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
+                            var r2 = await _userbotClient.SendMessageAsync(peer.Item1, text);
+                            return r != null && r2 != null;
+                        }
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                    }
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -304,36 +341,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        private async Task<bool> SendFileRealBot(TelegramFile documentInput, long chatId, string text,
-            TextAsCaption textAsCaption)
-        {
-            var inputOnlineFile = documentInput.GetOnlineFile();
-            switch (textAsCaption)
-            {
-                case TextAsCaption.AS_CAPTION:
-                {
-                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile, text);
-                    return true;
-                }
-
-                case TextAsCaption.BEFORE_FILE:
-                {
-                    _ = await _botClient.SendTextMessageAsync(chatId, text);
-                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
-                    return true;
-                }
-
-                case TextAsCaption.AFTER_FILE:
-                {
-                    _ = await _botClient.SendDocumentAsync(chatId, inputOnlineFile);
-                    _ = await _botClient.SendTextMessageAsync(chatId, text);
-                    return true;
-                }
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
-            }
-        }
 
         internal string GetContactString()
         {
