@@ -41,6 +41,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var toExit2 = LoadUserBotConfig();
             if (toExit2 == ToExit.EXIT)
                 return;
+            
+            var toExit3 = LoadBotDisguisedAsUserBotConfig();
+            if (toExit3 == ToExit.EXIT)
+                return;
 
             GlobalVariables.LoadToRam();
 
@@ -49,6 +53,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             _ = StartBotsAsync();
 
             while (true) Console.ReadKey();
+        }
+
+        private static ToExit LoadBotDisguisedAsUserBotConfig()
+        {
+            throw new NotImplementedException();
         }
 
         private static ToExit LoadUserBotConfig()
@@ -62,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(false, true);
+                NewConfig.NewConfigMethod(false, true, false);
 
                 Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
@@ -96,7 +105,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(true, false);
+                NewConfig.NewConfigMethod(true, false, false);
 
                 Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
