@@ -131,7 +131,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static async Task StartBotsAsync()
         {
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
-            if (_botInfos != null)
+            if (_botInfos != null && false) //todo: remove &&false
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
@@ -148,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     botClient.StartReceiving();
                 }
 
-            if (_userBotsInfos != null)
+            if (_userBotsInfos != null && false) //todo: remove &&false
                 foreach (var userbot in _userBotsInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -178,7 +178,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
-                    int? userId = userbot.GetUserId();
+                    var userId = userbot.GetUserId();
                     if (userId != null)
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,

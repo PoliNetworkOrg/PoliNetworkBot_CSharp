@@ -1,5 +1,8 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Objects
+﻿using System;
+
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
+    [Serializable]
     public class BotDisguisedAsUserBotInfo : BotInfoAbstract
     {
         internal new bool SetIsBot(Enums.BotTypeApi v)
@@ -12,24 +15,93 @@
             return Enums.BotTypeApi.DISGUISED_BOT;
         }
 
-        public int? GetUserId()
+        internal long? GetUserId()
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.UserId]);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public int GetApiId()
+        internal int? GetApiId()
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.ApiId]);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public string GetApiHash()
+        internal string GetApiHash()
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                return KeyValuePairs[ConstConfigBot.ApiHash].ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public string GetSessionUserId()
+        private string GenerateSessionUserId_From_UserId()
         {
-            throw new System.NotImplementedException();
+            var id = GetUserId();
+            return id == null ? null : Convert.ToString(id.Value, 16).ToLower();
+        }
+
+        internal bool SetApiId(string v)
+        {
+            try
+            {
+                KeyValuePairs[ConstConfigBot.ApiId] = Convert.ToInt32(v);
+                return true;
+            }
+            catch
+            {
+                ;
+            }
+
+            return false;
+        }
+
+
+        internal string GetSessionUserId()
+        {
+            if (string.IsNullOrEmpty(SessionUserId)) SessionUserId = GenerateSessionUserId_From_UserId();
+
+            return SessionUserId;
+        }
+
+        public string? SessionUserId { get; set; }
+
+
+        internal void SetApiHash(string v)
+        {
+            KeyValuePairs[ConstConfigBot.ApiHash] = v;
+        }
+
+        
+        internal bool SetUserId(string v)
+        {
+            try
+            {
+                KeyValuePairs[ConstConfigBot.UserId] = Convert.ToInt32(v);
+                return true;
+            }
+            catch
+            {
+                ;
+            }
+
+            return false;
         }
     }
 }

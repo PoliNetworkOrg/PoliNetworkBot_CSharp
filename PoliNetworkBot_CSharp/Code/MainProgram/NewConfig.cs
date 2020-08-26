@@ -32,7 +32,32 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static void ResetBotDisguisedAsUserBotMethod()
         {           
-            throw  new NotImplementedException();
+            var lines = File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
+            var botInfos = new List<BotDisguisedAsUserBotInfo>();
+            foreach (var t in lines)
+            {
+                var line = t;
+                if (string.IsNullOrEmpty(line))
+                    continue;
+
+                line = line.Trim();
+
+                if (string.IsNullOrEmpty(line))
+                    continue;
+
+                var lineInfo = line.Split(ColumnSeparator);
+
+                var bot = new BotDisguisedAsUserBotInfo();
+                bot.SetApiId(lineInfo[0].Trim());
+                bot.SetApiHash(lineInfo[1].Trim());
+                bot.SetUserId(lineInfo[2].Trim());
+                bot.SetToken(lineInfo[3].Trim());
+                bot.SetIsBot(Enums.BotTypeApi.DISGUISED_BOT);
+
+                botInfos.Add(bot);
+            }
+
+            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigBotDisguisedAsUserbot, botInfos);
         }
 
         private static void ResetUserbotMethod()
