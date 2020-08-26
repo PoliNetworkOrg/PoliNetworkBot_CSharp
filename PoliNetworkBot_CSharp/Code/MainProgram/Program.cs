@@ -321,10 +321,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             var done = true;
             var bot = GlobalVariables.Bots[userId];
-            Media media = new Contact("+39 1234567890",
-                "Mario", "Rossi", null);
-            done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
-            done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot, "it");
+            //Media media = new Contact("+39 1234567890", "Mario", "Rossi", null);
+            //done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
+            //done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot, "it");
             return done;
         }
     }

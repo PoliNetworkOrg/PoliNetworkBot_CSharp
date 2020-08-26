@@ -81,6 +81,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
+            if (hasThisEntityAlreadyReachedItsLimit)
+            {
+                var languageList4 = new Language(dict: new Dictionary<string, string>()
+                {
+                    {"it", "Spiacente! In questo periodo hai inviato troppi messaggi"},
+                    {"en", "I'm sorry! In this period you have sent too many messages"}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
+                    ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                return false;
+            }
 
             var languageList2 = new Language(new Dictionary<string, string>
                 {
@@ -152,7 +163,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static bool CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
         {
-            throw new NotImplementedException();
+            return false; //todo: do a sql query to check how many messages have been already queued by that entity
         }
     }
 }
