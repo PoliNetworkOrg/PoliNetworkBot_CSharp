@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class CommandDispatcher
     {
-        public static void CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
+        public static async Task CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var cmdLines = e.Message.Text.Split(' ');
             var cmd = cmdLines[0];
@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 case "/start":
                 {
-                    Start(sender, e);
+                    await Start(sender, e);
                     return;
                 }
 
@@ -35,19 +35,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (GlobalVariables.Creators.Contains(e.Message.Chat.Id))
                         _ = ForceCheckInviteLinksAsync(sender, e);
                     else
-                        DefaultCommand(sender, e);
+                        await DefaultCommand(sender, e);
                     return;
                 }
 
                 case "/contact":
                 {
-                    ContactUs(sender, e);
+                    await ContactUs(sender, e);
                     return;
                 }
 
                 case "/help":
                 {
-                    Help(sender, e);
+                    await Help(sender, e);
                     return;
                 }
 
@@ -56,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         _ = BanAllAsync(sender, e, cmdLines);
                     else
-                        DefaultCommand(sender, e);
+                        await DefaultCommand(sender, e);
                     return;
                 }
 
@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id))
                         _ = UnbanAllAsync(sender, e, cmdLines[1]);
                     else
-                        DefaultCommand(sender, e);
+                        await DefaultCommand(sender, e);
                     return;
                 }
 
@@ -88,7 +88,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                     else
                     {
-                        DefaultCommand(sender, e);
+                        await DefaultCommand(sender, e);
                     }
 
                     return;
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/time":
                 {
-                    SendMessage.SendMessageInPrivate(sender, e, DateTimeClass.NowAsStringAmericanFormat());
+                    await SendMessage.SendMessageInPrivate(sender, e, DateTimeClass.NowAsStringAmericanFormat());
                     return;
                 }
 
@@ -108,7 +108,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 default:
                 {
-                    DefaultCommand(sender, e);
+                    await DefaultCommand(sender, e);
                     return;
                 }
             }
@@ -170,12 +170,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             else
             {
-                sender.SendTextMessageAsync(e.Message.From.Id, "You have to attach something! (A photo, for example)",
+                await sender.SendTextMessageAsync(e.Message.From.Id,
+                    "You have to attach something! (A photo, for example)",
                     ChatType.Private);
                 return false;
             }
 
-            sender.SendTextMessageAsync(e.Message.From.Id, "The message has been submitted correctly",
+            await sender.SendTextMessageAsync(e.Message.From.Id, "The message has been submitted correctly",
                 ChatType.Private);
             return true;
         }
@@ -203,7 +204,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
             var done = await RestrictUser.BanAllAsync(sender, e, target, false);
-            SendMessage.SendMessageInPrivate(sender, e,
+            await SendMessage.SendMessageInPrivate(sender, e,
                 "Target unbanned from " + done.Count + " groups");
         }
 
@@ -214,38 +215,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 if (target.Count < 2)
                 {
-                    sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", ChatType.Private);
+                    await sender.SendTextMessageAsync(e.Message.From.Id, "We can't find the target.", ChatType.Private);
                 }
                 else
                 {
                     var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
-                    SendMessage.SendMessageInPrivate(sender, e,
+                    await SendMessage.SendMessageInPrivate(sender, e,
                         "Target banned from " + done.Count + " groups");
                 }
             }
             else
             {
                 var done = await RestrictUser.BanAllAsync(sender, e, e.Message.ReplyToMessage.From.Id.ToString(), true);
-                SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e,
                     "Target banned from " + done.Count + " groups");
             }
         }
 
-        private static void DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            SendMessage.SendMessageInPrivate(sender, e,
+            await SendMessage.SendMessageInPrivate(sender, e,
                 "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)");
         }
 
-        private static void Help(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task Help(TelegramBotAbstract sender, MessageEventArgs e)
         {
             if (e.Message.Chat.Type == ChatType.Private)
-                HelpPrivate(sender, e);
+                await HelpPrivate(sender, e);
             else
-                SendMessage.SendMessageInPrivateOrAGroup(sender, e, "Questo messaggio funziona solo in chat privata");
+                await SendMessage.SendMessageInPrivateOrAGroup(sender, e,
+                    "Questo messaggio funziona solo in chat privata");
         }
 
-        private static void HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
         {
             const string text = "<i>Lista di funzioni</i>:\n" +
                                 "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
@@ -258,13 +260,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "\n👥 Gruppo consigliati e utili /groups\n" +
                                 "\n⚠ Hai già letto le regole del network? /rules\n" +
                                 "\n✍ Per contattarci /contact";
-            SendMessage.SendMessageInPrivate(sender, e, text, ParseMode.Html);
+            await SendMessage.SendMessageInPrivate(sender, e, text, ParseMode.Html);
         }
 
-        private static void ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
-            telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
+            await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
                 telegramBotClient.GetContactString(), e.Message.Chat.Type
             );
         }
@@ -272,13 +274,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
-            SendMessage.SendMessageInPrivate(sender, e, "I have updated n=" + n + " links");
+            await SendMessage.SendMessageInPrivate(sender, e, "I have updated n=" + n + " links");
         }
 
-        private static void Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
-            telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
+            await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
                 "Ciao! 👋\n" +
                 "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
                 "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite(),

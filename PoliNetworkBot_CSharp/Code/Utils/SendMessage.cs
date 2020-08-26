@@ -12,27 +12,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class SendMessage
     {
-        internal static void SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        internal static async Task<bool> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
+            MessageEventArgs e,
             string text)
         {
             try
             {
-                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, ParseMode.Html);
+                var r = await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                    ParseMode.Html);
+                if (r) return true;
             }
             catch
             {
-                var messageTo = GetMessageTo(e);
-                var messageFor = "Messaggio per";
-                var language = e.Message.From.LanguageCode.ToLower();
-                messageFor = language switch
-                {
-                    "en" => "Message for",
-                    _ => messageFor
-                };
-
-                var text2 = "[" + messageFor + " " + messageTo + "]\n\n" + text;
-                telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, e.Message.Chat.Type, ParseMode.Html);
+                // ignored
             }
+
+            var messageTo = GetMessageTo(e);
+            var messageFor = "Messaggio per";
+            var language = e.Message.From.LanguageCode.ToLower();
+            messageFor = language switch
+            {
+                "en" => "Message for",
+                _ => messageFor
+            };
+
+            var text2 = "[" + messageFor + " " + messageTo + "]\n\n" + text;
+            return await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text2, e.Message.Chat.Type,
+                ParseMode.Html);
         }
 
         private static string GetMessageTo(MessageEventArgs e)
@@ -42,13 +48,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
         }
 
-        internal static bool SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             string text, ParseMode html = ParseMode.Default)
         {
             try
             {
-                telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, html);
-                return true;
+                return await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, html);
             }
             catch
             {

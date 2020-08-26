@@ -28,7 +28,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             //todo: check user state
             SendMessage.SendMessageInPrivate(telegramBotClient, e,
-                "Ciao, al momento non è possibile fare conversazione col bot.\nTi consigliamo di premere /help per vedere le funzioni disponibili");
+                "Ciao, al momento non è possibile fare conversazione col bot.\n" +
+                "Ti consigliamo di premere /help per vedere le funzioni disponibili");
         }
     }
 }

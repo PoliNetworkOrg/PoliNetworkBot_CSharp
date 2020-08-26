@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class RestrictUser
     {
-        internal static void Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId)
+        internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId)
         {
             var permissions = new ChatPermissions
             {
@@ -29,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 CanSendMediaMessages = false
             };
             var untilDate = DateTime.Now.AddSeconds(time);
-            telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
         }
 
         internal static async Task<List<DataRow>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var targetId = await Info.GetTargetUserIdAsync(target, sender);
             if (targetId == null)
             {
-                SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e,
                     "We were not able to BanAll the target '" + target + "', error code " +
                     ErrorCodes.TargetInvalidWhenBanAll);
                 return null;
@@ -48,7 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var dt = SqLite.ExecuteSelect(q1);
             if (dt == null || dt.Rows.Count == 0)
             {
-                SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e,
                     "We were not able to BanAll the target '" + target + "', error code " +
                     ErrorCodes.DatatableEmptyWhenBanAll);
                 return null;

@@ -550,7 +550,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        public async Task<bool> CreateGroup(string name, string description, List<long> membersToInvite)
+        public async Task<bool> CreateGroup(string name, string description, IEnumerable<long> membersToInvite)
         {
             switch (_isbot)
             {

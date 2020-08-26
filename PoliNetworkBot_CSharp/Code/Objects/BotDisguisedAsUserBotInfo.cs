@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class BotDisguisedAsUserBotInfo : BotInfoAbstract
     {
-        public string? SessionUserId { get; set; }
+        public string SessionUserId { get; set; }
 
         internal new bool SetIsBot(BotTypeApi v)
         {

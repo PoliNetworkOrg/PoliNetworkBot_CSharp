@@ -136,7 +136,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return true;
                 case MessageType.Photo:
                     return await SendPhotoFromDataRow(dr, botClass);
-                    return true;
                 case MessageType.Audio:
                     break;
                 case MessageType.Video:
@@ -209,7 +208,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (messageType == false || typeT == null)
                 return null;
 
-            MessageType typeT2;
             if (typeT is MessageType t)
                 return t;
             return null;

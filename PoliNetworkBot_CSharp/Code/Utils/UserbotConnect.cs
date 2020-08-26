@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var numberToAuthenticate = userbot.GetPhoneNumber();
             var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
-            var code = "";
+            const string code = "";
             var passwordToAuthenticate = userbot.GetPasswordToAuthenticate();
 
 

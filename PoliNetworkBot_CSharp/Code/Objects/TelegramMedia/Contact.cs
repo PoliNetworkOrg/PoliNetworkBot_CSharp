@@ -9,17 +9,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
     public class Contact : Media
     {
-        private readonly string firstName;
-        private readonly string lastName;
-        private readonly string phoneNumber;
-        private readonly string vCard;
+        private readonly string _firstName;
+        private readonly string _lastName;
+        private readonly string _phoneNumber;
+        private readonly string _vCard;
 
         public Contact(string phoneNumber, string firstName, string lastName, string vCard)
         {
-            this.phoneNumber = phoneNumber;
-            this.lastName = lastName;
-            this.firstName = firstName;
-            this.vCard = vCard;
+            _phoneNumber = phoneNumber;
+            _lastName = lastName;
+            _firstName = firstName;
+            _vCard = vCard;
         }
 
         public override MessageType? GetMediaBotType()
@@ -31,8 +31,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         {
             return new TLInputMediaContact
             {
-                FirstName = firstName,
-                LastName = lastName, PhoneNumber = phoneNumber
+                FirstName = _firstName,
+                LastName = _lastName, PhoneNumber = _phoneNumber
             };
         }
     }
