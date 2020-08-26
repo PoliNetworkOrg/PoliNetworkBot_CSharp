@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -317,6 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             Media media = new Contact("+39 1234567890",
                 "Mario", "Rossi", null);
             done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97");
+            done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot);
             return done;
         }
     }

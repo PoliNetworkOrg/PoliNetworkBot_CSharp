@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+using TLSharp.Core;
 
 #endregion
 
@@ -68,6 +69,37 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract, string username)
         {
             return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username);
+        }
+
+        public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient, 
+            TLAbsInputPeer peer, string text, string username)
+        {
+            TLAbsUpdates r2 = null;
+            try
+            {
+                r2 = await userbotClient.SendMessageAsync(peer, text);
+            }
+            catch
+            {
+                if (string.IsNullOrEmpty(username))
+                {
+                    return null;
+                }
+         
+                var peerBetter = await UserbotPeer.GetPeerUserWithAccessHash(username, userbotClient);
+
+                try
+                {
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text);
+                }
+                catch
+                {
+                    return null;
+                }
+                                
+            }
+
+            return r2;
         }
     }
 }

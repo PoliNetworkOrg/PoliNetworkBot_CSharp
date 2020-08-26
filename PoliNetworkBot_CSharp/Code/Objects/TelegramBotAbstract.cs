@@ -314,7 +314,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         case TextAsCaption.BEFORE_FILE:
                         {
-                            var r2 = await _userbotClient.SendMessageAsync(peer.Item1, text);
+                            var r2 = await Utils.SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
                             var tlFileToSend = await (documentInput).GetMediaTl(this._userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
                             return r!= null && r2 != null;
@@ -324,7 +324,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             var tlFileToSend = await documentInput.GetMediaTl(this._userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username);
-                            var r2 = await _userbotClient.SendMessageAsync(peer.Item1, text);
+                            var r2 = await Utils.SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username);
                             return r != null && r2 != null;
                         }
 
