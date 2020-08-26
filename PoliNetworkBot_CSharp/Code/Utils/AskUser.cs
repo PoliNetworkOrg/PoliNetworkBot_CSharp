@@ -28,12 +28,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract telegramBotAbstract)
         {
             var tcs = new TaskCompletionSource<string>();
-            UserAnswers[idUser].WorkCompleted += result =>
+            UserAnswers[idUser].WorkCompleted += async result =>
             {
                 if (sendMessageConfirmationChoice)
                 {
                     var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                    telegramBotAbstract.SendTextMessageAsync(idUser,
+                    await telegramBotAbstract.SendTextMessageAsync(idUser,
                         "You choose [" + result + "]",
                         ChatType.Private, default, replyMarkup);
                 }
@@ -49,9 +49,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var toSend = question.Select(lang);
             UserAnswers[id] = new AnswerTelegram();
-            var replyMarkupObject = new ReplyMarkupObject(KeyboardMarkup.OptionsStringToKeyboard(options, lang));
+            var replyMarkupObject = new ReplyMarkupObject(
+                new ReplyMarkupOptions( 
+                    KeyboardMarkup.OptionsStringToKeyboard(options, lang)
+                    )
+                );
 
-            sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
+            await sender.SendTextMessageAsync(id, toSend, ChatType.Private, default, replyMarkupObject);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender);
         }
     }

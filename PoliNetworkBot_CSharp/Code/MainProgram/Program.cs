@@ -24,36 +24,75 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static void Main()
         {
-            Console.WriteLine("Hello World! Welcome to our bots system!\n" +
-                              "If you want to reset everything, write 'n'. If not, write another character");
-            var readChoice = Console.ReadLine();
-            if (!string.IsNullOrEmpty(readChoice))
-                if (readChoice.StartsWith("n"))
+            var readChoice = MainGetMenuChoice();
+
+            switch (readChoice)
+            {
+                case '1': //reset everything
                 {
-                    NewConfig.NewConfigMethod(true, true, true);
-                    Console.WriteLine("Reset done!");
+                    ResetEverything();
                     return;
                 }
 
-            var toExit = LoadBotConfig();
-            if (toExit == ToExit.EXIT)
-                return;
+                case '2': //normal mode
+                case '3': //disguised bot test
+                {
+                    var toExit = LoadBotConfig();
+                    if (toExit == ToExit.EXIT)
+                        return;
 
-            var toExit2 = LoadUserBotConfig();
-            if (toExit2 == ToExit.EXIT)
-                return;
+                    var toExit2 = LoadUserBotConfig();
+                    if (toExit2 == ToExit.EXIT)
+                        return;
 
-            var toExit3 = LoadBotDisguisedAsUserBotConfig();
-            if (toExit3 == ToExit.EXIT)
-                return;
+                    var toExit3 = LoadBotDisguisedAsUserBotConfig();
+                    if (toExit3 == ToExit.EXIT)
+                        return;
 
-            GlobalVariables.LoadToRam();
+                    GlobalVariables.LoadToRam();
 
-            Console.WriteLine("\nTo kill this process, you have to check the process list");
+                    Console.WriteLine("\nTo kill this process, you have to check the process list");
 
-            _ = StartBotsAsync();
+                    _ = StartBotsAsync(advancedModeDebugDisguised: readChoice == '3');
 
-            while (true) Console.ReadKey();
+                    while (true) Console.ReadKey();
+                    return;
+                }
+            }
+            
+        }
+
+        private static void ResetEverything()
+        {
+            NewConfig.NewConfigMethod(true, true, true);
+            Console.WriteLine("Reset done!");
+        }
+
+        private static char MainGetMenuChoice()
+        {
+            while (true)
+            {
+                Console.WriteLine("Welcome to our bots system!\n" +
+                                  "What do you want to do?\n" +
+                                  "1) Reset everything\n" +
+                                  "2) Normal mode\n" +
+                                  "3) Disguised bot test\n");
+
+                var reply = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(reply))
+                {
+                    var first = reply[0];
+
+                    switch (first)
+                    {
+                        case '1':
+                        case '2':
+                        case '3':
+                            return first;
+                    }
+                }
+            }
         }
 
         private static ToExit LoadBotDisguisedAsUserBotConfig()
@@ -162,10 +201,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static async Task StartBotsAsync()
+        private static async Task StartBotsAsync(bool advancedModeDebugDisguised)
         {
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
-            if (_botInfos != null && false) //todo: remove &&false
+            if (_botInfos != null && advancedModeDebugDisguised == false)
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
@@ -183,7 +222,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     botClient.StartReceiving();
                 }
 
-            if (_userBotsInfos != null && false) //todo: remove &&false
+            if (_userBotsInfos != null && advancedModeDebugDisguised == false)
                 foreach (var userbot in _userBotsInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -245,7 +284,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             var done = true;
             var bot = GlobalVariables.Bots[userId];
-            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
+            var replyMarkupObject = new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE);
+            await bot.SendTextMessageAsync(5651789, "ciao test", ChatType.Private, 
+                parseMode: default, replyMarkupObject: replyMarkupObject);
             done &= await bot.CreateGroup("Gruppo test by bot", null, new List<long> {5651789});
 
             return done;

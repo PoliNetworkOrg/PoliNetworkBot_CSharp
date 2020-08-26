@@ -142,7 +142,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     IReplyMarkup reply = null;
-                    if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkup();
+                    if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
 
                     var m1 = await _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                     return m1 != null;
@@ -151,7 +151,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
                     try
                     {
-                        var m2 = await _userbotClient.SendMessageAsync(peer, text);
+                        TLAbsReplyMarkup replyMarkup = null;
+                        if (replyMarkupObject != null) replyMarkup = replyMarkupObject.GetReplyMarkupUserBot();
+                        var m2 = await _userbotClient.SendMessageAsync(peer, text, replyMarkup: replyMarkup);
                         return m2 != null;
                     }
                     catch (Exception e)
