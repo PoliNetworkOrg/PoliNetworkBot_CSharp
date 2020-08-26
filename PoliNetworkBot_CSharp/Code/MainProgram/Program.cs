@@ -57,7 +57,36 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadBotDisguisedAsUserBotConfig()
         {
-            throw new NotImplementedException();
+            _botDisguisedAsUserBotInfos = FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin.ConfigBotDisguisedAsUserbot);
+            if (_botDisguisedAsUserBotInfos != null && _botDisguisedAsUserBotInfos.Count != 0)
+                return ToExit.STAY;
+
+            Console.WriteLine(
+                "It seems that the bot disguised as userbot configuration isn't available. Do you want to reset it? (Y/N)");
+            var readChoice2 = Console.ReadLine();
+            if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
+            {
+                NewConfig.NewConfigMethod(false, false, true);
+
+                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                var readChoice3 = Console.ReadLine();
+                if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
+                {
+                    //ok, keep going
+                    _botDisguisedAsUserBotInfos = FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin.ConfigBotDisguisedAsUserbot);
+                }
+                else
+                {
+                    Console.WriteLine("Ok, bye!");
+                    return ToExit.EXIT;
+                }
+            }
+            else
+            {
+                return ToExit.EXIT;
+            }
+
+            return ToExit.STAY;
         }
 
         private static ToExit LoadUserBotConfig()
