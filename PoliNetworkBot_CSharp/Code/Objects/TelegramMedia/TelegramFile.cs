@@ -43,11 +43,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             _stream.Seek(0, SeekOrigin.Begin);
             var streamReader = new StreamReader(this._stream);
             var r = await client.UploadFile(this._fileName, streamReader);
-            
+
+            var attributes = new TLVector<TLAbsDocumentAttribute>();
+            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename() {FileName = this._fileName};
+            attributes.Add(att1);
             return r switch
             {
                 null => null,
-                TLInputFile r2 => new TlFileToSend(r2, _mimeType, null),
+                TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
                 _ => null
             };
         }

@@ -65,6 +65,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             {
                 try
                 {
+                    caption ??= "";
+                    
                     var r = await telegramClient.SendUploadedDocument(peer, this._tlInputFile,
                         caption: caption, mimeType: mimeType, attributes: attributes);
                     return r;
