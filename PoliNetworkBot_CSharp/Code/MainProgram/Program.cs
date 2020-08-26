@@ -18,7 +18,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
     internal static class Program
     {
         private static List<BotInfo> _botInfos;
-        private static List<UserBotInfo> _userBots;
+        private static List<UserBotInfo> _userBotsInfos;
+        private static List<BotDisguisedAsUserBotInfo> _botDisguisedAsUserBotInfos;
 
         private static void Main()
         {
@@ -28,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             if (!string.IsNullOrEmpty(readChoice))
                 if (readChoice.StartsWith("n"))
                 {
-                    NewConfig.NewConfigMethod(true, true);
+                    NewConfig.NewConfigMethod(true, true, true);
                     Console.WriteLine("Reset done!");
                     return;
                 }
@@ -52,8 +53,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadUserBotConfig()
         {
-            _userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
-            if (_userBots != null && _userBots.Count != 0)
+            _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
+            if (_userBotsInfos != null && _userBotsInfos.Count != 0)
                 return ToExit.STAY;
 
             Console.WriteLine(
@@ -68,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _userBots = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
+                    _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.ConfigUserbot);
                 }
                 else
                 {
@@ -138,8 +139,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     botClient.StartReceiving();
                 }
 
-            if (_userBots != null)
-                foreach (var userbot in _userBots)
+            if (_userBotsInfos != null)
+                foreach (var userbot in _userBotsInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.GetUserId();

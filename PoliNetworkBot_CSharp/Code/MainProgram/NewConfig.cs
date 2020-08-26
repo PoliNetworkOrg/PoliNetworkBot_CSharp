@@ -16,18 +16,28 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
     public static class NewConfig
     {
-        public static void NewConfigMethod(bool resetBot, bool resetUserbot)
+        private const string RowSeparator = "| _:r:_ |";
+        private const string ColumnSeparator = "| _:c:_ |";
+        
+        public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot)
         {
             if (resetBot) ResetBotMethod();
 
-            if (resetUserbot) ResetUserbotMethod();
+            if (resetUserBot) ResetUserbotMethod();
+
+            if (resetBotDisguisedAsUserBot) ResetBotDisguisedAsUserBotMethod();
 
             DestroyDB_And_Redo_it();
         }
 
+        private static void ResetBotDisguisedAsUserBotMethod()
+        {
+            throw new NotImplementedException();
+        }
+
         private static void ResetUserbotMethod()
         {
-            var lines = File.ReadAllText(Paths.ConfigUserBotsInfo).Split("| _:r:_ |");
+            var lines = File.ReadAllText(Paths.ConfigUserBotsInfo).Split(RowSeparator);
             var botInfos = new List<UserBotInfo>();
             foreach (var t in lines)
             {
@@ -40,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (string.IsNullOrEmpty(line))
                     continue;
 
-                var lineInfo = line.Split("| _:c:_ |");
+                var lineInfo = line.Split(ColumnSeparator);
 
                 var bot = new UserBotInfo();
                 bot.SetApiId(lineInfo[0].Trim());
@@ -58,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static void ResetBotMethod()
         {
-            var lines = File.ReadAllText(Paths.ConfigBotsInfo).Split("| _:r:_ |");
+            var lines = File.ReadAllText(Paths.ConfigBotsInfo).Split(RowSeparator);
             var botInfos = new List<BotInfo>();
             foreach (var t in lines)
             {
@@ -71,7 +81,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (string.IsNullOrEmpty(line))
                     continue;
 
-                var lineInfo = line.Split("| _:c:_ |");
+                var lineInfo = line.Split(ColumnSeparator);
 
                 var bot = new BotInfo();
                 bot.SetToken(lineInfo[0].Trim());
