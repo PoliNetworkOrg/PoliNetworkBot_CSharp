@@ -170,7 +170,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
                     GlobalVariables.Bots[botClient.BotId] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(), Enums.BotTypeApi.REAL_BOT);
+                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                            BotTypeApi.REAL_BOT);
                     if (!bot.AcceptsMessages())
                         continue;
 
@@ -190,7 +191,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (userId != null)
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, Enums.BotTypeApi.USER_BOT);
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT);
 
                         _ = TestThingsAsync(userId.Value);
                     }
@@ -216,7 +217,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
                             userbot.GetWebsite(), userbot.GetContactString(), userId.Value,
-                            Enums.BotTypeApi.DISGUISED_BOT);
+                            BotTypeApi.DISGUISED_BOT);
 
                         _ = TestThingsDisguisedAsync(userId.Value);
                     }
@@ -242,7 +243,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static async Task TestThingsDisguisedAsync(long userId)
         {
-            Data.GlobalVariables.Bots[userId].SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
+            GlobalVariables.Bots[userId].SendTextMessageAsync(5651789, "ciao test", ChatType.Private);
         }
 
         private static async void CheckMessagesToSend()

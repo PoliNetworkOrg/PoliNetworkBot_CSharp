@@ -40,7 +40,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await CheckIfToExit(sender, e, null);
         }
 
-        private static async Task<bool> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e, object v)
+        private static async Task<bool> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+            object v)
         {
             switch (v)
             {
@@ -58,10 +59,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task<bool> CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task<bool> CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient,
+            MessageEventArgs e)
         {
             var r = await telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
-            
+
             //todo: check if admins are allowed and set valid column
             return false;
         }

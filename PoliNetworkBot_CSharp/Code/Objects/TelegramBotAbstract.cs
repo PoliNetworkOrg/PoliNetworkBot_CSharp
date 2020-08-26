@@ -24,12 +24,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly TelegramBotClient _botClient;
         private readonly string _contactString;
         private readonly int _id;
-        private readonly Enums.BotTypeApi _isbot;
+        private readonly BotTypeApi _isbot;
         private readonly TelegramClient _userbotClient;
 
         private readonly string _website;
 
-        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString, Enums.BotTypeApi botTypeApi)
+        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString,
+            BotTypeApi botTypeApi)
         {
             _botClient = botClient;
             _isbot = botTypeApi;
@@ -37,7 +38,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             _contactString = contactString;
         }
 
-        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id, Enums.BotTypeApi botTypeApi)
+        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id,
+            BotTypeApi botTypeApi)
         {
             _userbotClient = userbotClient;
             _isbot = botTypeApi;
@@ -58,7 +60,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
         {
-
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
@@ -113,7 +114,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
         }
 
         internal int GetId()
@@ -129,6 +129,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return _id;
         }
 
@@ -136,7 +137,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             ChatType chatType, ParseMode parseMode = ParseMode.Default,
             ReplyMarkupObject replyMarkupObject = null)
         {
-
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
@@ -146,10 +146,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var m1 = await _botClient.SendTextMessageAsync(chatid, text, parseMode, replyMarkup: reply);
                     return m1 != null;
                 case BotTypeApi.USER_BOT:
-                    
+
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
                     var m2 = await _userbotClient.SendMessageAsync(peer, text);
-                    return m2!= null;
+                    return m2 != null;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -177,9 +177,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        private async Task<bool> SendFileRealBot(TelegramFile documentInput, long chatId, string text, TextAsCaption textAsCaption)
+        private async Task<bool> SendFileRealBot(TelegramFile documentInput, long chatId, string text,
+            TextAsCaption textAsCaption)
         {
-            
             var inputOnlineFile = documentInput.GetOnlineFile();
             switch (textAsCaption)
             {
@@ -206,7 +206,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
             }
-
         }
 
         internal string GetContactString()
@@ -220,14 +219,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     var admins = await _botClient.GetChatAdministratorsAsync(chatId);
-                    return admins.Any(admin => admin.User.Id == userId);;
+                    return admins.Any(admin => admin.User.Id == userId);
+                    ;
                 case BotTypeApi.USER_BOT:
                     var r = await _userbotClient.ChannelsGetParticipant(
                         UserbotPeer.GetPeerChannelFromIdAndType(chatId),
                         UserbotPeer.GetPeerUserFromdId(userId));
 
                     return r.Participant is TLChannelParticipantModerator ||
-                           r.Participant is TLChannelParticipantCreator;;
+                           r.Participant is TLChannelParticipantCreator;
+                    ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -264,9 +265,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
                 case BotTypeApi.USER_BOT:
                     var updates =
-                        await _userbotClient.SendMessageReactionAsync(UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
+                        await _userbotClient.SendMessageReactionAsync(
+                            UserbotPeer.GetPeerFromIdAndType(chatId, chatType),
                             messageId, emojiReaction);
-                    return updates != null;;
+                    return updates != null;
+                    ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -281,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    
+
                     var untilDate = DateTimeClass.GetUntilDate(time);
 
                     try
@@ -291,18 +294,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             await _botClient.KickChatMemberAsync(groupChatId, target);
                             return true;
                         }
-                        else
-                        {
-                            await _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
-                            return true;
-                        }
+
+                        await _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
+                        return true;
                     }
                     catch
                     {
                         return false;
                     }
 
-                    return true;;
+                    return true;
+                    ;
                 case BotTypeApi.USER_BOT:
                     return false;
                 case BotTypeApi.DISGUISED_BOT:
@@ -312,7 +314,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
 
             return false;
-
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()
@@ -322,7 +323,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     return null;
                 case BotTypeApi.USER_BOT:
-                    return await _userbotClient.GetUserDialogsAsync(limit: 100);;
+                    return await _userbotClient.GetUserDialogsAsync(limit: 100);
+                    ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -337,7 +339,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    return await this._botClient.GetChatAdministratorsAsync(id);
+                    return await _botClient.GetChatAdministratorsAsync(id);
                 case BotTypeApi.USER_BOT:
                     break;
                 case BotTypeApi.DISGUISED_BOT:
@@ -345,7 +347,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             return null;
         }
 
@@ -362,7 +364,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     catch
                     {
                         return false;
-                    };
+                    }
+
+                    ;
                 case BotTypeApi.USER_BOT:
                     break;
                 case BotTypeApi.DISGUISED_BOT:
@@ -370,7 +374,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             return false;
         }
 
@@ -399,9 +403,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
                         objectPhoto.GetTelegramBotInputOnlineFile(), caption);
-                    return m1 != null;;
+                    return m1 != null;
+                    ;
                 case BotTypeApi.USER_BOT:
-                    
+
                     var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
                     if (photoFile == null)
                         return false;
@@ -415,7 +420,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
 
             return false;
         }
