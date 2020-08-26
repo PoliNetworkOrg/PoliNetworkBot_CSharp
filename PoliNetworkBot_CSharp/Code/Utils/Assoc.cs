@@ -83,7 +83,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
             if (hasThisEntityAlreadyReachedItsLimit)
             {
-                var languageList4 = new Language(dict: new Dictionary<string, string>()
+                var languageList4 = new Language(new Dictionary<string, string>
                 {
                     {"it", "Spiacente! In questo periodo hai inviato troppi messaggi"},
                     {"en", "I'm sorry! In this period you have sent too many messages"}
