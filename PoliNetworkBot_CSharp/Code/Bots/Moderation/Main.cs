@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.Text.StartsWith("/"))
                 await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             else
-                TextConversation.DetectMessage(telegramBotClient, e);
+                await TextConversation.DetectMessage(telegramBotClient, e);
         }
     }
 }

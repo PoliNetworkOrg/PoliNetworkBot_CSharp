@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Assoc
     {
-        internal static async Task<int?> GetIdEntityFromPersonAsync(int id, Language question,
+        private static async Task<int?> GetIdEntityFromPersonAsync(int id, Language question,
             TelegramBotAbstract sender, string lang, string username)
         {
             const string q =
