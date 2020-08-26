@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -56,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case "/banAll":
                 {
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id))
-                        _ = BanAllAsync(sender, e, cmdLines, lang: e.Message.From.LanguageCode, e.Message.From.Username);
+                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
                     else
                         await DefaultCommand(sender, e);
                     return;
@@ -94,17 +93,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/time":
                 {
-                    var lang = new Language(dict: new Dictionary<string, string>()
+                    var lang = new Language(new Dictionary<string, string>
                     {
                         {"", DateTimeClass.NowAsStringAmericanFormat()}
                     });
-                    await SendMessage.SendMessageInPrivate(sender, e, lang );
+                    await SendMessage.SendMessageInPrivate(sender, e, lang);
                     return;
                 }
 
                 case "/assoc_send":
                 {
-                    _ = Utils.Assoc.Assoc_SendAsync(sender, e);
+                    _ = Assoc.Assoc_SendAsync(sender, e);
                     return;
                 }
 
@@ -126,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, chatId);
 
 
-            Language text2 = new Language(dict: new Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", "Here are all groups:"},
                 {"it", "Ecco tutti i gruppi:"}
@@ -134,7 +133,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
-                sender, username, lang: lang);
+                sender, username, lang);
         }
 
         private static async Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -160,7 +159,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
             var done = await RestrictUser.BanAllAsync(sender, e, target, false);
-            var text2 = new Language(dict: new  Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", "Target unbanned from " + done.Count + " groups"},
                 {"it", "Target sbannato da " + done.Count + " gruppi"}
@@ -175,19 +174,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 if (target.Count < 2)
                 {
-                    var lang2 = new Language(dict: new Dictionary<string, string>()
+                    var lang2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "We can't find the target."},
                         {"it", "Non riusciamo a trovare il bersaglio"}
                     });
-                    await sender.SendTextMessageAsync(e.Message.From.Id, text: lang2, chatType: ChatType.Private,
-                        lang: lang, ParseMode.Default, username: username, 
+                    await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
+                        lang, ParseMode.Default, username: username,
                         replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
                 }
                 else
                 {
                     var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
-                    var text2 = new Language(dict:new Dictionary<string, string>()
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "Target banned from " + done.Count + " groups"},
                         {"it", "Target bannato da " + done.Count + " gruppi"}
@@ -198,7 +197,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             else
             {
                 var done = await RestrictUser.BanAllAsync(sender, e, e.Message.ReplyToMessage.From.Id.ToString(), true);
-                Language text3 = new Language(dict: new Dictionary<string, string>()
+                var text3 = new Language(new Dictionary<string, string>
                 {
                     {"en", "Target banned from " + done.Count + " groups"},
                     {"it", "Target bannato da " + done.Count + " gruppi"}
@@ -209,12 +208,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            Language text2 = new Language(dict: new Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", 
-                    "I'm sorry, but I don't know this command. Try to ask the administrators (/contact)"},
-                {"it", 
-                    "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)"}
+                {
+                    "en",
+                    "I'm sorry, but I don't know this command. Try to ask the administrators (/contact)"
+                },
+                {
+                    "it",
+                    "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)"
+                }
             });
             await SendMessage.SendMessageInPrivate(sender, e, text2);
         }
@@ -222,16 +225,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task Help(TelegramBotAbstract sender, MessageEventArgs e)
         {
             if (e.Message.Chat.Type == ChatType.Private)
+            {
                 await HelpPrivate(sender, e);
+            }
             else
             {
-                var lang = new Language(dict:new Dictionary<string, string>()
+                var lang = new Language(new Dictionary<string, string>
                 {
                     {"it", "Questo messaggio funziona solo in chat privata"},
                     {"en", "This command only works in private chat with me"}
                 });
                 await SendMessage.SendMessageInPrivateOrAGroup(sender, e,
-                    text: lang, e.Message.From.LanguageCode, e.Message.From.Username);
+                    lang, e.Message.From.LanguageCode, e.Message.From.Username);
             }
         }
 
@@ -248,22 +253,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "\n👥 Gruppo consigliati e utili /groups\n" +
                                 "\n⚠ Hai già letto le regole del network? /rules\n" +
                                 "\n✍ Per contattarci /contact";
-            
-            
+
+
             const string textEng = "<i>List of features</i>:\n" +
-                                "\n📑 Review system of courses (for more info /help_review)\n" +
-                                "\n🔖 Link to notes (for more info /help_material)\n" +
-                                "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
-                                "FAQ (frequently asked questions)</a>\n" +
-                                "\n🏫 Bot to find free rooms @AulePolimiBot\n" +
-                                "\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
-                                "\n🎙️ Record of lessons (for more info /help_record)\n" +
-                                "\n👥 Recommended groups /groups\n" +
-                                "\n⚠ Have you already read our network rules? /rules\n" +
-                                "\n✍ To contact us /contact";
+                                   "\n📑 Review system of courses (for more info /help_review)\n" +
+                                   "\n🔖 Link to notes (for more info /help_material)\n" +
+                                   "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                                   "FAQ (frequently asked questions)</a>\n" +
+                                   "\n🏫 Bot to find free rooms @AulePolimiBot\n" +
+                                   "\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
+                                   "\n🎙️ Record of lessons (for more info /help_record)\n" +
+                                   "\n👥 Recommended groups /groups\n" +
+                                   "\n⚠ Have you already read our network rules? /rules\n" +
+                                   "\n✍ To contact us /contact";
 
 
-            Language text2 = new Language(dict: new Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", textEng},
                 {"it", text}
@@ -274,25 +279,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
-            var lang2 = new Language(dict: new Dictionary<string, string>()
+            var lang2 = new Language(new Dictionary<string, string>
             {
                 {"it", telegramBotClient.GetContactString()},
-                { "en", telegramBotClient.GetContactString() }
+                {"en", telegramBotClient.GetContactString()}
             });
             await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
-                lang2, e.Message.Chat.Type, lang: e.Message.From.LanguageCode, 
-                parseMode: ParseMode.Default, 
-                replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username 
+                lang2, e.Message.Chat.Type, e.Message.From.LanguageCode,
+                ParseMode.Default,
+                new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username
             );
         }
 
         private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
-            Language text2 = new Language(dict: new Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", "I have updated n=" + n + " links"},
-                { "it", "Ho aggiornato n=" + n + " link"}
+                {"it", "Ho aggiornato n=" + n + " link"}
             });
             await SendMessage.SendMessageInPrivate(sender, e, text2);
         }
@@ -300,20 +305,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
-            Language lang2 = new Language(dict: new Dictionary<string, string>()
+            var lang2 = new Language(new Dictionary<string, string>
             {
-                {"it", "Ciao! 👋\n" +
-                       "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
-                       "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite()},
-                {"en", "Hi! 👋\n" +
-                       "\nWrite /help for the complete list of my functions👀\n" +
-                       "\nAlso visit our site " + telegramBotClient.GetWebSite()}
-                
+                {
+                    "it", "Ciao! 👋\n" +
+                          "\nScrivi /help per la lista completa delle mie funzioni 👀\n" +
+                          "\nVisita anche il nostro sito " + telegramBotClient.GetWebSite()
+                },
+                {
+                    "en", "Hi! 👋\n" +
+                          "\nWrite /help for the complete list of my functions👀\n" +
+                          "\nAlso visit our site " + telegramBotClient.GetWebSite()
+                }
             });
-            await telegramBotClient.SendTextMessageAsync(chatid: e.Message.Chat.Id,
-                text:lang2,
-                chatType: e.Message.Chat.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: e.Message.From.LanguageCode, username: e.Message.From.Username, parseMode: ParseMode.Default 
+            await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
+                lang2,
+                e.Message.Chat.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                lang: e.Message.From.LanguageCode, username: e.Message.From.Username, parseMode: ParseMode.Default
             );
         }
     }

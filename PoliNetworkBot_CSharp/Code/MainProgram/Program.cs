@@ -287,14 +287,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var done = true;
             var bot = GlobalVariables.Bots[userbotId];
             var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-            var text = new Language(dict: new Dictionary<string, string>()
+            var text = new Language(new Dictionary<string, string>
             {
                 {"en", "ciao test"},
                 {"it", "ciao test"}
             });
-            await bot.SendTextMessageAsync(5651789, text:text, ChatType.Private,
-                 lang: "", default, replyMarkupObject: replyMarkupObject, username: "@ArmeF97");
-            done &= await bot.CreateGroup("Gruppo test by bot", 
+            await bot.SendTextMessageAsync(5651789, text, ChatType.Private,
+                "", default, replyMarkupObject, "@ArmeF97");
+            done &= await bot.CreateGroup("Gruppo test by bot",
                 null, new List<long> {5651789});
 
             return done;

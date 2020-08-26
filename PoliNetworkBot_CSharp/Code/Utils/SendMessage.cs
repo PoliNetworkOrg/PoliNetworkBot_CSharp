@@ -23,10 +23,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                var r = await telegramBotClient.SendTextMessageAsync(chatid: e.Message.From.Id,
-                    text: text, chatType: ChatType.Private, parseMode: ParseMode.Html, 
+                var r = await telegramBotClient.SendTextMessageAsync(e.Message.From.Id,
+                    text, ChatType.Private, parseMode: ParseMode.Html,
                     lang: lang, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE) );
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
                 if (r) return true;
             }
             catch
@@ -36,15 +36,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var messageTo = GetMessageTo(e);
             var language = e.Message.From.LanguageCode.ToLower();
-            var text3 = new Language(dict: new Dictionary<string, string>()
+            var text3 = new Language(new Dictionary<string, string>
             {
-                {"en" , "[Message for " + messageTo + "]\n\n" + text.Select("en")},
-                {"it" , "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")},
+                {"en", "[Message for " + messageTo + "]\n\n" + text.Select("en")},
+                {"it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")}
             });
 
-            
+
             return await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text3, e.Message.Chat.Type,
-                 lang: lang,  parseMode: ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username: username );
+                lang, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
         }
 
         private static string GetMessageTo(MessageEventArgs e)
@@ -59,8 +59,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                return await telegramBotClient.SendTextMessageAsync(chatid: e.Message.From.Id, text: text, 
-                    chatType:ChatType.Private, parseMode: html, 
+                return await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text,
+                    ChatType.Private, parseMode: html,
                     lang: e.Message.From.LanguageCode, username: e.Message.From.Username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
             }

@@ -32,14 +32,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (sendMessageConfirmationChoice)
                 {
                     var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                    var languagereply = new Language(dict: new Dictionary<string, string>()
+                    var languagereply = new Language(new Dictionary<string, string>
                     {
                         {"en", "You choose [" + result + "]"},
                         {"it", "Hai scelto [" + result + "]"}
                     });
                     await telegramBotAbstract.SendTextMessageAsync(idUser,
                         languagereply,
-                        ChatType.Private, lang: lang, parseMode:default, replyMarkup, username);
+                        ChatType.Private, lang, default, replyMarkup, username);
                 }
 
                 tcs.SetResult(result.ToString());
@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 )
             );
 
-            await sender.SendTextMessageAsync(chatid: id, text:  question, chatType: ChatType.Private, 
+            await sender.SendTextMessageAsync(id, question, ChatType.Private,
                 parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username);
             return await WaitForAnswer(id, sendMessageConfirmationChoice, sender, lang, username);
         }

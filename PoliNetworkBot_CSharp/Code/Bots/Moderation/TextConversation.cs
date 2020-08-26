@@ -29,14 +29,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
             //todo: check user state
-            var text2 = new Language(dict: new Dictionary<string, string>()
+            var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", 
+                {
+                    "en",
                     "Hi, at the moment is not possible to have conversation with the bot.\n" +
-                    "We advice you to write /help to see what this bot can do"},
-                {"it", 
+                    "We advice you to write /help to see what this bot can do"
+                },
+                {
+                    "it",
                     "Ciao, al momento non è possibile fare conversazione col bot.\n" +
-                    "Ti consigliamo di premere /help per vedere le funzioni disponibili"}
+                    "Ti consigliamo di premere /help per vedere le funzioni disponibili"
+                }
             });
             await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
         }

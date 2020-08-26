@@ -123,7 +123,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                    Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
         }
 
-        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e, bool username,
+        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+            bool username,
             bool name, string lang, string usernameOfUser)
         {
             var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n";
@@ -131,23 +132,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 s1I = "Imposta un username dalle impostazioni di telegram\n";
             else if (!username && name)
                 s1I = "Imposta un nome più lungo " +
-                     "dalle impostazioni di telegram\n";
+                      "dalle impostazioni di telegram\n";
 
-            
-            
+
             var s1E = "Set an username and a longer first name from telegram settings";
             if (username && !name)
                 s1E = "Set an username from telegram settings";
             else if (!username && name)
                 s1E = "Set a longer first name from telegram settings";
-            
-            
-            var s2 = new Language(dict: new Dictionary<string, string>()
+
+
+            var s2 = new Language(new Dictionary<string, string>
             {
                 {"it", s1I},
                 {"en", s1E}
             });
-            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, text: s2, lang, usernameOfUser);
+            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s2, lang, usernameOfUser);
             await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
             telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
         }
@@ -164,36 +164,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 case SpamType.SPAM_LINK:
                 {
-                    Language text2 = new Language(dict:new Dictionary<string, string>()
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "You sent a message with spam, and you were muted for 5 minutes"},
                         {"it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti"}
                     });
-     
-                    
+
+
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }
                 case SpamType.NOT_ALLOWED_WORDS:
                 {
-                    Language text2 = new Language(dict: new Dictionary<string, string>()
+                    var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"en","You sent a message with banned words, and you were muted for 5 minutes" },
+                        {"en", "You sent a message with banned words, and you were muted for 5 minutes"},
                         {"it", "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"}
                     });
-                    
+
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }
 
                 case SpamType.FOREIGN:
                 {
-                    Language text2 = new Language(dict: new Dictionary<string, string>()
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "You sent a message with banned characters, and you were muted for 5 minutes"},
-                        {"it","Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti" }
+                        {
+                            "it",
+                            "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
+                        }
                     });
-                    
+
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
                     break;
                 }

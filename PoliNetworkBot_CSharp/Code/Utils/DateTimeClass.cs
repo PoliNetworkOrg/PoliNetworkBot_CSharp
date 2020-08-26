@@ -153,8 +153,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
                 {"en", "Insert a date (you can also write 'in an hour'"}
             });
-            
-            var reply = await AskUser.AskAsync( id, lang2, sender, lang, username);
+
+            var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
             var replyDatetime = GetDateTimeFromString(reply);
             return replyDatetime;
         }

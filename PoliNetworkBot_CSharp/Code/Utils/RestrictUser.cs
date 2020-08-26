@@ -38,12 +38,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var targetId = await Info.GetTargetUserIdAsync(target, sender);
             if (targetId == null)
             {
-                var text2 = new Language(dict: new Dictionary<string, string>()
+                var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "We were not able to BanAll the target '" + target + "', error code " +
-                           ErrorCodes.TargetInvalidWhenBanAll},
-                    {"it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
-                           ErrorCodes.TargetInvalidWhenBanAll}
+                    {
+                        "en", "We were not able to BanAll the target '" + target + "', error code " +
+                              ErrorCodes.TargetInvalidWhenBanAll
+                    },
+                    {
+                        "it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
+                              ErrorCodes.TargetInvalidWhenBanAll
+                    }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e,
                     text2);
@@ -54,12 +58,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var dt = SqLite.ExecuteSelect(q1);
             if (dt == null || dt.Rows.Count == 0)
             {
-                var text3 = new Language(dict:new Dictionary<string, string>()
+                var text3 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "We were not able to BanAll the target '" + target + "', error code " +
-                           ErrorCodes.DatatableEmptyWhenBanAll},
-                    {"it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
-                           ErrorCodes.DatatableEmptyWhenBanAll}
+                    {
+                        "en", "We were not able to BanAll the target '" + target + "', error code " +
+                              ErrorCodes.DatatableEmptyWhenBanAll
+                    },
+                    {
+                        "it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
+                              ErrorCodes.DatatableEmptyWhenBanAll
+                    }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e,
                     text3);

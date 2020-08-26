@@ -41,8 +41,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var (item1, item2) = ModerationCheck.CheckUsername(e);
             if (item1 || item2)
             {
-                await ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1, 
-                    item2, lang:e.Message.From.LanguageCode, e.Message.From.Username);
+                await ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1,
+                    item2, e.Message.From.LanguageCode, e.Message.From.Username);
                 return;
             }
 

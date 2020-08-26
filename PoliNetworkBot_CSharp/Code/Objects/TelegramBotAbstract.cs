@@ -145,7 +145,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     IReplyMarkup reply = null;
                     if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
 
-                    var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode, replyMarkup: reply);
+                    var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
+                        replyMarkup: reply);
                     return m1 != null;
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
@@ -154,7 +155,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         TLAbsReplyMarkup replyMarkup = null;
                         if (replyMarkupObject != null) replyMarkup = replyMarkupObject.GetReplyMarkupUserBot();
-                        var m3 = await Utils.SendMessage.SendMessageUserBot(this._userbotClient, 
+                        var m3 = await SendMessage.SendMessageUserBot(_userbotClient,
                             peer, text, username, replyMarkup, lang);
                         return m3 != null;
                     }
@@ -316,7 +317,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         case TextAsCaption.BEFORE_FILE:
                         {
-                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username, new TLReplyKeyboardHide(), lang);
+                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
+                                new TLReplyKeyboardHide(), lang);
                             var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
                             return r != null && r2 != null;
@@ -326,7 +328,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
-                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username, new TLReplyKeyboardHide(), lang);
+                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
+                                new TLReplyKeyboardHide(), lang);
                             return r != null && r2 != null;
                         }
 

@@ -44,11 +44,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var options = KeyboardMarkup.ArrayToMatrixString(l3);
             var r2 = await AskUser.AskBetweenRangeAsync(id, question, sender, lang,
-                options, username: username);
+                options, username);
 
             return l[r2];
         }
-        
+
         public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var replyTo = e.Message.ReplyToMessage;
@@ -59,23 +59,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"en", "Choose the entity you are writing this message for"}
             });
 
-            var messageFromIdEntity = await Assoc.GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
             if (messageFromIdEntity == null)
             {
-                Language languageList3 = new Language( dict:new Dictionary<string, string>()
+                var languageList3 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "We can't find the entity you want to post from. Are you sure you are a member of some entity allowed to post?"},
-                    {"it", "Non riusciamo a trovare l'organizzazione per la quale vuoi postare. Sei sicuro di essere un membro di qualche organizzazione autorizzata a postare?"}
-                    
+                    {
+                        "en",
+                        "We can't find the entity you want to post from. Are you sure you are a member of some entity allowed to post?"
+                    },
+                    {
+                        "it",
+                        "Non riusciamo a trovare l'organizzazione per la quale vuoi postare. Sei sicuro di essere un membro di qualche organizzazione autorizzata a postare?"
+                    }
                 });
                 await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, default,
-                    parseMode: ParseMode.Default, replyMarkupObject:new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username: e.Message.From.Username);
+                    ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
                 return false;
             }
 
-            bool hasThisEntityAlreadyReachedItsLimit = Assoc.CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
+            var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
 
             var languageList2 = new Language(new Dictionary<string, string>
                 {
@@ -120,28 +125,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             else
             {
-                Language lang2 = new Language(dict:new Dictionary<string, string>()
+                var lang2 = new Language(new Dictionary<string, string>
                 {
-                    {"en",  "You have to attach something! (A photo, for example)"},
-                    { "it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
+                    {"en", "You have to attach something! (A photo, for example)"},
+                    {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
                 });
-                await sender.SendTextMessageAsync(chatid: e.Message.From.Id,
-                    text: lang2,
-                    chatType:ChatType.Private, lang: e.Message.From.LanguageCode,
-                    parseMode: ParseMode.Default,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username );
+                await sender.SendTextMessageAsync(e.Message.From.Id,
+                    lang2,
+                    ChatType.Private, e.Message.From.LanguageCode,
+                    ParseMode.Default,
+                    new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
                 return false;
             }
 
-            Language lang3 = new Language(dict:new Dictionary<string, string>()
+            var lang3 = new Language(new Dictionary<string, string>
             {
                 {"en", "The message has been submitted correctly"},
                 {"it", "Il messaggio è stato inviato correttamente"}
             });
-            await sender.SendTextMessageAsync(chatid: e.Message.From.Id, text: lang3,
-                chatType: ChatType.Private, lang: e.Message.From.LanguageCode, 
-                parseMode: ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                e.Message.From.Username );
+            await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
+                ChatType.Private, e.Message.From.LanguageCode,
+                ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                e.Message.From.Username);
             return true;
         }
 
