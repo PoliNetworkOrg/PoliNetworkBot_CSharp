@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -38,13 +39,51 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var (item1, item2) = ModerationCheck.CheckUsername(e);
-            if (item1 || item2)
+            var usernameCheck = ModerationCheck.CheckUsername(e);
+            if (usernameCheck == null)
             {
-                await ModerationCheck.SendUsernameWarning(telegramBotClient, e, item1,
-                    item2, e.Message.From.LanguageCode, e.Message.From.Username);
+                ;
+            }
+            else if (usernameCheck.Count == 1)
+            {
+                if (usernameCheck[0].UsernameBool || usernameCheck[0].Name)
+                {
+                    await ModerationCheck.SendUsernameWarning(telegramBotClient,  usernameCheck[0].UsernameBool,
+                        usernameCheck[0].Name, e.Message.From.LanguageCode, 
+                        e.Message.From.Username, chatId: e.Message.Chat.Id,
+                        userId: e.Message.From.Id, messageId: e.Message.MessageId,
+                        messageChatType: e.Message.Chat.Type, e.Message.From.FirstName, 
+                        e.Message.From.LastName);
+                    return;
+                }
+            }
+            else
+            {
+                foreach (var usernameCheck2 in usernameCheck)
+                {
+                    if (usernameCheck2 != null)
+                    {
+                        if (usernameCheck2.Name || usernameCheck2.UsernameBool)
+                        {
+                            await ModerationCheck.SendUsernameWarning(telegramBotClient, 
+                                usernameCheck2.UsernameBool,
+                                name: usernameCheck2.Name,
+                                usernameCheck2.GetLanguage(),
+                                usernameCheck2.GetUsername(), 
+                                chatId: e.Message.Chat.Id,
+                                userId: usernameCheck2.GetUserId(),
+                                messageId: null, 
+                                messageChatType: e.Message.Chat.Type, 
+                                firstName: usernameCheck2.GetFirstName(),
+                                lastName: usernameCheck2.GetLastName());
+                        }
+                    }
+                }
+
                 return;
             }
+
+
 
             var checkSpam = ModerationCheck.CheckSpam(e);
             if (checkSpam != SpamType.ALL_GOOD)

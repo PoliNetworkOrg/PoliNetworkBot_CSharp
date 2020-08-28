@@ -60,15 +60,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId];
         }
 
-        internal void DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
+        internal async Task DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    _botClient.DeleteMessageAsync(chatId, messageId);
+                    await _botClient.DeleteMessageAsync(chatId, messageId);
                     break;
                 case BotTypeApi.USER_BOT:
-                    _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
+                    await _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
                         new TLVector<int> {messageId});
                     break;
                 case BotTypeApi.DISGUISED_BOT:

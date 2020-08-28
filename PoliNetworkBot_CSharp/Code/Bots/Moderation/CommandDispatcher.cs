@@ -235,8 +235,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"it", "Questo messaggio funziona solo in chat privata"},
                     {"en", "This command only works in private chat with me"}
                 });
-                await SendMessage.SendMessageInPrivateOrAGroup(sender, e,
-                    lang, e.Message.From.LanguageCode, e.Message.From.Username);
+                await SendMessage.SendMessageInPrivateOrAGroup(sender,
+                    lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id, 
+                    e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
             }
         }
 
@@ -278,7 +279,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
             var lang2 = new Language(new Dictionary<string, string>
             {
                 {"it", telegramBotClient.GetContactString()},

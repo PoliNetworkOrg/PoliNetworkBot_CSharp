@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -86,17 +87,38 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
         }
 
-        public static Tuple<bool, bool> CheckUsername(MessageEventArgs e)
+        public static List<Objects.UsernameAndNameCheckResult> CheckUsername(MessageEventArgs e)
+        {
+            var r = new List<UsernameAndNameCheckResult>
+            {
+                CheckUsername2(fromUsername: e.Message.From.Username, fromFirstName: e.Message.From.FirstName, 
+                    lastName: e.Message.From.LastName,language: e.Message.From.LanguageCode, userId: e.Message.From.Id)
+            };
+            
+            if (e.Message.NewChatMembers == null) 
+                return r;
+
+            r.AddRange(from user in e.Message.NewChatMembers 
+                where user != null
+                select CheckUsername2(fromUsername: user.Username, fromFirstName: user.FirstName, userId: user.Id,
+                    lastName:user.LastName, language:user.LanguageCode));
+
+            return r;
+        }
+
+        private static UsernameAndNameCheckResult CheckUsername2(string fromUsername, string fromFirstName, int userId,
+            string lastName, string language)
         {
             var username = false;
             var name = false;
 
-            if (string.IsNullOrEmpty(e.Message.From.Username)) username = true;
+            if (string.IsNullOrEmpty(fromUsername)) username = true;
 
-            if (e.Message.From.FirstName.Length < 2)
+            if (fromFirstName.Length < 2)
                 name = true;
-
-            return new Tuple<bool, bool>(username, name);
+            
+            return new UsernameAndNameCheckResult(username, name, language: language,
+                usernameString: fromUsername, userId: userId, firstName: fromFirstName, lastName: lastName);
         }
 
         public static SpamType CheckSpam(MessageEventArgs e)
@@ -123,9 +145,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                    Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
         }
 
-        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
-            bool username,
-            bool name, string lang, string usernameOfUser)
+        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
+            bool username, bool name, string lang, string usernameOfUser,
+            long chatId, int userId, int? messageId, ChatType messageChatType, 
+            string firstName, string lastName)
         {
             var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n";
             if (username && !name)
@@ -147,9 +170,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"it", s1I},
                 {"en", s1E}
             });
-            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, e, s2, lang, usernameOfUser);
-            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
-            telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
+            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
+                usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
+            await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId);
+            if (messageId != null)
+            {
+                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
+            }
         }
 
         public static async Task AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,

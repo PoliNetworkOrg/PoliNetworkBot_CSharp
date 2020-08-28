@@ -18,12 +18,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal static class SendMessage
     {
         internal static async Task<bool> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
-            MessageEventArgs e,
-            Language text, string lang, string username)
+            Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
+            ChatType chatType)
         {
             try
             {
-                var r = await telegramBotClient.SendTextMessageAsync(e.Message.From.Id,
+                var r = await telegramBotClient.SendTextMessageAsync(userId,
                     text, ChatType.Private, parseMode: ParseMode.Html,
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
@@ -34,8 +34,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 // ignored
             }
 
-            var messageTo = GetMessageTo(e);
-            var language = e.Message.From.LanguageCode.ToLower();
+            var messageTo = GetMessageTo(firstName, lastName, userId);
             var text3 = new Language(new Dictionary<string, string>
             {
                 {"en", "[Message for " + messageTo + "]\n\n" + text.Select("en")},
@@ -43,15 +42,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
 
 
-            return await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id, text3, e.Message.Chat.Type,
+            return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
                 lang, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
         }
 
-        private static string GetMessageTo(MessageEventArgs e)
+        private static string GetMessageTo(string firstname, string lastname, long messageFromUserId)
         {
-            var name = e.Message.From.FirstName + " " + e.Message.From.LastName;
+            var name = firstname + " " + lastname;
             name = name.Trim();
-            return "<a href=\"tg://user?id=" + e.Message.From.Id + "\">" + name + "</a>";
+            return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
         internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
