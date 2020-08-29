@@ -11,7 +11,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class DeleteMessage
     {
-        internal static async Task DeleteIfMessageIsNotInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        internal static async Task DeleteIfMessageIsNotInPrivate(TelegramBotAbstract telegramBotClient,
+            MessageEventArgs e)
         {
             if (e.Message.Chat.Type == ChatType.Private)
                 return;

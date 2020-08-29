@@ -236,7 +236,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"en", "This command only works in private chat with me"}
                 });
                 await SendMessage.SendMessageInPrivateOrAGroup(sender,
-                    lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id, 
+                    lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id,
                     e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
             }
         }

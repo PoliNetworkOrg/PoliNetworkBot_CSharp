@@ -1,7 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -39,51 +37,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var usernameCheck = ModerationCheck.CheckUsername(e);
-            if (usernameCheck == null)
-            {
-                ;
-            }
-            else if (usernameCheck.Count == 1)
-            {
-                if (usernameCheck[0].UsernameBool || usernameCheck[0].Name)
-                {
-                    await ModerationCheck.SendUsernameWarning(telegramBotClient,  usernameCheck[0].UsernameBool,
-                        usernameCheck[0].Name, e.Message.From.LanguageCode, 
-                        e.Message.From.Username, chatId: e.Message.Chat.Id,
-                        userId: e.Message.From.Id, messageId: e.Message.MessageId,
-                        messageChatType: e.Message.Chat.Type, e.Message.From.FirstName, 
-                        e.Message.From.LastName);
-                    return;
-                }
-            }
-            else
-            {
-                foreach (var usernameCheck2 in usernameCheck)
-                {
-                    if (usernameCheck2 != null)
-                    {
-                        if (usernameCheck2.Name || usernameCheck2.UsernameBool)
-                        {
-                            await ModerationCheck.SendUsernameWarning(telegramBotClient, 
-                                usernameCheck2.UsernameBool,
-                                name: usernameCheck2.Name,
-                                usernameCheck2.GetLanguage(),
-                                usernameCheck2.GetUsername(), 
-                                chatId: e.Message.Chat.Id,
-                                userId: usernameCheck2.GetUserId(),
-                                messageId: null, 
-                                messageChatType: e.Message.Chat.Type, 
-                                firstName: usernameCheck2.GetFirstName(),
-                                lastName: usernameCheck2.GetLastName());
-                        }
-                    }
-                }
-
+            var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+            if (toExitBecauseUsernameAndNameCheck)
                 return;
-            }
-
-
 
             var checkSpam = ModerationCheck.CheckSpam(e);
             if (checkSpam != SpamType.ALL_GOOD)
@@ -92,10 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            if (string.IsNullOrEmpty(e.Message.Text))
-                return;
-
-            if (e.Message.Text.StartsWith("/"))
+            if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             else
                 await TextConversation.DetectMessage(telegramBotClient, e);
