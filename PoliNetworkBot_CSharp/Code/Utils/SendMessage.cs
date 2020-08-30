@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TLSharp.Core;
@@ -101,6 +103,56 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return r2;
+        }
+
+        public static SuccessQueue PlaceMessageInQueue(Message replyTo, DateTimeSchedule sentDate,
+            int messageFromIdPerson, int? messageFromIdEntity,
+            long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
+        {
+            var d1 = sentDate.IsInvalid();
+            if (d1)
+            {
+                return SuccessQueue.DATE_INVALID;
+            }
+            
+            if (replyTo.Photo != null)
+            {
+                var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
+                var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
+                if (photoIdDb == null)
+                    return Enums.SuccessQueue.INVALID_ID_TO_DB;
+
+                
+                MessageDb.AddMessage(MessageType.Photo,
+                    replyTo.Caption, messageFromIdPerson,
+                    messageFromIdEntity, photoIdDb.Value,
+                    idChatSentInto, sentDate.GetDate(), false,
+                    sender.GetId(), replyTo.MessageId, 
+                    typeChatSentInto);
+            }
+            else if (replyTo.Video != null)
+            {
+                ;
+                var video = replyTo.Video;
+                
+                var videoMax = UtilsVideo.GetLargest(video);
+                var videoIdDb = UtilsVideo.AddVideoToDb(videoMax);
+                if (videoIdDb == null)
+                    return SuccessQueue.INVALID_ID_TO_DB;
+                
+                MessageDb.AddMessage(MessageType.Video,
+                    replyTo.Caption, messageFromIdPerson,
+                    messageFromIdEntity, videoIdDb.Value,
+                    idChatSentInto, sentDate.GetDate(), false,
+                    sender.GetId(), replyTo.MessageId, 
+                    typeChatSentInto);
+            }
+            else
+            {
+                return SuccessQueue.INVALID_OBJECT;
+            }
+
+            return SuccessQueue.SUCCESS;
         }
     }
 }

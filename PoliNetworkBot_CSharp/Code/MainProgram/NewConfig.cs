@@ -207,7 +207,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "message_id_tg_from INT(12)," +
                            "message_id_tg_to INT(12)," +
                            "id_chat_sent_into BIGINT," +
-                           "from_id_bot INT(12)" +
+                           "from_id_bot INT(12)," +
+                           "type_chat_sent_into VARCHAR(250)" +
                            ");");
 
             SqLite.Execute("CREATE TABLE MessageTypes (" +
@@ -222,6 +223,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "height INT(12)," +
                            "width INT(12)," +
                            "unique_id VARCHAR(250)" +
+                           ");");
+            
+            SqLite.Execute("CREATE TABLE Videos (" +
+                           "id_video INT(12) PRIMARY KEY," +
+                           "file_id VARCHAR(250)," +
+                           "file_size INT(12)," +
+                           "height INT(12)," +
+                           "width INT(12)," +
+                           "unique_id VARCHAR(250)," +
+                           "duration INT," +
+                           "mime VARCHAR(250)" +
                            ");");
         }
 

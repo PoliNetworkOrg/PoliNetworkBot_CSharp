@@ -6,6 +6,7 @@ using System.Data;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -19,14 +20,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
             int photoId, long idChatSentInto, DateTime? sentDate,
-            bool hasBeenSent, int messageFromIdBot, int messageIdTgFrom)
+            bool hasBeenSent, int messageFromIdBot, int messageIdTgFrom, ChatType type_chat_sent_into)
         {
             const string q = "INSERT INTO Messages " +
                              "(id, from_id_person, from_id_entity, type, " +
                              "id_photo, message_text, id_chat_sent_into, sent_date," +
-                             " has_been_sent, from_id_bot, message_id_tg_from) " +
+                             " has_been_sent, from_id_bot, message_id_tg_from, type_chat_sent_into) " +
                              "VALUES " +
-                             "(@id, @fip, @fie, @t, @idp, @mt, @icsi, @sent_date, @hbs, @fib, @mitf);";
+                             "(@id, @fip, @fie, @t, @idp, @mt, @icsi, @sent_date, @hbs, @fib, @mitf, @tcsi);";
 
             var typeI = GetMessageTypeByName(type);
             if (typeI == null) return false;
@@ -46,7 +47,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"@sent_date", sentDate},
                 {"@hbs", hasBeenSent},
                 {"@fib", messageFromIdBot},
-                {"@mitf", messageIdTgFrom}
+                {"@mitf", messageIdTgFrom},
+                {"@tcsi", type_chat_sent_into.ToString()}
             });
 
             return true;

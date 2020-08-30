@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<DateTime?> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender,
+        internal static async Task<DateTimeSchedule> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender,
             string username)
         {
             if (string.IsNullOrEmpty(text)) return await AskDate2Async(id, lang, sender, username);
@@ -138,14 +138,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "ora":
                 case "now":
                 {
-                    return DateTime.Now;
+                    return new DateTimeSchedule(dateTime: DateTime.Now, schedule: true);
                 }
             }
 
             return await AskDate2Async(id, lang, sender, username);
         }
 
-        private static async Task<DateTime?> AskDate2Async(int id, string lang, TelegramBotAbstract sender,
+        private static async Task<DateTimeSchedule> AskDate2Async(int id, string lang, TelegramBotAbstract sender,
             string username)
         {
             var lang2 = new Language(new Dictionary<string, string>
@@ -156,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
             var replyDatetime = GetDateTimeFromString(reply);
-            return replyDatetime;
+            return new DateTimeSchedule(replyDatetime, true);
         }
 
         private static DateTime? GetDateTimeFromString(string reply)

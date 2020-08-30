@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -96,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var languageList2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "Data di pubblicazione?"},
-                    {"en", "Date of pubblication?"}
+                    {"en", "Date of publication?"}
                 }
             );
 
@@ -111,42 +112,44 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
                 languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
 
-            DateTime? sentDate = null;
+            DateTimeSchedule sentDate = null;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
-                sentDate = null;
+                sentDate = new DateTimeSchedule(null, false);
             else
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
-
-
+            
             const long idChatSentInto = Channels.PoliAssociazioni;
 
-            if (replyTo.Photo != null)
-            {
-                var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
-                var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
-                if (photoIdDb == null)
-                    return false;
+            var successQueue = Utils.SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
+                messageFromIdEntity, idChatSentInto, sender, ChatType.Channel);
 
-                MessageDb.AddMessage(MessageType.Photo,
-                    replyTo.Caption, e.Message.From.Id,
-                    messageFromIdEntity, photoIdDb.Value,
-                    idChatSentInto, sentDate, false,
-                    sender.GetId(), replyTo.MessageId);
-            }
-            else
+            switch (successQueue)
             {
-                var lang2 = new Language(new Dictionary<string, string>
+                case SuccessQueue.INVALID_ID_TO_DB:
+                    break;
+                case SuccessQueue.INVALID_OBJECT:
                 {
-                    {"en", "You have to attach something! (A photo, for example)"},
-                    {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
-                });
-                await sender.SendTextMessageAsync(e.Message.From.Id,
-                    lang2,
-                    ChatType.Private, e.Message.From.LanguageCode,
-                    ParseMode.Default,
-                    new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
-                return false;
+                    var lang2 = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "You have to attach something! (A photo, for example)"},
+                        {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
+                    });
+                    await sender.SendTextMessageAsync(e.Message.From.Id,
+                        lang2,
+                        ChatType.Private, e.Message.From.LanguageCode,
+                        ParseMode.Default,
+                        new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                    
+                    break;
+                }
+                    
+                case SuccessQueue.SUCCESS:
+                    break;
+                case SuccessQueue.DATE_INVALID:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             var lang3 = new Language(new Dictionary<string, string>

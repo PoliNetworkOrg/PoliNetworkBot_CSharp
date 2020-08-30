@@ -8,7 +8,7 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 {
     internal static class UtilsPhoto
     {
