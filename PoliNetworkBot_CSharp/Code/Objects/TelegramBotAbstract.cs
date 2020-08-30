@@ -602,11 +602,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    var m1 = await _botClient.SendVideoAsync(chatIdToSendTo, caption: caption,
-                        video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
-                        height: video.GetHeight(),
-                        width: video.GetWidth(), parseMode: parseMode);
-                    return m1 != null;
+                    try
+                    {
+                        var m1 = await _botClient.SendVideoAsync(5651789, caption: caption,
+                            video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
+                            height: video.GetHeight(),
+                            width: video.GetWidth(), parseMode: parseMode);
+                        return m1 != null;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
                     ;
                 case BotTypeApi.USER_BOT:
 

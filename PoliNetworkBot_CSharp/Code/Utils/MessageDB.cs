@@ -19,15 +19,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
-            int photoId, long idChatSentInto, DateTime? sentDate,
-            bool hasBeenSent, int messageFromIdBot, int messageIdTgFrom, ChatType type_chat_sent_into)
+            long idChatSentInto, DateTime? sentDate,
+            bool hasBeenSent, int messageFromIdBot, int messageIdTgFrom, ChatType type_chat_sent_into,
+            int? photo_id, int? video_id)
         {
             const string q = "INSERT INTO Messages " +
                              "(id, from_id_person, from_id_entity, type, " +
-                             "id_photo, message_text, id_chat_sent_into, sent_date," +
+                             "id_photo, id_video, message_text, id_chat_sent_into, sent_date," +
                              " has_been_sent, from_id_bot, message_id_tg_from, type_chat_sent_into) " +
                              "VALUES " +
-                             "(@id, @fip, @fie, @t, @idp, @mt, @icsi, @sent_date, @hbs, @fib, @mitf, @tcsi);";
+                             "(@id, @fip, @fie, @t, @idp, @idv, @mt, @icsi, @sent_date, @hbs, @fib, @mitf, @tcsi);";
 
             var typeI = GetMessageTypeByName(type);
             if (typeI == null) return false;
@@ -41,7 +42,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"@fip", messageFromIdPerson},
                 {"@fie", messageFromIdEntity},
                 {"@t", typeI},
-                {"@idp", photoId},
+                {"@idp", photo_id},
+                {"@idv", video_id},
                 {"@mt", messageText},
                 {"@icsi", idChatSentInto},
                 {"@sent_date", sentDate},
@@ -260,7 +262,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (typeOfChatSentInto == null)
                 return false;
 
-            var video = UtilsPhoto.GetVideoByIdFromDb(
+            var video = UtilsVideo.GetVideoByIdFromDb(
                 videoId.Value,
                 messageIdFrom,
                 chatIdFromIdPerson,

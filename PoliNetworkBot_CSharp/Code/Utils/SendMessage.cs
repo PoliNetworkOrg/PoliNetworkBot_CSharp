@@ -125,10 +125,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, messageFromIdPerson,
-                    messageFromIdEntity, photoIdDb.Value,
+                    messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
                     sender.GetId(), replyTo.MessageId, 
-                    typeChatSentInto);
+                    typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
             {
@@ -142,10 +142,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 
                 MessageDb.AddMessage(MessageType.Video,
                     replyTo.Caption, messageFromIdPerson,
-                    messageFromIdEntity, videoIdDb.Value,
+                    messageFromIdEntity, 
                     idChatSentInto, sentDate.GetDate(), false,
                     sender.GetId(), replyTo.MessageId, 
-                    typeChatSentInto);
+                    typeChatSentInto, null, videoIdDb.Value);
             }
             else
             {
