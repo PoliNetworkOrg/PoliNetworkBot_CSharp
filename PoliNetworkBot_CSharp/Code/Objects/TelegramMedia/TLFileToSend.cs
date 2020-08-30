@@ -70,7 +70,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
                 {
                     string caption2 = Utils.StringUtil.NotNull(caption, lang);
 
-                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, mimeType, attributes);
+                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2,mimeType, attributes);
                     return r;
                 }
                 catch (Exception e)

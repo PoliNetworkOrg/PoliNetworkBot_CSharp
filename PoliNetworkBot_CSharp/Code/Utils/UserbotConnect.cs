@@ -33,9 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (telegramClient == null)
                 return null;
 
-            bool r = await telegramClient.ConnectAsync();
-            if (r == false)
-                return null;
+            await telegramClient.ConnectAsync();
 
             if (telegramClient.IsUserAuthorized())
                 return telegramClient;

@@ -365,7 +365,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         UserbotPeer.GetPeerChannelFromIdAndType(chatId),
                         UserbotPeer.GetPeerUserFromdId(userId));
 
-                    return r.Participant is TLChannelParticipantAdmin ||
+                    return r.Participant is TLChannelParticipantModerator ||
                            r.Participant is TLChannelParticipantCreator;
                     ;
                 case BotTypeApi.DISGUISED_BOT:
@@ -555,8 +555,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return false;
 
                     var m2 = await _userbotClient.SendUploadedPhoto(
-                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo),
-                        photoFile);
+                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
+                        file: photoFile);
                     return m2 != null;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
