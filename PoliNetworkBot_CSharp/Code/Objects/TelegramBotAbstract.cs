@@ -545,7 +545,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
-                        objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode: parseMode);
+                        objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
                     return m1 != null;
                     ;
                 case BotTypeApi.USER_BOT:
@@ -602,8 +602,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    var m1 = await _botClient.SendVideoAsync(chatId:chatIdToSendTo, caption: caption, 
-                        video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(), height: video.GetHeight(),
+                    var m1 = await _botClient.SendVideoAsync(chatIdToSendTo, caption: caption,
+                        video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
+                        height: video.GetHeight(),
                         width: video.GetWidth(), parseMode: parseMode);
                     return m1 != null;
                     ;
@@ -614,9 +615,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return false;
 
                     //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
-                    TLAbsInputMedia media2 = video.GetTLabsInputMedia();
+                    var media2 = video.GetTLabsInputMedia();
                     var m2 = await _userbotClient.Messages_SendMedia(
-                        peer: UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media: media2);
+                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
                     return m2 != null;
                 case BotTypeApi.DISGUISED_BOT:
                     break;

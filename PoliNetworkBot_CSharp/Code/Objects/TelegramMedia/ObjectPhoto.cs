@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
@@ -15,9 +14,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
     public class ObjectPhoto : GenericMedia
     {
-        private readonly string _uniqueId;
         private readonly long _chatId;
         private readonly ChatType _chatType;
+        private readonly string _uniqueId;
         private int _fileSize;
         private int _idPhotoDb;
         private int? _messageIdFrom;
@@ -26,17 +25,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType)
         {
             _idPhotoDb = idPhotoDb;
-            this._fileId = fileId;
+            _fileId = fileId;
             _fileSize = fileSize;
             _height = height;
             _width = width;
             _uniqueId = uniqueId;
-            this._messageIdFrom = messageIdFrom;
-            this._chatId = chatId;
-            this._chatType = chatType;
+            _messageIdFrom = messageIdFrom;
+            _chatId = chatId;
+            _chatType = chatType;
         }
 
- 
 
         public async Task<TLAbsInputFile> GetTelegramUserBotInputPhoto(TelegramClient userbot)
         {

@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -17,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                Enum.TryParse(typeof(ChatType), s, result: out var r);
+                Enum.TryParse(typeof(ChatType), s, out var r);
 
                 switch (r)
                 {

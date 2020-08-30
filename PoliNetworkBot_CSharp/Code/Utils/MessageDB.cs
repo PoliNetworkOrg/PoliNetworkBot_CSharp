@@ -253,8 +253,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 //ignored
             }
-            
-            var typeOfChatSentInto = Utils.ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
+
+            var typeOfChatSentInto = ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
             if (typeOfChatSentInto == null)
                 return false;
 
@@ -264,8 +264,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 chatIdFromIdPerson,
                 ChatType.Private);
 
-            var done = await botClass.SendVideoAsync(chatIdToSendTo, video, 
-                caption: caption, parseMode, typeOfChatSentInto.Value );
+            var done = await botClass.SendVideoAsync(chatIdToSendTo, video,
+                caption, parseMode, typeOfChatSentInto.Value);
             return done;
         }
 
@@ -288,8 +288,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 //ignored
             }
-            
-            var typeOfChatSentInto = Utils.ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
+
+            var typeOfChatSentInto = ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
             if (typeOfChatSentInto == null)
                 return false;
 
@@ -300,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ChatType.Private);
 
             var done = await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode: parseMode, typeOfChatSentInto.Value);
+                caption, parseMode, typeOfChatSentInto.Value);
             return done;
         }
     }

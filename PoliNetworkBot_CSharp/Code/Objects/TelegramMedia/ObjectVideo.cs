@@ -1,36 +1,39 @@
-﻿using System.Threading.Tasks;
-using Telegram.Bot.Types;
+﻿#region
+
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using TeleSharp.TL;
 using TLSharp.Core;
 
+#endregion
+
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public class ObjectVideo : Objects.TelegramMedia.GenericMedia
+    public class ObjectVideo : GenericMedia
     {
-        private readonly string _uniqueId;
         private readonly long _chatId;
         private readonly ChatType _chatType;
+        private readonly int _durationVideo;
+        private readonly string _uniqueId;
         private int _fileSize;
         private int _idVideoDb;
         private int? _messageIdFrom;
-        private readonly int _durationVideo;
-        
-        
+
+
         public ObjectVideo(int idVideoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
         {
             _idVideoDb = idVideoDb;
-            this._fileId = fileId;
+            _fileId = fileId;
             _fileSize = fileSize;
             _height = height;
             _width = width;
             _uniqueId = uniqueId;
-            this._messageIdFrom = messageIdFrom;
-            this._chatId = chatId;
-            this._chatType = chatType;
-            this._durationVideo = durationVideo;
+            _messageIdFrom = messageIdFrom;
+            _chatId = chatId;
+            _chatType = chatType;
+            _durationVideo = durationVideo;
         }
 
         public int GetDuration()
@@ -45,7 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 
         public int GetHeight()
         {
-            return this._height;
+            return _height;
         }
 
         public int GetWidth()
@@ -55,7 +58,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 
         public async Task<TLAbsInputFile> GetTelegramUserBotInputVideo(TelegramClient userbotClient)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public TLAbsInputMedia GetTLabsInputMedia()

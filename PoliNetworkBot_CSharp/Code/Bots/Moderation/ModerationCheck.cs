@@ -245,9 +245,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             else if (usernameCheck.Count == 1)
             {
-                if (!usernameCheck[0].UsernameBool && !usernameCheck[0].Name) 
+                if (!usernameCheck[0].UsernameBool && !usernameCheck[0].Name)
                     return false;
-                
+
                 await SendUsernameWarning(telegramBotClient, usernameCheck[0].UsernameBool,
                     usernameCheck[0].Name, e.Message.From.LanguageCode,
                     e.Message.From.Username, e.Message.Chat.Id,

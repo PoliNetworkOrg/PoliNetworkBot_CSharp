@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
 using TeleSharp.TL;
 using TLSharp.Core;
+using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
 
 #endregion
 
@@ -68,9 +69,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             if (_tlInputFile != null)
                 try
                 {
-                    string caption2 = Utils.StringUtil.NotNull(caption, lang);
+                    var caption2 = StringUtil.NotNull(caption, lang);
 
-                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2,mimeType, attributes);
+                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2, mimeType,
+                        attributes);
                     return r;
                 }
                 catch (Exception e)

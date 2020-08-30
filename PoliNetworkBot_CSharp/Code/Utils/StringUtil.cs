@@ -1,4 +1,8 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -6,11 +10,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         public static string NotNull(Language caption, string lang)
         {
-   
             if (caption == null)
                 return "";
-            else
-                return caption.Select(lang);
+            return caption.Select(lang);
         }
     }
 }
