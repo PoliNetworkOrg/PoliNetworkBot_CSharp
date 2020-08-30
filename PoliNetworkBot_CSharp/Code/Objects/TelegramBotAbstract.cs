@@ -604,7 +604,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     try
                     {
-                        var m1 = await _botClient.SendVideoAsync(5651789, caption: caption,
+                        var m1 = await _botClient.SendVideoAsync(chatIdToSendTo, caption: caption,
                             video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
                             height: video.GetHeight(),
                             width: video.GetWidth(), parseMode: parseMode);
@@ -614,9 +614,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         return false;
                     }
-
-                    ;
+                    
                 case BotTypeApi.USER_BOT:
+                {
 
                     var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
                     if (videoFile == null)
@@ -627,6 +627,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var m2 = await _userbotClient.Messages_SendMedia(
                         UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
                     return m2 != null;
+                }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
