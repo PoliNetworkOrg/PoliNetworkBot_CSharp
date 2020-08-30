@@ -35,7 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             };
 
             SqLite.Execute(q, keyValuePairs);
-            Tables.FixIdTable("Photos", "id_photo", "file_id");
+            Tables.FixIdTable("Videos", "id_video", "file_id");
 
             return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId);
         }
