@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 {
@@ -20,11 +24,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 
             var q =
                 "INSERT INTO Videos " +
-                "(file_id, file_size, height, width, unique_id, duration, mime) "+
+                "(file_id, file_size, height, width, unique_id, duration, mime) " +
                 " VALUES " +
                 "(@fi, @fs, @h, @w, @u, @d, @mime)";
-            
-            
+
+
             var keyValuePairs = new Dictionary<string, object>
             {
                 {"@fi", video.FileId},
@@ -93,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
                 return null;
             }
         }
-        
+
         public static ObjectVideo GetVideoByIdFromDb(int videoId, int? messageIdFrom,
             in long chatIdFromIdPerson, ChatType chatType)
         {

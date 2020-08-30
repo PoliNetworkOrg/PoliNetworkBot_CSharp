@@ -224,7 +224,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "width INT(12)," +
                            "unique_id VARCHAR(250)" +
                            ");");
-            
+
             SqLite.Execute("CREATE TABLE Videos (" +
                            "id_video INT(12) PRIMARY KEY," +
                            "file_id VARCHAR(250)," +

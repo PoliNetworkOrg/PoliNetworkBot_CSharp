@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -6,20 +10,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private readonly DateTime? _dateTime;
         private readonly bool _schedule;
+
         public DateTimeSchedule(DateTime? dateTime, bool schedule)
         {
-            this._dateTime = dateTime;
-            this._schedule = schedule;
+            _dateTime = dateTime;
+            _schedule = schedule;
         }
 
         public bool IsInvalid()
         {
-            return _schedule && this._dateTime == null;
+            return _schedule && _dateTime == null;
         }
 
         public DateTime? GetDate()
         {
-            return this._dateTime;
+            return _dateTime;
         }
     }
 }

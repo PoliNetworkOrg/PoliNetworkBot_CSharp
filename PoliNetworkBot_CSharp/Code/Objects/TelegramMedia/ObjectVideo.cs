@@ -64,7 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         public TLAbsInputMedia GetTLabsInputMedia()
         {
             TLAbsInputMedia r = new TLInputMediaPhoto();
-            
+
 
             return r;
         }

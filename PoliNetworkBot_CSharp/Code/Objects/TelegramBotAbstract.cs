@@ -614,10 +614,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         return false;
                     }
-                    
+
                 case BotTypeApi.USER_BOT:
                 {
-
                     var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
                     if (videoFile == null)
                         return false;

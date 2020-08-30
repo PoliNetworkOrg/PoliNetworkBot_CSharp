@@ -125,7 +125,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<DateTimeSchedule> AskDateAsync(int id, string text, string lang, TelegramBotAbstract sender,
+        internal static async Task<DateTimeSchedule> AskDateAsync(int id, string text, string lang,
+            TelegramBotAbstract sender,
             string username)
         {
             if (string.IsNullOrEmpty(text)) return await AskDate2Async(id, lang, sender, username);
@@ -138,7 +139,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "ora":
                 case "now":
                 {
-                    return new DateTimeSchedule(dateTime: DateTime.Now, schedule: true);
+                    return new DateTimeSchedule(DateTime.Now, true);
                 }
             }
 

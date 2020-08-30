@@ -115,7 +115,5 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
                 Convert.ToInt32(dr["width"]), dr["unique_id"].ToString(),
                 messageIdFrom, chatId, chatType);
         }
-
-
     }
 }

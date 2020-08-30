@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -118,10 +117,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             else
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
-            
+
             const long idChatSentInto = Channels.PoliAssociazioni;
 
-            var successQueue = Utils.SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
+            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
                 messageFromIdEntity, idChatSentInto, sender, ChatType.Channel);
 
             switch (successQueue)
@@ -140,10 +139,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         ChatType.Private, e.Message.From.LanguageCode,
                         ParseMode.Default,
                         new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
-                    
+
                     break;
                 }
-                    
+
                 case SuccessQueue.SUCCESS:
                     break;
                 case SuccessQueue.DATE_INVALID:

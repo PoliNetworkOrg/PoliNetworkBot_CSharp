@@ -110,41 +110,38 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
         {
             var d1 = sentDate.IsInvalid();
-            if (d1)
-            {
-                return SuccessQueue.DATE_INVALID;
-            }
-            
+            if (d1) return SuccessQueue.DATE_INVALID;
+
             if (replyTo.Photo != null)
             {
                 var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
                 var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
-                    return Enums.SuccessQueue.INVALID_ID_TO_DB;
+                    return SuccessQueue.INVALID_ID_TO_DB;
 
-                
+
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    sender.GetId(), replyTo.MessageId, 
+                    sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
             {
                 ;
                 var video = replyTo.Video;
-                
+
                 var videoMax = UtilsVideo.GetLargest(video);
                 var videoIdDb = UtilsVideo.AddVideoToDb(videoMax);
                 if (videoIdDb == null)
                     return SuccessQueue.INVALID_ID_TO_DB;
-                
+
                 MessageDb.AddMessage(MessageType.Video,
                     replyTo.Caption, messageFromIdPerson,
-                    messageFromIdEntity, 
+                    messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    sender.GetId(), replyTo.MessageId, 
+                    sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, null, videoIdDb.Value);
             }
             else
