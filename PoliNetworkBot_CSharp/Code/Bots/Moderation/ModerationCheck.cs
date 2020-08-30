@@ -145,7 +145,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                    Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
         }
 
-        public static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
+        private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
             bool username, bool name, string lang, string usernameOfUser,
             long chatId, int userId, int? messageId, ChatType messageChatType,
             string firstName, string lastName)
@@ -245,16 +245,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             else if (usernameCheck.Count == 1)
             {
-                if (usernameCheck[0].UsernameBool || usernameCheck[0].Name)
-                {
-                    await SendUsernameWarning(telegramBotClient, usernameCheck[0].UsernameBool,
-                        usernameCheck[0].Name, e.Message.From.LanguageCode,
-                        e.Message.From.Username, e.Message.Chat.Id,
-                        e.Message.From.Id, e.Message.MessageId,
-                        e.Message.Chat.Type, e.Message.From.FirstName,
-                        e.Message.From.LastName);
-                    return true;
-                }
+                if (!usernameCheck[0].UsernameBool && !usernameCheck[0].Name) 
+                    return false;
+                
+                await SendUsernameWarning(telegramBotClient, usernameCheck[0].UsernameBool,
+                    usernameCheck[0].Name, e.Message.From.LanguageCode,
+                    e.Message.From.Username, e.Message.Chat.Id,
+                    e.Message.From.Id, e.Message.MessageId,
+                    e.Message.Chat.Type, e.Message.From.FirstName,
+                    e.Message.From.LastName);
+                return true;
             }
             else
             {

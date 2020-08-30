@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -114,6 +115,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Convert.ToInt32(dr["file_size"]), Convert.ToInt32(dr["height"]),
                 Convert.ToInt32(dr["width"]), dr["unique_id"].ToString(),
                 messageIdFrom, chatId, chatType);
+        }
+
+        public static ObjectVideo GetVideoByIdFromDb(int videoId, int? messageIdFrom, 
+            in long chatIdFromIdPerson, ChatType chatType)
+        {
+            var q = "SELECT * FROM Videos WHERE id_video = " + videoId;
+            var dt = SqLite.ExecuteSelect(q);
+            if (dt == null || dt.Rows.Count == 0)
+                return null;
+
+            var dr = dt.Rows[0];
+
+            return new ObjectVideo(Convert.ToInt32(dr["id_photo"]), dr["file_id"].ToString(),
+                Convert.ToInt32(dr["file_size"]), Convert.ToInt32(dr["height"]),
+                Convert.ToInt32(dr["width"]), dr["unique_id"].ToString(),
+                messageIdFrom, chatIdFromIdPerson, chatType, Convert.ToInt32(dr["duration"]));
         }
     }
 }

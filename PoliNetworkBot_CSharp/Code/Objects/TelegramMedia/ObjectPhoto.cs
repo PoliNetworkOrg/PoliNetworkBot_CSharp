@@ -11,49 +11,42 @@ using TLSharp.Core;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public class ObjectPhoto
+    public class ObjectPhoto : GenericMedia
     {
-        private readonly string _fileId;
         private readonly string _uniqueId;
-        private readonly long chatId;
-        private readonly ChatType chatType;
+        private readonly long _chatId;
+        private readonly ChatType _chatType;
         private int _fileSize;
-        private int _height;
         private int _idPhotoDb;
-        private int _width;
-        private int? messageIdFrom;
+        private int? _messageIdFrom;
 
         public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType)
         {
             _idPhotoDb = idPhotoDb;
-            _fileId = fileId;
+            this._fileId = fileId;
             _fileSize = fileSize;
             _height = height;
             _width = width;
             _uniqueId = uniqueId;
-            this.messageIdFrom = messageIdFrom;
-            this.chatId = chatId;
-            this.chatType = chatType;
+            this._messageIdFrom = messageIdFrom;
+            this._chatId = chatId;
+            this._chatType = chatType;
         }
 
-        public InputOnlineFile GetTelegramBotInputOnlineFile()
-        {
-            var r = new InputOnlineFile(_fileId);
-            return r;
-        }
+ 
 
         public async Task<TLAbsInputFile> GetTelegramUserBotInputPhoto(TelegramClient userbot)
         {
-            if (messageIdFrom == null)
+            if (_messageIdFrom == null)
                 return null;
 
             var filename = "photo" + _uniqueId;
-            var peer = UserbotPeer.GetPeerFromIdAndType(chatId, chatType);
+            var peer = UserbotPeer.GetPeerFromIdAndType(_chatId, _chatType);
             const int offsetDate = 0;
-            var r = await userbot.GetHistoryAsync(peer, messageIdFrom.Value,
+            var r = await userbot.GetHistoryAsync(peer, _messageIdFrom.Value,
                 offsetDate, 0, 1);
 
             if (r == null) return null;

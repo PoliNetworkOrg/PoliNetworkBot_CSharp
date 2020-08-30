@@ -305,7 +305,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
             var lang2 = new Language(new Dictionary<string, string>
             {
                 {

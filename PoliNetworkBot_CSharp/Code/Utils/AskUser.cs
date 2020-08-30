@@ -32,13 +32,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (sendMessageConfirmationChoice)
                 {
                     var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                    var languagereply = new Language(new Dictionary<string, string>
+                    var languageReply = new Language(new Dictionary<string, string>
                     {
                         {"en", "You choose [" + result + "]"},
                         {"it", "Hai scelto [" + result + "]"}
                     });
                     await telegramBotAbstract.SendTextMessageAsync(idUser,
-                        languagereply,
+                        languageReply,
                         ChatType.Private, lang, default, replyMarkup, username);
                 }
 

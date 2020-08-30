@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -319,8 +320,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             var done = true;
             var bot = GlobalVariables.Bots[userId];
-            //Media media = new Contact("+39 1234567890", "Mario", "Rossi", null);
-            //done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
+            Objects.TelegramMedia.GenericFile media = new Objects.TelegramMedia.Contact("+39 1234567890", "Mario", "Rossi", null);
+            done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
             //done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot, "it");
             return done;
         }

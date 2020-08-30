@@ -3,12 +3,12 @@
     public class UsernameAndNameCheckResult
     {
         private readonly string _language;
-        private readonly string firstName;
-        private readonly string lastName;
+        private readonly string _firstName;
+        private readonly string _lastName;
         public readonly bool Name;
-        private readonly int userId;
+        private readonly int _userId;
         public readonly bool UsernameBool;
-        private readonly string usernameString;
+        private readonly string _usernameString;
 
         public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
             string usernameString, int userId, string firstName, string lastName)
@@ -16,10 +16,10 @@
             UsernameBool = usernameBool;
             Name = name;
             _language = language;
-            this.usernameString = usernameString;
-            this.userId = userId;
-            this.firstName = firstName;
-            this.lastName = lastName;
+            this._usernameString = usernameString;
+            this._userId = userId;
+            this._firstName = firstName;
+            this._lastName = lastName;
         }
 
         public string GetLanguage()
@@ -29,22 +29,22 @@
 
         public string GetUsername()
         {
-            return usernameString;
+            return _usernameString;
         }
 
         public int GetUserId()
         {
-            return userId;
+            return _userId;
         }
 
         public string GetFirstName()
         {
-            return firstName;
+            return _firstName;
         }
 
         public string GetLastName()
         {
-            return lastName;
+            return _lastName;
         }
     }
 }

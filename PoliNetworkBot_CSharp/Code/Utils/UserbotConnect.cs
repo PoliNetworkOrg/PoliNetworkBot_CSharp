@@ -19,9 +19,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (apiId == null)
                 return null;
 
-            var telegramClient = new TelegramClient(apiId.Value, userbot.GetApiHash(),
-                sessionUserId: userbot.GetSessionUserId());
-            await telegramClient.ConnectAsync();
+            TelegramClient telegramClient = null;
+            try
+            {
+                telegramClient = new TelegramClient(apiId.Value, userbot.GetApiHash(),
+                    sessionUserId: userbot.GetSessionUserId());
+            }
+            catch
+            {
+                ;
+            }
+
+            if (telegramClient == null)
+                return null;
+
+            bool r = await telegramClient.ConnectAsync();
+            if (r == false)
+                return null;
 
             if (telegramClient.IsUserAuthorized())
                 return telegramClient;

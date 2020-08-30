@@ -9,7 +9,7 @@ using TLSharp.Core;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public class Contact : Media
+    public class Contact : GenericFile
     {
         private readonly string _firstName;
         private readonly string _lastName;

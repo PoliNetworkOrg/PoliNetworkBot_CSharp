@@ -135,11 +135,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     SendTextFromDataRow(dr, botClass);
                     return true;
                 case MessageType.Photo:
-                    return await SendPhotoFromDataRow(dr, botClass);
+                    return await SendPhotoFromDataRow(dr, botClass, ParseMode.Html);
                 case MessageType.Audio:
                     break;
                 case MessageType.Video:
-                    return await SendVideoFromDataRow(dr, botClass);
+                    return await SendVideoFromDataRow(dr, botClass, ParseMode.Html);
                 case MessageType.Voice:
                     break;
                 case MessageType.Document:
@@ -234,12 +234,43 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return value;
         }
 
-        private static async Task<bool> SendVideoFromDataRow(DataRow dr, TelegramBotAbstract botClass)
+        private static async Task<bool> SendVideoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
+            ParseMode parseMode)
         {
-            throw new NotImplementedException();
+            var videoId = SqLite.GetIntFromColumn(dr, "id_video");
+            if (videoId == null)
+                return false;
+
+            var chatIdToSendTo = (long) dr["id_chat_sent_into"];
+            var caption = dr["message_text"].ToString();
+            var chatIdFromIdPerson = Convert.ToInt64(dr["from_id_person"]);
+            int? messageIdFrom = null;
+            try
+            {
+                messageIdFrom = Convert.ToInt32(dr["message_id_tg_from"]);
+            }
+            catch
+            {
+                //ignored
+            }
+            
+            var typeOfChatSentInto = Utils.ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
+            if (typeOfChatSentInto == null)
+                return false;
+
+            var video = UtilsPhoto.GetVideoByIdFromDb(
+                videoId.Value,
+                messageIdFrom,
+                chatIdFromIdPerson,
+                ChatType.Private);
+
+            var done = await botClass.SendVideoAsync(chatIdToSendTo, video, 
+                caption: caption, parseMode, typeOfChatSentInto.Value );
+            return done;
         }
 
-        private static async Task<bool> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass)
+        private static async Task<bool> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
+            ParseMode parseMode)
         {
             var photoId = SqLite.GetIntFromColumn(dr, "id_photo");
             if (photoId == null)
@@ -257,6 +288,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 //ignored
             }
+            
+            var typeOfChatSentInto = Utils.ChatTypeUtil.GetChatTypeFromString(dr["type_chat_sent_into"]);
+            if (typeOfChatSentInto == null)
+                return false;
 
             var photo = UtilsPhoto.GetPhotoByIdFromDb(
                 photoId.Value,
@@ -264,7 +299,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 chatIdFromIdPerson,
                 ChatType.Private);
 
-            var done = await botClass.SendPhotoAsync(chatIdToSendTo, photo, caption);
+            var done = await botClass.SendPhotoAsync(chatIdToSendTo, photo,
+                caption, parseMode: parseMode, typeOfChatSentInto.Value);
             return done;
         }
     }

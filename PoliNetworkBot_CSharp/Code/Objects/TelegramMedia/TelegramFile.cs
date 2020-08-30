@@ -12,7 +12,7 @@ using TLSharp.Core.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public class TelegramFile : Media
+    public class TelegramFile : GenericFile
     {
         private readonly string _caption;
         private readonly string _fileName;

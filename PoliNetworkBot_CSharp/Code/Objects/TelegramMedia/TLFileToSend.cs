@@ -68,14 +68,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             if (_tlInputFile != null)
                 try
                 {
-                    string caption2 = null;
-                    if (caption == null)
-                        caption2 = "";
-                    else
-                        caption2 = caption.Select(lang);
+                    string caption2 = Utils.StringUtil.NotNull(caption, lang);
 
-                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile,
-                        caption2, mimeType, attributes);
+                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, mimeType, attributes);
                     return r;
                 }
                 catch (Exception e)

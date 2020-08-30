@@ -8,7 +8,7 @@ using TLSharp.Core;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
 {
-    public abstract class Media
+    public abstract class GenericFile
     {
         public abstract MessageType? GetMediaBotType();
 
