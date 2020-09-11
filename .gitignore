@@ -23,3 +23,9 @@ PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/runtimes/
 *.bin
 
 *.pdb
+
+PoliNetworkBot_CSharp/Old/config/assoc.json
+
+PoliNetworkBot_CSharp/Old/config/groups.json
+
+PoliNetworkBot_CSharp/Old/data/groups.json
