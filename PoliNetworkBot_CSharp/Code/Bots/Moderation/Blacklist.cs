@@ -36,6 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
 
             return SpamType.ALL_GOOD;
+            ;
         }
 
         private static bool CheckSpamLink(string text)
