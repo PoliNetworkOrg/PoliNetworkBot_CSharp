@@ -3,6 +3,7 @@
     internal enum ToExit
     {
         EXIT,
-        STAY
+        STAY,
+        SKIP
     }
 }

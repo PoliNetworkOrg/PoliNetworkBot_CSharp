@@ -123,12 +123,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 else
                 {
                     Console.WriteLine("Ok, bye!");
-                    return ToExit.EXIT;
+                    return ToExit.SKIP;
                 }
             }
             else
             {
-                return ToExit.EXIT;
+                return ToExit.SKIP;
             }
 
             return ToExit.STAY;
@@ -157,12 +157,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 else
                 {
                     Console.WriteLine("Ok, bye!");
-                    return ToExit.EXIT;
+                    return ToExit.SKIP;
                 }
             }
             else
             {
-                return ToExit.EXIT;
+                return ToExit.SKIP;
             }
 
             return ToExit.STAY;
@@ -191,12 +191,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 else
                 {
                     Console.WriteLine("Ok, bye!");
-                    return ToExit.EXIT;
+                    return ToExit.SKIP;
                 }
             }
             else
             {
-                return ToExit.EXIT;
+                return ToExit.SKIP;
             }
 
             return ToExit.STAY;
