@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 
 #endregion
 
@@ -77,6 +78,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var s = text.Split(' ');
             return s.FirstOrDefault(s2 => s2.Contains("t.me/"));
+        }
+
+        internal static SpamType IsSpam(PhotoSize[] photo)
+        {
+            //todo: analizzare la foto con un ocr
+            return SpamType.ALL_GOOD;
         }
     }
 }

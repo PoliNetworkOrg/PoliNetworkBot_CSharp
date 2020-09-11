@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/force_check_invite_links":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.Chat.Id))
+                    if (GlobalVariables.Creators.Contains(e.Message.Chat.Username))
                         _ = ForceCheckInviteLinksAsync(sender, e);
                     else
                         await DefaultCommand(sender, e);
@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/banAll":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Username))
                         _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
                     else
                         await DefaultCommand(sender, e);
@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/unbanAll":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Id))
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Username))
                         _ = UnbanAllAsync(sender, e, cmdLines[1]);
                     else
                         await DefaultCommand(sender, e);
@@ -84,7 +84,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/getGroups":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == ChatType.Private)
+                    if (GlobalVariables.Creators.Contains(e.Message.From.Username) && e.Message.Chat.Type == ChatType.Private)
                     {
                         string username = null;
                         if (!string.IsNullOrEmpty(e.Message.From.Username)) username = e.Message.From.Username;
@@ -173,7 +173,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string[] stringInfo)
         {
-            var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.Chat.Id, sender);
+            var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
             if (!r)
                 return false;
 

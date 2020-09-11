@@ -80,8 +80,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return false;
             }
 
-            var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
-            if (hasThisEntityAlreadyReachedItsLimit)
+            bool? hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
+            if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
             {
                 var languageList4 = new Language(new Dictionary<string, string>
                 {
@@ -163,9 +163,37 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-        private static bool CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
+        private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
         {
-            return false; //todo: do a sql query to check how many messages have been already queued by that entity
+            string q = "SELECT COUNT (*) " +
+                "FROM Messages " +
+                "WHERE Messages.from_id_entity = 2 AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
+
+            var dt = Utils.SqLite.ExecuteSelect(q);
+
+            if (dt == null)
+            {
+                return null;
+            }
+
+            if (dt.Rows == null)
+                return null;
+
+            int? count = null;
+
+            try
+            {
+                count = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+            }
+            catch
+            {
+                ;
+            }
+
+            if (count == null)
+                return null;
+
+            return count.Value >= 2;
         }
     }
 }

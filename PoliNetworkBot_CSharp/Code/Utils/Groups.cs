@@ -17,10 +17,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return SqLite.ExecuteSelect(q1);
         }
 
-        internal static async Task<bool> CheckIfAdminAsync(int userId, long chatId,
+        internal static async Task<bool> CheckIfAdminAsync(int userId, string username, long chatId,
             TelegramBotAbstract telegramBotAbstract)
         {
-            if (GlobalVariables.Creators.Contains(userId))
+            if (GlobalVariables.Creators.Contains(username))
                 return true;
 
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);

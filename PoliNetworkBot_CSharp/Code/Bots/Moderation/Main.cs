@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -22,36 +23,44 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
-            TelegramBotClient telegramBotClientBot = null;
-            if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
-
-            if (telegramBotClientBot == null)
-                return;
-
-            var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
-
-            var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
-            if (toExit)
+            try
             {
-                await LeaveChat.ExitFromChat(telegramBotClient, e);
-                return;
+                TelegramBotClient telegramBotClientBot = null;
+                if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
+
+                if (telegramBotClientBot == null)
+                    return;
+
+                var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+
+                var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+                if (toExit == ToExit.EXIT)
+                {
+                    await LeaveChat.ExitFromChat(telegramBotClient, e);
+                    return;
+                }
+
+                var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+                if (toExitBecauseUsernameAndNameCheck)
+                    return;
+
+                var checkSpam = ModerationCheck.CheckSpam(e);
+                if (checkSpam != SpamType.ALL_GOOD)
+                {
+                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                    return;
+                }
+
+                if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
+                    await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+                else
+                    await TextConversation.DetectMessage(telegramBotClient, e);
             }
-
-            var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
-            if (toExitBecauseUsernameAndNameCheck)
-                return;
-
-            var checkSpam = ModerationCheck.CheckSpam(e);
-            if (checkSpam != SpamType.ALL_GOOD)
+            catch (Exception exception)
             {
-                await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
-                return;
+                Console.WriteLine(exception.Message);
+                //todo: send exception to owner
             }
-
-            if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
-                await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            else
-                await TextConversation.DetectMessage(telegramBotClient, e);
         }
     }
 }

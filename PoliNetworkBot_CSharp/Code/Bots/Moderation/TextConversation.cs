@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
-            //todo: check user state
+
             var text2 = new Language(new Dictionary<string, string>
             {
                 {

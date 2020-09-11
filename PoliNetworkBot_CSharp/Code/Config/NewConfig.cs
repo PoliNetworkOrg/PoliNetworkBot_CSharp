@@ -8,12 +8,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.MainProgram
+namespace PoliNetworkBot_CSharp.Code.Config
 {
     public static class NewConfig
     {
@@ -178,6 +179,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            "title VARCHAR(250)" +
                            ") ");
 
+            FillGroups(0);
+
             SqLite.Execute("CREATE TABLE PeopleInEntities (" +
                            "id_entity INT(12)," +
                            "id_person INT(12)," +
@@ -237,6 +240,241 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                            ");");
         }
 
+        private static void FillGroups(int botIdWhoInsertedThem)
+        {
+            //read groups from polinetwork python config file and fill db
+            var s = File.ReadAllText("../../../Old/config/groups.json");
+            var r = JsonConvert.DeserializeObject<JObject>(s);
+            var r2 = r.Children();
+            foreach (var r3 in r2)
+            {
+                if (r3 is JProperty r4)
+                {
+                    var name = r4.Name;
+                    if (name == "Gruppi")
+                    {
+                        var r5 = r4.Children();
+                        foreach (var r6 in r5)
+                        {
+                            var r7 = r6.Children();
+                            foreach (var r8 in r7)
+                            {
+                                
+                                if (r8 is JObject r9)
+                                {                                
+                                    var r10 = r9.Children();
+
+                                    AddGroupToDb(r10, botIdWhoInsertedThem);                                  
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static bool AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
+        {
+            ;
+
+            ChatJson chat = null;
+            DateTime? lastUpdateLinkTime = null;
+            bool? we_are_admin = null;
+
+            foreach (var r2 in r1 )
+            {
+                ;
+                if (r2 is JProperty r3)
+                {
+                    ;
+                    if (r3.Name == "Chat")
+                    {
+                        chat = GetChatFromJson(r3);
+                    }
+                    else if (r3.Name == "LastUpdateInviteLinkTime")
+                    {
+                        lastUpdateLinkTime = GetLastUpdateLinkTimeFromJson(r3);
+                    }
+                    else if (r3.Name == "we_are_admin")
+                    {
+                        we_are_admin = GetWeAreAdminFromJson(r3);
+                    }
+                }
+            }
+
+            return AddGroupToDb2(chat, lastUpdateLinkTime, we_are_admin, botIdWhoInsertedThem);
+        }
+
+        private static bool AddGroupToDb2(ChatJson chat, DateTime? lastUpdateLinkTime, bool? we_are_admin,
+            int botIdWhoInsertedThem)
+        {
+            try
+            {
+                const string q1 = "INSERT INTO Groups (id, bot_id, type, title, link, last_update_link, valid) " +
+                    " VALUES " +
+                    " (@id, @botid, @type, @title, @link, @lul, @valid)";
+                SqLite.Execute(q1, new Dictionary<string, object>
+                {
+                    {"@id", chat.id},
+                    {"@botid", botIdWhoInsertedThem },
+                    {"@type", chat.type},
+                    {"@title", chat.title},
+                    {"@link", chat.invite_link },
+                    {"@lul", lastUpdateLinkTime},
+                    {"@valid", we_are_admin }
+                });
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;   
+        }
+
+        private static bool? GetWeAreAdminFromJson(JProperty r3)
+        {
+            ;
+            var r4 = r3.First;
+            ;
+            if (r4 is JValue r5)
+            {
+                ;
+                if (r5.Value == null)
+                    return null;
+
+                if (r5.Value.ToString().ToLower() == "true")
+                    return true;
+
+                return false;
+            }
+            return null;
+        }
+
+        private static DateTime? GetLastUpdateLinkTimeFromJson(JProperty r3)
+        {
+            ;
+            var r4 = r3.First;
+            ;
+            if (r4 is JValue r5)
+            {
+                ;
+                if (r5.Value == null)
+                    return null;
+
+                return Utils.DateTimeClass.GetFromString(r5.Value.ToString());
+            }
+            return null;
+        }
+
+        private static ChatJson GetChatFromJson(JProperty r3)
+        {
+            ;
+            var r4 = r3.Children();
+            ;
+            var r5 = r4.Children();
+
+            long? id = null;
+            string type = null;
+            string title = null;
+            string invite_link = null;
+
+            foreach(var r6 in r5)
+            {
+                ;
+                if (r6 is JProperty r7)
+                {
+                    ;
+                    if (r7.Name == "id")
+                    {
+                        id = GetIdFromJson(r7);
+                    }
+                    else if (r7.Name == "type")
+                    {
+                        type = GetTypeFromJson(r7);
+                    }
+                    else if (r7.Name == "title")
+                    {
+                        title = GetTitleFromJson(r7);
+                    }
+                    else if (r7.Name == "invite_link")
+                    {
+                        invite_link = GetInviteLinkFromJson(r7);
+                    }
+                    else
+                    {
+                        ;
+                    }
+                }
+            }
+
+            return new ChatJson(id, type, title, invite_link);
+        }
+
+        private static string GetInviteLinkFromJson(JProperty r7)
+        {
+            var r8 = r7.First;
+            ;
+            if (r8 is JValue r9)
+            {
+                if (r9.Value == null)
+                    return null;
+
+                return r9.Value.ToString();
+            }
+
+            return null;
+        }
+
+        private static string GetTitleFromJson(JProperty r7)
+        {
+            var r8 = r7.First;
+            ;
+            if (r8 is JValue r9)
+            {
+                if (r9.Value == null)
+                    return null;
+
+                return r9.Value.ToString();
+            }
+
+            return null;
+        }
+
+        private static string GetTypeFromJson(JProperty r7)
+        {
+            var r8 = r7.First;
+            ;
+            if (r8 is JValue r9)
+            {
+                if (r9.Value == null)
+                    return null;
+
+                return r9.Value.ToString();
+            }
+
+            return null;
+        }
+
+        private static long? GetIdFromJson(JProperty r7)
+        {
+            var r8 = r7.First;
+
+            if (r8 is JValue r9)
+            {
+                try
+                {
+                    return Convert.ToInt64(r9.Value);
+                }
+                catch
+                {
+                    ;
+                }
+            }
+
+            return null;
+        }
+
         private static void FillAssoc()
         {
             //read assoc from polinetwork python config file and fill db
@@ -256,12 +494,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            var i = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
+            var i = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
 
             Tables.FixIdTable("Entities", "id", "name");
 
             const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
@@ -286,7 +524,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                var i2 = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
+                var i2 = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
             }
 
             return true;

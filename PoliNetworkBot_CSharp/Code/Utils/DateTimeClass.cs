@@ -309,5 +309,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return DateTime.Now.AddSeconds(i.Value);
         }
+
+        internal static DateTime? GetFromString(string v)
+        {
+            ;
+            if (v.Contains(' '))
+            {
+                var v2 = v.Split(' ');
+                //v2[0] data, v2[1] ora
+
+                if (v2[0].Contains('-'))
+                {
+                    var data = v2[0].Split('-');
+                    if (v2[1].Contains('.'))
+                    {
+                        var v4 = v2[1].Split('.');
+                        if (v4[0].Contains(':'))
+                        {
+                            var orario = v4[0].Split(':');
+                            return new DateTime(year: Convert.ToInt32(data[0]), month: Convert.ToInt32(data[1]),
+                                day: Convert.ToInt32(data[2]), hour: Convert.ToInt32(orario[0]), minute: Convert.ToInt32(orario[1]),
+                                second: Convert.ToInt32(orario[2]), millisecond: Convert.ToInt32(v4[1].Trim().Substring(0, 3)));
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }

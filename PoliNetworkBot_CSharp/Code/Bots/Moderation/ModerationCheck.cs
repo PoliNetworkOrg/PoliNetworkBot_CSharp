@@ -17,12 +17,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class ModerationCheck
     {
-        public static async Task<bool> CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
+        public static async Task<ToExit> CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
         {
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                    return false;
+                    return ToExit.STAY;
                 case ChatType.Group:
                     break;
                 case ChatType.Channel:
@@ -35,38 +35,62 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
-            if (dt != null && dt.Rows.Count > 0) return await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
+            if (dt != null && dt.Rows.Count > 0) 
+                return await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
 
             InsertGroup(sender, e);
             return await CheckIfToExit(sender, e, null);
         }
 
-        private static async Task<bool> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        private static async Task<ToExit> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             object v)
         {
             switch (v)
             {
                 case null:
                 case DBNull _:
-                    return await CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
                 case char b:
-                    return b != 'Y';
+                    return b != 'Y' ? ToExit.EXIT : ToExit.STAY;
                 case string s when string.IsNullOrEmpty(s):
-                    return await CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
                 case string s:
-                    return s != "Y";
+                    return s != "Y" ? ToExit.EXIT : ToExit.STAY;
                 default:
-                    return await CheckIfToExit_NullValue(telegramBotClient, e);
+                    return await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
             }
         }
 
-        private static async Task<bool> CheckIfToExit_NullValue(TelegramBotAbstract telegramBotClient,
+        private static async Task<ToExit> CheckIfToExit_NullValueAndUpdateIt(TelegramBotAbstract telegramBotClient,
             MessageEventArgs e)
         {
-            var r = await telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
+            ToExit r = await CheckIfToExit_NullValue2Async(telegramBotClient, e);
+            string valid = r == ToExit.STAY ? "Y": "N";
 
-            //todo: check if admins are allowed and set valid column
-            return false;
+            string q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+            Dictionary<string, object> d = new Dictionary<string, object>() {
+                {"@valid", valid },
+                {"@id", e.Message.Chat.Id }
+            };
+            Utils.SqLite.Execute(q, d);
+
+            return r;
+        }
+
+        private static async Task<ToExit> CheckIfToExit_NullValue2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            Telegram.Bot.Types.ChatMember[] r = await telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
+            if (r == null)
+                return ToExit.STAY;
+
+            foreach (var chatMember in r)
+            {
+                bool? isCreator = Utils.Creators.CheckIfIsCreatorOrSubCreator(chatMember);
+                if (isCreator != null && isCreator.Value)
+                    return ToExit.STAY;
+            }
+
+            return ToExit.EXIT;
         }
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
@@ -112,7 +136,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var username = false;
             var name = false;
 
-            if (string.IsNullOrEmpty(fromUsername)) username = true;
+            if (string.IsNullOrEmpty(fromUsername))
+            {
+                if (Data.GlobalVariables.AllowedNoUsername.Contains(userId))
+                {
+                    username = false;
+                }
+                else
+                {
+                    username = true;
+                }
+            }
 
             if (fromFirstName.Length < 2)
                 name = true;
@@ -124,15 +158,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static SpamType CheckSpam(MessageEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Message.Text))
-                //todo
-                return SpamType.ALL_GOOD;
+                return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption), Blacklist.IsSpam(e.Message.Photo));
 
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
 
             var isForeign = DetectForeignLanguage(e);
 
-            return isForeign ? SpamType.FOREIGN : Blacklist.IsSpam(e.Message.Text);
+            if (isForeign)
+                return SpamType.FOREIGN;
+
+            return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text), Blacklist.IsSpam(e.Message.Photo));
         }
 
         private static bool DetectForeignLanguage(MessageEventArgs e)
