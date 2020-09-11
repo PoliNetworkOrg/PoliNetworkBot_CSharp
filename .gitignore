@@ -22,6 +22,4 @@ PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/runtimes/
 
 *.bin
 
-*.json
-
 *.pdb
