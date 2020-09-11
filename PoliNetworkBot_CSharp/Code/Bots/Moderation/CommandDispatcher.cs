@@ -76,6 +76,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
 
+                case "/groups":
+                {
+                    await SendRecommendedGroupsAsync(sender, e);
+                    return;
+                }
+
                 case "/getGroups":
                 {
                     if (GlobalVariables.Creators.Contains(e.Message.From.Id) && e.Message.Chat.Type == ChatType.Private)
@@ -113,6 +119,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
             }
+        }
+
+        private static async Task SendRecommendedGroupsAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            const string text = "<i>Lista di gruppi consigliati</i>:\n" +
+                "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
+                "\n📖 Libri @PoliBook\n" +
+                "\n🤪 Spotted & Memes @PolimiSpotted @PolimiMemes\n" +
+                "\n🥳 Eventi @PoliEventi\n" +
+                "\nRicordiamo che sul nostro sito vi sono tutti i link ai gruppi con tanto ricerca, facci un salto!\n" +
+                "https://polinetwork.github.io/" ;
+
+
+            const string textEng = "<i>List of recommended groups</i>:\n" +
+                "\n👥 Group with all students @PoliGruppo 👈\n" +
+                "\n📖 Books @PoliBook\n" +
+                "\n🤪 Spotted & Memes @PolimiSpotted @PolimiMemes\n" +
+                "\n🥳 Events @PoliEventi\n" +
+                "\nWe remind you that on our website there are all link to the groups, and they are searchable, have a look!\n" +
+                "https://polinetwork.github.io/";
+
+
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                {"en", textEng},
+                {"it", text}
+            });
+            await SendMessage.SendMessageInPrivate(sender, e, text2, ParseMode.Html);
         }
 
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
@@ -244,26 +278,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
         {
             const string text = "<i>Lista di funzioni</i>:\n" +
-                                "\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
-                                "\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
+                                //"\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
+                                //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
                                 "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                 "FAQ (domande frequenti)</a>\n" +
                                 "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
-                                "\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                                "\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+                                //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+                                //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
                                 "\n👥 Gruppo consigliati e utili /groups\n" +
                                 "\n⚠ Hai già letto le regole del network? /rules\n" +
                                 "\n✍ Per contattarci /contact";
 
 
             const string textEng = "<i>List of features</i>:\n" +
-                                   "\n📑 Review system of courses (for more info /help_review)\n" +
-                                   "\n🔖 Link to notes (for more info /help_material)\n" +
+                                   //"\n📑 Review system of courses (for more info /help_review)\n" +
+                                   //"\n🔖 Link to notes (for more info /help_material)\n" +
                                    "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                    "FAQ (frequently asked questions)</a>\n" +
-                                   "\n🏫 Bot to find free rooms @AulePolimiBot\n" +
-                                   "\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
-                                   "\n🎙️ Record of lessons (for more info /help_record)\n" +
+                                   //"\n🏫 Bot to find free rooms @AulePolimiBot\n" +
+                                   //"\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
+                                   //"\n🎙️ Record of lessons (for more info /help_record)\n" +
                                    "\n👥 Recommended groups /groups\n" +
                                    "\n⚠ Have you already read our network rules? /rules\n" +
                                    "\n✍ To contact us /contact";
