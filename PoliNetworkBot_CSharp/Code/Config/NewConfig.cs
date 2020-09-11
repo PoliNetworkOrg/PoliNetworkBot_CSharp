@@ -243,7 +243,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static void FillGroups(int botIdWhoInsertedThem)
         {
             //read groups from polinetwork python config file and fill db
-            var s = File.ReadAllText("../../../Old/config/groups.json");
+            var s = File.ReadAllText("../../../Old/data/groups.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
             var r2 = r.Children();
             foreach (var r3 in r2)
