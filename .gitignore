@@ -9,3 +9,19 @@ TestBot/obj/
 TestBot/Old/
 
 PoliNetworkBot_CSharp.sln.DotSettings.user
+
+PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/backup/
+
+PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/config/
+
+PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/data/
+
+PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/runtimes/
+
+*.dat
+
+*.bin
+
+*.json
+
+*.pdb
