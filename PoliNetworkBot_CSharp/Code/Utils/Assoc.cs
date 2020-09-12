@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
-                "WHERE Messages.from_id_entity = 2 AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
+                "WHERE Messages.from_id_entity = "+ messageFromIdEntity + " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
 
             var dt = Utils.SqLite.ExecuteSelect(q);
 
