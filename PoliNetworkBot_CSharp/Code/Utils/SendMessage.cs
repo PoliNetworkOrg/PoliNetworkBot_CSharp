@@ -84,7 +84,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLAbsUpdates r2 = null;
             try
             {
-                r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang));
+                r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
             }
             catch
             {
@@ -94,7 +94,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 try
                 {
-                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang));
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
                 }
                 catch
                 {
