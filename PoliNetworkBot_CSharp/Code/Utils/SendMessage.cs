@@ -55,14 +55,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
-        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
+            long userIdToSendTo, string langCode, string usernameToSendTo,
             Language text, ParseMode html = ParseMode.Default)
         {
             try
             {
-                return await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text,
+                return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
                     ChatType.Private, parseMode: html,
-                    lang: e.Message.From.LanguageCode, username: e.Message.From.Username,
+                    lang: langCode, username: usernameToSendTo,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
             }
             catch

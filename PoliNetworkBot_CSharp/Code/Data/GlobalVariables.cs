@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
 
@@ -13,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<string> Creators;
         public static List<string> SubCreators;
         public static List<long> AllowedNoUsername;
-
+        public static List<Tuple<long,string>> Owners;
         internal static void LoadToRam()
         {
             Creators = new List<string>
@@ -32,6 +33,11 @@ namespace PoliNetworkBot_CSharp.Code.Data
             AllowedNoUsername = new List<long>()
             {
                 777000 //telegram
+            };
+
+            Owners = new List<Tuple<long, string>>()
+            {
+                new Tuple<long, string>(5651789, "armef97")
             };
         }
     }

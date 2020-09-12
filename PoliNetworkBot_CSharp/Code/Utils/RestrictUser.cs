@@ -49,7 +49,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                               ErrorCodes.TargetInvalidWhenBanAll
                     }
                 });
-                await SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username,
                     text2);
                 return null;
             }
@@ -69,7 +71,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                               ErrorCodes.DatatableEmptyWhenBanAll
                     }
                 });
-                await SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username,
                     text3);
                 return null;
             }

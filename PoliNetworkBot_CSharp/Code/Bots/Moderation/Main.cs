@@ -23,15 +23,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
+            TelegramBotClient telegramBotClientBot = null;
+            TelegramBotAbstract telegramBotClient = null;
+
             try
             {
-                TelegramBotClient telegramBotClientBot = null;
+
                 if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
                 if (telegramBotClientBot == null)
                     return;
 
-                var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+                telegramBotClient  = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit == ToExit.EXIT)
@@ -59,7 +62,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
-                //todo: send exception to owner
+
+                await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }
     }
