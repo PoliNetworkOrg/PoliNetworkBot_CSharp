@@ -16,10 +16,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private State _currentState;
         internal Action<object> WorkCompleted;
+        private bool _answeredProcessed;
 
         public AnswerTelegram()
         {
-            _currentState = State.WAITING_FOR_ANSWER;
+            Reset();
         }
 
         internal State GetState()
@@ -32,7 +33,33 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (_currentState != State.WAITING_FOR_ANSWER) return;
 
             _currentState = State.ANSWERED;
-            WorkCompleted.Invoke(text);
+            if (_answeredProcessed == false)
+            {
+                WorkCompleted.Invoke(text);
+                _answeredProcessed = true;
+            }
+        }
+
+        internal void Reset()
+        {
+            _currentState = State.WAITING_FOR_ANSWER;
+            _answeredProcessed = false;
+            WorkCompleted = null;
+        }
+
+        internal void SetState(State state)
+        {
+            this._currentState = state;
+        }
+
+        internal void SetAnswerProcessed(bool v)
+        {
+            this._answeredProcessed = v;
+        }
+
+        internal bool GetAlreadyProcessedAnswer()
+        {
+            return this._answeredProcessed;
         }
     }
 }

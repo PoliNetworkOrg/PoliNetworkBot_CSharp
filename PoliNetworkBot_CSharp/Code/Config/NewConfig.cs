@@ -21,7 +21,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private const string RowSeparator = "| _:r:_ |";
         private const string ColumnSeparator = "| _:c:_ |";
 
-        public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot)
+        public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot,
+            bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
         {
             if (resetBot) ResetBotMethod();
 
@@ -29,7 +30,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
             if (resetBotDisguisedAsUserBot) ResetBotDisguisedAsUserBotMethod();
 
-            DestroyDB_And_Redo_it();
+            if (destroy_db_and_redo_it)
+                DestroyDB_And_Redo_it(alsoFillTablesFromJson);
         }
 
         private static void ResetBotDisguisedAsUserBotMethod()
@@ -125,7 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigBot, botInfos);
         }
 
-        private static void DestroyDB_And_Redo_it()
+        private static void DestroyDB_And_Redo_it(bool alsoFillTablesFromJson)
         {
             DirectoryUtils.CreateDirectory("data");
 
@@ -142,7 +144,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
             CleanDb();
 
-            Redo_DB();
+            Redo_DB(alsoFillTablesFromJson);
         }
 
         private static void CleanDb()
@@ -167,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
         }
 
-        private static void Redo_DB()
+        private static void Redo_DB(bool alsoFillTablesFromJson)
         {
             SqLite.Execute("CREATE TABLE Groups (" +
                            "id BIGINT PRIMARY KEY, " +
@@ -179,7 +181,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
                            "title VARCHAR(250)" +
                            ") ");
 
-            FillGroups(0);
+            if (alsoFillTablesFromJson)
+                FillGroups(0);
 
             SqLite.Execute("CREATE TABLE PeopleInEntities (" +
                            "id_entity INT(12)," +
@@ -192,7 +195,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
                            "name VARCHAR(250)" +
                            ");");
 
-            FillAssoc();
+            if (alsoFillTablesFromJson)
+                FillAssoc();
 
             SqLite.Execute("CREATE TABLE Messages (" +
                            "id INT(12) PRIMARY KEY," +

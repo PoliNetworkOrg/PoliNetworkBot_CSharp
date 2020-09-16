@@ -39,5 +39,20 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             var bValue = bLanguage.Select(languageOfB);
             return aValue == bValue;
         }
+
+        internal static int? FindChosen(List<Language> options2, string r, string languageCode)
+        {
+            if (options2 == null)
+                return null;
+
+            for (int i = 0; i < options2.Count; i++)
+            {
+                if (options2[i]._dict[languageCode] == r)
+                    return i;
+            }
+
+            return null;
+        }
+
     }
 }

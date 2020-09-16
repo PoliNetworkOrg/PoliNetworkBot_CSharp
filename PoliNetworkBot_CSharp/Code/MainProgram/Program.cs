@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Config;
@@ -26,14 +27,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static void Main()
         {
+            FirstThingsToDo();
+
             var readChoice = MainGetMenuChoice();
 
             switch (readChoice)
             {
                 case '1': //reset everything
                 {
-                    ResetEverything();
-                    return;
+                        ResetEverything(alsoFillTablesFromJson: true);
+
+                        return;
                 }
 
                 case '2': //normal mode
@@ -60,12 +64,23 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     while (true) Console.ReadKey();
                     return;
                 }
+
+                case '4':
+                    {
+                        ResetEverything(alsoFillTablesFromJson: false);
+                        return;
+                    }
             }
         }
 
-        private static void ResetEverything()
+        private static void FirstThingsToDo()
         {
-            NewConfig.NewConfigMethod(true, true, true);
+            Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        }
+
+        private static void ResetEverything(bool alsoFillTablesFromJson)
+        {
+            NewConfig.NewConfigMethod(true, true, true, true, alsoFillTablesFromJson);
             Console.WriteLine("Reset done!");
         }
 
@@ -77,7 +92,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "What do you want to do?\n" +
                                   "1) Reset everything\n" +
                                   "2) Normal mode (no disguised)\n" +
-                                  "3) Only Disguised bot\n");
+                                  "3) Only Disguised bot\n" +
+                                  "4) Reset everything but don't fill tables\n" +
+                                  "\n");
 
                 var reply = Console.ReadLine();
 
@@ -90,6 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '1':
                         case '2':
                         case '3':
+                        case '4':
                             return first;
                     }
                 }
@@ -109,7 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(false, false, true);
+                NewConfig.NewConfigMethod(false, false, true, false, false);
 
                 Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
@@ -145,7 +163,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(false, true, false);
+                NewConfig.NewConfigMethod(false, true, false, false, false);
 
                 Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
@@ -179,7 +197,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(true, false, false);
+                NewConfig.NewConfigMethod(true, false, false, false, false);
 
                 Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();

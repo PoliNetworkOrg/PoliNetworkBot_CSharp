@@ -114,6 +114,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
 
+                case "/rooms":
+                    {
+                        Bots.Moderation.Rooms.RoomsMainAsync(sender, e);
+                        return;
+                    }
+
                 default:
                 {
                     await DefaultCommand(sender, e);
