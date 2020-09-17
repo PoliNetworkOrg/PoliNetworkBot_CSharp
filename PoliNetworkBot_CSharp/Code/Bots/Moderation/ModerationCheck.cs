@@ -251,7 +251,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
 
             await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
-            var language = e.Message.From.LanguageCode.ToLower();
+
             switch (checkSpam)
             {
                 case SpamType.SPAM_LINK:

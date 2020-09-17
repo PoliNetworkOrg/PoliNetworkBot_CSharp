@@ -498,7 +498,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            var i = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
+            _ = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
 
             Tables.FixIdTable("Entities", "id", "name");
 
@@ -528,7 +528,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                var i2 = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+                _ = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
             }
 
             return true;

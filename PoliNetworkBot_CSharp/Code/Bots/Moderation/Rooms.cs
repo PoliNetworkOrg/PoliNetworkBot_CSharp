@@ -263,7 +263,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             int colsizetotal = 0;
             for (int i = 2; i < node.ChildNodes.Count; i++)
             {
-                int colsize = 0;
+                int colsize;
                 if (node.ChildNodes[i].Attributes.Contains("colspan"))
                 {
                     colsize = Convert.ToInt32(node.ChildNodes[i].Attributes["colspan"].Value);
@@ -526,8 +526,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             month = d2.Value.Month;
             year = d2.Value.Year;
 
+            string sede = await AskUser.GetSedeAsync(sender,e);
+            if (string.IsNullOrEmpty(sede))
+            {
+                return null;
+            }
+
             string url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
-          "csic=MIA" +
+          "csic="+sede +
           "&categoria=tutte" +
           "&tipologia=tutte" +
           "&giorno_day=" + day.ToString() +

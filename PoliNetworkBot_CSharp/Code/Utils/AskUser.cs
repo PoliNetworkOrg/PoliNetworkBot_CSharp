@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -82,6 +83,47 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
             UserAnswers[idUser] = null;
             return result;
+        }
+
+        internal static async Task<string> GetSedeAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            List<List<Language>> options = new List<List<Language>>
+            {
+                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Milano Leonardo" } }) },
+                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Milano Bovisa" } }) },
+                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Como" } }) }
+            };
+            Language question = new Language(dict: new Dictionary<string, string>() {
+                {"it", "In che sede?" },
+                {"en", "In which territorial pole?" }
+            });
+            var reply = await Utils.AskUser.AskBetweenRangeAsync(idUser: e.Message.From.Id, 
+                sender: sender,
+                lang: e.Message.From.LanguageCode,
+                options: options,
+                username: e.Message.From.Username, 
+                sendMessageConfirmationChoice: true,
+                question: question);
+
+            if (string.IsNullOrEmpty(reply))
+                return null;
+
+            switch (reply)
+            {
+                case "Milano Leonardo":
+                    return "MIA";
+
+                case "Milano Bovisa":
+                    return "MIB";
+
+                case "Como":
+                    return "COE";
+
+                default:
+                    break;
+            }
+
+            return null;
         }
     }
 }

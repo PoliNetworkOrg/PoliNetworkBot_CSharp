@@ -82,7 +82,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
             TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang)
         {
-            TLAbsUpdates r2 = null;
+            TLAbsUpdates r2;
             try
             {
                 r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang), replyMarkup: tlAbsReplyMarkup);

@@ -110,13 +110,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/assoc_send":
                 {
-                    _ = Assoc.Assoc_SendAsync(sender, e);
+                    _ = await Assoc.Assoc_SendAsync(sender, e);
                     return;
                 }
 
                 case "/rooms":
                     {
-                        Bots.Moderation.Rooms.RoomsMainAsync(sender, e);
+                        await Bots.Moderation.Rooms.RoomsMainAsync(sender, e);
                         return;
                     }
 
@@ -299,7 +299,7 @@ e.Message.From.Username, text2);
                                 //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
                                 "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                 "FAQ (domande frequenti)</a>\n" +
-                                "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
+                                "\n🏫 Ricerca aule libere /rooms\n" +
                                 //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
                                 //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
                                 "\n👥 Gruppo consigliati e utili /groups\n" +
@@ -312,7 +312,7 @@ e.Message.From.Username, text2);
                                    //"\n🔖 Link to notes (for more info /help_material)\n" +
                                    "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                    "FAQ (frequently asked questions)</a>\n" +
-                                   //"\n🏫 Bot to find free rooms @AulePolimiBot\n" +
+                                   "\n🏫 Find free rooms /rooms\n" +
                                    //"\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
                                    //"\n🎙️ Record of lessons (for more info /help_record)\n" +
                                    "\n👥 Recommended groups /groups\n" +

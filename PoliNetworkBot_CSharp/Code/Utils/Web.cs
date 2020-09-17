@@ -16,10 +16,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-
                 try
                 {
+                    StreamReader readStream;
                     if (String.IsNullOrWhiteSpace(response.CharacterSet))
                         readStream = new StreamReader(receiveStream);
                     else
