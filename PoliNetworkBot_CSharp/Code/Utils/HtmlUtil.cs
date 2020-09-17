@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class HtmlUtil
     {
-        internal static List<HtmlNode> getElementsByTagAndClassName(HtmlNode doc, string tag = "", string className = "", int? limit = null)
+        internal static List<HtmlNode> GetElementsByTagAndClassName(HtmlNode doc, string tag = "", string className = "", int? limit = null)
         {
             if (doc == null)
                 return null;

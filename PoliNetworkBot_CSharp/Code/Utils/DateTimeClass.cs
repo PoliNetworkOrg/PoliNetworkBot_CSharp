@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             reply = reply.ToLower();
 
-            if (reply == "now")
+            if (reply == "now" || reply == "ora")
                 return DateTime.Now;
 
             if (reply.StartsWith("in a"))

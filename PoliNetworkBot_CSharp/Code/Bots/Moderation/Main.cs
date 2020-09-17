@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -41,6 +42,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     await LeaveChat.ExitFromChat(telegramBotClient, e);
                     return;
+                }
+
+                List<long> NotAuthorizedBotHasBeenAddedBool = await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
+                if (NotAuthorizedBotHasBeenAddedBool != null && NotAuthorizedBotHasBeenAddedBool.Count > 0)
+                {
+                    foreach (var bot in NotAuthorizedBotHasBeenAddedBool)
+                    {
+                        await Utils.RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
+                    }
+
+                    //todo: send messagge "Bots not allowed here!"
                 }
 
                 var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);

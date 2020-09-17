@@ -421,7 +421,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> BanUserFromGroup(int target, long groupChatId, MessageEventArgs e, string[] time)
+        internal async Task<bool> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e, string[] time)
         {
             switch (_isbot)
             {
@@ -433,11 +433,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         if (untilDate == null)
                         {
-                            await _botClient.KickChatMemberAsync(groupChatId, target);
+                            await _botClient.KickChatMemberAsync(groupChatId, (int)target);
                             return true;
                         }
 
-                        await _botClient.KickChatMemberAsync(groupChatId, target, untilDate.Value);
+                        await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value);
                         return true;
                     }
                     catch

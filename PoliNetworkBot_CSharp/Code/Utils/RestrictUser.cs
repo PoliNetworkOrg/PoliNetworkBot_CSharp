@@ -116,7 +116,7 @@ e.Message.From.Username,
             return await sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
-        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
+        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
             long groupChatId, string[] time)
         {
             return await sender.BanUserFromGroup(target, groupChatId, e, time);
