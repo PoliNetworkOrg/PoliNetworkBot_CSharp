@@ -43,7 +43,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (toExit.Item1 == ToExit.EXIT)
                 {
                     string itemToPrint = MemberListToString(toExit.Item2);
-                    throw new Exception(itemToPrint + "\n" + e?.Message?.Chat?.Title);
+                    string itemToPrint2 = ListIntToString(toExit.Item3);
+                    throw new Exception(itemToPrint + "\n" + e?.Message?.Chat?.Title + "\n----\n" + itemToPrint2);
                     //await LeaveChat.ExitFromChat(telegramBotClient, e);
                     return;
                 }
@@ -81,6 +82,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
+        }
+
+        private static string ListIntToString(List<int> item3)
+        {
+            if (item3 == null)
+                return "[NULL]";
+
+            if (item3.Count() == 0)
+                return "[EMPTY]";
+
+            string r = "";
+            foreach (var item4 in item3)
+            {
+                r += item4 +  "\n";
+            }
+            return r;
         }
 
         private static string MemberListToString(ChatMember[] item2)
