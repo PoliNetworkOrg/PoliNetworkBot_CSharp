@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async Task<bool> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
-            ChatType chatType)
+            ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
             try
             {
