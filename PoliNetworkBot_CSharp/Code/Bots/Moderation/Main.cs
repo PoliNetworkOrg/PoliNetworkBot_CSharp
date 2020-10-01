@@ -42,7 +42,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
-
                     string itemToPrint = MemberListToString(toExit.Item2);
                     throw new Exception(itemToPrint + "\n" + e?.Message?.Chat?.Title);
                     //await LeaveChat.ExitFromChat(telegramBotClient, e);

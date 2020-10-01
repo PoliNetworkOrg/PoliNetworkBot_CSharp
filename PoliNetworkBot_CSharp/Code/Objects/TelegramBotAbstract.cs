@@ -118,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                             case ChatType.Group:
                                 {
-                                    throw new Exception("Can't restrict a user in a group");
+                                    Console.WriteLine("Can't restrict a user in a group");
                                     break;
                                 }
                         }

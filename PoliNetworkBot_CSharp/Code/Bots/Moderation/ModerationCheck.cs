@@ -243,7 +243,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
             await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
-            if (messageId != null) await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
+            if (messageId != null) 
+                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
         }
 
         public static async Task AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
