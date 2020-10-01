@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     string itemToPrint = MemberListToString(toExit.Item2);
                     string itemToPrint2 = ListIntToString(toExit.Item3);
                     string itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                    throw new Exception(itemToPrint + "\n" + e?.Message?.Chat?.Title + "\n----\n" + itemToPrint2 +"\n----\n" + itemToPrint3);
+                    throw new Exception(itemToPrint + "\n" + e?.Message?.Chat?.Title + "\n----\n" + itemToPrint2 +"\n----\nS:" + itemToPrint3);
                     //await LeaveChat.ExitFromChat(telegramBotClient, e);
                     return;
                 }
