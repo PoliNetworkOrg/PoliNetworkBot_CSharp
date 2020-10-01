@@ -18,12 +18,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class ModerationCheck
     {
-        public static async Task<Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>>> CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
+        public static async Task<Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>, string>> CheckIfToExitAndUpdateGroupList(TelegramBotAbstract sender, MessageEventArgs e)
         {
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                    return new Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>>(ToExit.STAY, null, new List<int>() {13 });
+                    return new Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int>() {13 }, "private");
                 case ChatType.Group:
                     break;
                 case ChatType.Channel:
@@ -41,14 +41,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var r1 =  await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
                 var list1 = r1.Item3;
                 list1.Insert(0, 11);
-                return new Tuple<ToExit, ChatMember[], List<int>>(r1.Item1, r1.Item2, list1);
+                return new Tuple<ToExit, ChatMember[], List<int>, string>(r1.Item1, r1.Item2, list1, r1.Item4);
             }
 
             InsertGroup(sender, e);
             var r2 =  await CheckIfToExit(sender, e, null);
             var list2 = r2.Item3;
             list2.Insert(0, 12);
-            return new Tuple<ToExit, ChatMember[], List<int>>(r2.Item1, r2.Item2, list2);
+            return new Tuple<ToExit, ChatMember[], List<int>, string>(r2.Item1, r2.Item2, list2, r2.Item4);
         }
 
         internal async static Task<List<long>> CheckIfNotAuthorizedBotHasBeenAdded(MessageEventArgs e, TelegramBotAbstract telegramBotClient)
@@ -83,7 +83,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return not_authorized_bot;
         }
 
-        private static async Task<Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>>> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        private static async Task<Tuple<ToExit, Telegram.Bot.Types.ChatMember[], List<int>, string>> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             object v)
         {
             switch (v)
@@ -94,28 +94,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var r1 =  await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
                         var list1 = r1.Item3;
                         list1.Insert(0, 1);
-                        return new Tuple<ToExit, ChatMember[], List<int>>(r1.Item1, r1.Item2, list1);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(r1.Item1, r1.Item2, list1, null);
                     }
                 case char b:
                     {
-                        return b != 'Y' ? new Tuple<ToExit, ChatMember[], List<int>>(ToExit.EXIT, null, new List<int> { 6}) : 
-                            new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, null, new List<int> { 7 });
+                        return b != 'Y' ? new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 6}, b.ToString()) : 
+                            new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 7 }, b.ToString());
                     }
                 case string s when string.IsNullOrEmpty(s):
                     {
-                        return await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                        var r3 =  await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                        var list3 = r3.Item3;
+                        list3.Insert(0, 14);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(r3.Item1, r3.Item2, list3, s);
                     }
                 case string s:
                     {
-                        return s != "Y" ? new Tuple<ToExit, ChatMember[], List<int>>(ToExit.EXIT, null, new List<int> { 8 }) : 
-                            new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, null, new List<int> { 9 });
+                        return s != "Y" ? new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 8 }, s) : 
+                            new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 }, s);
                     }
                 default:
                     {
                         var r2 =  await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
                         var list2 = r2.Item3;
                         list2.Insert(0, 10);
-                        return new Tuple<ToExit, ChatMember[], List<int>>(r2.Item1, r2.Item2, list2);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(r2.Item1, r2.Item2, list2, v?.ToString());
                     }
             }
         }
