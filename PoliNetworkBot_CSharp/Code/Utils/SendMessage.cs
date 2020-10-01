@@ -116,6 +116,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (replyTo.Photo != null)
             {
                 var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
+                if (photoLarge == null)
+                {
+                    return SuccessQueue.INVALID_OBJECT;
+                }
                 var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
                     return SuccessQueue.INVALID_ID_TO_DB;

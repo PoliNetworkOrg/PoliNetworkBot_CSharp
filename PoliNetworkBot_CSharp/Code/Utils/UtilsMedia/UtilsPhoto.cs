@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -14,6 +15,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
     {
         internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
         {
+            if (photo == null || photo.Count() == 0)
+                return null;
+
             var max = -1;
             PhotoSize r = null;
             foreach (var p in photo)

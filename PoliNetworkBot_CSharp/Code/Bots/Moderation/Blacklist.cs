@@ -84,6 +84,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         internal static SpamType IsSpam(PhotoSize[] photo)
         {
             PhotoSize biggerphoto = Utils.UtilsMedia.UtilsPhoto.GetLargest(photo);
+            if (biggerphoto == null)
+                return SpamType.ALL_GOOD;
+
+
             //todo: analizzare la foto con un ocr
 
             return SpamType.ALL_GOOD;
