@@ -72,20 +72,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId, string lang, string username, Language text, string firstName, string lastName, long chatId, ChatType chatType, ParseMode parseMode)
+        internal static async Task SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId, 
+            string lang, string username, Language text, string firstName, string lastName,
+            long chatId, ChatType chatType, ParseMode parseMode, long replyToMessageId,
+            bool disablePreviewLink)
         {
-            _ = await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, username);
+            _ = await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, username, replyToMessageId, disablePreviewLink);
         }
 
         internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,
             Language text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract,
-            string username, string lang)
+            string username, string lang, long? replyToMessageId, bool disablePreviewLink)
         {
-            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang);
+            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang, replyToMessageId: replyToMessageId, disablePreviewLink);
         }
 
         public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
-            TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang)
+            TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang, long? replyToMessageId, bool disablePreviewLink)
         {
             TLAbsUpdates r2;
             try

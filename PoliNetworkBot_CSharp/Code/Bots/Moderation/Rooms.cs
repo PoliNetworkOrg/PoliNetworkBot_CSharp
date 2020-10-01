@@ -505,7 +505,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await sender.SendFileAsync(documentInput: document,
                 peer: peer, text: text, 
                 textAsCaption: Enums.TextAsCaption.AS_CAPTION,
-                e.Message.From.Username, e.Message.From.LanguageCode);
+                e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
 
         private static async System.Threading.Tasks.Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)

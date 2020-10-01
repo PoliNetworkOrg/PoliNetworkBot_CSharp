@@ -176,7 +176,7 @@ e.Message.From.Username, text2, ParseMode.Html);
             return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
-                sender, username, lang);
+                sender, username, lang, null, true);
         }
 
         private static async Task<bool> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,

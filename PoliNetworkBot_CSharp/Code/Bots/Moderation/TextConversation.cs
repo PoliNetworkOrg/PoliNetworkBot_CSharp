@@ -68,7 +68,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             lastName: e.Message.From.LastName,
                             chatId: e.Message.Chat.Id,
                             chatType: e.Message.Chat.Type, 
-                            parseMode: ParseMode.Html);
+                            parseMode: ParseMode.Html,
+                            replyToMessageId: e.Message.MessageId,
+                            disablePreviewLink: true);
                     }
                 }
             }

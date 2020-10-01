@@ -152,16 +152,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<bool> SendTextMessageAsync(long chatid, Language text,
             ChatType chatType, string lang, ParseMode parseMode,
-            ReplyMarkupObject replyMarkupObject, string username)
+            ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null, bool disablePreviewLink = false)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     IReplyMarkup reply = null;
                     if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
-
+                    var m2 = replyToMessageId == null ? 0 : replyToMessageId.Value;
                     var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
-                        replyMarkup: reply);
+                        replyMarkup: reply, replyToMessageId: (int)m2,disableWebPagePreview: disablePreviewLink);
                     return m1 != null;
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
@@ -171,7 +171,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         TLAbsReplyMarkup replyMarkup = null;
                         if (replyMarkupObject != null) replyMarkup = replyMarkupObject.GetReplyMarkupUserBot();
                         var m3 = await SendMessage.SendMessageUserBot(_userbotClient,
-                            peer, text, username, replyMarkup, lang);
+                            peer, text, username, replyMarkup, lang, replyToMessageId, disablePreviewLink);
                         return m3 != null;
                     }
                     catch (Exception e)
@@ -285,7 +285,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, Tuple<TLAbsInputPeer, long> peer,
             Language text,
-            TextAsCaption textAsCaption, string username, string lang)
+            TextAsCaption textAsCaption, string username, string lang, long? replyToMessageId, bool disablePreviewLink)
         {
             switch (_isbot)
             {
@@ -333,7 +333,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         case TextAsCaption.BEFORE_FILE:
                         {
                             var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
-                                new TLReplyKeyboardHide(), lang);
+                                new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
                             var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
                             return r != null && r2 != null;
@@ -344,7 +344,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
                             var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
                             var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
-                                new TLReplyKeyboardHide(), lang);
+                                new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
                             return r != null && r2 != null;
                         }
 
