@@ -26,8 +26,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
             SubCreators = new List<string> 
             {
                 "carlogiova", "giovannieffe777", "testpolinetwork",
-                "albus25", "deet98", "alberto_fattori", "scala98",
-                "giulia_ye"
+               "albus25", "deet98", "alberto_fattori", "scala98",
+               "giulia_ye", "andre_crc", "perularrabeiti", "fllippo"
             };
 
             AllowedNoUsername = new List<long>()
