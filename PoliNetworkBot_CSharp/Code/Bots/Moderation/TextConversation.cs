@@ -73,6 +73,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             disablePreviewLink: true);
                     }
                 }
+
+                if (e.Message.Chat.Id != -1001241129618)
+                {
+                    if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") || text.Contains("dsu"))
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {
+                                "it",
+                                "Ciao 👋 sembra tu stia chiedendo domande in merito al DSU. " +
+                                "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
+                                 "<a href='https://t.me/joinchat/FNGD_xs3LIL1jKC9klPPSw'>clicca qui</a>!"
+                            },
+                            {
+                                "en",
+                                "Hi 👋 it seems you are asking questions about 'DSU'. " +
+                                "PoliNetwork advice you to write in the dedicated group, " +
+                                 "<a href='https://t.me/joinchat/FNGD_xs3LIL1jKC9klPPSw'>click here</a>!"
+                            }
+                        });
+                        await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
+                            userId: e.Message.From.Id,
+                            lang: e.Message.From.LanguageCode,
+                            username: e.Message.From.Username,
+                            text: text2, firstName: e.Message.From.FirstName,
+                            lastName: e.Message.From.LastName,
+                            chatId: e.Message.Chat.Id,
+                            chatType: e.Message.Chat.Type,
+                            parseMode: ParseMode.Html,
+                            replyToMessageId: e.Message.MessageId,
+                            disablePreviewLink: true);
+                    }
+                }
             }
 
             return null;
