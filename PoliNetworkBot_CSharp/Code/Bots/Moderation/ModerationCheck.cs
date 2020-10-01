@@ -302,10 +302,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {"it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti"}
                     });
 
-
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                        e.Message.From.LanguageCode,
+                        e.Message.From.Username, text2);
+
                     break;
                 }
                 case SpamType.NOT_ALLOWED_WORDS:
@@ -317,8 +317,9 @@ e.Message.From.Username, text2);
                     });
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                        e.Message.From.LanguageCode,
+                        e.Message.From.Username, text2);
+
                     break;
                 }
 
