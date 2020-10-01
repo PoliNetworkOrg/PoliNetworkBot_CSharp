@@ -35,8 +35,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return SpamType.NOT_ALLOWED_WORDS;
                 }
 
+            if (text.Contains("bitcoin") && (text.Contains("guadagno") || text.Contains("rischio")))
+                return SpamType.NOT_ALLOWED_WORDS;
+
             return SpamType.ALL_GOOD;
-            ;
+        
         }
 
         private static bool CheckSpamLink(string text)
