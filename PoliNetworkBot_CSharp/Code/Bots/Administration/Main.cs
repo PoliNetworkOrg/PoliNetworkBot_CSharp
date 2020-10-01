@@ -7,9 +7,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
 {
     class Main
     {
-        internal static void MainMethod(TelegramBotAbstract telegramBotAbstract)
+        internal static async System.Threading.Tasks.Task MainMethodAsync(TelegramBotAbstract telegramBotAbstract)
         {
             ;
+
+            await telegramBotAbstract.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync();
         }
     }
 }

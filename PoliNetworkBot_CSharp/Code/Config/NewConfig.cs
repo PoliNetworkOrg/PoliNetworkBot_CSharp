@@ -89,6 +89,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 bot.SetNumberNumber(lineInfo[4].Trim());
                 bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
                 bot.SetIsBot(BotTypeApi.USER_BOT);
+                bot.SetMethod(lineInfo[6].Trim());
 
                 botInfos.Add(bot);
             }

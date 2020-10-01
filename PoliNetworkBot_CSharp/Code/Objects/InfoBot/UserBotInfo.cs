@@ -140,11 +140,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             }
         }
 
+        internal bool SetMethod(string v)
+        {
+            try
+            {
+                KeyValuePairs[ConstConfigBot.Method] = Convert.ToString(v);
+                return true;
+            }
+            catch
+            {
+                ;
+            }
+
+            return false;
+        }
+
         internal char? GetMethod()
         {
             try
             {
-                string s =  Convert.ToString(KeyValuePairs[ConstConfigBot.Method]);
+                string s = Convert.ToString(KeyValuePairs[ConstConfigBot.Method]);
                 if (string.IsNullOrEmpty(s))
                     return null;
 
