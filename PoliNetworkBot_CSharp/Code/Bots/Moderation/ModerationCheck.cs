@@ -110,8 +110,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 case string s:
                     {
-                        return s != "Y" ? new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 8 }, s) : 
-                            new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 }, s);
+                        if (!(s == "Y" || s == "1"))
+                        {
+                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 8 }, s);
+                        }
+                        else
+                        {
+                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 }, s);
+                        }
                     }
                 default:
                     {
