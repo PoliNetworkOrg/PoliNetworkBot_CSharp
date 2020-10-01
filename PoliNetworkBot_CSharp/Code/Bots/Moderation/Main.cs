@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -9,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 
 #endregion
 
@@ -38,9 +40,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 telegramBotClient  = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
-                if (toExit == ToExit.EXIT)
+                if (toExit.Item1 == ToExit.EXIT)
                 {
-                    await LeaveChat.ExitFromChat(telegramBotClient, e);
+
+                    string itemToPrint = MemberListToString(toExit.Item2);
+                    throw new Exception(itemToPrint);
+                    //await LeaveChat.ExitFromChat(telegramBotClient, e);
                     return;
                 }
 
@@ -77,6 +82,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
+        }
+
+        private static string MemberListToString(ChatMember[] item2)
+        {
+            if (item2 == null)
+                return "[NULL]";
+
+            if (item2.Count() == 0)
+                return "[EMPTY]";
+
+            string r = "";
+            foreach (var item3 in item2)
+            {
+                r += item3?.User?.Username + " " + item3?.Status + "\n";
+            }
+            return r;
         }
     }
 }
