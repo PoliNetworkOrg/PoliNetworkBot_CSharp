@@ -190,7 +190,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     lastName: e.Message.From.LastName, language: e.Message.From.LanguageCode, userId: e.Message.From.Id)
             };
 
-            if (e.Message.NewChatMembers == null)
+            if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
                 return r;
 
             r.AddRange(from user in e.Message.NewChatMembers
@@ -255,7 +255,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
             bool username, bool name, string lang, string usernameOfUser,
             long chatId, int userId, int? messageId, ChatType messageChatType,
-            string firstName, string lastName)
+            string firstName, string lastName, User[] newChatMembers)
         {
             var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n";
             if (username && !name)
@@ -279,7 +279,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             });
             await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
-            await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
+
+            if (newChatMembers == null || newChatMembers.Length == 0)
+            {
+                await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
+            }
+
             if (messageId != null) 
                 await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
         }
@@ -368,7 +373,8 @@ e.Message.From.Username, text2);
                     e.Message.From.Username, e.Message.Chat.Id,
                     e.Message.From.Id, e.Message.MessageId,
                     e.Message.Chat.Type, e.Message.From.FirstName,
-                    e.Message.From.LastName);
+                    e.Message.From.LastName, e.Message.NewChatMembers);
+
                 return true;
             }
             else
@@ -386,7 +392,8 @@ e.Message.From.Username, text2);
                                 null,
                                 e.Message.Chat.Type,
                                 usernameCheck2.GetFirstName(),
-                                usernameCheck2.GetLastName());
+                                usernameCheck2.GetLastName(),
+                                e.Message.NewChatMembers);
 
                 return true;
             }

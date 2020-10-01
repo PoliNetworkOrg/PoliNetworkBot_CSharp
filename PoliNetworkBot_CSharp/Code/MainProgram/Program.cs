@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static List<UserBotInfo> _userBotsInfos;
         private static List<BotDisguisedAsUserBotInfo> _botDisguisedAsUserBotInfos;
 
-        private static void Main()
+        private static void Main(string[] args)
         {
             FirstThingsToDo();
 
@@ -251,7 +251,19 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
                             userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT);
 
-                        _ = TestThingsAsync(userId.Value);
+                        char? method = userbot.GetMethod();
+                        if (method != null)
+                        {
+                            switch (method)
+                            {
+                                case 'A': //Administration
+                                    {
+                                        Code.Bots.Administration.Main.MainMethod(GlobalVariables.Bots[userId.Value]);
+                                        break;
+                                    }
+
+                            }
+                        }
                     }
                     else
                     {

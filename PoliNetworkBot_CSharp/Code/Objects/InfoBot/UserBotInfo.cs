@@ -139,5 +139,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
                 return null;
             }
         }
+
+        internal char? GetMethod()
+        {
+            try
+            {
+                string s =  Convert.ToString(KeyValuePairs[ConstConfigBot.Method]);
+                if (string.IsNullOrEmpty(s))
+                    return null;
+
+                return s[0];
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
