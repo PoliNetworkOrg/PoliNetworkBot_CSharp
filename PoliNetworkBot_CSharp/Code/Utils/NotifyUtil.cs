@@ -11,8 +11,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
 
-                    {"it", "Eccezione! " + exception.Message },
-                    {"en", "Exception! " + exception.Message }
+                    {"it", "Eccezione! " + exception.Message + "\n\n" + exception.ToString() },
+                    {"en", "Exception! " + exception.Message + "\n\n" + exception.ToString()  }
                 
                 });
                 await Utils.SendMessage.SendMessageInPrivate(sender, usernameToSendTo: user.Item2,
