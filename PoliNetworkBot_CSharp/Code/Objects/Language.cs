@@ -21,6 +21,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (_dict == null)
                 return null;
 
+            if (string.IsNullOrEmpty(lang))
+            {
+                if (_dict.Keys.Count == 0)
+                    return null;
+
+                var d2 = _dict.Keys.First();
+                return _dict[d2];
+            }
+
             if (_dict.ContainsKey(lang))
                 return _dict[lang];
 
