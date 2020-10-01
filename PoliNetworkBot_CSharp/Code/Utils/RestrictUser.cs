@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -15,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class RestrictUser
     {
-        internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId)
+        internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId, ChatType chatType)
         {
             var permissions = new ChatPermissions
             {
@@ -29,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 CanSendMediaMessages = false
             };
             var untilDate = DateTime.Now.AddSeconds(time);
-            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
         }
 
         internal static async Task<List<DataRow>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,

@@ -102,13 +102,28 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         internal async Task RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
-            DateTime untilDate)
+            DateTime untilDate, ChatType chatType)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    await _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
-                    break;
+                    {
+                        switch (chatType)
+                        {
+                            case ChatType.Supergroup:
+                                {
+                                    await _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+                                    break;
+                                }
+
+                            case ChatType.Group:
+                                {
+                                    throw new Exception("Can't restrict a user in a group");
+                                    break;
+                                }
+                        }
+                        break;
+                    }
                 case BotTypeApi.USER_BOT:
                     break;
                 case BotTypeApi.DISGUISED_BOT:

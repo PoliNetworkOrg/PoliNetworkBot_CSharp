@@ -240,7 +240,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             });
             await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
-            await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId);
+            await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
             if (messageId != null) await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
         }
 
@@ -250,7 +250,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (checkSpam == SpamType.ALL_GOOD)
                 return;
 
-            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
+            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id, e.Message.Chat.Type);
 
             switch (checkSpam)
             {
