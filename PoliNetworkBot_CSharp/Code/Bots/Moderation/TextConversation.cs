@@ -48,14 +48,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var text2 = new Language(new Dictionary<string, string>
                         {
                             {
-                                "en",
-                                 "Hi 👋 it seems you are asking questions about 'piano di studi'. " +
+                                "it",
+                                "Ciao 👋 sembra tu stia chiedendo domande in merito al piano di studi. " +
                                 "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
                                  "<a href='https://t.me/joinchat/FNGD_0gOWoXdxdMhwUeMdw'>clicca qui</a>!"
                             },
                             {
-                                "it",
-                                "Ciao 👋 sembra tu stia chiedendo domande in merito al piano di studi. " +
+                                "en",
+                                "Hi 👋 it seems you are asking questions about 'piano di studi'. " +
                                 "PoliNetwork advice you to write in the dedicated group, " +
                                  "<a href='https://t.me/joinchat/FNGD_0gOWoXdxdMhwUeMdw'>click here</a>!"
                             }
