@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
                 languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
 
-            DateTimeSchedule sentDate = null;
+            DateTimeSchedule sentDate;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
                 sentDate = new DateTimeSchedule(null, false);
             else
@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
-                "WHERE Messages.from_id_entity = 2 AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
+                "WHERE Messages.from_id_entity = "+ messageFromIdEntity + " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
 
             var dt = Utils.SqLite.ExecuteSelect(q);
 

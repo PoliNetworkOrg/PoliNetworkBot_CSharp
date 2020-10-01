@@ -42,6 +42,38 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await CheckIfToExit(sender, e, null);
         }
 
+        internal async static Task<List<long>> CheckIfNotAuthorizedBotHasBeenAdded(MessageEventArgs e, TelegramBotAbstract telegramBotClient)
+        {
+            if (e == null || telegramBotClient == null)
+                return null;
+
+            if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
+                return null;
+
+            List<long> not_authorized_bot = new List<long>();
+            foreach(Telegram.Bot.Types.User new_member in e.Message.NewChatMembers)
+            {
+                if (new_member.IsBot)
+                {
+                    not_authorized_bot.Add(new_member.Id);
+                }
+            }
+
+            if (not_authorized_bot.Count == 0)
+            {
+                return null;
+            }
+
+            int user_that_added_bots = e.Message.From.Id;
+            bool is_admin = await telegramBotClient.IsAdminAsync(user_that_added_bots, e.Message.Chat.Id);
+            if (is_admin)
+            {
+                return null;
+            }
+
+            return not_authorized_bot;
+        }
+
         private static async Task<ToExit> CheckIfToExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
             object v)
         {
@@ -219,7 +251,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
 
             await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id);
-            var language = e.Message.From.LanguageCode.ToLower();
+
             switch (checkSpam)
             {
                 case SpamType.SPAM_LINK:
@@ -231,7 +263,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     });
 
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
                     break;
                 }
                 case SpamType.NOT_ALLOWED_WORDS:
@@ -242,7 +276,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {"it", "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"}
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
                     break;
                 }
 
@@ -257,7 +293,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
                     break;
                 }
 

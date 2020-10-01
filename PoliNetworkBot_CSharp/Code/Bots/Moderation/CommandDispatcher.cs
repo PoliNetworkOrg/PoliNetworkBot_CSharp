@@ -103,15 +103,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         {"", DateTimeClass.NowAsStringAmericanFormat()}
                     });
-                    await SendMessage.SendMessageInPrivate(sender, e, lang);
+                    await SendMessage.SendMessageInPrivate(sender, userIdToSendTo: e.Message.From.Id,
+                        usernameToSendTo: e.Message.From.Username,  langCode: e.Message.From.LanguageCode, text: lang);
                     return;
                 }
 
                 case "/assoc_send":
                 {
-                    _ = Assoc.Assoc_SendAsync(sender, e);
+                    _ = await Assoc.Assoc_SendAsync(sender, e);
                     return;
                 }
+
+                case "/rooms":
+                    {
+                        await Bots.Moderation.Rooms.RoomsMainAsync(sender, e);
+                        return;
+                    }
 
                 default:
                 {
@@ -146,7 +153,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", textEng},
                 {"it", text}
             });
-            await SendMessage.SendMessageInPrivate(sender, e, text2, ParseMode.Html);
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2, ParseMode.Html);
         }
 
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
@@ -198,7 +207,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", "Target unbanned from " + done.Count + " groups"},
                 {"it", "Target sbannato da " + done.Count + " gruppi"}
             });
-            await SendMessage.SendMessageInPrivate(sender, e, text2);
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
         }
 
         private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -225,7 +236,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {"en", "Target banned from " + done.Count + " groups"},
                         {"it", "Target bannato da " + done.Count + " gruppi"}
                     });
-                    await SendMessage.SendMessageInPrivate(sender, e, text2);
+                    await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
                 }
             }
             else
@@ -236,7 +249,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"en", "Target banned from " + done.Count + " groups"},
                     {"it", "Target bannato da " + done.Count + " gruppi"}
                 });
-                await SendMessage.SendMessageInPrivate(sender, e, text3);
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text3);
             }
         }
 
@@ -253,7 +268,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)"
                 }
             });
-            await SendMessage.SendMessageInPrivate(sender, e, text2);
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
         }
 
         private static async Task Help(TelegramBotAbstract sender, MessageEventArgs e)
@@ -282,7 +299,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
                                 "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                 "FAQ (domande frequenti)</a>\n" +
-                                "\n🏫 Bot ricerca aule libere @AulePolimiBot\n" +
+                                "\n🏫 Ricerca aule libere /rooms\n" +
                                 //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
                                 //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
                                 "\n👥 Gruppo consigliati e utili /groups\n" +
@@ -295,7 +312,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                    //"\n🔖 Link to notes (for more info /help_material)\n" +
                                    "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
                                    "FAQ (frequently asked questions)</a>\n" +
-                                   //"\n🏫 Bot to find free rooms @AulePolimiBot\n" +
+                                   "\n🏫 Find free rooms /rooms\n" +
                                    //"\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
                                    //"\n🎙️ Record of lessons (for more info /help_record)\n" +
                                    "\n👥 Recommended groups /groups\n" +
@@ -308,7 +325,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", textEng},
                 {"it", text}
             });
-            await SendMessage.SendMessageInPrivate(sender, e, text2, ParseMode.Html);
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2, ParseMode.Html);
         }
 
         private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
@@ -334,7 +353,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", "I have updated n=" + n + " links"},
                 {"it", "Ho aggiornato n=" + n + " link"}
             });
-            await SendMessage.SendMessageInPrivate(sender, e, text2);
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
         }
 
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)

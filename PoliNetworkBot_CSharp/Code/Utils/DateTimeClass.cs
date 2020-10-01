@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             reply = reply.ToLower();
 
-            if (reply == "now")
+            if (reply == "now" || reply == "ora")
                 return DateTime.Now;
 
             if (reply.StartsWith("in a"))
@@ -239,6 +239,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     ;
                 }
             }
+            else if (reply.Contains("-"))
+            {
+                ;
+                var x = reply.Split('-');
+                return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]));
+            }
             else
             {
                 if (reply[0] >= '0' && reply[0] <= '9') return GetDateTimeFromString2(reply);
@@ -303,6 +309,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (reply.StartsWith("un'"))
                 reply = reply.Substring(3).Trim();
             else if (reply.StartsWith("un ")) reply = reply.Substring(3).Trim();
+
+            if (reply.Contains("-"))
+            {
+                return GetDateTimeFromString(reply);
+            }
 
             var i = GetHowManySeconds(reply);
             if (i == null) return null;

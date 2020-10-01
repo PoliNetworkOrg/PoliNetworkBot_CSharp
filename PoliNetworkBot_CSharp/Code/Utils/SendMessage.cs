@@ -55,14 +55,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
-        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
+            long userIdToSendTo, string langCode, string usernameToSendTo,
             Language text, ParseMode html = ParseMode.Default)
         {
             try
             {
-                return await telegramBotClient.SendTextMessageAsync(e.Message.From.Id, text,
+                return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
                     ChatType.Private, parseMode: html,
-                    lang: e.Message.From.LanguageCode, username: e.Message.From.Username,
+                    lang: langCode, username: usernameToSendTo,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
             }
             catch
@@ -81,10 +82,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
             TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang)
         {
-            TLAbsUpdates r2 = null;
+            TLAbsUpdates r2;
             try
             {
-                r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang));
+                r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
             }
             catch
             {
@@ -94,7 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 try
                 {
-                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang));
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
                 }
                 catch
                 {

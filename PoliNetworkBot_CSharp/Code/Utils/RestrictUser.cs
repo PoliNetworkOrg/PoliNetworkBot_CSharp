@@ -49,7 +49,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                               ErrorCodes.TargetInvalidWhenBanAll
                     }
                 });
-                await SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username,
                     text2);
                 return null;
             }
@@ -69,7 +71,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                               ErrorCodes.DatatableEmptyWhenBanAll
                     }
                 });
-                await SendMessage.SendMessageInPrivate(sender, e,
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username,
                     text3);
                 return null;
             }
@@ -112,7 +116,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
-        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
+        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
             long groupChatId, string[] time)
         {
             return await sender.BanUserFromGroup(target, groupChatId, e, time);

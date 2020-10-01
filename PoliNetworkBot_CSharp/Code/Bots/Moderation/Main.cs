@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -23,21 +24,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
+            TelegramBotClient telegramBotClientBot = null;
+            TelegramBotAbstract telegramBotClient = null;
+
             try
             {
-                TelegramBotClient telegramBotClientBot = null;
+
                 if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
                 if (telegramBotClientBot == null)
                     return;
 
-                var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+                telegramBotClient  = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit == ToExit.EXIT)
                 {
                     await LeaveChat.ExitFromChat(telegramBotClient, e);
                     return;
+                }
+
+                List<long> NotAuthorizedBotHasBeenAddedBool = await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
+                if (NotAuthorizedBotHasBeenAddedBool != null && NotAuthorizedBotHasBeenAddedBool.Count > 0)
+                {
+                    foreach (var bot in NotAuthorizedBotHasBeenAddedBool)
+                    {
+                        await Utils.RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
+                    }
+
+                    //todo: send messagge "Bots not allowed here!"
                 }
 
                 var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
@@ -59,7 +74,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
-                //todo: send exception to owner
+
+                await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }
     }

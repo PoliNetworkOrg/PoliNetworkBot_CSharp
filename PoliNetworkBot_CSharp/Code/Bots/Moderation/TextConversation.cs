@@ -42,7 +42,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     "Ti consigliamo di premere /help per vedere le funzioni disponibili"
                 }
             });
-            await SendMessage.SendMessageInPrivate(telegramBotClient, e, text2);
+            await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+e.Message.From.LanguageCode,
+e.Message.From.Username, text2);
         }
     }
 }
