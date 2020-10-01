@@ -60,7 +60,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                  "<a href='https://t.me/joinchat/FNGD_0gOWoXdxdMhwUeMdw'>click here</a>!"
                             }
                         });
-                        await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient: telegramBotClient,
+                        await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
                             userId: e.Message.From.Id,
                             lang: e.Message.From.LanguageCode,
                             username: e.Message.From.Username,
