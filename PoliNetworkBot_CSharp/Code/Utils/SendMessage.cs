@@ -118,6 +118,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             int messageFromIdPerson, int? messageFromIdEntity,
             long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
         {
+            if (sentDate == null)
+                return SuccessQueue.DATE_INVALID;
+
             var d1 = sentDate.IsInvalid();
             if (d1) return SuccessQueue.DATE_INVALID;
 
