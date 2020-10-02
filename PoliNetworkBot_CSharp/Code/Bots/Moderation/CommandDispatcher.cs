@@ -126,12 +126,40 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/rules":
+                    {
+                        _ = await Rules(sender, e);
+                        return;
+                    }
+
                 default:
                 {
                     await DefaultCommand(sender, e);
                     return;
                 }
             }
+        }
+
+        private static async Task<bool> Rules(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            const string text = "Ecco le regole!\n" +
+                "https://polinetwork.github.io/it/rules";
+
+
+            const string textEng = "Here are the rules!\n" +
+                "https://polinetwork.github.io/en/rules";
+
+
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                {"en", textEng},
+                {"it", text}
+            });
+
+            return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2, ParseMode.Html);
+
         }
 
         private static async Task SendRecommendedGroupsAsync(TelegramBotAbstract sender, MessageEventArgs e)
