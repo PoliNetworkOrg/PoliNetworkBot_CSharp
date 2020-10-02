@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/force_check_invite_links":
                     {
-                        if (GlobalVariables.Creators.Contains(e.Message.Chat.Username))
+                        if (GlobalVariables.Creators.Contains(e.Message?.Chat?.Username?.ToLower()))
                             _ = ForceCheckInviteLinksAsync(sender, e);
                         else
                             await DefaultCommand(sender, e);
