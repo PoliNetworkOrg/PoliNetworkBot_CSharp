@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PoliNetworkBot_CSharp": {
+      "commandName": "Project"
+    },
+    "Test": {
+      "commandName": "Executable"
+    }
+  }
+}
