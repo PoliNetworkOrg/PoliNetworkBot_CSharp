@@ -1,4 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
         {
             ;
 
-            await telegramBotAbstract.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync();
+            try
+            {
+                await telegramBotAbstract.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync();
+            }
+            catch (Exception e)
+            {
+                await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            }
         }
     }
 }

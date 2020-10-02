@@ -3,7 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -17,6 +20,7 @@ using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TgSharp.TL;
 using TLSharp.Core;
+using TLSharp.Core.Network.Exceptions;
 
 #endregion
 
@@ -28,7 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly string _contactString;
         private readonly int _id;
         private readonly BotTypeApi _isbot;
-        private readonly TelegramClient _userbotClient;
+        public readonly TelegramClient _userbotClient;
 
         private readonly string _website;
 
@@ -61,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId];
         }
 
-        internal async Task DeleteMessageAsync(long chatId, int messageId, ChatType chatType)
+        internal async Task DeleteMessageAsync(long chatId, int messageId, ChatType chatType, long? accessHash)
         {
             switch (_isbot)
             {
@@ -69,9 +73,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     await _botClient.DeleteMessageAsync(chatId, messageId);
                     break;
                 case BotTypeApi.USER_BOT:
-                    await _userbotClient.ChannelsDeleteMessageAsync(UserbotPeer.GetPeerChannelFromIdAndType(chatId),
-                        new TLVector<int> {messageId});
-                    break;
+                    {
+                        TLAbsInputChannel peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
+                        
+                        var r1 = await _userbotClient.ChannelsDeleteMessageAsync(peer,
+                            new TLVector<int> { messageId });
+                        break;
+                    }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
                 default:
@@ -378,7 +386,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.USER_BOT:
                     var r = await _userbotClient.ChannelsGetParticipant(
-                        UserbotPeer.GetPeerChannelFromIdAndType(chatId),
+                        UserbotPeer.GetPeerChannelFromIdAndType(chatId, null),
                         UserbotPeer.GetPeerUserFromdId(userId));
 
                     return r.Participant is TLChannelParticipantModerator ||
@@ -661,281 +669,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
                 case BotTypeApi.USER_BOT:
                     {
-                        await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2();
+                        await Utils.UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
                     }
                     break;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
         }
-
-        private async Task<bool> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2()
-        {
-            const int LIMIT = 20;
-            int i = 0;
-            while (true)
-            {
-                TLAbsDialogs x = await this._userbotClient.GetUserDialogsAsync(limit: LIMIT, offsetId: i);
-
-                if (x == null)
-                    return i > 0;
-
-                if (x is TLDialogs x2)
-                {
-                    if (x2.Chats != null)
-                    {
-                        foreach (var x4 in x2.Chats)
-                        {
-                            await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4);
-                        }
-                    }
-                }
-                else if (x is TLDialogsSlice x3)
-                {
-                    if (x3.Chats != null)
-                    {
-                        foreach (var x4 in x3.Chats)
-                        {
-                            await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4);
-                        }
-                    }
-                }
-                else
-                {
-                    ;
-                }
-
-                i += LIMIT;
-            }
-            throw new NotImplementedException();
-        }
-
-        private async Task<bool?> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(TLAbsChat x4)
-        {
-            if (x4 == null)
-                return null;
-
-            if (x4 is TLChat x5)
-            {
-                return await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5);
-            }
-            else if (x4 is TLChannel x6)
-            {
-                return await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6);
-            }
-            else
-            {
-                ;
-            }
-
-            return null;
-        }
-
-        private async Task<bool?> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(TLChannel x5)
-        {
-            if (x5 == null)
-                return null;
-
-            ;
-
-            if (x5.Broadcast)
-                return null;
-
-            ;
-
-            if (x5.AccessHash == null)
-                return null;
-
-            TLAbsInputChannel channel = new TLInputChannel { ChannelId = (int)x5.Id, AccessHash = x5.AccessHash.Value };
-            TeleSharp.TL.Messages.TLChatFull x = null;
-            try
-            {
-               x = await this._userbotClient.getFullChat(channel: channel);
-            }
-            catch (Exception e)
-            {
-                ;
-            }
-
-            ;
-
-            bool isOurBotPresent = CheckIfOurBotIsPresent(x);
-
-            ;
-
-            if (isOurBotPresent)
-            {
-                return true;
-            }
-
-            return await InsertOurBotAsync(x5, x);
-
-        }
-
-        private async Task<bool?> InsertOurBotAsync(TLChannel x5, TeleSharp.TL.Messages.TLChatFull x)
-        {
-            ;
-
-            const long userIdOfOurBot = 768169879;
-            TLInputChannel channel = new TLInputChannel() { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
-            TLVector<TLAbsInputUser> users = new TLVector<TLAbsInputUser>();
-            TLAbsInputPeer u = await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot" , this._userbotClient);
-            if (u == null)
-                return false;
-            long accessHashUser = 0;
-
-            ;
-
-            TLInputPeerUser u5 = null;
-            if (u is TLInputPeerUser u4)
-            {
-                u5 = u4;
-            }
-
-            if (u5 == null)
-                return false;
-
-            accessHashUser = u5.AccessHash;
-          
-            TLAbsInputUser u2 = new TLInputUser() {  UserId = (int)userIdOfOurBot, AccessHash = accessHashUser};
-            users.Add(u2);
-            TLAbsUpdates r = null;
-            try
-            {
-               r  = await this._userbotClient.ChannelsInviteToChannel(channel, users: users);
-            }
-            catch  (Exception e)
-            {
-                ;
-            }
-
-            TLAbsUpdates r2 = null;
-            try
-            {
-                TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
-                r2 = await this.PromoteToAdminAsync(u2, channel, role);
-            }
-            catch (Exception e2)
-            {
-                ;
-            }
-
-            ;
-
-    
-
-            ;
-
-            return r != null && r2 != null;
-        }
-
-        private async Task<TLAbsUpdates> PromoteToAdminAsync(TLAbsInputUser u2, TLInputChannel channel, TLAbsChannelParticipantRole role)
-        {
-            TLAbsUpdates r2 = null;
-            try
-            {       
-                r2 = await this._userbotClient.ChannelsEditAdmin(channel, u2, role: role);
-            }
-            catch (Exception e2)
-            {
-                ;
-            }
-
-            ;
-
-            return r2;
-        }
-
-        private bool? InsertOurBot(TLChat x5, TeleSharp.TL.Messages.TLChatFull x)
-        {
-            ;
-
-            return null;
-        }
-
-        private bool CheckIfOurBotIsPresent(TeleSharp.TL.Messages.TLChatFull x)
-        {
-            if (x == null)
-                return false;
-
-            if (x.Users == null)
-                return false;
-
-            if (x.Users.Count == 0)
-                return false;
-
-            foreach (TLAbsUser u in x.Users)
-            {
-                if (u is TLUser u2)
-                {
-                    if (string.IsNullOrEmpty(u2.Username) == false)
-                    {
-                        if (u2.Username.ToLower() == "polinetwork3bot")
-                            return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private async Task<bool?> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(TLChat x5)
-        {
-            if (x5 == null)
-                return null;
-
-            ;
-
-
-            ;
-
-            if (x5.MigratedTo == null)
-                return null;
-
-
-
-            TLAbsInputChannel x6 = x5.MigratedTo;
-            TLInputChannel x8 = null;
-            if (x6 is TLInputChannel x7)
-            {
-                x8 = x7;
-            }
-            else
-            {
-                ;
-                return null;
-            }
-
-            if (x5.MigratedTo == null)
-            {
-                return null;
-            }
-
-            TLAbsInputChannel channel = x8;
-            TeleSharp.TL.Messages.TLChatFull x = null;
-            try
-            {
-                x = await this._userbotClient.getFullChat(channel: channel);
-            }
-            catch (Exception e)
-            {
-                ;
-            }
-
-            ;
-
-            bool isOurBotPresent = CheckIfOurBotIsPresent(x);
-
-            ;
-
-            if (isOurBotPresent)
-            {
-                return true;
-            }
-
-            return InsertOurBot(x5, x);
-        }
-
 
     }
 }

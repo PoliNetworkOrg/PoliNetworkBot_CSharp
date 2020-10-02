@@ -38,6 +38,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private async static Task<object> MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
+            if (e == null)
+                return null;
+
+            if (e.Message == null)
+                return null;
+
+            if (string.IsNullOrEmpty(e.Message.Text))
+                return null;
+
+            if (e.Message.Chat == null)
+                return null;
+
             string text = e.Message.Text.ToLower();
             if (e.Message.Chat.Title.ToLower().Contains("polimi"))
             {

@@ -20,5 +20,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     text: text, html: Telegram.Bot.Types.Enums.ParseMode.Default);
             }
         }
+
+        internal static async System.Threading.Tasks.Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo, TelegramBotAbstract sender)
+        {
+            if (r1 == null)
+                return;
+
+            if (r1.Item1 == null)
+                return;
+
+            if (r1.Item1.Value)
+                return;
+
+            string error = "Error (notifyIfFalse): ";
+            error += "\n";
+            error += "String: " + r1?.Item2 + "\n";
+            error += "Long: " + r1.Item3.ToString() + "\n";
+            error += "Extra: " + extraInfo;
+            error += "\n";
+
+            Exception exception = new Exception(error);
+            await NotifyOwners(exception, sender);
+        }
     }
 }

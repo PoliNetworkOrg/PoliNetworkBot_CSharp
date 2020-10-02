@@ -286,7 +286,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             if (messageId != null) 
-                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType);
+                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType, null);
         }
 
         public static async Task AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
@@ -353,7 +353,7 @@ e.Message.From.Username, text2);
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }
 
-            await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
+            await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type, null);
         }
 
         public static async Task<bool> CheckUsernameAndName(MessageEventArgs e, TelegramBotAbstract telegramBotClient)

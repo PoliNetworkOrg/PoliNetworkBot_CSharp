@@ -290,7 +290,7 @@ e.Message.From.Username, text2);
                     lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id,
                     e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
 
-                await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type);
+                await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type, null);
             }
         }
 
