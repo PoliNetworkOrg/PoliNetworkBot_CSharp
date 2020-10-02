@@ -58,12 +58,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     if (x2.Chats != null)
                     {
-                        foreach (var x4 in x2.Chats)
+                        foreach (TLAbsChat x4 in x2.Chats)
                         {
                             var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u, telegramBotAbstract);
                             await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
                         }
                     }
+
+             
                 }
                 else if (x is TLDialogsSlice x3)
                 {
@@ -75,6 +77,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
                         }
                     }
+
+     
                 }
                 else
                 {
@@ -152,6 +156,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         ;
                     }
                 }
+            }
+            else if (x4 is TLChatForbidden chatForbidden)
+            {
+                ;
             }
             else
             {
