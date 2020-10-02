@@ -116,7 +116,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             {"", DateTimeClass.NowAsStringAmericanFormat()}
                         });
                         await SendMessage.SendMessageInPrivate(sender, userIdToSendTo: e.Message.From.Id,
-                            usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode, 
+                            usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode,
                             text: lang, parseMode: ParseMode.Default, messageIdToReplyTo: null);
                         return;
                     }
@@ -421,7 +421,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
-                e.Message.From.Username, text2, 
+                e.Message.From.Username, text2,
                 parseMode: ParseMode.Default,
                 e.Message.MessageId);
         }

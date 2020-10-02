@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text2,
-                    parseMode: ParseMode.Default, 
+                    parseMode: ParseMode.Default,
                     e.Message.MessageId);
                 return null;
             }

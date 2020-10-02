@@ -85,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //wrong choice: (should be impossible)
             await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
                 e.Message.From.Username, text,
-                parseMode: ParseMode.Default, 
+                parseMode: ParseMode.Default,
                 null);
         }
 

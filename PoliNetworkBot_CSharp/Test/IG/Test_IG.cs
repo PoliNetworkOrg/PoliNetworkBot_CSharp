@@ -1,16 +1,12 @@
-﻿using InstagramApiSharp.API;
-using InstagramApiSharp.API.Builder;
+﻿using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
-using Microsoft.VisualBasic;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {
-    class Test_IG
+    internal class Test_IG
     {
         //https://github.com/ramtinak/InstagramApiSharp
 
@@ -51,7 +47,6 @@ namespace PoliNetworkBot_CSharp.Test.IG
 
             ;
 
-
             if (!x.IsUserAuthenticated)
             {
                 // login
@@ -81,8 +76,6 @@ namespace PoliNetworkBot_CSharp.Test.IG
                                     if (!string.IsNullOrEmpty(challenge.Value.StepData.Email))
                                     {
                                         ;
-
-                                        
                                     }
 
                                     ;
