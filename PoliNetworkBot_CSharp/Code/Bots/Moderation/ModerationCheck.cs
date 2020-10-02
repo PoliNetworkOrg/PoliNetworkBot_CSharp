@@ -314,7 +314,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
-                            e.Message.From.Username, text2);
+                            e.Message.From.Username, text2, parseMode: ParseMode.Default, null);
 
                         break;
                     }
@@ -328,7 +328,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
-                            e.Message.From.Username, text2);
+                            e.Message.From.Username, text2, parseMode: ParseMode.Default, null);
 
                         break;
                     }
@@ -336,17 +336,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case SpamType.FOREIGN:
                     {
                         var text2 = new Language(new Dictionary<string, string>
-                    {
-                        {"en", "You sent a message with banned characters, and you were muted for 5 minutes"},
                         {
-                            "it",
-                            "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
-                        }
-                    });
+                            {"en", "You sent a message with banned characters, and you were muted for 5 minutes"},
+                            {
+                                "it",
+                                "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
+                            }
+                        });
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-    e.Message.From.LanguageCode,
-    e.Message.From.Username, text2);
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username, text2,
+                           parseMode: ParseMode.Default, null);
                         break;
                     }
 

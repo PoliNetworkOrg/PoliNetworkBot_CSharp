@@ -55,14 +55,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
-            Language text, ParseMode html = ParseMode.Default)
+            Language text, ParseMode parseMode, long? messageIdToReplyTo)
         {
             try
             {
                 return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
-                    ChatType.Private, parseMode: html,
+                    ChatType.Private, parseMode: parseMode,
                     lang: langCode, username: usernameToSendTo,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), replyToMessageId: messageIdToReplyTo);
             }
             catch
             {

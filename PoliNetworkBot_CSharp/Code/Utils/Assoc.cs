@@ -197,7 +197,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"en", "There are no message in the queue!" }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode, e.Message.From.Username,
-                    text, ParseMode.Html);
+                    text, ParseMode.Html, null);
 
                 return true;
             }

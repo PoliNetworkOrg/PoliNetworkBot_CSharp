@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -82,7 +83,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", "You choose something that was not possible to choose" }
             });
             //wrong choice: (should be impossible)
-            await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode, e.Message.From.Username, text);
+            await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
+                e.Message.From.Username, text,
+                parseMode: ParseMode.Default, 
+                null);
         }
 
         private static async System.Threading.Tasks.Task HelpAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -92,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", "Use /rooms to find rooms!"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username, text: text);
+                e.Message.From.LanguageCode, e.Message.From.Username, text: text, parseMode: ParseMode.Default, null);
         }
 
         private static async System.Threading.Tasks.Task FreeClassroomAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -107,7 +111,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     langCode: e.Message.From.LanguageCode,
                     e.Message.From.Username,
-                    text: text4);
+                    text: text4,
+                    parseMode: ParseMode.Default, null);
                 return;
             }
 
@@ -123,7 +128,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     langCode: e.Message.From.LanguageCode,
                     e.Message.From.Username,
-                    text: text3);
+                    text: text3,
+                    parseMode: ParseMode.Default, null);
                 return;
             }
 
@@ -139,7 +145,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 langCode: e.Message.From.LanguageCode,
                 e.Message.From.Username,
-                text: text2);
+                text: text2,
+                parseMode: ParseMode.Html, null);
             return;
         }
 
@@ -385,7 +392,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", result }
             });
             await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username, text2);
+                e.Message.From.LanguageCode, e.Message.From.Username,
+                text2, parseMode: ParseMode.Html, null);
         }
 
         private static int? FindRoomIndex(List<HtmlNode> t3, string sigla)
@@ -442,7 +450,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     langCode: e.Message.From.LanguageCode,
                     e.Message.From.Username,
-                    text: text2);
+                    text: text2,
+                    parseMode: ParseMode.Default, null);
                 return;
             }
 
@@ -465,7 +474,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     langCode: e.Message.From.LanguageCode,
                     e.Message.From.Username,
-                    text: text2);
+                    text: text2,
+                    parseMode: ParseMode.Default, null);
                 return;
             }
 

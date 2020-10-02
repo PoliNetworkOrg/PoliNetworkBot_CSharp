@@ -112,11 +112,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case "/time":
                     {
                         var lang = new Language(new Dictionary<string, string>
-                    {
-                        {"", DateTimeClass.NowAsStringAmericanFormat()}
-                    });
+                        {
+                            {"", DateTimeClass.NowAsStringAmericanFormat()}
+                        });
                         await SendMessage.SendMessageInPrivate(sender, userIdToSendTo: e.Message.From.Id,
-                            usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode, text: lang);
+                            usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode, 
+                            text: lang, parseMode: ParseMode.Default, messageIdToReplyTo: null);
                         return;
                     }
 
@@ -168,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
-                e.Message.From.Username, text2, ParseMode.Html);
+                e.Message.From.Username, text2, ParseMode.Html, null);
         }
 
         private static async Task SendRecommendedGroupsAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -195,8 +196,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"it", text}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2, ParseMode.Html);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2, ParseMode.Html, null);
         }
 
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
@@ -244,12 +245,14 @@ e.Message.From.Username, text2, ParseMode.Html);
             var done = await RestrictUser.BanAllAsync(sender, e, target, false);
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", "Target unbanned from " + done.Count + " groups"},
-                {"it", "Target sbannato da " + done.Count + " gruppi"}
+                {"en", "Target "+target+" unbanned from " + done.Count + " groups"},
+                {"it", "Target "+target+" sbannato da " + done.Count + " gruppi"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
-                e.Message.From.Username, text2);
+                e.Message.From.Username, text2,
+                parseMode: ParseMode.Default,
+                e.Message.MessageId);
         }
 
         private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -273,12 +276,14 @@ e.Message.From.Username, text2, ParseMode.Html);
                     var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "Target banned from " + done.Count + " groups"},
-                        {"it", "Target bannato da " + done.Count + " gruppi"}
+                        {"en", "Target "+target+" banned from " + done.Count + " groups"},
+                        {"it", "Target "+target+" bannato da " + done.Count + " gruppi"}
                     });
                     await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2);
+                        e.Message.From.Username, text2,
+                        parseMode: ParseMode.Default,
+                        e.Message.MessageId);
                 }
             }
             else
@@ -286,12 +291,14 @@ e.Message.From.Username, text2, ParseMode.Html);
                 var done = await RestrictUser.BanAllAsync(sender, e, e.Message.ReplyToMessage.From.Id.ToString(), true);
                 var text3 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Target banned from " + done.Count + " groups"},
-                    {"it", "Target bannato da " + done.Count + " gruppi"}
+                    {"en", "Target "+target+" banned from " + done.Count + " groups"},
+                    {"it", "Target "+target+" bannato da " + done.Count + " gruppi"}
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
-                    e.Message.From.Username, text3);
+                    e.Message.From.Username, text3,
+                    parseMode: ParseMode.Default,
+                    e.Message.MessageId);
             }
         }
 
@@ -309,8 +316,10 @@ e.Message.From.Username, text2, ParseMode.Html);
                 }
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2,
+                parseMode: ParseMode.Default,
+                null);
         }
 
         private static async Task Help(TelegramBotAbstract sender, MessageEventArgs e)
@@ -371,8 +380,8 @@ e.Message.From.Username, text2);
                 {"it", text}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2, ParseMode.Html);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2, ParseMode.Html, null);
         }
 
         private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
@@ -412,7 +421,9 @@ e.Message.From.Username, text2, ParseMode.Html);
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
-                e.Message.From.Username, text2);
+                e.Message.From.Username, text2, 
+                parseMode: ParseMode.Default,
+                e.Message.MessageId);
         }
 
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)

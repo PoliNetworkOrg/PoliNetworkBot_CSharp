@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 });
                 await Utils.SendMessage.SendMessageInPrivate(sender, usernameToSendTo: user.Item2,
                     userIdToSendTo: user.Item1, langCode: "en",
-                    text: text, html: Telegram.Bot.Types.Enums.ParseMode.Default);
+                    text: text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Default, messageIdToReplyTo: null);
             }
         }
 
