@@ -151,6 +151,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     throw new ArgumentOutOfRangeException();
             }
 
+            if (successQueue != SuccessQueue.SUCCESS)
+            {
+                return false;
+            }
+
             var lang3 = new Language(new Dictionary<string, string>
             {
                 {"en", "The message has been submitted correctly"},
