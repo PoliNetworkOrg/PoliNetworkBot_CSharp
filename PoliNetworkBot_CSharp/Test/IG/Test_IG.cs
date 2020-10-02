@@ -12,6 +12,8 @@ namespace PoliNetworkBot_CSharp.Test.IG
 {
     class Test_IG
     {
+        //https://github.com/ramtinak/InstagramApiSharp
+
         public static async System.Threading.Tasks.Task<bool> MainIGAsync()
         {
             Console.WriteLine("Starting demo of InstagramApiSharp project");

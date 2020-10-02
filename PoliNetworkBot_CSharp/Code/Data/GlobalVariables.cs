@@ -16,6 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<string> AllowedBanAll;
         public static List<long> AllowedNoUsername;
         public static List<Tuple<long, string>> Owners;
+        public static List<string> AllowedSpam;
 
         internal static void LoadToRam()
         {
@@ -33,6 +34,11 @@ namespace PoliNetworkBot_CSharp.Code.Data
             };
 
             AllowedBanAll = new List<string>
+            {
+                "armef97", "raif9", "eliamaggioni"
+            };
+
+            AllowedSpam = new List<string>()
             {
                 "armef97", "raif9", "eliamaggioni"
             };
