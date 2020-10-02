@@ -9,6 +9,7 @@
       "PoliNetworkBot_CSharp/1.0.0": {
         "dependencies": {
           "HtmlAgilityPack": "1.11.24",
+          "InstagramApiSharp": "1.5.0.1",
           "Microsoft.Data.Sqlite.Core": "3.1.6",
           "System.Data.SQLite.Core": "1.0.113.1",
           "Telegram.Bot": "15.7.1",
@@ -24,6 +25,17 @@
           "lib/netstandard2.0/HtmlAgilityPack.dll": {
             "assemblyVersion": "1.11.24.0",
             "fileVersion": "1.11.24.0"
+          }
+        }
+      },
+      "InstagramApiSharp/1.5.0.1": {
+        "dependencies": {
+          "Newtonsoft.Json": "11.0.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/InstagramApiSharp.dll": {
+            "assemblyVersion": "1.5.0.1",
+            "fileVersion": "1.5.0.1"
           }
         }
       },
@@ -842,6 +854,13 @@
       "sha512": "sha512-DLcytINO8EfCdBgMGsaz8Tvdgu2Aewoo2XX7WfZuRG9cBQRtbm8JZ4/sMRtFvzehjdIDqubdlQb8TqNfjRMEWg==",
       "path": "htmlagilitypack/1.11.24",
       "hashPath": "htmlagilitypack.1.11.24.nupkg.sha512"
+    },
+    "InstagramApiSharp/1.5.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7WUoTAIS4X6bPAtvRVlu0U17WjNsGE5mO4y/IOLDCfnBblTXUCPANMiUdmZ9S8/0yQxMHVbeSjGti7eR9AsLAg==",
+      "path": "instagramapisharp/1.5.0.1",
+      "hashPath": "instagramapisharp.1.5.0.1.nupkg.sha512"
     },
     "Microsoft.Data.Sqlite.Core/3.1.6": {
       "type": "package",

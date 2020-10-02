@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static List<UserBotInfo> _userBotsInfos;
         private static List<BotDisguisedAsUserBotInfo> _botDisguisedAsUserBotInfos;
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             FirstThingsToDo();
 
@@ -70,6 +70,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         ResetEverything(alsoFillTablesFromJson: false);
                         return;
                     }
+
+                case '5':
+                    {
+                        _ = await Test.IG.Test_IG.MainIGAsync();
+                        return;
+                    }
             }
         }
 
@@ -94,6 +100,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "2) Normal mode (no disguised)\n" +
                                   "3) Only Disguised bot\n" +
                                   "4) Reset everything but don't fill tables\n" +
+                                  "5) Test IG\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -108,6 +115,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '2':
                         case '3':
                         case '4':
+                        case '5':
                             return first;
                     }
                 }

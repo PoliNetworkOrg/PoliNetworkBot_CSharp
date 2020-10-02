@@ -17,5 +17,10 @@
             public const string ConfigUserbot = "config/userbots.bin";
             public const string ConfigBotDisguisedAsUserbot = "config/botdisguisedasuserbots.bin";
         }
+
+        public static class IG
+        {
+            public const string CREDENTIALS = "config/ig.txt";
+        }
     }
 }
