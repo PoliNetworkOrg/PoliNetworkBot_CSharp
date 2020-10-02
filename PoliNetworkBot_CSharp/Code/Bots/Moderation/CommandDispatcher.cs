@@ -114,6 +114,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
 
+                case "/assoc_read":
+                    {
+                        _ = await Assoc.Assoc_Read(sender, e);
+                        return;
+                    }
+
                 case "/rooms":
                     {
                         await Bots.Moderation.Rooms.RoomsMainAsync(sender, e);

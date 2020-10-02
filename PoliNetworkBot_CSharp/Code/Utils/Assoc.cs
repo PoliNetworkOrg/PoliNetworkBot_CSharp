@@ -64,19 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (messageFromIdEntity == null)
             {
-                var languageList3 = new Language(new Dictionary<string, string>
-                {
-                    {
-                        "en",
-                        "We can't find the entity you want to post from. Are you sure you are a member of some entity allowed to post?"
-                    },
-                    {
-                        "it",
-                        "Non riusciamo a trovare l'organizzazione per la quale vuoi postare. Sei sicuro di essere un membro di qualche organizzazione autorizzata a postare?"
-                    }
-                });
-                await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, default,
-                    ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                await EntityNotFoundAsync(sender,e);
                 return false;
             }
 
@@ -166,6 +154,67 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                 e.Message.From.Username);
             return true;
+        }
+
+        private static async Task EntityNotFoundAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var languageList3 = new Language(new Dictionary<string, string>
+                {
+                    {
+                        "en",
+                        "We can't find the entity you want to post from. Are you sure you are a member of some entity allowed to post?"
+                    },
+                    {
+                        "it",
+                        "Non riusciamo a trovare l'organizzazione per la quale vuoi postare. Sei sicuro di essere un membro di qualche organizzazione autorizzata a postare?"
+                    }
+                });
+            await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, default,
+                ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+        }
+
+        internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            Language languageList = null;
+            int? messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
+               sender, e.Message.From.LanguageCode, e.Message.From.Username);
+
+            if (messageFromIdEntity == null)
+            {
+                await EntityNotFoundAsync(sender, e);
+                return false;
+            }
+
+            string q = "SELECT * FROM Messages WHERE from_id_entity = @id AND has_been_sent = FALSE";
+            DataTable r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { {"@id", messageFromIdEntity.Value } });
+            if (r == null || r.Rows.Count == 0)
+            {
+                Language text = new Language(dict: new Dictionary<string, string>() {
+                    {"it", "Non ci sono messaggi in coda!" },
+                    {"en", "There are no message in the queue!" }
+                });
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode, e.Message.From.Username,
+                    text, ParseMode.Html);
+
+                return true;
+            }
+
+            foreach (DataRow m in r.Rows)
+            {
+                _ = await SendMessageAssocToUserAsync(m, sender, e);
+            }
+
+            return true;
+        }
+
+        private static async Task<bool> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            if (m == null)
+            {
+                return false;
+            }
+
+            return await Utils.MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private);
         }
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
