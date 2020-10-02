@@ -2,6 +2,7 @@
 using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,16 @@ namespace PoliNetworkBot_CSharp.Test.IG
         {
             Console.WriteLine("Starting demo of InstagramApiSharp project");
 
-            var c = File.ReadAllLines(PoliNetworkBot_CSharp.Code.Data.Constants.Paths.IG.CREDENTIALS);
+            string[] c = null;
+            try
+            {
+                c = File.ReadAllLines(PoliNetworkBot_CSharp.Code.Data.Constants.Paths.IG.CREDENTIALS);
+            }
+            catch
+            {
+                File.WriteAllText(Code.Data.Constants.Paths.IG.CREDENTIALS, "");
+            }
+
             if (c == null || c.Length < 2)
                 return false;
 
