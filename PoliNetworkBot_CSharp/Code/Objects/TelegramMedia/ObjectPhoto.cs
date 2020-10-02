@@ -17,9 +17,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         private readonly long _chatId;
         private readonly ChatType _chatType;
         private readonly string _uniqueId;
-        private int _fileSize;
-        private int _idPhotoDb;
-        private int? _messageIdFrom;
+        private readonly int _fileSize;
+        private readonly int _idPhotoDb;
+        private readonly int? _messageIdFrom;
 
         public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType)

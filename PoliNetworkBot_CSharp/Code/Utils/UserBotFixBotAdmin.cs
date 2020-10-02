@@ -390,8 +390,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                         try
                         {
-                            TLVector<int> messageToDelete = new TLVector<int>();
-                            messageToDelete.Add(idMessageAdded.Value);
+                            TLVector<int> messageToDelete = new TLVector<int>
+                            {
+                                idMessageAdded.Value
+                            };
                             TLAbsInputChannel x7 = new TLInputChannel() { AccessHash = accessHash.Value, ChannelId = id };
                             await telegramBotAbstract._userbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
                         }
