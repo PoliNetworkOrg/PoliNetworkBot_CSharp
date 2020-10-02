@@ -10,10 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (Tuple<long, string> user in Data.GlobalVariables.Owners)
             {
                 Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
-
                     {"it", "Eccezione! " + exception.Message + "\n\n" + exception.ToString() },
                     {"en", "Exception! " + exception.Message + "\n\n" + exception.ToString()  }
-                
                 });
                 await Utils.SendMessage.SendMessageInPrivate(sender, usernameToSendTo: user.Item2,
                     userIdToSendTo: user.Item1, langCode: "en",

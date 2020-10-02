@@ -1,13 +1,13 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             const string q =
                 "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
-            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> {{"@idp", id}});
+            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@idp", id } });
             if (r == null || r.Rows.Count == 0) return null;
 
             if (r.Rows.Count == 1) return Convert.ToInt32(r.Rows[0].ItemArray[0]);
@@ -64,7 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (messageFromIdEntity == null)
             {
-                await EntityNotFoundAsync(sender,e);
+                await EntityNotFoundAsync(sender, e);
                 return false;
             }
 
@@ -88,9 +88,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             );
 
-            var opt1 = new Language(new Dictionary<string, string> {{"it", "Metti in coda"}, {"en", "Place in queue"}});
+            var opt1 = new Language(new Dictionary<string, string> { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
-                new Dictionary<string, string> {{"it", "Scegli la data"}, {"en", "Choose the date"}});
+                new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
                 new List<Language> {opt1, opt2}
@@ -115,26 +115,29 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case SuccessQueue.INVALID_ID_TO_DB:
                     break;
+
                 case SuccessQueue.INVALID_OBJECT:
-                {
-                    var lang2 = new Language(new Dictionary<string, string>
+                    {
+                        var lang2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "You have to attach something! (A photo, for example)"},
                         {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
                     });
-                    await sender.SendTextMessageAsync(e.Message.From.Id,
-                        lang2,
-                        ChatType.Private, e.Message.From.LanguageCode,
-                        ParseMode.Default,
-                        new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                        await sender.SendTextMessageAsync(e.Message.From.Id,
+                            lang2,
+                            ChatType.Private, e.Message.From.LanguageCode,
+                            ParseMode.Default,
+                            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
 
-                    break;
-                }
+                        break;
+                    }
 
                 case SuccessQueue.SUCCESS:
                     break;
+
                 case SuccessQueue.DATE_INVALID:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -186,7 +189,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             string q = "SELECT * FROM Messages WHERE from_id_entity = @id AND has_been_sent = FALSE";
-            DataTable r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { {"@id", messageFromIdEntity.Value } });
+            DataTable r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { { "@id", messageFromIdEntity.Value } });
             if (r == null || r.Rows.Count == 0)
             {
                 Language text = new Language(dict: new Dictionary<string, string>() {
@@ -221,7 +224,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
-                "WHERE Messages.from_id_entity = "+ messageFromIdEntity + " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
+                "WHERE Messages.from_id_entity = " + messageFromIdEntity + " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
 
             var dt = Utils.SqLite.ExecuteSelect(q);
 

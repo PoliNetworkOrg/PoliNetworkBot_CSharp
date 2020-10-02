@@ -1,10 +1,10 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                var success = await CreateInviteLinkAsync((long) dr.ItemArray[0], sender);
+                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
                 if (success)
                     n++;
             }

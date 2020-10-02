@@ -27,6 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     case null:
                         return null;
+
                     case ChatType r2:
                         return r2;
                 }

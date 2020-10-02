@@ -1,16 +1,15 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 
 #endregion
 
@@ -264,12 +263,11 @@ namespace PoliNetworkBot_CSharp.Code.Config
                             var r7 = r6.Children();
                             foreach (var r8 in r7)
                             {
-                                
                                 if (r8 is JObject r9)
-                                {                                
+                                {
                                     var r10 = r9.Children();
 
-                                    AddGroupToDb(r10, botIdWhoInsertedThem);                                  
+                                    AddGroupToDb(r10, botIdWhoInsertedThem);
                                 }
                             }
                         }
@@ -286,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             DateTime? lastUpdateLinkTime = null;
             bool? we_are_admin = null;
 
-            foreach (var r2 in r1 )
+            foreach (var r2 in r1)
             {
                 ;
                 if (r2 is JProperty r3)
@@ -334,7 +332,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 return false;
             }
 
-            return true;   
+            return true;
         }
 
         private static bool? GetWeAreAdminFromJson(JProperty r3)
@@ -384,7 +382,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             string title = null;
             string invite_link = null;
 
-            foreach(var r6 in r5)
+            foreach (var r6 in r5)
             {
                 ;
                 if (r6 is JProperty r7)

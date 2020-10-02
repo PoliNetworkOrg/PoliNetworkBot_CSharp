@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -15,7 +15,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<string> SubCreators;
         public static List<string> AllowedBanAll;
         public static List<long> AllowedNoUsername;
-        public static List<Tuple<long,string>> Owners;
+        public static List<Tuple<long, string>> Owners;
+
         internal static void LoadToRam()
         {
             Creators = new List<string>
@@ -24,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
                 "policreator4", "policreator5", "armef97", "poliadmin"
             };
 
-            SubCreators = new List<string> 
+            SubCreators = new List<string>
             {
                 "carlogiova", "giovannieffe777", "testpolinetwork",
                "albus25", "deet98", "alberto_fattori", "scala98",

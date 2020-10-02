@@ -20,7 +20,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         private int _idVideoDb;
         private int? _messageIdFrom;
 
-
         public ObjectVideo(int idVideoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
         {
@@ -64,7 +63,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         public TLAbsInputMedia GetTLabsInputMedia()
         {
             TLAbsInputMedia r = new TLInputMediaPhoto();
-
 
             return r;
         }

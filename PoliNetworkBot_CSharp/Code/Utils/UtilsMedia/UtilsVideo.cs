@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -27,7 +27,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
                 "(file_id, file_size, height, width, unique_id, duration, mime) " +
                 " VALUES " +
                 "(@fi, @fs, @h, @w, @u, @d, @mime)";
-
 
             var keyValuePairs = new Dictionary<string, object>
             {

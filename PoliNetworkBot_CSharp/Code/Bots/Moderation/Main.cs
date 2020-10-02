@@ -1,13 +1,12 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -31,13 +30,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             try
             {
-
                 if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
                 if (telegramBotClientBot == null)
                     return;
 
-                telegramBotClient  = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+                telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
@@ -112,7 +110,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string r = "";
             foreach (var item4 in item3)
             {
-                r += item4 +  "\n";
+                r += item4 + "\n";
             }
             return r;
         }

@@ -1,11 +1,11 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Errors;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Errors;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -85,7 +85,7 @@ e.Message.From.Username,
                 foreach (DataRow dr in dt.Rows)
                     try
                     {
-                        var groupChatId = (long) dr["id"];
+                        var groupChatId = (long)dr["id"];
                         var success = await BanUserFromGroup(sender, e, targetId.Value, groupChatId, null);
                         if (success)
                             done.Add(dr);
@@ -98,7 +98,7 @@ e.Message.From.Username,
                 foreach (DataRow dr in dt.Rows)
                     try
                     {
-                        var groupChatId = (long) dr["id"];
+                        var groupChatId = (long)dr["id"];
                         var success = await UnBanUserFromGroup(sender, e, targetId.Value, groupChatId);
                         if (success)
                             done.Add(dr);

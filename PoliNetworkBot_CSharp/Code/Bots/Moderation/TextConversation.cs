@@ -1,11 +1,9 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -26,6 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 case ChatType.Channel:
                     break;
+
                 case ChatType.Group:
                 case ChatType.Supergroup:
                     {
@@ -33,7 +32,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         break;
                     }
             }
-
         }
 
         private async static Task<object> MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
@@ -79,7 +77,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             text: text2, firstName: e.Message.From.FirstName,
                             lastName: e.Message.From.LastName,
                             chatId: e.Message.Chat.Id,
-                            chatType: e.Message.Chat.Type, 
+                            chatType: e.Message.Chat.Type,
                             parseMode: ParseMode.Html,
                             replyToMessageId: e.Message.MessageId,
                             disablePreviewLink: true);
@@ -132,7 +130,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         AskUser.UserAnswers[e.Message.From.Id].RecordAnswer(e.Message.Text);
                         return;
                     }
-
 
             var text2 = new Language(new Dictionary<string, string>
             {

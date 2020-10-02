@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -76,8 +75,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await HelpAsync(sender, e);
                         return;
                     }
-
-
             }
 
             Language text = new Language(dict: new Dictionary<string, string>() {
@@ -130,7 +127,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-
             string reply_text = "";
             foreach (var room in t4)
             {
@@ -172,7 +168,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     DateTime dt1 = new DateTime(2000, 1, 1, Convert.ToInt32(start2[0]), Convert.ToInt32(start2[1]), 0);
                     DateTime dt2 = new DateTime(2000, 1, 1, Convert.ToInt32(end2[0]), Convert.ToInt32(end2[1]), 0);
-                    return new Tuple<DateTime, DateTime>(dt1,dt2);
+                    return new Tuple<DateTime, DateTime>(dt1, dt2);
                 }
                 catch
                 {
@@ -228,14 +224,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                         }
                                     }
 
-
                                     if (toAdd)
                                     {
                                         result.Add(name);
                                     }
                                 }
-
-
                             }
                             catch
                             {
@@ -283,8 +276,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return false;
                     }
                 }
-
-                
             }
 
             return true;
@@ -293,22 +284,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async System.Threading.Tasks.Task SearchClassroomAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             Language question = new Language(dict: new Dictionary<string, string>() {
-
                 {"it", "Nome dell'aula?" },
                 {"en", "Name of the room?" }
-            
             });
             string sigla = await AskUser.AskAsync(e.Message.From.Id, question: question, sender,
                 e.Message.From.LanguageCode, e.Message.From.Username);
 
-            string url = "https://www7.ceda.polimi.it/spazi/spazi/controller/RicercaAula.do?spazi___model"+
-                "___formbean___RicercaAvanzataAuleVO___postBack=true&spazi___model___formbean___"+
-                "RicercaAvanzataAuleVO___formMode=FILTER&evn_ricerca_avanzata=&spazi___model___formbean___"+
-                "RicercaAvanzataAuleVO___sede=tutte&spazi___model___formbean___RicercaAvanzataAuleVO___sigla="+
-                sigla+"&spazi___model___formbean___RicercaAvanzataAuleVO___categoriaScelta=tutte&spazi"+
-                "___model___formbean___RicercaAvanzataAuleVO___tipologiaScelta=tutte&spazi___model"+
-                "___formbean___RicercaAvanzataAuleVO___iddipScelto=tutti&spazi___model___formbean___"+
-                "RicercaAvanzataAuleVO___soloPreseElettriche_default=N&spazi___model___formbean___"+
+            string url = "https://www7.ceda.polimi.it/spazi/spazi/controller/RicercaAula.do?spazi___model" +
+                "___formbean___RicercaAvanzataAuleVO___postBack=true&spazi___model___formbean___" +
+                "RicercaAvanzataAuleVO___formMode=FILTER&evn_ricerca_avanzata=&spazi___model___formbean___" +
+                "RicercaAvanzataAuleVO___sede=tutte&spazi___model___formbean___RicercaAvanzataAuleVO___sigla=" +
+                sigla + "&spazi___model___formbean___RicercaAvanzataAuleVO___categoriaScelta=tutte&spazi" +
+                "___model___formbean___RicercaAvanzataAuleVO___tipologiaScelta=tutte&spazi___model" +
+                "___formbean___RicercaAvanzataAuleVO___iddipScelto=tutti&spazi___model___formbean___" +
+                "RicercaAvanzataAuleVO___soloPreseElettriche_default=N&spazi___model___formbean___" +
                 "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
             WebReply webReply = await Utils.Web.DownloadHtmlAsync(url);
@@ -347,10 +336,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             ;
 
             var t5 = Utils.HtmlUtil.GetElementsByTagAndClassName(t4, "td", "", null);
-            
+
             ;
 
-            if (t5.Count <3)
+            if (t5.Count < 3)
             {
                 return; //todo: send to the user "room not found"
             }
@@ -361,11 +350,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t7 = Utils.HtmlUtil.GetElementsByTagAndClassName(t6, "a", "", null);
 
-            if (t7.Count < 1 )
+            if (t7.Count < 1)
             {
                 return; //todo: send to the user "room not found"
             }
-
 
             ;
 
@@ -405,7 +393,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (t3 == null || t3.Count == 0)
                 return null;
 
-            for (int i = 0; i<t3.Count; i++)
+            for (int i = 0; i < t3.Count; i++)
             {
                 var t4 = t3[i];
                 if (t4 == null || t4.ChildNodes == null || t4.ChildNodes.Count < 2)
@@ -444,7 +432,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async System.Threading.Tasks.Task OccupanciesOfTheDayAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             List<HtmlNode> t3 = await GetDailySituationAsync(sender, e);
-            
+
             if (t3 == null)
             {
                 Language text2 = new Language(dict: new Dictionary<string, string>() {
@@ -462,14 +450,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 { "en", "Which room? (example: 3.0.1)"},
                 {"it", "Quale aula? (esempio 3.0.1)" }
             });
-            string roomName = await AskUser.AskAsync(idUser: e.Message.From.Id, question: question, sender: sender, lang:e.Message.From.LanguageCode,
+            string roomName = await AskUser.AskAsync(idUser: e.Message.From.Id, question: question, sender: sender, lang: e.Message.From.LanguageCode,
                 username: e.Message.From.Username, true);
             List<HtmlNode> t4 = GetRoomTitleAndHours(table: t3[0], roomName: roomName);
 
-            
-
             ;
-
 
             if (t4 == null || t4.Count == 0)
             {
@@ -477,8 +462,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"it", "Aula non trovata!" },
                     {"en", "Room not found!" }
                 });
-                await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, 
-                    langCode: e.Message.From.LanguageCode, 
+                await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                    langCode: e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text: text2);
                 return;
@@ -503,7 +488,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 roomName, "text/html");
 
             await sender.SendFileAsync(documentInput: document,
-                peer: peer, text: text, 
+                peer: peer, text: text,
                 textAsCaption: Enums.TextAsCaption.AS_CAPTION,
                 e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
@@ -526,14 +511,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             month = d2.Value.Month;
             year = d2.Value.Year;
 
-            string sede = await AskUser.GetSedeAsync(sender,e);
+            string sede = await AskUser.GetSedeAsync(sender, e);
             if (string.IsNullOrEmpty(sede))
             {
                 return null;
             }
 
             string url = "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do?" +
-          "csic="+sede +
+          "csic=" + sede +
           "&categoria=tutte" +
           "&tipologia=tutte" +
           "&giorno_day=" + day.ToString() +
@@ -578,8 +563,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
 
             result.Add(table.ChildNodes[titleIndex.Value]);
-            result.Add(table.ChildNodes[titleIndex.Value+1]);
-            result.Add(table.ChildNodes[titleIndex.Value+2]);
+            result.Add(table.ChildNodes[titleIndex.Value + 1]);
+            result.Add(table.ChildNodes[titleIndex.Value + 2]);
             result.Add(table.ChildNodes[roomIndex.Value]);
 
             return result;
@@ -604,7 +589,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             for (int i = 0; i < table.ChildNodes.Count; i++)
             {
                 HtmlNode child = table.ChildNodes[i];
-                
+
                 if (child.ChildNodes != null && child.GetClasses().Contains("normalRow"))
                 {
                     foreach (var child2 in child.ChildNodes)

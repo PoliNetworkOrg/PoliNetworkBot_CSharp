@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: default,
                 replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
-            
+
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
             UserAnswers[idUser] = null;
             return result;
@@ -56,8 +56,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     UserAnswers[idUser].SetAnswerProcessed(true);
 
                     tcs.SetResult(result.ToString());
-
-           
                 }
             };
             return await tcs.Task;
@@ -97,11 +95,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", "In che sede?" },
                 {"en", "In which territorial pole?" }
             });
-            var reply = await Utils.AskUser.AskBetweenRangeAsync(idUser: e.Message.From.Id, 
+            var reply = await Utils.AskUser.AskBetweenRangeAsync(idUser: e.Message.From.Id,
                 sender: sender,
                 lang: e.Message.From.LanguageCode,
                 options: options,
-                username: e.Message.From.Username, 
+                username: e.Message.From.Username,
                 sendMessageConfirmationChoice: true,
                 question: question);
 

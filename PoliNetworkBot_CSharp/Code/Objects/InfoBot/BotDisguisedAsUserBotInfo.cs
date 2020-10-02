@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 
 #endregion
 
@@ -79,7 +79,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             return false;
         }
 
-
         internal string GetSessionUserId()
         {
             if (string.IsNullOrEmpty(SessionUserId)) SessionUserId = GenerateSessionUserId_From_UserId();
@@ -87,12 +86,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             return SessionUserId;
         }
 
-
         internal void SetApiHash(string v)
         {
             KeyValuePairs[ConstConfigBot.ApiHash] = v;
         }
-
 
         internal bool SetUserId(string v)
         {

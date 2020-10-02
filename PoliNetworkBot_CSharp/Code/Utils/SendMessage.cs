@@ -1,13 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using Telegram.Bot.Args;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -43,7 +42,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")}
             });
 
-
             return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
                 lang, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
         }
@@ -72,7 +70,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId, 
+        internal static async Task SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId,
             string lang, string username, Language text, string firstName, string lastName,
             long chatId, ChatType chatType, ParseMode parseMode, long replyToMessageId,
             bool disablePreviewLink)
@@ -137,7 +135,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
                     return SuccessQueue.INVALID_ID_TO_DB;
-
 
                 MessageDb.AddMessage(MessageType.Photo,
                     replyTo.Caption, messageFromIdPerson,

@@ -1,16 +1,13 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -18,9 +15,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
-using TgSharp.TL;
 using TLSharp.Core;
-using TLSharp.Core.Network.Exceptions;
 
 #endregion
 
@@ -52,7 +47,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             _isbot = botTypeApi;
             _website = website;
             _contactString = contactString;
-            _id = (int) id;
+            _id = (int)id;
         }
 
         internal string GetWebSite()
@@ -72,16 +67,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     await _botClient.DeleteMessageAsync(chatId, messageId);
                     break;
+
                 case BotTypeApi.USER_BOT:
                     {
                         TLAbsInputChannel peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
-                        
+
                         var r1 = await _userbotClient.ChannelsDeleteMessageAsync(peer,
                             new TLVector<int> { messageId });
                         break;
                     }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -101,8 +98,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         TLPeerUser tLPeerUser => tLPeerUser.UserId,
                         _ => null
                     };
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -135,8 +134,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -148,10 +149,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     return _botClient.BotId;
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -170,8 +174,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
                     var m2 = replyToMessageId == null ? 0 : replyToMessageId.Value;
                     var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
-                        replyMarkup: reply, replyToMessageId: (int)m2,disableWebPagePreview: disablePreviewLink);
+                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                     return m1 != null;
+
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
                     var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
@@ -203,88 +208,119 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                {
-                    var messageType = genericFile.GetMediaBotType();
-                    switch (messageType)
                     {
-                        case MessageType.Unknown:
-                            break;
-                        case MessageType.Text:
-                            break;
-                        case MessageType.Photo:
-                            break;
-                        case MessageType.Audio:
-                            break;
-                        case MessageType.Video:
-                            break;
-                        case MessageType.Voice:
-                            break;
-                        case MessageType.Document:
-                            break;
-                        case MessageType.Sticker:
-                            break;
-                        case MessageType.Location:
-                            break;
-                        case MessageType.Contact:
-                            break;
-                        case MessageType.Venue:
-                            break;
-                        case MessageType.Game:
-                            break;
-                        case MessageType.VideoNote:
-                            break;
-                        case MessageType.Invoice:
-                            break;
-                        case MessageType.SuccessfulPayment:
-                            break;
-                        case MessageType.WebsiteConnected:
-                            break;
-                        case MessageType.ChatMembersAdded:
-                            break;
-                        case MessageType.ChatMemberLeft:
-                            break;
-                        case MessageType.ChatTitleChanged:
-                            break;
-                        case MessageType.ChatPhotoChanged:
-                            break;
-                        case MessageType.MessagePinned:
-                            break;
-                        case MessageType.ChatPhotoDeleted:
-                            break;
-                        case MessageType.GroupCreated:
-                            break;
-                        case MessageType.SupergroupCreated:
-                            break;
-                        case MessageType.ChannelCreated:
-                            break;
-                        case MessageType.MigratedToSupergroup:
-                            break;
-                        case MessageType.MigratedFromGroup:
-                            break;
-                        case MessageType.Animation:
-                            break;
-                        case MessageType.Poll:
-                            break;
-                        case MessageType.Dice:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        var messageType = genericFile.GetMediaBotType();
+                        switch (messageType)
+                        {
+                            case MessageType.Unknown:
+                                break;
+
+                            case MessageType.Text:
+                                break;
+
+                            case MessageType.Photo:
+                                break;
+
+                            case MessageType.Audio:
+                                break;
+
+                            case MessageType.Video:
+                                break;
+
+                            case MessageType.Voice:
+                                break;
+
+                            case MessageType.Document:
+                                break;
+
+                            case MessageType.Sticker:
+                                break;
+
+                            case MessageType.Location:
+                                break;
+
+                            case MessageType.Contact:
+                                break;
+
+                            case MessageType.Venue:
+                                break;
+
+                            case MessageType.Game:
+                                break;
+
+                            case MessageType.VideoNote:
+                                break;
+
+                            case MessageType.Invoice:
+                                break;
+
+                            case MessageType.SuccessfulPayment:
+                                break;
+
+                            case MessageType.WebsiteConnected:
+                                break;
+
+                            case MessageType.ChatMembersAdded:
+                                break;
+
+                            case MessageType.ChatMemberLeft:
+                                break;
+
+                            case MessageType.ChatTitleChanged:
+                                break;
+
+                            case MessageType.ChatPhotoChanged:
+                                break;
+
+                            case MessageType.MessagePinned:
+                                break;
+
+                            case MessageType.ChatPhotoDeleted:
+                                break;
+
+                            case MessageType.GroupCreated:
+                                break;
+
+                            case MessageType.SupergroupCreated:
+                                break;
+
+                            case MessageType.ChannelCreated:
+                                break;
+
+                            case MessageType.MigratedToSupergroup:
+                                break;
+
+                            case MessageType.MigratedFromGroup:
+                                break;
+
+                            case MessageType.Animation:
+                                break;
+
+                            case MessageType.Poll:
+                                break;
+
+                            case MessageType.Dice:
+                                break;
+
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
                 case BotTypeApi.USER_BOT:
-                {
-                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-                    var media2 = await genericFile.GetMediaTl(_userbotClient);
+                    {
+                        var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                        var media2 = await genericFile.GetMediaTl(_userbotClient);
 
-                    var r = await media2.SendMedia(peer, _userbotClient, caption, username, lang);
-                    return r != null;
+                        var r = await media2.SendMedia(peer, _userbotClient, caption, username, lang);
+                        return r != null;
 
-                    break;
-                }
+                        break;
+                    }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -303,29 +339,28 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     switch (textAsCaption)
                     {
                         case TextAsCaption.AS_CAPTION:
-                        {
-                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile, text.Select(lang));
-                            return true;
-                        }
+                            {
+                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile, text.Select(lang));
+                                return true;
+                            }
 
                         case TextAsCaption.BEFORE_FILE:
-                        {
-                            _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
-                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
-                            return true;
-                        }
+                            {
+                                _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
+                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                                return true;
+                            }
 
                         case TextAsCaption.AFTER_FILE:
-                        {
-                            _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
-                            _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
-                            return true;
-                        }
+                            {
+                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                                _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
+                                return true;
+                            }
 
                         default:
                             throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
                     }
-
 
                     return false;
 
@@ -333,29 +368,29 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     switch (textAsCaption)
                     {
                         case TextAsCaption.AS_CAPTION:
-                        {
-                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, text, username, lang);
-                            return r != null;
-                        }
+                            {
+                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, text, username, lang);
+                                return r != null;
+                            }
 
                         case TextAsCaption.BEFORE_FILE:
-                        {
-                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
-                                new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
-                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
-                            return r != null && r2 != null;
-                        }
+                            {
+                                var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
+                                    new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
+                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
+                                return r != null && r2 != null;
+                            }
 
                         case TextAsCaption.AFTER_FILE:
-                        {
-                            var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                            var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
-                            var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
-                                new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
-                            return r != null && r2 != null;
-                        }
+                            {
+                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.Item1, _userbotClient, null, username, lang);
+                                var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.Item1, text, username,
+                                    new TLReplyKeyboardHide(), lang, replyToMessageId: replyToMessageId, disablePreviewLink: disablePreviewLink);
+                                return r != null && r2 != null;
+                            }
 
                         default:
                             throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
@@ -363,13 +398,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             return false;
         }
-
 
         internal string GetContactString()
         {
@@ -394,6 +429,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -410,8 +446,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -426,6 +464,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     break;
+
                 case BotTypeApi.USER_BOT:
                     /*
                     var updates =
@@ -438,6 +477,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -473,8 +513,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.USER_BOT:
                     return false;
+
                 case BotTypeApi.DISGUISED_BOT:
                     return false;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -488,11 +530,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     return null;
+
                 case BotTypeApi.USER_BOT:
                     return await _userbotClient.GetUserDialogsAsync(limit: 100);
                     ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -506,10 +550,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     return await _botClient.GetChatAdministratorsAsync(id);
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -535,8 +582,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -551,10 +600,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     await _botClient.LeaveChatAsync(id);
                     return true;
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -582,12 +634,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
                         file: photoFile);
                     return m2 != null;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
 
             return false;
         }
@@ -598,11 +651,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     return false;
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     var users = new TLVector<TLAbsInputUser>();
-                    foreach (var userId in membersToInvite) users.Add(new TLInputUser {UserId = (int) userId});
+                    foreach (var userId in membersToInvite) users.Add(new TLInputUser { UserId = (int)userId });
 
                     try
                     {
@@ -640,23 +695,23 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
 
                 case BotTypeApi.USER_BOT:
-                {
-                    var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
-                    if (videoFile == null)
-                        return false;
+                    {
+                        var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
+                        if (videoFile == null)
+                            return false;
 
-                    //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
-                    var media2 = video.GetTLabsInputMedia();
-                    var m2 = await _userbotClient.Messages_SendMedia(
-                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
-                    return m2 != null;
-                }
+                        //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
+                        var media2 = video.GetTLabsInputMedia();
+                        var m2 = await _userbotClient.Messages_SendMedia(
+                            UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
+                        return m2 != null;
+                    }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
 
             return false;
         }
@@ -667,15 +722,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     break;
+
                 case BotTypeApi.USER_BOT:
                     {
                         await Utils.UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
                     }
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
         }
-
     }
 }

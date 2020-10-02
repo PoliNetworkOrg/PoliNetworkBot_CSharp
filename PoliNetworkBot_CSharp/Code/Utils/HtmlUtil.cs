@@ -37,7 +37,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         result.Add(lst[i]);
                     }
 
-
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
                     {
@@ -46,8 +45,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;
@@ -67,7 +64,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         result.Add(lst[i]);
                     }
 
-
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
                     {
@@ -76,15 +72,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;
             }
             else if (empty_cn == false && empty_tag == false && limit == null)
             {
-
                 lst.Add(doc);
                 for (int i = 0; i < lst.Count; i++)
                 {
@@ -98,7 +91,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         result.Add(lst[i]);
                     }
 
-
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
                     {
@@ -107,15 +99,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;
             }
             else if (empty_tag && limit != null)
             {
-
                 lst.Add(doc);
                 for (int i = 0; i < lst.Count; i++)
                 {
@@ -132,7 +121,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             return result;
                     }
 
-
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
                     {
@@ -141,8 +129,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;
@@ -161,11 +147,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         result.Add(lst[i]);
 
-
                         if (result.Count == limit.Value)
                             return result;
                     }
-
 
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
@@ -175,16 +159,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;
             }
-
             else if (empty_cn == false && empty_tag == false && limit != null)
             {
-
                 lst.Add(doc);
                 for (int i = 0; i < lst.Count; i++)
                 {
@@ -201,7 +181,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             return result;
                     }
 
-
                     var childcollection = lst[i].ChildNodes;
                     if (childcollection != null)
                     {
@@ -210,8 +189,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             lst.Add(child);
                         }
                     }
-
-
                 }
 
                 return result;

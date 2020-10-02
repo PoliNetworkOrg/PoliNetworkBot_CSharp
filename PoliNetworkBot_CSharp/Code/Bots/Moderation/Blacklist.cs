@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot.Types;
 
 #endregion
@@ -39,7 +39,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.NOT_ALLOWED_WORDS;
 
             return SpamType.ALL_GOOD;
-        
         }
 
         private static bool CheckSpamLink(string text)
@@ -70,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(link))
                 return null;
 
-            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@link", link}});
+            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
                 return false;
@@ -89,7 +88,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             PhotoSize biggerphoto = Utils.UtilsMedia.UtilsPhoto.GetLargest(photo);
             if (biggerphoto == null)
                 return SpamType.ALL_GOOD;
-
 
             //todo: analizzare la foto con un ocr
 

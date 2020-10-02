@@ -1,12 +1,12 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -63,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (times < 0) return null;
 
                 const string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
-                var keyValuePairs = new Dictionary<string, object> {{"@name", type.ToString()}};
+                var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
                 var r1 = SqLite.ExecuteSelect(q1, keyValuePairs);
                 var r2 = SqLite.GetFirstValueFromDataTable(r1);
                 if (r1 == null || r1.Rows.Count == 0 || r2 == null)
@@ -87,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static void AddMessageType(MessageType type)
         {
             const string q = "INSERT INTO MessageTypes (name) VALUES (@name)";
-            var keyValuePairs = new Dictionary<string, object> {{"@name", type.ToString()}};
+            var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
             SqLite.Execute(q, keyValuePairs);
             Tables.FixIdTable("MessageTypes", "id", "name");
         }
@@ -135,65 +135,95 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case MessageType.Unknown:
                     break;
+
                 case MessageType.Text:
                     SendTextFromDataRow(dr, botClass);
                     return true;
+
                 case MessageType.Photo:
                     return await SendPhotoFromDataRow(dr, botClass, ParseMode.Html, chatIdToSendTo, chatTypeToSendTo);
+
                 case MessageType.Audio:
                     break;
+
                 case MessageType.Video:
                     return await SendVideoFromDataRow(dr, botClass, ParseMode.Html, chatIdToSendTo, chatTypeToSendTo);
+
                 case MessageType.Voice:
                     break;
+
                 case MessageType.Document:
                     break;
+
                 case MessageType.Sticker:
                     break;
+
                 case MessageType.Location:
                     break;
+
                 case MessageType.Contact:
                     break;
+
                 case MessageType.Venue:
                     break;
+
                 case MessageType.Game:
                     break;
+
                 case MessageType.VideoNote:
                     break;
+
                 case MessageType.Invoice:
                     break;
+
                 case MessageType.SuccessfulPayment:
                     break;
+
                 case MessageType.WebsiteConnected:
                     break;
+
                 case MessageType.ChatMembersAdded:
                     break;
+
                 case MessageType.ChatMemberLeft:
                     break;
+
                 case MessageType.ChatTitleChanged:
                     break;
+
                 case MessageType.ChatPhotoChanged:
                     break;
+
                 case MessageType.MessagePinned:
                     break;
+
                 case MessageType.ChatPhotoDeleted:
                     break;
+
                 case MessageType.GroupCreated:
                     break;
+
                 case MessageType.SupergroupCreated:
                     break;
+
                 case MessageType.ChannelCreated:
                     break;
+
                 case MessageType.MigratedToSupergroup:
                     break;
+
                 case MessageType.MigratedFromGroup:
                     break;
+
                 case MessageType.Animation:
                     break;
+
                 case MessageType.Poll:
                     break;
+
                 case MessageType.Dice:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -287,7 +317,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (photoId == null)
                 return false;
 
-            var chatIdToSendTo = (long) dr["id_chat_sent_into"];
+            var chatIdToSendTo = (long)dr["id_chat_sent_into"];
             if (chatIdToSendTo2 != null)
                 chatIdToSendTo = chatIdToSendTo2.Value;
 

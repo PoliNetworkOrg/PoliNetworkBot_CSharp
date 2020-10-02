@@ -34,7 +34,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             var r = new TLInputMediaContact
             {
                 FirstName = _firstName,
-                LastName = _lastName, PhoneNumber = _phoneNumber
+                LastName = _lastName,
+                PhoneNumber = _phoneNumber
             };
 
             return new TlFileToSend(r);

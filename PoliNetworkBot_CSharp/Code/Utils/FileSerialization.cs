@@ -44,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var binaryFormatter = new BinaryFormatter();
                 try
                 {
-                    return (T) binaryFormatter.Deserialize(stream);
+                    return (T)binaryFormatter.Deserialize(stream);
                 }
                 catch
                 {

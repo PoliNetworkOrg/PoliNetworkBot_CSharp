@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 
 #endregion
 
@@ -11,7 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
     public class UserBotInfo : BotInfoAbstract
     {
         public string SessionUserId;
-
 
         internal new bool SetIsBot(BotTypeApi v)
         {

@@ -1,14 +1,14 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -26,93 +26,105 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (cmd)
             {
                 case "/start":
-                {
-                    await Start(sender, e);
-                    return;
-                }
-
-                case "/force_check_invite_links":
-                {
-                    if (GlobalVariables.Creators.Contains(e.Message.Chat.Username))
-                        _ = ForceCheckInviteLinksAsync(sender, e);
-                    else
-                        await DefaultCommand(sender, e);
-                    return;
-                }
-
-                case "/contact":
-                {
-                    await ContactUs(sender, e);
-                    return;
-                }
-
-                case "/help":
-                {
-                    await Help(sender, e);
-                    return;
-                }
-
-                case "/banAll":
-                {
-                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
-                    else
-                        await DefaultCommand(sender, e);
-                    return;
-                }
-
-                case "/ban":
-                {
-                    _ = BanUserAsync(sender, e, cmdLines);
-                    return;
-                }
-
-                case "/unbanAll":
-                {
-                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                        _ = UnbanAllAsync(sender, e, cmdLines[1]);
-                    else
-                        await DefaultCommand(sender, e);
-                    return;
-                }
-
-                case "/groups":
-                {
-                    await SendRecommendedGroupsAsync(sender, e);
-                    return;
-                }
-
-                case "/getGroups":
-                {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Username) && e.Message.Chat.Type == ChatType.Private)
                     {
-                        string username = null;
-                        if (!string.IsNullOrEmpty(e.Message.From.Username)) username = e.Message.From.Username;
-                        _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode);
+                        await Start(sender, e);
                         return;
                     }
 
-                    await DefaultCommand(sender, e);
+                case "/force_check_invite_links":
+                    {
+                        if (GlobalVariables.Creators.Contains(e.Message.Chat.Username))
+                            _ = ForceCheckInviteLinksAsync(sender, e);
+                        else
+                            await DefaultCommand(sender, e);
+                        return;
+                    }
 
-                    return;
-                }
+                case "/contact":
+                    {
+                        await ContactUs(sender, e);
+                        return;
+                    }
+
+                case "/help":
+                    {
+                        await Help(sender, e);
+                        return;
+                    }
+
+                case "/banAll":
+                    {
+                        if (e.Message.Chat.Type != ChatType.Private)
+                        {
+                            await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+
+                        if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                            _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                        else
+                            await DefaultCommand(sender, e);
+                        return;
+                    }
+
+                case "/ban":
+                    {
+                        _ = BanUserAsync(sender, e, cmdLines);
+                        return;
+                    }
+
+                case "/unbanAll":
+                    {
+                        if (e.Message.Chat.Type != ChatType.Private)
+                        {
+                            await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+
+                        if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                            _ = UnbanAllAsync(sender, e, cmdLines[1]);
+                        else
+                            await DefaultCommand(sender, e);
+                        return;
+                    }
+
+                case "/groups":
+                    {
+                        await SendRecommendedGroupsAsync(sender, e);
+                        return;
+                    }
+
+                case "/getGroups":
+                    {
+                        if (GlobalVariables.Creators.Contains(e.Message.From.Username) && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            string username = null;
+                            if (!string.IsNullOrEmpty(e.Message.From.Username)) username = e.Message.From.Username;
+                            _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode);
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
+                        return;
+                    }
 
                 case "/time":
-                {
-                    var lang = new Language(new Dictionary<string, string>
+                    {
+                        var lang = new Language(new Dictionary<string, string>
                     {
                         {"", DateTimeClass.NowAsStringAmericanFormat()}
                     });
-                    await SendMessage.SendMessageInPrivate(sender, userIdToSendTo: e.Message.From.Id,
-                        usernameToSendTo: e.Message.From.Username,  langCode: e.Message.From.LanguageCode, text: lang);
-                    return;
-                }
+                        await SendMessage.SendMessageInPrivate(sender, userIdToSendTo: e.Message.From.Id,
+                            usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode, text: lang);
+                        return;
+                    }
 
                 case "/assoc_send":
-                {
-                    _ = await Assoc.Assoc_SendAsync(sender, e);
-                    return;
-                }
+                    {
+                        _ = await Assoc.Assoc_SendAsync(sender, e);
+                        return;
+                    }
 
                 case "/assoc_read":
                     {
@@ -133,10 +145,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
                 default:
-                {
-                    await DefaultCommand(sender, e);
-                    return;
-                }
+                    {
+                        await DefaultCommand(sender, e);
+                        return;
+                    }
             }
         }
 
@@ -145,10 +157,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             const string text = "Ecco le regole!\n" +
                 "https://polinetwork.github.io/it/rules";
 
-
             const string textEng = "Here are the rules!\n" +
                 "https://polinetwork.github.io/en/rules";
-
 
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -159,7 +169,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2, ParseMode.Html);
-
         }
 
         private static async Task SendRecommendedGroupsAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -170,8 +179,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 "\n🤪 Spotted & Memes @PolimiSpotted @PolimiMemes\n" +
                 "\n🥳 Eventi @PoliEventi\n" +
                 "\nRicordiamo che sul nostro sito vi sono tutti i link ai gruppi con tanto ricerca, facci un salto!\n" +
-                "https://polinetwork.github.io/" ;
-
+                "https://polinetwork.github.io/";
 
             const string textEng = "<i>List of recommended groups</i>:\n" +
                 "\n👥 Group with all students @PoliGruppo 👈\n" +
@@ -180,7 +188,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 "\n🥳 Events @PoliEventi\n" +
                 "\nWe remind you that on our website there are all link to the groups, and they are searchable, have a look!\n" +
                 "https://polinetwork.github.io/";
-
 
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -198,9 +205,8 @@ e.Message.From.Username, text2, ParseMode.Html);
             var groups = Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);
-            TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) chatId};
+            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)chatId };
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, chatId);
-
 
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -242,8 +248,8 @@ e.Message.From.Username, text2, ParseMode.Html);
                 {"it", "Target sbannato da " + done.Count + " gruppi"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2);
         }
 
         private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -315,17 +321,22 @@ e.Message.From.Username, text2);
             }
             else
             {
-                var lang = new Language(new Dictionary<string, string>
+                await CommandNotSentInPrivateAsync(sender, e);
+            }
+        }
+
+        private static async Task CommandNotSentInPrivateAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var lang = new Language(new Dictionary<string, string>
                 {
                     {"it", "Questo messaggio funziona solo in chat privata"},
                     {"en", "This command only works in private chat with me"}
                 });
-                await SendMessage.SendMessageInPrivateOrAGroup(sender,
-                    lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id,
-                    e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
+            await SendMessage.SendMessageInPrivateOrAGroup(sender,
+                lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id,
+                e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
 
-                await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type, null);
-            }
+            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type, null);
         }
 
         private static async Task HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
@@ -342,7 +353,6 @@ e.Message.From.Username, text2);
                                 "\n⚠ Hai già letto le regole del network? /rules\n" +
                                 "\n✍ Per contattarci /contact";
 
-
             const string textEng = "<i>List of features</i>:\n" +
                                    //"\n📑 Review system of courses (for more info /help_review)\n" +
                                    //"\n🔖 Link to notes (for more info /help_material)\n" +
@@ -354,7 +364,6 @@ e.Message.From.Username, text2);
                                    "\n👥 Recommended groups /groups\n" +
                                    "\n⚠ Have you already read our network rules? /rules\n" +
                                    "\n✍ To contact us /contact";
-
 
             var text2 = new Language(new Dictionary<string, string>
             {

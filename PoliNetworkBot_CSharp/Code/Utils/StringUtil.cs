@@ -2,7 +2,6 @@
 
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 
 #endregion
 
@@ -43,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (j < 0)
                 return false;
 
-            if (j==0)
+            if (j == 0)
             {
                 if (Utils.StringUtil.IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false)
                     return true;

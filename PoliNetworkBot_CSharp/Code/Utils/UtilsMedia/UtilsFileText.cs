@@ -1,5 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using System;
 using System.IO;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
@@ -12,8 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             TelegramFile telegramFile = new TelegramFile(stream, fileName, caption, mimeType);
             return telegramFile;
         }
-
-
 
         public static Stream GenerateStreamFromString(string s)
         {

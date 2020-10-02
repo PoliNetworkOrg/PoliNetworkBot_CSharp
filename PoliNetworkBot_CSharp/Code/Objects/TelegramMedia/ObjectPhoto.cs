@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -34,7 +34,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             _chatId = chatId;
             _chatType = chatType;
         }
-
 
         public async Task<TLAbsInputFile> GetTelegramUserBotInputPhoto(TelegramClient userbot)
         {

@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -12,6 +7,11 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -34,36 +34,36 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             switch (readChoice)
             {
                 case '1': //reset everything
-                {
+                    {
                         ResetEverything(alsoFillTablesFromJson: true);
 
                         return;
-                }
+                    }
 
                 case '2': //normal mode
                 case '3': //disguised bot test
-                {
-                    var toExit = LoadBotConfig();
-                    if (toExit == ToExit.EXIT)
+                    {
+                        var toExit = LoadBotConfig();
+                        if (toExit == ToExit.EXIT)
+                            return;
+
+                        var toExit2 = LoadUserBotConfig();
+                        if (toExit2 == ToExit.EXIT)
+                            return;
+
+                        var toExit3 = LoadBotDisguisedAsUserBotConfig();
+                        if (toExit3 == ToExit.EXIT)
+                            return;
+
+                        GlobalVariables.LoadToRam();
+
+                        Console.WriteLine("\nTo kill this process, you have to check the process list");
+
+                        _ = StartBotsAsync(readChoice == '3');
+
+                        while (true) Console.ReadKey();
                         return;
-
-                    var toExit2 = LoadUserBotConfig();
-                    if (toExit2 == ToExit.EXIT)
-                        return;
-
-                    var toExit3 = LoadBotDisguisedAsUserBotConfig();
-                    if (toExit3 == ToExit.EXIT)
-                        return;
-
-                    GlobalVariables.LoadToRam();
-
-                    Console.WriteLine("\nTo kill this process, you have to check the process list");
-
-                    _ = StartBotsAsync(readChoice == '3');
-
-                    while (true) Console.ReadKey();
-                    return;
-                }
+                    }
 
                 case '4':
                     {
@@ -261,7 +261,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                         _ = Code.Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
                                         break;
                                     }
-
                             }
                         }
                     }
@@ -324,7 +323,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             await bot.SendTextMessageAsync(5651789, text, ChatType.Private,
                 "", default, replyMarkupObject, "@ArmeF97");
             done &= await bot.CreateGroup("Gruppo test by bot",
-                null, new List<long> {5651789});
+                null, new List<long> { 5651789 });
 
             return done;
         }
@@ -346,7 +345,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group
                 emojiReaction: "😎", messageId: 8, Telegram.Bot.Types.Enums.ChatType.Group);
             */
-
 
             var done = true;
             _ = GlobalVariables.Bots[userId];

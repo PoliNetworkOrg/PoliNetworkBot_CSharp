@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
+using System.Collections.Generic;
 using Telegram.Bot.Args;
 
 #endregion
@@ -75,7 +75,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
         internal bool AcceptsMessages()
         {
-            return (bool) KeyValuePairs[ConstConfigBot.AcceptsMessages];
+            return (bool)KeyValuePairs[ConstConfigBot.AcceptsMessages];
         }
 
         internal string GetWebsite()
