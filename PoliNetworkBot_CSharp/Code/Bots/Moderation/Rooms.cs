@@ -433,8 +433,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (t9 == sigla)
                     return i;
 
-                bool found = Utils.StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(sigla, t8[0]);
-                if (found)
+                bool? found = Utils.StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(sigla, t8[0]);
+                if (found != null && found.Value)
                     return i;
             }
 
@@ -609,8 +609,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     foreach (var child2 in child.ChildNodes)
                     {
-                        bool found = Utils.StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2);
-                        if (found)
+                        bool? found = Utils.StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2);
+                        if (found != null && found.Value)
                             return i;
                     }
                 }

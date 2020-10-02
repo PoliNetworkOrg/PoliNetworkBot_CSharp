@@ -34,11 +34,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return false;
         }
 
-        internal static bool CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string textToFind, HtmlNode nodeToFindTextInto)
+        internal static bool? CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string textToFind, HtmlNode nodeToFindTextInto)
         {
+            if (nodeToFindTextInto == null)
+                return null;
+
             int j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind);
             if (j < 0)
                 return false;
+
+            if (j==0)
+            {
+                if (Utils.StringUtil.IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false)
+                    return true;
+
+                return false;
+            }
 
             if (Utils.StringUtil.IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
                 Utils.StringUtil.IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false)
