@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var cmdLines = e.Message.Text.Split(' ');
-            var cmd = cmdLines[0];
+            var cmd = cmdLines[0].Trim();
             switch (cmd)
             {
                 case "/start":
