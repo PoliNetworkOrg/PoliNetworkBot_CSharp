@@ -163,7 +163,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _id;
         }
 
-        internal async Task<bool> SendTextMessageAsync(long chatid, Language text,
+        internal async Task<Tuple<bool,object>> SendTextMessageAsync(long chatid, Language text,
             ChatType chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null, bool disablePreviewLink = false)
         {
@@ -173,9 +173,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     IReplyMarkup reply = null;
                     if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
                     var m2 = replyToMessageId == null ? 0 : replyToMessageId.Value;
-                    var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
+                    Message m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
                         replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
-                    return m1 != null;
+                    bool b1 = m1 != null;
+                    return new Tuple<bool, object>(b1, m1);
 
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
@@ -186,20 +187,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         if (replyMarkupObject != null) replyMarkup = replyMarkupObject.GetReplyMarkupUserBot();
                         var m3 = await SendMessage.SendMessageUserBot(_userbotClient,
                             peer, text, username, replyMarkup, lang, replyToMessageId, disablePreviewLink);
-                        return m3 != null;
+                        bool b3 = m3 != null;
+                        return new Tuple<bool, object>(b3, m3);
                     }
                     catch (Exception e)
                     {
                         ;
                     }
 
-                    return false;
+                    return new Tuple<bool, object>(false, null);
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return false;
+            return new Tuple<bool, object>(false, null);
         }
 
         internal async Task<bool> SendMedia(GenericFile genericFile, long chatid, ChatType chatType, string username,

@@ -153,7 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task<bool> Rules(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<Tuple<bool, object>> Rules(TelegramBotAbstract sender, MessageEventArgs e)
         {
             const string text = "Ecco le regole!\n" +
                 "https://polinetwork.github.io/it/rules";

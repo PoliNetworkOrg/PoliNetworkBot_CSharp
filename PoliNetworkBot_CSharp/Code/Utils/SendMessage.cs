@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class SendMessage
     {
-        internal static async Task<bool> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
+        internal static async Task<Tuple<bool, object>> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
@@ -28,7 +28,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     text, ChatType.Private, parseMode: ParseMode.Html,
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-                if (r) return true;
+                if (r.Item1)
+                    return r;
             }
             catch
             {
@@ -42,8 +43,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")}
             });
 
-            return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
+            var r1 = await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
                 lang, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
+
+            return r1;
         }
 
         private static string GetMessageTo(string firstname, string lastname, long messageFromUserId)
@@ -53,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
-        internal static async Task<bool> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
+        internal static async Task<Tuple<bool, object>> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
             Language text, ParseMode parseMode, long? messageIdToReplyTo)
         {
@@ -66,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                return false;
+                return new Tuple<bool, object>(false, null);
             }
         }
 
