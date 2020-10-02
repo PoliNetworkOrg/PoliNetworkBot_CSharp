@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/banAll":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Username))
+                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
                         _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
                     else
                         await DefaultCommand(sender, e);
@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/unbanAll":
                 {
-                    if (GlobalVariables.Creators.Contains(e.Message.From.Username))
+                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
                         _ = UnbanAllAsync(sender, e, cmdLines[1]);
                     else
                         await DefaultCommand(sender, e);
@@ -271,8 +271,8 @@ e.Message.From.Username, text2);
                         {"it", "Target bannato da " + done.Count + " gruppi"}
                     });
                     await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                        e.Message.From.LanguageCode,
+                        e.Message.From.Username, text2);
                 }
             }
             else
@@ -284,8 +284,8 @@ e.Message.From.Username, text2);
                     {"it", "Target bannato da " + done.Count + " gruppi"}
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text3);
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, text3);
             }
         }
 

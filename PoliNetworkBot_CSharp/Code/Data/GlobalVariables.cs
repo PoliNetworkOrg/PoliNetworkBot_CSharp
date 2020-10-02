@@ -13,6 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static Dictionary<long, TelegramBotAbstract> Bots;
         public static List<string> Creators;
         public static List<string> SubCreators;
+        public static List<string> AllowedBanAll;
         public static List<long> AllowedNoUsername;
         public static List<Tuple<long,string>> Owners;
         internal static void LoadToRam()
@@ -28,6 +29,11 @@ namespace PoliNetworkBot_CSharp.Code.Data
                 "carlogiova", "giovannieffe777", "testpolinetwork",
                "albus25", "deet98", "alberto_fattori", "scala98",
                "giulia_ye", "andre_crc", "perularrabeiti", "fllippo"
+            };
+
+            AllowedBanAll = new List<string>
+            {
+                "armef97", "raif9", "eliamaggioni"
             };
 
             AllowedNoUsername = new List<long>()
