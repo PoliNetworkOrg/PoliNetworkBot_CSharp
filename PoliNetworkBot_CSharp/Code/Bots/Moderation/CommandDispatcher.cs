@@ -392,15 +392,27 @@ e.Message.From.Username, text2, ParseMode.Html);
 
         private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
+            int? n = null;
+            try
+            {
+                n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
+            }
+            catch (Exception e2)
+            {
+                await Utils.NotifyUtil.NotifyOwners(e2, sender);
+            }
+
+            if (n == null)
+                return;
+
             var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", "I have updated n=" + n + " links"},
                 {"it", "Ho aggiornato n=" + n + " link"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-e.Message.From.LanguageCode,
-e.Message.From.Username, text2);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2);
         }
 
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
