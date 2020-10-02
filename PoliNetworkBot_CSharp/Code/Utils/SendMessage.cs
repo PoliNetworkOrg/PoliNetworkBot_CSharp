@@ -121,6 +121,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (sentDate == null)
                 return SuccessQueue.DATE_INVALID;
 
+            if (replyTo == null)
+                return SuccessQueue.INVALID_OBJECT;
+
             var d1 = sentDate.IsInvalid();
             if (d1) return SuccessQueue.DATE_INVALID;
 
