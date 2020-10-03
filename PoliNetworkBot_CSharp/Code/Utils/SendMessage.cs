@@ -22,10 +22,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
+            Tuple<bool, object> r = null;
             try
             {
-                var r = await telegramBotClient.SendTextMessageAsync(userId,
-                    text, ChatType.Private, parseMode: ParseMode.Html,
+                r = await telegramBotClient.SendTextMessageAsync(userId,
+                    text, ChatType.Private, parseMode: parseMode,
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
                 if (r.Item1)
@@ -36,6 +37,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 // ignored
             }
 
+            if (!(r == null || r.Item1 == false))
+            {
+                return r;
+            }
+
             var messageTo = GetMessageTo(firstName, lastName, userId);
             var text3 = new Language(new Dictionary<string, string>
             {
@@ -44,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
 
             var r1 = await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
-                lang, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
+                lang, parseMode, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
 
             return r1;
         }
