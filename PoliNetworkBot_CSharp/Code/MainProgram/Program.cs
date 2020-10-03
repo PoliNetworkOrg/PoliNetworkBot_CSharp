@@ -76,6 +76,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         _ = await Test.IG.Test_IG.MainIGAsync();
                         return;
                     }
+
+                case '6':
+                    {
+                        NewConfig.NewConfigMethod(true, false, false, false, false);
+                        return;
+                    }
             }
         }
 
@@ -101,6 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "3) Only Disguised bot\n" +
                                   "4) Reset everything but don't fill tables\n" +
                                   "5) Test IG\n" +
+                                  "6) Reset only bot config\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -116,6 +123,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '3':
                         case '4':
                         case '5':
+                        case '6':
                             return first;
                     }
                 }
