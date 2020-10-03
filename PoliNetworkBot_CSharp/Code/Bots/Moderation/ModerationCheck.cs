@@ -301,6 +301,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                             var toDelete = new Code.Objects.MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
                             Code.Data.GlobalVariables.MessagesToDelete.Add(toDelete);
+
+                            Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
                         }
                     }
                 }

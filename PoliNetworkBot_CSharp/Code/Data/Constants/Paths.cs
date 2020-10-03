@@ -16,6 +16,7 @@
             public const string ConfigBot = "config/bots.bin";
             public const string ConfigUserbot = "config/userbots.bin";
             public const string ConfigBotDisguisedAsUserbot = "config/botdisguisedasuserbots.bin";
+            public const string MessagesToDelete = "config/messagestodelete.bin";
         }
 
         public static class IG

@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -24,10 +25,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         ///     If false the file will be overwritten if it already exists. If true the contents will be appended
         ///     to the file.
         /// </param>
-        public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
+        public static Tuple<bool,Exception> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
-            Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
-            SerializeFile(objectToWrite, ref stream);
+            try
+            {
+                Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
+                SerializeFile(objectToWrite, ref stream);
+                return new Tuple<bool, Exception>(true, null);
+            }
+            catch (Exception e)
+            {
+                return new Tuple<bool, Exception>(false, e);
+            }
         }
 
         /// <summary>

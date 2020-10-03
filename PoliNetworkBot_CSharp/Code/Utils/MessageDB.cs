@@ -370,6 +370,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         lock (Code.Data.GlobalVariables.MessagesToDelete)
                         {
                             Code.Data.GlobalVariables.MessagesToDelete.RemoveAt(i);
+                            Utils.FileSerialization.WriteToBinaryFile(Code.Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
                             continue;
                         }
                     }
