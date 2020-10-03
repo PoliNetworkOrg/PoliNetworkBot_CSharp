@@ -56,5 +56,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return false;
         }
+
+
+        internal static char ToSN(bool b)
+        {
+            return b ? 'S' : 'N';
+        }
     }
 }

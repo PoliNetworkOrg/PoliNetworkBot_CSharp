@@ -130,7 +130,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"@whob", who_banned },
                     {"@whenb", DateTime.Now },
                     {"@target", targetId },
-                    {"@btuf", Utils.ChatTypeUtil.ToSN(banned_true_unbanned_false)}
+                    {"@btuf", Utils.StringUtil.ToSN(banned_true_unbanned_false)}
                 };
                 int done = Utils.SqLite.Execute(q, dict);
 
