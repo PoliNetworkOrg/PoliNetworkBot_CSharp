@@ -17,9 +17,12 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<long> AllowedNoUsername;
         public static List<Tuple<long, string>> Owners;
         public static List<string> AllowedSpam;
+        public static List<MessageToDelete> MessagesToDelete;
 
         internal static void LoadToRam()
         {
+            MessagesToDelete = new List<MessageToDelete>();
+
             Creators = new List<string>
             {
                 "policreator", "policreator2", "policreator3",

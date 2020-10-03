@@ -351,5 +351,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 caption, parseMode, typeOfChatSentInto.Value);
             return done;
         }
+
+        internal async static Task CheckMessageToDelete()
+        {
+            if (Code.Data.GlobalVariables.MessagesToDelete == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < Code.Data.GlobalVariables.MessagesToDelete.Count;)
+            {
+                var m = Code.Data.GlobalVariables.MessagesToDelete[i];
+                if (m.ToDelete())
+                {
+                    bool success = await m.Delete();
+                    if (success)
+                    {
+                        lock (Code.Data.GlobalVariables.MessagesToDelete)
+                        {
+                            Code.Data.GlobalVariables.MessagesToDelete.RemoveAt(i);
+                            continue;
+                        }
+                    }
+                }
+
+                i++;
+            }
+
+        }
     }
 }

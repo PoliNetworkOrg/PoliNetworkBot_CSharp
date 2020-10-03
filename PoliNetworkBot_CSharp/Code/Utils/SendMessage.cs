@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class SendMessage
     {
-        internal static async Task<Tuple<bool, object>> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
+        internal static async Task<Code.Objects.MessageSend> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
@@ -30,7 +30,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
                 if (r.Item1)
-                    return r;
+                {
+                    return new MessageSend(r.Item1, r.Item2, ChatType.Private);
+                }
             }
             catch
             {
@@ -39,7 +41,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (!(r == null || r.Item1 == false))
             {
-                return r;
+                return new MessageSend(r.Item1, r.Item2, ChatType.Private);
             }
 
             var messageTo = GetMessageTo(firstName, lastName, userId);
@@ -52,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r1 = await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
                 lang, parseMode, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
 
-            return r1;
+            return new MessageSend(success: r1.Item1, message: r1.Item2, chatType: chatType);
         }
 
         private static string GetMessageTo(string firstname, string lastname, long messageFromUserId)

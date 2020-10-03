@@ -313,11 +313,21 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             if (GlobalVariables.Bots.Keys.Count > 0)
             {
-                var t = new Thread(CheckMessagesToSend);
+                var t = new Thread(DoThingsAsyncBot);
                 t.Start();
             }
         }
 
+        private static void DoThingsAsyncBot(object obj)
+        {
+            var t = new Thread(CheckMessagesToSend);
+            t.Start();
+
+            var t2 = new Thread(CheckMessagesToDeleteAsync);
+            t2.Start();
+        }
+
+ 
         private static async Task<bool> TestThingsDisguisedAsync(long userbotId)
         {
             var done = true;
@@ -335,6 +345,16 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             return done;
         }
+
+        private static async void CheckMessagesToDeleteAsync()
+        {
+            while (true)
+            {
+                await MessageDb.CheckMessageToDelete();
+                Thread.Sleep(10 * 1000); //10 sec
+            }
+        }
+
 
         private static async void CheckMessagesToSend()
         {

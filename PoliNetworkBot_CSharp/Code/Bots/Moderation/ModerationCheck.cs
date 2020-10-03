@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TeleSharp.TL;
 
 #endregion
 
@@ -282,8 +283,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"it", s1I},
                 {"en", s1E}
             });
-            await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
+
+            MessageSend r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType, parseMode: ParseMode.Html);
+
+            if (r1.getChatType() != ChatType.Private)
+            {
+                var r2 = r1.getMessage();
+                if (r2 != null)
+                {
+                    if (r2 is TLMessage r3)
+                    {
+                        lock (Code.Data.GlobalVariables.MessagesToDelete)
+                        {
+                            TimeSpan timeUntilDelete = TimeSpan.FromMinutes(2);
+                            DateTime TimeToDelete = DateTime.Now + timeUntilDelete;
+
+                            var toDelete = new Code.Objects.MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
+                            Code.Data.GlobalVariables.MessagesToDelete.Add(toDelete);
+                        }
+                    }
+                }
+            }
 
             if (newChatMembers == null || newChatMembers.Length == 0)
             {

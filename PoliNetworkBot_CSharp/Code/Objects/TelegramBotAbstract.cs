@@ -60,13 +60,23 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId];
         }
 
-        internal async Task DeleteMessageAsync(long chatId, int messageId, ChatType chatType, long? accessHash)
+        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, ChatType chatType, long? accessHash)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    await _botClient.DeleteMessageAsync(chatId, messageId);
-                    break;
+                    {
+                        try
+                        {
+                            await _botClient.DeleteMessageAsync(chatId, messageId);
+                        }
+                        catch
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
 
                 case BotTypeApi.USER_BOT:
                     {
@@ -74,7 +84,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         var r1 = await _userbotClient.ChannelsDeleteMessageAsync(peer,
                             new TLVector<int> { messageId });
-                        break;
+
+                        return r1 != null;
                     }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -82,6 +93,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return false;
         }
 
         internal async Task<int?> GetIdFromUsernameAsync(string target)
