@@ -305,6 +305,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
                         }
                     }
+                    else
+                    {
+                        string e4 = r2?.GetType() + r2?.ToString();
+                        Exception e3 = new Exception(e4);
+                        await Utils.NotifyUtil.NotifyOwners(e3, telegramBotClient);
+                    }
                 }
             }
 
