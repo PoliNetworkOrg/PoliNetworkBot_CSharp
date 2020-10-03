@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
 {
     public static class BotStartMethods
     {
-        private const string Moderation = "m";
+        public const string Moderation = "m";
 
         internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
         {

@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -228,8 +229,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
+       
+
         private static async Task StartBotsAsync(bool advancedModeDebugDisguised)
         {
+            int moderationBots = 0;
+
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
             if (_botInfos != null && advancedModeDebugDisguised == false)
                 foreach (var bot in _botInfos)
@@ -241,12 +246,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (!bot.AcceptsMessages())
                         continue;
 
-                    var onmessageMethod = bot.GetOnMessage();
-                    if (onmessageMethod == null)
+                    var onmessageMethod2 = bot.GetOnMessage();
+                    if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
                         continue;
 
-                    botClient.OnMessage += onmessageMethod;
+                    botClient.OnMessage += onmessageMethod2.Item1;
                     botClient.StartReceiving();
+
+                    if (onmessageMethod2.Item2 == Data.Constants.BotStartMethods.Moderation)
+                    {
+                        moderationBots++;
+                    }
                 }
 
             if (_userBotsInfos != null && advancedModeDebugDisguised == false)
@@ -311,7 +321,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (GlobalVariables.Bots.Keys.Count > 0)
+            if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
             {
                 var t = new Thread(Code.Bots.Moderation.ThreadAsync.DoThingsAsyncBot);
                 t.Start();

@@ -67,10 +67,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             KeyValuePairs[ConstConfigBot.Token] = v;
         }
 
-        internal EventHandler<MessageEventArgs> GetOnMessage()
+        internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
         {
             var s = KeyValuePairs[ConstConfigBot.OnMessages].ToString();
-            return BotStartMethods.GetMethodFromString(s);
+            var r1 = BotStartMethods.GetMethodFromString(s);
+            return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
         }
 
         internal bool AcceptsMessages()
