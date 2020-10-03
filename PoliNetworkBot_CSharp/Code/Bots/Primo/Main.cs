@@ -56,7 +56,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
         private static async Task HandleMessage2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            string t = e.Message.Text.ToLower();
+            string t = e?.Message?.Text?.ToLower();
+
+            if (string.IsNullOrEmpty(t))
+                return;
+            
             switch (t)
             {
                 case "boomer":
