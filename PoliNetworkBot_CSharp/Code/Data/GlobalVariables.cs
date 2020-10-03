@@ -21,7 +21,9 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
         internal static void LoadToRam()
         {
-            MessagesToDelete = new List<MessageToDelete>();
+            LoadMessagesToDelete();
+
+        
 
             Creators = new List<string>
             {
@@ -55,6 +57,18 @@ namespace PoliNetworkBot_CSharp.Code.Data
             {
                 new Tuple<long, string>(5651789, "armef97")
             };
+        }
+
+        private static void LoadMessagesToDelete()
+        {
+            var m = Utils.FileSerialization.ReadFromBinaryFile<List<MessageToDelete>>(Data.Constants.Paths.Bin.MessagesToDelete);
+            if (m == default || m == null)
+            {
+                MessagesToDelete = new List<MessageToDelete>();
+                return;
+            }
+
+            MessagesToDelete = m;
         }
     }
 }
