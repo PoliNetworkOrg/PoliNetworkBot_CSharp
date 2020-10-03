@@ -11,12 +11,14 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
     public static class BotStartMethods
     {
         public const string Moderation = "m";
+        public const string Primo = "p";
 
         internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
         {
             return s switch
             {
                 Moderation => Main.MainMethod,
+                Primo => Code.Bots.Primo.Main.MainMethod,
                 _ => null
             };
         }
