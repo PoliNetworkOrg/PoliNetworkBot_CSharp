@@ -112,7 +112,38 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         ;
                     }
 
+
+            LogBanAction(targetId.Value,banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
+
             return done;
+        }
+
+        private static bool LogBanAction(int targetId, bool banned_true_unbanned_false, TelegramBotAbstract bot, int who_banned)
+        {
+            try
+            {
+                string q = "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
+                    " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
+
+                Dictionary<string, object> dict = new Dictionary<string, object>() {
+                    {"@fbi", bot.GetId() },
+                    {"@whob", who_banned },
+                    {"@whenb", DateTime.Now },
+                    {"@target", targetId },
+                    {"@btuf", Utils.ChatTypeUtil.ToSN(banned_true_unbanned_false)}
+                };
+                int done = Utils.SqLite.Execute(q, dict);
+
+                if (done > 0)
+                    return true;
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+
         }
 
         private static async Task<bool> UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
