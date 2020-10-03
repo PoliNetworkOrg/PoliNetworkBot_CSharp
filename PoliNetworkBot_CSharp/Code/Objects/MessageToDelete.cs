@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -18,6 +19,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public MessageToDelete(TLMessage r3, long chatId, System.DateTime timeToDelete, long botId, ChatType chatType, long? accessHash)
         {
             this.messageId = r3.Id;
+            this.chatId = chatId;
+            this.timeToDelete = timeToDelete;
+            this.botId = botId;
+            this.chatType = chatType;
+            this.accessHash = accessHash;
+        }
+
+        public MessageToDelete(Message r4, long chatId, DateTime timeToDelete, int botId, ChatType chatType, long? accessHash)
+        {
+            this.messageId = r4.MessageId;
             this.chatId = chatId;
             this.timeToDelete = timeToDelete;
             this.botId = botId;

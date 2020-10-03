@@ -287,6 +287,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             MessageSend r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType, parseMode: ParseMode.Html);
 
+            const int MINUTES_WAIT = 2;
+
             if (r1.getChatType() != ChatType.Private)
             {
                 var r2 = r1.getMessage();
@@ -296,7 +298,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         lock (Code.Data.GlobalVariables.MessagesToDelete)
                         {
-                            TimeSpan timeUntilDelete = TimeSpan.FromMinutes(2);
+                            TimeSpan timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
                             DateTime TimeToDelete = DateTime.Now + timeUntilDelete;
 
                             var toDelete = new Code.Objects.MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
@@ -305,9 +307,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
                         }
                     }
+                    else if (r2 is Telegram.Bot.Types.Message r4)
+                    {
+                        lock (Code.Data.GlobalVariables.MessagesToDelete)
+                        {
+                            TimeSpan timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
+                            DateTime TimeToDelete = DateTime.Now + timeUntilDelete;
+
+                            var toDelete = new Code.Objects.MessageToDelete(r4, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
+                            Code.Data.GlobalVariables.MessagesToDelete.Add(toDelete);
+
+                            Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
+                        }
+                    }
                     else
                     {
-                        string e4 = r2?.GetType() + r2?.ToString();
+                        string e4 = "Attempted to add a message to be deleted in queue\n" + r2?.GetType() + " " + r2?.ToString();
                         Exception e3 = new Exception(e4);
                         await Utils.NotifyUtil.NotifyOwners(e3, telegramBotClient);
                     }
