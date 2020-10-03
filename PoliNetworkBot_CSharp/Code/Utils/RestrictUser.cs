@@ -112,8 +112,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         ;
                     }
 
-
-            LogBanAction(targetId.Value,banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
+            LogBanAction(targetId.Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
             return done;
         }
@@ -143,7 +142,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return false;
             }
-
         }
 
         private static async Task<bool> UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,

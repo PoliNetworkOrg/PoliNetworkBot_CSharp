@@ -1,7 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
@@ -25,7 +22,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 Thread.Sleep(20 * 1000); //20 sec
             }
         }
-
 
         private static async void CheckMessagesToSend()
         {

@@ -378,7 +378,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 i++;
             }
-
         }
     }
 }

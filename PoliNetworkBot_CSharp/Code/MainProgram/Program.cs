@@ -9,7 +9,6 @@ using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -229,8 +228,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-       
-
         private static async Task StartBotsAsync(bool advancedModeDebugDisguised)
         {
             int moderationBots = 0;
@@ -328,9 +325,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
- 
-
- 
         private static async Task<bool> TestThingsDisguisedAsync(long userbotId)
         {
             var done = true;
@@ -348,8 +342,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             return done;
         }
-
-       
 
         private static async Task<bool> TestThingsAsync(long userId)
         {

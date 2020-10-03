@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         ///     If false the file will be overwritten if it already exists. If true the contents will be appended
         ///     to the file.
         /// </param>
-        public static Tuple<bool,Exception> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
+        public static Tuple<bool, Exception> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
             try
             {

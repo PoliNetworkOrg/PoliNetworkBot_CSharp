@@ -176,7 +176,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _id;
         }
 
-        internal async Task<Tuple<bool,object>> SendTextMessageAsync(long chatid, Language text,
+        internal async Task<Tuple<bool, object>> SendTextMessageAsync(long chatid, Language text,
             ChatType chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null, bool disablePreviewLink = false)
         {
