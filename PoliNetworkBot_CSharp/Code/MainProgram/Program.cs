@@ -351,7 +351,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             while (true)
             {
                 await MessageDb.CheckMessageToDelete();
-                Thread.Sleep(10 * 1000); //10 sec
+                Thread.Sleep(20 * 1000); //20 sec
             }
         }
 
@@ -361,7 +361,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             while (true)
             {
                 await MessageDb.CheckMessagesToSend();
-                Thread.Sleep(10 * 1000); //10 sec
+                Thread.Sleep(20 * 1000); //20 sec
             }
 
             // ReSharper disable once FunctionNeverReturns
