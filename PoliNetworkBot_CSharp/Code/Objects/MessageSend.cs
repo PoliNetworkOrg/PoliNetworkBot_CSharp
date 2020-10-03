@@ -4,9 +4,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class MessageSend
     {
-        private bool success;
-        private object message;
-        private ChatType chatType;
+        private readonly bool success;
+        private readonly object message;
+        private readonly ChatType chatType;
 
         public MessageSend(bool success, object message, ChatType chatType)
         {
@@ -15,12 +15,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.chatType = chatType;
         }
 
-        internal object getMessage()
+        internal object GetMessage()
         {
             return message;
         }
 
-        internal ChatType getChatType()
+        internal ChatType GetChatType()
         {
             return this.chatType;
         }

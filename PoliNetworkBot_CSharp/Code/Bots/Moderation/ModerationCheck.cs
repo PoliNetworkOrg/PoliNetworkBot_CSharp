@@ -289,9 +289,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             const int MINUTES_WAIT = 2;
 
-            if (r1.getChatType() != ChatType.Private)
+            if (r1.GetChatType() != ChatType.Private)
             {
-                var r2 = r1.getMessage();
+                var r2 = r1.GetMessage();
                 if (r2 != null)
                 {
                     if (r2 is TLMessage r3)
@@ -301,7 +301,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             TimeSpan timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
                             DateTime TimeToDelete = DateTime.Now + timeUntilDelete;
 
-                            var toDelete = new Code.Objects.MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
+                            var toDelete = new Code.Objects.MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(), r1.GetChatType(), null);
                             Code.Data.GlobalVariables.MessagesToDelete.Add(toDelete);
 
                             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
@@ -314,7 +314,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             TimeSpan timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
                             DateTime TimeToDelete = DateTime.Now + timeUntilDelete;
 
-                            var toDelete = new Code.Objects.MessageToDelete(r4, chatId, TimeToDelete, telegramBotClient.GetId(), r1.getChatType(), null);
+                            var toDelete = new Code.Objects.MessageToDelete(r4, chatId, TimeToDelete, telegramBotClient.GetId(), r1.GetChatType(), null);
                             Code.Data.GlobalVariables.MessagesToDelete.Add(toDelete);
 
                             Utils.FileSerialization.WriteToBinaryFile(Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);

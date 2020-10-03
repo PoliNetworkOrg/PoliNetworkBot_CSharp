@@ -9,12 +9,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class MessageToDelete
     {
-        private int messageId;
-        private long chatId;
-        private DateTime timeToDelete;
-        private long botId;
-        private ChatType chatType;
-        private long? accessHash;
+        private readonly int messageId;
+        private readonly long chatId;
+        private readonly DateTime timeToDelete;
+        private readonly long botId;
+        private readonly ChatType chatType;
+        private readonly long? accessHash;
 
         public MessageToDelete(TLMessage r3, long chatId, System.DateTime timeToDelete, long botId, ChatType chatType, long? accessHash)
         {
