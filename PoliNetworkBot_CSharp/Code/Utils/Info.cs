@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Info
     {
-        internal static async Task<int?> GetTargetUserIdAsync(string target, TelegramBotAbstract telegramBotAbstract)
+        internal static async Task<Code.Objects.UserIdFound> GetTargetUserIdAsync(string target, TelegramBotAbstract telegramBotAbstract)
         {
             if (string.IsNullOrEmpty(target))
                 return null;
@@ -18,19 +18,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (target.StartsWith("-"))
                 try
                 {
-                    return Convert.ToInt32(target);
+                    var i = Convert.ToInt32(target);
+                    return new UserIdFound(i, "FailedParsingInt(1)");
                 }
                 catch
                 {
-                    return null;
+                    return new UserIdFound(null, "FailedParsingInt(2)");
                 }
 
             if (target[0] < '0' || target[0] > '9')
-                return await GetIdFromUsernameAsync(target, telegramBotAbstract);
+            {
+                var i2 = await GetIdFromUsernameAsync(target, telegramBotAbstract);
+                return new UserIdFound(i2, "FailedUsernameResolve");
+            }
 
             try
             {
-                return Convert.ToInt32(target);
+                var i3 = Convert.ToInt32(target);
+                return new UserIdFound(i3, "FailedParsingInt(3)");
             }
             catch
             {

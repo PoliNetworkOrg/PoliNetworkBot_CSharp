@@ -229,9 +229,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (e.Message.ReplyToMessage == null)
             {
-                var targetInt = await Info.GetTargetUserIdAsync(stringInfo[1], sender);
-                return targetInt != null &&
-                       await RestrictUser.BanUserFromGroup(sender, e, targetInt.Value, e.Message.Chat.Id, null);
+                var userIdFound = await Info.GetTargetUserIdAsync(stringInfo[1], sender);
+                if (userIdFound == null)
+                {
+                    Exception e2 = new Exception("Can't find userid (1)");
+                    await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                    return false;
+                }
+                else
+                {
+                    int? targetId = userIdFound.GetID();
+                    if (targetId == null)
+                    {
+                        Exception e2 = new Exception("Can't find userid (2)");
+                        await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                        return false;
+                    }
+                    else
+                    {
+                        return await RestrictUser.BanUserFromGroup(sender, e, targetId.Value, e.Message.Chat.Id, null);
+                    }
+                }
+
             }
             else
             {

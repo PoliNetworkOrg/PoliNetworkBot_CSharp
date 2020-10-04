@@ -36,18 +36,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<List<DataRow>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string target, bool banTarget)
         {
-            var targetId = await Info.GetTargetUserIdAsync(target, sender);
-            if (targetId == null)
+            UserIdFound targetId = await Info.GetTargetUserIdAsync(target, sender);
+            if (targetId == null || targetId.GetID() == null)
             {
+                string exception2 = "";
+                if (targetId != null)
+                {
+                    exception2 += "\n" + targetId.getError();
+                }
+
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {
                         "en", "We were not able to BanAll the target '" + target + "', error code " +
-                              ErrorCodes.TargetInvalidWhenBanAll
+                              ErrorCodes.TargetInvalidWhenBanAll + exception2
                     },
                     {
                         "it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
-                              ErrorCodes.TargetInvalidWhenBanAll
+                              ErrorCodes.TargetInvalidWhenBanAll + exception2
                     }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
@@ -90,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await BanUserFromGroup(sender, e, targetId.Value, groupChatId, null);
+                        var success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
                         if (success)
                             done.Add(dr);
                     }
@@ -103,7 +109,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await UnBanUserFromGroup(sender, e, targetId.Value, groupChatId);
+                        var success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
                         if (success)
                             done.Add(dr);
                     }
@@ -112,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         ;
                     }
 
-            LogBanAction(targetId.Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
+            LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
             return done;
         }
