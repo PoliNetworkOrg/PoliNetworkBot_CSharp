@@ -121,6 +121,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/assoc_write":
                 case "/assoc_send":
                     {
                         _ = await Assoc.Assoc_SendAsync(sender, e);
