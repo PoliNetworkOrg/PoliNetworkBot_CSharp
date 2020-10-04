@@ -1,6 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
@@ -61,27 +62,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (string.IsNullOrEmpty(t))
                 return;
 
-            bool valid = CheckIfValid(t);
-            if (valid)
+            var valid = CheckIfValid(t);
+            if (valid.Item1)
             {
-                await HandleMessage3Async(telegramBotClient, e, t);
+                await HandleMessage3Async(telegramBotClient, e, valid.Item2);
                 return;
             }
         }
 
-        private static bool CheckIfValid(string t)
+        private static Tuple<bool,string> CheckIfValid(string t)
         {
             foreach (var x in Code.Data.GlobalVariables.wordToBeFirsts)
             {
-                if (x.Matches(t))
-                    return true;
+                var x2 = x.Matches(t);
+                if (x2.Item1)
+                    return x2;
             }
 
-            return false;
+            return new Tuple<bool, string>(false, null);
         }
 
         private static async Task HandleMessage3Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
         {
+            if (string.IsNullOrEmpty(t))
+                return;
+
             string q = "SELECT * FROM Primo WHERE title = @t";
             var r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { { "@t", t } });
             if (r == null || r.Rows.Count == 0)
@@ -98,23 +103,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                     {"@ki", e.Message.From.Id }
                 });
 
-                await SendMessageYouAreKingAsync(telegramBotClient, e, t);
+                await MaybeKing(telegramBotClient, e, t);
+
                 return;
             }
 
             var datetime = (DateTime)r.Rows[0]["when_king"];
             if (datetime.Day != DateTime.Now.Day || datetime.Month != DateTime.Now.Month || datetime.Year != DateTime.Now.Year)
             {
-                string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln";
-                Dictionary<string, object> dict3 = new Dictionary<string, object>() {
-                    { "@fn", e.Message.From.FirstName },
-                    {"@ln", e.Message.From.LastName },
-                    { "@wk", DateTime.Now },
-                    {"@ki", e.Message.From.Id }
-                };
-                var r3 = Utils.SqLite.Execute(q3, dict3);
-
-                await SendMessageYouAreKingAsync(telegramBotClient, e, t);
+                await MaybeKing(telegramBotClient, e, t);
                 return;
             }
 
@@ -129,6 +126,70 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
             return;
 
+            
+        }
+
+        private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+        {
+            bool tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
+            if (tooManyKingsForThisUser == false)
+            {
+                string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln";
+                Dictionary<string, object> dict3 = new Dictionary<string, object>() {
+                    { "@fn", e.Message.From.FirstName },
+                    {"@ln", e.Message.From.LastName },
+                    { "@wk", DateTime.Now },
+                    {"@ki", e.Message.From.Id }
+                };
+                var r3 = Utils.SqLite.Execute(q3, dict3);
+
+                await SendMessageYouAreKingAsync(telegramBotClient, e, t);
+            }
+            else
+            {
+                Dictionary<string, string> dict4 = new Dictionary<string, string>() {
+                    {"it", "Hai già troppi ruoli!" },
+                 {"en", "You have already too many titles!" }
+               };
+                Language text = new Language(dict: dict4);
+                var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
+                    e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+                return;
+            }
+        }
+
+        private static bool CheckIfLimitOfMaxKingsHasBeenReached(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+        {
+            string q = "SELECT * FROM Primo";
+            var r = Utils.SqLite.ExecuteSelect(q);
+            if (r == null || r.Rows.Count == 0)
+                return false;
+
+            int countOfUser = CountOfUserMethod(r, e);
+            if (countOfUser >= 2)
+                return true;
+
+
+            return false;
+        }
+
+        private static int CountOfUserMethod(System.Data.DataTable r, MessageEventArgs e)
+        {
+            if (r == null || e == null || r.Rows == null)
+                return -1;
+
+            int r2 = 0;
+            foreach (DataRow dr in r.Rows)
+            {
+                if (dr == null)
+                    continue;
+          
+                var id = (int)dr["king_id"];
+                if (id == e.Message.From.Id)
+                    r2++;
+            }
+
+            return r2;
         }
 
         private static string GenerateUserStringHtml(System.Data.DataRow dataRow)

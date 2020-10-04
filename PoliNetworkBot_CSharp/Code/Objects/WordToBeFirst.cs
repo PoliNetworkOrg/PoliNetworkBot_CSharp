@@ -18,9 +18,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.similarWords = similarWords;
         }
 
-        internal bool Matches(string t)
+        internal Tuple<bool,string> Matches(string t)
         {
-            return t == word;
+            if (t == word)
+                return new Tuple<bool, string>(true, word);
+
+            foreach (var x in similarWords)
+            {
+                if (x == t)
+                    return new Tuple<bool, string>(true, word);
+            }
+
+            return new Tuple<bool, string>(false, word);
         }
     }
 }
