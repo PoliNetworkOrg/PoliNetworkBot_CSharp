@@ -20,8 +20,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal Tuple<bool,string> Matches(string t)
         {
+            if (string.IsNullOrEmpty(t))
+                return new Tuple<bool, string>(false, word);
+
             if (t == word)
                 return new Tuple<bool, string>(true, word);
+
+            if (similarWords == null || similarWords.Count == 0)
+            {
+                return new Tuple<bool, string>(false, word);
+            }
 
             foreach (var x in similarWords)
             {
@@ -45,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal string GetWord()
         {
-            throw new NotImplementedException();
+            return this.word;
         }
     }
 }
