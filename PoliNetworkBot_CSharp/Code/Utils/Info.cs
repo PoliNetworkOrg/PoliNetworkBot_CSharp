@@ -29,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (target[0] < '0' || target[0] > '9')
             {
                 var i2 = await GetIdFromUsernameAsync(target, telegramBotAbstract);
-                return new UserIdFound(i2, "FailedUsernameResolve");
+                return i2;
             }
 
             try
@@ -43,7 +43,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static async Task<int?> GetIdFromUsernameAsync(string target, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Code.Objects.UserIdFound> GetIdFromUsernameAsync(string target, TelegramBotAbstract telegramBotAbstract)
         {
             return await telegramBotAbstract.GetIdFromUsernameAsync(target);
         }

@@ -97,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<int?> GetIdFromUsernameAsync(string target)
+        internal async Task<Code.Objects.UserIdFound> GetIdFromUsernameAsync(string target)
         {
             switch (_isbot)
             {
@@ -105,7 +105,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         TelegramBotAbstract userBot = FindFirstUserBot();
                         if (userBot == null)
-                            return null; //bot api does not allow that
+                            return new UserIdFound(null, "BotApiDoesNotAllowThat");
                         return await userBot.GetIdFromUsernameAsync(target);
                     }
 
@@ -113,9 +113,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var r = await _userbotClient.ResolveUsernameAsync(target);
                     return r.Peer switch
                     {
-                        null => null,
-                        TLPeerUser tLPeerUser => tLPeerUser.UserId,
-                        _ => null
+                        null => new UserIdFound(null, "UserbotCantFindTheIDofTarget(1)"),
+                        TLPeerUser tLPeerUser => new UserIdFound(tLPeerUser.UserId, "UserbotCantFindTheIDofTarget(2)"),
+                        _ => new UserIdFound(null, "UserbotCantFindTheIDofTarget(3)")
                     };
 
                 case BotTypeApi.DISGUISED_BOT:
@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
-            return null;
+            return new UserIdFound(null, "BotIsNotOfAnyType");
         }
 
         private TelegramBotAbstract FindFirstUserBot()
