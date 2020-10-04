@@ -152,19 +152,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { { "@t", t } });
             if (r == null || r.Rows.Count == 0)
             {
-                string q2 = "INSERT INTO Primo (title, firstname, lastname, when_king, king_id) " +
-                    " VALUES " +
-                    " (@title, @fn, @ln, @wk, @ki)";
-
-                var r2 = Utils.SqLite.Execute(q2, new Dictionary<string, object>() {
-                    { "@title", t},
-                    { "@fn", e.Message.From.FirstName },
-                    {"@ln", e.Message.From.LastName },
-                    { "@wk", DateTime.Now },
-                    {"@ki", e.Message.From.Id }
-                });
-
-                await MaybeKing(telegramBotClient, e, t);
+                await MaybeKing(telegramBotClient, e, t, toInsert: true);
 
                 return;
             }
@@ -172,7 +160,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var datetime = (DateTime)r.Rows[0]["when_king"];
             if (datetime.Day != DateTime.Now.Day || datetime.Month != DateTime.Now.Month || datetime.Year != DateTime.Now.Year)
             {
-                await MaybeKing(telegramBotClient, e, t);
+                await MaybeKing(telegramBotClient, e, t, false);
                 return;
             }
 
@@ -190,22 +178,40 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             
         }
 
-        private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+        private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t, bool toInsert)
         {
             Tuple<bool, List<string>> tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
             if (tooManyKingsForThisUser.Item1 == false)
             {
-                string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
-                Dictionary<string, object> dict3 = new Dictionary<string, object>() {
+                if (toInsert)
+                {
+                    string q2 = "INSERT INTO Primo (title, firstname, lastname, when_king, king_id) " +
+                      " VALUES " +
+                      " (@title, @fn, @ln, @wk, @ki)";
+
+                    var r2 = Utils.SqLite.Execute(q2, new Dictionary<string, object>() {
+                        { "@title", t},
+                        { "@fn", e.Message.From.FirstName },
+                        {"@ln", e.Message.From.LastName },
+                        { "@wk", DateTime.Now },
+                        {"@ki", e.Message.From.Id }
+                    });
+                }
+                else
+                {
+                    string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
+                    Dictionary<string, object> dict3 = new Dictionary<string, object>() {
                     { "@t", t},
                     { "@fn", e.Message.From.FirstName },
                     {"@ln", e.Message.From.LastName },
                     { "@wk", DateTime.Now },
                     {"@ki", e.Message.From.Id }
                 };
-                var r3 = Utils.SqLite.Execute(q3, dict3);
+                    var r3 = Utils.SqLite.Execute(q3, dict3);
+                }
 
                 await SendMessageYouAreKingAsync(telegramBotClient, e, t);
+                return;
             }
             else
             {
