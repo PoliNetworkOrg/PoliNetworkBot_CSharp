@@ -62,12 +62,73 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (string.IsNullOrEmpty(t))
                 return;
 
+            if (t == "/lista_primo@primopolibot" || t == "/lista_primo")
+            {
+                await HandleListAsync(telegramBotClient,e);
+                return;
+            }
+
             var valid = CheckIfValid(t);
             if (valid.Item1)
             {
                 await HandleMessage3Async(telegramBotClient, e, valid.Item2);
                 return;
             }
+        }
+
+        private static async Task HandleListAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            List<string> taken = GetTaken();
+
+            const string emojiTaken = "🚫";
+            const string emojiFree = "✅️";
+
+            string toSend = "";
+            foreach (WordToBeFirst word in Data.GlobalVariables.wordToBeFirsts)
+            {
+                bool isTaken = word.IsTaken(taken);
+                if (isTaken)
+                {
+                    toSend += emojiTaken;
+                }
+                else
+                {
+                    toSend += emojiFree;
+                }
+
+                toSend += " " + word.GetWord();
+
+                toSend += "\n";
+            }
+
+            Dictionary<string, string> dict = new Dictionary<string, string>() {
+                {"en", toSend }
+            };
+            Language text = new Language(dict);
+            await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.Id,
+                e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName, e.Message.From.LastName,
+                e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+           
+        }
+
+        private static List<string> GetTaken()
+        {
+            string q = "SELECT * FROM Primo";
+            var r = Utils.SqLite.ExecuteSelect(q);
+            if (r == null || r.Rows.Count == 0)
+                return new List<string>();
+
+            List<string> r2 = new List<string>();
+            foreach (DataRow dr in r.Rows)
+            {
+                DateTime dt = (DateTime)dr["when_king"];
+                if (dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year)
+                {
+                    r2.Add(dr["title"].ToString());
+                }
+            }
+
+            return r2;
         }
 
         private static Tuple<bool,string> CheckIfValid(string t)

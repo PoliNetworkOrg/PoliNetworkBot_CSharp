@@ -31,5 +31,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return new Tuple<bool, string>(false, word);
         }
+
+        internal bool IsTaken(List<string> taken)
+        {
+            foreach (var r in taken)
+            {
+                if (r == this.word)
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal string GetWord()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
