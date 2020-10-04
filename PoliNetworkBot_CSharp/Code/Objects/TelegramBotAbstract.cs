@@ -102,7 +102,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    return null; //bot api does not allow that
+                    {
+                        TelegramBotAbstract userBot = FindFirstUserBot();
+                        if (userBot == null)
+                            return null; //bot api does not allow that
+                        return await userBot.GetIdFromUsernameAsync(target);
+                    }
+
                 case BotTypeApi.USER_BOT:
                     var r = await _userbotClient.ResolveUsernameAsync(target);
                     return r.Peer switch
@@ -117,6 +123,25 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            return null;
+        }
+
+        private TelegramBotAbstract FindFirstUserBot()
+        {
+            foreach (long b in Data.GlobalVariables.Bots.Keys)
+            {
+                var bot = Data.GlobalVariables.Bots[b];
+                switch (bot._isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                        break;
+                    case BotTypeApi.USER_BOT:
+                        return bot;
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
             }
 
             return null;

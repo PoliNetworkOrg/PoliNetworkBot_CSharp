@@ -18,6 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<Tuple<long, string>> Owners;
         public static List<string> AllowedSpam;
         public static List<MessageToDelete> MessagesToDelete;
+        public static List<Code.Objects.WordToBeFirst> wordToBeFirsts;
 
         internal static void LoadToRam()
         {
@@ -56,6 +57,15 @@ namespace PoliNetworkBot_CSharp.Code.Data
             Owners = new List<Tuple<long, string>>()
             {
                 new Tuple<long, string>(5651789, "armef97")
+            };
+
+            wordToBeFirsts = new List<WordToBeFirst>()
+            {
+                new WordToBeFirst("boomer"),
+                new WordToBeFirst("primo", new List<string>() { "prima" }),
+                new WordToBeFirst("secondo", new List<string>() {"seconda" }),
+                new WordToBeFirst("terzo", new List<string>(){ "terza"}),
+                new WordToBeFirst("upkara")
             };
         }
 
