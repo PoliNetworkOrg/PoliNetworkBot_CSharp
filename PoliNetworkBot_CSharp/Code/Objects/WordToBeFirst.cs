@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -15,6 +16,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public WordToBeFirst(string word, List<string> similarWords) : this(word)
         {
             this.similarWords = similarWords;
+        }
+
+        internal bool Matches(string t)
+        {
+            return t == word;
         }
     }
 }

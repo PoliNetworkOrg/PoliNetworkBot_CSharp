@@ -60,19 +60,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
             if (string.IsNullOrEmpty(t))
                 return;
-            
-            switch (t)
+
+            bool valid = CheckIfValid(t);
+            if (valid)
             {
-                case "boomer":
-                case "upkara":
-                case "primo":
-                case "secondo":
-                case "terzo":
-                    {
-                        await HandleMessage3Async(telegramBotClient, e, t);
-                        return;
-                    }
+                await HandleMessage3Async(telegramBotClient, e, t);
+                return;
             }
+        }
+
+        private static bool CheckIfValid(string t)
+        {
+            foreach (var x in Code.Data.GlobalVariables.wordToBeFirsts)
+            {
+                if (x.Matches(t))
+                    return true;
+            }
+
+            return false;
         }
 
         private static async Task HandleMessage3Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
