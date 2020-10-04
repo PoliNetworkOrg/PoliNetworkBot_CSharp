@@ -195,8 +195,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             Tuple<bool, List<string>> tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
             if (tooManyKingsForThisUser.Item1 == false)
             {
-                string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln";
+                string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                 Dictionary<string, object> dict3 = new Dictionary<string, object>() {
+                    { "@t", t},
                     { "@fn", e.Message.From.FirstName },
                     {"@ln", e.Message.From.LastName },
                     { "@wk", DateTime.Now },
@@ -229,9 +230,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
             foreach(var item3 in item2)
             {
-                r += item3 + ",";
+                r += item3 + ", ";
             }
 
+            r = r.Remove(r.Length - 1);
             r = r.Remove(r.Length - 1);
 
             return r;
