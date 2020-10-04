@@ -192,8 +192,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
         private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
         {
-            bool tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
-            if (tooManyKingsForThisUser == false)
+            Tuple<bool, List<string>> tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
+            if (tooManyKingsForThisUser.Item1 == false)
             {
                 string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln";
                 Dictionary<string, object> dict3 = new Dictionary<string, object>() {
@@ -208,10 +208,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             }
             else
             {
+                string roles = GetRoles(tooManyKingsForThisUser.Item2);
                 Dictionary<string, string> dict4 = new Dictionary<string, string>() {
-                    {"it", "Hai già troppi ruoli!" },
-                 {"en", "You have already too many titles!" }
-               };
+                    {"it", "Hai già troppi ruoli!" + roles },
+                    {"en", "You have already too many titles!" + roles}
+                };
                 Language text = new Language(dict: dict4);
                 var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
                     e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
@@ -219,27 +220,48 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             }
         }
 
-        private static bool CheckIfLimitOfMaxKingsHasBeenReached(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+        private static string GetRoles(List<string> item2)
+        {
+            if (item2 == null || item2.Count == 0)
+                return "";
+
+            string r = "\n";
+
+            foreach(var item3 in item2)
+            {
+                r += item3 + ",";
+            }
+
+            r = r.Remove(r.Length - 1);
+
+            return r;
+        }
+
+        private static Tuple<bool, List<string>> CheckIfLimitOfMaxKingsHasBeenReached(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
         {
             string q = "SELECT * FROM Primo";
             var r = Utils.SqLite.ExecuteSelect(q);
             if (r == null || r.Rows.Count == 0)
-                return false;
+                return new Tuple<bool, List<string>>(false, null);
 
-            int countOfUser = CountOfUserMethod(r, e);
-            if (countOfUser >= 2)
-                return true;
+            List<string> countOfUser = CountOfUserMethod(r, e);
 
+            if (countOfUser == null)
+                return new Tuple<bool, List<string>>(false, null);
 
-            return false;
+            if (countOfUser.Count >= 2)
+                return new Tuple<bool, List<string>>(true, countOfUser);
+
+            return new Tuple<bool, List<string>>(false, null);
         }
 
-        private static int CountOfUserMethod(System.Data.DataTable r, MessageEventArgs e)
+        private static List<string> CountOfUserMethod(System.Data.DataTable r, MessageEventArgs e)
         {
             if (r == null || e == null || r.Rows == null)
-                return -1;
+                return null;
 
-            int r2 = 0;
+
+            List<string> r3 = new List<string>();
             foreach (DataRow dr in r.Rows)
             {
                 if (dr == null)
@@ -247,10 +269,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
           
                 var id = (long)dr["king_id"];
                 if (id == e.Message.From.Id)
-                    r2++;
+                {
+                    r3.Add(dr["title"].ToString());
+                }
             }
 
-            return r2;
+            return r3;
         }
 
         private static string GenerateUserStringHtml(System.Data.DataRow dataRow)
