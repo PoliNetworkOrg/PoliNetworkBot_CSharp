@@ -276,8 +276,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "Target "+target+" banned from " + done.Count + " groups"},
-                        {"it", "Target "+target+" bannato da " + done.Count + " gruppi"}
+                        {"en", "Target "+target[1]+" banned from " + done.Count + " groups"},
+                        {"it", "Target "+target[1]+" bannato da " + done.Count + " gruppi"}
                     });
                     await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                         e.Message.From.LanguageCode,
@@ -288,11 +288,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             else
             {
-                var done = await RestrictUser.BanAllAsync(sender, e, e.Message.ReplyToMessage.From.Id.ToString(), true);
+                string target2 = e.Message.ReplyToMessage.From.Id.ToString();
+                var done = await RestrictUser.BanAllAsync(sender, e, target2, true);
                 var text3 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Target "+target+" banned from " + done.Count + " groups"},
-                    {"it", "Target "+target+" bannato da " + done.Count + " gruppi"}
+                    {"en", "Target "+target2+" banned from " + done.Count + " groups"},
+                    {"it", "Target "+target2+" bannato da " + done.Count + " gruppi"}
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
