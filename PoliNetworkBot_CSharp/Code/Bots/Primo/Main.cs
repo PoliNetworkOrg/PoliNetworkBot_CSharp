@@ -245,7 +245,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 if (dr == null)
                     continue;
           
-                var id = (int)dr["king_id"];
+                var id = (long)dr["king_id"];
                 if (id == e.Message.From.Id)
                     r2++;
             }
