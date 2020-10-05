@@ -159,6 +159,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
+        internal async static Task<bool> Assoc_Delete(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            DataRowCollection messages = await GetMessagesInQueueAsync(sender, e, false);
+
+            if (messages == null)
+                return false;
+
+            int count = 0;
+            foreach (DataRow m in messages)
+            {
+                _ = await SendMessageAssocToUserAsync(m, sender, e, extraInfo: true, count);
+                count++;
+            }
+
+
+            return true;
+        }
+
         internal static string GetNameOfEntityFromItsID(int value)
         {
             string q = "SELECT name FROM Entities WHERE id = " + value.ToString();
@@ -193,6 +211,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e, bool allAssoc)
         {
+            DataRowCollection messages = await GetMessagesInQueueAsync(sender, e, allAssoc);
+
+            if (messages == null)
+                return false;
+
+            int count = 0;
+            foreach (DataRow m in messages)
+            {
+                _ = await SendMessageAssocToUserAsync(m, sender, e, extraInfo: true, count);
+                count++;
+            }
+
+            return true;
+        }
+
+        private static async Task<DataRowCollection> GetMessagesInQueueAsync(TelegramBotAbstract sender, MessageEventArgs e, bool allAssoc)
+        {
             Language languageList = null;
             int? messageFromIdEntity = null;
             string conditionOnIdEntity = "";
@@ -206,14 +241,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (messageFromIdEntity == null)
                 {
                     await EntityNotFoundAsync(sender, e);
-                    return false;
+                    return null;
                 }
 
                 conditionOnIdEntity = "from_id_entity = @id AND";
                 dict2 = new Dictionary<string, object>() { { "@id", messageFromIdEntity.Value } };
             }
 
-            string q = "SELECT * FROM Messages WHERE "+conditionOnIdEntity+" has_been_sent = FALSE";
+            string q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
             DataTable r = Utils.SqLite.ExecuteSelect(q, dict2);
             if (r == null || r.Rows.Count == 0)
             {
@@ -224,25 +259,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode, e.Message.From.Username,
                     text, ParseMode.Html, null);
 
-                return true;
+                return null;
             }
 
-            foreach (DataRow m in r.Rows)
-            {
-                _ = await SendMessageAssocToUserAsync(m, sender, e, extraInfo: true);
-            }
-
-            return true;
+            return r.Rows;
         }
 
-        private static async Task<MessageSend> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e, bool extraInfo)
+        private static async Task<MessageSend> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e, bool extraInfo, int count)
         {
             if (m == null)
             {
                 return new MessageSend(false, null, null);
             }
 
-            return await MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private, extraInfo, sender);
+            return await MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private, extraInfo, sender, count);
         }
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)

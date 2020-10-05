@@ -114,7 +114,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract)
         {
-            var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract);
+            var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
                 return;
 
@@ -123,13 +123,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo, 
-            ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract telegramBotAbstract)
+            ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo);
 
             if (extraInfo)
             {
-                var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract );
+                var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract, count);
                 return r2;
             }
 
@@ -137,7 +137,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private async static Task<MessageSend> SendExtraInfoDbForThisMessage(MessageSend r1, DataRow dr, 
-            int? chatIdToSendTo, ChatType? chatTypeToSendTo, TelegramBotAbstract telegramBotAbstract)
+            int? chatIdToSendTo, ChatType? chatTypeToSendTo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             if (r1 == null || r1.IsSuccess() == false)
             {
@@ -184,7 +184,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
-            string text1 = "";
+            string text1 = "📌 ID: " + count.ToString() + "\n";
             if (dt != null)
             {
                 text1 += "📅 " + Utils.DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
@@ -199,10 +199,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 text1 += "✍ " + from_id_person.ToString() + "\n";
             }
 
-            if (string.IsNullOrEmpty(text1))
-            {
-                text1 = "No information on this message!";
-            }
 
             Dictionary<string, string> dict = new Dictionary<string, string>() {
                 {"en", text1 }

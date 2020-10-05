@@ -143,6 +143,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/assoc_delete":
+                case "/assoc_remove":
+                    {
+                        _ = await Assoc.Assoc_Delete(sender, e);
+                        return;
+                    }
+
                 case "/rooms":
                     {
                         await Bots.Moderation.Rooms.RoomsMainAsync(sender, e);
