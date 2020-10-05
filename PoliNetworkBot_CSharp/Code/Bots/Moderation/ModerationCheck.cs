@@ -199,7 +199,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return r;
 
             r.AddRange(from user in e.Message.NewChatMembers
-                       where user != null
+                       where user != null && user.Id != r[0].GetUserId()
                        select CheckUsername2(user.Username, user.FirstName, user.Id,
                            user.LastName, user.LanguageCode));
 
