@@ -66,7 +66,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 */
 
-                string toSend = "<a href='tg://user?id=-1001314601927'>PoliAssociazioni</a>";
+                string toSend = "<a href='tg://resolve?domain=PoliAssociazioni'>PoliAssociazioni</a>";
                 System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>() {
                     {"it" , toSend}
                 };
