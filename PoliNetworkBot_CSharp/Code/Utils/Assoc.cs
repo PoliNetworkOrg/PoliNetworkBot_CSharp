@@ -166,6 +166,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (messages == null)
                 return false;
 
+            if (messages.Count == 1)
+            {
+                return DeleteMessageFromQueue(messages, 0);
+            }
+
             int count = 0;
             foreach (DataRow m in messages)
             {
@@ -173,6 +178,50 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 count++;
             }
 
+            Dictionary<string, string> dict = new Dictionary<string, string>() {
+                {"it", "Quale vuoi rimuovere dalla coda?" },
+                {"en", "Which one do you want to remove from queue?" }
+            };
+            Language question = new Language(dict);
+            List<Language> list = new List<Language>();
+            for (int i=0; i<count; i++)
+            {
+                list.Add(new Language(dict: new Dictionary<string, string>() {
+                    {"en", count.ToString() }
+                }));
+            }
+
+            List<List<Language>> options = Utils.KeyboardMarkup.ArrayToMatrixString(list);
+            List<Language> options2 = new List<Language>() {
+                new Language(dict: new Dictionary<string, string>(){
+                    {"it", "Annulla" },
+                    {"en", "Cancel" }
+                })
+            };
+            options.Insert(0, options2);
+            var r1 = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode, options, e.Message.From.Username, true);
+
+            int? index = null;
+            try
+            {
+                index = Convert.ToInt32(r1);
+            }
+            catch
+            {
+                ;
+            }
+
+            if (index == null)
+            {
+                return true;
+            }
+
+            return DeleteMessageFromQueue(messages, index.Value);
+        }
+
+        private static bool DeleteMessageFromQueue(DataRowCollection messages, int v)
+        {
+            Console.WriteLine("Delete message from queue: " + v.ToString());
 
             return true;
         }
