@@ -201,12 +201,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {
                     string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                     Dictionary<string, object> dict3 = new Dictionary<string, object>() {
-                    { "@t", t},
-                    { "@fn", e.Message.From.FirstName },
-                    {"@ln", e.Message.From.LastName },
-                    { "@wk", DateTime.Now },
-                    {"@ki", e.Message.From.Id }
-                };
+                        { "@t", t},
+                        { "@fn", e.Message.From.FirstName },
+                        { "@ln", e.Message.From.LastName },
+                        { "@wk", DateTime.Now },
+                        { "@ki", e.Message.From.Id }
+                    };
                     var r3 = Utils.SqLite.Execute(q3, dict3);
                 }
 
@@ -278,7 +278,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 var id = (long)dr["king_id"];
                 if (id == e.Message.From.Id)
                 {
-                    r3.Add(dr["title"].ToString());
+                    DateTime dt = (DateTime)dr["when_king"];
+                    if (DateTime.Now.Year != dt.Year || DateTime.Now.Month != dt.Month || DateTime.Now.Day != dt.Day)
+                    {
+                        r3.Add(dr["title"].ToString());
+                    }
                 }
             }
 
