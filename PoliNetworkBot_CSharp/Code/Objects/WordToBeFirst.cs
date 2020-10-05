@@ -5,8 +5,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class WordToBeFirst
     {
-        private string word;
-        private List<string> similarWords;
+        private readonly string word;
+        private readonly List<string> similarWords;
 
         public WordToBeFirst(string word)
         {

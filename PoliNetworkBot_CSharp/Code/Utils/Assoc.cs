@@ -159,6 +159,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
+        internal async static Task<bool> Assoc_ReadAll(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            return await Assoc_Read(sender, e, true);
+        }
+
         private static async Task EntityNotFoundAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var languageList3 = new Language(new Dictionary<string, string>
@@ -176,19 +181,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
         }
 
-        internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e)
+        internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e, bool allAssoc)
         {
             Language languageList = null;
-            int? messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
-               sender, e.Message.From.LanguageCode, e.Message.From.Username);
+            int? messageFromIdEntity = null;
+            string conditionOnIdEntity = "";
 
-            if (messageFromIdEntity == null)
+            if (allAssoc == false)
             {
-                await EntityNotFoundAsync(sender, e);
-                return false;
+                messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
+                   sender, e.Message.From.LanguageCode, e.Message.From.Username);
+
+                if (messageFromIdEntity == null)
+                {
+                    await EntityNotFoundAsync(sender, e);
+                    return false;
+                }
+
+                conditionOnIdEntity = "from_id_entity = @id AND";
             }
 
-            string q = "SELECT * FROM Messages WHERE from_id_entity = @id AND has_been_sent = FALSE";
+            string q = "SELECT * FROM Messages WHERE "+conditionOnIdEntity+" has_been_sent = FALSE";
             DataTable r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { { "@id", messageFromIdEntity.Value } });
             if (r == null || r.Rows.Count == 0)
             {

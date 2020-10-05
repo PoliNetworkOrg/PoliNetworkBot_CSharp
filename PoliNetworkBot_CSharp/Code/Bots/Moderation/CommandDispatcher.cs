@@ -130,7 +130,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/assoc_read":
                     {
-                        _ = await Assoc.Assoc_Read(sender, e);
+                        _ = await Assoc.Assoc_Read(sender, e, false);
+                        return;
+                    }
+
+                case "/assoc_read_all":
+                    {
+                        if (Utils.Owners.CheckIfOwner(e.Message.From.Id))
+                            _ = await Assoc.Assoc_ReadAll(sender, e);
+                        else
+                            _ = await DefaultCommand(sender, e);
                         return;
                     }
 
@@ -323,7 +332,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<bool> DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -341,6 +350,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.From.Username, text2,
                 parseMode: ParseMode.Default,
                 null);
+
+            return true;
         }
 
         private static async Task Help(TelegramBotAbstract sender, MessageEventArgs e)
