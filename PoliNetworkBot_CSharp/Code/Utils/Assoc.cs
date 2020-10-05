@@ -186,6 +186,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Language languageList = null;
             int? messageFromIdEntity = null;
             string conditionOnIdEntity = "";
+            Dictionary<string, object> dict2 = null;
 
             if (allAssoc == false)
             {
@@ -199,10 +200,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
 
                 conditionOnIdEntity = "from_id_entity = @id AND";
+                dict2 = new Dictionary<string, object>() { { "@id", messageFromIdEntity.Value } };
             }
 
             string q = "SELECT * FROM Messages WHERE "+conditionOnIdEntity+" has_been_sent = FALSE";
-            DataTable r = Utils.SqLite.ExecuteSelect(q, new Dictionary<string, object>() { { "@id", messageFromIdEntity.Value } });
+            DataTable r = Utils.SqLite.ExecuteSelect(q, dict2);
             if (r == null || r.Rows.Count == 0)
             {
                 Language text = new Language(dict: new Dictionary<string, string>() {
