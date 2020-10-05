@@ -149,9 +149,40 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return new MessageSend(false, null, chatTypeToSendTo);
             }
 
-            DateTime? dt = (DateTime?)dr["sent_date"];
-            int? from_id_entity = (int?)dr["from_id_entity"];
-            int? from_id_person = (int?)dr["from_id_person"];
+            object dto = dr["sent_date"];
+            object fieo = dr["from_id_entity"];
+            object fipo = dr["from_id_person"];
+
+            DateTime? dt = null;
+            int? from_id_entity = null;
+            int? from_id_person = null;
+
+            try
+            {
+                dt = (DateTime?)dto;
+            }
+            catch
+            {
+                ;
+            }
+
+            try
+            {
+                from_id_entity = (int?)fieo;
+            }
+            catch
+            {
+                ;
+            }
+
+            try
+            {
+                from_id_person = (int?)fipo;
+            }
+            catch
+            {
+                ;
+            }
 
             string text1 = "";
             if (dt != null)
