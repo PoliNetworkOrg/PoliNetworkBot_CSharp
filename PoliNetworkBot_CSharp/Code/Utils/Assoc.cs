@@ -168,7 +168,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (messages.Count == 1)
             {
-                return DeleteMessageFromQueue(messages, 0);
+                return await DeleteMessageFromQueueAsync(messages, 0, sender, e);
             }
 
             int count = 0;
@@ -216,12 +216,58 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return true;
             }
 
-            return DeleteMessageFromQueue(messages, index.Value);
+            return await DeleteMessageFromQueueAsync(messages, index.Value, sender, e);
         }
 
-        private static bool DeleteMessageFromQueue(DataRowCollection messages, int v)
+        private static async Task<bool> DeleteMessageFromQueueAsync(DataRowCollection messages, int v, TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
         {
-            Console.WriteLine("Delete message from queue: " + v.ToString());
+            bool r = DeleteMessageFromQueueSingle(messages, v);
+            if (r)
+            {
+                Language text1 = new Language(dict: new Dictionary<string, string>() {
+                    {"it", "Messaggio ["+v+"] eliminato con successo" },
+                    {"en", "Message ["+v+"] deleted successfully" }
+                });
+                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text1, 
+                    e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, null, true);   
+            }
+            else
+            {
+                Language text2 = new Language(dict: new Dictionary<string, string>() {
+                    {"it", "Messaggio ["+v+"] non eliminato, errore" },
+                    {"en", "Message ["+v+"] not deleted, error" }
+                });
+                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text2,
+                 e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, null, true);
+            }
+
+            return r;
+        }
+
+        private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, int v)
+        {
+            string q = "DELETE FROM Messages WHERE ID = @id";
+            DataRow dr = null;
+
+            try
+            {
+                dr = messages[v];
+            }
+            catch
+            {
+                ;
+            }
+
+            if (dr == null)
+                return false;
+
+
+            int id = Convert.ToInt32(dr["id"]);
+
+            Dictionary<string, object> args = new Dictionary<string, object>() {
+                {"@id", id }
+            };
+            Utils.SqLite.Execute(q, args);
 
             return true;
         }
