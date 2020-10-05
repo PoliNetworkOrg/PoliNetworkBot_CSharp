@@ -279,7 +279,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 if (id == e.Message.From.Id)
                 {
                     DateTime dt = (DateTime)dr["when_king"];
-                    if (DateTime.Now.Year != dt.Year || DateTime.Now.Month != dt.Month || DateTime.Now.Day != dt.Day)
+                    if (DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day)
                     {
                         r3.Add(dr["title"].ToString());
                     }
