@@ -261,6 +261,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
+        internal static string DateTimeToItalianFormat(DateTime? dt)
+        {
+            if (dt == null)
+                return null;
+
+            return dt.Value.Year.ToString().PadLeft(4, '0') + "-" +
+                dt.Value.Month.ToString().PadLeft(2, '0') + "-" +
+                dt.Value.Day.ToString().PadLeft(2, '0') + " " +
+                dt.Value.Hour.ToString().PadLeft(2, '0') + ":" +
+                dt.Value.Minute.ToString().PadLeft(2, '0') + ":" +
+                dt.Value.Second.ToString().PadLeft(2, '0') + "." +
+                dt.Value.Millisecond.ToString().PadLeft(3, '0');
+        }
+
         private static DateTime? GetDateTimeFromString2(string reply)
         {
             //entro "reply"

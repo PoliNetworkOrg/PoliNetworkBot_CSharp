@@ -316,7 +316,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             return "[EMPTY]";
         }
 
-        private static async Task<Tuple<bool,object>> SendMessageYouAreKingAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+        private static async Task<MessageSend> SendMessageYouAreKingAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
         {
             Dictionary<string, string> dict = new Dictionary<string, string>() {
                 {"it", "Congratulazioni, sei il re " + t + "!" },

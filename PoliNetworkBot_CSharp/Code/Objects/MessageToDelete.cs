@@ -13,10 +13,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly long chatId;
         private readonly DateTime timeToDelete;
         private readonly long botId;
-        private readonly ChatType chatType;
+        private readonly ChatType? chatType;
         private readonly long? accessHash;
 
-        public MessageToDelete(TLMessage r3, long chatId, System.DateTime timeToDelete, long botId, ChatType chatType, long? accessHash)
+        public MessageToDelete(TLMessage r3, long chatId, System.DateTime timeToDelete, long botId, ChatType? chatType, long? accessHash)
         {
             this.messageId = r3.Id;
             this.chatId = chatId;
@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.accessHash = accessHash;
         }
 
-        public MessageToDelete(Message r4, long chatId, DateTime timeToDelete, int botId, ChatType chatType, long? accessHash)
+        public MessageToDelete(Message r4, long chatId, DateTime timeToDelete, int botId, ChatType? chatType, long? accessHash)
         {
             this.messageId = r4.MessageId;
             this.chatId = chatId;

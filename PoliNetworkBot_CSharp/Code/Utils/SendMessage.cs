@@ -22,16 +22,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
-            Tuple<bool, object> r = null;
+            MessageSend r = null;
             try
             {
                 r = await telegramBotClient.SendTextMessageAsync(userId,
                     text, ChatType.Private, parseMode: parseMode,
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-                if (r.Item1)
+                if (r.IsSuccess())
                 {
-                    return new MessageSend(r.Item1, r.Item2, ChatType.Private);
+                    return r;
                 }
             }
             catch
@@ -39,9 +39,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 // ignored
             }
 
-            if (!(r == null || r.Item1 == false))
+            if (!(r == null || r.IsSuccess() == false))
             {
-                return new MessageSend(r.Item1, r.Item2, ChatType.Private);
+                return r;
             }
 
             var messageTo = GetMessageTo(firstName, lastName, userId);
@@ -51,10 +51,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")}
             });
 
-            var r1 = await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
+            return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
                 lang, parseMode, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
-
-            return new MessageSend(success: r1.Item1, message: r1.Item2, chatType: chatType);
         }
 
         private static string GetMessageTo(string firstname, string lastname, long messageFromUserId)
@@ -64,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
-        internal static async Task<Tuple<bool, object>> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
+        internal static async Task<MessageSend> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
             Language text, ParseMode parseMode, long? messageIdToReplyTo)
         {
@@ -77,11 +75,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                return new Tuple<bool, object>(false, null);
+                return new MessageSend(false, null, ChatType.Private);
             }
         }
 
-        internal static async Task<Tuple<bool, object>> SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId,
+        internal static async Task<MessageSend> SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId,
             string lang, string username, Language text, string firstName, string lastName,
             long chatId, ChatType chatType, ParseMode parseMode, long replyToMessageId,
             bool disablePreviewLink)

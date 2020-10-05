@@ -60,7 +60,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId];
         }
 
-        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, ChatType chatType, long? accessHash)
+        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, ChatType? chatType, long? accessHash)
         {
             switch (_isbot)
             {
@@ -201,8 +201,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _id;
         }
 
-        internal async Task<Tuple<bool, object>> SendTextMessageAsync(long chatid, Language text,
-            ChatType chatType, string lang, ParseMode parseMode,
+        internal async Task<MessageSend> SendTextMessageAsync(long chatid, Language text,
+            ChatType? chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null, bool disablePreviewLink = false)
         {
             switch (_isbot)
@@ -214,7 +214,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     Message m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
                         replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                     bool b1 = m1 != null;
-                    return new Tuple<bool, object>(b1, m1);
+                    return new MessageSend(b1, m1, chatType);
 
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
@@ -226,20 +226,20 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         var m3 = await SendMessage.SendMessageUserBot(_userbotClient,
                             peer, text, username, replyMarkup, lang, replyToMessageId, disablePreviewLink);
                         bool b3 = m3 != null;
-                        return new Tuple<bool, object>(b3, m3);
+                        return new MessageSend(b3, m3, chatType);
                     }
                     catch (Exception e)
                     {
                         ;
                     }
 
-                    return new Tuple<bool, object>(false, null);
+                    return new MessageSend(false, null, chatType);
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return new Tuple<bool, object>(false, null);
+            return new MessageSend(false, null, chatType);
         }
 
         internal async Task<bool> SendMedia(GenericFile genericFile, long chatid, ChatType chatType, string username,
@@ -654,26 +654,29 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        public async Task<bool> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto objectPhoto, string caption,
+        public async Task<MessageSend> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto objectPhoto, string caption,
             ParseMode parseMode, ChatType chatTypeToSendTo)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
-                        objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
-                    return m1 != null;
-                    ;
+                    {
+                        Message m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
+                            objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
+
+                        return new MessageSend(m1 != null, m1, chatTypeToSendTo);
+                    }
+                    
                 case BotTypeApi.USER_BOT:
 
                     var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
                     if (photoFile == null)
-                        return false;
+                        return new MessageSend(false, null, chatTypeToSendTo);
 
                     var m2 = await _userbotClient.SendUploadedPhoto(
                         UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
                         file: photoFile);
-                    return m2 != null;
+                    return new MessageSend( m2 != null, m2, chatTypeToSendTo);
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -682,7 +685,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
-            return false;
+            return new MessageSend(false, null,chatTypeToSendTo);
         }
 
         public async Task<bool> CreateGroup(string name, string description, IEnumerable<long> membersToInvite)
@@ -715,7 +718,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        public async Task<bool> SendVideoAsync(long chatIdToSendTo, ObjectVideo video, string caption,
+        public async Task<MessageSend> SendVideoAsync(long chatIdToSendTo, ObjectVideo video, string caption,
             ParseMode parseMode, ChatType chatTypeToSendTo)
         {
             switch (_isbot)
@@ -727,24 +730,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
                             height: video.GetHeight(),
                             width: video.GetWidth(), parseMode: parseMode);
-                        return m1 != null;
+                        return new MessageSend( m1 != null, m1, chatTypeToSendTo);
                     }
                     catch
                     {
-                        return false;
+                        return new MessageSend(false, null, chatTypeToSendTo);
                     }
 
                 case BotTypeApi.USER_BOT:
                     {
                         var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
                         if (videoFile == null)
-                            return false;
+                            return new MessageSend(false, null, chatTypeToSendTo);
 
                         //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
                         var media2 = video.GetTLabsInputMedia();
                         var m2 = await _userbotClient.Messages_SendMedia(
                             UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
-                        return m2 != null;
+                        return new MessageSend(m2 != null, m2, chatTypeToSendTo);
                     }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -753,7 +756,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
-            return false;
+            return new MessageSend(false, null, chatTypeToSendTo);
         }
 
         internal async Task FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync()

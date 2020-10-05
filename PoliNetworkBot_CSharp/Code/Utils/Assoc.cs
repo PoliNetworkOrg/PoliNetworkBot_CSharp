@@ -159,6 +159,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
+        internal static string GetNameOfEntityFromItsID(int value)
+        {
+            string q = "SELECT name FROM Entities WHERE id = " + value.ToString();
+            var r = Utils.SqLite.ExecuteSelect(q);
+            if (r == null || r.Rows.Count == 0)
+                return null;
+
+            return r.Rows[0].ItemArray[0].ToString();
+        }
+
         internal async static Task<bool> Assoc_ReadAll(TelegramBotAbstract sender, MessageEventArgs e)
         {
             return await Assoc_Read(sender, e, true);
@@ -219,20 +229,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow m in r.Rows)
             {
-                _ = await SendMessageAssocToUserAsync(m, sender, e);
+                _ = await SendMessageAssocToUserAsync(m, sender, e, extraInfo: true);
             }
 
             return true;
         }
 
-        private static async Task<bool> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<MessageSend> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e, bool extraInfo)
         {
             if (m == null)
             {
-                return false;
+                return new MessageSend(false, null, null);
             }
 
-            return await Utils.MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private);
+            return await MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private, extraInfo, sender);
         }
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
