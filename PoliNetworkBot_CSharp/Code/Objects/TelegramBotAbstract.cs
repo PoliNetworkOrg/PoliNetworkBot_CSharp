@@ -40,6 +40,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             _contactString = contactString;
         }
 
+        internal BotTypeApi GetBotType()
+        {
+            return _isbot;
+        }
+
         public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id,
             BotTypeApi botTypeApi)
         {
