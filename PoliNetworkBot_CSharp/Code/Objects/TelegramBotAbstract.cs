@@ -102,6 +102,34 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
+        internal async Task<bool> PromoteChatMember(int userId, ChatId chatId)
+        {
+            switch (this._isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    {
+                        try
+                        {
+                            await this._botClient.PromoteChatMemberAsync(chatId, userId, true, true, true, true, true, true, true, true);
+                        }
+                        catch (Exception e)
+                        {
+                            await Utils.NotifyUtil.NotifyOwners(e, this);
+                            return false;
+                        }
+
+                        return true;
+                    }
+               
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return false;
+        }
+
         internal async Task<Code.Objects.UserIdFound> GetIdFromUsernameAsync(string target)
         {
             switch (_isbot)
@@ -446,6 +474,46 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
+        }
+
+        internal async Task<bool> UpdateUsername(string from, string to)
+        {
+            switch (this._isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    {
+                        var c = await this._userbotClient.ResolveUsernameAsync(from);
+                        var c2 = c.Peer;
+                        if (c2 == null)
+                            return false;
+
+                        var c5 = c.Chats[0];
+                        if (c5 is TLChannel c6)
+                        {
+
+                            if (c2 is TLPeerChannel c3)
+                            {
+                                try
+                                {
+                                    return await this._userbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
+                                }
+                                catch (Exception e2)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+
+
+                        return false;
+                    }
             }
 
             return false;

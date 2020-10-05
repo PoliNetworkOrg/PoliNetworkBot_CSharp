@@ -82,6 +82,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         NewConfig.NewConfigMethod(true, false, false, false, false);
                         return;
                     }
+
+                case '7':
+                    {
+                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        return;
+                    }
             }
         }
 
@@ -108,6 +114,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "4) Reset everything but don't fill tables\n" +
                                   "5) Test IG\n" +
                                   "6) Reset only bot config\n" +
+                                  "7) Reset only disguised bot config\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -124,6 +131,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '4':
                         case '5':
                         case '6':
+                        case '7':
                             return first;
                     }
                 }
@@ -345,8 +353,22 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             });
             await bot.SendTextMessageAsync(5651789, text, ChatType.Private,
                 "", default, replyMarkupObject, "@ArmeF97");
+
+            /*
             done &= await bot.CreateGroup("Gruppo test by bot",
                 null, new List<long> { 5651789 });
+            */
+
+            try
+            {
+                done &= await bot.UpdateUsername(from: "PoliAssociazioni", to: "PoliAssociazioni2");
+            }
+            catch (Exception e1)
+            {
+                ;
+            }
+            ;
+
 
             return done;
         }

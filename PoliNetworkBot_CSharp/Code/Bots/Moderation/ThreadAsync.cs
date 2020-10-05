@@ -66,6 +66,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 */
 
+                /*
                 string toSend = "<a href='tg://resolve?domain=PoliAssociazioni'>PoliAssociazioni</a>";
                 System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>() {
                     {"it" , toSend}
@@ -74,6 +75,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await bot.SendTextMessageAsync(GlobalVariables.Owners[0].Item1, text, Telegram.Bot.Types.Enums.ChatType.Private, "it",
                     Telegram.Bot.Types.Enums.ParseMode.Html,
                     null, "armef97", null, true);
+
+                */
+
+                await bot.PromoteChatMember(userId: 149620444, //raif
+                     chatId: -1001314601927);
 
             }
             catch (Exception e)
