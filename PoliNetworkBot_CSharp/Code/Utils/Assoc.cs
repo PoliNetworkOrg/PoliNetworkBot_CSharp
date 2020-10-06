@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -109,8 +110,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
                 sentDate = new DateTimeSchedule(null, false);
             else
+            {
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
+
+                DateTime? sdt = sentDate.GetDate();
+                if (CheckIfDateTimeIsValid(sdt)==false)
+                {
+                    var lang4 = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "The date you choose is invalid!"},
+                        {"it", "La data che hai scelto non è valida!"}
+                    });
+                    await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
+                        ChatType.Private, e.Message.From.LanguageCode,
+                        ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        e.Message.From.Username);
+                    return false;
+                }
+            }
+
+        
 
             //const long idChatSentInto = Channels.PoliAssociazioni;
             const long idChatSentInto = -432645805;
@@ -154,6 +174,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ChatType.Private, e.Message.From.LanguageCode,
                 ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                 e.Message.From.Username);
+            return true;
+        }
+
+        private static bool CheckIfDateTimeIsValid(DateTime? sdt)
+        {
+            if (sdt == null)
+                return false;
+
+            if (sdt.Value.Year < DateTime.Now.Year)
+                return false;
+
+            if (sdt.Value.Year == DateTime.Now.Year && sdt.Value.Month < DateTime.Now.Month)
+                return false;
+
+            if (sdt.Value.Year == DateTime.Now.Year && sdt.Value.Month == DateTime.Now.Month && sdt.Value.Day < DateTime.Now.Day)
+                return false;
+
             return true;
         }
 
