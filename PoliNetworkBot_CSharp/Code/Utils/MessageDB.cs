@@ -207,7 +207,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (schedule && dt == null)
                 return new MessageSendScheduled( Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null ,r1);
 
-            if (schedule && dt < DateTime.Now)
+            if (schedule && dt > DateTime.Now)
                 return new MessageSendScheduled( Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
 
             var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
