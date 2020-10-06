@@ -53,6 +53,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var replyTo = e.Message.ReplyToMessage;
 
+            if (replyTo == null)
+            {
+                await Assoc_ObjectToSendNotValid(sender, e);
+                return false;
+            }
+
             var languageList = new Language(new Dictionary<string, string>
             {
                 {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
@@ -120,18 +126,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case SuccessQueue.INVALID_OBJECT:
                     {
-                        var lang2 = new Language(new Dictionary<string, string>
-                    {
-                        {"en", "You have to attach something! (A photo, for example)"},
-                        {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
-                    });
-                        await sender.SendTextMessageAsync(e.Message.From.Id,
-                            lang2,
-                            ChatType.Private, e.Message.From.LanguageCode,
-                            ParseMode.Default,
-                            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
-
-                        break;
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false; 
                     }
 
                 case SuccessQueue.SUCCESS:
@@ -159,6 +155,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                 e.Message.From.Username);
             return true;
+        }
+
+        private static async Task Assoc_ObjectToSendNotValid(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var lang2 = new Language(new Dictionary<string, string>
+                        {
+                            {"en", "You have to attach something! (A photo, for example)"},
+                            {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
+                        });
+            await sender.SendTextMessageAsync(e.Message.From.Id,
+                lang2,
+                ChatType.Private, e.Message.From.LanguageCode,
+                ParseMode.Default,
+                new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
         }
 
         internal static async Task<bool> Assoc_Publish(TelegramBotAbstract sender, MessageEventArgs e)
