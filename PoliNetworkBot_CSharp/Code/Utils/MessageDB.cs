@@ -20,7 +20,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
             long idChatSentInto, DateTime? sentDate,
-            bool hasBeenSent, int messageFromIdBot, int messageIdTgFrom, ChatType type_chat_sent_into,
+            bool hasBeenSent, int messageFromIdBot, 
+            int messageIdTgFrom, ChatType type_chat_sent_into,
             int? photo_id, int? video_id)
         {
             const string q = "INSERT INTO Messages " +

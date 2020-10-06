@@ -106,10 +106,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
-            const long idChatSentInto = Channels.PoliAssociazioni;
+            //const long idChatSentInto = Channels.PoliAssociazioni;
+            const long idChatSentInto = -432645805;
+            ChatType chatTypeSendInto = ChatType.Group;
 
             var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
-                messageFromIdEntity, idChatSentInto, sender, ChatType.Channel);
+                messageFromIdEntity, idChatSentInto, sender,  chatTypeSendInto);
 
             switch (successQueue)
             {
