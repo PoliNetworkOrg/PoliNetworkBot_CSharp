@@ -202,6 +202,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
+            string s4 = "[WE DON'T KNOW]";
+            try
+            {
+                s4 = dr["has_been_sent"].ToString();
+            }
+            catch
+            {
+                ;
+            }
+
+            string s3 = s4;
+            s3 += "\n";
+            s3 += "GetHasBeenSentAsync";
+            Exception e3 = new Exception(s3);
+            await Utils.NotifyUtil.NotifyOwners(e3, sender);
             return null;
         }
 
