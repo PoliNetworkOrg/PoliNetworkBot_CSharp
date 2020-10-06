@@ -152,7 +152,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var lang2 = new Language(new Dictionary<string, string>
             {
                 {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
-                {"en", "Insert a date (you can also write 'in an hour'"}
+                {"en", "Insert a date (you can also write 'in an hour')"}
             });
 
             var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
