@@ -109,6 +109,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
                     string s3 = r1.ToString();
+                    string s4 = r1?.r1?.Item2.ToString();
+                    if (string.IsNullOrEmpty(s4))
+                        s4 = "[NULL(2)]";
+                    s3 += "\n" + s4+"\n";
                     s3 += "\nCheckMessagesToSend\n";
                     Exception e3 = new Exception(s3);
                     await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
@@ -121,24 +125,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-        private static async Task<Code.Enums.ScheduleMessageSentResult> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
+        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
         {
             bool? has_been_sent = null;
+            Tuple<bool?, int> r1 = null;
             try
             {
-                var r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract);
-                if (r1 == null)
-                {
-                    string m1 = "SendMessageToSend\n";
-                    m1 += "[NULL]\n\n";
-                    await Utils.NotifyUtil.NotifyOwners(message: m1, sender: telegramBotAbstract);
-                }
-                else
-                {
-                    string m1 = "SendMessageToSend\n";
-                    m1 += r1.Item2.ToString() + "\n\n";
-                    await Utils.NotifyUtil.NotifyOwners(message: m1, sender: telegramBotAbstract);
-                }
+                r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract);
             }
             catch (Exception e3)
             {
@@ -146,10 +139,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (has_been_sent == null)
-                return Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT;
+                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null, r1);
 
             if (has_been_sent.Value == true)
-                return Enums.ScheduleMessageSentResult.ALREADY_SENT;
+                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.ALREADY_SENT,null,null ,r1);
 
 
             DateTime? dt = null;
@@ -164,19 +157,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (schedule && dt == null)
-                return Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED;
+                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null ,r1);
 
             if (schedule && dt < DateTime.Now)
-                return Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME;
+                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
 
             var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
-                return Enums.ScheduleMessageSentResult.FAILED_SEND;
+                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
             var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
             SqLite.Execute(q2);
 
-            return Enums.ScheduleMessageSentResult.SUCCESS;
+            return new MessageSendScheduled( Enums.ScheduleMessageSentResult.SUCCESS, null, null, r1);
         }
 
         private static async Task<Tuple<bool?, int>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
