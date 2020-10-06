@@ -126,7 +126,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             bool? has_been_sent = null;
             try
             {
-                has_been_sent = await GetHasBeenSentAsync(dr, telegramBotAbstract);
+                var r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract);
+                if (r1 == null)
+                {
+                    string m1 = "SendMessageToSend\n";
+                    m1 += "[NULL]\n\n";
+                    await Utils.NotifyUtil.NotifyOwners(message: m1, sender: telegramBotAbstract);
+                }
+                else
+                {
+                    string m1 = "SendMessageToSend\n";
+                    m1 += r1.Item2.ToString() + "\n\n";
+                    await Utils.NotifyUtil.NotifyOwners(message: m1, sender: telegramBotAbstract);
+                }
             }
             catch (Exception e3)
             {
@@ -167,7 +179,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return Enums.ScheduleMessageSentResult.SUCCESS;
         }
 
-        private static async Task<bool?> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
+        private static async Task<Tuple<bool?, int>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
         {
             try
             {
@@ -178,7 +190,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s1 += "GetHasBeenSentAsync";
                 Exception e1 = new Exception(s1);
                 await Utils.NotifyUtil.NotifyOwners(e1, sender);
-                return null; //todo: change to "return b1"
+                return new Tuple<bool?, int>(null, 1); //todo: change to "return b1"
             }
             catch
             {
@@ -195,7 +207,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s2 += "GetHasBeenSentAsync";
                 Exception e2 = new Exception(s2);
                 await Utils.NotifyUtil.NotifyOwners(e2, sender);
-                return null; //todo: change to "return b2"
+                return new Tuple<bool?, int>(null, 2); //todo: change to "return b2"
             }
             catch
             {
@@ -217,7 +229,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             s3 += "GetHasBeenSentAsync";
             Exception e3 = new Exception(s3);
             await Utils.NotifyUtil.NotifyOwners(e3, sender);
-            return null;
+            return new Tuple<bool?, int>(null, 3);
         }
 
         public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo,

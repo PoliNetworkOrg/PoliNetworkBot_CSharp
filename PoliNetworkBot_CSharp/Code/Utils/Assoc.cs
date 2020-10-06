@@ -163,7 +163,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<bool> Assoc_Publish(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            return await MessageDb.CheckMessagesToSend(true, sender);
+            try
+            {
+                return await MessageDb.CheckMessagesToSend(true, sender);
+            }
+            catch (Exception e1)
+            {
+                await Utils.NotifyUtil.NotifyOwners(e1, sender);
+                return false;
+            }
         }
 
         internal async static Task<bool> Assoc_Delete(TelegramBotAbstract sender, MessageEventArgs e)
