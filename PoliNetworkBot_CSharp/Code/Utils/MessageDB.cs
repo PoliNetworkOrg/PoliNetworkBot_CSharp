@@ -155,14 +155,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string s4 = r1?.r1?.Item2.ToString();
             if (string.IsNullOrEmpty(s4))
                 s4 = "[NULL(1)]";
-            s3 += "[Id1]: " + s4 + "\n";
+            s3 += "\n[Id1]: " + s4 + "\n";
             string s5 = r1?.r1?.Item3.ToString();
             if (string.IsNullOrEmpty(s5))
             {
                 s5 = "[NULL(2)]";
             }
             s3 += "[Id2]: " + s5 + "\n";
-            s3 += "\nCheckMessagesToSend\n";
+            s3 += "[Id3]: " + r1?.scheduleMessageSentResult.ToString() + "\n";
+            s3 += "CheckMessagesToSend\n\n";
             Exception e3 = new Exception(s3);
             await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
         }
