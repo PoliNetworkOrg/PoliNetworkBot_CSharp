@@ -6,7 +6,6 @@ using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
@@ -104,7 +103,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    await SendMessageToSend(dr, null);
+                    _ = await SendMessageToSend(dr, null, schedule: true);
                 }
                 catch
                 {
@@ -112,17 +111,36 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
         }
 
-        private static async Task SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Code.Enums.ScheduleMessageSentResult> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
         {
+            DateTime? dt = null;
+
+            try
+            {
+                dt = (DateTime)dr["sent_date"];
+            }
+            catch
+            {
+                ;
+            }
+
+            if (schedule && dt == null)
+                return Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED;
+
+            if (schedule && dt < DateTime.Now)
+                return Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME;
+
             var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
-                return;
+                return Enums.ScheduleMessageSentResult.FAILED_SEND;
 
             var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
             SqLite.Execute(q2);
+
+            return Enums.ScheduleMessageSentResult.SUCCESS;
         }
 
-        public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo, 
+        public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo,
             ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo);
@@ -136,7 +154,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r1;
         }
 
-        private async static Task<MessageSend> SendExtraInfoDbForThisMessage(MessageSend r1, DataRow dr, 
+        private async static Task<MessageSend> SendExtraInfoDbForThisMessage(MessageSend r1, DataRow dr,
             int? chatIdToSendTo, ChatType? chatTypeToSendTo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             if (r1 == null || r1.IsSuccess() == false)
@@ -199,14 +217,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 text1 += "✍ " + from_id_person.ToString() + "\n";
             }
 
-
             Dictionary<string, string> dict = new Dictionary<string, string>() {
                 {"en", text1 }
             };
             Language text2 = new Language(dict: dict);
             return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "", ParseMode.Html,
                 null, null, r1.GetMessageID(), true);
-
         }
 
         private static async Task<Objects.MessageSend> SendMessageFromDataRowSingle(DataRow dr, int? chatIdToSendTo, ChatType? chatTypeToSendTo)
@@ -217,7 +233,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var typeI = Convert.ToInt32(dr["type"]);
             var typeT = GetMessageTypeClassById(typeI);
             if (typeT == null)
-                return new MessageSend(false,null, chatTypeToSendTo);
+                return new MessageSend(false, null, chatTypeToSendTo);
 
             switch (typeT.Value)
             {
