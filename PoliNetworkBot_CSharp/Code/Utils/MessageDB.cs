@@ -108,7 +108,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
-                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
+                    telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
+                    if (telegramBotAbstract != null)
+                        await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
                 }
                 catch (Exception e)
                 {
@@ -116,6 +118,35 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
 
             return true;
+        }
+
+        private static TelegramBotAbstract FindBotIfNeeded(MessageSendScheduled r1, TelegramBotAbstract telegramBotAbstract)
+        {
+            if (telegramBotAbstract != null)
+                return telegramBotAbstract;
+
+            if (r1 == null)
+                return Utils.BotUtil.GetFirstModerationRealBot();
+
+            var r2 = r1.scheduleMessageSentResult;
+
+            switch (r2)
+            {
+                case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+                    break;
+                case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
+                    break;
+                case Enums.ScheduleMessageSentResult.FAILED_SEND:
+                    break;
+                case Enums.ScheduleMessageSentResult.SUCCESS:
+                    return null;
+                case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
+                    break;
+                case Enums.ScheduleMessageSentResult.ALREADY_SENT:
+                    return null;
+            }
+
+            return Utils.BotUtil.GetFirstModerationRealBot();
         }
 
         private static async Task NotifyOwnersOfResultAsync(MessageSendScheduled r1, TelegramBotAbstract telegramBotAbstract)
