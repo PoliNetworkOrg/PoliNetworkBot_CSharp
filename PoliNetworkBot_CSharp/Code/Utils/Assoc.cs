@@ -386,11 +386,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
-        {
-            if (messageFromIdEntity == 2) //polinetwork
+        { 
+            switch (messageFromIdEntity)
             {
-                return false;
+                case 13: //terna che ci sta aiutando col test (sarà tolto)
+                case 2: //polinetwork
+                    {
+                        return false;
+                    }
             }
+   
 
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
