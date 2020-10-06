@@ -97,8 +97,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             DataTable dt = null;
             string q = "SELECT * " +
-                "FROM Messages " +
-                "WHERE Messages.has_been_sent IS FALSE";
+                "FROM Messages ";
+         
 
             dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
@@ -119,6 +119,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task<Code.Enums.ScheduleMessageSentResult> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
         {
+            bool? has_been_sent = null;
+            try
+            {
+                has_been_sent = await GetHasBeenSentAsync(dr, telegramBotAbstract);
+            }
+            catch (Exception e3)
+            {
+                await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+            }
+
+            if (has_been_sent == null)
+                return Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT;
+
+            if (has_been_sent.Value == true)
+                return Enums.ScheduleMessageSentResult.ALREADY_SENT;
+
+
             DateTime? dt = null;
 
             try
@@ -144,6 +161,44 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             SqLite.Execute(q2);
 
             return Enums.ScheduleMessageSentResult.SUCCESS;
+        }
+
+        private static async Task<bool?> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
+        {
+            try
+            {
+                bool b1 = (bool)dr["has_been_sent"];
+
+                string s1 = b1 ? "S" : "N";
+                s1 += "\n";
+                s1 += "GetHasBeenSentAsync";
+                Exception e1 = new Exception(s1);
+                await Utils.NotifyUtil.NotifyOwners(e1, sender);
+                return null; //todo: change to "return b1"
+            }
+            catch
+            {
+                ;
+            }
+
+            try
+            {
+                string s = dr["has_been_sent"].ToString();
+                bool b2  = (s == "1" || s == "S");
+
+                string s2 = b2 ? "S" : "N";
+                s2 += "\n";
+                s2 += "GetHasBeenSentAsync";
+                Exception e2 = new Exception(s2);
+                await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                return null; //todo: change to "return b2"
+            }
+            catch
+            {
+                ;
+            }
+
+            return null;
         }
 
         public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo,
