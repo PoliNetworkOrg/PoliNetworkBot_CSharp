@@ -109,6 +109,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/testtime":
+                    {
+                        if (e.Message.Chat.Type == ChatType.Private)
+                        {
+                            await TestTime(sender,e);
+    
+                        }
+
+                        return;
+                    }
+
                 case "/time":
                     {
                         var lang = new Language(new Dictionary<string, string>
@@ -177,6 +188,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private async static Task<MessageSend> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+                    e.Message.From.LanguageCode, sender, e.Message.From.Username);
+
+            DateTime? sentDate2 = sentDate.GetDate();
+
+            Dictionary<string, string> dict = new Dictionary<string, string>() {
+                {"en", Utils.DateTimeClass.DateTimeToItalianFormat(sentDate2) }
+            };
+            Language text = new Language(dict);
+            return await Utils.SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode, e.Message.From.Username,
+                text, ParseMode.Default, e.Message.MessageId);
         }
 
         private static async Task<MessageSend> Rules(TelegramBotAbstract sender, MessageEventArgs e)
