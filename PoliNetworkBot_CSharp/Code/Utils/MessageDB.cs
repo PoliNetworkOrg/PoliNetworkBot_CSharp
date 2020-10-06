@@ -133,7 +133,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             switch (r2)
             {
                 case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
-                    break;
+                    return null;
                 case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                     break;
                 case Enums.ScheduleMessageSentResult.FAILED_SEND:
