@@ -149,6 +149,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
             }
 
+            if (r1 != null)
+            {
+                has_been_sent = r1.Item1;
+            }
+
             if (has_been_sent == null)
                 return new MessageSendScheduled( Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null, r1);
 
