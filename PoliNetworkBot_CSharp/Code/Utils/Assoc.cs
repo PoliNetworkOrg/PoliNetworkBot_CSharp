@@ -387,6 +387,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
         {
+            if (messageFromIdEntity == 2) //polinetwork
+            {
+                return false;
+            }
+
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
                 "WHERE Messages.from_id_entity = " + messageFromIdEntity + " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
