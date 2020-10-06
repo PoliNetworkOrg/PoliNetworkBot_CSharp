@@ -202,7 +202,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             for (int i=0; i<count; i++)
             {
                 list.Add(new Language(dict: new Dictionary<string, string>() {
-                    {"en", count.ToString() }
+                    {"en", i.ToString() }
                 }));
             }
 
