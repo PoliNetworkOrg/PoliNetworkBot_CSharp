@@ -107,7 +107,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    _ = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
+                    var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
+                    string s3 = r1.ToString();
+                    s3 += "\nCheckMessagesToSend\n";
+                    Exception e3 = new Exception(s3);
+                    await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
                 }
                 catch (Exception e)
                 {
