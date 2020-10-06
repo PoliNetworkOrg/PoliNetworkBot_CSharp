@@ -32,34 +32,38 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return mode;
         }
 
-        private readonly int _id;
+        private readonly long _id;
         private readonly BotTypeApi _isbot;
         public readonly TelegramClient _userbotClient;
 
         private readonly string _website;
 
-        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString,
-            BotTypeApi botTypeApi)
+        private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi, string website, string contactString, long id)
         {
+            _userbotClient = userBotClient;
             _botClient = botClient;
             _isbot = botTypeApi;
             _website = website;
             _contactString = contactString;
+            _id = id;
+        }
+
+
+        public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString,
+            BotTypeApi botTypeApi, string mode) : this(botClient, null, botTypeApi, website, contactString, botClient.BotId)
+        {    
+            this.mode = mode;
+        }
+
+        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id,
+            BotTypeApi botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
+        {
+            this.mode = mode;
         }
 
         internal BotTypeApi GetBotType()
         {
             return _isbot;
-        }
-
-        public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id,
-            BotTypeApi botTypeApi)
-        {
-            _userbotClient = userbotClient;
-            _isbot = botTypeApi;
-            _website = website;
-            _contactString = contactString;
-            _id = (int)id;
         }
 
         internal string GetWebSite()
@@ -221,7 +225,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        internal int GetId()
+        internal long GetId()
         {
             switch (_isbot)
             {

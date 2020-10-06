@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.accessHash = accessHash;
         }
 
-        public MessageToDelete(Message r4, long chatId, DateTime timeToDelete, int botId, ChatType? chatType, long? accessHash)
+        public MessageToDelete(Telegram.Bot.Types.Message r4, long chatId, DateTime timeToDelete, long botId, ChatType? chatType, long? accessHash)
         {
             this.messageId = r4.MessageId;
             this.chatId = chatId;
@@ -36,6 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.accessHash = accessHash;
         }
 
+        
         internal bool ToDelete()
         {
             if (DateTime.Now > timeToDelete)

@@ -149,7 +149,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    sender.GetId(), replyTo.MessageId,
+                    (int)sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
@@ -166,7 +166,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    sender.GetId(), replyTo.MessageId,
+                    (int)sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, null, videoIdDb.Value);
             }
             else

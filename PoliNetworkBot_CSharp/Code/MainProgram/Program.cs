@@ -255,7 +255,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     var botClient = new TelegramBotClient(bot.GetToken());
                     GlobalVariables.Bots[botClient.BotId] =
                         new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT);
+                            BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
                     if (!bot.AcceptsMessages())
                         continue;
 
@@ -280,7 +280,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (userId != null)
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT);
+                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT, userbot.GetOnMessage().Item2);
 
                         char? method = userbot.GetMethod();
                         if (method != null)
@@ -317,7 +317,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     {
                         GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
                             userbot.GetWebsite(), userbot.GetContactString(), userId.Value,
-                            BotTypeApi.DISGUISED_BOT);
+                            BotTypeApi.DISGUISED_BOT, userbot.GetOnMessage().Item2);
 
                         _ = TestThingsDisguisedAsync(userId.Value);
                     }
