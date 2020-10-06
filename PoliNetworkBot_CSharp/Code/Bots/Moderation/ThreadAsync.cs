@@ -28,25 +28,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 TelegramBotAbstract bot = GlobalVariables.Bots[768169879];
                 if (bot == null)
                     return;
+                
+                try
+                {
+                    await bot.DeleteMessageAsync(-1001314601927, 32, Telegram.Bot.Types.Enums.ChatType.Channel, null);
+                }
+                catch
+                {
+                    ;
+                }
+
+                try
+                {
+                    await bot.DeleteMessageAsync(-1001314601927, 32, Telegram.Bot.Types.Enums.ChatType.Channel, null);
+                }
+                catch
+                {
+                    ;
+                }
                 /*
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 30, Telegram.Bot.Types.Enums.ChatType.Channel, null);
-                }
-                catch
-                {
-                    ;
-                }
-
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 31, Telegram.Bot.Types.Enums.ChatType.Channel, null);
-                }
-                catch
-                {
-                    ;
-                }
-
                 try
                 {
                     await bot.DeleteMessageAsync(-1001314601927, 30, Telegram.Bot.Types.Enums.ChatType.Supergroup, null);
