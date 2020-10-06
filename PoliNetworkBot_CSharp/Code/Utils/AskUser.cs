@@ -33,32 +33,58 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<string> WaitForAnswer(long idUser, bool sendMessageConfirmationChoice,
             TelegramBotAbstract telegramBotAbstract, string lang, string username)
         {
-            var tcs = new TaskCompletionSource<string>();
-            UserAnswers[idUser].SetAnswerProcessed(false);
-
-            UserAnswers[idUser].WorkCompleted += async result =>
+            try
             {
-                if (UserAnswers[idUser].GetState() == AnswerTelegram.State.ANSWERED && UserAnswers[idUser].GetAlreadyProcessedAnswer() == false)
+                var tcs = new TaskCompletionSource<string>();
+                UserAnswers[idUser].SetAnswerProcessed(false);
+
+                UserAnswers[idUser].WorkCompleted += async result =>
                 {
-                    if (sendMessageConfirmationChoice)
+                    bool crashed = true;
+                    try
                     {
-                        var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                        var languageReply = new Language(new Dictionary<string, string>
+                        if (UserAnswers[idUser].GetState() == AnswerTelegram.State.ANSWERED && UserAnswers[idUser].GetAlreadyProcessedAnswer() == false)
+                        {
+                            if (sendMessageConfirmationChoice)
+                            {
+                                var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
+                                var languageReply = new Language(new Dictionary<string, string>
+                            {
+                                {"en", "You choose [" + result + "]"},
+                                {"it", "Hai scelto [" + result + "]"}
+                            });
+                                await telegramBotAbstract.SendTextMessageAsync(idUser,
+                                    languageReply,
+                                    ChatType.Private, lang, default, replyMarkup, username);
+                            }
+
+                            UserAnswers[idUser].SetAnswerProcessed(true);
+
+                            var resultstring = result.ToString();
+                            crashed = false;
+                            var done = tcs.TrySetResult(resultstring);                   
+                        }
+                    }
+                    catch
                     {
-                        {"en", "You choose [" + result + "]"},
-                        {"it", "Hai scelto [" + result + "]"}
-                    });
-                        await telegramBotAbstract.SendTextMessageAsync(idUser,
-                            languageReply,
-                            ChatType.Private, lang, default, replyMarkup, username);
+                        ;
                     }
 
-                    UserAnswers[idUser].SetAnswerProcessed(true);
+                    if (crashed)
+                    {
+                        tcs.TrySetResult("");
+                    }
+                };
 
-                    tcs.SetResult(result.ToString());
-                }
-            };
-            return await tcs.Task;
+             
+                return await tcs.Task;
+            }
+            catch
+            {
+                ;
+            }
+
+            return null;
         }
 
         internal static async Task<string> AskBetweenRangeAsync(int idUser, Language question,
