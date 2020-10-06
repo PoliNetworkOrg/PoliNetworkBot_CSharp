@@ -108,20 +108,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
-                    string s3 = r1.ToString();
-                    string s4 = r1?.r1?.Item2.ToString();
-                    if (string.IsNullOrEmpty(s4))
-                        s4 = "[NULL(1)]";
-                    s3 += "[Id1]: " + s4 + "\n";
-                    string s5 = r1?.r1?.Item3.ToString();
-                    if (string.IsNullOrEmpty(s5))
-                    {
-                        s5 = "[NULL(2)]";
-                    }
-                    s3 += "[Id2]: " + s5 + "\n";
-                    s3 += "\nCheckMessagesToSend\n";
-                    Exception e3 = new Exception(s3);
-                    await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
                 }
                 catch (Exception e)
                 {
@@ -129,6 +116,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
 
             return true;
+        }
+
+        private static async Task NotifyOwnersOfResultAsync(MessageSendScheduled r1, TelegramBotAbstract telegramBotAbstract)
+        {
+            string s3 = r1.ToString();
+            string s4 = r1?.r1?.Item2.ToString();
+            if (string.IsNullOrEmpty(s4))
+                s4 = "[NULL(1)]";
+            s3 += "[Id1]: " + s4 + "\n";
+            string s5 = r1?.r1?.Item3.ToString();
+            if (string.IsNullOrEmpty(s5))
+            {
+                s5 = "[NULL(2)]";
+            }
+            s3 += "[Id2]: " + s5 + "\n";
+            s3 += "\nCheckMessagesToSend\n";
+            Exception e3 = new Exception(s3);
+            await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
         }
 
         private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
@@ -189,7 +194,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s1 += "GetHasBeenSentAsync";
                 Exception e1 = new Exception(s1);
                 await Utils.NotifyUtil.NotifyOwners(e1, sender);
-                return new Tuple<bool?, int, string>(null, 1, s1); //todo: change to "return b1"
+                return new Tuple<bool?, int, string>(b1, 1, s1); //todo: change to "return b1"
             }
             catch
             {
@@ -206,7 +211,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s2 += "GetHasBeenSentAsync";
                 Exception e2 = new Exception(s2);
                 await Utils.NotifyUtil.NotifyOwners(e2, sender);
-                return new Tuple<bool?, int, string>(null, 2, s2); //todo: change to "return b2"
+                return new Tuple<bool?, int, string>(b2, 2, s2); //todo: change to "return b2"
             }
             catch
             {
