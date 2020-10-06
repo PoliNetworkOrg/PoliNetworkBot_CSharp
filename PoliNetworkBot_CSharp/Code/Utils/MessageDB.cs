@@ -109,7 +109,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
-                    if (telegramBotAbstract != null)
+                    if (telegramBotAbstract != null && r1 != null && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                         await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
                 }
                 catch (Exception e)
