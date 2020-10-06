@@ -128,6 +128,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/assoc_publish":
+                    {
+                        if (Utils.Owners.CheckIfOwner(e.Message.From.Id))
+                            _ = await Assoc.Assoc_Publish(sender, e);
+                        else
+                            _ = await DefaultCommand(sender, e);
+                        return;
+                    }
+
                 case "/assoc_read":
                     {
                         _ = await Assoc.Assoc_Read(sender, e, false);

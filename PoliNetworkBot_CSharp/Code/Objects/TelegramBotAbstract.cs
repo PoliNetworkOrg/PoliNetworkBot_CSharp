@@ -25,6 +25,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private readonly TelegramBotClient _botClient;
         private readonly string _contactString;
+
+        internal string GetMode()
+        {
+            throw new NotImplementedException();
+        }
+
         private readonly int _id;
         private readonly BotTypeApi _isbot;
         public readonly TelegramClient _userbotClient;

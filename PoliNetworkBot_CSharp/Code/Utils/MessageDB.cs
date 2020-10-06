@@ -93,23 +93,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Tables.FixIdTable("MessageTypes", "id", "name");
         }
 
-        public static async Task CheckMessagesToSend()
+        public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue, TelegramBotAbstract telegramBotAbstract)
         {
-            const string q =
-                "SELECT * FROM Messages WHERE Messages.has_been_sent IS FALSE AND Messages.sent_date IS NOT NULL AND julianday('now') - julianday(Messages.sent_date) <= 0";
-            var dt = SqLite.ExecuteSelect(q);
+            DataTable dt = null;
+            string q = "SELECT * " +
+                "FROM Messages " +
+                "WHERE Messages.has_been_sent IS FALSE";
+
+            dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
-                return;
+                return false;
 
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    _ = await SendMessageToSend(dr, null, schedule: true);
+                    _ = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
                 }
-                catch
+                catch (Exception e)
                 {
-                    //ignored
+                    await Utils.NotifyUtil.NotifyOwners(e, Utils.BotUtil.GetFirstModerationRealBot(telegramBotAbstract));
                 }
+
+            return true;
         }
 
         private static async Task<Code.Enums.ScheduleMessageSentResult> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
