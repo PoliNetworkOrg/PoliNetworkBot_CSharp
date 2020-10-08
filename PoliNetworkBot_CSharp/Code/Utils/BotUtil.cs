@@ -1,5 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -26,6 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                     case Enums.BotTypeApi.USER_BOT:
                         break;
+
                     case Enums.BotTypeApi.DISGUISED_BOT:
                         break;
                 }

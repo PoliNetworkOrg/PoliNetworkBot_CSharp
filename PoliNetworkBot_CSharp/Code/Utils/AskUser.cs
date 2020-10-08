@@ -62,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                             var resultstring = result.ToString();
                             crashed = false;
-                            var done = tcs.TrySetResult(resultstring);                   
+                            var done = tcs.TrySetResult(resultstring);
                         }
                     }
                     catch
@@ -76,7 +76,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 };
 
-             
                 return await tcs.Task;
             }
             catch

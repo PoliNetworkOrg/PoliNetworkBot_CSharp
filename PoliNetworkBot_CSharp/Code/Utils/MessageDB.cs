@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static bool AddMessage(MessageType type, string messageText,
             int messageFromIdPerson, int? messageFromIdEntity,
             long idChatSentInto, DateTime? sentDate,
-            bool hasBeenSent, int messageFromIdBot, 
+            bool hasBeenSent, int messageFromIdBot,
             int messageIdTgFrom, ChatType type_chat_sent_into,
             int? photo_id, int? video_id)
         {
@@ -98,7 +98,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             DataTable dt = null;
             string q = "SELECT * " +
                 "FROM Messages ";
-         
 
             dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
@@ -134,14 +133,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
                     return null;
+
                 case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                     break;
+
                 case Enums.ScheduleMessageSentResult.FAILED_SEND:
                     break;
+
                 case Enums.ScheduleMessageSentResult.SUCCESS:
                     return null;
+
                 case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
                     break;
+
                 case Enums.ScheduleMessageSentResult.ALREADY_SENT:
                     return null;
             }
@@ -187,11 +191,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (has_been_sent == null)
-                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null, r1);
+                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null, r1);
 
             if (has_been_sent.Value == true)
-                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.ALREADY_SENT,null,null ,r1);
-
+                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.ALREADY_SENT, null, null, r1);
 
             DateTime? dt = null;
 
@@ -205,19 +208,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (schedule && dt == null)
-                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null ,r1);
+                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null, r1);
 
             if (schedule && dt > DateTime.Now)
-                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
+                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
 
             var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
-                return new MessageSendScheduled( Enums.ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
+                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
             var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
             SqLite.Execute(q2);
 
-            return new MessageSendScheduled( Enums.ScheduleMessageSentResult.SUCCESS, null, null, r1);
+            return new MessageSendScheduled(Enums.ScheduleMessageSentResult.SUCCESS, null, null, r1);
         }
 
         private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
@@ -241,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 string s = dr["has_been_sent"].ToString();
-                bool b2  = (s == "1" || s == "S");
+                bool b2 = (s == "1" || s == "S");
 
                 string s2 = b2 ? "S" : "N";
                 s2 += "\n";

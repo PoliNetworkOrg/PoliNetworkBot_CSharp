@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -18,7 +16,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
         }
-
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
@@ -64,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
             if (t == "/lista_primo@primopolibot" || t == "/lista_primo")
             {
-                await HandleListAsync(telegramBotClient,e);
+                await HandleListAsync(telegramBotClient, e);
                 return;
             }
 
@@ -108,7 +105,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.Id,
                 e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName, e.Message.From.LastName,
                 e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
-           
         }
 
         private static List<string> GetTaken()
@@ -131,7 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             return r2;
         }
 
-        private static Tuple<bool,string> CheckIfValid(string t)
+        private static Tuple<bool, string> CheckIfValid(string t)
         {
             foreach (var x in Code.Data.GlobalVariables.wordToBeFirsts)
             {
@@ -164,7 +160,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 return;
             }
 
-
             string user = GenerateUserStringHtml(r.Rows[0]);
             Dictionary<string, string> dict4 = new Dictionary<string, string>() {
                 {"it", "C'è già "+user+" come re " + t + "!" },
@@ -174,8 +169,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
                 e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
             return;
-
-            
         }
 
         private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t, bool toInsert)
@@ -234,7 +227,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
             string r = "\n";
 
-            foreach(var item3 in item2)
+            foreach (var item3 in item2)
             {
                 r += item3 + ", ";
             }
@@ -268,13 +261,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (r == null || e == null || r.Rows == null)
                 return null;
 
-
             List<string> r3 = new List<string>();
             foreach (DataRow dr in r.Rows)
             {
                 if (dr == null)
                     continue;
-          
+
                 var id = (long)dr["king_id"];
                 if (id == e.Message.From.Id)
                 {
@@ -292,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
         private static string GenerateUserStringHtml(System.Data.DataRow dataRow)
         {
             string link = "tg://user?id=" + dataRow["king_id"].ToString();
-            string r = "<a href='"+link+"'>";
+            string r = "<a href='" + link + "'>";
             r += NameOfUser(dataRow);
             r += "</a>";
             return r;

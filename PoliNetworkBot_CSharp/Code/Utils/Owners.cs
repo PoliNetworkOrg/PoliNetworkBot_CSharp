@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliNetworkBot_CSharp.Code.Utils
+﻿namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Owners
     {

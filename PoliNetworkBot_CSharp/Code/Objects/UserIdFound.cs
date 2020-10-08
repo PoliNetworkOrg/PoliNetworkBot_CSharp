@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PoliNetworkBot_CSharp.Code.Objects
+﻿namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class UserIdFound
     {

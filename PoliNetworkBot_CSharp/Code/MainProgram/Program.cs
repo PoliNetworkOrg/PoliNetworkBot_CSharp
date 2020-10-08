@@ -369,7 +369,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
             ;
 
-
             return done;
         }
 

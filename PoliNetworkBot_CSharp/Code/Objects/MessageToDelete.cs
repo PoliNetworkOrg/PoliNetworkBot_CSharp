@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -36,7 +35,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.accessHash = accessHash;
         }
 
-        
         internal bool ToDelete()
         {
             if (DateTime.Now > timeToDelete)

@@ -1,13 +1,11 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -115,7 +113,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
                 DateTime? sdt = sentDate.GetDate();
-                if (CheckIfDateTimeIsValid(sdt)==false)
+                if (CheckIfDateTimeIsValid(sdt) == false)
                 {
                     var lang4 = new Language(new Dictionary<string, string>
                     {
@@ -130,14 +128,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             }
 
-        
-
             //const long idChatSentInto = Channels.PoliAssociazioni;
             const long idChatSentInto = -432645805;
             ChatType chatTypeSendInto = ChatType.Group;
 
             var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
-                messageFromIdEntity, idChatSentInto, sender,  chatTypeSendInto);
+                messageFromIdEntity, idChatSentInto, sender, chatTypeSendInto);
 
             switch (successQueue)
             {
@@ -147,7 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case SuccessQueue.INVALID_OBJECT:
                     {
                         await Assoc_ObjectToSendNotValid(sender, e);
-                        return false; 
+                        return false;
                     }
 
                 case SuccessQueue.SUCCESS:
@@ -246,7 +242,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
             Language question = new Language(dict);
             List<Language> list = new List<Language>();
-            for (int i=0; i<count; i++)
+            for (int i = 0; i < count; i++)
             {
                 list.Add(new Language(dict: new Dictionary<string, string>() {
                     {"en", i.ToString() }
@@ -290,8 +286,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"it", "Messaggio ["+v+"] eliminato con successo" },
                     {"en", "Message ["+v+"] deleted successfully" }
                 });
-                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text1, 
-                    e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, null, true);   
+                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text1,
+                    e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, null, true);
             }
             else
             {
@@ -322,7 +318,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (dr == null)
                 return false;
-
 
             int id = Convert.ToInt32(dr["id"]);
 
@@ -433,7 +428,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
-        { 
+        {
             switch (messageFromIdEntity)
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
@@ -442,7 +437,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         return false;
                     }
             }
-   
 
             string q = "SELECT COUNT (*) " +
                 "FROM Messages " +

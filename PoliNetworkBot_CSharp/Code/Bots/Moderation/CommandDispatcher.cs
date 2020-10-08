@@ -113,8 +113,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-                            await TestTime(sender,e);
-    
+                            await TestTime(sender, e);
                         }
 
                         return;
@@ -303,7 +302,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return await RestrictUser.BanUserFromGroup(sender, e, targetId.Value, e.Message.Chat.Id, null);
                     }
                 }
-
             }
             else
             {

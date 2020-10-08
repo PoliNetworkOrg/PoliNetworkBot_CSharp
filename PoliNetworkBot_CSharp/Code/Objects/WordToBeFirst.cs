@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.similarWords = similarWords;
         }
 
-        internal Tuple<bool,string> Matches(string t)
+        internal Tuple<bool, string> Matches(string t)
         {
             if (string.IsNullOrEmpty(t))
                 return new Tuple<bool, string>(false, word);

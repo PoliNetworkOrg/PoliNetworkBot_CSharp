@@ -48,10 +48,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             _id = id;
         }
 
-
         public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString,
             BotTypeApi botTypeApi, string mode) : this(botClient, null, botTypeApi, website, contactString, botClient.BotId)
-        {    
+        {
             this.mode = mode;
         }
 
@@ -131,9 +130,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         return true;
                     }
-               
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
@@ -181,8 +181,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 {
                     case BotTypeApi.REAL_BOT:
                         break;
+
                     case BotTypeApi.USER_BOT:
                         return bot;
+
                     case BotTypeApi.DISGUISED_BOT:
                         break;
                 }
@@ -496,8 +498,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     break;
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     {
                         var c = await this._userbotClient.ResolveUsernameAsync(from);
@@ -508,7 +512,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         var c5 = c.Chats[0];
                         if (c5 is TLChannel c6)
                         {
-
                             if (c2 is TLPeerChannel c3)
                             {
                                 try
@@ -521,7 +524,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             }
                         }
-
 
                         return false;
                     }
@@ -750,7 +752,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         return new MessageSend(m1 != null, m1, chatTypeToSendTo);
                     }
-                    
+
                 case BotTypeApi.USER_BOT:
 
                     var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
@@ -760,7 +762,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var m2 = await _userbotClient.SendUploadedPhoto(
                         UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
                         file: photoFile);
-                    return new MessageSend( m2 != null, m2, chatTypeToSendTo);
+                    return new MessageSend(m2 != null, m2, chatTypeToSendTo);
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -769,7 +771,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
-            return new MessageSend(false, null,chatTypeToSendTo);
+            return new MessageSend(false, null, chatTypeToSendTo);
         }
 
         public async Task<bool> CreateGroup(string name, string description, IEnumerable<long> membersToInvite)
@@ -814,7 +816,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
                             height: video.GetHeight(),
                             width: video.GetWidth(), parseMode: parseMode);
-                        return new MessageSend( m1 != null, m1, chatTypeToSendTo);
+                        return new MessageSend(m1 != null, m1, chatTypeToSendTo);
                     }
                     catch
                     {

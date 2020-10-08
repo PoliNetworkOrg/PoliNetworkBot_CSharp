@@ -18,17 +18,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t3 = new Thread(FixThings);
             t3.Start();
-
         }
 
-        private static  async void FixThings()
+        private static async void FixThings()
         {
             try
             {
                 TelegramBotAbstract bot = GlobalVariables.Bots[768169879];
                 if (bot == null)
                     return;
-                
+
                 try
                 {
                     await bot.DeleteMessageAsync(-1001314601927, 32, Telegram.Bot.Types.Enums.ChatType.Channel, null);
@@ -66,7 +65,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 */
 
-                
                 string toSend = "<a href='tg://resolve?domain=-1393901944'>PoliAssociazioni 3</a>";
                 System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>() {
                     {"it" , toSend}
@@ -76,12 +74,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     Telegram.Bot.Types.Enums.ParseMode.Html,
                     null, "armef97", null, true);
 
-                
                 /*
                 await bot.PromoteChatMember(userId: 149620444, //raif
                      chatId: -1001314601927);
                 */
-
             }
             catch (Exception e)
             {
@@ -98,8 +94,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     case Enums.BotTypeApi.REAL_BOT:
                         return bot2;
+
                     case Enums.BotTypeApi.USER_BOT:
                         break;
+
                     case Enums.BotTypeApi.DISGUISED_BOT:
                         break;
                 }
