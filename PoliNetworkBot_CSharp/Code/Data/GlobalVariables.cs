@@ -19,6 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<string> AllowedSpam;
         public static List<MessageToDelete> MessagesToDelete;
         public static List<Code.Objects.WordToBeFirst> wordToBeFirsts;
+        public static List<long> ExcludedChatsForBot;
 
         internal static void LoadToRam()
         {
@@ -69,6 +70,12 @@ namespace PoliNetworkBot_CSharp.Code.Data
                 new WordToBeFirst("snitch"),
                 new WordToBeFirst("pizzaiolo", new List<string>(){"pizzaiola"}),
                 new WordToBeFirst("lasagna")
+            };
+
+            ExcludedChatsForBot = new List<long>()
+            {
+                -230287457,
+                -1454214112
             };
         }
 

@@ -42,6 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                 case '2': //normal mode
                 case '3': //disguised bot test
+                case '8':
                     {
                         var toExit = LoadBotConfig();
                         if (toExit == ToExit.EXIT)
@@ -59,7 +60,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         Console.WriteLine("\nTo kill this process, you have to check the process list");
 
-                        _ = StartBotsAsync(readChoice == '3');
+                        _ = StartBotsAsync(readChoice == '3', readChoice == '8');
 
                         while (true) Console.ReadKey();
                         return;
@@ -88,6 +89,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         NewConfig.NewConfigMethod(false, false, true, false, false);
                         return;
                     }
+
+          
             }
         }
 
@@ -115,6 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "5) Test IG\n" +
                                   "6) Reset only bot config\n" +
                                   "7) Reset only disguised bot config\n" +
+                                  "8) Run only userbots\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -132,6 +136,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '5':
                         case '6':
                         case '7':
+                        case '8':
                             return first;
                     }
                 }
@@ -244,12 +249,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static async Task StartBotsAsync(bool advancedModeDebugDisguised)
+        private static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot)
         {
             int moderationBots = 0;
 
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
-            if (_botInfos != null && advancedModeDebugDisguised == false)
+            if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
@@ -279,8 +284,19 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     var userId = userbot.GetUserId();
                     if (userId != null)
                     {
-                        GlobalVariables.Bots[userId.Value] = new TelegramBotAbstract(client,
-                            userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT, userbot.GetOnMessage().Item2);
+                        TelegramBotAbstract x2 = null;
+
+                        try
+                        {
+                            x2 = new TelegramBotAbstract(client,
+                                userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT, userbot.GetOnMessage().Item2);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        GlobalVariables.Bots[userId.Value] = x2;
 
                         char? method = userbot.GetMethod();
                         if (method != null)
@@ -308,7 +324,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised)
+            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false)
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);

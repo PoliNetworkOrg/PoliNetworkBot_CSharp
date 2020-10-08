@@ -93,6 +93,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (x4 is TLChat x5)
             {
+                if (Data.GlobalVariables.ExcludedChatsForBot.Contains(x5.Id))
+                {
+                    return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+                }
+
                 var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
                 if (r5 == null)
                 {
@@ -122,6 +127,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             else if (x4 is TLChannel x6)
             {
+                if (Data.GlobalVariables.ExcludedChatsForBot.Contains(x6.Id))
+                {
+                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
+                }
+
                 var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
 
                 if (r2 == null)
