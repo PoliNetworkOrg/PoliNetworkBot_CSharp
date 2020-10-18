@@ -108,8 +108,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
-                    if (telegramBotAbstract != null && r1 != null && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
-                        await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
+                    if (telegramBotAbstract != null && r1 != null)// && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
+                    {
+                        switch (r1.scheduleMessageSentResult)
+                        {
+                            case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:         
+                            case Enums.ScheduleMessageSentResult.FAILED_SEND:          
+                            case Enums.ScheduleMessageSentResult.SUCCESS:    
+                            case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
+                                {
+                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
+                                    break;
+                                }
+                     
+                            case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
+                            case Enums.ScheduleMessageSentResult.ALREADY_SENT:
+                                break;
+                        }
+                    
+                    }
                 }
                 catch (Exception e)
                 {
@@ -135,7 +152,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return null;
 
                 case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
-                    break;
+                    return null;
 
                 case Enums.ScheduleMessageSentResult.FAILED_SEND:
                     break;
