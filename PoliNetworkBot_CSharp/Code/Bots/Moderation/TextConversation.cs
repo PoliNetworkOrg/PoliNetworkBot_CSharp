@@ -131,6 +131,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+            if (string.IsNullOrEmpty(e.Message.Text))
+            {
+                return;
+            }
+
             var text2 = new Language(new Dictionary<string, string>
             {
                 {

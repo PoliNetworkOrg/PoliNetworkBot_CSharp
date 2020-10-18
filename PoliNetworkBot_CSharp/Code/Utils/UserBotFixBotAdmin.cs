@@ -50,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 }
 
-                if (x == null)
+                 if (x == null)
                     return i > 0;
 
                 if (x is TLDialogs x2)
