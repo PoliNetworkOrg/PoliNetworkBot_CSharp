@@ -55,7 +55,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             Owners = new List<Tuple<long, string>>()
             {
-                new Tuple<long, string>(5651789, "armef97")
+                new Tuple<long, string>(5651789, "armef97"),
+                new Tuple<long, string>(107050697, "eliamaggioni")
             };
 
             wordToBeFirsts = new List<WordToBeFirst>()

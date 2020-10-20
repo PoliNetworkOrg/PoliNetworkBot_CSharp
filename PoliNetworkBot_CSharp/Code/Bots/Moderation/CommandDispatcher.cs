@@ -96,10 +96,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/getGroups":
                     {
-                        if (GlobalVariables.Creators.Contains(e.Message.From.Username) && e.Message.Chat.Type == ChatType.Private)
+                        if ((GlobalVariables.Creators.Contains(e.Message.From.Username) || Utils.Owners.CheckIfOwner(e.Message.From.Id)) 
+                            && e.Message.Chat.Type == ChatType.Private)
                         {
                             string username = null;
-                            if (!string.IsNullOrEmpty(e.Message.From.Username)) username = e.Message.From.Username;
+                            if (!string.IsNullOrEmpty(e.Message.From.Username)) 
+                                username = e.Message.From.Username;
+
                             _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode);
                             return;
                         }
@@ -255,7 +258,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
             string lang)
         {
-            var groups = Groups.GetAllGroups();
+            System.Data.DataTable groups = Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);
             TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)chatId };
