@@ -189,10 +189,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static List<UsernameAndNameCheckResult> CheckUsername(MessageEventArgs e)
         {
+            if (Data.GlobalVariables.NoUsernameCheckInThisChats.Contains(e.Message.Chat.Id))
+            {
+                return null;
+            }
+
             var r = new List<UsernameAndNameCheckResult>
             {
                 CheckUsername2(e.Message.From.Username, e.Message.From.FirstName,
-                    lastName: e.Message.From.LastName, language: e.Message.From.LanguageCode, userId: e.Message.From.Id)
+                    lastName: e.Message.From.LastName, language: e.Message.From.LanguageCode,
+                    userId: e.Message.From.Id, messageId: e.Message.MessageId)
             };
 
             if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
@@ -201,20 +207,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             r.AddRange(from user in e.Message.NewChatMembers
                        where user != null && user.Id != r[0].GetUserId()
                        select CheckUsername2(user.Username, user.FirstName, user.Id,
-                           user.LastName, user.LanguageCode));
+                           user.LastName, user.LanguageCode, messageId: e.Message.MessageId));
 
             return r;
         }
 
         private static UsernameAndNameCheckResult CheckUsername2(string fromUsername, string fromFirstName, int userId,
-            string lastName, string language)
+            string lastName, string language, int? messageId)
         {
             var username = false;
             var name = false;
 
             if (string.IsNullOrEmpty(fromUsername))
             {
-                if (Data.GlobalVariables.AllowedNoUsername.Contains(userId))
+                if (Data.GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId))
                 {
                     username = false;
                 }
@@ -228,7 +234,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 name = true;
 
             return new UsernameAndNameCheckResult(username, name, language,
-                fromUsername, userId, fromFirstName, lastName);
+                fromUsername, userId, fromFirstName, lastName, messageId);
         }
 
         public static SpamType CheckSpam(MessageEventArgs e)
@@ -411,44 +417,32 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var usernameCheck = CheckUsername(e);
             if (usernameCheck == null)
             {
-                ;
-            }
-            else if (usernameCheck.Count == 1)
-            {
-                if (!usernameCheck[0].UsernameBool && !usernameCheck[0].Name)
-                    return false;
-
-                await SendUsernameWarning(telegramBotClient, usernameCheck[0].UsernameBool,
-                    usernameCheck[0].Name, e.Message.From.LanguageCode,
-                    e.Message.From.Username, e.Message.Chat.Id,
-                    e.Message.From.Id, e.Message.MessageId,
-                    e.Message.Chat.Type, e.Message.From.FirstName,
-                    e.Message.From.LastName, e.Message.NewChatMembers);
-
-                return true;
-            }
-            else
-            {
-                foreach (var usernameCheck2 in usernameCheck)
-                    if (usernameCheck2 != null)
-                        if (usernameCheck2.Name || usernameCheck2.UsernameBool)
-                            await SendUsernameWarning(telegramBotClient,
-                                usernameCheck2.UsernameBool,
-                                usernameCheck2.Name,
-                                usernameCheck2.GetLanguage(),
-                                usernameCheck2.GetUsername(),
-                                e.Message.Chat.Id,
-                                usernameCheck2.GetUserId(),
-                                null,
-                                e.Message.Chat.Type,
-                                usernameCheck2.GetFirstName(),
-                                usernameCheck2.GetLastName(),
-                                e.Message.NewChatMembers);
-
-                return true;
+                return false;
             }
 
-            return false;
+            bool donesomething = false;
+
+            foreach (var usernameCheck2 in usernameCheck)
+                if (usernameCheck2 != null)
+                    if (usernameCheck2.Name || usernameCheck2.UsernameBool)
+                    {
+                        await SendUsernameWarning(telegramBotClient,
+                            usernameCheck2.UsernameBool,
+                            usernameCheck2.Name,
+                            usernameCheck2.GetLanguage(),
+                            usernameCheck2.GetUsername(),
+                            e.Message.Chat.Id,
+                            usernameCheck2.GetUserId(),
+                            usernameCheck2.GetMessageId(),
+                            e.Message.Chat.Type,
+                            usernameCheck2.GetFirstName(),
+                            usernameCheck2.GetLastName(),
+                            e.Message.NewChatMembers);
+
+                        donesomething = true;
+                    }
+
+            return donesomething;
         }
     }
 }

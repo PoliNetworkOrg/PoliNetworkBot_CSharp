@@ -1,4 +1,6 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Objects
+﻿using System;
+
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class UsernameAndNameCheckResult
     {
@@ -9,9 +11,10 @@
         private readonly string _usernameString;
         public readonly bool Name;
         public readonly bool UsernameBool;
+        private readonly int? messageId;
 
         public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
-            string usernameString, int userId, string firstName, string lastName)
+            string usernameString, int userId, string firstName, string lastName, int? messageId)
         {
             UsernameBool = usernameBool;
             Name = name;
@@ -20,6 +23,7 @@
             _userId = userId;
             _firstName = firstName;
             _lastName = lastName;
+            this.messageId = messageId;
         }
 
         public string GetLanguage()
@@ -45,6 +49,11 @@
         public string GetLastName()
         {
             return _lastName;
+        }
+
+        internal int? GetMessageId()
+        {
+            return this.messageId;
         }
     }
 }

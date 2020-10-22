@@ -14,12 +14,13 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<string> Creators;
         public static List<string> SubCreators;
         public static List<string> AllowedBanAll;
-        public static List<long> AllowedNoUsername;
+        public static List<long> AllowedNoUsernameFromThisUserId;
         public static List<Tuple<long, string>> Owners;
         public static List<string> AllowedSpam;
         public static List<MessageToDelete> MessagesToDelete;
         public static List<Code.Objects.WordToBeFirst> wordToBeFirsts;
         public static List<long> ExcludedChatsForBot;
+        public static List<long> NoUsernameCheckInThisChats;
 
         internal static void LoadToRam()
         {
@@ -48,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
                 "armef97", "raif9", "eliamaggioni"
             };
 
-            AllowedNoUsername = new List<long>()
+            AllowedNoUsernameFromThisUserId = new List<long>()
             {
                 777000 //telegram
             };
@@ -77,6 +78,11 @@ namespace PoliNetworkBot_CSharp.Code.Data
             {
                 -230287457,
                 -1454214112
+            };
+
+            NoUsernameCheckInThisChats = new List<long>()
+            {
+                -1443285113
             };
         }
 
