@@ -106,7 +106,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue);
+                    TelegramBotAbstract botToReportException = FindBotIfNeeded(null, telegramBotAbstract); 
+                    var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue, botToReportException);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                     if (telegramBotAbstract != null && r1 != null)// && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                     {
@@ -189,7 +190,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
         }
 
-        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, bool schedule)
+        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, 
+            bool schedule, TelegramBotAbstract botToReportException)
         {
             bool? has_been_sent = null;
             Tuple<bool?, int, string> r1 = null;
@@ -199,7 +201,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e3)
             {
-                await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+                await Utils.NotifyUtil.NotifyOwners(e3, botToReportException);
+                
             }
 
             if (r1 != null)
