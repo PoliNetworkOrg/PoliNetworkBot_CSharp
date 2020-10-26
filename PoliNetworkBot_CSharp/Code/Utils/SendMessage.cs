@@ -82,7 +82,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<MessageSend> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
             string lang, Language text,
             long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-            bool disablePreviewLink)
+            bool disablePreviewLink, int i = 0)
         {
             MessageSend r1 = null;
 
@@ -90,6 +90,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return null;
             }
+
+            if (i > 5)
+                return null;
 
             try
             {
@@ -105,7 +108,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e1)
             {
-                await NotifyUtil.NotifyOwners(e1, telegramBotClient);
+                await NotifyUtil.NotifyOwners(e1, telegramBotClient, i + 1);
             }
 
             return r1;

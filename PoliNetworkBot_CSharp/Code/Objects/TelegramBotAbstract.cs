@@ -124,7 +124,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         }
                         catch (Exception e)
                         {
-                            await Utils.NotifyUtil.NotifyOwners(e, this);
+                            await Utils.NotifyUtil.NotifyOwners(e, this, 0);
                             return false;
                         }
 

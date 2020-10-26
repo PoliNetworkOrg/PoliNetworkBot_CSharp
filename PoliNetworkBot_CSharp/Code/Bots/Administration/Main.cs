@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e, telegramBotAbstract, 0);
             }
         }
     }

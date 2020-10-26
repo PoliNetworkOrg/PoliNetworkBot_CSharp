@@ -336,7 +336,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "\n --- end --- ";
                 m += "\n";
                 Exception e2 = new Exception(m, r2.Item2);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, 0);
 
                 await DeleteMessageAddedAsync(idMessageAdded, x5, telegramBotAbstract);
 

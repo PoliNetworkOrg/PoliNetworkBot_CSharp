@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NotifyUtil
     {
-        internal static async System.Threading.Tasks.Task NotifyOwners(Exception exception, TelegramBotAbstract sender)
+        internal static async System.Threading.Tasks.Task NotifyOwners(Exception exception, TelegramBotAbstract sender, int v = 0)
         {
             if (sender == null)
                 return;
@@ -17,14 +17,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"en", "Exception! " + exception.Message + "\n\n" + exception.ToString()  }
                 });
 
-            await NotifyOwners2Async(text, sender);
+            await NotifyOwners2Async(text, sender, v);
         }
 
-        private static async Task NotifyOwners2Async(Language text, TelegramBotAbstract sender)
+        private static async Task NotifyOwners2Async(Language text, TelegramBotAbstract sender, int v)
         {
             const long group_exception = -438352042;
             await Utils.SendMessage.SendMessageInAGroup(sender, "en", text, group_exception,
-                Telegram.Bot.Types.Enums.ChatType.Group, Telegram.Bot.Types.Enums.ParseMode.Default, null, true);
+                Telegram.Bot.Types.Enums.ChatType.Group, Telegram.Bot.Types.Enums.ParseMode.Default, null, true, v);
         }
 
         internal static async System.Threading.Tasks.Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo, TelegramBotAbstract sender)
@@ -46,7 +46,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             error += "\n";
 
             Exception exception = new Exception(error);
-            await NotifyOwners(exception, sender);
+            await NotifyOwners(exception, sender, 0);
         }
 
         internal static async Task NotifyOwners(string message, TelegramBotAbstract sender)
@@ -55,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 { "en", message}
             };
             Language text = new Language(dict: dict);
-            await NotifyOwners2Async(text, sender);
+            await NotifyOwners2Async(text, sender, 0);
         }
 
         internal static async Task NotifyOwnersAsync(List<Exception> exceptions, TelegramBotAbstract sender, string v)
@@ -63,17 +63,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Language text = new Language(dict: new Dictionary<string, string>() {
                 { "en", v }
             }) ;
-            await NotifyOwners2Async(text, sender);
+            await NotifyOwners2Async(text, sender, 0);
 
             foreach (var e1 in exceptions)
             {
-                await NotifyOwners(e1, sender);
+                await NotifyOwners(e1, sender, 0);
             }
 
             Language text2 = new Language(dict: new Dictionary<string, string>() {
                 { "en", "---End---"}
             });
-            await NotifyOwners2Async(text2, sender);
+            await NotifyOwners2Async(text2, sender, 0);
         }
     }
 }

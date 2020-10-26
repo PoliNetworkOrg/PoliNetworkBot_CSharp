@@ -300,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (targetId == null)
                     {
                         Exception e2 = new Exception("Can't find userid (2)");
-                        await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                        await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
                         return new Tuple<bool, Exception>(false, e2);
                     }
                     else
@@ -487,7 +487,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e2)
             {
-                await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
             }
 
             if (n == null)

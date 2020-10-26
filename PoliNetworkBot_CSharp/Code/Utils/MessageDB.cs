@@ -131,7 +131,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    await Utils.NotifyUtil.NotifyOwners(e, Utils.BotUtil.GetFirstModerationRealBot(telegramBotAbstract));
+                    await Utils.NotifyUtil.NotifyOwners(e, Utils.BotUtil.GetFirstModerationRealBot(telegramBotAbstract), 0);
                 }
 
             return true;
@@ -187,7 +187,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             s3 += "[Id3]: " + r1?.scheduleMessageSentResult.ToString() + "\n";
             s3 += "CheckMessagesToSend\n\n";
             Exception e3 = new Exception(s3);
-            await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+            await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract, 0);
         }
 
         private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, 
@@ -201,7 +201,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e3)
             {
-                await Utils.NotifyUtil.NotifyOwners(e3, botToReportException);
+                await Utils.NotifyUtil.NotifyOwners(e3, botToReportException, 0);
                 
             }
 
@@ -270,7 +270,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s2 += "\n";
                 s2 += "GetHasBeenSentAsync";
                 Exception e2 = new Exception(s2);
-                await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
                 return new Tuple<bool?, int, string>(b2, 2, s2); //todo: change to "return b2"
             }
             catch
@@ -292,7 +292,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             s3 += "\n";
             s3 += "GetHasBeenSentAsync";
             Exception e3 = new Exception(s3);
-            await Utils.NotifyUtil.NotifyOwners(e3, sender);
+            await Utils.NotifyUtil.NotifyOwners(e3, sender, 0);
             return new Tuple<bool?, int, string>(null, 3, s3);
         }
 
