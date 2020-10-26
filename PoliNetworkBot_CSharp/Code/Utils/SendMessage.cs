@@ -87,11 +87,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageSend r1 = null;
             try
             {
-                r1 = await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, null, replyToMessageId, disablePreviewLink);
+                r1 = await telegramBotClient.SendTextMessageAsync(chatid: chatId,
+                    text: text,
+                    chatType: chatType,
+                    lang: lang,
+                    parseMode: parseMode,
+                    username: null,
+                    replyMarkupObject: null,
+                    replyToMessageId: replyToMessageId, 
+                    disablePreviewLink: disablePreviewLink);
             }
             catch (Exception e1)
             {
-                ;
+                await NotifyUtil.NotifyOwners(e1, telegramBotClient);
             }
 
             return r1;
