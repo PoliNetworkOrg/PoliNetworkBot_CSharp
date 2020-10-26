@@ -96,8 +96,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
-                        if (success)
+                        Tuple<bool> success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
+                        if (success.Item1)
                             done.Add(dr);
                     }
                     catch
@@ -156,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
-        public static async Task<bool> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
+        public static async Task<Tuple<bool>> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
             long groupChatId, string[] time)
         {
             return await sender.BanUserFromGroup(target, groupChatId, e, time);

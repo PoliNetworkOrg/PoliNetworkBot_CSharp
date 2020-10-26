@@ -611,7 +611,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e, string[] time)
+        internal async Task<Tuple<bool>> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e, string[] time)
         {
             switch (_isbot)
             {
@@ -624,30 +624,30 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         if (untilDate == null)
                         {
                             await _botClient.KickChatMemberAsync(groupChatId, (int)target);
-                            return true;
+                            return new Tuple<bool>(true);
                         }
 
                         await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value);
-                        return true;
+                        return new Tuple<bool>(true);
                     }
                     catch
                     {
-                        return false;
+                        return new Tuple<bool>(false);
                     }
 
-                    return true;
+                    return new Tuple<bool>(true);
                     ;
                 case BotTypeApi.USER_BOT:
-                    return false;
+                    return new Tuple<bool>(false);
 
                 case BotTypeApi.DISGUISED_BOT:
-                    return false;
+                    return new Tuple<bool>(false);
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return false;
+            return new Tuple<bool>(false);
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()

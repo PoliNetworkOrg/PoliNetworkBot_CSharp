@@ -79,12 +79,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task<MessageSend> SendMessageInAGroup(TelegramBotAbstract telegramBotClient, int userId,
-            string lang, string username, Language text, string firstName, string lastName,
-            long chatId, ChatType chatType, ParseMode parseMode, long replyToMessageId,
+        internal static async Task<MessageSend> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
+            string lang, Language text,
+            long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
             bool disablePreviewLink)
         {
-            return await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, username, replyToMessageId, disablePreviewLink);
+            return await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, null, replyToMessageId, disablePreviewLink);
         }
 
         internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,

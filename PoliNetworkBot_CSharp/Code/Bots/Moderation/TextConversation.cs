@@ -71,11 +71,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             }
                         });
                         await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
-                            userId: e.Message.From.Id,
                             lang: e.Message.From.LanguageCode,
-                            username: e.Message.From.Username,
-                            text: text2, firstName: e.Message.From.FirstName,
-                            lastName: e.Message.From.LastName,
+                            text: text2, 
                             chatId: e.Message.Chat.Id,
                             chatType: e.Message.Chat.Type,
                             parseMode: ParseMode.Html,
@@ -104,11 +101,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             }
                         });
                         await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
-                            userId: e.Message.From.Id,
                             lang: e.Message.From.LanguageCode,
-                            username: e.Message.From.Username,
-                            text: text2, firstName: e.Message.From.FirstName,
-                            lastName: e.Message.From.LastName,
+                            text: text2,
                             chatId: e.Message.Chat.Id,
                             chatType: e.Message.Chat.Type,
                             parseMode: ParseMode.Html,

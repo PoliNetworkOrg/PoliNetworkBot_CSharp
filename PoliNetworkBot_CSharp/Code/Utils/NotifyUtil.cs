@@ -18,12 +18,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task NotifyOwners2Async(Language text, TelegramBotAbstract sender)
         {
-            foreach (Tuple<long, string> user in Data.GlobalVariables.Owners)
-            {
-                await Utils.SendMessage.SendMessageInPrivate(sender, usernameToSendTo: user.Item2,
-                    userIdToSendTo: user.Item1, langCode: "en",
-                    text: text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Default, messageIdToReplyTo: null);
-            }
+            const long group_exception = -438352042;
+            await Utils.SendMessage.SendMessageInAGroup(sender, "en", text, group_exception,
+                Telegram.Bot.Types.Enums.ChatType.Group, Telegram.Bot.Types.Enums.ParseMode.Default, null, true);
         }
 
         internal static async System.Threading.Tasks.Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo, TelegramBotAbstract sender)

@@ -102,9 +102,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", toSend }
             };
             Language text = new Language(dict);
-            await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName, e.Message.From.LastName,
-                e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+            await Utils.SendMessage.SendMessageInAGroup(
+                telegramBotClient, e.Message.From.LanguageCode,
+                text,
+                e.Message.Chat.Id, e.Message.Chat.Type, 
+                Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
         }
 
         private static List<string> GetTaken()
@@ -166,8 +168,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", "There is already "+user+" as the " + t + " king!" }
             };
             Language text = new Language(dict: dict4);
-            var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
-                e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+            var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient,  e.Message.From.LanguageCode,  text, 
+                e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
             return;
         }
 
@@ -214,8 +216,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                     {"en", "You have already too many titles!" + roles}
                 };
                 Language text = new Language(dict: dict4);
-                var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
-                    e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+                var r4 = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient,  e.Message.From.LanguageCode,   text,  
+                    e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
                 return;
             }
         }
@@ -319,8 +321,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", "Contratulations, you are the " + t + " king!" }
             };
             Language text = new Language(dict: dict);
-            var r = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, 0, e.Message.From.LanguageCode, e.Message.From.Username, text, e.Message.From.FirstName,
-                e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
+            var r = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient,  e.Message.From.LanguageCode, text,
+                e.Message.Chat.Id, e.Message.Chat.Type, Telegram.Bot.Types.Enums.ParseMode.Html, e.Message.MessageId, true);
             return r;
         }
     }
