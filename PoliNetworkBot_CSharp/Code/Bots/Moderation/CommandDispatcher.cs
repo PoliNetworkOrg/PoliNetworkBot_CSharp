@@ -317,11 +317,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
-            var done = await RestrictUser.BanAllAsync(sender, e, target, false);
+            Tuple<List<System.Data.DataRow>> done = await RestrictUser.BanAllAsync(sender, e, target, false);
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", "Target "+target+" unbanned from " + done.Count + " groups"},
-                {"it", "Target "+target+" sbannato da " + done.Count + " gruppi"}
+                {"en", "Target "+target+" unbanned from " + done.Item1.Count + " groups"},
+                {"it", "Target "+target+" sbannato da " + done.Item1.Count + " gruppi"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
@@ -348,11 +348,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 else
                 {
-                    var done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
+                    Tuple<List<System.Data.DataRow>> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "Target "+target[1]+" banned from " + done.Count + " groups"},
-                        {"it", "Target "+target[1]+" bannato da " + done.Count + " gruppi"}
+                        {"en", "Target "+target[1]+" banned from " + done.Item1.Count + " groups"},
+                        {"it", "Target "+target[1]+" bannato da " + done.Item1.Count + " gruppi"}
                     });
                     await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                         e.Message.From.LanguageCode,
@@ -364,11 +364,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             else
             {
                 string target2 = e.Message.ReplyToMessage.From.Id.ToString();
-                var done = await RestrictUser.BanAllAsync(sender, e, target2, true);
+                Tuple<List<System.Data.DataRow>> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
                 var text3 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Target "+target2+" banned from " + done.Count + " groups"},
-                    {"it", "Target "+target2+" bannato da " + done.Count + " gruppi"}
+                    {"en", "Target "+target2+" banned from " + done.Item1.Count + " groups"},
+                    {"it", "Target "+target2+" bannato da " + done.Item1.Count + " gruppi"}
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
