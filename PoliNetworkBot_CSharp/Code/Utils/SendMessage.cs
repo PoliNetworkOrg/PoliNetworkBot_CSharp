@@ -84,7 +84,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
             bool disablePreviewLink)
         {
-            return await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, null, replyToMessageId, disablePreviewLink);
+            MessageSend r1 = null;
+            try
+            {
+                r1 = await telegramBotClient.SendTextMessageAsync(chatId, text, chatType, lang, parseMode, null, null, replyToMessageId, disablePreviewLink);
+            }
+            catch (Exception e1)
+            {
+                ;
+            }
+
+            return r1;
         }
 
         internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,
