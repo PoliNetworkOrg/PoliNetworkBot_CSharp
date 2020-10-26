@@ -1,5 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -52,6 +53,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
             Language text = new Language(dict: dict);
             await NotifyOwners2Async(text, sender);
+        }
+
+        internal static async Task NotifyOwnersAsync(List<Exception> exceptions, TelegramBotAbstract sender, string v)
+        {
+            Language text = new Language(dict: new Dictionary<string, string>() {
+                { "en", v }
+            }) ;
+            await NotifyOwners2Async(text, sender);
+
+            foreach (var e1 in exceptions)
+            {
+                await NotifyOwners(e1, sender);
+            }
+
+            Language text2 = new Language(dict: new Dictionary<string, string>() {
+                { "en", "---End---"}
+            });
+            await NotifyOwners2Async(text2, sender);
         }
     }
 }

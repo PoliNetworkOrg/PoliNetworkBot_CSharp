@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
         }
 
-        internal static async Task<Tuple<List<DataRow>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+        internal static async Task<Tuple<List<DataRow>, List<Exception>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string target, bool banTarget)
         {
             UserIdFound targetId = await Info.GetTargetUserIdAsync(target, sender);
@@ -128,7 +128,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var r4 = done;
 
-            return new Tuple<List<DataRow>>(r4);
+            NotifyUtil.NotifyOwnersAsync(exceptions, sender, "Ban/Unban All of [" +  targetId.GetID() + "]");
+
+            return new Tuple<List<DataRow>, List<Exception>>(r4, exceptions);
         }
 
         private static void AddExceptionIfNeeded(ref List<Exception> exceptions, Exception item2)
