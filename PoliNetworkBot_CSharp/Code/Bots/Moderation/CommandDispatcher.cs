@@ -275,13 +275,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 sender, username, lang, null, true);
         }
 
-        private static async Task<Tuple<bool>> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
+        private static async Task<Tuple<bool, Exception>> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string[] stringInfo)
         {
-            var r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
-            if (!r)
+            Tuple<bool, Exception> r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
+            if (!r.Item1)
             {
-                return new Tuple<bool>(false);
+                return r;
             }
 
             if (e.Message.ReplyToMessage == null)
@@ -291,7 +291,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     Exception e2 = new Exception("Can't find userid (1)");
                     await Utils.NotifyUtil.NotifyOwners(e2, sender);
-                    return new Tuple<bool>(false);
+                    return new Tuple<bool, Exception>(false, e2);
                 }
                 else
                 {
@@ -300,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         Exception e2 = new Exception("Can't find userid (2)");
                         await Utils.NotifyUtil.NotifyOwners(e2, sender);
-                        return new Tuple<bool>(false);
+                        return new Tuple<bool, Exception>(false, e2);
                     }
                     else
                     {
