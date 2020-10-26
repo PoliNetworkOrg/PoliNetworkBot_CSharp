@@ -85,6 +85,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             bool disablePreviewLink)
         {
             MessageSend r1 = null;
+
+            if (telegramBotClient == null)
+            {
+                return null;
+            }
+
             try
             {
                 r1 = await telegramBotClient.SendTextMessageAsync(chatid: chatId,

@@ -9,6 +9,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async System.Threading.Tasks.Task NotifyOwners(Exception exception, TelegramBotAbstract sender)
         {
+            if (sender == null)
+                return;
+
             Language text = new Language(dict: new Dictionary<string, string>() {
                     {"it", "Eccezione! " + exception.Message + "\n\n" + exception.ToString() },
                     {"en", "Exception! " + exception.Message + "\n\n" + exception.ToString()  }
