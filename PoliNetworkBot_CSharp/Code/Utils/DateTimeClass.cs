@@ -263,7 +263,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         var x1 = reply.Split(" ");
-                        var x = x1[0];
+                        var x2 = x1[0];
+                        var x = x2.Split("-");
                         var orario = x1[1];
                         var orario2 = orario.Split(":");
                         var d3 = new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]),
