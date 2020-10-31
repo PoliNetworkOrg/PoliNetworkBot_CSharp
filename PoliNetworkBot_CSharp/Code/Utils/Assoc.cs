@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
@@ -128,8 +129,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             }
 
-            //const long idChatSentInto = Channels.PoliAssociazioni;
-            const long idChatSentInto = -432645805;
+            const long idChatSentInto = Channels.PoliAssociazioni;
+            //const long idChatSentInto = -432645805;
             ChatType chatTypeSendInto = ChatType.Group;
 
             var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
