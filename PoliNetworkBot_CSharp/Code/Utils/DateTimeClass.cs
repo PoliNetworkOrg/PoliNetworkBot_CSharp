@@ -3,6 +3,7 @@
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 #endregion
@@ -125,7 +126,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<DateTimeSchedule> AskDateAsync(int id, string text, string lang,
+        internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(int id, string text, string lang,
             TelegramBotAbstract sender,
             string username)
         {
@@ -140,14 +141,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "ora":
                 case "now":
                     {
-                        return new DateTimeSchedule(DateTime.Now, true);
+                        return new Tuple<DateTimeSchedule, Exception, string>( new DateTimeSchedule(DateTime.Now, true), null, s[1]);
                     }
             }
 
             return await AskDate2Async(id, lang, sender, username);
         }
 
-        private static async Task<DateTimeSchedule> AskDate2Async(int id, string lang, TelegramBotAbstract sender,
+        private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(int id, string lang, TelegramBotAbstract sender,
             string username)
         {
             var lang2 = new Language(new Dictionary<string, string>
@@ -157,11 +158,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
 
             string reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
-            var replyDatetime = GetDateTimeFromString(reply);
-            return new DateTimeSchedule(replyDatetime, true);
+            try
+            {
+                var replyDatetime = GetDateTimeFromString(reply);
+                if (replyDatetime.Item2 != null)
+                {
+                    return new Tuple<DateTimeSchedule, Exception, string>(null, replyDatetime.Item2, reply);
+                }
+
+                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(replyDatetime.Item1, true), null, reply);
+            }
+            catch (Exception e1)
+            {
+                return new Tuple<DateTimeSchedule, Exception,string>(null, e1, reply);
+            }
         }
 
-        private static DateTime? GetDateTimeFromString(string reply)
+        private static Tuple<DateTime?,Exception> GetDateTimeFromString(string reply)
         {
             if (string.IsNullOrEmpty(reply))
                 return null;
@@ -169,24 +182,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             reply = reply.ToLower();
 
             if (reply == "now" || reply == "ora")
-                return DateTime.Now;
+                return new Tuple<DateTime?, Exception>( DateTime.Now, null);
 
             if (reply.StartsWith("in a"))
             {
                 reply = reply.Substring(4).Trim();
-                return GetDateTimeFromString2(reply);
+                return  GetDateTimeFromString2(reply);
             }
 
             if (reply.StartsWith("fra "))
             {
                 reply = reply.Substring(4).Trim();
-                return GetDateTimeFromString2(reply);
+                return  GetDateTimeFromString2(reply);
             }
 
             if (reply.StartsWith("entro "))
             {
                 reply = reply.Substring(5).Trim();
-                return GetDateTimeFromString2(reply);
+                var d2 = GetDateTimeFromString2(reply);
+                return d2;
             }
 
             if (reply.Contains("/"))
@@ -208,10 +222,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                     var seconds = 0;
                                     if (s3.Length == 3) seconds = Convert.ToInt32(s3[2]);
 
-                                    return new DateTime(Convert.ToInt32(s2[2]),
+                                    var d1 = new DateTime(Convert.ToInt32(s2[2]),
                                         Convert.ToInt32(s2[1]), Convert.ToInt32(s2[0]),
                                         Convert.ToInt32(s3[0]), Convert.ToInt32(s3[1]),
                                         seconds);
+
+                                    return new Tuple<DateTime?, Exception>(d1, null);
                                 }
                                 catch
                                 {
@@ -244,22 +260,31 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 if (reply.Contains(" "))
                 {
-                    var x1 = reply.Split(" ");
-                    var x = x1[0];
-                    var orario = x1[1];
-                    var orario2 = orario.Split(":");
-                    return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]),
-                        Convert.ToInt32(orario2[0]), Convert.ToInt32(orario2[1]), 0);
+                    try
+                    {
+                        var x1 = reply.Split(" ");
+                        var x = x1[0];
+                        var orario = x1[1];
+                        var orario2 = orario.Split(":");
+                        var d3 = new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]),
+                            Convert.ToInt32(orario2[0]), Convert.ToInt32(orario2[1]), 0);
+                        return new Tuple<DateTime?, Exception>(d3, null);
+                    }
+                    catch (Exception e2)
+                    {
+                        return new Tuple<DateTime?, Exception>(null, e2);
+                    }
                 }
                 else
                 {
                     var x = reply.Split('-');
-                    return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]));
+                    return new Tuple<DateTime?, Exception>( new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2])), null);
                 }
             }
             else
             {
-                if (reply[0] >= '0' && reply[0] <= '9') return GetDateTimeFromString2(reply);
+                if (reply[0] >= '0' && reply[0] <= '9') 
+                    return  GetDateTimeFromString2(reply);
 
                 if (reply.StartsWith("un'"))
                 {
@@ -287,7 +312,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 dt.Value.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        private static DateTime? GetDateTimeFromString2(string reply)
+        private static Tuple<DateTime?, Exception> GetDateTimeFromString2(string reply)
         {
             //entro "reply"
             if (string.IsNullOrEmpty(reply))
@@ -302,7 +327,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "1 hour":
                 case "1 ora":
                     {
-                        return DateTime.Now.AddHours(1);
+                        return new Tuple<DateTime?, Exception>( DateTime.Now.AddHours(1), null);
                     }
 
                 case "un mese":
@@ -310,7 +335,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "1 mese":
                 case "1 month":
                     {
-                        return DateTime.Now.AddMonths(1);
+                        return new Tuple<DateTime?, Exception>( DateTime.Now.AddMonths(1), null);
                     }
 
                 case "giorno":
@@ -319,7 +344,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "1 giorno":
                 case "1 day":
                     {
-                        return DateTime.Now.AddDays(1);
+                        return new Tuple<DateTime?, Exception>( DateTime.Now.AddDays(1),null);
                     }
 
                 case "anno":
@@ -328,7 +353,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "1 anno":
                 case "1 year":
                     {
-                        return DateTime.Now.AddYears(1);
+                        return new Tuple<DateTime?, Exception>( DateTime.Now.AddYears(1), null);
                     }
             }
 
@@ -344,7 +369,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var i = GetHowManySeconds(reply);
             if (i == null) return null;
 
-            return DateTime.Now.AddSeconds(i.Value);
+            return new Tuple<DateTime?, Exception>( DateTime.Now.AddSeconds(i.Value), null);
         }
 
         internal static DateTime? GetFromString(string v)

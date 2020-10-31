@@ -195,10 +195,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private async static Task<MessageSend> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            DateTimeSchedule sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
-            DateTime? sentDate2 = sentDate.GetDate();
+            if (sentDate.Item2 != null)
+            {
+                Utils.NotifyUtil.NotifyOwners(sentDate.Item2, sender, 0,  sentDate.Item3);
+
+                return null;
+            }
+
+            DateTime? sentDate2 = sentDate.Item1.GetDate();
 
             Dictionary<string, string> dict = new Dictionary<string, string>() {
                 {"en", Utils.DateTimeClass.DateTimeToItalianFormat(sentDate2) }

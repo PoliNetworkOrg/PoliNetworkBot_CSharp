@@ -509,9 +509,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             int month;
             int year;
 
-            var datetime = await Utils.DateTimeClass.AskDateAsync(e.Message.From.Id, "Scegli un giorno", "it", sender, e.Message.From.Username);
+            Tuple<DateTimeSchedule, Exception, string> datetime = await Utils.DateTimeClass.AskDateAsync(e.Message.From.Id, "Scegli un giorno", "it", sender, e.Message.From.Username);
 
-            var d2 = datetime.GetDate();
+            if (datetime.Item2 != null)
+            {
+                throw datetime.Item2;
+                return null;
+            }
+
+            var d2 = datetime.Item1.GetDate();
             if (d2 == null)
             {
                 return null;

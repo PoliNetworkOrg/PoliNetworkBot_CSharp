@@ -105,15 +105,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
                 languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
 
-            DateTimeSchedule sentDate;
+            Tuple<DateTimeSchedule, Exception, string> sentDate;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
-                sentDate = new DateTimeSchedule(null, false);
+                sentDate = new Tuple<DateTimeSchedule, Exception, string>( new DateTimeSchedule(null, false), null, null);
             else
             {
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
-                DateTime? sdt = sentDate.GetDate();
+                if (sentDate.Item2 != null)
+                {
+                    await Utils.NotifyUtil.NotifyOwners(sentDate.Item2, sender, 0, sentDate.Item3);
+                    return false;
+                }
+
+                DateTime? sdt = sentDate.Item1.GetDate();
                 if (CheckIfDateTimeIsValid(sdt) == false)
                 {
                     var lang4 = new Language(new Dictionary<string, string>
@@ -133,7 +139,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             //const long idChatSentInto = -432645805;
             ChatType chatTypeSendInto = ChatType.Group;
 
-            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate, e.Message.From.Id,
+            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
                 messageFromIdEntity, idChatSentInto, sender, chatTypeSendInto);
 
             switch (successQueue)
