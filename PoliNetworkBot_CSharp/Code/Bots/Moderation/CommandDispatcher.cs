@@ -195,7 +195,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private async static Task<MessageSend> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+            DateTimeSchedule sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
             DateTime? sentDate2 = sentDate.GetDate();

@@ -129,7 +129,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract sender,
             string username)
         {
-            if (string.IsNullOrEmpty(text)) return await AskDate2Async(id, lang, sender, username);
+            if (string.IsNullOrEmpty(text)) 
+                return await AskDate2Async(id, lang, sender, username);
 
             var s = text.Split(' ');
             if (s.Length == 1) return await AskDate2Async(id, lang, sender, username);
@@ -155,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"en", "Insert a date (you can also write 'in an hour')"}
             });
 
-            var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
+            string reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
             var replyDatetime = GetDateTimeFromString(reply);
             return new DateTimeSchedule(replyDatetime, true);
         }
@@ -241,9 +242,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             else if (reply.Contains("-"))
             {
-                ;
-                var x = reply.Split('-');
-                return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]));
+                if (reply.Contains(" "))
+                {
+                    var x1 = reply.Split(" ");
+                    var x = x1[0];
+                    var orario = x1[1];
+                    var orario2 = orario.Split(":");
+                    return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]),
+                        Convert.ToInt32(orario2[0]), Convert.ToInt32(orario2[1]), 0);
+                }
+                else
+                {
+                    var x = reply.Split('-');
+                    return new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]));
+                }
             }
             else
             {
