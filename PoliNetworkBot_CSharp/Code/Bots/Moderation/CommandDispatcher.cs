@@ -195,12 +195,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private async static Task<MessageSend> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+            Tuple<DateTimeSchedule, Exception, string> sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
             if (sentDate.Item2 != null)
             {
-                Utils.NotifyUtil.NotifyOwners(sentDate.Item2, sender, 0,  sentDate.Item3);
+                await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( sentDate.Item2), sender, 0,  sentDate.Item3);
 
                 return null;
             }
@@ -298,7 +298,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (userIdFound == null)
                 {
                     Exception e2 = new Exception("Can't find userid (1)");
-                    await Utils.NotifyUtil.NotifyOwners(e2, sender);
+                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( e2), sender);
                     return new Tuple<bool, Exception>(false, e2);
                 }
                 else
@@ -307,7 +307,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (targetId == null)
                     {
                         Exception e2 = new Exception("Can't find userid (2)");
-                        await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
+                        await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( e2), sender, 0);
                         return new Tuple<bool, Exception>(false, e2);
                     }
                     else
@@ -325,7 +325,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
-            Tuple<List<DataRow>, List<Exception>> done = await RestrictUser.BanAllAsync(sender, e, target, false);
+            Tuple<List<DataRow>, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target, false);
             var text2 = new Language(new Dictionary<string, string>
             {
                 {"en", "Target "+target+" unbanned from " + done.Item1.Count + " groups"},
@@ -356,7 +356,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 else
                 {
-                    Tuple<List<DataRow>, List<Exception>> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
+                    Tuple<List<DataRow>, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
                     var text2 = new Language(new Dictionary<string, string>
                     {
                         {"en", "Target "+target[1]+" banned from " + done.Item1.Count + " groups"},
@@ -372,7 +372,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             else
             {
                 string target2 = e.Message.ReplyToMessage.From.Id.ToString();
-                Tuple<List<DataRow>, List<Exception>> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
+                Tuple<List<DataRow>, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
                 var text3 = new Language(new Dictionary<string, string>
                 {
                     {"en", "Target "+target2+" banned from " + done.Item1.Count + " groups"},
@@ -494,7 +494,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e2)
             {
-                await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
+                await Utils.NotifyUtil.NotifyOwners( new ExceptionNumbered( e2), sender, 0);
             }
 
             if (n == null)

@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
         }
 
-        internal static async Task<Tuple<List<DataRow>, List<Exception>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+        internal static async Task<Tuple<List<DataRow>, List<ExceptionNumbered>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string target, bool banTarget)
         {
             UserIdFound targetId = await Info.GetTargetUserIdAsync(target, sender);
@@ -91,7 +91,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var done = new List<DataRow>();
 
-            List<Exception> exceptions = new List<Exception>();
+            List<ExceptionNumbered> exceptions = new List<ExceptionNumbered>();
 
             if (banTarget)
                 foreach (DataRow dr in dt.Rows)
@@ -128,40 +128,49 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var r4 = done;
 
-            NotifyUtil.NotifyOwnersAsync(exceptions, sender, "Ban/Unban All of [" +  targetId.GetID() + "]");
+            int? targetId2 = targetId.GetID();
+            if (targetId2 == null)
+            {
+                await NotifyUtil.NotifyOwnersAsync(exceptions, sender, "Ban/Unban All of [UNKNOWN]", e.Message.From.LanguageCode);
+            }
+            else
+            {
+                string link2 = "tg://user?id=" + targetId2.Value.ToString();
+                await NotifyUtil.NotifyOwnersAsync(exceptions, sender, "Ban/Unban All of [<a href='"+link2+"'>" + targetId2.Value.ToString() +"</a>]", e.Message.From.LanguageCode);
+            }
 
-            return new Tuple<List<DataRow>, List<Exception>>(r4, exceptions);
+            return new Tuple<List<DataRow>, List<ExceptionNumbered>>(r4, exceptions);
         }
 
-        private static void AddExceptionIfNeeded(ref List<Exception> exceptions, Exception item2)
+        private static void AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
         {
             if (item2 == null)
                 return;
 
-            bool isPresent = FindIfPresentSimilarException(exceptions, item2);
-            if (isPresent == false)
-                exceptions.Add(item2);
+            Tuple<bool,int> isPresent = FindIfPresentSimilarException(exceptions, item2);
+            if (isPresent.Item1 == false)
+                exceptions.Add(new ExceptionNumbered(item2));
+            else
+                exceptions[isPresent.Item2].Increment(); 
         }
 
-        private static bool FindIfPresentSimilarException(List<Exception> exceptions, Exception item2)
+        private static Tuple<bool, int> FindIfPresentSimilarException(List<ExceptionNumbered> exceptions, Exception item2)
         {
-            foreach (var e1 in exceptions)
+            for (int i = 0; i < exceptions.Count; i++)
             {
+                ExceptionNumbered e1 = exceptions[i];
                 if (AreTheySimilar(e1, item2))
                 {
-                    return true;
+                    return new Tuple<bool, int>(true, i);
                 }
             }
 
-            return false;
+            return new Tuple<bool, int>(false, -1);
         }
 
-        private static bool AreTheySimilar(Exception e1, Exception item2)
+        private static bool AreTheySimilar(ExceptionNumbered e1, Exception item2)
         {
-            if (e1.Message == item2.Message)
-                return true;
-
-            return false;
+            return e1.AreTheySimilar(item2);
         }
 
         private static bool LogBanAction(int targetId, bool banned_true_unbanned_false, TelegramBotAbstract bot, int who_banned)

@@ -115,7 +115,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (sentDate.Item2 != null)
                 {
-                    await Utils.NotifyUtil.NotifyOwners(sentDate.Item2, sender, 0, sentDate.Item3);
+                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( sentDate.Item2), sender, 0, sentDate.Item3);
                     return false;
                 }
 
