@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
         }
 
-        internal static async Task<Tuple<List<DataRow>, List<ExceptionNumbered>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+        internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string target, bool banTarget)
         {
             UserIdFound targetId = await Info.GetTargetUserIdAsync(target, sender);
@@ -90,6 +90,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var done = new List<DataRow>();
+            var failed = new List<DataRow>();
 
             List<ExceptionNumbered> exceptions = new List<ExceptionNumbered>();
 
@@ -101,6 +102,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         Tuple<bool, Exception> success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
                         if (success.Item1)
                             done.Add(dr);
+                        else
+                            failed.Add(dr);
 
                         AddExceptionIfNeeded(ref exceptions, success.Item2);
                     }
@@ -116,6 +119,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         Tuple<bool, Exception> success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
                         if (success.Item1)
                             done.Add(dr);
+                        else
+                            failed.Add(dr);
 
                         AddExceptionIfNeeded(ref exceptions, success.Item2);
                     }
@@ -126,7 +131,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
-            var r4 = done;
 
             int? targetId2 = targetId.GetID();
             if (targetId2 == null)
@@ -139,7 +143,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 await NotifyUtil.NotifyOwnersAsync(exceptions, sender, "Ban/Unban All of [<a href='"+link2+"'>" + targetId2.Value.ToString() +"</a>]", e.Message.From.LanguageCode);
             }
 
-            return new Tuple<List<DataRow>, List<ExceptionNumbered>>(r4, exceptions);
+            BanUnbanAllResult r5 = new BanUnbanAllResult(done, failed);
+            return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>>(r5, exceptions);
         }
 
         private static void AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
