@@ -24,6 +24,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var cmdLines = e.Message.Text.Split(' ');
             var cmd = cmdLines[0].Trim();
+            if (cmd.Contains("@"))
+            {
+                string[] cmd2 = cmd.Split("@");
+                string botUsername = await sender.GetBotUsernameAsync();
+                if (cmd2[1].ToLower() != botUsername.ToLower())
+                {
+                    return;
+                }
+            }
+
             switch (cmd)
             {
                 case "/start":

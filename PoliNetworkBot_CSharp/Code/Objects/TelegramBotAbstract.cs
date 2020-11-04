@@ -26,6 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly TelegramBotClient _botClient;
         private readonly string _contactString;
         private readonly string mode;
+        private string username = null;
 
         internal string GetMode()
         {
@@ -34,9 +35,39 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private readonly long _id;
         private readonly BotTypeApi _isbot;
+
         public readonly TelegramClient _userbotClient;
 
         private readonly string _website;
+
+        internal async Task<string> GetBotUsernameAsync()
+        {
+            if (!string.IsNullOrEmpty(username))
+                return username;
+
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    {
+                        User x = await this._botClient.GetMeAsync();
+                        string u1 = x.Username;
+                        if (u1.StartsWith("@"))
+                            u1 = u1.Substring(1);
+
+                        username = u1;
+                        return username;
+                    }
+                    break;
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return null;
+        }
+
+
 
         private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi, string website, string contactString, long id)
         {
