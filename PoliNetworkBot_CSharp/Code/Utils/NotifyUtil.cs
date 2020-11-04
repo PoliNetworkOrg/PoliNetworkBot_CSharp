@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (sender == null)
                 return;
 
-            string message = exception.Message + "\n\n" + exception.GetException().ToString();
+            string message = exception.Message + "\n\n" + exception.GetException().ToString() + "\n\n" + exception.StackTrace.ToString();
             if (!string.IsNullOrEmpty(extrainfo))
             {
                 message += "\n\n" + extrainfo;
@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<MessageSend> NotifyOwners3(Language text2, TelegramBotAbstract sender, long? replyToMessageId, int v, string langCode)
         {
             return await SendMessage.SendMessageInAGroup(sender, langCode, text2, group_exception,
-                    Telegram.Bot.Types.Enums.ChatType.Group, Telegram.Bot.Types.Enums.ParseMode.Default, replyToMessageId: replyToMessageId, true, v);
+                    Telegram.Bot.Types.Enums.ChatType.Group, Telegram.Bot.Types.Enums.ParseMode.Html, replyToMessageId: replyToMessageId, true, v);
         }
 
         internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, int v = 0)
