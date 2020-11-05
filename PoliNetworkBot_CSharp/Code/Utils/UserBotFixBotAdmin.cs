@@ -1,4 +1,6 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -273,61 +275,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             const long userIdOfOurBot = 768169879;
             TLInputChannel channel = new TLInputChannel() { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
-            TLVector<TLAbsInputUser> users = new TLVector<TLAbsInputUser>();
-            if (u == null)
-                return false;
-            long accessHashUser = 0;
 
-            ;
+            ResultF1 r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
+            if (r4.returnobject != null)
+                return r4.returnobject;
 
-            TLInputPeerUser u5 = null;
-            if (u is TLInputPeerUser u4)
-            {
-                u5 = u4;
-            }
-
-            if (u5 == null)
-                return false;
-
-            accessHashUser = u5.AccessHash;
-
-            TLAbsInputUser u2 = new TLInputUser() { UserId = (int)userIdOfOurBot, AccessHash = accessHashUser };
-            users.Add(u2);
-            TLAbsUpdates r = null;
-            try
-            {
-                r = await telegramBotAbstract._userbotClient.ChannelsInviteToChannel(channel, users: users);
-            }
-            catch (Exception e)
-            {
-                string m = "\n";
-                m += "We can't add our bot in this group:\n";
-                m += "[Title] " + x5.Title + "\n";
-                m += "[ID]    " + x5.Id.ToString();
-                m += "\n --- end --- ";
-                m += "\n";
-                Exception e2 = new Exception(m, e);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
-                return false;
-            }
-
-            Thread.Sleep(2000);
-
-            int? idMessageAdded = GetIdMessageAdded(r);
-
-            Tuple<TLAbsUpdates, Exception> r2 = null;
-            try
-            {
-                r2 = await PromoteToAdminAsync(u2, channel, telegramBotAbstract);
-            }
-            catch (Exception e2)
-            {
-                ;
-            }
-
-            ;
-
-            if (r2.Item1 == null)
+            if (r4.r2.Item1 == null)
             {
                 string m = "\n";
                 m += "We can't make our bot admin in this group:\n";
@@ -335,10 +288,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "[ID]    " + x5.Id.ToString();
                 m += "\n --- end --- ";
                 m += "\n";
-                Exception e2 = new Exception(m, r2.Item2);
+                Exception e2 = new Exception(m, r4.r2.Item2);
                 await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, 0);
 
-                await DeleteMessageAddedAsync(idMessageAdded, x5, telegramBotAbstract);
+                await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
 
                 return false;
             }
@@ -349,7 +302,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                await DeleteMessageAddedAsync(idMessageAdded, x5, telegramBotAbstract);
+                await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
             }
             catch (Exception e5)
             {
@@ -359,7 +312,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             id_of_chats_we_know_are_ok[x5.Id] = true;
 
-            return r != null && r2.Item1 != null;
+            return r4.r != null && r4.r2.Item1 != null;
         }
 
         private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChannel x5, TelegramBotAbstract telegramBotAbstract)
@@ -524,24 +477,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new Tuple<TLAbsUpdates, Exception>(r2, null);
         }
 
-        private static async Task<bool?> InsertOurBotAsyncChat(TLChat x5,
-            TLAbsInputPeer u, long? accessHash, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<ResultF1> F1Async(TelegramBotAbstract telegramBotAbstract, long userIdOfOurBot, TLAbsInputPeer u, string x5Title, int x5Id, TLInputChannel channel)
         {
-            ;
-
-            ;
-
-            const long userIdOfOurBot = 768169879;
-
-            TLInputChannel channel = null;
-            if (accessHash != null)
-                channel = new TLInputChannel() { AccessHash = accessHash.Value, ChannelId = x5.Id };
-            else
-                channel = new TLInputChannel() { ChannelId = x5.Id };
-
             TLVector<TLAbsInputUser> users = new TLVector<TLAbsInputUser>();
             if (u == null)
-                return false;
+                return new ResultF1(returnobject: false, null, null, null);
+
             long accessHashUser = 0;
 
             ;
@@ -553,7 +494,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (u5 == null)
-                return false;
+                return new ResultF1(returnobject: false, null, null, null);
 
             accessHashUser = u5.AccessHash;
 
@@ -568,13 +509,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 string m = "\n";
                 m += "We can't add our bot in this group:\n";
-                m += "[Title] " + x5.Title + "\n";
-                m += "[ID]    " + x5.Id.ToString();
+                m += "[Title] " + x5Title + "\n";
+                m += "[ID]    " + x5Id.ToString();
                 m += "\n --- end --- ";
                 m += "\n";
                 Exception e2 = new Exception(m, e);
                 await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
-                return false;
+
+                return new ResultF1(returnobject: false, null, r, null);
             }
 
             Thread.Sleep(2000);
@@ -593,7 +535,29 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             ;
 
-            if (r2.Item1 == null)
+            return new ResultF1(null, idMessageAdded, r, r2);
+        }
+
+        private static async Task<bool?> InsertOurBotAsyncChat(TLChat x5,
+            TLAbsInputPeer u, long? accessHash, TelegramBotAbstract telegramBotAbstract)
+        {
+            ;
+
+            ;
+
+            const long userIdOfOurBot = 768169879;
+
+            TLInputChannel channel = null;
+            if (accessHash != null)
+                channel = new TLInputChannel() { AccessHash = accessHash.Value, ChannelId = x5.Id };
+            else
+                channel = new TLInputChannel() { ChannelId = x5.Id };
+
+            ResultF1 r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
+            if (r4.returnobject != null)
+                return r4.returnobject.Value;
+ 
+            if (r4.r2.Item1 == null)
             {
                 string m = "\n";
                 m += "We can't make our bot admin in this group:\n";
@@ -601,10 +565,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "[ID]    " + x5.Id.ToString();
                 m += "\n --- end --- ";
                 m += "\n";
-                Exception e2 = new Exception(m, r2.Item2);
+                Exception e2 = new Exception(m, r4.r2.Item2);
                 await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
 
-                await DeleteMessageAddedAsync(idMessageAdded, x5, accessHash, telegramBotAbstract);
+                await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
 
                 return false;
             }
@@ -613,11 +577,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             ;
 
-            await DeleteMessageAddedAsync(idMessageAdded, x5, accessHash, telegramBotAbstract);
+            await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
 
             id_of_chats_we_know_are_ok[x5.Id] = true;
 
-            return r != null && r2.Item1 != null;
+            return r4.r != null && r4.r2.Item1 != null;
 
             return null;
         }
