@@ -5,6 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -89,6 +90,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
             }
 
+            await AlertActionStartedAsync(sender, target, e);
+
+
             var done = new List<DataRow>();
             var failed = new List<DataRow>();
 
@@ -96,8 +100,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             int nExceptions = 0;
 
+            const int TIME_SLEEP_BETWEEN_BAN_UNBAN = 10;
+
             if (banTarget)
                 foreach (DataRow dr in dt.Rows)
+                {
+                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
                     try
                     {
                         var groupChatId = (long)dr["id"];
@@ -113,8 +121,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         ;
                     }
+                }
             else
                 foreach (DataRow dr in dt.Rows)
+                {
+                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
                     try
                     {
                         var groupChatId = (long)dr["id"];
@@ -130,6 +141,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         ;
                     }
+                }
 
             LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
@@ -150,6 +162,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             BanUnbanAllResult r5 = new BanUnbanAllResult(done, failed);
             return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int>(r5, exceptions, nExceptions);
+        }
+
+        private static async Task AlertActionStartedAsync(TelegramBotAbstract sender, string target, MessageEventArgs e)
+        {
+            var text7 = new Language(new Dictionary<string, string>
+                {
+                    {
+                        "en", "Action started: '" + target + "'"
+                    },
+                    {
+                        "it", "Azione avviata: '" + target + "'"
+                    }
+                });
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username,
+                text7,
+                parseMode: ParseMode.Default,
+                e.Message.MessageId);
         }
 
         private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
