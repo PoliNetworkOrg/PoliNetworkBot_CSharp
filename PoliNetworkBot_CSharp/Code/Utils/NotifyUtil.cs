@@ -23,6 +23,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message3 = "";
                 try
                 {
+                    message3 += "Number of times: ";
+                    message3 += exception.GetNumberOfTimes();
+                    message3 += "\n\n";
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+                try
+                {
                     message3 += "Message:\n";
                     message3 += exception.Message;
                     message3 += "\n\n";
@@ -70,25 +80,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (r1 == null)
                 return;
 
-            if (r1.IsSuccess())
-            {
-                int v2 = exception.GetNumberOfTimes();
-                if (v <= 1)
-                {
-                    return;
-                }
-
-                string message2 = v2.ToString();
-
-                Language text2 = new Language(dict: new Dictionary<string, string>() {
-                    {"it", "Numero di volte: " + message2 },
-                    {"en", "Number of times: " + message2 }
-                });
-
-                long? replyToMessageId = r1.GetMessageID();
-
-                await NotifyOwners3(text2, sender, replyToMessageId, v, langCode);
-            }
         }
 
         private static async Task<MessageSend> NotifyOwners3(Language text2, TelegramBotAbstract sender, long? replyToMessageId, int v, string langCode)
