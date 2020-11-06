@@ -93,7 +93,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                            _ = UnbanAllAsync(sender, e, cmdLines[1]);
+                            _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
                         else
                             await DefaultCommand(sender, e);
                         return;
@@ -333,10 +333,36 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
+        private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
         {
-            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target, false);
-            Language text2 = done.Item1.GetLanguage(ban_true_unban_false: false, target, done.Item3);
+            await BanAllUnbanAllMethod1Async(false, GetFinalTarget(e, target), e, sender, lang, username);
+        }
+
+        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+            IReadOnlyList<string> target, string lang, string username)
+        {
+            await BanAllUnbanAllMethod1Async(true, GetFinalTarget(e, target), e, sender, lang, username);
+        }
+
+        private static async Task BanAllUnbanAllMethod1Async(bool ban_true_unban_false, string finalTarget,
+            MessageEventArgs e, TelegramBotAbstract sender, string lang, string username)
+        {
+            if (string.IsNullOrEmpty(finalTarget))
+            {
+                var lang2 = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "We can't find the target."},
+                        {"it", "Non riusciamo a trovare il bersaglio"}
+                    });
+                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
+                    lang, ParseMode.Default, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+
+                return;
+            }
+
+            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, finalTarget, ban_true_unban_false);
+            var text2 = done.Item1.GetLanguage(ban_true_unban_false, finalTarget, done.Item3);
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
@@ -345,45 +371,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.MessageId);
         }
 
-        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
-            IReadOnlyList<string> target, string lang, string username)
+        private static string GetFinalTarget(MessageEventArgs e, IReadOnlyList<string> target)
         {
-            if (e.Message.ReplyToMessage == null)
-            {
-                if (target.Count < 2)
-                {
-                    var lang2 = new Language(new Dictionary<string, string>
-                    {
-                        {"en", "We can't find the target."},
-                        {"it", "Non riusciamo a trovare il bersaglio"}
-                    });
-                    await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
-                        lang, ParseMode.Default, username: username,
-                        replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-                }
-                else
-                {
-                    Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
-                    var text2 = done.Item1.GetLanguage(true, target[1], done.Item3);
-     
-                    await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2,
-                        parseMode: ParseMode.Default,
-                        e.Message.MessageId);
-                }
-            }
-            else
-            {
-                string target2 = e.Message.ReplyToMessage.From.Id.ToString();
-                Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
-                var text3 = done.Item1.GetLanguage(true, target2, done.Item3);
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username, text3,
-                    parseMode: ParseMode.Default,
-                    e.Message.MessageId);
-            }
+            return (e.Message.ReplyToMessage == null && target.Count >= 2) ? target[1] : e.Message.ReplyToMessage.From.Id.ToString();
         }
 
         private static async Task<bool> DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
