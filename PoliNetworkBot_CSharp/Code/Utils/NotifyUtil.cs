@@ -17,25 +17,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (sender == null)
                 return;
 
-            string message = null;
-
+            string message3;
             try
             {
-                message = exception.Message + "\n\n" + exception.GetException().ToString() + "\n\n" + exception.StackTrace.ToString();
+                message3 = exception.Message + "\n\n" + exception.GetException().ToString() + "\n\n" + exception.StackTrace.ToString();
                 if (!string.IsNullOrEmpty(extrainfo))
                 {
-                    message += "\n\n" + extrainfo;
+                    message3 += "\n\n" + extrainfo;
                 }
             }
             catch (Exception e1)
             {
-                message = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
-                return;
+                message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
             }
 
             Language text = new Language(dict: new Dictionary<string, string>() {
-                    {"it", "Eccezione! " + message },
-                    {"en", "Exception! " + message }
+                    {"it", "Eccezione! " + message3 },
+                    {"en", "Exception! " + message3 }
                 });
 
             MessageSend r1 = await NotifyOwners2Async(text, sender, v, langCode, replyToMessageId2);
