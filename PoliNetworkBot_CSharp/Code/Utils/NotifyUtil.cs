@@ -20,7 +20,37 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string message3;
             try
             {
-                message3 = exception.Message + "\n\n" + exception.GetException().ToString() + "\n\n" + exception.StackTrace.ToString();
+                message3 = "";
+                try
+                {
+                    message3 += "Message:\n";
+                    message3 += exception.Message;
+                    message3 += "\n\n";
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+                try
+                {
+                    message3 += "ExceptionToString:\n";
+                    message3 += exception.GetException().ToString();
+                    message3 += "\n\n";
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+                try
+                {
+                    message3 += "StackTrace:\n";
+                    message3 += exception.StackTrace.ToString();
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+
                 if (!string.IsNullOrEmpty(extrainfo))
                 {
                     message3 += "\n\n" + extrainfo;
