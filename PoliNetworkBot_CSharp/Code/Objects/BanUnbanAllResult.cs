@@ -32,8 +32,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "Target "+target+" banned from " + done + " groups" + "\n" + "not banned from " + failed.Count + " groups"},
-                        {"it", "Target "+target+" bannato da " + done + " gruppi"+ "\n" + "non bannato da " + failed.Count + " gruppi"}
+                        {"en", "Target "+target+" banned from " + done.Count + " groups" + "\n" + "not banned from " + failed.Count + " groups"},
+                        {"it", "Target "+target+" bannato da " + done.Count + " gruppi"+ "\n" + "non bannato da " + failed.Count + " gruppi"}
                     });
 
                 return text2;
