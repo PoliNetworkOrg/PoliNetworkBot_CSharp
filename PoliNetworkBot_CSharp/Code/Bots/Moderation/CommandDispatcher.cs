@@ -335,8 +335,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string target)
         {
-            Tuple<BanUnbanAllResult, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target, false);
-            Language text2 = done.Item1.GetLanguage(ban_true_unban_false: false, target);
+            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target, false);
+            Language text2 = done.Item1.GetLanguage(ban_true_unban_false: false, target, done.Item3);
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
@@ -363,8 +363,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 else
                 {
-                    Tuple<BanUnbanAllResult, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
-                    var text2 = done.Item1.GetLanguage(true, target[1]);
+                    Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target[1], true);
+                    var text2 = done.Item1.GetLanguage(true, target[1], done.Item3);
      
                     await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                         e.Message.From.LanguageCode,
@@ -376,8 +376,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             else
             {
                 string target2 = e.Message.ReplyToMessage.From.Id.ToString();
-                Tuple<BanUnbanAllResult, List<ExceptionNumbered>> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
-                var text3 = done.Item1.GetLanguage(true, target2);
+                Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, target2, true);
+                var text3 = done.Item1.GetLanguage(true, target2, done.Item3);
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
                     e.Message.From.Username, text3,

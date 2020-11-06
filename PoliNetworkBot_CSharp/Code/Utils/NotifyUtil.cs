@@ -110,7 +110,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
         }
 
-        internal static async Task NotifyOwnersAsync(List<ExceptionNumbered> exceptions, TelegramBotAbstract sender, string v, string langCode, long? replyToMessageId = null)
+        internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions, TelegramBotAbstract sender, string v, string langCode, long? replyToMessageId = null)
         {
             MessageSend m = null;
             try
@@ -127,7 +127,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                foreach (ExceptionNumbered e1 in exceptions)
+                Language text = new Language(dict: new Dictionary<string, string>() {
+                { "en", "Number of exceptions: " + exceptions.Item2 + " - " + exceptions.Item1.Count }
+                });
+                _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+            }
+            catch
+            {
+                ;
+            }
+
+            try
+            {
+                foreach (ExceptionNumbered e1 in exceptions.Item1)
                 {
                     try
                     {
