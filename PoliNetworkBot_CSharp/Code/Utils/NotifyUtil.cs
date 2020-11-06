@@ -10,7 +10,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         const long group_exception = -438352042;
         const string default_lang = "en";
 
-        internal static async System.Threading.Tasks.Task NotifyOwners(ExceptionNumbered exception, TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang)
+        internal static async System.Threading.Tasks.Task NotifyOwners(ExceptionNumbered exception, 
+            TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang,
+            long ? replyToMessageId2 = null)
         {
             if (sender == null)
                 return;
@@ -26,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"en", "Exception! " + message }
                 });
 
-            var r1 = await NotifyOwners2Async(text, sender, v, langCode);
+            var r1 = await NotifyOwners2Async(text, sender, v, langCode, replyToMessageId2);
             if (r1 == null)
                 return;
 
@@ -62,9 +64,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, v);
         }
 
-        private static async Task<MessageSend> NotifyOwners2Async(Language text, TelegramBotAbstract sender, int v, string langCode)
+        private static async Task<MessageSend> NotifyOwners2Async(Language text, TelegramBotAbstract sender, int v, string langCode, long? replyto)
         {
-            return await NotifyOwners3(text, sender, null, v, langCode);
+            return await NotifyOwners3(text, sender, replyto, v, langCode );
         }
 
         internal static async System.Threading.Tasks.Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo, TelegramBotAbstract sender)
@@ -89,31 +91,61 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await NotifyOwners(exception, sender, 0);
         }
 
-        internal static async Task NotifyOwners(Exception item2, string message, TelegramBotAbstract sender, string langCode)
+        internal static async Task NotifyOwners(Exception item2, string message, TelegramBotAbstract sender, string langCode, long? replyToMessageId = null)
         {
             System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>() {
                 { "en", message}
             };
             Language text = new Language(dict: dict);
-            await NotifyOwners2Async(text, sender, 0, langCode);
+            await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
         }
 
-        internal static async Task NotifyOwnersAsync(List<ExceptionNumbered> exceptions, TelegramBotAbstract sender, string v, string langCode)
+        internal static async Task NotifyOwnersAsync(List<ExceptionNumbered> exceptions, TelegramBotAbstract sender, string v, string langCode, long? replyToMessageId = null)
         {
-            Language text = new Language(dict: new Dictionary<string, string>() {
-                { "en", v }
-            }) ;
-            await NotifyOwners2Async(text, sender, 0, langCode);
-
-            foreach (var e1 in exceptions)
+            MessageSend m = null;
+            try
             {
-                await NotifyOwners(e1, sender, 0);
+                Language text = new Language(dict: new Dictionary<string, string>() {
+                { "en", v }
+                });
+                m =  await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+            }
+            catch
+            {
+                ;
             }
 
-            Language text2 = new Language(dict: new Dictionary<string, string>() {
+            try
+            {
+                foreach (var e1 in exceptions)
+                {
+                    await NotifyOwners(e1, sender, 0);
+                }
+            }
+            catch
+            {
+                ;
+            }
+
+
+            try
+            {
+                Language text2 = new Language(dict: new Dictionary<string, string>() {
                 { "en", "---End---"}
-            });
-            await NotifyOwners2Async(text2, sender, 0, langCode);
+                });
+
+                long? replyto = null; ;
+
+                if (m!= null)
+                {
+                    replyto = m.GetMessageID();
+                }
+                await NotifyOwners2Async(text2, sender, 0, langCode, replyto);
+            }
+            catch
+            {
+                ;
+            }
         }
     }
 }
