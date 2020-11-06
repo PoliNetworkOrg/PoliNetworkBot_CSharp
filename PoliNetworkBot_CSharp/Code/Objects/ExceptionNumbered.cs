@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         const int default_v = 1;
 
-        public ExceptionNumbered(Exception item1, int v = default_v) : base(item1.Message)
+        public ExceptionNumbered(Exception item1, int v = default_v) : base(item1.Message, item1)
         {
             this.v = v;
         }
