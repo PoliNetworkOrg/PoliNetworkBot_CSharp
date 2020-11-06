@@ -369,6 +369,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.From.Username, text2,
                 parseMode: ParseMode.Default,
                 e.Message.MessageId);
+
+            await SendReportOfSuccessAndFailures(sender, e, done);
+        }
+
+        private static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract sender, MessageEventArgs e, 
+            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done)
+        {
+            try
+            {
+                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(done.Item1.GetSuccess()), "success.bin", sender, e);
+                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(done.Item1.GetFailed()), "failed.bin", sender, e);
+            }
+            catch
+            {
+                ;
+            }
+        }
+
+        private static async Task SendReportOfSuccessAndFailures2(Stream stream, string filename, TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            TelegramFile file = new TelegramFile(stream, filename, "", "application/octet-stream");
+            Tuple<TLAbsInputPeer, long> peer = new Tuple<TLAbsInputPeer, long>(null, e.Message.From.Id);
+            Language text = new Language(dict: new Dictionary<string, string>() {
+                {"en", "" }
+            });
+            await Utils.SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+                sender, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
 
         private static string GetFinalTarget(MessageEventArgs e, IReadOnlyList<string> target)

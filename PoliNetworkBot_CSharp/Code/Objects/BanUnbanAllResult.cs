@@ -64,5 +64,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
         }
+
+        internal List<DataRow> GetSuccess()
+        {
+            return done;
+        }
+
+        internal List<DataRow> GetFailed()
+        {
+            return failed;
+        }
     }
 }
