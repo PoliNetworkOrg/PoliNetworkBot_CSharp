@@ -7,7 +7,6 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
@@ -107,11 +106,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/getGroups":
                     {
-                        if ((GlobalVariables.Creators.Contains(e.Message.From.Username) || Utils.Owners.CheckIfOwner(e.Message.From.Id)) 
+                        if ((GlobalVariables.Creators.Contains(e.Message.From.Username) || Utils.Owners.CheckIfOwner(e.Message.From.Id))
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             string username = null;
-                            if (!string.IsNullOrEmpty(e.Message.From.Username)) 
+                            if (!string.IsNullOrEmpty(e.Message.From.Username))
                                 username = e.Message.From.Username;
 
                             _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode);
@@ -210,7 +209,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (sentDate.Item2 != null)
             {
-                await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( sentDate.Item2), sender, 0,  sentDate.Item3);
+                await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, 0, sentDate.Item3);
 
                 return null;
             }
@@ -308,7 +307,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (userIdFound == null)
                 {
                     Exception e2 = new Exception("Can't find userid (1)");
-                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( e2), sender);
+                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender);
                     return new Tuple<bool, Exception>(false, e2);
                 }
                 else
@@ -317,7 +316,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (targetId == null)
                     {
                         Exception e2 = new Exception("Can't find userid (2)");
-                        await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( e2), sender, 0);
+                        await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, 0);
                         return new Tuple<bool, Exception>(false, e2);
                     }
                     else
@@ -373,7 +372,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await SendReportOfSuccessAndFailures(sender, e, done);
         }
 
-        private static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract sender, MessageEventArgs e, 
+        private static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract sender, MessageEventArgs e,
             Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done)
         {
             try
@@ -511,7 +510,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e2)
             {
-                await Utils.NotifyUtil.NotifyOwners( new ExceptionNumbered( e2), sender, 0);
+                await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, 0);
             }
 
             if (n == null)

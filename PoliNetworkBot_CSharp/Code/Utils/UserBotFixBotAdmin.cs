@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 }
 
-                 if (x == null)
+                if (x == null)
                     return i > 0;
 
                 if (x is TLDialogs x2)
@@ -556,7 +555,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             ResultF1 r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)
                 return r4.returnobject.Value;
- 
+
             if (r4.r2.Item1 == null)
             {
                 string m = "\n";

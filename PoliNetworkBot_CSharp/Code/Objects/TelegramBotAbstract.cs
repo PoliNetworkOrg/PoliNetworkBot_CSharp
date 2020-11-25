@@ -58,16 +58,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return username;
                     }
                     break;
+
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
 
             return null;
         }
-
-
 
         private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi, string website, string contactString, long id)
         {
@@ -738,7 +738,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         await _botClient.UnbanChatMemberAsync(groupChatId, target);
-                        return new Tuple<bool, Exception>( true, null);
+                        return new Tuple<bool, Exception>(true, null);
                     }
                     catch (Exception e1)
                     {

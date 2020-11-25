@@ -1,5 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -31,11 +30,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     {
                         "it",
-                        "Target "+target+" sbannato da " + done.Count + " gruppi" + "\n" + 
+                        "Target "+target+" sbannato da " + done.Count + " gruppi" + "\n" +
                         "non sbannato da " + failed.Count + " gruppi" + "\n" +
                         "numero eccezioni = " + nExceptions
                     }
-
                 });
 
                 return text2;
@@ -57,12 +55,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             "non bannato da " + failed.Count + " gruppi"+ "\n" +
                             "numero eccezioni = " + nExceptions
                         }
-
                     });
 
                 return text2;
             }
-
         }
 
         internal List<DataRow> GetSuccess()

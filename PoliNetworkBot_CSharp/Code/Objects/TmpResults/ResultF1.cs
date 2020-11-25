@@ -10,9 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TmpResults
         public readonly TLAbsUpdates r;
         public readonly Tuple<TLAbsUpdates, Exception> r2;
 
-    
-
-        public ResultF1(bool? returnobject, int? idMessageAdded, TLAbsUpdates r, Tuple<TLAbsUpdates, Exception> r2) 
+        public ResultF1(bool? returnobject, int? idMessageAdded, TLAbsUpdates r, Tuple<TLAbsUpdates, Exception> r2)
         {
             this.returnobject = returnobject;
             this.idMessageAdded = idMessageAdded;

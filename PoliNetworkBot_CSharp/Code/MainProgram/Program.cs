@@ -89,8 +89,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         NewConfig.NewConfigMethod(false, false, true, false, false);
                         return;
                     }
-
-          
             }
         }
 

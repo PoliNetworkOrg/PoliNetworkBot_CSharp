@@ -106,27 +106,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    TelegramBotAbstract botToReportException = FindBotIfNeeded(null, telegramBotAbstract); 
+                    TelegramBotAbstract botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
                     var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue, botToReportException);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                     if (telegramBotAbstract != null && r1 != null)// && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                     {
                         switch (r1.scheduleMessageSentResult)
                         {
-                            case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:         
-                            case Enums.ScheduleMessageSentResult.FAILED_SEND:          
-                            case Enums.ScheduleMessageSentResult.SUCCESS:    
+                            case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+                            case Enums.ScheduleMessageSentResult.FAILED_SEND:
+                            case Enums.ScheduleMessageSentResult.SUCCESS:
                             case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
                                 {
                                     await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
                                     break;
                                 }
-                     
+
                             case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                             case Enums.ScheduleMessageSentResult.ALREADY_SENT:
                                 break;
                         }
-                    
                     }
                 }
                 catch (Exception e)
@@ -190,7 +189,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract, 0);
         }
 
-        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract, 
+        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract,
             bool schedule, TelegramBotAbstract botToReportException)
         {
             bool? has_been_sent = null;
@@ -202,7 +201,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             catch (Exception e3)
             {
                 await Utils.NotifyUtil.NotifyOwners(e3, botToReportException, 0);
-                
             }
 
             if (r1 != null)

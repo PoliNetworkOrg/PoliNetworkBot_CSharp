@@ -103,7 +103,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     parseMode: parseMode,
                     username: null,
                     replyMarkupObject: null,
-                    replyToMessageId: replyToMessageId, 
+                    replyToMessageId: replyToMessageId,
                     disablePreviewLink: disablePreviewLink);
             }
             catch (Exception e1)

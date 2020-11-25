@@ -92,7 +92,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             await AlertActionStartedAsync(sender, target, e);
 
-
             var done = new List<DataRow>();
             var failed = new List<DataRow>();
 
@@ -145,7 +144,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
-
             int? targetId2 = targetId.GetID();
             Tuple<List<ExceptionNumbered>, int> r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
             if (targetId2 == null)
@@ -188,12 +186,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (item2 == null)
                 return 0;
 
-            Tuple<bool,int> isPresent = FindIfPresentSimilarException(exceptions, item2);
+            Tuple<bool, int> isPresent = FindIfPresentSimilarException(exceptions, item2);
             if (isPresent.Item1 == false)
                 exceptions.Add(new ExceptionNumbered(item2));
             else
                 exceptions[isPresent.Item2].Increment();
-
 
             return 1;
         }

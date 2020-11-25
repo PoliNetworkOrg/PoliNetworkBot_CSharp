@@ -107,7 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             Tuple<DateTimeSchedule, Exception, string> sentDate;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
-                sentDate = new Tuple<DateTimeSchedule, Exception, string>( new DateTimeSchedule(null, false), null, null);
+                sentDate = new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(null, false), null, null);
             else
             {
                 sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
@@ -115,7 +115,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (sentDate.Item2 != null)
                 {
-                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered( sentDate.Item2), sender, 0, sentDate.Item3);
+                    await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, 0, sentDate.Item3);
                     return false;
                 }
 

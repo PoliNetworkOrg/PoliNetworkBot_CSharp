@@ -7,12 +7,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NotifyUtil
     {
-        const long group_exception = -438352042;
-        const string default_lang = "en";
+        private const long group_exception = -438352042;
+        private const string default_lang = "en";
 
-        internal static async System.Threading.Tasks.Task NotifyOwners(ExceptionNumbered exception, 
+        internal static async System.Threading.Tasks.Task NotifyOwners(ExceptionNumbered exception,
             TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang,
-            long ? replyToMessageId2 = null)
+            long? replyToMessageId2 = null)
         {
             if (sender == null)
                 return;
@@ -79,7 +79,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageSend r1 = await NotifyOwners2Async(text, sender, v, langCode, replyToMessageId2);
             if (r1 == null)
                 return;
-
         }
 
         private static async Task<MessageSend> NotifyOwners3(Language text2, TelegramBotAbstract sender, long? replyToMessageId, int v, string langCode)
@@ -95,7 +94,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task<MessageSend> NotifyOwners2Async(Language text, TelegramBotAbstract sender, int v, string langCode, long? replyto)
         {
-            return await NotifyOwners3(text, sender, replyto, v, langCode );
+            return await NotifyOwners3(text, sender, replyto, v, langCode);
         }
 
         internal static async System.Threading.Tasks.Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo, TelegramBotAbstract sender)
@@ -137,7 +136,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Language text = new Language(dict: new Dictionary<string, string>() {
                 { "en", v }
                 });
-                m =  await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+                m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
             }
             catch
             {
@@ -175,7 +174,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
-
             try
             {
                 Language text2 = new Language(dict: new Dictionary<string, string>() {
@@ -184,7 +182,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 long? replyto = null; ;
 
-                if (m!= null)
+                if (m != null)
                 {
                     replyto = m.GetMessageID();
                 }

@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         });
                         await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
                             lang: e.Message.From.LanguageCode,
-                            text: text2, 
+                            text: text2,
                             chatId: e.Message.Chat.Id,
                             chatType: e.Message.Chat.Type,
                             parseMode: ParseMode.Html,
