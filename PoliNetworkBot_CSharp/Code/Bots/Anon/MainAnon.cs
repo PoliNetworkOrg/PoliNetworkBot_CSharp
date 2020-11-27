@@ -115,7 +115,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             if (l1.Matches(r))
             {
                 //yes
-                await AskIdentityForMessageToSend(telegramBotAbstract, e);
+                await AskIdentityForMessageToSend2(telegramBotAbstract, e);
                 return;
             }
             else
@@ -129,6 +129,40 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
+        private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
+        {
+            Language question = new Language(dict: new Dictionary<string, string>() {
+                {
+                    "it",
+                    "Vuoi essere completamente anonimo o usare uno dei nostri pseudonimi per te riservati? (non sarai riconoscibile in nessun modo, tuttavia sarà chiaro a chi legge che sei sempre tu l'autore, se scegli lo stesso pseudonimo)"
+                }
+            });
+
+            Language l1 = new Language(dict: new Dictionary<string, string>() { { "it", "Anonimo" } });
+            Language l2 = new Language(dict: new Dictionary<string, string>() { { "it", "Pseudonimo" } });
+
+            List<List<Language>> options = new List<List<Language>>
+            {
+                new List<Language>()
+                {
+                    l1, l2
+                }
+            };
+
+           
+
+            var r = await Utils.AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract, e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
+
+            if (l1.Matches(r))
+            {
+                await PlaceMessageInQueue(telegramBotAbstract, e, identity: 0);
+                return;
+            }
+
+
+            await AskIdentityForMessageToSend(telegramBotAbstract, e);
+        }
+
         private static async Task AskIdentityForMessageToSend(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
         {
             Language question = new Language(dict: new Dictionary<string, string>() {
@@ -139,16 +173,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 }
             });
 
-            Language l1 = new Language(dict: new Dictionary<string, string>() { { "it", "DEFAULT (0)" } });
-
             
-            List<List<Language>> options = new List<List<Language>>
-            {
-                new List<Language>()
-                {
-                    l1
-                }
-            };
+            List<List<Language>> options = new List<List<Language>>();
 
             List<Language> l2 = new List<Language>();
             for (int i=1; i<= 8; i++)
@@ -240,8 +266,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         if (x.userId == null)
                             return;
 
+                        
+                        string link = "";
+
+                        try
+                        {
+                            MessageSentResult messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
+                            if (messageSentResult != null)
+                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
                         Language t1 = new Language(dict: new Dictionary<string, string>() {
-                            {"it", "Il tuo post è stato approvato! Congratulazioni!" }
+                            {"it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                         });
                         await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private, 
                             x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
@@ -278,6 +318,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         return;
                     }
             }
+        }
+
+        private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract, CallbackQueryEventArgs e, CallBackDataAnon x)
+        {
+            var r = await telegramBotAbstract.ForwardMessageAsync(x.messageId.Value, ConfigAnon.ModAnonCheckGroup, x.ResultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+            return r;
         }
 
         private static async Task PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e, int identity)
@@ -363,7 +409,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             try
             {
                 int x = Convert.ToInt32(r);
-                if (x >= 0)
+                if (x >= 1)
                     return x;
             }
             catch

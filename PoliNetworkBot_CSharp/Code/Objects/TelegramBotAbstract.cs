@@ -224,7 +224,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<MessageSentResult> ForwardMessageAsync(int messageId, int idChatMessageFrom, long idChatMessageTo)
+        internal async Task<MessageSentResult> ForwardMessageAsync(int messageId, long idChatMessageFrom, long idChatMessageTo)
         {
             switch (_isbot)
             {
