@@ -294,7 +294,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new Tuple<bool?, int, string>(null, 3, s3);
         }
 
-        public static async Task<MessageSend> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo,
+        public static async Task<MessageSentResult> SendMessageFromDataRow(DataRow dr, int? chatIdToSendTo,
             ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo);
@@ -308,7 +308,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r1;
         }
 
-        private async static Task<MessageSend> SendExtraInfoDbForThisMessage(MessageSend r1, DataRow dr,
+        private async static Task<MessageSentResult> SendExtraInfoDbForThisMessage(MessageSentResult r1, DataRow dr,
             int? chatIdToSendTo, ChatType? chatTypeToSendTo, TelegramBotAbstract telegramBotAbstract, int count)
         {
             if (r1 == null || r1.IsSuccess() == false)
@@ -318,7 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (chatIdToSendTo == null)
             {
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
             }
 
             object dto = dr["sent_date"];
@@ -379,7 +379,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 null, null, r1.GetMessageID(), true);
         }
 
-        private static async Task<Objects.MessageSend> SendMessageFromDataRowSingle(DataRow dr, int? chatIdToSendTo, ChatType? chatTypeToSendTo)
+        private static async Task<Objects.MessageSentResult> SendMessageFromDataRowSingle(DataRow dr, int? chatIdToSendTo, ChatType? chatTypeToSendTo)
         {
             var botId = Convert.ToInt32(dr["from_id_bot"]);
             var botClass = GlobalVariables.Bots[botId];
@@ -387,7 +387,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var typeI = Convert.ToInt32(dr["type"]);
             var typeT = GetMessageTypeClassById(typeI);
             if (typeT == null)
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
 
             switch (typeT.Value)
             {
@@ -485,7 +485,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     throw new ArgumentOutOfRangeException();
             }
 
-            return new MessageSend(false, null, chatTypeToSendTo);
+            return new MessageSentResult(false, null, chatTypeToSendTo);
         }
 
         public static MessageType? GetMessageTypeClassById(in int typeI)
@@ -504,7 +504,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
-        private static MessageSend SendTextFromDataRow(DataRow dr, TelegramBotAbstract botClass)
+        private static MessageSentResult SendTextFromDataRow(DataRow dr, TelegramBotAbstract botClass)
         {
             throw new NotImplementedException();
         }
@@ -525,12 +525,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return value;
         }
 
-        private static async Task<MessageSend> SendVideoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
+        private static async Task<MessageSentResult> SendVideoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
             ParseMode parseMode, int? chatIdToSendTo2, ChatType? chatTypeToSendTo)
         {
             var videoId = SqLite.GetIntFromColumn(dr, "id_video");
             if (videoId == null)
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
 
             var chatIdToSendTo = (long)dr["id_chat_sent_into"];
             if (chatIdToSendTo2 != null)
@@ -554,7 +554,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 typeOfChatSentInto = chatTypeToSendTo;
 
             if (typeOfChatSentInto == null)
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
 
             var video = UtilsVideo.GetVideoByIdFromDb(
                 videoId.Value,
@@ -566,12 +566,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 caption, parseMode, typeOfChatSentInto.Value);
         }
 
-        private static async Task<MessageSend> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
+        private static async Task<MessageSentResult> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
             ParseMode parseMode, int? chatIdToSendTo2, ChatType? chatTypeToSendTo)
         {
             var photoId = SqLite.GetIntFromColumn(dr, "id_photo");
             if (photoId == null)
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
 
             var chatIdToSendTo = (long)dr["id_chat_sent_into"];
             if (chatIdToSendTo2 != null)
@@ -595,7 +595,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 typeOfChatSentInto = chatTypeToSendTo;
 
             if (typeOfChatSentInto == null)
-                return new MessageSend(false, null, chatTypeToSendTo);
+                return new MessageSentResult(false, null, chatTypeToSendTo);
 
             var photo = UtilsPhoto.GetPhotoByIdFromDb(
                 photoId.Value,

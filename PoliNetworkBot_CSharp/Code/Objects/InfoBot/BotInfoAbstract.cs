@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             try
             {
                 var s = KeyValuePairs[ConstConfigBot.OnMessages].ToString();
-                var r1 = BotStartMethods.GetMethodFromString(s);
+                EventHandler<MessageEventArgs> r1 = BotStartMethods.GetMethodFromString(s);
                 return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
             }
             catch

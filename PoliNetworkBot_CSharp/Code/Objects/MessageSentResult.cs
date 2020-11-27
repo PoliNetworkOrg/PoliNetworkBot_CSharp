@@ -4,14 +4,14 @@ using TeleSharp.TL;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
-    public class MessageSend
+    public class MessageSentResult
     {
         private readonly bool success;
         private readonly object message;
         private readonly ChatType? chatType;
         private int? messageId;
 
-        public MessageSend(bool success, object message, ChatType? chatType)
+        public MessageSentResult(bool success, object message, ChatType? chatType)
         {
             this.success = success;
             this.message = message;

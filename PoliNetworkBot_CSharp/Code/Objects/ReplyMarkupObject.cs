@@ -13,6 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private readonly ReplyMarkupOptions _list;
         private readonly ReplyMarkupEnum _replyMarkupEnum;
+        private InlineKeyboardMarkup inlineKeyboardMarkup;
 
         public ReplyMarkupObject(ReplyMarkupOptions list)
         {
@@ -25,6 +26,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             _replyMarkupEnum = replyMarkupEnum;
         }
 
+        public ReplyMarkupObject(InlineKeyboardMarkup inlineKeyboardMarkup)
+        {
+            this.inlineKeyboardMarkup = inlineKeyboardMarkup;
+            this._replyMarkupEnum = ReplyMarkupEnum.INLINE;
+        }
+
         public IReplyMarkup GetReplyMarkupBot()
         {
             return _replyMarkupEnum switch
@@ -32,6 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
                 ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
                 ReplyMarkupEnum.CHOICE => new ReplyKeyboardMarkup(_list.GetMatrixKeyboardButton()),
+                ReplyMarkupEnum.INLINE => inlineKeyboardMarkup,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -43,8 +51,33 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 ReplyMarkupEnum.FORCED => new TLReplyKeyboardForceReply(),
                 ReplyMarkupEnum.REMOVE => new TLReplyKeyboardHide(),
                 ReplyMarkupEnum.CHOICE => new TLReplyKeyboardMarkup { Rows = _list.GetMatrixTlKeyboardButton() },
+                ReplyMarkupEnum.INLINE =>  GetRowsInline(inlineKeyboardMarkup),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        private TLReplyInlineMarkup GetRowsInline(InlineKeyboardMarkup inlineKeyboardMarkup)
+        {
+            TLVector<TLKeyboardButtonRow> r2 = null;
+
+            foreach (System.Collections.Generic.IEnumerable<InlineKeyboardButton> x1 in inlineKeyboardMarkup.InlineKeyboard)
+            {
+                TLVector<TLAbsKeyboardButton> buttons = new TLVector<TLAbsKeyboardButton>();
+
+                foreach (var x2 in x1)
+                {
+                    TLKeyboardButton x3 = new TLKeyboardButton() { Text = x2.Text };
+                    buttons.Add(x3);
+                }
+
+                TLKeyboardButtonRow tLKeyboardButtonRow = new TLKeyboardButtonRow() { Buttons = buttons };
+                r2.Add(tLKeyboardButtonRow);
+            }
+
+            TLReplyInlineMarkup r = new TLReplyInlineMarkup() { Rows = r2 };
+            return r;
+      
+     
         }
     }
 }

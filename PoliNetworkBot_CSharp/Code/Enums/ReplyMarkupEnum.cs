@@ -4,6 +4,7 @@
     {
         FORCED,
         REMOVE,
-        CHOICE
+        CHOICE,
+        INLINE
     }
 }

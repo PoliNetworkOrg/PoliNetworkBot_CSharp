@@ -424,11 +424,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r.Rows;
         }
 
-        private static async Task<MessageSend> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e, bool extraInfo, int count)
+        private static async Task<MessageSentResult> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender, MessageEventArgs e, bool extraInfo, int count)
         {
             if (m == null)
             {
-                return new MessageSend(false, null, null);
+                return new MessageSentResult(false, null, null);
             }
 
             return await MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private, extraInfo, sender, count);

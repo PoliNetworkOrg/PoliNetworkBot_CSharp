@@ -2,7 +2,7 @@
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
-    internal class MessageSendScheduled : MessageSend
+    internal class MessageSendScheduled : MessageSentResult
     {
         public Code.Enums.ScheduleMessageSentResult scheduleMessageSentResult;
         public System.Tuple<bool?, int, string> r1;

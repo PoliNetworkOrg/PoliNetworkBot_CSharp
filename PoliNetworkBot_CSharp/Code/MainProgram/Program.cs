@@ -270,7 +270,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         continue;
 
                     botClient.OnMessage += onmessageMethod2.Item1;
-                    botClient.StartReceiving();
+                    botClient.StartReceiving(bot.GetAllowedUpdates());
+
+                    if (bot.Callback())
+                    {
+                        botClient.OnCallbackQuery += bot.GetCallbackEvent();
+                    }
 
                     if (onmessageMethod2.Item2 == Data.Constants.BotStartMethods.Moderation)
                     {

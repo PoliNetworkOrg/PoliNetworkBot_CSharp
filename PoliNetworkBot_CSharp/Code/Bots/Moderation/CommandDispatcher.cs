@@ -202,7 +202,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private async static Task<MessageSend> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
+        private async static Task<MessageSentResult> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
         {
             Tuple<DateTimeSchedule, Exception, string> sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
@@ -225,7 +225,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 text, ParseMode.Default, e.Message.MessageId);
         }
 
-        private static async Task<MessageSend> Rules(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<MessageSentResult> Rules(TelegramBotAbstract sender, MessageEventArgs e)
         {
             const string text = "Ecco le regole!\n" +
                 "https://polinetwork.github.io/it/rules";

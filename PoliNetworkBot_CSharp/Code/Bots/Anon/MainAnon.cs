@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -178,12 +179,176 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             await PlaceMessageInQueue(telegramBotAbstract, e, identity: chosen.Value);
         }
 
+        internal static void CallbackMethod(object sender, CallbackQueryEventArgs e)
+        {
+            ;
+
+            Thread thread = new Thread(() => _ = CallbackMethod3Async(sender, e) );
+            thread.Start();        
+        }
+
+        private static async Task CallbackMethod3Async(object sender, CallbackQueryEventArgs e)
+        {
+            TelegramBotClient s3 = null;
+            if (sender is TelegramBotClient s2)
+            {
+                s3 = s2;
+            }
+            else
+            {
+                return;
+            }
+
+            TelegramBotAbstract telegramBotAbstract = TelegramBotAbstract.GetFromRam(s3);
+
+            try
+            {
+                CallBackDataAnon x = new CallBackDataAnon(e.CallbackQuery.Data);
+                await CallbackMethod2Async(telegramBotAbstract, e, x);
+            }
+            catch
+            {
+                return;
+            }         
+        }
+
+        private static async Task CallbackMethod2Async(TelegramBotAbstract telegramBotAbstract, CallbackQueryEventArgs e, CallBackDataAnon x)
+        {
+            try
+            {
+                InlineKeyboardButton inlineKeyboard = new InlineKeyboardButton() { Text = "-", CallbackData = "-" };
+                InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
+
+
+                if (x.messageId != null)
+                {
+                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, x.messageId.Value + 1, "Hai scelto ["+x.ResultQueueEnum?.ToString()+"]");
+                }
+            }
+            catch (Exception e1)
+            {
+                ;
+            }
+
+            ;
+
+            
+            switch (x.ResultQueueEnum)
+            {
+                case ResultQueueEnum.APPROVED_MAIN:
+                    {
+                        if (x.userId == null)
+                            return;
+
+                        Language t1 = new Language(dict: new Dictionary<string, string>() {
+                            {"it", "Il tuo post è stato approvato! Congratulazioni!" }
+                        });
+                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private, 
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                        break;
+                    }
+                case ResultQueueEnum.GO_TO_UNCENSORED:
+                    {
+                        if (x.userId == null)
+                            return;
+
+                        Language t1 = new Language(dict: new Dictionary<string, string>() {
+                            {"it", "Il tuo post è stato messo nella zona uncensored!" }
+                        });
+                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                        break;
+                    }
+                 
+                case ResultQueueEnum.DELETE:
+                    {
+                        if (x.userId == null)
+                            return;
+
+                        Language t1 = new Language(dict: new Dictionary<string, string>() {
+                            {"it", "Il tuo post è stato rifiutato!" }
+                        });
+                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                        break;
+                    }
+                default:
+                    {
+                        //todo: error
+                        return;
+                    }
+            }
+        }
+
         private static async Task PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e, int identity)
         {
             ;
             //todo: place message in queue
 
-            
+            MessageSentResult x = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId, e.Message.From.Id, Anon.ConfigAnon.ModAnonCheckGroup);
+
+            Language language = new Language(dict: new Dictionary<string, string>()
+            {
+                { "it", "Approvare? Identità ["+identity+"]"}
+            });
+
+            List<List<InlineKeyboardButton>> x2 = new List<List<InlineKeyboardButton>>();
+            List<InlineKeyboardButton> x3 = new List<InlineKeyboardButton>() {
+                new InlineKeyboardButton() { Text = "Si", CallbackData = 
+                FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username) },
+
+                new InlineKeyboardButton() { Text = "No", CallbackData =
+                FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username)}
+            };
+            List<InlineKeyboardButton> x4 = new List<InlineKeyboardButton>() {
+                new InlineKeyboardButton() { Text = "Uncensored", CallbackData =
+                FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username) }
+            }; ;
+
+            x2.Add(x3);   
+            x2.Add(x4);
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
+            ReplyMarkupObject r = new ReplyMarkupObject(inlineKeyboardMarkup);
+            await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language, 
+                Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, r, null, x.GetMessageID());
+        }
+
+        
+        private static string FormatDataCallBack(ResultQueueEnum v, long? messageId, int userId, int identity, string langcode, string username)
+        {
+            // split
+            string r = "";
+            switch (v)
+            {
+                case ResultQueueEnum.APPROVED_MAIN:
+                    {
+                        r += "a";
+                        break;
+                    }
+                case ResultQueueEnum.GO_TO_UNCENSORED:
+                    {
+                        r += "u";
+                        break;
+                    }
+                case ResultQueueEnum.DELETE:
+                    {
+                        r += "d";
+                        break;
+                    }
+            }
+
+            r += Anon.ConfigAnon.splitCallback;
+            r += (messageId == null ? "null" : messageId.Value.ToString());
+            r += Anon.ConfigAnon.splitCallback;
+            r += userId;
+            r += Anon.ConfigAnon.splitCallback;
+            r += identity;
+            r += Anon.ConfigAnon.splitCallback;
+            r += langcode;
+            r += Anon.ConfigAnon.splitCallback;
+            r += username;
+
+            return r;
         }
 
         private static int? GetIdentityFromReply(string r)

@@ -296,7 +296,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", s1E}
             });
 
-            MessageSend r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
+            MessageSentResult r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
                 usernameOfUser, userId, firstName, lastName, chatId, messageChatType, parseMode: ParseMode.Html);
 
             const int MINUTES_WAIT = 2;

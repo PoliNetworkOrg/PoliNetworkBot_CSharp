@@ -18,11 +18,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class SendMessage
     {
-        internal static async Task<Code.Objects.MessageSend> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
+        internal static async Task<Code.Objects.MessageSentResult> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
-            MessageSend r = null;
+            MessageSentResult r = null;
             try
             {
                 r = await telegramBotClient.SendTextMessageAsync(userId,
@@ -62,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
         }
 
-        internal static async Task<MessageSend> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
+        internal static async Task<MessageSentResult> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
             Language text, ParseMode parseMode, long? messageIdToReplyTo)
         {
@@ -75,16 +75,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch
             {
-                return new MessageSend(false, null, ChatType.Private);
+                return new MessageSentResult(false, null, ChatType.Private);
             }
         }
 
-        internal static async Task<MessageSend> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
+        internal static async Task<MessageSentResult> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
             string lang, Language text,
             long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
             bool disablePreviewLink, int i = 0)
         {
-            MessageSend r1 = null;
+            MessageSentResult r1 = null;
 
             if (telegramBotClient == null)
             {
