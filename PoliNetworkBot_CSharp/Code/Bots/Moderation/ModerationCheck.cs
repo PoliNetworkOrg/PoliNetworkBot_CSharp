@@ -39,6 +39,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     throw new ArgumentOutOfRangeException();
             }
 
+            //start | exclude groups, bot will not operate in them
+            if (e.Message.Chat.Id == Code.Bots.Anon.ConfigAnon.ModAnonCheckGroup)
+                return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 30 }, null);
+            //end | exclude groups
+
+
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)

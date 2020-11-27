@@ -182,6 +182,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             ;
             //todo: place message in queue
+
+            
         }
 
         private static int? GetIdentityFromReply(string r)
