@@ -18,6 +18,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal void Reset(long idUser)
         {
+            if (!d.ContainsKey(idUser))
+            {
+                d[idUser] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+            }
+            else if (d[idUser] == null)
+            {
+                d[idUser] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+            }
+
             d[idUser].Item1 = null;
             d[idUser].Item1 = new AnswerTelegram();
             d[idUser].Item1.Reset();
@@ -25,7 +34,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal void Delete(long idUser)
         {
-            d[idUser] = null;
+            d[idUser].Item1 = null;
+            d[idUser].Item2 = null;
         }
 
         internal void SetAnswerProcessed(long idUser, bool v)
@@ -55,11 +65,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 ChatType.Private, lang, default, replyMarkup, username);
                         }
 
+                        ;
+
                         this.d[idUser].Item1.SetAnswerProcessed(true);
 
                         var resultstring = result.ToString();
                         crashed = false;
                         var done = this.d[idUser].Item2.TrySetResult(resultstring);
+
+                        ;
                     }
                 }
                 catch

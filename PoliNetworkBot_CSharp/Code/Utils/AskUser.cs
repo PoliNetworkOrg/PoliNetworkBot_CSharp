@@ -63,6 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
                 parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
+            ;
             UserAnswers.Delete(idUser);
             return result;
         }

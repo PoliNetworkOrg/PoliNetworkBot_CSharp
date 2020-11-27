@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -85,6 +86,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             ;
 
+            if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id))
+                if (AskUser.UserAnswers.GetState(e.Message.From.Id) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+                {
+                    AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, e.Message.Text);
+                    return;
+                }
+
             Language question = new Language(dict: new Dictionary<string, string>() {
                 { "it", "Vuoi postare questo messaggio?"},
                 { "en", "Do you want to post this message?"}
@@ -149,6 +157,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             List<List<Language>> x1 = Utils.KeyboardMarkup.ArrayToMatrixString(l2);
             options.AddRange(x1);
 
+            ;
 
             var r = await Utils.AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract, e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
 
