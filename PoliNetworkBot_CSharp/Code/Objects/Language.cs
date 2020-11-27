@@ -62,5 +62,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return null;
         }
+
+        internal bool Matches(string r)
+        {
+            if (this._dict.Keys.Count == 0)
+                return false;
+
+            foreach (var key in this._dict.Keys)
+            {
+                if (this._dict[key] == r)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

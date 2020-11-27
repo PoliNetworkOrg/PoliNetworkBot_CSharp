@@ -6,7 +6,7 @@ using System;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
-    internal class AnswerTelegram
+    public class AnswerTelegram
     {
         public enum State
         {

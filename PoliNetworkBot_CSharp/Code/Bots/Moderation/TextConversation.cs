@@ -117,11 +117,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (AskUser.UserAnswers.ContainsKey(e.Message.From.Id))
-                if (AskUser.UserAnswers[e.Message.From.Id] != null)
-                    if (AskUser.UserAnswers[e.Message.From.Id].GetState() == AnswerTelegram.State.WAITING_FOR_ANSWER)
+            if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id))
+                if (AskUser.UserAnswers.GetState(e.Message.From.Id) == AnswerTelegram.State.WAITING_FOR_ANSWER)
                     {
-                        AskUser.UserAnswers[e.Message.From.Id].RecordAnswer(e.Message.Text);
+                        AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, e.Message.Text);
                         return;
                     }
 

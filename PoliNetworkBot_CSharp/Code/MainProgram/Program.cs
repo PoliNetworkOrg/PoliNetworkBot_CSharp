@@ -43,6 +43,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 case '2': //normal mode
                 case '3': //disguised bot test
                 case '8':
+                case '9':
                     {
                         var toExit = LoadBotConfig();
                         if (toExit == ToExit.EXIT)
@@ -60,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         Console.WriteLine("\nTo kill this process, you have to check the process list");
 
-                        _ = StartBotsAsync(readChoice == '3', readChoice == '8');
+                        _ = StartBotsAsync(readChoice == '3', readChoice == '8', runOnlyNormalBot: readChoice == '9');
 
                         while (true) Console.ReadKey();
                         return;
@@ -117,6 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "6) Reset only bot config\n" +
                                   "7) Reset only disguised bot config\n" +
                                   "8) Run only userbots\n" +
+                                  "9) Run only normal bots\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -135,6 +137,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case '6':
                         case '7':
                         case '8':
+                        case '9':
                             return first;
                     }
                 }
@@ -247,7 +250,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot)
+        private static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot, bool runOnlyNormalBot)
         {
             int moderationBots = 0;
 
@@ -275,7 +278,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_userBotsInfos != null && advancedModeDebugDisguised == false)
+            if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
                 foreach (var userbot in _userBotsInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -322,7 +325,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false)
+            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false && runOnlyNormalBot == false)
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);

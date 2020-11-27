@@ -13,20 +13,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class AskUser
     {
-        public static readonly Dictionary<long, AnswerTelegram> UserAnswers = new Dictionary<long, AnswerTelegram>();
+        public static readonly DictionaryUserAnswer UserAnswers = new DictionaryUserAnswer();
 
         internal static async Task<string> AskAsync(long idUser, Language question,
             TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
         {
-            UserAnswers[idUser] = null;
-            UserAnswers[idUser] = new AnswerTelegram();
-            UserAnswers[idUser].Reset();
+            UserAnswers.Reset(idUser);
 
             await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: default,
                 replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
 
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-            UserAnswers[idUser] = null;
+            UserAnswers.Delete(idUser);
             return result;
         }
 
@@ -35,47 +33,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                var tcs = new TaskCompletionSource<string>();
-                UserAnswers[idUser].SetAnswerProcessed(false);
-
-                UserAnswers[idUser].WorkCompleted += async result =>
-                {
-                    bool crashed = true;
-                    try
-                    {
-                        if (UserAnswers[idUser].GetState() == AnswerTelegram.State.ANSWERED && UserAnswers[idUser].GetAlreadyProcessedAnswer() == false)
-                        {
-                            if (sendMessageConfirmationChoice)
-                            {
-                                var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                                var languageReply = new Language(new Dictionary<string, string>
-                            {
-                                {"en", "You choose [" + result + "]"},
-                                {"it", "Hai scelto [" + result + "]"}
-                            });
-                                await telegramBotAbstract.SendTextMessageAsync(idUser,
-                                    languageReply,
-                                    ChatType.Private, lang, default, replyMarkup, username);
-                            }
-
-                            UserAnswers[idUser].SetAnswerProcessed(true);
-
-                            var resultstring = result.ToString();
-                            crashed = false;
-                            var done = tcs.TrySetResult(resultstring);
-                        }
-                    }
-                    catch
-                    {
-                        ;
-                    }
-
-                    if (crashed)
-                    {
-                        tcs.TrySetResult("");
-                    }
-                };
-
+                var tcs = UserAnswers.GetNewTCS(idUser);
+                UserAnswers.SetAnswerProcessed(idUser,false);
+                UserAnswers.AddWorkCompleted(idUser, sendMessageConfirmationChoice, telegramBotAbstract, lang, username);
+              
                 return await tcs.Task;
             }
             catch
@@ -89,11 +50,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<string> AskBetweenRangeAsync(int idUser, Language question,
             TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options,
             string username,
-            bool sendMessageConfirmationChoice = true)
+            bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
         {
-            UserAnswers[idUser] = null;
-            UserAnswers[idUser] = new AnswerTelegram();
-            UserAnswers[idUser].Reset();
+            UserAnswers.Reset(idUser);
 
             var replyMarkupObject = new ReplyMarkupObject(
                 new ReplyMarkupOptions(
@@ -102,9 +61,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             );
 
             await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
-                parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username);
+                parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-            UserAnswers[idUser] = null;
+            UserAnswers.Delete(idUser);
             return result;
         }
 
