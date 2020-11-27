@@ -86,10 +86,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             ;
 
-            if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id))
-                if (AskUser.UserAnswers.GetState(e.Message.From.Id) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+            long botId = telegramBotAbstract.GetId();
+
+            if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
+                if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, e.Message.Text);
+                    AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, botId, e.Message.Text);
                     return;
                 }
 

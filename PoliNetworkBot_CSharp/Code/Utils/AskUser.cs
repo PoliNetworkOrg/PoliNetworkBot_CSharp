@@ -18,13 +18,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<string> AskAsync(long idUser, Language question,
             TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
         {
-            UserAnswers.Reset(idUser);
+            long botId = sender.GetId();
+
+            UserAnswers.Reset(idUser, botId);
 
             await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: default,
                 replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
 
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-            UserAnswers.Delete(idUser);
+            UserAnswers.Delete(idUser, botId);
             return result;
         }
 
@@ -33,9 +35,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                var tcs = UserAnswers.GetNewTCS(idUser);
-                UserAnswers.SetAnswerProcessed(idUser,false);
-                UserAnswers.AddWorkCompleted(idUser, sendMessageConfirmationChoice, telegramBotAbstract, lang, username);
+                long botId = telegramBotAbstract.GetId();
+                var tcs = UserAnswers.GetNewTCS(idUser, botId);
+                UserAnswers.SetAnswerProcessed(idUser, botId, false);
+                UserAnswers.AddWorkCompleted(idUser, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang, username);
               
                 return await tcs.Task;
             }
@@ -52,7 +55,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string username,
             bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
         {
-            UserAnswers.Reset(idUser);
+            long botId = sender.GetId();
+
+            UserAnswers.Reset(idUser, botId);
 
             var replyMarkupObject = new ReplyMarkupObject(
                 new ReplyMarkupOptions(
@@ -64,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
             ;
-            UserAnswers.Delete(idUser);
+            UserAnswers.Delete(idUser, botId);
             return result;
         }
 
