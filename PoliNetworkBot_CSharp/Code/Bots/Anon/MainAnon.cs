@@ -247,11 +247,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 InlineKeyboardButton inlineKeyboard = new InlineKeyboardButton() { Text = "-", CallbackData = "-" };
                 InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-
-                if (x.messageIdGroup != null)
-                {
-                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, (int)(x.messageIdGroup.Value + 1), "Hai scelto ["+x.resultQueueEnum?.ToString()+"]");
-                }
+                await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, (int)(e.CallbackQuery.Message.MessageId), "Hai scelto ["+x.resultQueueEnum?.ToString()+"]");
+                
             }
             catch (Exception e1)
             {
@@ -349,7 +346,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                     {"it", "Il tuo messaggio è stato correttamente messo in coda. Attendi risposta" }
                 });
 
+                ;
+
                 x = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId, e.Message.From.Id, Anon.ConfigAnon.ModAnonCheckGroup);
+
+                ;
 
                 m2 = await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l4,
                     Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.Message.MessageId);
@@ -389,7 +390,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         
 
-            await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language, 
+            var m4 = await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language, 
                 Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, r, null, x.GetMessageID());
 
 

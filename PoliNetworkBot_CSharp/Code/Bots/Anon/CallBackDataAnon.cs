@@ -87,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         internal string ToDataString()
         {
-
+            ;
             // split
             string r = "";
             switch (this.resultQueueEnum)
