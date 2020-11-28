@@ -557,7 +557,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Audio:
                     break;
                 case MessageType.Video:
-                    break;
+                    {
+                        switch (this._isbot)
+                        {
+                            case BotTypeApi.REAL_BOT:
+                                {
+                                    var m1 = await this._botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message), message.Video.Duration, message.Video.Width, message.Video.Height, message.Caption, ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                    return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                    break;
+                                }
+                            case BotTypeApi.USER_BOT:
+                                break;
+                            case BotTypeApi.DISGUISED_BOT:
+                                break;
+                        }
+                        break;
+                    }
                 case MessageType.Voice:
                     break;
                 case MessageType.Document:
@@ -568,6 +583,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 {
                                     var m1 = await this._botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                    return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                     break;
                                 }
                             case BotTypeApi.USER_BOT:
