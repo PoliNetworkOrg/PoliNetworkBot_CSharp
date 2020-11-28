@@ -118,5 +118,38 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return null;
         }
+
+        internal static async Task<bool> AskYesNo(int id, Language question, bool defaultBool, TelegramBotAbstract sender, string lang, string username)
+        {
+            Language l1 = new Language(new Dictionary<string, string>() {
+                { "it", "Si"},
+                {"en", "Yes" }
+            });
+            Language l2 = new Language(new Dictionary<string, string>() {
+                  { "it", "No"},
+                {"en", "No" }
+            });
+
+            List<List<Language>> options = new List<List<Language>>() {
+                new List<Language>()
+                {
+                    l1, l2
+                }
+            };
+
+            var r = await AskUser.AskBetweenRangeAsync(id, question, sender, lang, options, username);
+
+            if (l1.Matches(r))
+            {
+                return true;
+            }
+
+            if (l2.Matches(r))
+            {
+                return false;
+            }
+
+            return defaultBool;
+        }
     }
 }

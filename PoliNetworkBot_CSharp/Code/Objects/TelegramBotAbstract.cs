@@ -507,9 +507,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message, long? messageIdToReplyToLong)
+        internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message, Tuple<long?, Bots.Anon.ResultQueueEnum?> messageIdToReplyToLong)
         {
-            int messageIdToReplyToInt = (int)(messageIdToReplyToLong == null ? 0 : messageIdToReplyToLong.Value);
+            int messageIdToReplyToInt = 0;
+            if (messageIdToReplyToLong != null && messageIdToReplyToLong.Item1 != null)
+            {
+                messageIdToReplyToInt = (int)messageIdToReplyToLong.Item1.Value;
+            }
 
             ;
 
@@ -594,7 +598,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         break;
                     }
                 case MessageType.Sticker:
-                    break;
+                    {
+                        switch (this._isbot)
+                        {
+                            case BotTypeApi.REAL_BOT:
+                                {
+                                    var m1 = await this._botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message), replyToMessageId: messageIdToReplyToInt);
+                                    return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                    break;
+                                }
+                            case BotTypeApi.USER_BOT:
+                                break;
+                            case BotTypeApi.DISGUISED_BOT:
+                                break;
+                        }
+                        break;
+                    }
                 case MessageType.Location:
                     break;
                 case MessageType.Contact:

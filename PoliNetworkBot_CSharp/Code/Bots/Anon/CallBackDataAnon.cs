@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         public string langUser;
         public string username;
         public long? messageIdUser;
-        internal long? messageIdToReplyTo;
+        internal Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo;
 
         public CallBackDataAnon(string data)
         {
@@ -59,10 +59,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             catch
             {
                 this.messageIdUser = null;
+            }    
+
+            try
+            {
+                this.messageIdToReplyTo = new Tuple<long?, ResultQueueEnum?>(Convert.ToInt64(s[7]), getChosenQueue(s[8]));
+            }
+            catch
+            {
+                this.messageIdToReplyTo = null;
             }
         }
 
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1, long? messageIdToReplyTo)
+        private ResultQueueEnum? getChosenQueue(string v)
+        {
+            return getResult(v);
+        }
+
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo)
         {
             this.resultQueueEnum = v;
             this.messageIdGroup = messageIdGroup1;
@@ -92,25 +106,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             ;
             // split
             string r = "";
-            switch (this.resultQueueEnum)
-            {
-                case ResultQueueEnum.APPROVED_MAIN:
-                    {
-                        r += "a";
-                        break;
-                    }
-                case ResultQueueEnum.GO_TO_UNCENSORED:
-                    {
-                        r += "u";
-                        break;
-                    }
-                case ResultQueueEnum.DELETE:
-                    {
-                        r += "d";
-                        break;
-                    }
-            }
 
+            r += ResultToString(this.resultQueueEnum);
             r += Anon.ConfigAnon.splitCallback;
             r += (messageIdGroup == null ? "null" : messageIdGroup.Value.ToString());
             r += Anon.ConfigAnon.splitCallback;
@@ -123,8 +120,53 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             r += username;
             r += Anon.ConfigAnon.splitCallback;
             r += (messageIdUser == null ? "null" : messageIdUser.Value.ToString());
+            r += Anon.ConfigAnon.splitCallback;
+            r += PrintReplyTo();
 
             return r;
+        }
+
+        private string PrintReplyTo()
+        {
+            if (this.messageIdToReplyTo == null)
+            {
+                return "null" + Anon.ConfigAnon.splitCallback + "null";
+            }
+
+            string r = "";
+
+            if (this.messageIdToReplyTo.Item1 == null)
+            {
+                r += "null";
+            }
+            else
+            {
+                r += this.messageIdToReplyTo.Item1.ToString();
+            }
+
+            r += Anon.ConfigAnon.splitCallback;
+
+            if (this.messageIdToReplyTo.Item2 == null)
+            {
+                r += "null";
+            }
+            else
+            {
+                r += ResultToString(this.messageIdToReplyTo.Item2);
+            }
+
+            return r;
+        }
+
+        private string ResultToString(ResultQueueEnum? item2)
+        {
+            return item2 switch
+            {
+                ResultQueueEnum.APPROVED_MAIN => "a",
+                ResultQueueEnum.GO_TO_UNCENSORED => "u",
+                ResultQueueEnum.DELETE => "d",
+                _ => null
+            };
         }
     }
 }
