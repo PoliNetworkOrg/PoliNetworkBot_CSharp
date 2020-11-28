@@ -507,6 +507,92 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
+        internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message)
+        {
+            switch (message.Type)
+            {
+                case MessageType.Unknown:
+                    break;
+                case MessageType.Text:
+                    {
+                        switch (this._isbot)
+                        {
+                            case BotTypeApi.REAL_BOT:
+                                {
+                                    var m1 = await this._botClient.SendTextMessageAsync(chatIdToSend, message.Text, ParseMode.Html);
+                                    return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+
+                                    break;
+                                }
+                            case BotTypeApi.USER_BOT:
+                                break;
+                            case BotTypeApi.DISGUISED_BOT:
+                                break;
+                        }
+                        break;
+                    }
+                case MessageType.Photo:
+                    break;
+                case MessageType.Audio:
+                    break;
+                case MessageType.Video:
+                    break;
+                case MessageType.Voice:
+                    break;
+                case MessageType.Document:
+                    break;
+                case MessageType.Sticker:
+                    break;
+                case MessageType.Location:
+                    break;
+                case MessageType.Contact:
+                    break;
+                case MessageType.Venue:
+                    break;
+                case MessageType.Game:
+                    break;
+                case MessageType.VideoNote:
+                    break;
+                case MessageType.Invoice:
+                    break;
+                case MessageType.SuccessfulPayment:
+                    break;
+                case MessageType.WebsiteConnected:
+                    break;
+                case MessageType.ChatMembersAdded:
+                    break;
+                case MessageType.ChatMemberLeft:
+                    break;
+                case MessageType.ChatTitleChanged:
+                    break;
+                case MessageType.ChatPhotoChanged:
+                    break;
+                case MessageType.MessagePinned:
+                    break;
+                case MessageType.ChatPhotoDeleted:
+                    break;
+                case MessageType.GroupCreated:
+                    break;
+                case MessageType.SupergroupCreated:
+                    break;
+                case MessageType.ChannelCreated:
+                    break;
+                case MessageType.MigratedToSupergroup:
+                    break;
+                case MessageType.MigratedFromGroup:
+                    break;
+                case MessageType.Animation:
+                    break;
+                case MessageType.Poll:
+                    break;
+                case MessageType.Dice:
+                    break;
+            }
+
+
+            return null;
+        }
+
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, Tuple<TLAbsInputPeer, long> peer,
             Language text,
             TextAsCaption textAsCaption, string username, string lang, long? replyToMessageId, bool disablePreviewLink)

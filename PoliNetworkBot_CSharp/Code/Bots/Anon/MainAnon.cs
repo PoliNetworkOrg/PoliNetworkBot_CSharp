@@ -324,7 +324,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             if (x.messageIdGroup != null)
             {
-                var r = await telegramBotAbstract.ForwardMessageAsync((int)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+                Telegram.Bot.Types.Message r2 = e.CallbackQuery.Message.ReplyToMessage; //todo: fill this with the message to send
+
+                ;
+
+                //var r = await telegramBotAbstract.ForwardMessageAsync((int)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+                var r = await telegramBotAbstract.ForwardMessageAnonAsync(
+                    x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored, 
+                    r2);
+
                 return r;
             }
 
@@ -348,9 +356,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 ;
 
-                x = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId, e.Message.From.Id, Anon.ConfigAnon.ModAnonCheckGroup);
+                x = await telegramBotAbstract.ForwardMessageAnonAsync(Anon.ConfigAnon.ModAnonCheckGroup, e.Message);
 
                 ;
+
+                if (x == null)
+                {
+                    Language l6 = new Language(dict: new Dictionary<string, string>()
+                    {
+                        {"it", "Non siamo riusciti a mettere il messaggio in coda! Operazione annullata" }
+                    });
+
+                    await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l6, Telegram.Bot.Types.Enums.ChatType.Private, 
+                        e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Default, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+
+                    return;
+                }
 
                 m2 = await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l4,
                     Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.Message.MessageId);
