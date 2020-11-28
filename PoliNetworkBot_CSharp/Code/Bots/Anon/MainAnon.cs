@@ -250,18 +250,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 if (x.messageIdGroup != null)
                 {
-                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, x.messageIdGroup.Value + 1, "Hai scelto ["+x.ResultQueueEnum?.ToString()+"]");
+                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, (int)(x.messageIdGroup.Value + 1), "Hai scelto ["+x.resultQueueEnum?.ToString()+"]");
                 }
             }
             catch (Exception e1)
             {
                 ;
+                Console.WriteLine(e1.Message);
             }
 
             ;
 
             
-            switch (x.ResultQueueEnum)
+            switch (x.resultQueueEnum)
             {
                 case ResultQueueEnum.APPROVED_MAIN:
                     {
@@ -324,8 +325,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract, CallbackQueryEventArgs e, CallBackDataAnon x)
         {
-            var r = await telegramBotAbstract.ForwardMessageAsync(x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.ResultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
-            return r;
+            if (x.messageIdGroup != null)
+            {
+                var r = await telegramBotAbstract.ForwardMessageAsync((int)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+                return r;
+            }
+
+            return null;
         }
 
         private static async Task PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e, int identity)
@@ -394,41 +400,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, int userId, int identity, 
             string langcode, string username, long? messageIdUser)
         {
-            // split
-            string r = "";
-            switch (v)
-            {
-                case ResultQueueEnum.APPROVED_MAIN:
-                    {
-                        r += "a";
-                        break;
-                    }
-                case ResultQueueEnum.GO_TO_UNCENSORED:
-                    {
-                        r += "u";
-                        break;
-                    }
-                case ResultQueueEnum.DELETE:
-                    {
-                        r += "d";
-                        break;
-                    }
-            }
-
-            r += Anon.ConfigAnon.splitCallback;
-            r += (messageIdGroup == null ? "null" : messageIdGroup.Value.ToString());
-            r += Anon.ConfigAnon.splitCallback;
-            r += userId;
-            r += Anon.ConfigAnon.splitCallback;
-            r += identity;
-            r += Anon.ConfigAnon.splitCallback;
-            r += langcode;
-            r += Anon.ConfigAnon.splitCallback;
-            r += username;
-            r += Anon.ConfigAnon.splitCallback;
-            r += (messageIdUser == null ? "null" : messageIdUser.Value.ToString());
-
-            return r;
+            CallBackDataAnon callBackDataAnon = new CallBackDataAnon(v, messageIdGroup, userId, identity, langcode, username, messageIdUser);
+            return callBackDataAnon.ToDataString();
         }
 
         private static int? GetIdentityFromReply(string r)
@@ -457,23 +430,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         private static async Task helpMessageAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
         {
             Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
-                {"it", "[UPDATE!] Ora basta inviare il messaggio al bot. Il bot chiederà il resto.\n\n" +
-                "Scrivi il messaggio che vuoi inviare.\n" +
-                "Rispondi a quel messaggio con /anon per richiederne la pubblicazione sul canale @PoliAnoniMi.\n\n" +
-                "Devi indicare un'identità con la quale vuoi postare, 0 per identità nascosta.\n\n" +
-                "Esempio:\n" +
-                "/anon 1 [eventuale link del messaggio del canale a cui rispondere]\n" +
-                "Per inviare un messaggio con la propria identità anonima 1\n\n" +
-                "/anon 0 [eventuale link]\n" +
+                {"it", "Scrivi il messaggio che vuoi inviare, il bot ti chiederà il resto.\n" +
                 "Per inviare un messaggio con identità nascosta.\n\n" +
-                "In entrambi i casi(sia che si usi 0 come identità o un altro numero) nessun iscritto al canale sarà in grado di capire chi siete.\n" +
+                "Nessun iscritto al canale sarà in grado di capire chi siete.\n" +
                 "L'identità è stata introdotta per permettere a delle persone di scrivere sotto uno pseudonimo fisso, se lo desiderano.\n\n" +
                 "Buon divertimento con questa funzione del nostro bot 😄!\n\n" +
                 "Se dovesse esserci qualsiasi problema, scriveteci alla pagina Facebook di PoliNetwork" }
 
             });
             await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ChatType.Private,
-                e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, null, e.Message.From.Username, null);
+                e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username, null);
         }
 
         private static async Task startMessageAsync(TelegramBotAbstract sender, MessageEventArgs e)
