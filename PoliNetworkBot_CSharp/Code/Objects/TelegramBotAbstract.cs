@@ -298,13 +298,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        internal async Task RemoveInlineKeyboardAsync(ChatId chatId, int messageId, InlineKeyboardMarkup replyMarkup)
+        internal async Task RemoveInlineKeyboardAsync(ChatId chatId, long messageId, InlineKeyboardMarkup replyMarkup)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     {
-                        await this._botClient.EditMessageReplyMarkupAsync(chatId: chatId, messageId: messageId, replyMarkup: replyMarkup);
+                        await this._botClient.EditMessageReplyMarkupAsync(chatId: chatId, messageId: (int)messageId, replyMarkup: replyMarkup);
                         return;
                     }
 

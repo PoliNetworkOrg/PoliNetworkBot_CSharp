@@ -7,11 +7,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         private string data;
 
         public ResultQueueEnum? ResultQueueEnum;
-        public int? messageId;
+        public int? messageIdGroup;
         public int? userId;     
         public int? identity;
         public string langUser;
         public string username;
+        public int? messageIdUser;
 
         public CallBackDataAnon(string data)
         {
@@ -22,11 +23,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                this.messageId = Convert.ToInt32(s[1]);
+                this.messageIdGroup = Convert.ToInt32(s[1]);
             }
             catch
             {
-                this.messageId = null;
+                this.messageIdGroup = null;
             }
 
             try
@@ -47,9 +48,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 this.identity = null;
             }
 
-
             this.langUser = s[4];
             this.username = s[5];
+
+            try
+            {
+                this.messageIdUser = Convert.ToInt32(s[6]);
+            }
+            catch
+            {
+                this.messageIdUser = null;
+            }
         }
 
         private ResultQueueEnum? getResult(string v)

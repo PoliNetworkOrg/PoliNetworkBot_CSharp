@@ -134,7 +134,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             Language question = new Language(dict: new Dictionary<string, string>() {
                 {
                     "it",
-                    "Vuoi essere completamente anonimo o usare uno dei nostri pseudonimi per te riservati? (non sarai riconoscibile in nessun modo, tuttavia sarà chiaro a chi legge che sei sempre tu l'autore, se scegli lo stesso pseudonimo)"
+                    "Vuoi essere completamente anonimo o usare uno dei nostri pseudonimi per te riservati? (non sarai riconoscibile in nessun modo, " +
+                    "tuttavia sarà chiaro a chi legge che l'autore è sempre lo stesso, se scegli lo stesso pseudonimo)"
                 }
             });
 
@@ -169,7 +170,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 {
                     "it",
                     "Quale identità vuoi usare? Ti ricordiamo che sono tutte anonime, con pseudonimi collegati all'identità che hai scelto. " +
-                    "Se te ne servono altre, puoi digitare manualmente il numero che desideri"
+                    "Se te ne servono altre, puoi digitare manualmente il numero che desideri\n" +
+                    "I numeri consentiti vanno da 1 a 2147483647"
                 }
             });
 
@@ -246,9 +248,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
 
-                if (x.messageId != null)
+                if (x.messageIdGroup != null)
                 {
-                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, x.messageId.Value + 1, "Hai scelto ["+x.ResultQueueEnum?.ToString()+"]");
+                    await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, x.messageIdGroup.Value + 1, "Hai scelto ["+x.ResultQueueEnum?.ToString()+"]");
                 }
             }
             catch (Exception e1)
@@ -284,7 +286,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             {"it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                         });
                         await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private, 
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
                         break;
                     }
                 case ResultQueueEnum.GO_TO_UNCENSORED:
@@ -296,7 +298,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             {"it", "Il tuo post è stato messo nella zona uncensored!" }
                         });
                         await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
                         break;
                     }
                  
@@ -309,7 +311,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             {"it", "Il tuo post è stato rifiutato!" }
                         });
                         await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, null);
+                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
                         break;
                     }
                 default:
@@ -322,16 +324,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract, CallbackQueryEventArgs e, CallBackDataAnon x)
         {
-            var r = await telegramBotAbstract.ForwardMessageAsync(x.messageId.Value, ConfigAnon.ModAnonCheckGroup, x.ResultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+            var r = await telegramBotAbstract.ForwardMessageAsync(x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.ResultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
             return r;
         }
 
         private static async Task PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e, int identity)
         {
             ;
-            //todo: place message in queue
 
-            MessageSentResult x = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId, e.Message.From.Id, Anon.ConfigAnon.ModAnonCheckGroup);
+            long? m3 = null;
+            MessageSentResult x = null;
+            MessageSentResult m2 = null;
+
+            try
+            {
+
+                Language l4 = new Language(dict: new Dictionary<string, string>() {
+                    {"it", "Il tuo messaggio è stato correttamente messo in coda. Attendi risposta" }
+                });
+
+                x = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId, e.Message.From.Id, Anon.ConfigAnon.ModAnonCheckGroup);
+
+                m2 = await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l4,
+                    Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.Message.MessageId);
+
+                m3 = m2.GetMessageID();
+            }
+            catch (Exception e1)
+            {
+                ;
+            }
+
+            ;
+            
 
             Language language = new Language(dict: new Dictionary<string, string>()
             {
@@ -341,26 +366,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             List<List<InlineKeyboardButton>> x2 = new List<List<InlineKeyboardButton>>();
             List<InlineKeyboardButton> x3 = new List<InlineKeyboardButton>() {
                 new InlineKeyboardButton() { Text = "Si", CallbackData = 
-                FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username) },
+                FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3) },
 
                 new InlineKeyboardButton() { Text = "No", CallbackData =
-                FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username)}
+                FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3)}
             };
             List<InlineKeyboardButton> x4 = new List<InlineKeyboardButton>() {
                 new InlineKeyboardButton() { Text = "Uncensored", CallbackData =
-                FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username) }
+                FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3)}
             }; ;
 
             x2.Add(x3);   
             x2.Add(x4);
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
             ReplyMarkupObject r = new ReplyMarkupObject(inlineKeyboardMarkup);
+
+        
+
             await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language, 
                 Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, r, null, x.GetMessageID());
+
+
+            
         }
 
         
-        private static string FormatDataCallBack(ResultQueueEnum v, long? messageId, int userId, int identity, string langcode, string username)
+        private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, int userId, int identity, 
+            string langcode, string username, long? messageIdUser)
         {
             // split
             string r = "";
@@ -384,7 +416,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
 
             r += Anon.ConfigAnon.splitCallback;
-            r += (messageId == null ? "null" : messageId.Value.ToString());
+            r += (messageIdGroup == null ? "null" : messageIdGroup.Value.ToString());
             r += Anon.ConfigAnon.splitCallback;
             r += userId;
             r += Anon.ConfigAnon.splitCallback;
@@ -393,6 +425,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             r += langcode;
             r += Anon.ConfigAnon.splitCallback;
             r += username;
+            r += Anon.ConfigAnon.splitCallback;
+            r += (messageIdUser == null ? "null" : messageIdUser.Value.ToString());
 
             return r;
         }

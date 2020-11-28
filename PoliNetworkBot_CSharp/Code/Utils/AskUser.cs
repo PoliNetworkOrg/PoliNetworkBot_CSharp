@@ -2,6 +2,7 @@
 
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
@@ -65,8 +66,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 )
             );
 
-            await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
+            var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
                 parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
+
+
+            ;
+
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
             ;
             UserAnswers.Delete(idUser, botId);
