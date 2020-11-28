@@ -58,13 +58,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 {
                     case "/start":
                         {
-                            await startMessageAsync(telegramBotAbstract, e);
+                            await StartMessageAsync(telegramBotAbstract, e);
                             return;
                         }
 
                     case "/help":
                         {
-                            await helpMessageAsync(telegramBotAbstract, e);
+                            await HelpMessageAsync(telegramBotAbstract, e);
                             return;
                         }
                     default:
@@ -193,8 +193,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 {"it", "Inserisci il link del messaggio a cui vuoi rispondere" }
             });
             var r = await AskUser.AskAsync(e.Message.From.Id, question, telegramBotAbstract, e.Message.From.LanguageCode, e.Message.From.Username);
-
-            if (string.IsNullOrEmpty(r))
+            Tuple<long?, Anon.ResultQueueEnum?> tuple = GetMessageReply(r);
+            if (r == null)
             {
                 Language l2 = new Language(dict: new Dictionary<string, string>() {
                     {  
@@ -205,7 +205,59 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 });
             }
 
-            throw new NotImplementedException();
+
+            await PlaceMessageInQueue(telegramBotAbstract, e, identity, tuple);
+            
+        }
+
+        private static Tuple<long?, ResultQueueEnum?> GetMessageReply(string r)
+        {
+            if (string.IsNullOrEmpty(r))
+            {
+                return null;
+            }
+
+            if (!r.Contains("/"))
+                return null;
+
+            r = r.Trim();
+
+            var r2 = r.Split(r);
+
+            long? f1 = null;
+            try
+            {
+                f1 = Convert.ToInt64(r2[^1]);
+            }
+            catch
+            {
+                ;
+            }
+
+
+            Anon.ResultQueueEnum? f2 = GetMessageReply2(r, r2);
+
+            if (f1 == null || f2 == null)
+                return null;
+
+            return new Tuple<long?, ResultQueueEnum?>(f1, f2);
+        }
+
+        private static ResultQueueEnum? GetMessageReply2(string r, string[] r2)
+        {
+            if (r2.Length>1)
+            {
+                if (r2[^2] == ConfigAnon.WhereToPublishAnonMain.ToString())
+                {
+                    return ResultQueueEnum.APPROVED_MAIN;
+                }
+                else if (r2[^2] == ConfigAnon.WhereToPublishAnonUncensored.ToString())
+                {
+                    return ResultQueueEnum.GO_TO_UNCENSORED;
+                }
+            }
+
+            return null;
         }
 
         private static async Task AskIdentityForMessageToSend(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
@@ -438,20 +490,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             });
 
             List<List<InlineKeyboardButton>> x2 = new List<List<InlineKeyboardButton>>();
-            List<InlineKeyboardButton> x3 = new List<InlineKeyboardButton>() {
-                new InlineKeyboardButton() { Text = "Si", CallbackData = 
-                FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3, messageIdReplyTo: messageIdReplyTo) },
-
-                new InlineKeyboardButton() { Text = "No", CallbackData =
+            if (messageIdReplyTo == null || messageIdReplyTo.Item2 == null || messageIdReplyTo.Item2 == ResultQueueEnum.APPROVED_MAIN)
+            {
+                x2.Add(new List<InlineKeyboardButton>() {
+                    new InlineKeyboardButton() { Text = "Si, principale", CallbackData =
+                    FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3, messageIdReplyTo: messageIdReplyTo) }
+                });
+            }
+            if (messageIdReplyTo == null || messageIdReplyTo.Item2 == null || messageIdReplyTo.Item2 == ResultQueueEnum.GO_TO_UNCENSORED)
+            {
+                x2.Add(new List<InlineKeyboardButton>() {
+                    new InlineKeyboardButton() { Text = "Si, uncensored", CallbackData =
+                    FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3, messageIdReplyTo: messageIdReplyTo)}
+                });
+            }
+            x2.Add(new List<InlineKeyboardButton>() {
+                new InlineKeyboardButton() { Text = "No, elimina", CallbackData =
                 FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3, messageIdReplyTo: messageIdReplyTo)}
-            };
-            List<InlineKeyboardButton> x4 = new List<InlineKeyboardButton>() {
-                new InlineKeyboardButton() { Text = "Uncensored", CallbackData =
-                FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.Message.From.Id, identity, e.Message.From.LanguageCode, e.Message.From.Username, m3, messageIdReplyTo: messageIdReplyTo)}
-            }; ;
-
-            x2.Add(x3);   
-            x2.Add(x4);
+            });
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
             ReplyMarkupObject r = new ReplyMarkupObject(inlineKeyboardMarkup);
 
@@ -495,7 +551,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return null;
         }
 
-        private static async Task helpMessageAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
+        private static async Task HelpMessageAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
         {
             Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
                 {"it", "Scrivi il messaggio che vuoi inviare, il bot ti chiederà il resto.\n" +
@@ -510,7 +566,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username, null);
         }
 
-        private static async Task startMessageAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task StartMessageAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
                 {"it", "Ciao! 👋\n\n" +

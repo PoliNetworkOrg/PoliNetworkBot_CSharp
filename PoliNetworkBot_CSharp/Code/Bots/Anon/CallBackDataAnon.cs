@@ -4,7 +4,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class CallBackDataAnon
     {
-        private string data;
+        private readonly string data;
 
         public ResultQueueEnum? resultQueueEnum;
         public long? messageIdGroup;
@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.data = data;
 
             var s = data.Split(ConfigAnon.splitCallback);
-            this.resultQueueEnum = getResult(s[0]);
+            this.resultQueueEnum = GetResult(s[0]);
 
             try
             {
@@ -63,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                this.messageIdToReplyTo = new Tuple<long?, ResultQueueEnum?>(Convert.ToInt64(s[7]), getChosenQueue(s[8]));
+                this.messageIdToReplyTo = new Tuple<long?, ResultQueueEnum?>(Convert.ToInt64(s[7]), GetChosenQueue(s[8]));
             }
             catch
             {
@@ -71,9 +71,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        private ResultQueueEnum? getChosenQueue(string v)
+        private ResultQueueEnum? GetChosenQueue(string v)
         {
-            return getResult(v);
+            return GetResult(v);
         }
 
         public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo)
@@ -88,7 +88,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.messageIdToReplyTo = messageIdToReplyTo;
         }
 
-        private ResultQueueEnum? getResult(string v)
+        private ResultQueueEnum? GetResult(string v)
         {
             return v switch
             {
