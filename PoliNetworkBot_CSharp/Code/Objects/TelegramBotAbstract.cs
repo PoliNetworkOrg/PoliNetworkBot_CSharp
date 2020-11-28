@@ -507,8 +507,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message)
+        internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message, long? messageIdToReplyToLong)
         {
+            int messageIdToReplyToInt = (int)(messageIdToReplyToLong == null ? 0 : messageIdToReplyToLong.Value);
+
             switch (message.Type)
             {
                 case MessageType.Unknown:
@@ -519,7 +521,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             case BotTypeApi.REAL_BOT:
                                 {
-                                    var m1 = await this._botClient.SendTextMessageAsync(chatIdToSend, message.Text, ParseMode.Html);
+                                    var m1 = await this._botClient.SendTextMessageAsync(chatIdToSend, message.Text,
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
 
                                     break;
@@ -537,7 +540,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             case BotTypeApi.REAL_BOT:
                                 {
-                                    var m1 = await this._botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message), message.Caption, ParseMode.Html);
+                                    var m1 = await this._botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message), message.Caption,
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                     break;
                                 }
@@ -555,7 +559,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Voice:
                     break;
                 case MessageType.Document:
-                    break;
+                    {
+                        switch (this._isbot)
+                        {
+                            case BotTypeApi.REAL_BOT:
+                                {
+                                    var m1 = await this._botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), message.Caption,
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                    break;
+                                }
+                            case BotTypeApi.USER_BOT:
+                                break;
+                            case BotTypeApi.DISGUISED_BOT:
+                                break;
+                        }
+                        break;
+                    }
                 case MessageType.Sticker:
                     break;
                 case MessageType.Location:
@@ -632,7 +651,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Voice:
                     break;
                 case MessageType.Document:
-                    break;
+                    {
+                        return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Document.FileId);
+                        break;
+                    }
                 case MessageType.Sticker:
                     break;
                 case MessageType.Location:

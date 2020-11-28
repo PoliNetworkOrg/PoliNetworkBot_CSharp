@@ -13,6 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         public string langUser;
         public string username;
         public long? messageIdUser;
+        internal long? messageIdToReplyTo;
 
         public CallBackDataAnon(string data)
         {
@@ -61,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1)
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1, long? messageIdToReplyTo)
         {
             this.resultQueueEnum = v;
             this.messageIdGroup = messageIdGroup1;
@@ -70,6 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.langUser = langcode;
             this.username = username;
             this.messageIdUser = messageIdUser1;
+            this.messageIdToReplyTo = messageIdToReplyTo;
         }
 
         private ResultQueueEnum? getResult(string v)
