@@ -68,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
                             var languageReply = new Language(new Dictionary<string, string>
                             {
-                                {"en", "You choose [" + result + "]"},
+                                {"en", "You chose [" + result + "]"},
                                 {"it", "Hai scelto [" + result + "]"}
                             });
                             await telegramBotAbstract.SendTextMessageAsync(idUser,
