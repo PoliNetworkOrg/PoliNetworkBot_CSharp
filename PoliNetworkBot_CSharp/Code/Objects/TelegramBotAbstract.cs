@@ -511,6 +511,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             int messageIdToReplyToInt = (int)(messageIdToReplyToLong == null ? 0 : messageIdToReplyToLong.Value);
 
+            ;
+
             switch (message.Type)
             {
                 case MessageType.Unknown:
@@ -648,7 +650,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
                 case MessageType.Video:
                     {
-
+                        return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Video.FileId);
                         break;
                     }
                 case MessageType.Voice:
@@ -659,7 +661,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         break;
                     }
                 case MessageType.Sticker:
-                    break;
+                    {
+                        return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Sticker.FileId);
+                        break;
+                    }
                 case MessageType.Location:
                     break;
                 case MessageType.Contact:
