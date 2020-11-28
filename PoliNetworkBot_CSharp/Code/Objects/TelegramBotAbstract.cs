@@ -532,7 +532,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         break;
                     }
                 case MessageType.Photo:
-                    break;
+                    {
+                        switch (this._isbot)
+                        {
+                            case BotTypeApi.REAL_BOT:
+                                {
+                                    var m1 = await this._botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message), message.Caption, ParseMode.Html);
+                                    return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                    break;
+                                }
+                            case BotTypeApi.USER_BOT:
+                                break;
+                            case BotTypeApi.DISGUISED_BOT:
+                                break;
+                        }
+                        break;
+                    }
                 case MessageType.Audio:
                     break;
                 case MessageType.Video:
@@ -593,6 +608,102 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
+        private Telegram.Bot.Types.InputFiles.InputOnlineFile InputOnlineFile(Message message)
+        {
+            switch (message.Type)
+            {
+                case MessageType.Unknown:
+                    break;
+                case MessageType.Text:
+                    break;
+                case MessageType.Photo:
+                    {
+                        int? idMax = FindMax(message.Photo);
+                        if (idMax == null)
+                            return null;
+
+                        return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Photo[idMax.Value].FileId);
+                        break;
+                    }
+                case MessageType.Audio:
+                    break;
+                case MessageType.Video:
+                    break;
+                case MessageType.Voice:
+                    break;
+                case MessageType.Document:
+                    break;
+                case MessageType.Sticker:
+                    break;
+                case MessageType.Location:
+                    break;
+                case MessageType.Contact:
+                    break;
+                case MessageType.Venue:
+                    break;
+                case MessageType.Game:
+                    break;
+                case MessageType.VideoNote:
+                    break;
+                case MessageType.Invoice:
+                    break;
+                case MessageType.SuccessfulPayment:
+                    break;
+                case MessageType.WebsiteConnected:
+                    break;
+                case MessageType.ChatMembersAdded:
+                    break;
+                case MessageType.ChatMemberLeft:
+                    break;
+                case MessageType.ChatTitleChanged:
+                    break;
+                case MessageType.ChatPhotoChanged:
+                    break;
+                case MessageType.MessagePinned:
+                    break;
+                case MessageType.ChatPhotoDeleted:
+                    break;
+                case MessageType.GroupCreated:
+                    break;
+                case MessageType.SupergroupCreated:
+                    break;
+                case MessageType.ChannelCreated:
+                    break;
+                case MessageType.MigratedToSupergroup:
+                    break;
+                case MessageType.MigratedFromGroup:
+                    break;
+                case MessageType.Animation:
+                    break;
+                case MessageType.Poll:
+                    break;
+                case MessageType.Dice:
+                    break;
+            }
+
+            return null;
+        }
+
+        private int? FindMax(PhotoSize[] photo)
+        {
+            if (photo == null || photo.Length == 0)
+                return null;
+
+            int maxValue = -1;
+            int maxPos = -1;
+
+            for (int i=0; i<photo.Length; i++)
+            {
+                if (photo[i].Width > maxValue)
+                {
+                    maxValue = photo[i].Width;
+                    maxPos = i;
+                }
+            }
+
+            return maxPos;
+        }
+
         internal async Task<bool> SendFileAsync(TelegramFile documentInput, Tuple<TLAbsInputPeer, long> peer,
             Language text,
             TextAsCaption textAsCaption, string username, string lang, long? replyToMessageId, bool disablePreviewLink)
@@ -600,7 +711,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    var inputOnlineFile = documentInput.GetOnlineFile();
+                    Telegram.Bot.Types.InputFiles.InputOnlineFile inputOnlineFile = documentInput.GetOnlineFile();
                     switch (textAsCaption)
                     {
                         case TextAsCaption.AS_CAPTION:
