@@ -647,7 +647,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Audio:
                     break;
                 case MessageType.Video:
-                    break;
+                    {
+
+                        break;
+                    }
                 case MessageType.Voice:
                     break;
                 case MessageType.Document:
