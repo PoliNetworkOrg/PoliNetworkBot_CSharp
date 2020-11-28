@@ -57,9 +57,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return messageId;
         }
 
-        internal string GetLink(long chatId)
+        internal string GetLink(string chatId, bool IsPrivate)
         {
-            return "https://t.me/c/" + chatId + "/" + this.GetMessageID();
+            if (IsPrivate)
+               return "https://t.me/c/" + chatId + "/" + this.GetMessageID();
+
+            return "https://t.me/" + chatId + "/" + this.GetMessageID();
         }
     }
 }

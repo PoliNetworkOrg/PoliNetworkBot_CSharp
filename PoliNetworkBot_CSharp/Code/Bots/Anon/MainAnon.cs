@@ -273,7 +273,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         {
                             MessageSentResult messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
                             if (messageSentResult != null)
-                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain);
+                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain.ToString(), true);
                         }
                         catch
                         {
