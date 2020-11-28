@@ -44,7 +44,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 30 }, null);
             //end | exclude groups
 
-
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)

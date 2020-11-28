@@ -2,7 +2,6 @@
 
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
@@ -40,7 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var tcs = UserAnswers.GetNewTCS(idUser, botId);
                 UserAnswers.SetAnswerProcessed(idUser, botId, false);
                 UserAnswers.AddWorkCompleted(idUser, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang, username);
-              
+
                 return await tcs.Task;
             }
             catch
@@ -68,7 +67,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
                 parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
-
 
             ;
 

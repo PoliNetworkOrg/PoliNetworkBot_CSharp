@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PoliNetworkBot_CSharp.Code.Bots.Anon
+﻿namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     public class ConfigAnon
     {

@@ -236,6 +236,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case BotTypeApi.USER_BOT:
                     break;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
@@ -317,7 +318,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         internal long GetId()
@@ -521,6 +521,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case MessageType.Unknown:
                     break;
+
                 case MessageType.Text:
                     {
                         switch (this._isbot)
@@ -535,6 +536,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
+
                             case BotTypeApi.DISGUISED_BOT:
                                 break;
                         }
@@ -553,6 +555,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
+
                             case BotTypeApi.DISGUISED_BOT:
                                 break;
                         }
@@ -560,6 +563,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Audio:
                     break;
+
                 case MessageType.Video:
                     {
                         switch (this._isbot)
@@ -572,6 +576,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
+
                             case BotTypeApi.DISGUISED_BOT:
                                 break;
                         }
@@ -579,6 +584,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Voice:
                     break;
+
                 case MessageType.Document:
                     {
                         switch (this._isbot)
@@ -592,6 +598,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
+
                             case BotTypeApi.DISGUISED_BOT:
                                 break;
                         }
@@ -609,6 +616,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
+
                             case BotTypeApi.DISGUISED_BOT:
                                 break;
                         }
@@ -616,50 +624,70 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Location:
                     break;
+
                 case MessageType.Contact:
                     break;
+
                 case MessageType.Venue:
                     break;
+
                 case MessageType.Game:
                     break;
+
                 case MessageType.VideoNote:
                     break;
+
                 case MessageType.Invoice:
                     break;
+
                 case MessageType.SuccessfulPayment:
                     break;
+
                 case MessageType.WebsiteConnected:
                     break;
+
                 case MessageType.ChatMembersAdded:
                     break;
+
                 case MessageType.ChatMemberLeft:
                     break;
+
                 case MessageType.ChatTitleChanged:
                     break;
+
                 case MessageType.ChatPhotoChanged:
                     break;
+
                 case MessageType.MessagePinned:
                     break;
+
                 case MessageType.ChatPhotoDeleted:
                     break;
+
                 case MessageType.GroupCreated:
                     break;
+
                 case MessageType.SupergroupCreated:
                     break;
+
                 case MessageType.ChannelCreated:
                     break;
+
                 case MessageType.MigratedToSupergroup:
                     break;
+
                 case MessageType.MigratedFromGroup:
                     break;
+
                 case MessageType.Animation:
                     break;
+
                 case MessageType.Poll:
                     break;
+
                 case MessageType.Dice:
                     break;
             }
-
 
             return null;
         }
@@ -670,8 +698,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case MessageType.Unknown:
                     break;
+
                 case MessageType.Text:
                     break;
+
                 case MessageType.Photo:
                     {
                         int? idMax = FindMax(message.Photo);
@@ -683,6 +713,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Audio:
                     break;
+
                 case MessageType.Video:
                     {
                         return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Video.FileId);
@@ -690,6 +721,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Voice:
                     break;
+
                 case MessageType.Document:
                     {
                         return new Telegram.Bot.Types.InputFiles.InputOnlineFile(message.Document.FileId);
@@ -702,46 +734,67 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                 case MessageType.Location:
                     break;
+
                 case MessageType.Contact:
                     break;
+
                 case MessageType.Venue:
                     break;
+
                 case MessageType.Game:
                     break;
+
                 case MessageType.VideoNote:
                     break;
+
                 case MessageType.Invoice:
                     break;
+
                 case MessageType.SuccessfulPayment:
                     break;
+
                 case MessageType.WebsiteConnected:
                     break;
+
                 case MessageType.ChatMembersAdded:
                     break;
+
                 case MessageType.ChatMemberLeft:
                     break;
+
                 case MessageType.ChatTitleChanged:
                     break;
+
                 case MessageType.ChatPhotoChanged:
                     break;
+
                 case MessageType.MessagePinned:
                     break;
+
                 case MessageType.ChatPhotoDeleted:
                     break;
+
                 case MessageType.GroupCreated:
                     break;
+
                 case MessageType.SupergroupCreated:
                     break;
+
                 case MessageType.ChannelCreated:
                     break;
+
                 case MessageType.MigratedToSupergroup:
                     break;
+
                 case MessageType.MigratedFromGroup:
                     break;
+
                 case MessageType.Animation:
                     break;
+
                 case MessageType.Poll:
                     break;
+
                 case MessageType.Dice:
                     break;
             }
@@ -757,7 +810,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             int maxValue = -1;
             int maxPos = -1;
 
-            for (int i=0; i<photo.Length; i++)
+            for (int i = 0; i < photo.Length; i++)
             {
                 if (photo[i].Width > maxValue)
                 {

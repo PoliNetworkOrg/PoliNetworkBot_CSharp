@@ -1,5 +1,4 @@
-﻿using System;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -60,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal string GetLink(string chatId, bool IsPrivate)
         {
             if (IsPrivate)
-               return "https://t.me/c/" + chatId + "/" + this.GetMessageID();
+                return "https://t.me/c/" + chatId + "/" + this.GetMessageID();
 
             return "https://t.me/" + chatId + "/" + this.GetMessageID();
         }

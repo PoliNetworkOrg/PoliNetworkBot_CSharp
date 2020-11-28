@@ -1,6 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -9,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public class DictionaryUserAnswer
     {
-        public Dictionary<long, Dictionary<long,Couple<AnswerTelegram, TaskCompletionSource<string>>>> d;
+        public Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>> d;
 
         public DictionaryUserAnswer()
         {
@@ -22,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
             }
-            
+
             if (d[idUser] == null)
             {
                 d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();

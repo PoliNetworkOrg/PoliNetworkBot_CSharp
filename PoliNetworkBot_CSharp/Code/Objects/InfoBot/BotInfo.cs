@@ -28,8 +28,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                    {                        
-                        var x = new List<UpdateType>() { UpdateType.CallbackQuery, UpdateType.Message, UpdateType.InlineQuery, UpdateType.ChosenInlineResult};
+                    {
+                        var x = new List<UpdateType>() { UpdateType.CallbackQuery, UpdateType.Message, UpdateType.InlineQuery, UpdateType.ChosenInlineResult };
                         return x.ToArray();
                     }
             }
@@ -39,7 +39,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
         internal bool Callback()
         {
-
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":

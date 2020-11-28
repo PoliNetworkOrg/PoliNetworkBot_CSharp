@@ -1,12 +1,11 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using System.Linq;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
@@ -48,8 +47,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 await DetectMessageAsync(telegramBotAbstract, e);
                 return;
             }
-
-          
 
             string textLower = e.Message.Text.ToLower();
             if (textLower.StartsWith("/"))
@@ -150,17 +147,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 }
             };
 
-           
-
             var r = await Utils.AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract, e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
 
             if (l1.Matches(r))
             {
                 await AskForMessageToReplyTo(telegramBotAbstract, e, identity: 0);
-                
+
                 return;
             }
-
 
             await AskIdentityForMessageToSend(telegramBotAbstract, e);
         }
@@ -197,17 +191,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             if (r == null)
             {
                 Language l2 = new Language(dict: new Dictionary<string, string>() {
-                    {  
-                        "it", 
+                    {
+                        "it",
                         "Errore, non siamo riusciti a comprendere il link che hai inviato\n" +
-                        "Operazione annullata." 
+                        "Operazione annullata."
                     }
                 });
             }
 
-
             await PlaceMessageInQueue(telegramBotAbstract, e, identity, tuple);
-            
         }
 
         private static Tuple<long?, ResultQueueEnum?> GetMessageReply(string r)
@@ -234,7 +226,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 ;
             }
 
-
             Anon.ResultQueueEnum? f2 = GetMessageReply2(r, r2);
 
             if (f1 == null || f2 == null)
@@ -245,7 +236,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static ResultQueueEnum? GetMessageReply2(string r, string[] r2)
         {
-            if (r2.Length>1)
+            if (r2.Length > 1)
             {
                 if (r2[^2] == ConfigAnon.WhereToPublishAnonMain.ToString())
                 {
@@ -271,13 +262,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 }
             });
 
-            
             List<List<Language>> options = new List<List<Language>>();
 
             List<Language> l2 = new List<Language>();
-            for (int i=1; i<= 8; i++)
+            for (int i = 1; i <= 8; i++)
             {
-                l2.Add(new Language(dict:new Dictionary<string, string> {
+                l2.Add(new Language(dict: new Dictionary<string, string> {
                     {"it", i.ToString() }
                 }));
             }
@@ -294,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 Language l3 = new Language(dict: new Dictionary<string, string>() {
                     {"it", "L'identità non è stata riconosciuta. Operazione annullata" }
                 });
-                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l3, 
+                await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l3,
                                 Telegram.Bot.Types.Enums.ChatType.Private, e.Message.From.LanguageCode,
                                 Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username);
                 return;
@@ -307,8 +297,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             ;
 
-            Thread thread = new Thread(() => _ = CallbackMethod3Async(sender, e) );
-            thread.Start();        
+            Thread thread = new Thread(() => _ = CallbackMethod3Async(sender, e));
+            thread.Start();
         }
 
         private static async Task CallbackMethod3Async(object sender, CallbackQueryEventArgs e)
@@ -333,7 +323,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             catch
             {
                 return;
-            }         
+            }
         }
 
         private static async Task CallbackMethod2Async(TelegramBotAbstract telegramBotAbstract, CallbackQueryEventArgs e, CallBackDataAnon x)
@@ -343,8 +333,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 InlineKeyboardButton inlineKeyboard = new InlineKeyboardButton() { Text = "-", CallbackData = "-" };
                 InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-                await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, (int)(e.CallbackQuery.Message.MessageId), "Hai scelto ["+x.resultQueueEnum?.ToString()+"]");
-                
+                await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, (int)(e.CallbackQuery.Message.MessageId), "Hai scelto [" + x.resultQueueEnum?.ToString() + "]");
             }
             catch (Exception e1)
             {
@@ -354,7 +343,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             ;
 
-            
             switch (x.resultQueueEnum)
             {
                 case ResultQueueEnum.APPROVED_MAIN:
@@ -362,7 +350,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         if (x.userId == null)
                             return;
 
-                        
                         string link = "";
 
                         try
@@ -379,7 +366,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         Language t1 = new Language(dict: new Dictionary<string, string>() {
                             {"it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                         });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private, 
+                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
                             x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
                         break;
                     }
@@ -395,7 +382,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
                         break;
                     }
-                 
+
                 case ResultQueueEnum.DELETE:
                     {
                         if (x.userId == null)
@@ -426,7 +413,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 //var r = await telegramBotAbstract.ForwardMessageAsync((int)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
                 var r = await telegramBotAbstract.ForwardMessageAnonAsync(
-                    x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored, 
+                    x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored,
                     r2, messageIdToReplyToLong: x.messageIdToReplyTo);
 
                 return r;
@@ -445,7 +432,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-
                 Language l4 = new Language(dict: new Dictionary<string, string>() {
                     {"it", "Il tuo messaggio è stato correttamente messo in coda. Attendi risposta" }
                 });
@@ -465,7 +451,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         "Operazione annullata" }
                     });
 
-                    await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l6, Telegram.Bot.Types.Enums.ChatType.Private, 
+                    await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l6, Telegram.Bot.Types.Enums.ChatType.Private,
                         e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Default, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username);
 
                     return;
@@ -482,7 +468,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
 
             ;
-            
 
             Language language = new Language(dict: new Dictionary<string, string>()
             {
@@ -511,18 +496,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
             ReplyMarkupObject r = new ReplyMarkupObject(inlineKeyboardMarkup);
 
-        
-
-            var m4 = await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language, 
+            var m4 = await telegramBotAbstract.SendTextMessageAsync(Anon.ConfigAnon.ModAnonCheckGroup, language,
                 Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, r, null, x.GetMessageID());
-
-
-            
         }
 
-        
-        private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, int userId, int identity, 
-            string langcode, string username, long? messageIdUser, Tuple<long?,Anon.ResultQueueEnum?> messageIdReplyTo)
+        private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, int userId, int identity,
+            string langcode, string username, long? messageIdUser, Tuple<long?, Anon.ResultQueueEnum?> messageIdReplyTo)
         {
             CallBackDataAnon callBackDataAnon = new CallBackDataAnon(v, messageIdGroup, userId, identity, langcode, username, messageIdUser, messageIdReplyTo);
             return callBackDataAnon.ToDataString();
@@ -560,7 +539,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 "L'identità è stata introdotta per permettere a delle persone di scrivere sotto uno pseudonimo fisso, se lo desiderano.\n\n" +
                 "Buon divertimento con questa funzione del nostro bot 😄!\n\n" +
                 "Se dovesse esserci qualsiasi problema, scriveteci alla pagina Facebook di PoliNetwork" }
-
             });
             await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ChatType.Private,
                 e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.Message.From.Username, null);
@@ -572,7 +550,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 {"it", "Ciao! 👋\n\n" +
                 "Scrivi /help per la lista completa delle mie funzioni 👀\n\n" +
                 "Visita anche il nostro sito https://polinetwork.github.io" }
-            
             });
             await sender.SendTextMessageAsync(e.Message.From.Id, text, Telegram.Bot.Types.Enums.ChatType.Private,
                 e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, null, e.Message.From.Username, null);

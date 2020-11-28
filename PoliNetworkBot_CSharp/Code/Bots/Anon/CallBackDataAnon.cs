@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public ResultQueueEnum? resultQueueEnum;
         public long? messageIdGroup;
-        public int? userId;     
+        public int? userId;
         public int? identity;
         public string langUser;
         public string username;
@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             catch
             {
                 this.messageIdUser = null;
-            }    
+            }
 
             try
             {
