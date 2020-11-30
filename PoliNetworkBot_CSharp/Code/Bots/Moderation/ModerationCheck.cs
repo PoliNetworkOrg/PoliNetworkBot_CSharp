@@ -276,18 +276,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             long chatId, int userId, int? messageId, ChatType messageChatType,
             string firstName, string lastName, User[] newChatMembers)
         {
-            var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram\n";
+            var s1I = "Imposta un username e un nome più lungo dalle impostazioni di telegram per poter scrivere in questo gruppo\n";
             if (username && !name)
-                s1I = "Imposta un username dalle impostazioni di telegram\n";
+                s1I = "Imposta un username dalle impostazioni di telegram per poter scrivere in questo gruppo\n";
             else if (!username && name)
                 s1I = "Imposta un nome più lungo " +
                       "dalle impostazioni di telegram\n";
 
-            var s1E = "Set an username and a longer first name from telegram settings";
+            var s1E = "Set an username and a longer first name from telegram settings to write in this group\n";
             if (username && !name)
-                s1E = "Set an username from telegram settings";
+                s1E = "Set an username from telegram settings to write in this group\n";
             else if (!username && name)
-                s1E = "Set a longer first name from telegram settings";
+                s1E = "Set a longer first name from telegram settings to write in this group\n";
 
             var s2 = new Language(new Dictionary<string, string>
             {

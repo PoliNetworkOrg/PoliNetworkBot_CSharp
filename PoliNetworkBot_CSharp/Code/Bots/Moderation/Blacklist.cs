@@ -8,6 +8,8 @@ using Telegram.Bot.Types;
 
 #endregion
 
+ 
+
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Blacklist
@@ -91,6 +93,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             //todo: analizzare la foto con un ocr
 
+ 
             return SpamType.ALL_GOOD;
         }
     }
