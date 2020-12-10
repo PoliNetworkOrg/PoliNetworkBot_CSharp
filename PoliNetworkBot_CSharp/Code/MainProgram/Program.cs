@@ -27,6 +27,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static async Task Main(string[] args)
         {
+            //Test.Spam.SpamTest.Main();
+            //return;
+
             FirstThingsToDo();
 
             var readChoice = MainGetMenuChoice();

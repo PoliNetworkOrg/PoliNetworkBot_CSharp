@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.ALL_GOOD;
 
             var isSpamLink = CheckSpamLink(text);
-            return isSpamLink ? SpamType.SPAM_LINK : CheckNotAllowedWords(text);
+            return isSpamLink == SpamType.SPAM_LINK ? SpamType.SPAM_LINK : CheckNotAllowedWords(text);
         }
 
         private static SpamType CheckNotAllowedWords(string text)
@@ -43,10 +44,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return SpamType.ALL_GOOD;
         }
 
-        private static bool CheckSpamLink(string text)
+        private static SpamType CheckSpamLink(string text)
         {
             if (!text.Contains("t.me/"))
-                return text.Contains("facebook.com") ||
+            {
+                bool b1 = text.Contains("facebook.com") ||
                        text.Contains("whatsapp.com") ||
                        text.Contains("instagram.com") ||
                        text.Contains("bit.ly") ||
@@ -56,11 +58,57 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                        text.Contains("forms.gle") ||
                        text.Contains("docs.google.com") ||
                        text.Contains("discord.gg");
+                return b1 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+            }
 
-            if (text.Contains("t.me/c/")) return false;
+            if (text.Contains("t.me/"))
+            {
+                if (text.Contains("t.me/c/")) 
+                    return SpamType.ALL_GOOD;
+
+                text = text.ToLower();
+                var t2 = text.Split("/");
+                int? t3 = Find(t2, "t.me");
+                if (t3 != null)
+                {
+                    var t4 = t2[t3.Value + 1];
+                    var valid = CheckIfAllowedTag(t4);
+                    if (valid == SpamType.ALL_GOOD)
+                        return SpamType.ALL_GOOD;
+                }
+            }
 
             var isOurLink = CheckIfIsOurTgLink(text);
-            return isOurLink != null && !isOurLink.Value;
+            bool b2 = isOurLink != null && !isOurLink.Value;
+            return b2 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+        }
+
+        private static SpamType CheckIfAllowedTag(string t4)
+        {
+            if (string.IsNullOrEmpty(t4))
+            {
+                return SpamType.ALL_GOOD;
+            }
+
+            if (t4.StartsWith("@"))
+            {
+                t4 = t4.Substring(1);
+            }
+
+            bool b = GlobalVariables.AllowedTags.Contains(t4);
+            return b ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+        }
+
+        private static int? Find(string[] t2, string v)
+        {
+            for (int i = 0; i < t2.Length; i++)
+            {
+                string t3 = t2[i];
+                if (t3 == v)
+                    return i;
+            }
+
+            return null;
         }
 
         private static bool? CheckIfIsOurTgLink(string text)

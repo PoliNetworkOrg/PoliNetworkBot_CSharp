@@ -21,9 +21,17 @@ namespace PoliNetworkBot_CSharp.Code.Data
         public static List<Code.Objects.WordToBeFirst> wordToBeFirsts;
         public static List<long> ExcludedChatsForBot;
         public static List<long> NoUsernameCheckInThisChats;
+        public static List<string> AllowedTags;
+
+        public static bool alreadyLoaded = false;
 
         internal static void LoadToRam()
         {
+            if (alreadyLoaded == true)
+                return;
+
+            alreadyLoaded = true;
+
             LoadMessagesToDelete();
 
             Creators = new List<string>
@@ -52,6 +60,11 @@ namespace PoliNetworkBot_CSharp.Code.Data
             AllowedNoUsernameFromThisUserId = new List<long>()
             {
                 777000 //telegram
+            };
+
+            AllowedTags = new List<string>()
+            {
+                "poligruppo"
             };
 
             Owners = new List<Tuple<long, string>>()
