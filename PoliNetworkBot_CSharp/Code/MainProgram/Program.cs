@@ -27,72 +27,77 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static async Task Main(string[] args)
         {
-            //Test.Spam.SpamTest.Main();
-            //return;
-
             FirstThingsToDo();
 
-            var readChoice = MainGetMenuChoice();
-
-            switch (readChoice)
+            while (true)
             {
-                case '1': //reset everything
-                    {
-                        ResetEverything(alsoFillTablesFromJson: true);
+                var readChoice = MainGetMenuChoice();
 
-                        return;
-                    }
+                switch (readChoice)
+                {
+                    case '1': //reset everything
+                        {
+                            ResetEverything(alsoFillTablesFromJson: true);
 
-                case '2': //normal mode
-                case '3': //disguised bot test
-                case '8':
-                case '9':
-                    {
-                        var toExit = LoadBotConfig();
-                        if (toExit == ToExit.EXIT)
                             return;
+                        }
 
-                        var toExit2 = LoadUserBotConfig();
-                        if (toExit2 == ToExit.EXIT)
+                    case '2': //normal mode
+                    case '3': //disguised bot test
+                    case '8':
+                    case '9':
+                        {
+                            var toExit = LoadBotConfig();
+                            if (toExit == ToExit.EXIT)
+                                return;
+
+                            var toExit2 = LoadUserBotConfig();
+                            if (toExit2 == ToExit.EXIT)
+                                return;
+
+                            var toExit3 = LoadBotDisguisedAsUserBotConfig();
+                            if (toExit3 == ToExit.EXIT)
+                                return;
+
+                            GlobalVariables.LoadToRam();
+
+                            Console.WriteLine("\nTo kill this process, you have to check the process list");
+
+                            _ = StartBotsAsync(readChoice == '3', readChoice == '8', runOnlyNormalBot: readChoice == '9');
+
+                            while (true) Console.ReadKey();
                             return;
+                        }
 
-                        var toExit3 = LoadBotDisguisedAsUserBotConfig();
-                        if (toExit3 == ToExit.EXIT)
+                    case '4':
+                        {
+                            ResetEverything(alsoFillTablesFromJson: false);
                             return;
+                        }
 
-                        GlobalVariables.LoadToRam();
+                    case '5':
+                        {
+                            _ = await Test.IG.Test_IG.MainIGAsync();
+                            return;
+                        }
 
-                        Console.WriteLine("\nTo kill this process, you have to check the process list");
+                    case '6':
+                        {
+                            NewConfig.NewConfigMethod(true, false, false, false, false);
+                            return;
+                        }
 
-                        _ = StartBotsAsync(readChoice == '3', readChoice == '8', runOnlyNormalBot: readChoice == '9');
-
-                        while (true) Console.ReadKey();
-                        return;
-                    }
-
-                case '4':
-                    {
-                        ResetEverything(alsoFillTablesFromJson: false);
-                        return;
-                    }
-
-                case '5':
-                    {
-                        _ = await Test.IG.Test_IG.MainIGAsync();
-                        return;
-                    }
-
-                case '6':
-                    {
-                        NewConfig.NewConfigMethod(true, false, false, false, false);
-                        return;
-                    }
-
-                case '7':
-                    {
-                        NewConfig.NewConfigMethod(false, false, true, false, false);
-                        return;
-                    }
+                    case '7':
+                        {
+                            NewConfig.NewConfigMethod(false, false, true, false, false);
+                            return;
+                        }
+                    case 't':
+                        {
+                            Test.Spam.SpamTest.Main2();
+                            return;
+                        }
+                }
             }
         }
 
@@ -122,6 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                                   "7) Reset only disguised bot config\n" +
                                   "8) Run only userbots\n" +
                                   "9) Run only normal bots\n" +
+                                  "t) Test\n" +
                                   "\n");
 
                 var reply = Console.ReadLine();
@@ -130,19 +136,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     var first = reply[0];
 
-                    switch (first)
-                    {
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return first;
-                    }
+                    return first;
                 }
             }
         }

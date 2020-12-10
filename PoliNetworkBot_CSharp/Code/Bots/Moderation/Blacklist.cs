@@ -30,20 +30,44 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var s = text.Split(' ');
             foreach (var s2 in s)
-                switch (s2)
+            {
+                string s3 = RemoveUselessCharacters(s2);
+
+                if (!string.IsNullOrEmpty(s3))
                 {
-                    case "porcodio":
-                    case "dioporco":
-                    case "diocane":
-                    case "negro":
-                    case "negri":
-                        return SpamType.NOT_ALLOWED_WORDS;
+                    switch (s3)
+                    {
+                        case "porcodio":
+                        case "dioporco":
+                        case "diocane":
+                        case "negro":
+                        case "negri":
+                            return SpamType.NOT_ALLOWED_WORDS;
+                    }
                 }
+            }
 
             if (text.Contains("bitcoin") && (text.Contains("guadagno") || text.Contains("rischio")))
                 return SpamType.NOT_ALLOWED_WORDS;
 
             return SpamType.ALL_GOOD;
+        }
+
+        private static string RemoveUselessCharacters(string s3)
+        {
+            if (string.IsNullOrEmpty(s3))
+                return null;
+
+            string r = "";
+            foreach(var c in s3)
+            {
+                if ((c >= 'a' && c <= 'z' )|| (c >= 'A' && c <= 'Z'))
+                {
+                    r += c;
+                }
+            }
+
+            return r;
         }
 
         private static SpamType CheckSpamLink(string text)
