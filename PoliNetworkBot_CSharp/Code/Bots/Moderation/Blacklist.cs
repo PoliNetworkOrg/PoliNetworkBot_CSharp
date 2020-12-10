@@ -35,6 +35,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     case "porcodio":
                     case "dioporco":
                     case "diocane":
+                    case "negro":
+                    case "negri":
                         return SpamType.NOT_ALLOWED_WORDS;
                 }
 
