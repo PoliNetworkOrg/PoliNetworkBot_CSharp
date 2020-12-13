@@ -244,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string query = e.Message.ReplyToMessage.Text;
             if (execute_true_select_false)
             {
-                var i =  Utils.SqLite.Execute(query);
+                var i = Utils.SqLite.Execute(query);
 
                 Language text = new Language(new Dictionary<string, string>() {
                     {"en", "Query execution. Result: " + i.ToString() }
@@ -257,13 +257,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 System.Data.DataTable x = Utils.SqLite.ExecuteSelect(query);
                 MemoryStream x2 = Utils.StreamSerialization.SerializeToStream(x);
                 TelegramFile documentInput = new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
-                TLAbsInputPeer peer2 = new TLInputPeerUser() {UserId = e.Message.From.Id};
+                TLAbsInputPeer peer2 = new TLInputPeerUser() { UserId = e.Message.From.Id };
                 Tuple<TLAbsInputPeer, long> peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
                 Language text2 = new Language(new Dictionary<string, string>() {
                     {"en", "Query result" }
                 });
                 bool v = await sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION, e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
-                return v ? 1: 0;
+                return v ? 1 : 0;
             }
         }
 

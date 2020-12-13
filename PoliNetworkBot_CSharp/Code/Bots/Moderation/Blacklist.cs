@@ -9,8 +9,6 @@ using Telegram.Bot.Types;
 
 #endregion
 
- 
-
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Blacklist
@@ -61,9 +59,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
 
             string r = "";
-            foreach(var c in s3)
+            foreach (var c in s3)
             {
-                if ((c >= 'a' && c <= 'z' )|| (c >= 'A' && c <= 'Z'))
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
                 {
                     r += c;
                 }
@@ -91,7 +89,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (text.Contains("t.me/"))
             {
-                if (text.Contains("t.me/c/")) 
+                if (text.Contains("t.me/c/"))
                     return SpamType.ALL_GOOD;
 
                 text = text.ToLower();
@@ -169,7 +167,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             //todo: analizzare la foto con un ocr
 
- 
             return SpamType.ALL_GOOD;
         }
     }
