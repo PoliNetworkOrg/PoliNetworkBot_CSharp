@@ -110,5 +110,16 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             MessagesToDelete = m;
         }
+
+        internal static bool isOwner(long id)
+        {
+            foreach (var x in Owners)
+            {
+                if (x.Item1 == id)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

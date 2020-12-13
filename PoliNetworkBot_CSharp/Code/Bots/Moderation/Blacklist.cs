@@ -42,6 +42,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         case "diocane":
                         case "negro":
                         case "negri":
+                        case "negra":
+                        case "negre":
                             return SpamType.NOT_ALLOWED_WORDS;
                     }
                 }

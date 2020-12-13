@@ -194,11 +194,76 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/qe":
+                    {
+                        _ = await QueryBot(execute_true_select_false: true, e, sender);
+                        return;
+                    }
+
+                case "/qs":
+                    {
+                        _ = await QueryBot(execute_true_select_false: false, e, sender);
+                        return;
+                    }
+
                 default:
                     {
                         await DefaultCommand(sender, e);
                         return;
                     }
+            }
+        }
+
+        private static async Task<int?> QueryBot(bool execute_true_select_false, MessageEventArgs e, TelegramBotAbstract sender)
+        {
+            if (e.Message.ForwardFrom != null)
+                return null;
+
+            if (e.Message.From == null)
+                return null;
+
+            if (GlobalVariables.isOwner(e.Message.From.Id))
+            {
+                return await QueryBot2(execute_true_select_false, e, sender);
+            }
+
+            return null;
+        }
+
+        private static async Task<int?> QueryBot2(bool execute_true_select_false, MessageEventArgs e, TelegramBotAbstract sender)
+        {
+            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+            {
+                Language text = new Language(new Dictionary<string, string>() {
+                    {"en", "You have to reply to a message containing the query" }
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+                return null;
+            }
+
+            string query = e.Message.ReplyToMessage.Text;
+            if (execute_true_select_false)
+            {
+                var i =  Utils.SqLite.Execute(query);
+
+                Language text = new Language(new Dictionary<string, string>() {
+                    {"en", "Query execution. Result: " + i.ToString() }
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+                return i;
+            }
+            else
+            {
+                var x = Utils.SqLite.ExecuteSelect(query);
+                var x2 = Utils.StreamSerialization.SerializeToStream(x);
+                TelegramFile documentInput = null;
+                TLAbsInputPeer peer2 = new TLInputPeerUser() {UserId = e.Message.From.Id};
+                Tuple<TLAbsInputPeer, long> peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
+                Language text2 = new Language(new Dictionary<string, string>() {
+                    {"en", "Query result" }
+                });
+                bool v = await sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION, e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
+                return v ? 1: 0;
             }
         }
 
