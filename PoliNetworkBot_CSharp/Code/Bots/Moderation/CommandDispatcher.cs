@@ -256,7 +256,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var x = Utils.SqLite.ExecuteSelect(query);
                 var x2 = Utils.StreamSerialization.SerializeToStream(x);
-                TelegramFile documentInput = null;
+                TelegramFile documentInput = new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
                 TLAbsInputPeer peer2 = new TLInputPeerUser() {UserId = e.Message.From.Id};
                 Tuple<TLAbsInputPeer, long> peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
                 Language text2 = new Language(new Dictionary<string, string>() {
