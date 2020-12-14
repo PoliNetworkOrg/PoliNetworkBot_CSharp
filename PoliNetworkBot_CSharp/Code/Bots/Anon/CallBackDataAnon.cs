@@ -8,12 +8,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public ResultQueueEnum? resultQueueEnum;
         public long? messageIdGroup;
-        public int? userId;
+        public long? userId;
         public int? identity;
         public string langUser;
         public string username;
         public long? messageIdUser;
         internal Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo;
+        public bool? from_telegram;
 
         public CallBackDataAnon(string data)
         {
@@ -69,6 +70,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             {
                 this.messageIdToReplyTo = null;
             }
+
+
+            try
+            {
+                string s9 = s[9];
+                this.from_telegram = s9 == "S" || s9 == "Y";
+            }
+            catch
+            {
+                this.from_telegram = null;
+            }
         }
 
         private ResultQueueEnum? GetChosenQueue(string v)
@@ -76,7 +88,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return GetResult(v);
         }
 
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, int userId, int identity, string langcode, string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo)
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode, 
+            string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo, bool from_telegram)
         {
             this.resultQueueEnum = v;
             this.messageIdGroup = messageIdGroup1;
@@ -86,6 +99,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.username = username;
             this.messageIdUser = messageIdUser1;
             this.messageIdToReplyTo = messageIdToReplyTo;
+            this.from_telegram = from_telegram;
         }
 
         private ResultQueueEnum? GetResult(string v)
@@ -122,6 +136,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             r += (messageIdUser == null ? "null" : messageIdUser.Value.ToString());
             r += Anon.ConfigAnon.splitCallback;
             r += PrintReplyTo();
+            r += Anon.ConfigAnon.splitCallback;
+            r += from_telegram != null && from_telegram == true ? "Y" : "N";
 
             return r;
         }
