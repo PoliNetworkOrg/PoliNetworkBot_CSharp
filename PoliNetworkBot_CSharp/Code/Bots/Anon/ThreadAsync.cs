@@ -9,6 +9,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         
         internal static async void DoThingsAsyncBotAsync(object obj)
         {
+            var bot = await Code.Bots.Anon.WebPost.GetAnonBotAsync();
+            if (bot == null)
+                return;
+
+            await Utils.NotifyUtil.NotifyOwners(new Exception(message: "Check anon message started."), bot);
+
             while (true)
             {
                 try
@@ -35,7 +41,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 }
                 catch (Exception e)
                 {
-                    Utils.ExceptionNumbered.SendExceptionAsync(e, await Code.Bots.Anon.WebPost.GetAnonBotAsync());
+                    await Utils.ExceptionNumbered.SendExceptionAsync(e, bot);
                 }
 
                 Thread.Sleep(1000 * 30);
