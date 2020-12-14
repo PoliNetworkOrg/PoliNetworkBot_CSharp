@@ -121,7 +121,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public static Dictionary<long, WebPost> dictionary_webpost = new Dictionary<long, WebPost>();
+        public static Dictionary<long, WebPost> dictionary_webpost = null;
 
         private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync3Async(WebPost webPost)
         {
@@ -142,7 +142,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             if (dictionary_webpost == null)
             {
-                dictionary_webpost = new Dictionary<long, WebPost>();
+                dictionary_webpost = GetDictionary();
             }
 
             if (dictionary_webpost.ContainsKey(webPost.postid) && dictionary_webpost[webPost.postid].seen == 'Y')
@@ -159,11 +159,48 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 await webPost.PlaceInQueue();
 
                 dictionary_webpost[webPost.postid] = webPost;
+                WriteDict();
             }
             catch (Exception e)
             {
                 ;
             }
+        }
+
+        public static void WriteDict()
+        {
+            try
+            {
+                Utils.FileSerialization.WriteToBinaryFile(pathwebdict, dictionary_webpost);
+            }
+            catch
+            {
+                ;
+            }
+        }
+
+        public const string pathwebdict = "webposts.bin";
+
+        private static Dictionary<long, WebPost> GetDictionary()
+        {
+            bool done = false;
+            try
+            {
+                dictionary_webpost = Utils.FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(pathwebdict);
+                if (dictionary_webpost != null)
+                    done = true;
+            }
+            catch
+            {
+                ;
+            }
+
+            if (!done)
+            {
+                dictionary_webpost = new Dictionary<long, WebPost>();
+            }
+
+            return dictionary_webpost;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
     [Serializable]
     internal class WebPost
     {
-        public JObject r4;
+        //public JObject r4;
 
         public long postid;
         public string text;
@@ -20,9 +20,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public WebPost(JObject r4)
         {
-            this.r4 = r4;
+            //this.r4 = r4;
             ;
-            IJEnumerable<JToken> x = this.r4["PostID"].Values()[0];
+            IJEnumerable<JToken> x = r4["PostID"].Values()[0];
             ;
 
             foreach(var r5 in r4.Children())
@@ -156,6 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 string url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.userId.Value + "&password=" + Anon.ConfigAnon.password + "&approved=" + approved;
                 var x2 = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
                 Anon.ThreadAsync.dictionary_webpost[x.userId.Value].approved = approved;
+                Anon.ThreadAsync.WriteDict();
                 return true;
             }
             else
