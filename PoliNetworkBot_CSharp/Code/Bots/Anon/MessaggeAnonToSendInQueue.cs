@@ -15,6 +15,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.e = e;
         }
 
+        public MessaggeAnonToSendInQueue(WebPost webPost)
+        {
+            this.e2 = webPost;
+        }
+
         internal string getUsername()
         {
             if (this.e != null)

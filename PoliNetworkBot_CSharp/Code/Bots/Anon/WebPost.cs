@@ -104,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             Objects.TelegramBotAbstract telegramBotAbstract = await GetAnonBotAsync();
             if (telegramBotAbstract == null)
                 return false;
-            MessaggeAnonToSendInQueue e = null;
+            MessaggeAnonToSendInQueue e = new MessaggeAnonToSendInQueue(this);
             return await Code.Bots.Anon.MainAnon.PlaceMessageInQueue(telegramBotAbstract, e, 0, null);
         }
 
