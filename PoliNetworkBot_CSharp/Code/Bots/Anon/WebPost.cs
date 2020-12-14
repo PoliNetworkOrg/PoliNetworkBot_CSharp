@@ -134,10 +134,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return null;
         }
 
-        internal async System.Threading.Tasks.Task setAsSeenAsync()
+        internal async System.Threading.Tasks.Task SetAsSeenAsync()
         {
             string url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + this.postid.ToString() + "&password=" + Anon.ConfigAnon.password + "&seen=Y";
-            var x = await Utils.Web.DownloadHtmlAsync(url);
+            var x = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
             seen = 'Y';
         }
     }

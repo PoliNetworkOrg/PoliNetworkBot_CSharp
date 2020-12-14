@@ -307,7 +307,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 "RicercaAvanzataAuleVO___soloPreseElettriche_default=N&spazi___model___formbean___" +
                 "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
-            WebReply webReply = await Utils.Web.DownloadHtmlAsync(url);
+            WebReply webReply = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
             if (webReply == null || !webReply.IsValid())
             {
                 return; //todo: notify user that download failed
@@ -542,7 +542,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
           "&giorno_year=" + year.ToString() +
           "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-            WebReply html = await Utils.Web.DownloadHtmlAsync(url);
+            WebReply html = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
             if (html.IsValid() == false)
             {
                 return null;

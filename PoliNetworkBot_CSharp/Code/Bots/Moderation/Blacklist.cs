@@ -118,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (t4.StartsWith("@"))
             {
-                t4 = t4.Substring(1);
+                t4 = t4[1..];
             }
 
             bool b = GlobalVariables.AllowedTags.Contains(t4);

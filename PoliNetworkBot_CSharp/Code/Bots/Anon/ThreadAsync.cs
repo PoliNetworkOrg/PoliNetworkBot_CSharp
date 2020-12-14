@@ -35,7 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                     string urlFinal = url + Anon.ConfigAnon.password;
 
-                    Objects.WebObject.WebReply x = await Utils.Web.DownloadHtmlAsync(urlFinal);
+                    Objects.WebObject.WebReply x = await Utils.Web.DownloadHtmlAsync(urlFinal, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
                     if (x == null)
                     {
                         continue;
@@ -124,7 +124,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                await webPost.setAsSeenAsync();
+                await webPost.SetAsSeenAsync();
 
                 await webPost.PlaceInQueue();
 

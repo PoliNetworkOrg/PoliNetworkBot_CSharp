@@ -440,7 +440,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 if (e.FromTelegram())
                 {
-                    x = await telegramBotAbstract.ForwardMessageAnonAsync(Anon.ConfigAnon.ModAnonCheckGroup, e.getMessage(), null);
+                    x = await telegramBotAbstract.ForwardMessageAnonAsync(Anon.ConfigAnon.ModAnonCheckGroup, e.GetMessage(), null);
                 }
                 else
                 {
@@ -458,16 +458,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         "Operazione annullata" }
                     });
 
-                    await telegramBotAbstract.SendTextMessageAsync(e.getFromUserId(), l6, Telegram.Bot.Types.Enums.ChatType.Private,
-                        e.getLanguageCode(), Telegram.Bot.Types.Enums.ParseMode.Default, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.getUsername());
+                    await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l6, Telegram.Bot.Types.Enums.ChatType.Private,
+                        e.GetLanguageCode(), Telegram.Bot.Types.Enums.ParseMode.Default, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), e.GetUsername());
 
                     return false;
                 }
 
                 if (e.FromTelegram())
                 {
-                    m2 = await telegramBotAbstract.SendTextMessageAsync(e.getFromUserId(), l4,
-                        Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.getMessage().MessageId);
+                    m2 = await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
+                        Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.GetMessage().MessageId);
                 }
 
 
@@ -494,8 +494,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                                        x.GetMessageID(),
                                        e.GetFromUserIdOrPostId(),
                                        identity,
-                                       e.getLanguageCode(),
-                                       e.getUsername(),
+                                       e.GetLanguageCode(),
+                                       e.GetUsername(),
                                        m3,
                                        messageIdReplyTo: messageIdReplyTo,
                                        from_telegram: e.FromTelegram()) }
@@ -506,13 +506,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 x2.Add(new List<InlineKeyboardButton>() {
                     new InlineKeyboardButton() { Text = "Si, uncensored", CallbackData =
                     FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.GetFromUserIdOrPostId(), identity,
-                    e.getLanguageCode(), e.getUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
+                    e.GetLanguageCode(), e.GetUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
                 });
             }
             x2.Add(new List<InlineKeyboardButton>() {
                 new InlineKeyboardButton() { Text = "No, elimina", CallbackData =
                 FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.GetFromUserIdOrPostId(), identity,
-                e.getLanguageCode(), e.getUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
+                e.GetLanguageCode(), e.GetUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
             });
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
             ReplyMarkupObject r = new ReplyMarkupObject(inlineKeyboardMarkup);

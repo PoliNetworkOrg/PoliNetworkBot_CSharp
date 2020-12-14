@@ -8,9 +8,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Web
     {
-        internal static async System.Threading.Tasks.Task<WebReply> DownloadHtmlAsync(string urlAddress)
+        internal static async System.Threading.Tasks.Task<WebReply> DownloadHtmlAsync(string urlAddress, System.Net.Cache.RequestCacheLevel requestCacheLevel)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+            request.CachePolicy = new System.Net.Cache.RequestCachePolicy(requestCacheLevel);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
             if (response.StatusCode == HttpStatusCode.OK)

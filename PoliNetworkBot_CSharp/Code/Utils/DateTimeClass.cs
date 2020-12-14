@@ -185,7 +185,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (reply.StartsWith("in a"))
             {
-                reply = reply.Substring(4).Trim();
+                reply = reply[4..].Trim();
                 return GetDateTimeFromString2(reply);
             }
 
@@ -288,7 +288,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (reply.StartsWith("un'"))
                 {
-                    reply = reply.Substring(3).Trim();
+                    reply = reply[3..].Trim();
                     return GetDateTimeFromString2(reply);
                 }
 
@@ -358,7 +358,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (reply.StartsWith("un'"))
-                reply = reply.Substring(3).Trim();
+                reply = reply[3..].Trim();
             else if (reply.StartsWith("un ")) reply = reply[3..].Trim();
 
             if (reply.Contains("-"))

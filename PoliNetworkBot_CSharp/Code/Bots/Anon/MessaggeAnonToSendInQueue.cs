@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.e2 = webPost;
         }
 
-        internal string getUsername()
+        internal string GetUsername()
         {
             if (this.e != null)
             {
@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return null;
         }
 
-        internal string getLanguageCode()
+        internal string GetLanguageCode()
         {
             if (this.e != null)
             {
@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return this.e != null;
         }
 
-        internal Message getMessage()
+        internal Message GetMessage()
         {
             if (this.e != null)
             {
@@ -55,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return null;
         }
 
-        internal long? getFromUserId()
+        internal long? GetFromUserId()
         {
             if (this.e != null)
             {
