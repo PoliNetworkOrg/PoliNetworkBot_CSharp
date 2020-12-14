@@ -16,6 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         public char approved;
         public char seen;
         public string password;
+        public DateTime? whensubmitted;
 
         public WebPost(JObject r4)
         {
@@ -85,6 +86,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             case "Seen":
                                 {
                                     seen = r7.Value.ToString()[0];
+                                    break;
+                                }
+
+                            case "WhenSubmitted":
+                                {
+                                    whensubmitted = Convert.ToDateTime(r7.Value);
                                     break;
                                 }
 
