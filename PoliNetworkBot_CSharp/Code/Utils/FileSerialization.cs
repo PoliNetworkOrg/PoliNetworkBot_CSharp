@@ -27,14 +27,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         /// </param>
         public static Tuple<bool, Exception> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
+            Stream stream = null;
             try
             {
-                Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
+                stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
                 SerializeFile(objectToWrite, ref stream);
+                stream.Close();
                 return new Tuple<bool, Exception>(true, null);
             }
             catch (Exception e)
             {
+                try
+                {
+                    stream.Close();
+                }
+                catch
+                {
+                    ;
+                }
                 return new Tuple<bool, Exception>(false, e);
             }
         }
@@ -47,21 +57,47 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         /// <returns>Returns a new instance of the object read from the binary file.</returns>
         public static T ReadFromBinaryFile<T>(string filePath)
         {
+            Stream stream = null;
             try
             {
-                using Stream stream = File.Open(filePath, FileMode.Open);
+                stream = File.Open(filePath, FileMode.Open);
                 var binaryFormatter = new BinaryFormatter();
                 try
                 {
-                    return (T)binaryFormatter.Deserialize(stream);
+                    var r = (T)binaryFormatter.Deserialize(stream);
+                    try
+                    {
+                        stream.Close();
+                    }
+                    catch
+                    {
+                        ;
+                    }
+                    return r;
                 }
                 catch
                 {
+                    try
+                    {
+                        stream.Close();
+                    }
+                    catch
+                    {
+                        ;
+                    }
                     return default;
                 }
             }
             catch
             {
+                try
+                {
+                    stream.Close();
+                }
+                catch
+                {
+                    ;
+                }
                 return default;
             }
         }

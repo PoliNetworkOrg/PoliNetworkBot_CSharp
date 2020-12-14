@@ -43,6 +43,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 ;
             }
 
+            if (dictionary_webpost == null)
+            {
+                dictionary_webpost = GetDictionary();
+            }
+
             while (true)
             {
                 lock (random)
@@ -205,6 +210,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 dictionary_webpost = new Dictionary<long, WebPost>();
             }
 
+            WriteDict();
             return dictionary_webpost;
         }
     }
