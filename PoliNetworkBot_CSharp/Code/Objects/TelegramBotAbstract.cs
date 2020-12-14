@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         User x = await this._botClient.GetMeAsync();
                         string u1 = x.Username;
                         if (u1.StartsWith("@"))
-                            u1 = u1.Substring(1);
+                            u1 = u1[1..];
 
                         username = u1;
                         return username;

@@ -191,13 +191,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (reply.StartsWith("fra "))
             {
-                reply = reply.Substring(4).Trim();
+                reply = reply[4..].Trim();
                 return GetDateTimeFromString2(reply);
             }
 
             if (reply.StartsWith("entro "))
             {
-                reply = reply.Substring(5).Trim();
+                reply = reply[5..].Trim();
                 var d2 = GetDateTimeFromString2(reply);
                 return d2;
             }
@@ -359,7 +359,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (reply.StartsWith("un'"))
                 reply = reply.Substring(3).Trim();
-            else if (reply.StartsWith("un ")) reply = reply.Substring(3).Trim();
+            else if (reply.StartsWith("un ")) reply = reply[3..].Trim();
 
             if (reply.Contains("-"))
             {

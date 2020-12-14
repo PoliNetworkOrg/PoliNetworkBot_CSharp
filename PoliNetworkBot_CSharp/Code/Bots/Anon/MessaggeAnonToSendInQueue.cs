@@ -7,8 +7,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class MessaggeAnonToSendInQueue
     {
-        private MessageEventArgs e;
-        private WebPost e2;
+        private readonly MessageEventArgs e;
+        private readonly WebPost e2;
 
         public MessaggeAnonToSendInQueue(MessageEventArgs e)
         {
@@ -65,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return null;
         }
 
-        internal long? getFromUserIdOrPostId()
+        internal long? GetFromUserIdOrPostId()
         {
             if (this.e != null)
             {

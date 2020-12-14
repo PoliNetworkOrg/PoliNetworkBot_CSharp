@@ -492,7 +492,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                     new InlineKeyboardButton() { Text = "Si, principale", CallbackData =
                     FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN,
                                        x.GetMessageID(),
-                                       e.getFromUserIdOrPostId(),
+                                       e.GetFromUserIdOrPostId(),
                                        identity,
                                        e.getLanguageCode(),
                                        e.getUsername(),
@@ -505,13 +505,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             {
                 x2.Add(new List<InlineKeyboardButton>() {
                     new InlineKeyboardButton() { Text = "Si, uncensored", CallbackData =
-                    FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.getFromUserIdOrPostId(), identity,
+                    FormatDataCallBack( ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(), e.GetFromUserIdOrPostId(), identity,
                     e.getLanguageCode(), e.getUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
                 });
             }
             x2.Add(new List<InlineKeyboardButton>() {
                 new InlineKeyboardButton() { Text = "No, elimina", CallbackData =
-                FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.getFromUserIdOrPostId(), identity,
+                FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.GetFromUserIdOrPostId(), identity,
                 e.getLanguageCode(), e.getUsername(), m3, messageIdReplyTo: messageIdReplyTo, e.FromTelegram())}
             });
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
@@ -13,7 +14,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             if (bot == null)
                 return;
 
-            await Utils.NotifyUtil.NotifyOwners(new Exception(message: "Check anon message started."), bot);
+            if (string.IsNullOrEmpty(Anon.ConfigAnon.password))
+                return;
+
+            try
+            {
+                await Utils.NotifyUtil.NotifyOwners(new Exception(message: "Check anon message started."), bot);
+            }
+            catch
+            {
+                ;
+            }
 
             while (true)
             {
@@ -80,23 +91,49 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
+        public static Dictionary<long, WebPost> dictionary_webpost = new Dictionary<long, WebPost>();
+
         private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync3Async(WebPost webPost)
+        {
+            lock (dictionary_webpost)
+            {
+                _ = DoThingsAsyncBotAsync4Async(webPost);
+            }
+
+        }
+
+        private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync4Async(WebPost webPost)
         {
             if (webPost == null)
                 return;
 
+            if (webPost.seen == 'Y')
+                return;
+
+            if (dictionary_webpost == null)
+            {
+                dictionary_webpost = new Dictionary<long, WebPost>();
+            }
+
+            if (dictionary_webpost.ContainsKey(webPost.postid) && dictionary_webpost[webPost.postid].seen == 'Y')
+            {
+                return;
+            }
+
             ;
+
             try
             {
                 await webPost.setAsSeenAsync();
 
                 await webPost.PlaceInQueue();
+
+                dictionary_webpost[webPost.postid] = webPost;
             }
             catch (Exception e)
             {
                 ;
             }
-
         }
     }
 }
