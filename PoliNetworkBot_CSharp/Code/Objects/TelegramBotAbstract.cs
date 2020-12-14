@@ -340,7 +340,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _id;
         }
 
-        internal async Task<MessageSentResult> SendTextMessageAsync(long chatid, Language text,
+        internal async Task<MessageSentResult> SendTextMessageAsync(long? chatid, Language text,
             ChatType? chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null, bool disablePreviewLink = false)
         {
@@ -357,7 +357,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                 case BotTypeApi.DISGUISED_BOT:
-                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    if (chatid == null)
+                        return null;
+                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid.Value, chatType);
                     try
                     {
                         TLAbsReplyMarkup replyMarkup = null;

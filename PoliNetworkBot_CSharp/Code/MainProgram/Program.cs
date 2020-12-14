@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -94,7 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     case 't':
                         {
-                            Test.Spam.SpamTest.Main2();
+                            Test.Spam.SpamTest.Main2();                   
                             return;
                         }
                 }
@@ -104,6 +105,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static void FirstThingsToDo()
         {
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            if (File.Exists("psw_anon.txt"))
+            {
+                Code.Bots.Anon.ConfigAnon.password = File.ReadAllText("psw_anon.txt");
+            }
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -247,9 +253,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot, bool runOnlyNormalBot)
+        public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot, bool runOnlyNormalBot)
         {
             int moderationBots = 0;
+            int anonBots = 0;
 
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
             if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
@@ -277,6 +284,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     if (onmessageMethod2.Item2 == Data.Constants.BotStartMethods.Moderation)
                     {
                         moderationBots++;
+                    }
+
+                    if (onmessageMethod2.Item2 == BotStartMethods.Anon)
+                    {
+                        anonBots++;
                     }
                 }
 
@@ -356,6 +368,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
             {
                 var t = new Thread(Code.Bots.Moderation.ThreadAsync.DoThingsAsyncBot);
+                t.Start();
+            }
+
+            if (GlobalVariables.Bots.Keys.Count > 0 && anonBots > 0)
+            {
+                var t = new Thread(Code.Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
                 t.Start();
             }
         }
