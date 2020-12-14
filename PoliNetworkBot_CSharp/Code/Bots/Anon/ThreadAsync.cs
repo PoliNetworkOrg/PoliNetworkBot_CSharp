@@ -125,6 +125,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync3Async(WebPost webPost)
         {
+            if (dictionary_webpost == null)
+            {
+                dictionary_webpost = GetDictionary();
+            }
+
             lock (dictionary_webpost)
             {
                 _ = DoThingsAsyncBotAsync4Async(webPost);
