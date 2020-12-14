@@ -108,7 +108,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return await Code.Bots.Anon.MainAnon.PlaceMessageInQueue(telegramBotAbstract, e, 0, null);
         }
 
-        private async Task<TelegramBotAbstract> GetAnonBotAsync()
+        public static async Task<TelegramBotAbstract> GetAnonBotAsync()
         {
             if (Code.Data.GlobalVariables.Bots == null)
             {

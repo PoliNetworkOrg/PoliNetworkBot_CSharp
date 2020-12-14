@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -39,6 +40,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal int GetNumberOfTimes()
         {
             return v;
+        }
+
+        internal static async System.Threading.Tasks.Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract)
+        {
+            if (telegramBotAbstract == null)
+                return false;
+
+            await Utils.NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            return true;
         }
     }
 }

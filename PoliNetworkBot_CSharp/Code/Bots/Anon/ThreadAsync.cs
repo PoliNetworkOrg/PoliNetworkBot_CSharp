@@ -35,7 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 }
                 catch (Exception e)
                 {
-                    ;
+                    Utils.ExceptionNumbered.SendExceptionAsync(e, await Code.Bots.Anon.WebPost.GetAnonBotAsync());
                 }
 
                 Thread.Sleep(1000 * 30);
