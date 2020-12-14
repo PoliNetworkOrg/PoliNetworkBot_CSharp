@@ -363,11 +363,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             ;
                         }
 
-                        Language t1 = new Language(dict: new Dictionary<string, string>() {
-                            {"it", "Il tuo post è stato approvato! Congratulazioni! " + link }
-                        });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            Language t1 = new Language(dict: new Dictionary<string, string>() {
+                                {"it", "Il tuo post è stato approvato! Congratulazioni! " + link }
+                            });
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
+                                x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
                         break;
                     }
                 case ResultQueueEnum.GO_TO_UNCENSORED:
@@ -375,11 +382,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         if (x.userId == null)
                             return;
 
-                        Language t1 = new Language(dict: new Dictionary<string, string>() {
-                            {"it", "Il tuo post è stato messo nella zona uncensored!" }
-                        });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        string link = "";
+
+                        try
+                        {
+                            MessageSentResult messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
+                            if (messageSentResult != null)
+                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonUncensored.ToString(), true);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            Language t1 = new Language(dict: new Dictionary<string, string>() {
+                                {"it", "Il tuo post è stato messo nella zona uncensored! " + link }
+                            });
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
+                                x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
                         break;
                     }
 
@@ -388,11 +415,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         if (x.userId == null)
                             return;
 
-                        Language t1 = new Language(dict: new Dictionary<string, string>() {
-                            {"it", "Il tuo post è stato rifiutato!" }
-                        });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
-                            x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            Language t1 = new Language(dict: new Dictionary<string, string>() {
+                                {"it", "Il tuo post è stato rifiutato!" }
+                            });
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, Telegram.Bot.Types.Enums.ChatType.Private,
+                                x.langUser, Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), x.username, x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
                         break;
                     }
                 default:

@@ -174,7 +174,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return r;
         }
 
-        private string ResultToString(ResultQueueEnum? item2)
+        public static string ResultToString(ResultQueueEnum? item2)
         {
             return item2 switch
             {

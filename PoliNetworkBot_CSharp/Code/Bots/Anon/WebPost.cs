@@ -140,5 +140,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             var x = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
             seen = 'Y';
         }
+
+        internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
+        {
+            char approved = Approved(x);
+            if (x.userId != null)
+            {
+                string url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.userId.Value + "&password=" + Anon.ConfigAnon.password + "&approved=" + approved;
+                var x2 = await Utils.Web.DownloadHtmlAsync(url, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+                Anon.ThreadAsync.dictionary_webpost[x.userId.Value].approved = approved;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static char Approved(CallBackDataAnon x)
+        {
+            var s =  CallBackDataAnon.ResultToString(x.resultQueueEnum);
+            return s[0];
+        }
     }
 }
