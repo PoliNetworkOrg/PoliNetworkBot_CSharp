@@ -199,6 +199,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
             }
 
+            if (e.Message != null && e.Message.From != null && Data.GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(e.Message.From.Id))
+                return null;
+
             var r = new List<UsernameAndNameCheckResult>
             {
                 CheckUsername2(e.Message.From.Username, e.Message.From.FirstName,
