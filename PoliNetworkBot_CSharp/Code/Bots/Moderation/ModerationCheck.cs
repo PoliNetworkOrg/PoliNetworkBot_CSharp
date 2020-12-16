@@ -244,6 +244,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         public static SpamType CheckSpam(MessageEventArgs e)
         {
+            if (e.Message != null && e.Message.Chat != null && e.Message.Chat.Type == ChatType.Private)
+                return SpamType.ALL_GOOD;
+
             if (Code.Data.GlobalVariables.AllowedSpam.Contains(e.Message?.From?.Username?.ToLower()))
                 return SpamType.ALL_GOOD;
 
