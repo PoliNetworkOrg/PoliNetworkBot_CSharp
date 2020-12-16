@@ -247,6 +247,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message != null && e.Message.Chat != null && e.Message.Chat.Type == ChatType.Private)
                 return SpamType.ALL_GOOD;
 
+            if (e.Message != null && e.Message.From != null && e.Message.Chat != null && (e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id))
+            {
+                return SpamType.ALL_GOOD;
+            }
+
             if (Code.Data.GlobalVariables.AllowedSpam.Contains(e.Message?.From?.Username?.ToLower()))
                 return SpamType.ALL_GOOD;
 
