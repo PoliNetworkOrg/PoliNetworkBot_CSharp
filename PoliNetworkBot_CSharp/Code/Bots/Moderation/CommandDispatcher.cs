@@ -222,7 +222,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.From == null)
                 return null;
 
-            if (GlobalVariables.isOwner(e.Message.From.Id))
+            if (GlobalVariables.IsOwner(e.Message.From.Id))
             {
                 return await QueryBot2(execute_true_select_false, e, sender);
             }
