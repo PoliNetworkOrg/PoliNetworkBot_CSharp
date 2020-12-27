@@ -8,6 +8,8 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -80,6 +82,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case "/ban":
                     {
                         _ = BanUserAsync(sender, e, cmdLines);
+                        return;
+                    }
+                case "/banAllHistory":
+                    {
+                        // _ = BanUserAsync(sender, e, cmdLines);
+                        _ = BanUserHistoryAsync(sender, e);
                         return;
                     }
 
@@ -212,6 +220,41 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            Tuple<bool, Exception> r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
+            if (!r.Item1)
+            {
+                return r;
+            }
+            string query = "SELECT target FROM Banned"; //manca un where per gli unbanned? TODO
+            System.Data.DataTable x = Utils.SqLite.ExecuteSelect(query);
+            System.Data.DataTable groups = Utils.SqLite.ExecuteSelect("Select id From Groups");
+            long userToBeBanned;
+            if(e.Message.Text.Length !=10)
+            {
+                
+                return null;
+            }
+            int counter = 0;
+            string channel = e.Message.Text.Substring(0, 9);
+            if (groups.Select("id = " + "'" + channel + "'").Length == 1)
+            {
+                foreach (var element in x.Rows)
+                {
+                    userToBeBanned = (long)element;
+                    await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Int64.Parse(channel), new string[0]);
+                    counter++;
+                }
+                Language text = new Language(new Dictionary<string, string>() {
+                    {"en", "Banned " + counter + " in group: " + groups.Select(channel)}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+
+            }
+            return true;
         }
 
         private static async Task<int?> QueryBot(bool execute_true_select_false, MessageEventArgs e, TelegramBotAbstract sender)
