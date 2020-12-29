@@ -7,6 +7,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Channels;
@@ -224,36 +225,61 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            Tuple<bool, Exception> r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
-            if (!r.Item1)
+            bool r = Utils.Owners.CheckIfOwner(e.Message.From.Id);
+            if (!r)
             {
                 return r;
             }
-            string query = "SELECT target FROM Banned"; //manca un where per gli unbanned? TODO
+
+
+            string query = "SELECT DISTINCT T1.target FROM " +
+                "(SELECT * FROM Banned WHERE banned_true_unbanned_false = 83 ORDER BY when_banned DESC) AS T1, " +
+                "(SELECT * FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC) AS T2 " +
+                "WHERE (T1.target = T2.target AND T1.when_banned >= T2.when_banned AND T1.target IN (SELECT target FROM(SELECT target FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC))) OR (T1.target NOT IN (SELECT target FROM (SELECT target FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC)))";
             System.Data.DataTable x = Utils.SqLite.ExecuteSelect(query);
+            
+            if (x == null || x.Rows == null ||x.Rows.Count == 0)
+            {
+                Language text3 = new Language(new Dictionary<string, string>() {
+                    {"en", "There are no users to ban!"}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, text3, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+                return false;
+            }
+
             System.Data.DataTable groups = Utils.SqLite.ExecuteSelect("Select id From Groups");
-            long userToBeBanned;
             if(e.Message.Text.Length !=10)
             {
-                
-                return null;
+                Language text2 = new Language(new Dictionary<string, string>() {
+                    {"en", "Group not found (1)!"}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, text2, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+                return false;
             }
+
             int counter = 0;
             string channel = e.Message.Text.Substring(0, 9);
-            if (groups.Select("id = " + "'" + channel + "'").Length == 1)
+            if (groups.Select("id = " + "'" + channel + "'").Length != 1)
             {
-                foreach (var element in x.Rows)
-                {
-                    userToBeBanned = (long)element;
-                    await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Int64.Parse(channel), new string[0]);
-                    counter++;
-                }
-                Language text = new Language(new Dictionary<string, string>() {
-                    {"en", "Banned " + counter + " in group: " + groups.Select(channel)}
+                Language text2 = new Language(new Dictionary<string, string>() {
+                    {"en", "Group not found! (2)"}
                 });
-                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
-
+                await sender.SendTextMessageAsync(e.Message.From.Id, text2, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+                return false;
             }
+
+            foreach (DataRow element in x.Rows)
+            {
+                long userToBeBanned = Convert.ToInt64(element.ItemArray[0]);
+                await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Convert.ToInt64(channel), null);
+                counter++;
+            }
+
+
+            Language text = new Language(new Dictionary<string, string>() {
+                {"en", "Banned " + counter + " in group: " + groups.Select(channel)}
+            });
+            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
             return true;
         }
 
