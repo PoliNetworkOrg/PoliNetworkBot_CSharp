@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
@@ -246,8 +247,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await sender.SendTextMessageAsync(e.Message.From.Id, text3, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
                 return false;
             }
-
+            
             System.Data.DataTable groups = Utils.SqLite.ExecuteSelect("Select id From Groups");
+            /*
             if(e.Message.Text.Length !=10)
             {
                 Language text2 = new Language(new Dictionary<string, string>() {
@@ -256,9 +258,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await sender.SendTextMessageAsync(e.Message.From.Id, text2, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
                 return false;
             }
-
+            */
             int counter = 0;
-            string channel = e.Message.Text.Substring(0, 9);
+            string channel = Regex.Match(e.Message.Text, @"\d+").Value;
             if (groups.Select("id = " + "'" + channel + "'").Length != 1)
             {
                 Language text2 = new Language(new Dictionary<string, string>() {
