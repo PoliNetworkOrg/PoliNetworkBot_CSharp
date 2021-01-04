@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
@@ -63,6 +64,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case "/help":
                     {
                         await Help(sender, e);
+                        return;
+                    }
+
+
+                case "/muteAll":
+                    {
+                        if (e.Message.Chat.Type != ChatType.Private)
+                        {
+                            await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+
+                        if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
+                            _ = MuteAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                        else
+                            await DefaultCommand(sender, e);
                         return;
                     }
 
@@ -428,11 +445,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 sender, username, lang, null, true);
         }
 
-        private static async Task<Tuple<bool, Exception>> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> BanUserAsync(TelegramBotAbstract sender, MessageEventArgs e,
             string[] stringInfo)
         {
-            Tuple<bool, Exception> r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
-            if (!r.Item1)
+            PoliNetworkBot_CSharp.Code.Objects.SuccessWithException r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
+            if (!r.isSuccess())
             {
                 return r;
             }
@@ -444,7 +461,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     Exception e2 = new Exception("Can't find userid (1)");
                     await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender);
-                    return new Tuple<bool, Exception>(false, e2);
+                    return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, e2);
                 }
                 else
                 {
@@ -453,7 +470,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         Exception e2 = new Exception("Can't find userid (2)");
                         await Utils.NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, 0);
-                        return new Tuple<bool, Exception>(false, e2);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, e2);
                     }
                     else
                     {
@@ -468,19 +485,79 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> UnbanAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
         {
-            await BanAllUnbanAllMethod1Async(false, GetFinalTarget(e, target), e, sender, lang, username);
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, Enums.RestrictAction.UNBAN);
         }
 
-        private static async Task BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
-            IReadOnlyList<string> target, string lang, string username)
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
+            string[] target, string lang, string username)
         {
-            await BanAllUnbanAllMethod1Async(true, GetFinalTarget(e, target), e, sender, lang, username);
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, Enums.RestrictAction.BAN);
         }
 
-        private static async Task BanAllUnbanAllMethod1Async(bool ban_true_unban_false, string finalTarget,
-            MessageEventArgs e, TelegramBotAbstract sender, string lang, string username)
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> MuteAllAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
+        {
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, Enums.RestrictAction.MUTE);
+        }
+
+        private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract sender, MessageEventArgs e,
+            string[] target, string lang, string username, RestrictAction bAN)
+        {
+            ValueWithException<DateTime?> d1 = GetDateTime(target);
+            try
+            {
+                if (d1 == null)
+                {
+                    await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username, until: null);
+                    return new SuccessWithException(true);
+                }
+
+                DateTime? d2 = d1.GetValue();
+                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username, d2);
+            }
+            catch (Exception ex)
+            {
+                List<Exception> ex2 = Concat(ex, d1);
+                return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, ex2);
+            }
+
+            return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true, d1.GetExceptions());
+        }
+
+        private static List<Exception> Concat(Exception ex, ValueWithException<DateTime?> d1)
+        {
+            List<Exception> r = new List<Exception>();
+            r.Add(ex);
+            if (d1 != null && d1.ContainsExceptions())
+            {
+                r.AddRange(d1.GetExceptions());
+            }
+
+            return r;
+        }
+
+        private static ValueWithException<DateTime?> GetDateTime(string[] target)
+        {
+            ;
+            //TODO
+
+            if (target == null)
+                return null;
+            if (target.Length < 3)
+                return null;
+
+            string s = "";
+            for (int i=2; i< target.Length; i++)
+            {
+                s += target[i] + " ";
+            }
+            s = s.Trim();
+            return Utils.DateTimeClass.GetFromString(s);
+        }
+
+        private static async Task BanAllUnbanAllMethod1Async(Code.Enums.RestrictAction restrictAction, string finalTarget,
+            MessageEventArgs e, TelegramBotAbstract sender, string lang, string username, DateTime? until)
         {
             if (string.IsNullOrEmpty(finalTarget))
             {
@@ -496,8 +573,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, finalTarget, ban_true_unban_false);
-            var text2 = done.Item1.GetLanguage(ban_true_unban_false, finalTarget, done.Item3);
+            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done = await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until);
+            var text2 = done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,

@@ -19,6 +19,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, int userId, ChatType chatType)
         {
+            var untilDate = DateTime.Now.AddSeconds(time);
+            await Mute2Async(untilDate, telegramBotClient, chatId, userId, chatType);
+        }
+
+        private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract telegramBotClient, long chatId, int userId, ChatType? chatType)
+        {
             var permissions = new ChatPermissions
             {
                 CanSendMessages = false,
@@ -30,12 +36,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 CanPinMessages = false,
                 CanSendMediaMessages = false
             };
-            var untilDate = DateTime.Now.AddSeconds(time);
-            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
+
+            if (untilDate == null)
+            {
+                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, default, chatType);
+            }
+            else
+            {
+                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate.Value, chatType);
+            }
         }
 
         internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int>> BanAllAsync(TelegramBotAbstract sender, MessageEventArgs e,
-            string target, bool banTarget)
+            string target, Enums.RestrictAction banTarget, DateTime? until)
         {
             UserIdFound targetId = await Info.GetTargetUserIdAsync(target, sender);
             if (targetId == null || targetId.GetID() == null)
@@ -66,7 +79,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
             }
 
-            const string q1 = "SELECT id FROM Groups";
+            const string q1 = "SELECT id, type FROM Groups";
             var dt = SqLite.ExecuteSelect(q1);
             if (dt == null || dt.Rows.Count == 0)
             {
@@ -101,46 +114,94 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             const int TIME_SLEEP_BETWEEN_BAN_UNBAN = 10;
 
-            if (banTarget)
-                foreach (DataRow dr in dt.Rows)
-                {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                    try
+            switch(banTarget)
+            {
+                case Enums.RestrictAction.BAN:
                     {
-                        var groupChatId = (long)dr["id"];
-                        Tuple<bool, Exception> success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
-                        if (success.Item1)
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                            try
+                            {
+                                var groupChatId = (long)dr["id"];
+                                PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
+                                if (success.isSuccess())
+                                    done.Add(dr);
+                                else
+                                    failed.Add(dr);
 
-                        nExceptions += AddExceptionIfNeeded(ref exceptions, success.Item2);
+                                if (success.ContainsExceptions())
+                                {
+                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                                }
+                            }
+                            catch
+                            {
+                                ;
+                            }
+                        }
+                        break;
                     }
-                    catch
-                    {
-                        ;
-                    }
-                }
-            else
-                foreach (DataRow dr in dt.Rows)
-                {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                    try
-                    {
-                        var groupChatId = (long)dr["id"];
-                        Tuple<bool, Exception> success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
-                        if (success.Item1)
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
 
-                        nExceptions += AddExceptionIfNeeded(ref exceptions, success.Item2);
-                    }
-                    catch
+                case Enums.RestrictAction.UNBAN:
                     {
-                        ;
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                            try
+                            {
+                                var groupChatId = (long)dr["id"];
+                                PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
+                                if (success.isSuccess())
+                                    done.Add(dr);
+                                else
+                                    failed.Add(dr);
+
+                                if (success.ContainsExceptions())
+                                {
+                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                                }
+                            }
+                            catch
+                            {
+                                ;
+                            }
+                        }
+                        break;
                     }
-                }
+
+                case Enums.RestrictAction.MUTE:
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                            try
+                            {
+                                var groupChatId = (long)dr["id"];
+                                ChatType? chatType = GetChatType(dr);
+                                PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await MuteUser(sender, e, targetId.GetID().Value, groupChatId, until, chatType);
+                                if (success.isSuccess())
+                                    done.Add(dr);
+                                else
+                                    failed.Add(dr);
+
+                                if (success.ContainsExceptions())
+                                {
+                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                                }
+                            }
+                            catch
+                            {
+                                ;
+                            }
+                        }
+                        break;
+                    }
+            }
+
+
+        
+                
 
             LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
@@ -162,6 +223,45 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int>(r5, exceptions, nExceptions);
         }
 
+        private static ChatType? GetChatType(DataRow dr)
+        {
+            try
+            {
+                var o1 = dr["type"].ToString().ToLower();
+                if (o1 == null)
+                    return null;
+                if (o1 == "supergroup")
+                    return ChatType.Supergroup;
+                if (o1 == "group")
+                    return ChatType.Group;
+                if (o1 == "channel")
+                    return ChatType.Channel;
+                if (o1 == "private")
+                    return ChatType.Private;
+            }
+            catch
+            {
+                ;
+            }
+
+            return null;
+        }
+
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> MuteUser(TelegramBotAbstract sender, MessageEventArgs e, int value, long groupChatId, DateTime? until, ChatType? chatType)
+        {
+            try
+            {
+                await Mute2Async(until, sender, groupChatId, value, chatType);
+            }
+            catch (Exception ex)
+            {
+                return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, ex);
+            }
+
+            return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
+
+        }
+
         private static async Task AlertActionStartedAsync(TelegramBotAbstract sender, string target, MessageEventArgs e)
         {
             var text7 = new Language(new Dictionary<string, string>
@@ -181,7 +281,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 e.Message.MessageId);
         }
 
-        private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
+        private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, ExceptionNumbered item2)
         {
             if (item2 == null)
                 return 0;
@@ -195,7 +295,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return 1;
         }
 
-        private static Tuple<bool, int> FindIfPresentSimilarException(List<ExceptionNumbered> exceptions, Exception item2)
+        private static Tuple<bool, int> FindIfPresentSimilarException(List<ExceptionNumbered> exceptions, ExceptionNumbered item2)
         {
             for (int i = 0; i < exceptions.Count; i++)
             {
@@ -214,40 +314,61 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return e1.AreTheySimilar(item2);
         }
 
-        private static bool LogBanAction(int targetId, bool banned_true_unbanned_false, TelegramBotAbstract bot, int who_banned)
+        private static bool LogBanAction(int targetId, Enums.RestrictAction banned_true_unbanned_false, TelegramBotAbstract bot, int who_banned)
         {
-            try
+            if (banned_true_unbanned_false == Enums.RestrictAction.BAN || banned_true_unbanned_false == Enums.RestrictAction.UNBAN)
             {
-                string q = "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
-                    " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
+                // ban/unban action
 
-                Dictionary<string, object> dict = new Dictionary<string, object>() {
-                    {"@fbi", bot.GetId() },
-                    {"@whob", who_banned },
-                    {"@whenb", DateTime.Now },
-                    {"@target", targetId },
-                    {"@btuf", Utils.StringUtil.ToSN(banned_true_unbanned_false)}
-                };
-                int done = Utils.SqLite.Execute(q, dict);
+                try
+                {
+                    bool? b = null;
+                    if (banned_true_unbanned_false == Enums.RestrictAction.BAN)
+                    {
+                        b = true;
+                    }
+                    else if (banned_true_unbanned_false == Enums.RestrictAction.UNBAN)
+                    {
+                        b = false;
+                    }
 
-                if (done > 0)
-                    return true;
+                    string q = "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
+                        " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
 
-                return false;
+                    Dictionary<string, object> dict = new Dictionary<string, object>() {
+                        {"@fbi", bot.GetId() },
+                        {"@whob", who_banned },
+                        {"@whenb", DateTime.Now },
+                        {"@target", targetId },
+                        {"@btuf", Utils.StringUtil.ToSN(b)}
+                    };
+                    int done = Utils.SqLite.Execute(q, dict);
+
+                    if (done > 0)
+                        return true;
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
+            else
             {
+                // mute/unmute action
+                //TODO
                 return false;
             }
         }
 
-        private static async Task<Tuple<bool, Exception>> UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
+        private static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, int target,
             long groupChatId)
         {
             return await sender.UnBanUserFromGroup(target, groupChatId, e);
         }
 
-        public static async Task<Tuple<bool, Exception>> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
+        public static async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e, long target,
             long groupChatId, string[] time)
         {
             return await sender.BanUserFromGroup(target, groupChatId, e, time);

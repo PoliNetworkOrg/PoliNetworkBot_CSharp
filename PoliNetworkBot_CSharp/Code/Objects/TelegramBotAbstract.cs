@@ -245,7 +245,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         internal async Task RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
-            DateTime untilDate, ChatType chatType)
+            DateTime untilDate, ChatType? chatType)
         {
             switch (_isbot)
             {
@@ -947,7 +947,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _contactString;
         }
 
-        internal async Task<Tuple<bool, Exception>> IsAdminAsync(int userId, long chatId)
+        internal async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> IsAdminAsync(int userId, long chatId)
         {
             try
             {
@@ -956,7 +956,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     case BotTypeApi.REAL_BOT:
                         var admins = await _botClient.GetChatAdministratorsAsync(chatId);
                         bool b1 = admins.Any(admin => admin.User.Id == userId);
-                        return new Tuple<bool, Exception>(b1, null);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(b1);
                         ;
                     case BotTypeApi.USER_BOT:
                         var r = await _userbotClient.ChannelsGetParticipant(
@@ -965,7 +965,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         bool b2 = r.Participant is TLChannelParticipantModerator ||
                                r.Participant is TLChannelParticipantCreator;
-                        return new Tuple<bool, Exception>(b2, null);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(b2);
                         ;
                     case BotTypeApi.DISGUISED_BOT:
                         break;
@@ -974,11 +974,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         throw new ArgumentOutOfRangeException();
                 }
 
-                return new Tuple<bool, Exception>(false, new NotImplementedException());
+                return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, new NotImplementedException());
             }
             catch (Exception e1)
             {
-                return new Tuple<bool, Exception>(false, e1);
+                return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, e1);
             }
         }
 
@@ -1030,7 +1030,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<Tuple<bool, Exception>> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e, string[] time)
+        internal async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e, string[] time)
         {
             switch (_isbot)
             {
@@ -1043,30 +1043,30 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         if (untilDate == null)
                         {
                             await _botClient.KickChatMemberAsync(groupChatId, (int)target);
-                            return new Tuple<bool, Exception>(true, null);
+                            return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
                         }
 
                         await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value);
-                        return new Tuple<bool, Exception>(true, null);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
                     }
                     catch (Exception e1)
                     {
-                        return new Tuple<bool, Exception>(false, e1);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, e1);
                     }
 
-                    return new Tuple<bool, Exception>(true, null);
+                    return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
                     ;
                 case BotTypeApi.USER_BOT:
-                    return new Tuple<bool, Exception>(false, new NotImplementedException());
+                    return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, new NotImplementedException());
 
                 case BotTypeApi.DISGUISED_BOT:
-                    return new Tuple<bool, Exception>(false, new NotImplementedException());
+                    return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, new NotImplementedException());
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return new Tuple<bool, Exception>(false, new NotImplementedException());
+            return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, new NotImplementedException());
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()
@@ -1109,7 +1109,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<Tuple<bool, Exception>> UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
+        internal async Task<PoliNetworkBot_CSharp.Code.Objects.SuccessWithException> UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
         {
             switch (_isbot)
             {
@@ -1117,11 +1117,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         await _botClient.UnbanChatMemberAsync(groupChatId, target);
-                        return new Tuple<bool, Exception>(true, null);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
                     }
                     catch (Exception e1)
                     {
-                        return new Tuple<bool, Exception>(false, e1);
+                        return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, e1);
                     }
 
                     ;
@@ -1135,7 +1135,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     throw new ArgumentOutOfRangeException();
             }
 
-            return new Tuple<bool, Exception>(false, new NotImplementedException());
+            return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(false, new NotImplementedException());
         }
 
         internal async Task<bool> LeaveChatAsync(long id)
