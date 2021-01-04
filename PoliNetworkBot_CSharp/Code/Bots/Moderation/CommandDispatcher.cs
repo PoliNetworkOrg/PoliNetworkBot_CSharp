@@ -533,9 +533,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static ValueWithException<DateTime?> GetDateTime(string[] target)
         {
-            ;
-            //TODO
-
             if (target == null)
                 return null;
             if (target.Length < 3)
