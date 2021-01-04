@@ -2,7 +2,6 @@
 
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 using System.Data;
 using System.Threading.Tasks;
 

@@ -9,10 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -66,7 +63,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await Help(sender, e);
                         return;
                     }
-
 
                 case "/muteAll":
                     {
@@ -249,14 +245,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return r;
             }
 
-
             string query = "SELECT DISTINCT T1.target FROM " +
                 "(SELECT * FROM Banned WHERE banned_true_unbanned_false = 83 ORDER BY when_banned DESC) AS T1, " +
                 "(SELECT * FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC) AS T2 " +
                 "WHERE (T1.target = T2.target AND T1.when_banned >= T2.when_banned AND T1.target IN (SELECT target FROM(SELECT target FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC))) OR (T1.target NOT IN (SELECT target FROM (SELECT target FROM Banned WHERE banned_true_unbanned_false != 83 ORDER BY when_banned DESC)))";
             System.Data.DataTable x = Utils.SqLite.ExecuteSelect(query);
-            
-            if (x == null || x.Rows == null ||x.Rows.Count == 0)
+
+            if (x == null || x.Rows == null || x.Rows.Count == 0)
             {
                 Language text3 = new Language(new Dictionary<string, string>() {
                     {"en", "There are no users to ban!"}
@@ -264,7 +259,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await sender.SendTextMessageAsync(e.Message.From.Id, text3, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
                 return false;
             }
-            
+
             System.Data.DataTable groups = Utils.SqLite.ExecuteSelect("Select id From Groups");
             /*
             if(e.Message.Text.Length !=10)
@@ -293,7 +288,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Convert.ToInt64(channel), null);
                 counter++;
             }
-
 
             Language text = new Language(new Dictionary<string, string>() {
                 {"en", "Banned " + counter + " in group: " + groups.Select(channel)}
@@ -548,7 +542,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
 
             string s = "";
-            for (int i=2; i< target.Length; i++)
+            for (int i = 2; i < target.Length; i++)
             {
                 s += target[i] + " ";
             }

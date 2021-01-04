@@ -401,7 +401,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 else if (v.Contains('-'))
                 {
                     var data = v.Split('-');
-                    var d1 =  new DateTime(year: Convert.ToInt32(data[0]), month: Convert.ToInt32(data[1]), day: Convert.ToInt32(data[2]));
+                    var d1 = new DateTime(year: Convert.ToInt32(data[0]), month: Convert.ToInt32(data[1]), day: Convert.ToInt32(data[2]));
                     return new ValueWithException<DateTime?>(d1, null);
                 }
             }

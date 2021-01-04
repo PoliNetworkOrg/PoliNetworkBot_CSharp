@@ -7,14 +7,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class ThreadAsync
     {
-
         public static Random random = new Random();
         public const int timesleep = 1000 * 30;
 
         private static string GenerateRandomString(int length)
         {
             string r = "";
-            for (int i=0; i<length; i++)
+            for (int i = 0; i < length; i++)
             {
                 double r2 = random.NextDouble() * 26;
                 int r3 = (int)r2;
@@ -55,29 +54,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                     _ = IterationAsync2Async(bot);
                     Thread.Sleep(timesleep);
                 }
-
             }
         }
 
         private static async System.Threading.Tasks.Task IterationAsync2Async(Objects.TelegramBotAbstract bot)
         {
-           await IterationAsync(bot);
+            await IterationAsync(bot);
         }
 
         private static async System.Threading.Tasks.Task IterationAsync(Objects.TelegramBotAbstract bot)
         {
-           
             try
             {
                 string url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
-
 
                 string urlFinal = url + Anon.ConfigAnon.password;
                 string randomstring = GenerateRandomString(30);
                 urlFinal += "&random=" + randomstring;
 
                 Objects.WebObject.WebReply x = await Utils.Web.DownloadHtmlAsync(urlFinal, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                if (x == null  || x.IsValid() == false)
+                if (x == null || x.IsValid() == false)
                 {
                     return;
                 }
@@ -90,8 +86,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             {
                 await Utils.ExceptionNumbered.SendExceptionAsync(e, bot);
             }
-
-           
         }
 
         public static async System.Threading.Tasks.Task DoThingsAsyncBotAsync2Async(string data)
@@ -139,7 +133,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             {
                 _ = DoThingsAsyncBotAsync4Async(webPost);
             }
-
         }
 
         private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync4Async(WebPost webPost)

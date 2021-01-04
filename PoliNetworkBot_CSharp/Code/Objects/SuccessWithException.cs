@@ -1,7 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -18,17 +17,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public SuccessWithException(bool v, Exception e2)
         {
             this.success = v;
-            this.ex = new List<Exception> (){ e2 };
+            this.ex = new List<Exception>() { e2 };
         }
-
 
         public SuccessWithException(bool v, List<Exception> e2)
         {
             this.success = v;
             this.ex = e2;
         }
-
-
 
         internal bool isSuccess()
         {
@@ -49,10 +45,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             if (this.ContainsExceptions())
             {
-                var ex2 =  this.ex[0];
+                var ex2 = this.ex[0];
                 return new ExceptionNumbered(ex2);
             }
             return null;
         }
-    } 
+    }
 }

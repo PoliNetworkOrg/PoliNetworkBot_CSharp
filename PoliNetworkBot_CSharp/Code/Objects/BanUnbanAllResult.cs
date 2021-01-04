@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal Language GetLanguage(Enums.RestrictAction ban_true_unban_false, string target, int nExceptions)
         {
-            switch(ban_true_unban_false)
+            switch (ban_true_unban_false)
             {
                 case Enums.RestrictAction.UNBAN:
                     {

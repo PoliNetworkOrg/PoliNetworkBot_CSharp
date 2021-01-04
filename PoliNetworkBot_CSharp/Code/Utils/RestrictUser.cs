@@ -114,7 +114,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             const int TIME_SLEEP_BETWEEN_BAN_UNBAN = 10;
 
-            switch(banTarget)
+            switch (banTarget)
             {
                 case Enums.RestrictAction.BAN:
                     {
@@ -199,10 +199,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
             }
 
-
-        
-                
-
             LogBanAction(targetId.GetID().Value, banned_true_unbanned_false: banTarget, bot: sender, who_banned: e.Message.From.Id);
 
             int? targetId2 = targetId.GetID();
@@ -259,7 +255,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return new PoliNetworkBot_CSharp.Code.Objects.SuccessWithException(true);
-
         }
 
         private static async Task AlertActionStartedAsync(TelegramBotAbstract sender, string target, MessageEventArgs e)

@@ -1,5 +1,4 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 
