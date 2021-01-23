@@ -38,7 +38,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
             Creators = new List<string>
             {
                 "policreator", "policreator2", "policreator3",
-                "policreator4", "policreator5", "armef97", "poliadmin"
+                "policreator4", "policreator5", "armef97", "poliadmin",
+                "eliamaggioni"
             };
 
             SubCreators = new List<string>
