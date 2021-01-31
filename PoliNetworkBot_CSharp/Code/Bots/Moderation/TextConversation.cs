@@ -81,6 +81,36 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 }
 
+                if (e.Message.Chat.Id != -1001251460298)
+                {
+                    if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") || text.ToLower().Contains("representative"))
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {
+                                "it",
+                                "Ciao 👋 sembra tu stia chiedendo domande in merito alla Rappresentanza. " +
+                                "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
+                                 "<a href='https://t.me/askPolimi'>clicca qui</a>!"
+                            },
+                            {
+                                "en",
+                                "Hi 👋 it seems you are asking questions about Representatives. " +
+                                "PoliNetwork advice you to write in the dedicated group, " +
+                                 "<a href='https://t.me/askPolimi'>click here</a>!"
+                            }
+                        });
+                        await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
+                            lang: e.Message.From.LanguageCode,
+                            text: text2,
+                            chatId: e.Message.Chat.Id,
+                            chatType: e.Message.Chat.Type,
+                            parseMode: ParseMode.Html,
+                            replyToMessageId: e.Message.MessageId,
+                            disablePreviewLink: true);
+                    }
+                }
+                
                 if (e.Message.Chat.Id != -1001241129618)
                 {
                     if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") || text.Contains("dsu"))
