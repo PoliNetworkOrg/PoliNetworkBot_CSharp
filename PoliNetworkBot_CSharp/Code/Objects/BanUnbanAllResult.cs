@@ -15,50 +15,78 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             this.failed = failed;
         }
 
-        internal Language GetLanguage(bool ban_true_unban_false, string target, int nExceptions)
+        internal Language GetLanguage(Enums.RestrictAction ban_true_unban_false, string target, int nExceptions)
         {
-            if (ban_true_unban_false == false)
+            switch (ban_true_unban_false)
             {
-                var text2 = new Language(new Dictionary<string, string>
-                {
+                case Enums.RestrictAction.UNBAN:
                     {
-                        "en",
-                        "Target "+target+" unbanned from " + done.Count + " groups" + "\n" +
-                        "not unbanned from " + failed.Count + " groups" + "\n" +
-                        "exception number = " + nExceptions
-                    },
+                        var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {
+                                "en",
+                                "Target "+target+" unbanned from " + done.Count + " groups" + "\n" +
+                                "not unbanned from " + failed.Count + " groups" + "\n" +
+                                "exception number = " + nExceptions
+                            },
 
-                    {
-                        "it",
-                        "Target "+target+" sbannato da " + done.Count + " gruppi" + "\n" +
-                        "non sbannato da " + failed.Count + " gruppi" + "\n" +
-                        "numero eccezioni = " + nExceptions
+                            {
+                                "it",
+                                "Target "+target+" sbannato da " + done.Count + " gruppi" + "\n" +
+                                "non sbannato da " + failed.Count + " gruppi" + "\n" +
+                                "numero eccezioni = " + nExceptions
+                            }
+                        });
+
+                        return text2;
                     }
-                });
 
-                return text2;
-            }
-            else
-            {
-                var text2 = new Language(new Dictionary<string, string>
+                case Enums.RestrictAction.BAN:
                     {
+                        var text2 = new Language(new Dictionary<string, string>
                         {
-                            "en",
-                            "Target "+target+" banned from " + done.Count + " groups" + "\n" +
-                            "not banned from " + failed.Count + " groups" + "\n" +
-                            "exception number = " + nExceptions
-                        },
+                            {
+                                "en",
+                                "Target "+target+" banned from " + done.Count + " groups" + "\n" +
+                                "not banned from " + failed.Count + " groups" + "\n" +
+                                "exception number = " + nExceptions
+                            },
 
+                            {
+                                "it",
+                                "Target "+target+" bannato da " + done.Count + " gruppi"+ "\n" +
+                                "non bannato da " + failed.Count + " gruppi"+ "\n" +
+                                "numero eccezioni = " + nExceptions
+                            }
+                        });
+
+                        return text2;
+                    }
+
+                case Enums.RestrictAction.MUTE:
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
                         {
-                            "it",
-                            "Target "+target+" bannato da " + done.Count + " gruppi"+ "\n" +
-                            "non bannato da " + failed.Count + " gruppi"+ "\n" +
-                            "numero eccezioni = " + nExceptions
-                        }
-                    });
+                            {
+                                "en",
+                                "Target "+target+" muted from " + done.Count + " groups" + "\n" +
+                                "not muted from " + failed.Count + " groups" + "\n" +
+                                "exception number = " + nExceptions
+                            },
 
-                return text2;
+                            {
+                                "it",
+                                "Target "+target+" mutato da " + done.Count + " gruppi"+ "\n" +
+                                "non mutato da " + failed.Count + " gruppi"+ "\n" +
+                                "numero eccezioni = " + nExceptions
+                            }
+                        });
+
+                        return text2;
+                    }
             }
+
+            return null;
         }
 
         internal List<DataRow> GetSuccess()

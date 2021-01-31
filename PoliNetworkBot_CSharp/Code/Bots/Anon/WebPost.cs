@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             IJEnumerable<JToken> x = r4["PostID"].Values()[0];
             ;
 
-            foreach(var r5 in r4.Children())
+            foreach (var r5 in r4.Children())
             {
                 ;
                 if (r5 is JProperty r6)
@@ -34,7 +34,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                     if (r6.Value is JValue r7)
                     {
-
                         switch (r6.Name)
                         {
                             case "PostID":
@@ -63,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                                     photoid = p;
 
-                                    if (photoid <=0)
+                                    if (photoid <= 0)
                                     {
                                         photoid = null;
                                     }
@@ -167,7 +166,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static char Approved(CallBackDataAnon x)
         {
-            var s =  CallBackDataAnon.ResultToString(x.resultQueueEnum);
+            var s = CallBackDataAnon.ResultToString(x.resultQueueEnum);
             return s[0];
         }
     }

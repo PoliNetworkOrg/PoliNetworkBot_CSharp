@@ -71,7 +71,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 this.messageIdToReplyTo = null;
             }
 
-
             try
             {
                 string s9 = s[9];
@@ -88,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return GetResult(v);
         }
 
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode, 
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode,
             string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo, bool from_telegram)
         {
             this.resultQueueEnum = v;

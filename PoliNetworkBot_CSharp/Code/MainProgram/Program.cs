@@ -95,7 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     case 't':
                         {
-                            Test.Spam.SpamTest.Main2();                   
+                            Test.Spam.SpamTest.Main2();
                             return;
                         }
                 }

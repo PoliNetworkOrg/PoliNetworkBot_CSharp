@@ -84,8 +84,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             int user_that_added_bots = e.Message.From.Id;
-            Tuple<bool, Exception> is_admin = await telegramBotClient.IsAdminAsync(user_that_added_bots, e.Message.Chat.Id);
-            if (is_admin.Item1)
+            PoliNetworkBot_CSharp.Code.Objects.SuccessWithException is_admin = await telegramBotClient.IsAdminAsync(user_that_added_bots, e.Message.Chat.Id);
+            if (is_admin.isSuccess())
             {
                 return null;
             }

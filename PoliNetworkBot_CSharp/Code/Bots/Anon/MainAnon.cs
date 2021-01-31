@@ -504,7 +504,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         Telegram.Bot.Types.Enums.ChatType.Group, "it", Telegram.Bot.Types.Enums.ParseMode.Html, new ReplyMarkupObject(Enums.ReplyMarkupEnum.REMOVE), null, e.GetMessage().MessageId);
                 }
 
-
                 m3 = m2.GetMessageID();
             }
             catch (Exception e1)

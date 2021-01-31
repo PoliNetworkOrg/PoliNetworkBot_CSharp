@@ -276,7 +276,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
         }
 
-        private static bool AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
+        private static Tuple<bool, List<Exception>> AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
         {
             ;
 
@@ -284,6 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             DateTime? lastUpdateLinkTime = null;
             bool? we_are_admin = null;
 
+            List<Exception> exceptions = new List<Exception>();
             foreach (var r2 in r1)
             {
                 ;
@@ -296,7 +297,13 @@ namespace PoliNetworkBot_CSharp.Code.Config
                     }
                     else if (r3.Name == "LastUpdateInviteLinkTime")
                     {
-                        lastUpdateLinkTime = GetLastUpdateLinkTimeFromJson(r3);
+                        Objects.ValueWithException<DateTime?> d1 = GetLastUpdateLinkTimeFromJson(r3);
+                        if (d1.HasValue())
+                            lastUpdateLinkTime = d1.GetValue();
+                        else
+                        {
+                            exceptions.AddRange(d1.GetExceptions());
+                        }
                     }
                     else if (r3.Name == "we_are_admin")
                     {
@@ -305,7 +312,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 }
             }
 
-            return AddGroupToDb2(chat, lastUpdateLinkTime, we_are_admin, botIdWhoInsertedThem);
+            var d2 = AddGroupToDb2(chat, lastUpdateLinkTime, we_are_admin, botIdWhoInsertedThem);
+            return new Tuple<bool, List<Exception>>(d2, exceptions);
         }
 
         private static bool AddGroupToDb2(ChatJson chat, DateTime? lastUpdateLinkTime, bool? we_are_admin,
@@ -354,7 +362,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             return null;
         }
 
-        private static DateTime? GetLastUpdateLinkTimeFromJson(JProperty r3)
+        private static Objects.ValueWithException<DateTime?> GetLastUpdateLinkTimeFromJson(JProperty r3)
         {
             ;
             var r4 = r3.First;
@@ -367,7 +375,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
                 return Utils.DateTimeClass.GetFromString(r5.Value.ToString());
             }
-            return null;
+            return new Objects.ValueWithException<DateTime?>(null, new Code.Exceptions.JsonDateTimeNotFound());
         }
 
         private static ChatJson GetChatFromJson(JProperty r3)
