@@ -5,8 +5,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class ValueWithException<T>
     {
-        private SuccessWithException SuccessWithException;
-        private T value;
+        private readonly SuccessWithException SuccessWithException;
+        private readonly T value;
 
         public ValueWithException(T d2, Exception p)
         {

@@ -8,10 +8,10 @@
     ".NETCoreApp,Version=v3.1": {
       "PoliNetworkBot_CSharp/1.0.0": {
         "dependencies": {
-          "HtmlAgilityPack": "1.11.24",
-          "InstagramApiSharp": "1.5.0.1",
-          "Microsoft.Data.Sqlite.Core": "3.1.6",
-          "System.Data.SQLite.Core": "1.0.113.1",
+          "HtmlAgilityPack": "1.11.30",
+          "InstagramApiSharp": "1.5.0.2",
+          "Microsoft.Data.Sqlite.Core": "5.0.3",
+          "System.Data.SQLite.Core": "1.0.113.7",
           "Telegram.Bot": "15.7.1",
           "TeleSharp.TL": "1.0.0.0",
           "TLSharp.Core": "1.0.0.0"
@@ -20,33 +20,33 @@
           "PoliNetworkBot_CSharp.dll": {}
         }
       },
-      "HtmlAgilityPack/1.11.24": {
+      "HtmlAgilityPack/1.11.30": {
         "runtime": {
           "lib/netstandard2.0/HtmlAgilityPack.dll": {
-            "assemblyVersion": "1.11.24.0",
-            "fileVersion": "1.11.24.0"
+            "assemblyVersion": "1.11.30.0",
+            "fileVersion": "1.11.30.0"
           }
         }
       },
-      "InstagramApiSharp/1.5.0.1": {
+      "InstagramApiSharp/1.5.0.2": {
         "dependencies": {
           "Newtonsoft.Json": "11.0.2"
         },
         "runtime": {
           "lib/netstandard2.0/InstagramApiSharp.dll": {
-            "assemblyVersion": "1.5.0.1",
-            "fileVersion": "1.5.0.1"
+            "assemblyVersion": "1.5.0.2",
+            "fileVersion": "1.5.0.2"
           }
         }
       },
-      "Microsoft.Data.Sqlite.Core/3.1.6": {
+      "Microsoft.Data.Sqlite.Core/5.0.3": {
         "dependencies": {
-          "SQLitePCLRaw.core": "2.0.2"
+          "SQLitePCLRaw.core": "2.0.4"
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Data.Sqlite.dll": {
-            "assemblyVersion": "3.1.6.0",
-            "fileVersion": "3.100.620.31702"
+            "assemblyVersion": "5.0.3.0",
+            "fileVersion": "5.0.321.6417"
           }
         }
       },
@@ -163,14 +163,44 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
-      "SQLitePCLRaw.core/2.0.2": {
+      "SQLitePCLRaw.core/2.0.4": {
         "dependencies": {
           "System.Memory": "4.5.3"
         },
         "runtime": {
           "lib/netstandard2.0/SQLitePCLRaw.core.dll": {
-            "assemblyVersion": "2.0.2.669",
-            "fileVersion": "2.0.2.669"
+            "assemblyVersion": "2.0.4.976",
+            "fileVersion": "2.0.4.976"
+          }
+        }
+      },
+      "Stub.System.Data.SQLite.Core.NetStandard/1.0.113.2": {
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "assemblyVersion": "1.0.113.0",
+            "fileVersion": "1.0.113.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/SQLite.Interop.dll": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-x64/native/SQLite.Interop.dll": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/SQLite.Interop.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.113.0"
+          },
+          "runtimes/win-x86/native/SQLite.Interop.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.113.0"
           }
         }
       },
@@ -218,54 +248,9 @@
           "System.Text.Encoding": "4.3.0"
         }
       },
-      "System.Data.SQLite.Core/1.0.113.1": {
-        "runtime": {
-          "lib/netstandard2.1/System.Data.SQLite.dll": {
-            "assemblyVersion": "1.0.113.0",
-            "fileVersion": "1.0.113.0"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/linux-x64/native/netstandard2.0/SQLite.Interop.dll": {
-            "rid": "linux-x64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/linux-x64/native/netstandard2.1/SQLite.Interop.dll": {
-            "rid": "linux-x64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/osx-x64/native/netstandard2.0/SQLite.Interop.dll": {
-            "rid": "osx-x64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/osx-x64/native/netstandard2.1/SQLite.Interop.dll": {
-            "rid": "osx-x64",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/win-x64/native/netstandard2.0/SQLite.Interop.dll": {
-            "rid": "win-x64",
-            "assetType": "native",
-            "fileVersion": "1.0.113.0"
-          },
-          "runtimes/win-x64/native/netstandard2.1/SQLite.Interop.dll": {
-            "rid": "win-x64",
-            "assetType": "native",
-            "fileVersion": "1.0.113.0"
-          },
-          "runtimes/win-x86/native/netstandard2.0/SQLite.Interop.dll": {
-            "rid": "win-x86",
-            "assetType": "native",
-            "fileVersion": "1.0.113.0"
-          },
-          "runtimes/win-x86/native/netstandard2.1/SQLite.Interop.dll": {
-            "rid": "win-x86",
-            "assetType": "native",
-            "fileVersion": "1.0.113.0"
-          }
+      "System.Data.SQLite.Core/1.0.113.7": {
+        "dependencies": {
+          "Stub.System.Data.SQLite.Core.NetStandard": "1.0.113.2"
         }
       },
       "System.Diagnostics.Debug/4.3.0": {
@@ -848,26 +833,26 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HtmlAgilityPack/1.11.24": {
+    "HtmlAgilityPack/1.11.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DLcytINO8EfCdBgMGsaz8Tvdgu2Aewoo2XX7WfZuRG9cBQRtbm8JZ4/sMRtFvzehjdIDqubdlQb8TqNfjRMEWg==",
-      "path": "htmlagilitypack/1.11.24",
-      "hashPath": "htmlagilitypack.1.11.24.nupkg.sha512"
+      "sha512": "sha512-IuOSVuuHCJKrnAjNe5rZnZCyR/NpXL6ExEL7UiM8h4fnhbt8tLqIKol9q5Lv0uoxWO8fl9Uq+1kpGfMDUdr5zA==",
+      "path": "htmlagilitypack/1.11.30",
+      "hashPath": "htmlagilitypack.1.11.30.nupkg.sha512"
     },
-    "InstagramApiSharp/1.5.0.1": {
+    "InstagramApiSharp/1.5.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-7WUoTAIS4X6bPAtvRVlu0U17WjNsGE5mO4y/IOLDCfnBblTXUCPANMiUdmZ9S8/0yQxMHVbeSjGti7eR9AsLAg==",
-      "path": "instagramapisharp/1.5.0.1",
-      "hashPath": "instagramapisharp.1.5.0.1.nupkg.sha512"
+      "sha512": "sha512-FyjscSqT56geRCIDbl1KEnSLvzUTQuA9HyXbfNz74iIRF9IPFRRIFQrcmcflfwMJrX2gUPuyDMJ2zDn/VYpaBA==",
+      "path": "instagramapisharp/1.5.0.2",
+      "hashPath": "instagramapisharp.1.5.0.2.nupkg.sha512"
     },
-    "Microsoft.Data.Sqlite.Core/3.1.6": {
+    "Microsoft.Data.Sqlite.Core/5.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-fau0sMXOqZSBm3cZzfZMmk8YD9aa3ePtZQ2B34OfZKoh1RU+5sRstMEig9NZes4hcUiZkfcXFCy2JUnD+8T2XQ==",
-      "path": "microsoft.data.sqlite.core/3.1.6",
-      "hashPath": "microsoft.data.sqlite.core.3.1.6.nupkg.sha512"
+      "sha512": "sha512-4nfSZVXex4PqQkcVu78/W0E2p3m24mwwqwMadnTPukHWx9Mh234WKg95qG9hs/ynULVGMfMyA1eUJdYDMeKFPw==",
+      "path": "microsoft.data.sqlite.core/5.0.3",
+      "hashPath": "microsoft.data.sqlite.core.5.0.3.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -1016,12 +1001,19 @@
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
     },
-    "SQLitePCLRaw.core/2.0.2": {
+    "SQLitePCLRaw.core/2.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-TFSBX426OelS1tkaVC254NVVlrJIe9YLhWPkEvuqJj2104QpmDmEYOhfdfDJD1E/2SmqDhoRw1ek5cQHj8olcQ==",
-      "path": "sqlitepclraw.core/2.0.2",
-      "hashPath": "sqlitepclraw.core.2.0.2.nupkg.sha512"
+      "sha512": "sha512-4XlDZpDAsboMD6qZQcz9AaKblKDUTVHF+8f3lvbP7QjoqSRr2Xc0Lm34IK2pjRIYnyFLhI3yOJ5YWfOiCid2yg==",
+      "path": "sqlitepclraw.core/2.0.4",
+      "hashPath": "sqlitepclraw.core.2.0.4.nupkg.sha512"
+    },
+    "Stub.System.Data.SQLite.Core.NetStandard/1.0.113.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yGIM9xFyPHl79HluNTSQarvAOIJ68pmzmlMayVN6Nivu/7TiaHt7WqptolvwmuKdAXei8OzENh9RNdh7d6evjQ==",
+      "path": "stub.system.data.sqlite.core.netstandard/1.0.113.2",
+      "hashPath": "stub.system.data.sqlite.core.netstandard.1.0.113.2.nupkg.sha512"
     },
     "System.AppContext/4.3.0": {
       "type": "package",
@@ -1058,12 +1050,12 @@
       "path": "system.console/4.3.0",
       "hashPath": "system.console.4.3.0.nupkg.sha512"
     },
-    "System.Data.SQLite.Core/1.0.113.1": {
+    "System.Data.SQLite.Core/1.0.113.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ymvB558/Tgdxj2MzJjhDvPLJ/S2WgG1KzQ1cmqzsW3+YQ5DO+eAU04OpY5deK6fndM+DEU8+lwmmYHxxUS2Qvw==",
-      "path": "system.data.sqlite.core/1.0.113.1",
-      "hashPath": "system.data.sqlite.core.1.0.113.1.nupkg.sha512"
+      "sha512": "sha512-2DKMIxfZpIVzdMfx1dj9qvTm+0m0Mx6sN6CZXMQDNytU7Sk/JKo0Ox6mvHAicfHrQgqZbUZMzMMtLXD0kwmFfg==",
+      "path": "system.data.sqlite.core/1.0.113.7",
+      "hashPath": "system.data.sqlite.core.1.0.113.7.nupkg.sha512"
     },
     "System.Diagnostics.Debug/4.3.0": {
       "type": "package",

@@ -46,7 +46,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
             {
                 "carlogiova", "giovannieffe777", "testpolinetwork",
                "albus25", "deet98", "alberto_fattori", "scala98",
-               "giulia_ye", "andre_crc", "perularrabeiti", "fllippo"
+               "giulia_ye", "andre_crc", "perularrabeiti", "fllippo", "marcol_8"
             };
 
             AllowedBanAll = new List<string>

@@ -6,8 +6,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class SuccessWithException
     {
-        private bool success;
-        private List<Exception> ex;
+        private readonly bool success;
+        private readonly List<Exception> ex;
 
         public SuccessWithException(bool v)
         {
