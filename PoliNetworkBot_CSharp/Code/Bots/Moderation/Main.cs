@@ -48,9 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id.ToString();
                     itemToPrintFull += "\n@@@@@@";
 
-                    throw new Exception(itemToPrintFull);
-                    //await LeaveChat.ExitFromChat(telegramBotClient, e);
-                    return;
+                    throw new ToExitException(itemToPrintFull);
                 }
 
                 List<long> NotAuthorizedBotHasBeenAddedBool = await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);

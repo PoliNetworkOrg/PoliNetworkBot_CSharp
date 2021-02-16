@@ -48,10 +48,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)
             {
-                var r1 = await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
-                var list1 = r1.Item3;
-                list1.Insert(0, 11);
-                return new Tuple<ToExit, ChatMember[], List<int>, string>(r1.Item1, r1.Item2, list1, r1.Item4);
+                Tuple<ToExit, ChatMember[], List<int>, string> r1 = await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
+                r1.Item3.Insert(0, 11);
+                return r1;
             }
 
             InsertGroup(sender, e);
@@ -118,8 +117,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         list3.Insert(0, 14);
                         return new Tuple<ToExit, ChatMember[], List<int>, string>(r3.Item1, r3.Item2, list3, s);
                     }
+                case int i2:
+                    {
+                        if (i2 != 1)
+                        {
+                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 41 }, i2.ToString());
+                        }
+                        else
+                        {
+                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 42 }, i2.ToString());
+                        }
+                    }
                 case string s:
                     {
+                        s = s.Trim();
+
                         if (!(s == "Y" || s == "1"))
                         {
                             return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 8 }, s);

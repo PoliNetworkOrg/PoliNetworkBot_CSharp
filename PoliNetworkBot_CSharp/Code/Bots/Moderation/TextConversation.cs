@@ -110,7 +110,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             disablePreviewLink: true);
                     }
                 }
-                
+
                 if (e.Message.Chat.Id != -1001241129618)
                 {
                     if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") || text.Contains("dsu"))
