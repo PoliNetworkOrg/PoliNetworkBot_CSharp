@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -256,7 +257,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             Console.WriteLine(obj.GetType());
                             Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)obj;
 
-                            int n = 0;
+                            List<Tuple<GruppoTG, bool>> L = new List<Tuple<GruppoTG, bool>>();
 
                             foreach (Newtonsoft.Json.Linq.JToken x in jArray)
                             {                              
@@ -265,23 +266,42 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                     Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
                                     GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
 
+                                    long? group_id = null;
                                     if (!string.IsNullOrEmpty(gruppoTG.idLink))
-                                    {
+                                    {                                  
                                         string s = "SELECT id FROM Groups " +
                                             "WHERE Groups.link LIKE '%"+gruppoTG.idLink+"%'";
 
                                         DataTable r1 = Utils.SqLite.ExecuteSelect(s);
-                                        if (r1 != null)
+                                        if (r1 != null && r1.Rows!= null && r1.Rows.Count>0&& r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                                         {
                                             var r2 = r1.Rows[0];
                                             object r3 = r2.ItemArray[0];
-                                            long r4 = Convert.ToInt64(r3);
-
-                                            var success = await InviteLinks.CreateInviteLinkAsync(r4, sender);
-                                            if (success)
-                                                n++;
+                                            group_id = Convert.ToInt64(r3);
                                         }
                                     }
+
+                                    if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
+                                    {
+                                        string s = "SELECT id FROM Groups WHERE Groups.title LIKE '%" + gruppoTG.nome + "%'";
+                                        DataTable r1 = Utils.SqLite.ExecuteSelect(s);
+                                        if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                                        {
+                                            var r2 = r1.Rows[0];
+                                            object r3 = r2.ItemArray[0];
+                                            group_id = Convert.ToInt64(r3);
+                                        }
+                                    }
+
+                                    bool success = false;
+                                    if (group_id != null)
+                                    {
+                                        gruppoTG.UpdateID(group_id.Value);
+
+                                        success = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
+                                    }
+
+                                    L.Add(new Tuple<GruppoTG, bool>(gruppoTG, success));
                                 }
                                 catch (Exception ex)
                                 {
@@ -289,13 +309,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 }
                             }
 
-                            string s2 = "Generati " + n.ToString() + " links";
+
+                            
+                            string s2 = "Generati " + L.Count.ToString() + " links";
 
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                                 new Language(
                                     new Dictionary<string, string>() { { "it", 
                                         s2 } }),
                                 ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+
+                            foreach(var l2 in L)
+                            {
+                                try
+                                {
+                                    string s3 = "Success: " + (l2.Item2 ? "S" : "N") + "\n" +
+                                        "IdLink: " + l2.Item1.idLink + "\n" +
+                                        "Nome: " + l2.Item1.nome;
+
+                                    await sender.SendTextMessageAsync(e.Message.From.Id,
+                                        new Language(
+                                            new Dictionary<string, string>() { { "it",
+                                        s3 } }),
+                                        ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                                }
+                                catch (Exception ex2)
+                                {
+                                    Console.WriteLine(ex2);
+                                }
+
+                                Thread.Sleep(500);
+                            }
                         }
                         catch (Exception ex)
                         {
