@@ -281,7 +281,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<Tuple<Telegram.Bot.Types.File, Stream>> DownloadFileAsync(Document d)
         {
-            switch(_isbot)
+            switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     {
