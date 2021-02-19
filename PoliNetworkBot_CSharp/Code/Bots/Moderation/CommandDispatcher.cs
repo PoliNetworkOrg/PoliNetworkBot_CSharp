@@ -236,6 +236,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             if (e.Message.Chat.Type != ChatType.Private)
                                 return;
 
+                            if (!Utils.Owners.CheckIfOwner(e.Message.From.Id))
+                                return;
+
                             if (e.Message.ReplyToMessage == null)
                                 return;
 
@@ -252,6 +255,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             object obj = Newtonsoft.Json.JsonConvert.DeserializeObject(text);
                             Console.WriteLine(obj.GetType());
                             Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)obj;
+
+                            int n = 0;
+
                             foreach (Newtonsoft.Json.Linq.JToken x in jArray)
                             {                              
                                 try
@@ -259,15 +265,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                     Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
                                     GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
 
-                                    Console.WriteLine(gruppoTG.idLink);
-                                    Console.WriteLine(gruppoTG.nome);
-                                    Console.WriteLine("\n");
+                                    if (!string.IsNullOrEmpty(gruppoTG.idLink))
+                                    {
+                                        string s = "SELECT id FROM Groups " +
+                                            "WHERE Groups.link LIKE '%"+gruppoTG.idLink+"%'";
+
+                                        DataTable r1 = Utils.SqLite.ExecuteSelect(s);
+                                        if (r1 != null)
+                                        {
+                                            var r2 = r1.Rows[0];
+                                            object r3 = r2.ItemArray[0];
+                                            long r4 = Convert.ToInt64(r3);
+
+                                            var success = await InviteLinks.CreateInviteLinkAsync(r4, sender);
+                                            if (success)
+                                                n++;
+                                        }
+                                    }
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-                                    ;
+                                    Console.WriteLine(ex);
                                 }
                             }
+
+                            string s2 = "Generati " + n.ToString() + " links";
+
+                            await sender.SendTextMessageAsync(e.Message.From.Id,
+                                new Language(
+                                    new Dictionary<string, string>() { { "it", 
+                                        s2 } }),
+                                ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
                         }
                         catch (Exception ex)
                         {

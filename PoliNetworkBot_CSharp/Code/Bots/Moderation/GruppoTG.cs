@@ -4,13 +4,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal class GruppoTG
     {
-        public JToken idLink;
-        public JToken nome;
+        public string idLink;
+        public string nome;
 
         public GruppoTG(JToken idLink, JToken nome)
         {
-            this.idLink = idLink;
-            this.nome = nome;
+            this.idLink = idLink.ToString();
+            this.nome = nome.ToString();
         }
     }
 }
