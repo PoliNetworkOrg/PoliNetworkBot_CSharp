@@ -245,7 +245,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var d = e.Message.ReplyToMessage.Document;
                             var f = await sender.DownloadFileAsync(d);
                             Console.WriteLine(f.Item2.Length);
+                            f.Item2.Seek(0, SeekOrigin.Begin);
+                            StreamReader reader = new StreamReader(f.Item2);
+                            string text = reader.ReadToEnd();
                             //TODO: turn file into json, and generate links of those groups
+                            object obj = Newtonsoft.Json.JsonConvert.DeserializeObject(text);
+                            Console.WriteLine(obj.GetType());
                         }
                         catch (Exception ex)
                         {
