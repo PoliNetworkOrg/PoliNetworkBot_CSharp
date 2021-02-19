@@ -253,12 +253,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             Console.WriteLine(obj.GetType());
                             Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)obj;
                             foreach (Newtonsoft.Json.Linq.JToken x in jArray)
-                            {
-                                Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
+                            {                              
                                 try
                                 {
-                                    Console.WriteLine(jObject);
-                                    Console.WriteLine(jObject.First);
+                                    Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
+                                    GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
+
+                                    Console.WriteLine(gruppoTG.idLink);
+                                    Console.WriteLine(gruppoTG.nome);
                                     Console.WriteLine("\n");
                                 }
                                 catch
