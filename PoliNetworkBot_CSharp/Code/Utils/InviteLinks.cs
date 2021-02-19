@@ -28,15 +28,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
-                if (success)
+                NuovoLink success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
+                if (success.isNuovo)
                     n++;
             }
 
             return n;
         }
 
-        internal static async Task<bool> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
             string r = null;
             try
@@ -49,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (string.IsNullOrEmpty(r))
-                return false;
+                return new NuovoLink(false);
 
             const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
             SqLite.Execute(q1, new Dictionary<string, object>
@@ -59,7 +59,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"@id", chatId}
             });
 
-            return true;
+            return new NuovoLink(true, r);
+        }
+
+        public static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
 
         internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -130,7 +140,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             gruppoTG.UpdateID(group_id.Value);
 
-                            success = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
+                            var s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
+                            success = s3.isNuovo;
+                            gruppoTG.UpdateNewLink(s3.link);
                         }
 
                         L.Add(new Tuple<GruppoTG, bool>(gruppoTG, success));
@@ -149,32 +161,58 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                         s2 } }),
                     ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
 
+                string st = ""; 
+
                 foreach (var l2 in L)
                 {
                     try
                     {
                         string s3 = "Success: " + (l2.Item2 ? "S" : "N") + "\n" +
-                            "IdLink: " + l2.Item1.idLink + "\n" +
-                            "Nome: " + l2.Item1.nome;
+                            "IdLink: " + StringNotNull( l2.Item1.idLink) + "\n" +
+                            "NewLink: " + StringNotNull(l2.Item1.newLink) + "\n" +
+                            "Nome: " + StringNotNull(l2.Item1.nome);
+                        st += s3 + "\n\n";
 
-                        await sender.SendTextMessageAsync(e.Message.From.Id,
+                        /*await sender.SendTextMessageAsync(e.Message.From.Id,
                             new Language(
                                 new Dictionary<string, string>() { { "it",
                                         s3 } }),
                             ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                        */
                     }
                     catch (Exception ex2)
                     {
                         Console.WriteLine(ex2);
                     }
 
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                 }
+
+
+                Dictionary<string, string> dict = new Dictionary<string, string>() {
+                         { "it", "Gruppi con link rigenerati"} 
+                    };
+                Stream stream = GenerateStreamFromString(st);
+                Objects.TelegramMedia.TelegramFile tf = new Objects.TelegramMedia.TelegramFile(stream, "groups.txt", "Gruuppi con link rigenerati", "text/plain");
+                await sender.SendFileAsync(tf, new Tuple<TeleSharp.TL.TLAbsInputPeer, long>(null, e.Message.From.Id),
+                    new Language(dict), 
+                    Enums.TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private static string StringNotNull(string idLink)
+        {
+            if (idLink == null)
+                return "[null]";
+
+            if (idLink == "")
+                return "[EMPTY]";
+
+            return idLink;
         }
     }
 }
