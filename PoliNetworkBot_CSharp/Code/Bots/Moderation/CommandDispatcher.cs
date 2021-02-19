@@ -231,20 +231,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/update_links_from_json":
                     {
-                        if (e.Message.Chat.Type != ChatType.Private)
-                            return;
+                        try
+                        {
+                            if (e.Message.Chat.Type != ChatType.Private)
+                                return;
 
-                        if (e.Message.ReplyToMessage == null)
-                            return;
+                            if (e.Message.ReplyToMessage == null)
+                                return;
 
-                        if (e.Message.ReplyToMessage.Document == null)
-                            return;
+                            if (e.Message.ReplyToMessage.Document == null)
+                                return;
 
-                        var d = e.Message.ReplyToMessage.Document;
-                        var f = await sender.DownloadFileAsync(d);
-                        Console.WriteLine(f.Item2.Length);
-                        //TODO: turn file into json, and generate links of those groups
-
+                            var d = e.Message.ReplyToMessage.Document;
+                            var f = await sender.DownloadFileAsync(d);
+                            Console.WriteLine(f.Item2.Length);
+                            //TODO: turn file into json, and generate links of those groups
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
                         return;
                     }
 
