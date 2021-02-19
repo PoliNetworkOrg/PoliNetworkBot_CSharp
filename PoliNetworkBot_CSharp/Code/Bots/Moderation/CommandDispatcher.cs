@@ -248,9 +248,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             f.Item2.Seek(0, SeekOrigin.Begin);
                             StreamReader reader = new StreamReader(f.Item2);
                             string text = reader.ReadToEnd();
-                            //TODO: turn file into json, and generate links of those groups
+                            
                             object obj = Newtonsoft.Json.JsonConvert.DeserializeObject(text);
                             Console.WriteLine(obj.GetType());
+                            Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)obj;
+                            foreach (Newtonsoft.Json.Linq.JToken x in jArray)
+                            {
+                                Console.WriteLine(x.GetType());
+                                //TODO: generate links of this group
+                            }
                         }
                         catch (Exception ex)
                         {
