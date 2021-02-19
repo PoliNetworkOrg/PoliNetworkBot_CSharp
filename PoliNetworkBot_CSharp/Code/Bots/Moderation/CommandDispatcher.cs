@@ -229,6 +229,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/update_links_from_json":
+                    {
+                        if (e.Message.Chat.Type != ChatType.Private)
+                            return;
+
+                        if (e.Message.ReplyToMessage == null)
+                            return;
+
+                        if (e.Message.ReplyToMessage.Document == null)
+                            return;
+
+                        var d = e.Message.ReplyToMessage.Document;
+                        var f = await sender.DownloadFileAsync(d);
+                        Console.WriteLine(f.Item2.Length);
+                        //TODO: turn file into json, and generate links of those groups
+
+                        return;
+                    }
+
                 default:
                     {
                         await DefaultCommand(sender, e);
@@ -443,7 +462,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string[] stringInfo)
         {
             PoliNetworkBot_CSharp.Code.Objects.SuccessWithException r = await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
-            if (!r.isSuccess())
+            if (!r.IsSuccess())
             {
                 return r;
             }
@@ -521,8 +540,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static List<Exception> Concat(Exception ex, ValueWithException<DateTime?> d1)
         {
-            List<Exception> r = new List<Exception>();
-            r.Add(ex);
+            List<Exception> r = new List<Exception>
+            {
+                ex
+            };
             if (d1 != null && d1.ContainsExceptions())
             {
                 r.AddRange(d1.GetExceptions());

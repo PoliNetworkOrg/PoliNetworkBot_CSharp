@@ -4,7 +4,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class CallBackDataAnon
     {
+#pragma warning disable IDE0052 // Rimuovi i membri privati non letti
         private readonly string data;
+#pragma warning restore IDE0052 // Rimuovi i membri privati non letti
 
         public ResultQueueEnum? resultQueueEnum;
         public long? messageIdGroup;

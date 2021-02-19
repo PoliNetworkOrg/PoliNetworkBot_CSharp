@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {
                                 var groupChatId = (long)dr["id"];
                                 PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null);
-                                if (success.isSuccess())
+                                if (success.IsSuccess())
                                     done.Add(dr);
                                 else
                                     failed.Add(dr);
@@ -152,7 +152,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {
                                 var groupChatId = (long)dr["id"];
                                 PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
-                                if (success.isSuccess())
+                                if (success.IsSuccess())
                                     done.Add(dr);
                                 else
                                     failed.Add(dr);
@@ -180,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 var groupChatId = (long)dr["id"];
                                 ChatType? chatType = GetChatType(dr);
                                 PoliNetworkBot_CSharp.Code.Objects.SuccessWithException success = await MuteUser(sender, e, targetId.GetID().Value, groupChatId, until, chatType);
-                                if (success.isSuccess())
+                                if (success.IsSuccess())
                                     done.Add(dr);
                                 else
                                     failed.Add(dr);

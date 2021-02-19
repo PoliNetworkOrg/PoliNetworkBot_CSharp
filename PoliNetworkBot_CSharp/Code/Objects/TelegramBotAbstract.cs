@@ -6,6 +6,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -276,6 +277,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        internal async Task<Tuple<Telegram.Bot.Types.File, Stream>> DownloadFileAsync(Document d)
+        {
+            switch(_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    {
+                        MemoryStream stream = new MemoryStream();
+                        Telegram.Bot.Types.File f = await this._botClient.GetInfoAndDownloadFileAsync(d.FileId, stream);
+
+                        return new Tuple<Telegram.Bot.Types.File, Stream>(f, stream);
+                    }
+            }
+
+            return null;
         }
 
         internal async Task EditText(ChatId chatId, int messageId, string newText)

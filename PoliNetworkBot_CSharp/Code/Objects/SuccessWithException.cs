@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.ex = e2;
         }
 
-        internal bool isSuccess()
+        internal bool IsSuccess()
         {
             return this.success;
         }
