@@ -254,8 +254,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)obj;
                             foreach (Newtonsoft.Json.Linq.JToken x in jArray)
                             {
-                                Console.WriteLine(x.GetType());
-                                //TODO: generate links of this group
+                                Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
+                                try
+                                {
+                                    Console.WriteLine(jObject);
+                                    Console.WriteLine(jObject.First);
+                                    Console.WriteLine("\n");
+                                }
+                                catch
+                                {
+                                    ;
+                                }
                             }
                         }
                         catch (Exception ex)
