@@ -86,12 +86,12 @@ namespace PoliNetworkBot_CSharp.Code.Data
                 new WordToBeFirst("secondo", new List<string>() {"seconda" }),
                 new WordToBeFirst("terzo", new List<string>(){ "terza"}),
                 new WordToBeFirst("kebabbaro", new List<string>(){ "kebabbara"}),
-                new WordToBeFirst("foco"),
+                //new WordToBeFirst("foco"),
                 new WordToBeFirst("boomer"),
-                new WordToBeFirst("upkara"),
-                new WordToBeFirst("snitch"),
+                //new WordToBeFirst("upkara"),
+                //new WordToBeFirst("snitch"),
                 new WordToBeFirst("pizzaiolo", new List<string>(){"pizzaiola"}),
-                new WordToBeFirst("lasagna")
+                //new WordToBeFirst("lasagna")
             };
 
             ExcludedChatsForBot = new List<long>()
