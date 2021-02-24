@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {

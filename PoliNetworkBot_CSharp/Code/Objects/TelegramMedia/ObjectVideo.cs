@@ -16,9 +16,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         private readonly ChatType _chatType;
         private readonly int _durationVideo;
         private readonly string _uniqueId;
-        private int _fileSize;
-        private int _idVideoDb;
-        private int? _messageIdFrom;
+        private readonly int _fileSize;
+        private readonly int _idVideoDb;
+        private readonly int? _messageIdFrom;
 
         public ObjectVideo(int idVideoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType, int durationVideo)

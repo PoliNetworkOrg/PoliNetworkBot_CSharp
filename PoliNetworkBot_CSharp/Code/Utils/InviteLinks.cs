@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -161,14 +160,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                         s2 } }),
                     ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
 
-                string st = ""; 
+                string st = "";
 
                 foreach (var l2 in L)
                 {
                     try
                     {
                         string s3 = "Success: " + (l2.Item2 ? "S" : "N") + "\n" +
-                            "IdLink: " + StringNotNull( l2.Item1.idLink) + "\n" +
+                            "IdLink: " + StringNotNull(l2.Item1.idLink) + "\n" +
                             "NewLink: " + StringNotNull(l2.Item1.newLink) + "\n" +
                             "Nome: " + StringNotNull(l2.Item1.nome);
                         st += s3 + "\n\n";
@@ -188,14 +187,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     //Thread.Sleep(500);
                 }
 
-
                 Dictionary<string, string> dict = new Dictionary<string, string>() {
-                         { "it", "Gruppi con link rigenerati"} 
+                         { "it", "Gruppi con link rigenerati"}
                     };
                 Stream stream = GenerateStreamFromString(st);
                 Objects.TelegramMedia.TelegramFile tf = new Objects.TelegramMedia.TelegramFile(stream, "groups.txt", "Gruuppi con link rigenerati", "text/plain");
                 await sender.SendFileAsync(tf, new Tuple<TeleSharp.TL.TLAbsInputPeer, long>(null, e.Message.From.Id),
-                    new Language(dict), 
+                    new Language(dict),
                     Enums.TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
             }
             catch (Exception ex)

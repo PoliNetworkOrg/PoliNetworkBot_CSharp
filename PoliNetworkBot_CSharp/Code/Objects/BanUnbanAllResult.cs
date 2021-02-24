@@ -6,8 +6,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class BanUnbanAllResult
     {
-        private List<DataRow> done;
-        private List<DataRow> failed;
+        private readonly List<DataRow> done;
+        private readonly List<DataRow> failed;
 
         public BanUnbanAllResult(List<DataRow> done, List<DataRow> failed)
         {

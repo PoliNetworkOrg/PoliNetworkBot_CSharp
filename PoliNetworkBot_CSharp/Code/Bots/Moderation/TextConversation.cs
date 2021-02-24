@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System.Collections.Generic;
@@ -34,6 +35,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
+        public static Dictionary<SpecialGroup, long> excludedGroups = new Dictionary<SpecialGroup, long>(){
+            {  SpecialGroup.PIANO_DI_STUDI,-1001208900229 },
+            { SpecialGroup.ASK_POLIMI, -1001251460298 },
+            {  SpecialGroup.DSU,-1001241129618 }
+        };
+
+        public static Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch = new Dictionary<SpecialGroup, List<SpecialGroup>>() {
+            {SpecialGroup.ASK_POLIMI, new List<SpecialGroup>(){ SpecialGroup.ASK_POLIMI } },
+            {SpecialGroup.DSU, new List<SpecialGroup>(){ SpecialGroup.DSU, SpecialGroup.ASK_POLIMI } },
+            {SpecialGroup.PIANO_DI_STUDI, new List<SpecialGroup>(){ SpecialGroup.PIANO_DI_STUDI, SpecialGroup.ASK_POLIMI} }
+        };
+
         private async static Task<object> MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             if (e == null)
@@ -51,7 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string text = e.Message.Text.ToLower();
             if (e.Message.Chat.Title.ToLower().Contains("polimi"))
             {
-                if (e.Message.Chat.Id != -1001208900229 && e.Message.Chat.Id != -1001251460298)
+                if (CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
                 {
                     if (text.Contains("piano studi") || text.Contains("piano di studi") || text.Contains("piano degli studi"))
                     {
@@ -81,7 +94,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 }
 
-                if (e.Message.Chat.Id != -1001251460298)
+                if (CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
                 {
                     if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") || text.ToLower().Contains("representative"))
                     {
@@ -111,7 +124,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 }
 
-                if (e.Message.Chat.Id != -1001241129618 && e.Message.Chat.Id != -1001251460298)
+                if (CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
                 {
                     if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") || text.Contains("dsu"))
                     {
@@ -143,6 +156,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             return null;
+        }
+
+        private static bool CheckIfToSend(SpecialGroup s, long id)
+        {
+            List<SpecialGroup> x = excludedGroupsMatch[s];
+            foreach (SpecialGroup i in x)
+            {
+                var j = excludedGroups[i];
+                if (id == j)
+                    return false;
+            }
+
+            return true;
         }
 
         private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
