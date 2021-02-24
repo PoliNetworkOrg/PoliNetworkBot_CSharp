@@ -51,7 +51,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             string text = e.Message.Text.ToLower();
             if (e.Message.Chat.Title.ToLower().Contains("polimi"))
             {
-                if (e.Message.Chat.Id != -1001208900229)
+                if (e.Message.Chat.Id != -1001208900229 || e.Message.Chat.Id != -1001251460298)
                 {
                     if (text.Contains("piano studi") || text.Contains("piano di studi") || text.Contains("piano degli studi"))
                     {
@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 }
 
-                if (e.Message.Chat.Id != -1001241129618)
+                if (e.Message.Chat.Id != -1001241129618 || e.Message.Chat.Id != -1001251460298)
                 {
                     if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") || text.Contains("dsu"))
                     {
