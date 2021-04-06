@@ -284,9 +284,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text), Blacklist.IsSpam(e.Message.Photo));
         }
 
-        private static bool DetectForeignLanguage(MessageEventArgs e)
+        public static List<long> whitelistForeignGroups = new List<long>()
         {
-            if (e.Message.Chat.Id == -1001394018284)
+            -1001394018284 //japan group
+        };
+
+        private static bool DetectForeignLanguage(MessageEventArgs e)
+        { 
+            if (whitelistForeignGroups.Contains(e.Message.Chat.Id))
                 return false;
 
             var koreanCharactersCount = Regex.Matches(e.Message.Text, @"[\uac00-\ud7a3]").Count;
