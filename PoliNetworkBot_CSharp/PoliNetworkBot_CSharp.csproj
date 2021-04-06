@@ -14,16 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TeleSharp.TL">
-      <HintPath>..\..\TLSharp\TLSharp.Core\bin\Debug\TeleSharp.TL.dll</HintPath>
-    </Reference>
-    <Reference Include="TLSharp.Core">
-      <HintPath>..\..\TLSharp\TLSharp.Core\bin\Debug\TLSharp.Core.dll</HintPath>
-    </Reference>
+    <Folder Include="Resources\DB\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\DB\" />
+    <Reference Include="TeleSharp.TL">
+      <HintPath>dll\TeleSharp.TL.dll</HintPath>
+    </Reference>
+    <Reference Include="TLSharp.Core">
+      <HintPath>dll\TLSharp.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
