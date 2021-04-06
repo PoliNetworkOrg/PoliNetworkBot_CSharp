@@ -289,9 +289,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.Chat.Id == -1001394018284)
                 return false;
 
-            return Regex.Match(e.Message.Text, "[\uac00-\ud7a3]").Success ||
-                   Regex.Match(e.Message.Text, "[\u3040-\u30ff]").Success ||
-                   Regex.Match(e.Message.Text, "[\u4e00-\u9FFF]").Success;
+            var koreanCharactersCount = Regex.Matches(e.Message.Text, @"[\uac00-\ud7a3]").Count;
+            var japaneseCharactersCount = Regex.Matches(e.Message.Text, @"[\u3040-\u30ff]").Count;
+            var chineseCharactersCount = Regex.Matches(e.Message.Text, @"[\u4e00-\u9FFF]").Count;
+
+            if (koreanCharactersCount + japaneseCharactersCount + chineseCharactersCount >= 3)
+                return true;
+
+            return false;
         }
 
         private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
