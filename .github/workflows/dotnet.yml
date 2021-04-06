@@ -18,8 +18,11 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore .\PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj
+      run: dotnet restore
+      working-directory: PoliNetworkBot_CSharp
     - name: Build
-      run: dotnet build .\PoliNetworkBot_CSharp\ --no-restore
+      run: dotnet build --no-restore
+      working-directory: PoliNetworkBot_CSharp
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      working-directory: PoliNetworkBot_CSharp
