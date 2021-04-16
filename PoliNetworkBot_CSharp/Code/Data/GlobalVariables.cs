@@ -61,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             AllowedSpam = new List<string>()
             {
-                "armef97", "raif9", "eliamaggioni"
+                "armef97", "raif9", "eliamaggioni", "tlpats"
             };
 
             AllowedNoUsernameFromThisUserId = new List<long>()
@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             AllowedTags = new List<string>()
             {
-                "poligruppo"
+                "poligruppo", "polirules", "polibook", "poliextra"
             };
 
             Owners = new List<Tuple<long, string>>()
