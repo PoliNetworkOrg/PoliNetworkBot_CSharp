@@ -318,7 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
         {
             Dictionary<string, string> dict = new Dictionary<string, string>() {
                 {"it", "Congratulazioni, sei il re " + t + "!" },
-                {"en", "Contratulations, you are the " + t + " king!" }
+                {"en", "Congratulations, you are the " + t + " king!" }
             };
             Language text = new Language(dict: dict);
             var r = await Utils.SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text,
