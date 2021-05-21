@@ -94,6 +94,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                    /*
                 case "/massiveSend":
                     {
                         if (e.Message.Chat.Type != ChatType.Private)
@@ -117,6 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                    */
 
 
                 case "/ban":
