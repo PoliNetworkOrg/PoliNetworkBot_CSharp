@@ -94,6 +94,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/massiveSend":
+                    {
+                        if (e.Message.Chat.Type != ChatType.Private)
+                        {
+                            await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+
+
+                        try
+                        {
+                            if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                                _ = MassiveSendAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                            else
+                                await DefaultCommand(sender, e);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        return;
+                    }
+
+
                 case "/ban":
                     {
                         _ = BanUserAsync(sender, e, cmdLines);
@@ -241,6 +266,78 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task<object> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] cmdLines, string languageCode, string username)
+        {
+            System.Data.DataTable groups = Utils.SqLite.ExecuteSelect("Select id From Groups");
+
+            if (groups == null || groups.Rows == null || groups.Rows.Count == 0)
+            {
+
+                Dictionary<string, string> dict = new Dictionary<string, string>() { {"en", "No groups!" } };
+                await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+            }
+            int counter = 0;
+
+
+            Dictionary<string, string> dict2 = new Dictionary<string, string>() {
+                {
+                    "en",
+                    "Buonasera a tutti, vi ricordiamo che lunedì 24 fino al 27 verranno aperti i seggi online per le elezioni, fate sentire la vostra voce mi raccomando. <b>Votate!</b>\nPotete informarvi su modalità di voto e candidati al sito\npolinetworkelezioni.github.io/it" +
+                    "\n\n\n" +
+                    "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en" 
+                }         
+            };
+
+            try
+            {
+                foreach (DataRow element in groups.Rows)
+                {
+                    try
+                    {
+                        long groupId = Convert.ToInt64(element.ItemArray[0]);
+
+                        try
+                        {
+                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), groupId, ChatType.Supergroup, ParseMode.Html, null, default, default);
+                            counter++;
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), groupId, ChatType.Group, ParseMode.Html, null, default, default);
+                                counter++;
+                            }
+                            catch
+                            {
+                                ;
+                            }
+                        }
+               
+                    }
+                    catch
+                    {
+                        ;
+                    }
+
+                    await Task.Delay(500);
+                }
+            }
+            catch
+            {
+                ;
+            }
+
+            Language text = new Language(new Dictionary<string, string>() {
+                {"en", "Sent in  " + counter + " groups"}
+            });
+
+            await Task.Delay(500);
+
+            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
+            return true;
         }
 
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e)
