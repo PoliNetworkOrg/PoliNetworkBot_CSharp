@@ -12,6 +12,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -148,6 +149,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
+                case "/test_spam":
+                    {
+                        if (e.Message == null)
+                            return;
+                        if (e.Message.ReplyToMessage == null)
+                            return;
+
+                        await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
+                        return;
+                    }
+
                 case "/groups":
                     {
                         await SendRecommendedGroupsAsync(sender, e);
@@ -268,6 +280,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var r = Blacklist.IsSpam(message.Text);
+            var r2 = r.ToString();
+
+            Dictionary<string, string> dict = new Dictionary<string, string>() {
+
+                {"en", r2 }
+            
+            };
+            Language text = new Language(dict);
+            try
+            {
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en", ParseMode.Default, null, null, null);
+            }
+            catch
+            {
+                ;
+            }
+
         }
 
         private static async Task<object> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] cmdLines, string languageCode, string username)
