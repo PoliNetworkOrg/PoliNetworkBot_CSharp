@@ -284,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var r = Blacklist.IsSpam(message.Text);
+            var r = Blacklist.IsSpam(message.Text, message.Chat.Id);
             var r2 = r.ToString();
 
             Dictionary<string, string> dict = new Dictionary<string, string>() {

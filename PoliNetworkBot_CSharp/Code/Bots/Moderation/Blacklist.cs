@@ -13,12 +13,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Blacklist
     {
-        internal static SpamType IsSpam(string text)
+        internal static SpamType IsSpam(string text, long? groupId)
         {
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
 
-            var isSpamLink = CheckSpamLink(text);
+            var isSpamLink = CheckSpamLink(text, groupId);
             return isSpamLink == SpamType.SPAM_LINK ? SpamType.SPAM_LINK : CheckNotAllowedWords(text);
         }
 
@@ -70,7 +70,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return r;
         }
 
-        private static SpamType CheckSpamLink(string text)
+        private static SpamType CheckSpamLink(string text, long? groupId)
+        {
+            switch(groupId)
+            {
+                case 1307671408: //gruppo politica
+                    {
+                        return SpamType.ALL_GOOD;
+                    }
+
+                default:
+                    {
+                        return CheckSpamLink_DefaultGroup(text);
+                    }
+            }
+
+            
+        }
+
+        private static SpamType CheckSpamLink_DefaultGroup(string text)
         {
             if (!text.Contains("t.me/"))
             {

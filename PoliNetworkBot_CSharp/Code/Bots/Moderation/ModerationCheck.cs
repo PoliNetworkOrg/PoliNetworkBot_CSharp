@@ -271,7 +271,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.ALL_GOOD;
 
             if (string.IsNullOrEmpty(e.Message.Text))
-                return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption), Blacklist.IsSpam(e.Message.Photo));
+                return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption, e.Message.Chat.Id), Blacklist.IsSpam(e.Message.Photo));
 
             if (e.Message.Text.StartsWith("/"))
                 return SpamType.ALL_GOOD;
@@ -281,7 +281,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (isForeign)
                 return SpamType.FOREIGN;
 
-            return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text), Blacklist.IsSpam(e.Message.Photo));
+            return Utils.SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text, e.Message.Chat.Id), Blacklist.IsSpam(e.Message.Photo));
         }
 
         public static List<long> whitelistForeignGroups = new List<long>()
