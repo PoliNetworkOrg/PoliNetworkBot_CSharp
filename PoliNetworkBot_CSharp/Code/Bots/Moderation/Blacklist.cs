@@ -74,7 +74,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             switch(groupId)
             {
-                case 1307671408: //gruppo politica
+                case -1001307671408: //gruppo politica
                     {
                         return SpamType.ALL_GOOD;
                     }
