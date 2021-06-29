@@ -117,40 +117,83 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
 
                         long? group_id = null;
-                        if (!string.IsNullOrEmpty(gruppoTG.idLink))
+                        try
                         {
-                            string s = "SELECT id FROM Groups " +
-                                "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
-
-                            DataTable r1 = Utils.SqLite.ExecuteSelect(s);
-                            if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                            if (!string.IsNullOrEmpty(gruppoTG.idLink))
                             {
-                                var r2 = r1.Rows[0];
-                                object r3 = r2.ItemArray[0];
-                                group_id = Convert.ToInt64(r3);
+                                string s = "SELECT id FROM Groups " +
+                                    "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
+
+                                DataTable r1 = Utils.SqLite.ExecuteSelect(s);
+                                if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                                {
+                                    var r2 = r1.Rows[0];
+                                    object r3 = r2.ItemArray[0];
+                                    group_id = Convert.ToInt64(r3);
+                                }
                             }
                         }
-
-                        if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
+                        catch (Exception ex1)
                         {
-                            string s = "SELECT id FROM Groups WHERE Groups.title LIKE '%" + gruppoTG.nome + "%'";
-                            DataTable r1 = Utils.SqLite.ExecuteSelect(s);
-                            if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                            Console.WriteLine(ex1);
+                            await sender.SendTextMessageAsync(e.Message.From.Id,
+                             new Language(
+                                 new Dictionary<string, string>() { { "it",
+                                                    ex1.Message } }),
+                             ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                            return;
+                        }
+
+                        string sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%" + gruppoTG.nome + "%'";
+
+                        try
+                        {
+                            if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
                             {
-                                var r2 = r1.Rows[0];
-                                object r3 = r2.ItemArray[0];
-                                group_id = Convert.ToInt64(r3);
+                
+                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql2);
+                                if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                                {
+                                    var r2 = r1.Rows[0];
+                                    object r3 = r2.ItemArray[0];
+                                    group_id = Convert.ToInt64(r3);
+                                }
                             }
+                        }
+                        catch (Exception ex2)
+                        {
+
+                            Console.WriteLine(ex2);
+                            string ex2m = ex2.Message + "\n\n" + sql2;
+                            await sender.SendTextMessageAsync(e.Message.From.Id,
+                             new Language(
+                                 new Dictionary<string, string>() { { "it",
+                                                    ex2m } }),
+                             ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                            return;
                         }
 
                         bool success = false;
-                        if (group_id != null)
+                        try
                         {
-                            gruppoTG.UpdateID(group_id.Value);
+                            if (group_id != null)
+                            {
+                                gruppoTG.UpdateID(group_id.Value);
 
-                            var s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
-                            success = s3.isNuovo;
-                            gruppoTG.UpdateNewLink(s3.link);
+                                var s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
+                                success = s3.isNuovo;
+                                gruppoTG.UpdateNewLink(s3.link);
+                            }
+                        }
+                        catch (Exception ex3)
+                        {
+                            Console.WriteLine(ex3);
+                            await sender.SendTextMessageAsync(e.Message.From.Id,
+                             new Language(
+                                 new Dictionary<string, string>() { { "it",
+                                                    ex3.Message } }),
+                             ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                            return;
                         }
 
                         L.Add(new Tuple<GruppoTG, bool>(gruppoTG, success));
