@@ -158,6 +158,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
+                        await sender.SendTextMessageAsync(e.Message.From.Id,
+                         new Language(
+                             new Dictionary<string, string>() { { "it",
+                                                    ex.Message } }),
+                         ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                        return;
                     }
                 }
 
