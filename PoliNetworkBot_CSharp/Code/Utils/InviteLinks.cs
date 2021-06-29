@@ -124,7 +124,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             sql1 = "SELECT id FROM Groups " +
                               "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
+
+                            if (gruppoTG.idLink.Length <3) 
+                            {
+                                gruppoTG.idLink = "";
+                            }
                         }
+
+                  
 
                         try
                         {
