@@ -144,7 +144,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         catch (Exception ex1)
                         {
                             Console.WriteLine(ex1);
-                            string ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1;
+                            string ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink;
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                              new Language(
                                  new Dictionary<string, string>() { { "it",
