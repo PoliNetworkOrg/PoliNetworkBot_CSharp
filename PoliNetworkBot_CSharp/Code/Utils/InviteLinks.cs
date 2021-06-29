@@ -104,6 +104,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     try
                     {
+                        await Task.Delay(100);
+                    }
+                    catch
+                    {
+                        ;
+                    }
+
+                    try
+                    {
                         Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
                         GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
 
