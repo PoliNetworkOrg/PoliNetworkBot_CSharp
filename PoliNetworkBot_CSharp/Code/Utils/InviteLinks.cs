@@ -144,14 +144,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             return;
                         }
 
-                        string sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%" + gruppoTG.nome + "%'";
+                        string sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%' || @nome || '%'";
 
                         try
                         {
                             if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
                             {
                 
-                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql2);
+                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql2, new Dictionary<string, object> { {"@nome", gruppoTG.nome } });
                                 if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                                 {
                                     var r2 = r1.Rows[0];
@@ -164,7 +164,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
 
                             Console.WriteLine(ex2);
-                            string ex2m = ex2.Message + "\n\n" + sql2;
+                            string ex2m = ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                              new Language(
                                  new Dictionary<string, string>() { { "it",
