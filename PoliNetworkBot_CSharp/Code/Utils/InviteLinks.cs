@@ -117,14 +117,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
 
                         long? group_id = null;
+
+                        string sql1 = "empty";
+
+                        if (!string.IsNullOrEmpty(gruppoTG.idLink))
+                        {
+                            sql1 = "SELECT id FROM Groups " +
+                              "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
+                        }
+
                         try
                         {
                             if (!string.IsNullOrEmpty(gruppoTG.idLink))
                             {
-                                string s = "SELECT id FROM Groups " +
-                                    "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
+                          
 
-                                DataTable r1 = Utils.SqLite.ExecuteSelect(s);
+                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql1);
                                 if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                                 {
                                     var r2 = r1.Rows[0];
