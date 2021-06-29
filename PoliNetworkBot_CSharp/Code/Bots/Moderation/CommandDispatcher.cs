@@ -95,32 +95,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
-                    /*
-                case "/massiveSend":
+                /*
+            case "/massiveSend":
+                {
+                    if (e.Message.Chat.Type != ChatType.Private)
                     {
-                        if (e.Message.Chat.Type != ChatType.Private)
-                        {
-                            await CommandNotSentInPrivateAsync(sender, e);
-                            return;
-                        }
-
-
-                        try
-                        {
-                            if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                                _ = MassiveSendAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
-                            else
-                                await DefaultCommand(sender, e);
-                        }
-                        catch
-                        {
-                            ;
-                        }
-
+                        await CommandNotSentInPrivateAsync(sender, e);
                         return;
                     }
-                    */
 
+                    try
+                    {
+                        if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                            _ = MassiveSendAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                        else
+                            await DefaultCommand(sender, e);
+                    }
+                    catch
+                    {
+                        ;
+                    }
+
+                    return;
+                }
+                */
 
                 case "/ban":
                     {
@@ -288,9 +286,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var r2 = r.ToString();
 
             Dictionary<string, string> dict = new Dictionary<string, string>() {
-
                 {"en", r2 }
-            
             };
             Language text = new Language(dict);
             try
@@ -301,7 +297,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 ;
             }
-
         }
 
         private static async Task<object> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e, string[] cmdLines, string languageCode, string username)
@@ -310,20 +305,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (groups == null || groups.Rows == null || groups.Rows.Count == 0)
             {
-
-                Dictionary<string, string> dict = new Dictionary<string, string>() { {"en", "No groups!" } };
+                Dictionary<string, string> dict = new Dictionary<string, string>() { { "en", "No groups!" } };
                 await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
             }
             int counter = 0;
-
 
             Dictionary<string, string> dict2 = new Dictionary<string, string>() {
                 {
                     "en",
                     "Buonasera a tutti, vi ricordiamo che lunedì 24 fino al 27 verranno aperti i seggi online per le elezioni, fate sentire la vostra voce mi raccomando. <b>Votate!</b>\nPotete informarvi su modalità di voto e candidati al sito\npolinetworkelezioni.github.io/it" +
                     "\n\n\n" +
-                    "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en" 
-                }         
+                    "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en"
+                }
             };
 
             try
@@ -351,7 +344,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 ;
                             }
                         }
-               
                     }
                     catch
                     {

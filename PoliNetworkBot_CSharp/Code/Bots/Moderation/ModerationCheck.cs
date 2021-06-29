@@ -290,7 +290,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         };
 
         private static bool DetectForeignLanguage(MessageEventArgs e)
-        { 
+        {
             if (whitelistForeignGroups.Contains(e.Message.Chat.Id))
                 return false;
 

@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static SpamType CheckSpamLink(string text, long? groupId)
         {
-            switch(groupId)
+            switch (groupId)
             {
                 case -1001307671408: //gruppo politica
                     {
@@ -84,8 +84,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return CheckSpamLink_DefaultGroup(text);
                     }
             }
-
-            
         }
 
         private static SpamType CheckSpamLink_DefaultGroup(string text)

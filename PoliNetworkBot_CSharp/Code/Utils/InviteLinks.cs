@@ -136,10 +136,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         catch (Exception ex1)
                         {
                             Console.WriteLine(ex1);
+                            string ex1m = "1" + "\n\n" + ex1.Message;
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                              new Language(
                                  new Dictionary<string, string>() { { "it",
-                                                    ex1.Message } }),
+                                                    ex1m } }),
                              ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
                             return;
                         }
@@ -150,8 +151,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
                             {
-                
-                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql2, new Dictionary<string, object> { {"@nome", gruppoTG.nome } });
+                                DataTable r1 = Utils.SqLite.ExecuteSelect(sql2, new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
                                 if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null && r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                                 {
                                     var r2 = r1.Rows[0];
@@ -162,9 +162,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                         catch (Exception ex2)
                         {
-
                             Console.WriteLine(ex2);
-                            string ex2m = ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
+                            string ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                              new Language(
                                  new Dictionary<string, string>() { { "it",
@@ -188,10 +187,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         catch (Exception ex3)
                         {
                             Console.WriteLine(ex3);
+                            string ex3m = "3" + "\n\n" + ex3.Message;
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                              new Language(
                                  new Dictionary<string, string>() { { "it",
-                                                    ex3.Message } }),
+                                                    ex3m} }),
                              ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
                             return;
                         }
@@ -201,10 +201,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
+                        string ex4m = "4" + "\n\n" + ex.Message;
                         await sender.SendTextMessageAsync(e.Message.From.Id,
                          new Language(
                              new Dictionary<string, string>() { { "it",
-                                                    ex.Message } }),
+                                                 ex4m} }),
                          ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
                         return;
                     }
