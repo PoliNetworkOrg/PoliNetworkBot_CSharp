@@ -100,7 +100,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 List<Tuple<GruppoTG, bool>> L = new List<Tuple<GruppoTG, bool>>();
 
+                List<GruppoTG> gruppoTGs = new List<GruppoTG>();
                 foreach (Newtonsoft.Json.Linq.JToken x in jArray)
+                {
+                    try
+                    {
+                        Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
+                        GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"], jObject["id"]);
+                        gruppoTGs.Add(gruppoTG);
+                    }
+                    catch
+                    {
+                        ;
+                    }
+                }
+
+                gruppoTGs = RimuoviDuplicati(gruppoTGs);
+
+                foreach (var gruppoTG in gruppoTGs)
                 {
                     try
                     {
@@ -113,10 +130,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     try
                     {
-                        Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)x;
-                        GruppoTG gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"]);
-
-                        long? group_id = null;
+                        long? group_id = gruppoTG.id;
 
                         string sql1 = "empty";
 
@@ -274,6 +288,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private static List<GruppoTG> RimuoviDuplicati(List<GruppoTG> gruppoTGs)
+        {
+            if (gruppoTGs == null)
+                return new List<GruppoTG>();
+
+
+            for (int i=0; i<gruppoTGs.Count; i++)
+            {
+                for (int j=i+1; j<gruppoTGs.Count; j++)
+                {
+                    if (i != j)
+                    {
+                        if (gruppoTGs[i].id != null && gruppoTGs[j].id != null)
+                        {
+                            if (gruppoTGs[i].id == gruppoTGs[j].id)
+                            {
+                                gruppoTGs.RemoveAt(j);
+                                j--;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return gruppoTGs;
         }
 
         private static string StringNotNull(string idLink)

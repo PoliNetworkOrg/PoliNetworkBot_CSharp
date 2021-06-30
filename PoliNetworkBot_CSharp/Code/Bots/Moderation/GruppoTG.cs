@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -9,10 +10,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public long? id;
         public string newLink;
 
-        public GruppoTG(JToken idLink, JToken nome)
+        public GruppoTG(JToken idLink, JToken nome, JToken id)
         {
             this.idLink = idLink.ToString();
             this.nome = nome.ToString();
+            try
+            {
+                this.id = Convert.ToInt64( id.ToString());
+            }
+            catch
+            {
+                ;
+            }
         }
 
         internal void UpdateID(long value)
