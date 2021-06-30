@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -9,10 +10,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public string nome;
         public long? id;
         public string newLink;
+        public List<string> oldLinks;
 
         public GruppoTG(JToken idLink, JToken nome, JToken id)
         {
             this.idLink = idLink.ToString();
+            this.oldLinks = new List<string>() { this.idLink };
             this.nome = nome.ToString();
             try
             {
