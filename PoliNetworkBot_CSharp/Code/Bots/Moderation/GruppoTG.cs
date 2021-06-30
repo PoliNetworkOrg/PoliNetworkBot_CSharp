@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         public string idLink;
         public string nome;
-        public long? id;
+        public long? permanentId;
         public string newLink;
         public List<string> oldLinks;
         public DateTime? LastUpdateInviteLinkTimeDateTime;
@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             
             try
             {
-                this.id = Convert.ToInt64( id.ToString());
+                this.permanentId = Convert.ToInt64( id.ToString());
             }
             catch
             {
@@ -80,7 +80,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         internal void UpdateID(long value)
         {
-            this.id = value;
+            this.permanentId = value;
         }
 
         internal void UpdateNewLink(string link)

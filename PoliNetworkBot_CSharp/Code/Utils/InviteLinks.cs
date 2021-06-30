@@ -130,7 +130,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     try
                     {
-                        long? group_id = gruppoTG.id;
+                        long? group_id = gruppoTG.permanentId;
 
                         string sql1 = "empty";
 
@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             catch (Exception ex1)
                             {
                                 Console.WriteLine(ex1);
-                                string ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink + "\n\n" + gruppoTG.nome + "\n\n" + gruppoTG.newLink + "\n\n" + gruppoTG.id;
+                                string ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink + "\n\n" + gruppoTG.nome + "\n\n" + gruppoTG.newLink + "\n\n" + gruppoTG.permanentId;
                                 await sender.SendTextMessageAsync(e.Message.From.Id,
                                  new Language(
                                      new Dictionary<string, string>() { { "it",
@@ -271,6 +271,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         string s3 = "Success: " + (l2.Item2 ? "S" : "N") + "\n" +
                             "IdLink: " + StringNotNull(l2.Item1.idLink) + "\n" +
                             "NewLink: " + StringNotNull(l2.Item1.newLink) + "\n" +
+                            "PermanentId: " + StringNotNull(l2.Item1.permanentId) + "\n" +
                             "Nome: " + StringNotNull(l2.Item1.nome);
                         st += s3 + "\n\n";
 
@@ -304,6 +305,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
+        private static string StringNotNull(long? permanentId)
+        {
+            if (permanentId == null)
+                return "null";
+
+            return permanentId.Value.ToString();
+        }
+
         private static List<GruppoTG> RimuoviDuplicati(List<GruppoTG> gruppoTGs)
         {
             if (gruppoTGs == null)
@@ -316,9 +325,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     if (i != j)
                     {
-                        if (gruppoTGs[i].id != null && gruppoTGs[j].id != null)
+                        if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
                         {
-                            if (gruppoTGs[i].id == gruppoTGs[j].id)
+                            if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
                             {
                                 gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
                                 gruppoTGs.RemoveAt(j);
