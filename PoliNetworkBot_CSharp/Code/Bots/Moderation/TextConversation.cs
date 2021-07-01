@@ -74,13 +74,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito al piano di studi. " +
                                 "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-                                 "<a href='https://t.me/joinchat/LclXl0gOWoUCf67O6nwnnQ'>clicca qui</a>!"
+                                 "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>clicca qui</a>!"
                             },
                             {
                                 "en",
                                 "Hi 👋 it seems you are asking questions about 'piano di studi'. " +
                                 "PoliNetwork advice you to write in the dedicated group, " +
-                                 "<a href='https://t.me/joinchat/LclXl0gOWoUCf67O6nwnnQ'>click here</a>!"
+                                 "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"
                             }
                         });
                         await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
@@ -134,13 +134,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito al DSU. " +
                                 "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-                                 "<a href='https://t.me/joinchat/LclXl0n6IpKEeo39TbOkRw'>clicca qui</a>!"
+                                 "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!"
                             },
                             {
                                 "en",
                                 "Hi 👋 it seems you are asking questions about 'DSU'. " +
                                 "PoliNetwork advice you to write in the dedicated group, " +
-                                 "<a href='https://t.me/joinchat/LclXl0n6IpKEeo39TbOkRw'>click here</a>!"
+                                 "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"
                             }
                         });
                         await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
