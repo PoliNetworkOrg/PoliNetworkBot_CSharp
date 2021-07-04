@@ -2,10 +2,10 @@
 {
     internal class NuovoLink
     {
-        public bool isNuovo; //se il link è nuovo
+        public Enums.SuccessoGenerazioneLink isNuovo; //se il link è nuovo
         public string link;
 
-        public NuovoLink(bool v, string link = null)
+        public NuovoLink(Enums.SuccessoGenerazioneLink v, string link = null)
         {
             this.isNuovo = v;
             this.link = link;

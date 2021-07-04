@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
             {
                 NuovoLink success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
-                if (success.isNuovo)
-                    n++;
+                switch (success.isNuovo)
+                {
+                    case SuccessoGenerazioneLink.NUOVO_LINK:
+                    case SuccessoGenerazioneLink.RICICLATO:
+                        n++;
+                        break;
+                }
             }
 
             return n;
@@ -37,6 +43,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
+            Enums.SuccessoGenerazioneLink successoGenerazione = SuccessoGenerazioneLink.ERRORE;
             string r = await TryGetCurrentInviteLinkAsync(chatId, sender);
             if (string.IsNullOrEmpty(r))
             {
@@ -49,13 +56,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     // ignored
                 }
             }
+            else
+            {
+                successoGenerazione = SuccessoGenerazioneLink.RICICLATO;
+            }
 
             if (string.IsNullOrEmpty(r))
-                return new NuovoLink(false);
+                return new NuovoLink(successoGenerazione);
+            else
+                successoGenerazione = SuccessoGenerazioneLink.NUOVO_LINK;
 
             SalvaNuovoLink(r, chatId);
 
-            return new NuovoLink(true, r);
+            return new NuovoLink(successoGenerazione, r);
         }
 
         private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender)
@@ -162,7 +175,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 }
 
-                string s2 = "Generati " + L.Count().ToString() + " links";
+                string s2 = "Link generati\n\n" +
+                    "Totale: " + L.Count().ToString() + "\n" +
+                       "Nuovi: " + L.GetCount_Filtered(Enums.SuccessoGenerazioneLink.NUOVO_LINK).ToString() + "\n" +
+                "Riciclati: " + L.GetCount_Filtered(Enums.SuccessoGenerazioneLink.RICICLATO).ToString() + "\n" +
+                    "Errori: " + L.GetCount_Filtered(Enums.SuccessoGenerazioneLink.ERRORE).ToString() + "\n";
 
                 await sender.SendTextMessageAsync(e.Message.From.Id,
                     new Language(
@@ -262,19 +279,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (group_id == null)
             {
-                L.Add(new Tuple<GruppoTG, bool>(gruppoTG, false));
+                L.Add(new Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>(gruppoTG, Enums.SuccessoGenerazioneLink.ERRORE));
             }
             else
             {
-                bool success = false;
+                NuovoLink s3 = null;
                 try
                 {
                     if (group_id != null)
                     {
                         gruppoTG.UpdateID(group_id.Value);
 
-                        var s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
-                        success = s3.isNuovo;
+                        s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
                         gruppoTG.UpdateNewLink(s3.link);
                     }
                 }
@@ -290,8 +306,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
                 }
 
-                L.Add(new Tuple<GruppoTG, bool>(gruppoTG, success));
+                Enums.SuccessoGenerazioneLink successoGenerazione = GetSuccessoGenerazione(s3);
+                L.Add(new Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>(gruppoTG, successoGenerazione));
             }
+        }
+
+        private static SuccessoGenerazioneLink GetSuccessoGenerazione(NuovoLink s3)
+        {
+            if (s3 == null)
+                return SuccessoGenerazioneLink.ERRORE;
+
+            return s3.isNuovo;
         }
 
         private static List<GruppoTG> RimuoviDuplicati(List<GruppoTG> gruppoTGs)
