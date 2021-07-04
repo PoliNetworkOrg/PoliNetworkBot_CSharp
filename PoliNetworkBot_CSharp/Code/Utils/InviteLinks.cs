@@ -37,28 +37,47 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
-            string r = null;
-            try
+            string r = await TryGetCurrentInviteLinkAsync(chatId, sender);
+            if (string.IsNullOrEmpty(r))
             {
-                r = await sender.ExportChatInviteLinkAsync(chatId);
-            }
-            catch
-            {
-                // ignored
+                try
+                {
+                    r = await sender.ExportChatInviteLinkAsync(chatId);
+                }
+                catch
+                {
+                    // ignored
+                }
             }
 
             if (string.IsNullOrEmpty(r))
                 return new NuovoLink(false);
 
+            SalvaNuovoLink(r,chatId);
+
+            return new NuovoLink(true, r);
+        }
+
+        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        {
+            var chat = await sender.getChat(chatId);
+            if (chat == null)
+                return null;
+
+            return chat.InviteLink;
+        }
+
+        private static void SalvaNuovoLink(string nuovoLink, long chatId)
+        {
+
             const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
             SqLite.Execute(q1, new Dictionary<string, object>
             {
-                {"@link", r},
+                {"@link", nuovoLink},
                 {"@lul", DateTime.Now},
                 {"@id", chatId}
             });
 
-            return new NuovoLink(true, r);
         }
 
         public static Stream GenerateStreamFromString(string s)

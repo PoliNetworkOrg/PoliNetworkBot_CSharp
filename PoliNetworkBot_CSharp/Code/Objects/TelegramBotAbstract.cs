@@ -70,6 +70,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
+        internal async Task<Chat> getChat(long chatId)
+        {
+            switch(this._isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    {
+                        return await this._botClient.GetChatAsync(chatId);
+                    }
+            }
+
+            return null;
+        }
+
         private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi, string website, string contactString, long id)
         {
             _userbotClient = userBotClient;
