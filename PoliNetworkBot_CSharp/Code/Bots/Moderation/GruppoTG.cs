@@ -19,10 +19,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             this.idLink = idLink.ToString();
             this.oldLinks = new List<string>() { this.idLink };
             this.nome = nome.ToString();
-            
+
             try
             {
-                this.permanentId = Convert.ToInt64( id.ToString());
+                this.permanentId = Convert.ToInt64(id.ToString());
             }
             catch
             {
@@ -44,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var year = s4[0];
                         var month = s4[1];
                         var day = s4[2];
-                        
+
                         if (s3.Contains("."))
                         {
                             var s5 = s3.Split(".");
@@ -60,12 +60,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 var second = s7[2];
 
                                 this.LastUpdateInviteLinkTimeDateTime = new DateTime(
-                                    Convert.ToInt32(year), 
+                                    Convert.ToInt32(year),
                                     Convert.ToInt32(month),
                                     Convert.ToInt32(day),
                                     Convert.ToInt32(hour),
-                                    Convert.ToInt32(minute), 
-                                    Convert.ToInt32(second), 
+                                    Convert.ToInt32(minute),
+                                    Convert.ToInt32(second),
                                     Convert.ToInt32(millisecond));
                             }
                         }

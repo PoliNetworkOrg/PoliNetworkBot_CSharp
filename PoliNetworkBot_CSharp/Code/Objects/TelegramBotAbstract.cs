@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<Chat> getChat(long chatId)
         {
-            switch(this._isbot)
+            switch (this._isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     {
