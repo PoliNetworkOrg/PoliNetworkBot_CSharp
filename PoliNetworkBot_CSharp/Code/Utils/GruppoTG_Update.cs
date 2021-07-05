@@ -17,5 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public string ExceptionMessage { get; internal set; }
         public Exception ExceptionObject { get; internal set; }
+        public bool? query1Fallita { get; internal set; }
+        public bool? query2Fallita { get; internal set; }
+        public bool? createInviteLinkFallita { get; internal set; }
     }
 }

@@ -257,6 +257,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             object r3 = r2.ItemArray[0];
                             group_id = Convert.ToInt64(r3);
                         }
+                        else
+                        {
+                            result.query1Fallita = true;
+                        }
                     }
                 }
                 catch (Exception ex1)
@@ -294,6 +298,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             var r2 = r1.Rows[0];
                             object r3 = r2.ItemArray[0];
                             group_id = Convert.ToInt64(r3);
+                        }
+                        else
+                        {
+                            result.query2Fallita = true;
                         }
                     }
                 }
@@ -357,6 +365,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex3m;
                     result.ExceptionObject = ex3;
+                    result.createInviteLinkFallita = true;
                     L.Add(result);
 
                     return;

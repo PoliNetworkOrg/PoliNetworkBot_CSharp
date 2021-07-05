@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     string s3 = "Success: " + (l2.successoGenerazioneLink != Enums.SuccessoGenerazioneLink.ERRORE ? "S" : "N") + "\n" +
                         "IdLink: " + StringNotNull(l2.gruppoTG.idLink) + "\n" +
                         "NewLink: " + StringNotNull(l2.gruppoTG.newLink) + "\n" +
-                        "PermanentId: " + StringNotNull(l2.gruppoTG.permanentId) + "\n" +
+                        "PermanentId: " + StringNotNullFromLong(l2.gruppoTG.permanentId) + "\n" +
                         "OldLink: " + "[";
 
                     if (l2.gruppoTG.oldLinks == null || l2.gruppoTG.oldLinks.Count == 0)
@@ -54,6 +54,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     s3 += "]" + "\n" +
                             "ExceptionMessage: " + StringNotNull(System.Web.HttpUtility.HtmlEncode(l2.ExceptionMessage)) + "\n" +
+
+                            "q1: " + StringNotNullFromBool(l2.query1Fallita) + "\n" +
+
+                            "q2: " + StringNotNullFromBool(l2.query2Fallita) + "\n" +
+
+                            "q3: " + StringNotNullFromBool(l2.createInviteLinkFallita) + "\n" +
                         "Nome: " + StringNotNull(l2.gruppoTG.nome);
                     st += s3 + "\n\n";
 
@@ -75,7 +81,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return st;
         }
 
-        private static string StringNotNull(long? permanentId)
+        private string StringNotNullFromBool(bool? query2Fallita)
+        {
+            if (query2Fallita == null)
+            {
+                return StringNotNull(null);
+            }
+
+            return query2Fallita.Value ? "Y" : "N";
+
+        }
+
+        private static string StringNotNullFromLong(long? permanentId)
         {
             if (permanentId == null)
                 return "null";
