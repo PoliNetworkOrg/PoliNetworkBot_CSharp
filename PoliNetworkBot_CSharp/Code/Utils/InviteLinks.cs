@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class InviteLinks
     {
-        internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender)
+        internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender, MessageEventArgs e)
         {
             const string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
             var dt = SqLite.ExecuteSelect(q1);
@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                NuovoLink success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
+                NuovoLink success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender, e);
                 switch (success.isNuovo)
                 {
                     case SuccessoGenerazioneLink.NUOVO_LINK:
@@ -41,10 +41,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return n;
         }
 
-        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs e)
         {
             Enums.SuccessoGenerazioneLink successoGenerazione = SuccessoGenerazioneLink.ERRORE;
-            string r = await TryGetCurrentInviteLinkAsync(chatId, sender);
+            string r = await TryGetCurrentInviteLinkAsync(chatId, sender, e);
             if (string.IsNullOrEmpty(r))
             {
                 try
@@ -71,13 +71,34 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new NuovoLink(successoGenerazione, r);
         }
 
-        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var chat = await sender.getChat(chatId);
-            if (chat == null)
-                return null;
+            Telegram.Bot.Types.Chat chat =  null;
+            try
+            {
+                chat=  await sender.getChat(chatId);
+                if (chat == null)
+                    return null;
 
-            return chat.InviteLink;
+                return chat.InviteLink;
+            }
+            catch (Exception ex1)
+            {
+                Console.WriteLine(ex1);
+                string ex3m = "5" + 
+                    "\n\n" + ex1.Message + 
+                    "\n\n" + chatId.ToString() + 
+                    "\n\n" + chat == null ? "[null class]" : string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title;
+
+                await sender.SendTextMessageAsync(e.Message.From.Id,
+                 new Language(
+                     new Dictionary<string, string>() { { "it",
+                                                    ex3m} }),
+                 ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                return null;
+            }
+
+            return null;
         }
 
         private static void SalvaNuovoLink(string nuovoLink, long chatId)
@@ -290,8 +311,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         gruppoTG.UpdateID(group_id.Value);
 
-                        s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender);
-                        gruppoTG.UpdateNewLink(s3.link);
+                        
+                        s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender, e);
+                        if (s3 != null)
+                        {
+                            gruppoTG.UpdateNewLink(s3.link);
+                        }
                     }
                 }
                 catch (Exception ex3)

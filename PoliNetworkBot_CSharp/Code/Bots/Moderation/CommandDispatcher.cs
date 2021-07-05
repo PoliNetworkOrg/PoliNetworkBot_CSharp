@@ -843,7 +843,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             int? n = null;
             try
             {
-                n = await InviteLinks.FillMissingLinksIntoDB_Async(sender);
+                n = await InviteLinks.FillMissingLinksIntoDB_Async(sender, e);
             }
             catch (Exception e2)
             {
