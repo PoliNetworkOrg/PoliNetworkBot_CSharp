@@ -37,6 +37,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         "IdLink: " + StringNotNull(l2.Item1.idLink) + "\n" +
                         "NewLink: " + StringNotNull(l2.Item1.newLink) + "\n" +
                         "PermanentId: " + StringNotNull(l2.Item1.permanentId) + "\n" +
+                        "OldLink: " + "[";
+
+                    if (l2.Item1.oldLinks == null || l2.Item1.oldLinks.Count == 0)
+                        ;
+                    else
+                    {
+                        string s4 = "";
+                        foreach (var l3 in l2.Item1.oldLinks)
+                        {
+                            s4 += "'" + l3 + "',";
+                        }
+                        s4 = s4.Remove(s4.Length - 1);
+                        s3 += s4;
+                    }
+
+                    s3 += "]" + "\n" +
                         "Nome: " + StringNotNull(l2.Item1.nome);
                     st += s3 + "\n\n";
 
