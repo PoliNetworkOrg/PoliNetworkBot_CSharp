@@ -7,20 +7,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class ListaGruppiTG_Update
     {
-        public List<Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>> L = new List<Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>>();
+        public List<GruppoTG_Update> L = new List<GruppoTG_Update>();
 
         internal int Count()
         {
             if (L == null)
-                L = new List<Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>>();
+                L = new List<GruppoTG_Update>();
 
             return L.Count;
         }
 
-        internal void Add(Tuple<GruppoTG, Enums.SuccessoGenerazioneLink> tuple)
+        internal void Add(GruppoTG_Update tuple)
         {
             if (L == null)
-                L = new List<Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>>();
+                L = new List<GruppoTG_Update>();
 
             L.Add(tuple);
         }
@@ -33,18 +33,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    string s3 = "Success: " + (l2.Item2 != Enums.SuccessoGenerazioneLink.ERRORE ? "S" : "N") + "\n" +
-                        "IdLink: " + StringNotNull(l2.Item1.idLink) + "\n" +
-                        "NewLink: " + StringNotNull(l2.Item1.newLink) + "\n" +
-                        "PermanentId: " + StringNotNull(l2.Item1.permanentId) + "\n" +
+                    string s3 = "Success: " + (l2.successoGenerazioneLink != Enums.SuccessoGenerazioneLink.ERRORE ? "S" : "N") + "\n" +
+                        "IdLink: " + StringNotNull(l2.gruppoTG.idLink) + "\n" +
+                        "NewLink: " + StringNotNull(l2.gruppoTG.newLink) + "\n" +
+                        "PermanentId: " + StringNotNull(l2.gruppoTG.permanentId) + "\n" +
                         "OldLink: " + "[";
 
-                    if (l2.Item1.oldLinks == null || l2.Item1.oldLinks.Count == 0)
+                    if (l2.gruppoTG.oldLinks == null || l2.gruppoTG.oldLinks.Count == 0)
                         ;
                     else
                     {
                         string s4 = "";
-                        foreach (var l3 in l2.Item1.oldLinks)
+                        foreach (var l3 in l2.gruppoTG.oldLinks)
                         {
                             s4 += "'" + l3 + "',";
                         }
@@ -53,7 +53,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
 
                     s3 += "]" + "\n" +
-                        "Nome: " + StringNotNull(l2.Item1.nome);
+                            "ExceptionMessage: " + StringNotNull(System.Web.HttpUtility.HtmlEncode(l2.ExceptionMessage)) + "\n" +
+                        "Nome: " + StringNotNull(l2.gruppoTG.nome);
                     st += s3 + "\n\n";
 
                     /*await sender.SendTextMessageAsync(e.Message.From.Id,
@@ -96,9 +97,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal int GetCount_Filtered(Enums.SuccessoGenerazioneLink successoGenerazione)
         {
             if (L == null)
-                L = new List<Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>>();
+                L = new List<GruppoTG_Update>();
 
-            return L.Where(x => x.Item2 == successoGenerazione).ToList().Count;
+            return L.Where(x => x.successoGenerazioneLink == successoGenerazione).ToList().Count;
         }
     }
 }

@@ -228,6 +228,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task UpdateLinksFromJson2Async(GruppoTG gruppoTG, TelegramBotAbstract sender, MessageEventArgs e, ListaGruppiTG_Update L)
         {
+            var result = new GruppoTG_Update(null, Enums.SuccessoGenerazioneLink.ERRORE);
+
+
             long? group_id = gruppoTG.permanentId;
             string sql1 = "empty";
             if (!string.IsNullOrEmpty(gruppoTG.idLink))
@@ -265,6 +268,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                          new Dictionary<string, string>() { { "it",
                                                     ex1m } }),
                      ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+
+                    result.gruppoTG = gruppoTG;
+                    result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
+                    result.ExceptionMessage = ex1m;
+                    result.ExceptionObject = ex1;
+                    L.Add(result);
+
+
                     return;
                 }
             }
@@ -295,13 +306,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                          new Dictionary<string, string>() { { "it",
                                                     ex2m } }),
                      ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+
+                    result.gruppoTG = gruppoTG;
+                    result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
+                    result.ExceptionMessage = ex2m;
+                    result.ExceptionObject = ex2;
+                    L.Add(result);
+
                     return;
                 }
             }
 
             if (group_id == null)
             {
-                L.Add(new Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>(gruppoTG, Enums.SuccessoGenerazioneLink.ERRORE));
+
+
+
+                result.gruppoTG = gruppoTG;
+                result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
+                L.Add(result);
             }
             else
             {
@@ -329,11 +352,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                          new Dictionary<string, string>() { { "it",
                                                     ex3m} }),
                      ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+
+                    result.gruppoTG = gruppoTG;
+                    result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
+                    result.ExceptionMessage = ex3m;
+                    result.ExceptionObject = ex3;
+                    L.Add(result);
+
                     return;
                 }
 
                 Enums.SuccessoGenerazioneLink successoGenerazione = GetSuccessoGenerazione(s3);
-                L.Add(new Tuple<GruppoTG, Enums.SuccessoGenerazioneLink>(gruppoTG, successoGenerazione));
+
+                result.gruppoTG = gruppoTG;
+                result.successoGenerazioneLink = successoGenerazione;
+                L.Add(result);
             }
         }
 

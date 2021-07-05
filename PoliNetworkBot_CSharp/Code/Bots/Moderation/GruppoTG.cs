@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal class GruppoTG
+    public class GruppoTG
     {
         public string idLink;
         public string nome;
