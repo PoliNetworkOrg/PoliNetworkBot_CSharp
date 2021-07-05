@@ -76,7 +76,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Telegram.Bot.Types.Chat chat =  null;
             try
             {
-                chat=  await sender.getChat(chatId);
+                await Task.Delay(100);
+                chat=  await sender.GetChat(chatId);
                 if (chat == null)
                     return null;
 

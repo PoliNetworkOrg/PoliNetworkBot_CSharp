@@ -70,13 +70,33 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<Chat> getChat(long chatId)
+        internal async Task<Chat> GetChat(long chatId)
         {
             switch (this._isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     {
-                        return await this._botClient.GetChatAsync(chatId);
+                        try
+                        {
+                            return await this._botClient.GetChatAsync(chatId);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        if (chatId > 0)
+                        {
+                            await Task.Delay(100);
+
+                            string chatidS = chatId.ToString();
+                            chatidS = "-100" + chatidS;
+                            long chatidSl = Convert.ToInt64(chatidS);
+
+                            return await this._botClient.GetChatAsync(chatidSl);
+                        }
+
+                        return null;
                     }
             }
 
