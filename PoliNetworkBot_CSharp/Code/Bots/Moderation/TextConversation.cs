@@ -153,6 +153,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             disablePreviewLink: true);
                     }
                 }
+
+                if (text.Contains("esiste un gruppo"))
+                {
+                    var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {
+                                "it",
+                                "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
+                                "Ti consigliamo di visitare il nostro sito, " +
+                                 "<a href='https://polinetwork2.github.io/'>clicca qui</a>!"
+                            },
+                            {
+                                "en",
+                                "Hi 👋 it seems you are asking questions about groups. " +
+                                "We advice you to visit our website, " +
+                                 "<a href='https://polinetwork2.github.io/'>click here</a>!"
+                            }
+                        });
+                    await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
+                        lang: e.Message.From.LanguageCode,
+                        text: text2,
+                        chatId: e.Message.Chat.Id,
+                        chatType: e.Message.Chat.Type,
+                        parseMode: ParseMode.Html,
+                        replyToMessageId: e.Message.MessageId,
+                        disablePreviewLink: true);
+                }
             }
 
             return null;
