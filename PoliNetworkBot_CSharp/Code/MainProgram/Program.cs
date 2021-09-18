@@ -318,6 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             switch (method)
                             {
+                                case 'a':
                                 case 'A': //Administration
                                     {
                                         _ = Code.Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);

@@ -37,6 +37,58 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly long _id;
         private readonly BotTypeApi _isbot;
 
+        internal async Task<TLChannel?> upgradeGroupIntoSupergroup(long? chatID)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                    {
+                        var r =  await this._userbotClient.UpgradeGroupIntoSupergroup(chatID);
+                        if (r is TLUpdates r2)
+                        {
+                            if (r2.Chats!= null && r2.Chats.Count == 2)
+                            {
+                                var c1 = r2.Chats[1];
+                                if (c1 is TLChannel c2)
+                                {
+                                    return c2;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return null;
+        }
+
+        public async Task<bool?> EditDescriptionChannel(TLChannel channel, string desc)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                    {
+                        bool? r = await this._userbotClient.Channels_EditDescription(channel, desc);
+                        return r;
+                    }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return null;
+        }
+
         public readonly TelegramClient _userbotClient;
 
         private readonly string _website;
@@ -177,7 +229,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> PromoteChatMember(int userId, ChatId chatId)
+        internal async Task<bool> PromoteChatMember(int userId, ChatId chatId, long? accessHashChat)
         {
             switch (this._isbot)
             {
@@ -197,7 +249,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
 
                 case BotTypeApi.USER_BOT:
-                    break;
+                    {
+
+                        try
+                        {
+                            TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
+                            await this._userbotClient.ChannelsEditAdmin(Utils.UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat), 
+                            Utils.UserbotPeer.GetPeerUserFromdId(userId), 
+                            role);
+                        }
+                            catch (Exception e)
+                        {
+                            await Utils.NotifyUtil.NotifyOwners(e, this, 0);
+                            return false;
+                        }
+                        break;
+                    }
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -1243,16 +1310,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return new MessageSentResult(false, null, chatTypeToSendTo);
         }
 
-        public async Task<bool> CreateGroup(string name, string description, IEnumerable<long> membersToInvite)
+        public async Task<long?> CreateGroup(string name, string description, IEnumerable<long> membersToInvite)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    return false;
+                    return null;
 
                 case BotTypeApi.USER_BOT:
-                    break;
-
                 case BotTypeApi.DISGUISED_BOT:
                     var users = new TLVector<TLAbsInputUser>();
                     foreach (var userId in membersToInvite) users.Add(new TLInputUser { UserId = (int)userId });
@@ -1260,17 +1325,28 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         var r = await _userbotClient.Messages_CreateChat(name, users);
-                        return r != null;
+                        if(r is TLUpdates r2)
+                        {
+                            if(r2.Chats != null && r2.Chats.Count == 1)
+                            {
+                                var c1 = r2.Chats[0];
+                                if( c1 is TLChat c2)
+                                {
+                                    return c2.Id;
+                                }
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
-                        return false;
+                        return null;
                     }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return false;
+            return null;
         }
 
         public async Task<MessageSentResult> SendVideoAsync(long chatIdToSendTo, ObjectVideo video, string caption,

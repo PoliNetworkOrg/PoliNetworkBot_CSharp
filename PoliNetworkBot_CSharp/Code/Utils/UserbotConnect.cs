@@ -43,10 +43,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string code = "";
             var passwordToAuthenticate = userbot.GetPasswordToAuthenticate();
 
+            ;
+
             TLUser user;
             try
             {
-                user = await telegramClient.MakeAuthAsync(numberToAuthenticate, hash, "66050");
+                user = await telegramClient.MakeAuthAsync(numberToAuthenticate, hash, code);
             }
             catch (CloudPasswordNeededException ex)
             {

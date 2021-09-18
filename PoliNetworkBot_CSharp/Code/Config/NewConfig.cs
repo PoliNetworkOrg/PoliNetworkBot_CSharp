@@ -35,7 +35,18 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
         private static void ResetBotDisguisedAsUserBotMethod()
         {
-            var lines = File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
+            string[] lines = null;
+            try
+            {
+                File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
+            }
+            catch
+            {
+                ;
+            }
+            if (lines == null)
+                return;
+
             var botInfos = new List<BotDisguisedAsUserBotInfo>();
             foreach (var t in lines)
             {
@@ -98,7 +109,19 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
         private static void ResetBotMethod()
         {
-            var lines = File.ReadAllText(Paths.Info.ConfigBotsInfo).Split(RowSeparator);
+            string[] lines = null;
+            try
+            {
+                lines = File.ReadAllText(Paths.Info.ConfigBotsInfo).Split(RowSeparator);
+            }
+            catch
+            {
+                ;
+            }
+
+            if (lines == null)
+                return;
+
             var botInfos = new List<BotInfo>();
             foreach (var t in lines)
             {
