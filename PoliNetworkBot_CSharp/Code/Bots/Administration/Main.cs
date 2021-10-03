@@ -23,12 +23,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                 {
                     return;
                 }
-                var channel = await telegramBotAbstract.upgradeGroupIntoSupergroup(chatID);
+                var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
                 if (channel == null)
                     return;
 
                 await telegramBotAbstract.EditDescriptionChannel(channel, desc);
-
 
                 List<long> admins = new List<long>() { 768169879 };
 
