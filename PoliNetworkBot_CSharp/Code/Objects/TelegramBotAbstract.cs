@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -57,6 +59,54 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                     return c2;
                                 }
                             }
+                        }
+                    }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return null;
+        }
+
+
+        public async Task<TLAbsUpdates> addUserIntoChannel(string userID, TLChannel channel)
+        {
+
+            if (string.IsNullOrEmpty(userID))
+                return null;
+
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                    {
+                        try { 
+                        TLVector<TLAbsInputUser> users = new TLVector<TLAbsInputUser>();
+                            if (userID.StartsWith("@"))
+                            {
+                                TLInputPeerUser u = await UserbotPeer.GetPeerUserWithAccessHash(userID.Substring(1), this._userbotClient);
+                                TLAbsInputUser input2 = new TLInputUser() { AccessHash = u.AccessHash, UserId = u.UserId };
+                                users.Add(input2 );
+                            }
+                            else
+                            {
+                                users.Add(Utils.UserbotPeer.GetPeerUserFromdId(Convert.ToInt32(userID)));
+                            }
+                
+                        TLInputChannel tLInputChannel = new TLInputChannel() { ChannelId = channel.Id };
+                        if (channel.AccessHash != null)
+                            tLInputChannel.AccessHash = channel.AccessHash.Value;
+
+                        TLAbsUpdates r = await this._userbotClient.ChannelsInviteToChannel(tLInputChannel, users);
+                        return r;
+                    }
+                        catch (Exception e)
+                        {
+                            ;
                         }
                     }
                     break;
@@ -229,7 +279,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> PromoteChatMember(int userId, ChatId chatId, long? accessHashChat)
+        internal async Task<bool> PromoteChatMember(TLInputUser userIdInput, ChatId chatId, long? accessHashChat)
         {
             switch (this._isbot)
             {
@@ -237,7 +287,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         try
                         {
-                            await this._botClient.PromoteChatMemberAsync(chatId, userId, true, true, true, true, true, true, true, true);
+                            await this._botClient.PromoteChatMemberAsync(chatId, userIdInput.UserId, true, true, true, true, true, true, true, true);
                         }
                         catch (Exception e)
                         {
@@ -254,8 +304,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         try
                         {
                             TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
+              
                             await this._userbotClient.ChannelsEditAdmin(Utils.UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat), 
-                            Utils.UserbotPeer.GetPeerUserFromdId(userId), 
+                            userIdInput, 
                             role);
                         }
                             catch (Exception e)
@@ -1099,7 +1150,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        internal async Task<string> ExportChatInviteLinkAsync(long chatId)
+        internal async Task<string> ExportChatInviteLinkAsync(long chatId, long? accessHash)
         {
             switch (_isbot)
             {
@@ -1107,8 +1158,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     return await _botClient.ExportChatInviteLinkAsync(chatId);
                     ;
                 case BotTypeApi.USER_BOT:
-                    break;
-
+                    var channel = new TLChannel() { AccessHash = accessHash, Id = Convert.ToInt32(chatId) };
+                    TLAbsExportedChatInvite invite = await _userbotClient.ChannelsGetInviteLink(channel);
+                    if (invite is TLChatInviteExported c1)
+                    {
+                        return c1.Link;
+                    }
+                    return null;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
 
@@ -1339,6 +1395,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                     catch (Exception e)
                     {
+                        Console.WriteLine(e.Message);
+                        Thread.Sleep(Int32.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
                         return null;
                     }
                     break;

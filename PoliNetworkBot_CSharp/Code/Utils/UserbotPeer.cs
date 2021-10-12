@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static async Task<TLAbsInputPeer> GetPeerUserWithAccessHash(string username,
+        public static async Task<TLInputPeerUser> GetPeerUserWithAccessHash(string username,
             TelegramClient telegramClient)
         {
             var r = await telegramClient.ResolveUsernameAsync(username);

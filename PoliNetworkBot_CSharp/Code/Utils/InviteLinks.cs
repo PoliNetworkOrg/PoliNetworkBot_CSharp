@@ -49,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    r = await sender.ExportChatInviteLinkAsync(chatId);
+                    r = await sender.ExportChatInviteLinkAsync(chatId, null);
                 }
                 catch
                 {
