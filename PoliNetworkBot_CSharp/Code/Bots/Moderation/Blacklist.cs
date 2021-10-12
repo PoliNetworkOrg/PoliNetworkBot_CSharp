@@ -99,6 +99,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                        text.Contains("goo.gl") ||
                        text.Contains("forms.gle") ||
                        text.Contains("docs.google.com") ||
+                       text.Contains("amazon.it/gp/student") ||
+                       text.Contains("amazon.com/gp/student") ||
                        text.Contains("discord.gg");
                 return b1 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
             }

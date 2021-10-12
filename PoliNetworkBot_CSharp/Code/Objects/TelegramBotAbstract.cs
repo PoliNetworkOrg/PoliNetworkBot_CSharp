@@ -39,7 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly long _id;
         private readonly BotTypeApi _isbot;
 
-        internal async Task<TLChannel?> upgradeGroupIntoSupergroup(long? chatID)
+        internal async Task<TLChannel?> UpgradeGroupIntoSupergroup(long? chatID)
         {
             switch (_isbot)
             {
@@ -48,10 +48,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var r =  await this._userbotClient.UpgradeGroupIntoSupergroup(chatID);
+                        var r = await this._userbotClient.UpgradeGroupIntoSupergroup(chatID);
                         if (r is TLUpdates r2)
                         {
-                            if (r2.Chats!= null && r2.Chats.Count == 2)
+                            if (r2.Chats != null && r2.Chats.Count == 2)
                             {
                                 var c1 = r2.Chats[1];
                                 if (c1 is TLChannel c2)
@@ -300,7 +300,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-
                         try
                         {
                             TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
@@ -309,7 +308,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             userIdInput, 
                             role);
                         }
-                            catch (Exception e)
+                        catch (Exception e)
                         {
                             await Utils.NotifyUtil.NotifyOwners(e, this, 0);
                             return false;
@@ -1381,12 +1380,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         var r = await _userbotClient.Messages_CreateChat(name, users);
-                        if(r is TLUpdates r2)
+                        if (r is TLUpdates r2)
                         {
-                            if(r2.Chats != null && r2.Chats.Count == 1)
+                            if (r2.Chats != null && r2.Chats.Count == 1)
                             {
                                 var c1 = r2.Chats[0];
-                                if( c1 is TLChat c2)
+                                if (c1 is TLChat c2)
                                 {
                                     return c2.Id;
                                 }
@@ -1400,6 +1399,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return null;
                     }
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

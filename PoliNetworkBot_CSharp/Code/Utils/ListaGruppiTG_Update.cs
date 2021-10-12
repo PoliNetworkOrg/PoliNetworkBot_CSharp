@@ -1,5 +1,4 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -89,7 +88,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return query2Fallita.Value ? "Y" : "N";
-
         }
 
         private static string StringNotNullFromLong(long? permanentId)

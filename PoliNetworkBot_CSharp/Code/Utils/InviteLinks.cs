@@ -73,11 +73,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs e)
         {
-            Telegram.Bot.Types.Chat chat =  null;
+            Telegram.Bot.Types.Chat chat = null;
             try
             {
                 await Task.Delay(100);
-                chat=  await sender.GetChat(chatId);
+                chat = await sender.GetChat(chatId);
                 if (chat == null)
                     return null;
 
@@ -86,9 +86,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             catch (Exception ex1)
             {
                 Console.WriteLine(ex1);
-                string ex3m = "5" + 
-                    "\n\n" + ex1.Message + 
-                    "\n\n" + chatId.ToString() + 
+                string ex3m = "5" +
+                    "\n\n" + ex1.Message +
+                    "\n\n" + chatId.ToString() +
                     "\n\n" + chat == null ? "[null class]" : string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title;
 
                 await sender.SendTextMessageAsync(e.Message.From.Id,
@@ -230,7 +230,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var result = new GruppoTG_Update(null, Enums.SuccessoGenerazioneLink.ERRORE);
 
-
             long? group_id = gruppoTG.permanentId;
             string sql1 = "empty";
             if (!string.IsNullOrEmpty(gruppoTG.idLink))
@@ -279,7 +278,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     result.ExceptionObject = ex1;
                     L.Add(result);
 
-
                     return;
                 }
             }
@@ -327,9 +325,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (group_id == null)
             {
-
-
-
                 result.gruppoTG = gruppoTG;
                 result.successoGenerazioneLink = Enums.SuccessoGenerazioneLink.ERRORE;
                 L.Add(result);
@@ -343,7 +338,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         gruppoTG.UpdateID(group_id.Value);
 
-                        
                         s3 = await InviteLinks.CreateInviteLinkAsync(group_id.Value, sender, e);
                         if (s3 != null)
                         {
