@@ -118,6 +118,37 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
+        internal async Task<TLChannel?> upgradeGroupIntoSupergroup(long? chatID)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                    {
+                        var r = await this._userbotClient.UpgradeGroupIntoSupergroup(chatID);
+                        if (r is TLUpdates r2)
+                        {
+                            if (r2.Chats != null && r2.Chats.Count == 2)
+                            {
+                                var c1 = r2.Chats[1];
+                                if (c1 is TLChannel c2)
+                                {
+                                    return c2;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+
+            return null;
+        }
+
         public async Task<bool?> EditDescriptionChannel(TLChannel channel, string desc)
         {
             switch (_isbot)

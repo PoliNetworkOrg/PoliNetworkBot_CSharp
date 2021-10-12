@@ -61,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                 
                                 List<TLInputUser> admins = new List<TLInputUser>();
 
-                                List<String> adminTags = new List<string>() { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY
+                                List<String> adminTags = new List<string>() { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
                                 foreach (var admin in adminTags)
                                 {
                                     Thread.Sleep(1 * 1000 * 10);
