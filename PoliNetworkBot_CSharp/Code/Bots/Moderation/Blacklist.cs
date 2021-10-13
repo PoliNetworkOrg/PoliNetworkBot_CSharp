@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 return SpamType.SPAM_LINK;
             }
-            return CheckNotAllowedWords(text) == SpamType.NOT_ALLOWED_WORDS ? SpamType.NOT_ALLOWED_WORDS : CheckForFormatMistakes(text, groupId);
+            return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS ? SpamType.NOT_ALLOWED_WORDS : CheckForFormatMistakes(text, groupId);
         }
 
         private static SpamType CheckForFormatMistakes(string text, long? groupId)
@@ -53,16 +53,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             return SpamType.ALL_GOOD;
         }
-
-        private static bool IsSpecialGroup(string text, long? groupId)
-        {
-            if (groupId == null)
-                return false;
-            List<long> specialGroups = new List<long>{-1001175999519, -1001495422899, -1001164044303};
-            return specialGroups.Any(@group => groupId == @group);
-        }
-
-        private static SpamType CheckNotAllowedWords(string text)
+        
+        private static SpamType CheckNotAllowedWords(string text, long? groupId)
         {
             text = text.ToLower();
 
@@ -86,8 +78,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
                 }
             }
-
-            if (text.Contains("bitcoin") && (text.Contains("guadagno") || text.Contains("rischio")))
+            
+            var specialGroups = new List<long>{-1001361547847, -452591994, -1001320704409};
+            if (groupId != null && text.Contains("bitcoin") && (text.Contains("guadagno") || text.Contains("rischio")) && specialGroups.All(@group => groupId != @group) )
                 return SpamType.NOT_ALLOWED_WORDS;
 
             return SpamType.ALL_GOOD;
