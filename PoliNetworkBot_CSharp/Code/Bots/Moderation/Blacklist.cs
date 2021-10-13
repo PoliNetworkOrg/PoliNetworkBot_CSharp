@@ -17,9 +17,49 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
+            if (CheckSpamLink(text, groupId) == SpamType.SPAM_LINK)
+            {
+                return SpamType.SPAM_LINK;
+            }
+            return CheckNotAllowedWords(text) == SpamType.NOT_ALLOWED_WORDS ? SpamType.NOT_ALLOWED_WORDS : CheckForFormatMistakes(text, groupId);
+        }
 
-            var isSpamLink = CheckSpamLink(text, groupId);
-            return isSpamLink == SpamType.SPAM_LINK ? SpamType.SPAM_LINK : CheckNotAllowedWords(text);
+        private static SpamType CheckForFormatMistakes(string text, long? groupId)
+        {
+            if (groupId == null)
+                return SpamType.ALL_GOOD;
+            var specialGroups = new List<long>{-1001175999519, -1001495422899, -1001164044303};
+            if (specialGroups.All(@group => groupId != @group))
+                return SpamType.ALL_GOOD;
+            var textLower = text.ToLower();
+            if (groupId == specialGroups[0])
+            {
+                return textLower.Contains("#cerco") || textLower.Contains("#offro") || textLower.Contains("#searching") ||
+                       textLower.Contains("#offering")
+                    ? SpamType.ALL_GOOD
+                    : SpamType.NOT_ALLOWED_WORDS;
+            }
+            if (groupId == specialGroups[1])
+            {
+                return textLower.Contains("#richiesta") || textLower.Contains("#offerta")
+                    ? SpamType.ALL_GOOD
+                    : SpamType.NOT_ALLOWED_WORDS;
+            }
+            if (groupId == specialGroups[2])
+            {
+                return textLower.Contains("#cerco") || textLower.Contains("#vendo")
+                    ? SpamType.ALL_GOOD
+                    : SpamType.NOT_ALLOWED_WORDS;
+            }
+            return SpamType.ALL_GOOD;
+        }
+
+        private static bool IsSpecialGroup(string text, long? groupId)
+        {
+            if (groupId == null)
+                return false;
+            List<long> specialGroups = new List<long>{-1001175999519, -1001495422899, -1001164044303};
+            return specialGroups.Any(@group => groupId == @group);
         }
 
         private static SpamType CheckNotAllowedWords(string text)
