@@ -5,6 +5,7 @@
         SPAM_LINK,
         NOT_ALLOWED_WORDS,
         ALL_GOOD,
-        FOREIGN
+        FOREIGN,
+        FORMAT_INCORRECT
     }
 }

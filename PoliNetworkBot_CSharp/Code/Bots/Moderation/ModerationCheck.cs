@@ -420,6 +420,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         break;
                     }
+                case SpamType.FORMAT_INCORRECT:
+                {
+                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "You have sent a message that does not follow the group format"},
+                        {"it", "Hai inviato un messaggio che non rispetta il format del gruppo"}
+                    });
+
+                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                        e.Message.From.LanguageCode,
+                        e.Message.From.Username, text2, parseMode: ParseMode.Default, null);
+
+                    break;
+                }
 
                 case SpamType.FOREIGN:
                     {

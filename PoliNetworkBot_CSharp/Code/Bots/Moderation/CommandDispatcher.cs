@@ -181,7 +181,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                case "/updateGroups":
+                {
+                    if ((GlobalVariables.Creators.Contains(e.Message.From.Username) || Utils.Owners.CheckIfOwner(e.Message.From.Id))
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        //System.Data.DataTable groups = Groups.GetAllGroups();
+                    }
 
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
                 case "/testtime":
                     {
                         if (e.Message.Chat.Type == ChatType.Private)

@@ -67,7 +67,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
-                if (checkSpam != SpamType.ALL_GOOD)
+                if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.FORMAT_INCORRECT)
+                {
+                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                    return;
+                }
+                
+                if (checkSpam == SpamType.FORMAT_INCORRECT)
                 {
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                     return;

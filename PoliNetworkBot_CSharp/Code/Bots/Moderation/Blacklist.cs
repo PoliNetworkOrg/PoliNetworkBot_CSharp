@@ -37,19 +37,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return textLower.Contains("#cerco") || textLower.Contains("#offro") || textLower.Contains("#searching") ||
                        textLower.Contains("#offering")
                     ? SpamType.ALL_GOOD
-                    : SpamType.NOT_ALLOWED_WORDS;
+                    : SpamType.FORMAT_INCORRECT;
             }
             if (groupId == specialGroups[1])
             {
                 return textLower.Contains("#richiesta") || textLower.Contains("#offerta")
                     ? SpamType.ALL_GOOD
-                    : SpamType.NOT_ALLOWED_WORDS;
+                    : SpamType.FORMAT_INCORRECT;
             }
             if (groupId == specialGroups[2])
             {
                 return textLower.Contains("#cerco") || textLower.Contains("#vendo")
                     ? SpamType.ALL_GOOD
-                    : SpamType.NOT_ALLOWED_WORDS;
+                    : SpamType.FORMAT_INCORRECT;
             }
             return SpamType.ALL_GOOD;
         }
