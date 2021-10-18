@@ -162,13 +162,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
                                 "Ti consigliamo di visitare il nostro sito, " +
-                                 "<a href='https://polinetwork2.github.io/'>clicca qui</a>!"
+                                 "<a href='https://polinetwork.github.io/'>clicca qui</a>!"
                             },
                             {
                                 "en",
                                 "Hi 👋 it seems you are asking questions about groups. " +
                                 "We advice you to visit our website, " +
-                                 "<a href='https://polinetwork2.github.io/'>click here</a>!"
+                                 "<a href='https://polinetwork.github.io/'>click here</a>!"
                             }
                         });
                     await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
