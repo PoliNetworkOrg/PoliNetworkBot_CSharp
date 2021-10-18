@@ -12,7 +12,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
-    internal static class TextConversation
+    internal static class  TextConversation
     {
         internal static async Task DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {

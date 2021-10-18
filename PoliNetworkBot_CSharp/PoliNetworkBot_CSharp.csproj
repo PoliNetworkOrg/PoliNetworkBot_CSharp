@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="JsonPolimi_Core_nf">
+      <HintPath>..\..\JsonPolimiCore\JsonPolimi_Core_nf\bin\Debug\JsonPolimi_Core_nf.dll</HintPath>
+    </Reference>
     <Reference Include="TeleSharp.TL">
       <HintPath>dll\TeleSharp.TL.dll</HintPath>
     </Reference>

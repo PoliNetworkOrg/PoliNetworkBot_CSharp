@@ -11,10 +11,14 @@ using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+using File = System.IO.File;
+using JsonPolimi_Core_nf.Data;
+using JsonPolimi_Core_nf.Tipi;
 
 #endregion
 
@@ -187,6 +191,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         && e.Message.Chat.Type == ChatType.Private)
                     {
                         //System.Data.DataTable groups = Groups.GetAllGroups();
+                        //var jsonFile = JObject.Parse(groups.ToString());
+                        if (Variabili.L == null)
+                        {
+                            Variabili.L = new ListaGruppo();
+                        }
+
+                        Variabili.L.ImportaGruppiDaTabellaTelegramGruppiBot_PuntoBin();
+
+                        string json = JsonPolimi_Core_nf.Utils.JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3), false);
+                            
                     }
 
                     await DefaultCommand(sender, e);
@@ -898,5 +912,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 lang: e.Message.From.LanguageCode, username: e.Message.From.Username, parseMode: ParseMode.Default
             );
         }
+
+        public static async Task banMessageActions(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            long banCheckGroup = 0;
+            var bannedUser = e.Message.Text;
+            var bannedGroup = e.Message.Text;
+            var bannerAdmin = e.Message.Text;
+            var lang2 = new Language(new Dictionary<string, string>
+            {
+                {
+                    "it", "Utente " + bannedUser + " bannato dal gruppo " + bannedGroup + " da @" + bannerAdmin
+                }
+            });
+            await telegramBotClient.SendTextMessageAsync(
+                0,
+                lang2,
+                ChatType.Supergroup, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                lang: "it", username: e.Message.From.Username, parseMode: ParseMode.Default
+            );
+        }
+        
     }
 }

@@ -61,19 +61,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                     //todo: send messagge "Bots not allowed here!"
                 }
+                
+                if(banMessageDetected(e))
+                { 
+                    CommandDispatcher.banMessageActions(telegramBotClient, e); 
+                    return; 
+                }
 
                 var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
-                if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.FORMAT_INCORRECT)
-                {
-                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
-                    return;
-                }
-                
-                if (checkSpam == SpamType.FORMAT_INCORRECT)
+                if (checkSpam != SpamType.ALL_GOOD)
                 {
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
@@ -90,6 +90,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
+        }
+
+        private static bool banMessageDetected(MessageEventArgs messageEventArgs)
+        {
+            return false; //todo
         }
 
         private static string StringToStringToBePrinted(string item4)
