@@ -22,6 +22,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
+            var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
+            t1.Start();
+        }
+
+        private static object CheckAllowedMessageExpiration(object sender, MessageEventArgs messageEventArgs)
+        {
+            while (true)
+            {
+                AllowedMessages.CheckTimestamp();
+                Thread.Sleep(1000 * 3600 * 24);
+            }
         }
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
@@ -72,9 +83,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
-                if (checkSpam != SpamType.ALL_GOOD)
+                if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
                 {
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                    return;
+                }
+                
+                if (checkSpam == SpamType.SPAM_PERMITTED)
+                {
+                    await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
 

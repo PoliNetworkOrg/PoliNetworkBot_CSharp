@@ -182,6 +182,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                     return;
                 }
+
+                case "/allowMessage":
+                case "/allowmessage":
+                {
+                    if ((Owners.CheckIfOwner(e.Message.From.Id))
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+                        {
+                            var text = new Language(new Dictionary<string, string>
+                            {
+                                {"en", "You have to reply to a message containing the message"}
+                            });
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                                e.Message.MessageId);
+                            return;
+                        }
+
+                        AllowedMessages.AddMessage(e.Message.ReplyToMessage.Text);
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
+
+
                 case "/updateGroups":
                 {
                     if ((GlobalVariables.Creators.Contains(e.Message.From.Username) ||
@@ -197,7 +225,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var json =
                             JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                                 false);
-                        
                     }
 
                     await DefaultCommand(sender, e);

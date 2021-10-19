@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -256,13 +257,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (e.Message != null && e.Message.Chat != null && e.Message.Chat.Type == ChatType.Private)
                 return SpamType.ALL_GOOD;
+            
 
             if (e.Message != null && e.Message.From != null && e.Message.Chat != null &&
                 (e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id)) return SpamType.ALL_GOOD;
 
             if (GlobalVariables.AllowedSpam.Contains(e.Message?.From?.Username?.ToLower()))
                 return SpamType.ALL_GOOD;
-
+            
+            if (e.Message != null && e.Message.From != null && e.Message.Chat != null && 
+                AllowedMessages.CheckMessage(e.Message.Text) == SpamType.SPAM_PERMITTED) 
+                return SpamType.SPAM_PERMITTED;
+            
             if (string.IsNullOrEmpty(e.Message.Text))
                 return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption, e.Message.Chat.Id),
                     Blacklist.IsSpam(e.Message.Photo));
@@ -487,6 +493,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
             return donesomething;
+        }
+
+        public static async Task PermittedSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs messageEventArgs, SpamType checkSpam)
+        {
+            var title = "";
+            if (messageEventArgs is {Message: {Chat: {
+                Title: { }
+            }}})
+            {
+                title = messageEventArgs.Message.Chat.Title;
+            }
+            if (messageEventArgs is {Message: { }})
+            {
+                var message = "Permitted spam in group " + title + " of message " + messageEventArgs.Message.Text;
+                await Utils.NotifyUtil.NotifyOwnersPermittedSpam(message, telegramBotClient);
+            }
         }
     }
 }
