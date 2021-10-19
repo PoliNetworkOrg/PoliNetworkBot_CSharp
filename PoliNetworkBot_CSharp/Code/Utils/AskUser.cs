@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<string> AskAsync(long idUser, Language question,
             TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
         {
-            long botId = sender.GetId();
+            var botId = sender.GetId();
 
             UserAnswers.Reset(idUser, botId);
 
@@ -35,10 +35,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                long botId = telegramBotAbstract.GetId();
+                var botId = telegramBotAbstract.GetId();
                 var tcs = UserAnswers.GetNewTCS(idUser, botId);
                 UserAnswers.SetAnswerProcessed(idUser, botId, false);
-                UserAnswers.AddWorkCompleted(idUser, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang, username);
+                UserAnswers.AddWorkCompleted(idUser, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang,
+                    username);
 
                 return await tcs.Task;
             }
@@ -55,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             string username,
             bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
         {
-            long botId = sender.GetId();
+            var botId = sender.GetId();
 
             UserAnswers.Reset(idUser, botId);
 
@@ -66,7 +67,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             );
 
             var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
-                parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username, replyToMessageId: messageIdToReplyTo);
+                parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
+                replyToMessageId: messageIdToReplyTo);
 
             ;
 
@@ -78,17 +80,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<string> GetSedeAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            List<List<Language>> options = new List<List<Language>>
+            var options = new List<List<Language>>
             {
-                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Milano Leonardo" } }) },
-                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Milano Bovisa" } }) },
-                new List<Language>() { new Language(dict: new Dictionary<string, string>() { { "en", "Como" } }) }
+                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Milano Leonardo"}})},
+                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Milano Bovisa"}})},
+                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Como"}})}
             };
-            Language question = new Language(dict: new Dictionary<string, string>() {
-                {"it", "In che sede?" },
-                {"en", "In which territorial pole?" }
+            var question = new Language(new Dictionary<string, string>
+            {
+                {"it", "In che sede?"},
+                {"en", "In which territorial pole?"}
             });
-            var reply = await Utils.AskUser.AskBetweenRangeAsync(idUser: e.Message.From.Id,
+            var reply = await AskBetweenRangeAsync(e.Message.From.Id,
                 sender: sender,
                 lang: e.Message.From.LanguageCode,
                 options: options,
@@ -109,43 +112,38 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case "Como":
                     return "COE";
-
-                default:
-                    break;
             }
 
             return null;
         }
 
-        internal static async Task<bool> AskYesNo(int id, Language question, bool defaultBool, TelegramBotAbstract sender, string lang, string username)
+        internal static async Task<bool> AskYesNo(int id, Language question, bool defaultBool,
+            TelegramBotAbstract sender, string lang, string username)
         {
-            Language l1 = new Language(new Dictionary<string, string>() {
-                { "it", "Si"},
-                {"en", "Yes" }
+            var l1 = new Language(new Dictionary<string, string>
+            {
+                {"it", "Si"},
+                {"en", "Yes"}
             });
-            Language l2 = new Language(new Dictionary<string, string>() {
-                  { "it", "No"},
-                {"en", "No" }
+            var l2 = new Language(new Dictionary<string, string>
+            {
+                {"it", "No"},
+                {"en", "No"}
             });
 
-            List<List<Language>> options = new List<List<Language>>() {
-                new List<Language>()
+            var options = new List<List<Language>>
+            {
+                new List<Language>
                 {
                     l1, l2
                 }
             };
 
-            var r = await AskUser.AskBetweenRangeAsync(id, question, sender, lang, options, username);
+            var r = await AskBetweenRangeAsync(id, question, sender, lang, options, username);
 
-            if (l1.Matches(r))
-            {
-                return true;
-            }
+            if (l1.Matches(r)) return true;
 
-            if (l2.Matches(r))
-            {
-                return false;
-            }
+            if (l2.Matches(r)) return false;
 
             return defaultBool;
         }

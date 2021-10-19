@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -18,7 +18,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class SendMessage
     {
-        internal static async Task<Code.Objects.MessageSentResult> SendMessageInPrivateOrAGroup(TelegramBotAbstract telegramBotClient,
+        internal static async Task<MessageSentResult> SendMessageInPrivateOrAGroup(
+            TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
@@ -29,20 +30,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     text, ChatType.Private, parseMode: parseMode,
                     lang: lang, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-                if (r.IsSuccess())
-                {
-                    return r;
-                }
+                if (r.IsSuccess()) return r;
             }
             catch
             {
                 // ignored
             }
 
-            if (!(r == null || r.IsSuccess() == false))
-            {
-                return r;
-            }
+            if (!(r == null || r.IsSuccess() == false)) return r;
 
             var messageTo = GetMessageTo(firstName, lastName, userId);
             var text3 = new Language(new Dictionary<string, string>
@@ -71,7 +66,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
                     ChatType.Private, parseMode: parseMode,
                     lang: langCode, username: usernameToSendTo,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), replyToMessageId: messageIdToReplyTo);
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    replyToMessageId: messageIdToReplyTo);
             }
             catch
             {
@@ -86,21 +82,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             MessageSentResult r1 = null;
 
-            if (telegramBotClient == null)
-            {
-                return null;
-            }
+            if (telegramBotClient == null) return null;
 
             if (i > 5)
                 return null;
 
             try
             {
-                r1 = await telegramBotClient.SendTextMessageAsync(chatid: chatId,
-                    text: text,
-                    chatType: chatType,
-                    lang: lang,
-                    parseMode: parseMode,
+                r1 = await telegramBotClient.SendTextMessageAsync(chatId,
+                    text,
+                    chatType,
+                    lang,
+                    parseMode,
                     username: null,
                     replyMarkupObject: null,
                     replyToMessageId: replyToMessageId,
@@ -118,11 +111,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Language text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract,
             string username, string lang, long? replyToMessageId, bool disablePreviewLink)
         {
-            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang, replyToMessageId: replyToMessageId, disablePreviewLink);
+            return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang,
+                replyToMessageId, disablePreviewLink);
         }
 
         public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
-            TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang, long? replyToMessageId, bool disablePreviewLink)
+            TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang,
+            long? replyToMessageId, bool disablePreviewLink)
         {
             TLAbsUpdates r2;
             try
@@ -137,7 +132,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 try
                 {
-                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang),
+                        replyMarkup: tlAbsReplyMarkup);
                 }
                 catch
                 {
@@ -164,10 +160,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (replyTo.Photo != null)
             {
                 var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
-                if (photoLarge == null)
-                {
-                    return SuccessQueue.INVALID_OBJECT;
-                }
+                if (photoLarge == null) return SuccessQueue.INVALID_OBJECT;
                 var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
                 if (photoIdDb == null)
                     return SuccessQueue.INVALID_ID_TO_DB;
@@ -176,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int)sender.GetId(), replyTo.MessageId,
+                    (int) sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
@@ -193,7 +186,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int)sender.GetId(), replyTo.MessageId,
+                    (int) sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, null, videoIdDb.Value);
             }
             else

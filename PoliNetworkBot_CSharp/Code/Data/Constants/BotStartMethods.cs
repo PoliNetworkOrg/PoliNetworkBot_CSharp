@@ -1,7 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using System;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using Telegram.Bot.Args;
 
 #endregion
@@ -19,8 +20,8 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
             return s switch
             {
                 Moderation => Main.MainMethod,
-                Primo => Code.Bots.Primo.Main.MainMethod,
-                Anon => Code.Bots.Anon.MainAnon.MainMethod,
+                Primo => Bots.Primo.Main.MainMethod,
+                Anon => MainAnon.MainMethod,
                 _ => null
             };
         }

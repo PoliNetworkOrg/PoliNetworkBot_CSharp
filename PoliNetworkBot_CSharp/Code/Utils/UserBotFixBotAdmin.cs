@@ -1,23 +1,29 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core.Network.Exceptions;
+using TLChatFull = TeleSharp.TL.Messages.TLChatFull;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class UserBotFixBotAdmin
     {
-        public static async Task<bool> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(TelegramBotAbstract telegramBotAbstract)
+        public static Dictionary<long, bool> id_of_chats_we_know_are_ok;
+
+        public static async Task<bool> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(
+            TelegramBotAbstract telegramBotAbstract)
         {
             const int LIMIT = 20;
-            int i = 0;
-            TLAbsInputPeer u = await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract._userbotClient);
+            var i = 0;
+            TLAbsInputPeer u =
+                await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract._userbotClient);
             if (u == null)
                 return false;
 
@@ -38,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (x == null && floodException1 != null)
                 {
-                    DateTime untilWhen = GetUntilWhenWeCanMakeRequests(floodException1);
+                    var untilWhen = GetUntilWhenWeCanMakeRequests(floodException1);
                     WaitUntil(untilWhen);
 
                     try
@@ -57,24 +63,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (x is TLDialogs x2)
                 {
                     if (x2.Chats != null)
-                    {
-                        foreach (TLAbsChat x4 in x2.Chats)
+                        foreach (var x4 in x2.Chats)
                         {
-                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u, telegramBotAbstract);
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
                             await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
                         }
-                    }
                 }
                 else if (x is TLDialogsSlice x3)
                 {
                     if (x3.Chats != null)
-                    {
                         foreach (var x4 in x3.Chats)
                         {
-                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u, telegramBotAbstract);
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
                             await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
                         }
-                    }
                 }
                 else
                 {
@@ -83,55 +87,44 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 i += LIMIT;
             }
+
             throw new NotImplementedException();
         }
 
-        private static async Task<Tuple<bool?, string, long>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(TLAbsChat x4,
-                TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<bool?, string, long>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(
+            TLAbsChat x4,
+            TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
         {
             if (x4 == null)
                 return null;
 
             if (x4 is TLChat x5)
             {
-                if (Data.GlobalVariables.ExcludedChatsForBot.Contains(x5.Id))
-                {
+                if (GlobalVariables.ExcludedChatsForBot.Contains(x5.Id))
                     return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-                }
 
                 var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                if (r5 == null)
+                if (r5 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+
+                if (r5.Item2 == null) return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
+
+                WaitUntil(r5.Item2);
+                var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
+                if (r6 == null)
                 {
+                    ;
+
                     return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
                 }
 
-                if (r5.Item2 == null)
-                    return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
-                else
-                {
-                    WaitUntil(r5.Item2);
-                    var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                    if (r6 == null)
-                    {
-                        ;
-
-                        return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-                    }
-
-                    if (r6.Item2 == null)
-                        return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
-                    else
-                    {
-                        ;
-                    }
-                }
+                if (r6.Item2 == null)
+                    return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
+                ;
             }
             else if (x4 is TLChannel x6)
             {
-                if (Data.GlobalVariables.ExcludedChatsForBot.Contains(x6.Id))
-                {
+                if (GlobalVariables.ExcludedChatsForBot.Contains(x6.Id))
                     return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                }
 
                 var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
 
@@ -142,26 +135,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
                 }
 
-                if (r2.Item2 == null)
-                    return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
-                else
+                if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
+
+                WaitUntil(r2.Item2);
+                var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
+                if (r3 == null)
                 {
-                    WaitUntil(r2.Item2);
-                    var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-                    if (r3 == null)
-                    {
-                        ;
+                    ;
 
-                        return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                    }
-
-                    if (r3.Item2 == null)
-                        return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
-                    else
-                    {
-                        ;
-                    }
+                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
                 }
+
+                if (r3.Item2 == null)
+                    return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
+                ;
             }
             else if (x4 is TLChatForbidden chatForbidden)
             {
@@ -180,15 +167,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (item2 == null)
                 return;
 
-            while (DateTime.Now < item2.Value)
-            {
-                Thread.Sleep(2000);
-            }
+            while (DateTime.Now < item2.Value) Thread.Sleep(2000);
         }
 
-        public static Dictionary<long, bool> id_of_chats_we_know_are_ok;
-
-        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(TLChannel x5,
+        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(
+            TLChannel x5,
             TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
         {
             if (x5 == null)
@@ -204,53 +187,44 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (x5.AccessHash == null)
                 return null;
 
-            TLInputChannel x7 = new TLInputChannel() { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
-            Tuple<bool?, DateTime?> isOurBotPresent = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
-            if (isOurBotPresent.Item2 != null)
-            {
-                return new Tuple<bool?, DateTime?>(null, isOurBotPresent.Item2);
-            }
+            var x7 = new TLInputChannel {AccessHash = x5.AccessHash.Value, ChannelId = x5.Id};
+            var isOurBotPresent = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
+            if (isOurBotPresent.Item2 != null) return new Tuple<bool?, DateTime?>(null, isOurBotPresent.Item2);
 
             if (isOurBotPresent.Item1 != null && isOurBotPresent.Item1.Value)
-            {
                 return new Tuple<bool?, DateTime?>(true, null);
-            }
 
             var r3 = await InsertOurBotAsyncChannel(x5, u, telegramBotAbstract);
             return new Tuple<bool?, DateTime?>(r3, null);
         }
 
-        private static async Task<Tuple<bool?, DateTime?>> CheckIfOurBotIsPresent2Async(TLInputChannel x5, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<bool?, DateTime?>> CheckIfOurBotIsPresent2Async(TLInputChannel x5,
+            TelegramBotAbstract telegramBotAbstract)
         {
             if (id_of_chats_we_know_are_ok.ContainsKey(x5.ChannelId))
-            {
                 return new Tuple<bool?, DateTime?>(id_of_chats_we_know_are_ok[x5.ChannelId], null);
-            }
 
-            TLAbsInputChannel channel = new TLInputChannel { ChannelId = (int)x5.ChannelId, AccessHash = x5.AccessHash };
-            TeleSharp.TL.Messages.TLChatFull x = null;
+            TLAbsInputChannel channel = new TLInputChannel {ChannelId = x5.ChannelId, AccessHash = x5.AccessHash};
+            TLChatFull x = null;
             try
             {
-                x = await telegramBotAbstract._userbotClient.getFullChat(channel: channel);
+                x = await telegramBotAbstract._userbotClient.getFullChat(channel);
             }
             catch (Exception e)
             {
                 ;
 
-                if (e is TLSharp.Core.Network.Exceptions.FloodException eflood)
+                if (e is FloodException eflood)
                 {
                     ;
 
-                    DateTime untilWhen = GetUntilWhenWeCanMakeRequests(eflood);
+                    var untilWhen = GetUntilWhenWeCanMakeRequests(eflood);
                     return new Tuple<bool?, DateTime?>(null, untilWhen);
                 }
             }
 
             var isOurBotPresent = CheckIfOurBotIsPresent(x);
-            if (isOurBotPresent)
-            {
-                id_of_chats_we_know_are_ok[x5.ChannelId] = true;
-            }
+            if (isOurBotPresent) id_of_chats_we_know_are_ok[x5.ChannelId] = true;
 
             return new Tuple<bool?, DateTime?>(isOurBotPresent, null);
         }
@@ -273,22 +247,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return false;
 
             const long userIdOfOurBot = 768169879;
-            TLInputChannel channel = new TLInputChannel() { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
+            var channel = new TLInputChannel {AccessHash = x5.AccessHash.Value, ChannelId = x5.Id};
 
-            ResultF1 r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
+            var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)
                 return r4.returnobject;
 
             if (r4.r2.Item1 == null)
             {
-                string m = "\n";
+                var m = "\n";
                 m += "We can't make our bot admin in this group:\n";
                 m += "[Title] " + x5.Title + "\n";
-                m += "[ID]    " + x5.Id.ToString();
+                m += "[ID]    " + x5.Id;
                 m += "\n --- end --- ";
                 m += "\n";
-                Exception e2 = new Exception(m, r4.r2.Item2);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, 0);
+                var e2 = new Exception(m, r4.r2.Item2);
+                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
 
                 await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
 
@@ -314,18 +288,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r4.r != null && r4.r2.Item1 != null;
         }
 
-        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChannel x5, TelegramBotAbstract telegramBotAbstract)
+        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChannel x5,
+            TelegramBotAbstract telegramBotAbstract)
         {
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, x5.AccessHash, telegramBotAbstract);
         }
 
-        private static async Task DeleteMessageAddedAsync2(int? idMessageAdded, int id, long? accessHash, TelegramBotAbstract telegramBotAbstract)
+        private static async Task DeleteMessageAddedAsync2(int? idMessageAdded, int id, long? accessHash,
+            TelegramBotAbstract telegramBotAbstract)
         {
             if (idMessageAdded != null)
             {
                 try
                 {
-                    await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Supergroup, accessHash);
+                    await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Supergroup,
+                        accessHash);
                 }
                 catch (Exception e3)
                 {
@@ -333,7 +310,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     try
                     {
-                        await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Group, accessHash);
+                        await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Group,
+                            accessHash);
                     }
                     catch
                     {
@@ -341,11 +319,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                         try
                         {
-                            TLVector<int> messageToDelete = new TLVector<int>
+                            var messageToDelete = new TLVector<int>
                             {
                                 idMessageAdded.Value
                             };
-                            TLAbsInputChannel x7 = new TLInputChannel() { AccessHash = accessHash.Value, ChannelId = id };
+                            TLAbsInputChannel x7 = new TLInputChannel {AccessHash = accessHash.Value, ChannelId = id};
                             await telegramBotAbstract._userbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
                         }
                         catch
@@ -369,7 +347,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 }
 
-                            ;
+                ;
 
                 Thread.Sleep(2000);
             }
@@ -381,13 +359,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
 
             if (r is TLUpdates r2)
-            {
                 return GetIdMessageAdded2(r2);
-            }
-            else
-            {
-                ;
-            }
+            ;
 
             return null;
         }
@@ -400,8 +373,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (r2.Updates == null || r2.Updates.Count == 0)
                 return null;
 
-            foreach (TLAbsUpdate r3 in r2.Updates)
-            {
+            foreach (var r3 in r2.Updates)
                 if (r3 is TLUpdateMessageID r4)
                 {
                     return r4.Id;
@@ -412,32 +384,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 else if (r3 is TLUpdateNewChannelMessage r6)
                 {
-                    TLAbsMessage r7 = r6.Message;
+                    var r7 = r6.Message;
                     if (r7 is TLMessageService r8)
-                    {
                         return r8.Id;
-                    }
-                    else
-                    {
-                        ;
-                    }
+                    ;
                 }
                 else
                 {
                     ;
                 }
-            }
 
             return null;
         }
 
-        private static async Task<Tuple<TLAbsUpdates, Exception>> PromoteToAdminAsync(TLAbsInputUser u2, TLInputChannel channel, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<TLAbsUpdates, Exception>> PromoteToAdminAsync(TLAbsInputUser u2,
+            TLInputChannel channel, TelegramBotAbstract telegramBotAbstract)
         {
             TLAbsUpdates r2 = null;
             try
             {
                 TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
-                r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role: role);
+                r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role);
             }
             catch (Exception e2)
             {
@@ -446,17 +413,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     TLAbsChannelParticipantRole role2 = new TLChannelRoleModerator();
-                    r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role: role2);
+                    r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role2);
                 }
                 catch (Exception e3)
                 {
                     try
                     {
-                        var r3 = await telegramBotAbstract._userbotClient.Messages_EditChatAdmin(channel.ChannelId, u2, true);
-                        if (r3 == false)
-                        {
-                            return new Tuple<TLAbsUpdates, Exception>(null, e3);
-                        }
+                        var r3 = await telegramBotAbstract._userbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
+                            true);
+                        if (r3 == false) return new Tuple<TLAbsUpdates, Exception>(null, e3);
                     }
                     catch (Exception e4)
                     {
@@ -476,51 +441,49 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new Tuple<TLAbsUpdates, Exception>(r2, null);
         }
 
-        private static async Task<ResultF1> F1Async(TelegramBotAbstract telegramBotAbstract, long userIdOfOurBot, TLAbsInputPeer u, string x5Title, int x5Id, TLInputChannel channel)
+        private static async Task<ResultF1> F1Async(TelegramBotAbstract telegramBotAbstract, long userIdOfOurBot,
+            TLAbsInputPeer u, string x5Title, int x5Id, TLInputChannel channel)
         {
-            TLVector<TLAbsInputUser> users = new TLVector<TLAbsInputUser>();
+            var users = new TLVector<TLAbsInputUser>();
             if (u == null)
-                return new ResultF1(returnobject: false, null, null, null);
+                return new ResultF1(false, null, null, null);
 
             long accessHashUser = 0;
 
             ;
 
             TLInputPeerUser u5 = null;
-            if (u is TLInputPeerUser u4)
-            {
-                u5 = u4;
-            }
+            if (u is TLInputPeerUser u4) u5 = u4;
 
             if (u5 == null)
-                return new ResultF1(returnobject: false, null, null, null);
+                return new ResultF1(false, null, null, null);
 
             accessHashUser = u5.AccessHash;
 
-            TLAbsInputUser u2 = new TLInputUser() { UserId = (int)userIdOfOurBot, AccessHash = accessHashUser };
+            TLAbsInputUser u2 = new TLInputUser {UserId = (int) userIdOfOurBot, AccessHash = accessHashUser};
             users.Add(u2);
             TLAbsUpdates r = null;
             try
             {
-                r = await telegramBotAbstract._userbotClient.ChannelsInviteToChannel(channel, users: users);
+                r = await telegramBotAbstract._userbotClient.ChannelsInviteToChannel(channel, users);
             }
             catch (Exception e)
             {
-                string m = "\n";
+                var m = "\n";
                 m += "We can't add our bot in this group:\n";
                 m += "[Title] " + x5Title + "\n";
-                m += "[ID]    " + x5Id.ToString();
+                m += "[ID]    " + x5Id;
                 m += "\n --- end --- ";
                 m += "\n";
-                Exception e2 = new Exception(m, e);
+                var e2 = new Exception(m, e);
                 await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
 
-                return new ResultF1(returnobject: false, null, r, null);
+                return new ResultF1(false, null, r, null);
             }
 
             Thread.Sleep(2000);
 
-            int? idMessageAdded = GetIdMessageAdded(r);
+            var idMessageAdded = GetIdMessageAdded(r);
 
             Tuple<TLAbsUpdates, Exception> r2 = null;
             try
@@ -548,23 +511,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             TLInputChannel channel = null;
             if (accessHash != null)
-                channel = new TLInputChannel() { AccessHash = accessHash.Value, ChannelId = x5.Id };
+                channel = new TLInputChannel {AccessHash = accessHash.Value, ChannelId = x5.Id};
             else
-                channel = new TLInputChannel() { ChannelId = x5.Id };
+                channel = new TLInputChannel {ChannelId = x5.Id};
 
-            ResultF1 r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
+            var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)
                 return r4.returnobject.Value;
 
             if (r4.r2.Item1 == null)
             {
-                string m = "\n";
+                var m = "\n";
                 m += "We can't make our bot admin in this group:\n";
                 m += "[Title] " + x5.Title + "\n";
-                m += "[ID]    " + x5.Id.ToString();
+                m += "[ID]    " + x5.Id;
                 m += "\n --- end --- ";
                 m += "\n";
-                Exception e2 = new Exception(m, r4.r2.Item2);
+                var e2 = new Exception(m, r4.r2.Item2);
                 await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
 
                 await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
@@ -585,12 +548,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
-        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChat x5, long? accessHash, TelegramBotAbstract telegramBotAbstract)
+        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChat x5, long? accessHash,
+            TelegramBotAbstract telegramBotAbstract)
         {
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, accessHash, telegramBotAbstract);
         }
 
-        private static bool CheckIfOurBotIsPresent(TeleSharp.TL.Messages.TLChatFull x)
+        private static bool CheckIfOurBotIsPresent(TLChatFull x)
         {
             if (x == null)
                 return false;
@@ -601,22 +565,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (x.Users.Count == 0)
                 return false;
 
-            foreach (TLAbsUser u in x.Users)
-            {
+            foreach (var u in x.Users)
                 if (u is TLUser u2)
-                {
                     if (string.IsNullOrEmpty(u2.Username) == false)
-                    {
                         if (u2.Username.ToLower() == "polinetwork3bot")
                             return true;
-                    }
-                }
-            }
 
             return false;
         }
 
-        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(TLChat x5, TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(
+            TLChat x5, TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
         {
             if (x5 == null)
                 return null;
@@ -631,7 +590,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return r4;
             }
 
-            TLAbsInputChannel x6 = x5.MigratedTo;
+            var x6 = x5.MigratedTo;
             TLInputChannel x8 = null;
             if (x6 is TLInputChannel x7)
             {
@@ -643,15 +602,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
             }
 
-            if (x5.MigratedTo == null)
-            {
-                return null;
-            }
+            if (x5.MigratedTo == null) return null;
 
             TLAbsInputChannel channel = x8;
-            TeleSharp.TL.Messages.TLChatFull x = null;
+            TLChatFull x = null;
 
-            TLInputChannel channel2 = GetChannel(channel);
+            var channel2 = GetChannel(channel);
             if (channel2 == null)
                 return new Tuple<bool?, DateTime?>(false, null);
 
@@ -660,15 +616,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (isOurBotPresent2 == null)
                 return new Tuple<bool?, DateTime?>(false, null);
 
-            if (isOurBotPresent2.Item2 != null)
-            {
-                return new Tuple<bool?, DateTime?>(null, isOurBotPresent2.Item2);
-            }
+            if (isOurBotPresent2.Item2 != null) return new Tuple<bool?, DateTime?>(null, isOurBotPresent2.Item2);
 
             if (isOurBotPresent2.Item1 != null && isOurBotPresent2.Item1.Value)
-            {
                 return new Tuple<bool?, DateTime?>(true, null);
-            }
 
             var r3 = await InsertOurBotAsyncChat(x5, u, x8.AccessHash, telegramBotAbstract);
             return new Tuple<bool?, DateTime?>(r3, null);
@@ -679,45 +630,37 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (channel == null)
                 return null;
 
-            if (channel is TLInputChannel c2)
-            {
-                return c2;
-            }
+            if (channel is TLInputChannel c2) return c2;
 
             return null;
         }
 
-        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot6Async(TLChat x5, TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<bool?, DateTime?>> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot6Async(
+            TLChat x5, TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
         {
             ;
 
-            Tuple<bool?, DateTime?> isOurBotPresent2 = await CheckIfOurBotIsPresent3Async(x5, telegramBotAbstract);
+            var isOurBotPresent2 = await CheckIfOurBotIsPresent3Async(x5, telegramBotAbstract);
             if (isOurBotPresent2 == null)
                 return new Tuple<bool?, DateTime?>(false, null);
             ;
-            if (isOurBotPresent2.Item2 != null)
-            {
-                return new Tuple<bool?, DateTime?>(null, isOurBotPresent2.Item2);
-            }
+            if (isOurBotPresent2.Item2 != null) return new Tuple<bool?, DateTime?>(null, isOurBotPresent2.Item2);
 
             if (isOurBotPresent2.Item1 != null && isOurBotPresent2.Item1.Value)
-            {
                 return new Tuple<bool?, DateTime?>(true, null);
-            }
 
-            var r4 = await InsertOurBotAsyncChat(x5, u, accessHash: null, telegramBotAbstract);
+            var r4 = await InsertOurBotAsyncChat(x5, u, null, telegramBotAbstract);
 
             return new Tuple<bool?, DateTime?>(r4, null);
         }
 
-        private async static Task<Tuple<bool?, DateTime?>> CheckIfOurBotIsPresent3Async(TLChat x5, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<Tuple<bool?, DateTime?>> CheckIfOurBotIsPresent3Async(TLChat x5,
+            TelegramBotAbstract telegramBotAbstract)
         {
             if (id_of_chats_we_know_are_ok.ContainsKey(x5.Id))
-            {
                 return new Tuple<bool?, DateTime?>(id_of_chats_we_know_are_ok[x5.Id], null);
-            }
 
-            TeleSharp.TL.Messages.TLChatFull x = null;
+            TLChatFull x = null;
             try
             {
                 x = await telegramBotAbstract._userbotClient.Messages_getFullChat(x5.Id);
@@ -726,22 +669,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 if (e is FloodException floodException)
                 {
-                    DateTime untilWhen = GetUntilWhenWeCanMakeRequests(floodException);
+                    var untilWhen = GetUntilWhenWeCanMakeRequests(floodException);
                     return new Tuple<bool?, DateTime?>(null, untilWhen);
                 }
             }
 
-            if (x == null)
-            {
-                return new Tuple<bool?, DateTime?>(false, null);
-            }
+            if (x == null) return new Tuple<bool?, DateTime?>(false, null);
             ;
 
-            bool r = CheckIfOurBotIsPresent(x);
-            if (r)
-            {
-                id_of_chats_we_know_are_ok[x5.Id] = r;
-            }
+            var r = CheckIfOurBotIsPresent(x);
+            if (r) id_of_chats_we_know_are_ok[x5.Id] = r;
 
             return new Tuple<bool?, DateTime?>(r, null);
         }

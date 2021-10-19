@@ -32,9 +32,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 var buttons = new TLVector<TLAbsKeyboardButton>();
 
-                foreach (var v2 in v1) buttons.Add(new TLKeyboardButton { Text = v2.Text });
+                foreach (var v2 in v1) buttons.Add(new TLKeyboardButton {Text = v2.Text});
 
-                var row = new TLKeyboardButtonRow { Buttons = buttons };
+                var row = new TLKeyboardButtonRow {Buttons = buttons};
                 r.Add(row);
             }
 

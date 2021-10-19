@@ -1,13 +1,15 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Utils
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+
+namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NuovoLink
     {
-        public Enums.SuccessoGenerazioneLink isNuovo; //se il link è nuovo
+        public SuccessoGenerazioneLink isNuovo; //se il link è nuovo
         public string link;
 
-        public NuovoLink(Enums.SuccessoGenerazioneLink v, string link = null)
+        public NuovoLink(SuccessoGenerazioneLink v, string link = null)
         {
-            this.isNuovo = v;
+            isNuovo = v;
             this.link = link;
         }
     }

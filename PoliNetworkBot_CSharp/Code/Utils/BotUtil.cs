@@ -1,4 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -9,24 +12,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (telegramBotAbstract != null)
                 return telegramBotAbstract;
 
-            foreach (var x in Data.GlobalVariables.Bots.Keys)
+            foreach (var x in GlobalVariables.Bots.Keys)
             {
-                var bot = Data.GlobalVariables.Bots[x];
+                var bot = GlobalVariables.Bots[x];
                 var botType = bot.GetBotType();
                 switch (botType)
                 {
-                    case Enums.BotTypeApi.REAL_BOT:
-                        {
-                            string botMode = bot.GetMode();
-                            if (botMode == Code.Data.Constants.BotStartMethods.Moderation)
-                                return bot;
+                    case BotTypeApi.REAL_BOT:
+                    {
+                        var botMode = bot.GetMode();
+                        if (botMode == BotStartMethods.Moderation)
+                            return bot;
 
-                            break;
-                        }
-                    case Enums.BotTypeApi.USER_BOT:
+                        break;
+                    }
+                    case BotTypeApi.USER_BOT:
                         break;
 
-                    case Enums.BotTypeApi.DISGUISED_BOT:
+                    case BotTypeApi.DISGUISED_BOT:
                         break;
                 }
             }

@@ -1,12 +1,13 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -40,35 +41,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
-                    string itemToPrint = MemberListToString(toExit.Item2);
-                    string itemToPrint2 = ListIntToString(toExit.Item3);
-                    string itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                    string itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat?.Title;
+                    var itemToPrint = MemberListToString(toExit.Item2);
+                    var itemToPrint2 = ListIntToString(toExit.Item3);
+                    var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
+                    var itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat?.Title;
                     itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                    itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id.ToString();
+                    itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
                     itemToPrintFull += "\n@@@@@@";
 
                     throw new ToExitException(itemToPrintFull);
                 }
 
-                List<long> NotAuthorizedBotHasBeenAddedBool = await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
+                var NotAuthorizedBotHasBeenAddedBool =
+                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
                 if (NotAuthorizedBotHasBeenAddedBool != null && NotAuthorizedBotHasBeenAddedBool.Count > 0)
-                {
                     foreach (var bot in NotAuthorizedBotHasBeenAddedBool)
-                    {
-                        await Utils.RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
-                    }
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
 
-                    //todo: send messagge "Bots not allowed here!"
-                }
-                
-                if(banMessageDetected(e))
-                { 
-                    CommandDispatcher.banMessageActions(telegramBotClient, e); 
-                    return; 
+                //todo: send messagge "Bots not allowed here!"
+
+                if (banMessageDetected(e))
+                {
+                    CommandDispatcher.banMessageActions(telegramBotClient, e);
+                    return;
                 }
 
-                var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+                var toExitBecauseUsernameAndNameCheck =
+                    await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
@@ -88,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 Console.WriteLine(exception.Message);
 
-                await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }
 
@@ -116,11 +115,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item3.Count() == 0)
                 return "[EMPTY]";
 
-            string r = "";
-            foreach (var item4 in item3)
-            {
-                r += item4 + "\n";
-            }
+            var r = "";
+            foreach (var item4 in item3) r += item4 + "\n";
             return r;
         }
 
@@ -132,11 +128,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item2.Count() == 0)
                 return "[EMPTY]";
 
-            string r = "";
-            foreach (var item3 in item2)
-            {
-                r += item3?.User?.Username + " " + item3?.Status + "\n";
-            }
+            var r = "";
+            foreach (var item3 in item2) r += item3?.User?.Username + " " + item3?.Status + "\n";
             return r;
         }
     }

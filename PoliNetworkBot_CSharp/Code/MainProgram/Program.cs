@@ -1,5 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -7,14 +14,11 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Test.IG;
+using PoliNetworkBot_CSharp.Test.Spam;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using ThreadAsync = PoliNetworkBot_CSharp.Code.Bots.Moderation.ThreadAsync;
 
 #endregion
 
@@ -37,79 +41,76 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 switch (readChoice)
                 {
                     case '1': //reset everything
-                        {
-                            ResetEverything(alsoFillTablesFromJson: true);
+                    {
+                        ResetEverything(true);
 
-                            return;
-                        }
+                        return;
+                    }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                        {
-                            var toExit = LoadBotConfig();
-                            if (toExit == ToExit.EXIT)
-                                return;
-
-                            var toExit2 = LoadUserBotConfig();
-                            if (toExit2 == ToExit.EXIT)
-                                return;
-
-                            var toExit3 = LoadBotDisguisedAsUserBotConfig();
-                            if (toExit3 == ToExit.EXIT)
-                                return;
-
-                            GlobalVariables.LoadToRam();
-
-                            Console.WriteLine("\nTo kill this process, you have to check the process list");
-
-                            _ = StartBotsAsync(readChoice == '3', readChoice == '8', runOnlyNormalBot: readChoice == '9');
-
-                            while (true) Console.ReadKey();
+                    {
+                        var toExit = LoadBotConfig();
+                        if (toExit == ToExit.EXIT)
                             return;
-                        }
+
+                        var toExit2 = LoadUserBotConfig();
+                        if (toExit2 == ToExit.EXIT)
+                            return;
+
+                        var toExit3 = LoadBotDisguisedAsUserBotConfig();
+                        if (toExit3 == ToExit.EXIT)
+                            return;
+
+                        GlobalVariables.LoadToRam();
+
+                        Console.WriteLine("\nTo kill this process, you have to check the process list");
+
+                        _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
+
+                        while (true) Console.ReadKey();
+                        return;
+                    }
 
                     case '4':
-                        {
-                            ResetEverything(alsoFillTablesFromJson: false);
-                            return;
-                        }
+                    {
+                        ResetEverything(false);
+                        return;
+                    }
 
                     case '5':
-                        {
-                            _ = await Test.IG.Test_IG.MainIGAsync();
-                            return;
-                        }
+                    {
+                        _ = await Test_IG.MainIGAsync();
+                        return;
+                    }
 
                     case '6':
-                        {
-                            NewConfig.NewConfigMethod(true, false, false, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(true, false, false, false, false);
+                        return;
+                    }
 
                     case '7':
-                        {
-                            NewConfig.NewConfigMethod(false, false, true, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        return;
+                    }
                     case 't':
-                        {
-                            Test.Spam.SpamTest.Main2();
-                            return;
-                        }
+                    {
+                        SpamTest.Main2();
+                        return;
+                    }
                 }
             }
         }
 
         private static void FirstThingsToDo()
         {
-            Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (File.Exists("psw_anon.txt"))
-            {
-                Code.Bots.Anon.ConfigAnon.password = File.ReadAllText("psw_anon.txt");
-            }
+            if (File.Exists("psw_anon.txt")) ConfigAnon.password = File.ReadAllText("psw_anon.txt");
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -253,10 +254,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot, bool runOnlyNormalBot)
+        public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot,
+            bool runOnlyNormalBot)
         {
-            int moderationBots = 0;
-            int anonBots = 0;
+            var moderationBots = 0;
+            var anonBots = 0;
 
             GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
             if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
@@ -276,20 +278,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     botClient.OnMessage += onmessageMethod2.Item1;
                     botClient.StartReceiving(bot.GetAllowedUpdates());
 
-                    if (bot.Callback())
-                    {
-                        botClient.OnCallbackQuery += bot.GetCallbackEvent();
-                    }
+                    if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
 
-                    if (onmessageMethod2.Item2 == Data.Constants.BotStartMethods.Moderation)
-                    {
-                        moderationBots++;
-                    }
+                    if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Anon)
-                    {
-                        anonBots++;
-                    }
+                    if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
                 }
 
             if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
@@ -304,7 +297,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         try
                         {
                             x2 = new TelegramBotAbstract(client,
-                                userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT, userbot.GetOnMessage().Item2);
+                                userbot.GetWebsite(), userbot.GetContactString(), userId.Value, BotTypeApi.USER_BOT,
+                                userbot.GetOnMessage().Item2);
                         }
                         catch
                         {
@@ -313,19 +307,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         GlobalVariables.Bots[userId.Value] = x2;
 
-                        char? method = userbot.GetMethod();
+                        var method = userbot.GetMethod();
                         if (method != null)
-                        {
                             switch (method)
                             {
                                 case 'a':
                                 case 'A': //Administration
-                                    {
-                                        _ = Code.Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                        break;
-                                    }
+                                {
+                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                    break;
+                                }
                             }
-                        }
                     }
                     else
                     {
@@ -340,7 +332,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false && runOnlyNormalBot == false)
+            if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
+                runOnlyNormalBot == false)
                 foreach (var userbot in _botDisguisedAsUserBotInfos)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
@@ -368,13 +361,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
             {
-                var t = new Thread(Code.Bots.Moderation.ThreadAsync.DoThingsAsyncBot);
+                var t = new Thread(ThreadAsync.DoThingsAsyncBot);
                 t.Start();
             }
 
             if (GlobalVariables.Bots.Keys.Count > 0 && anonBots > 0)
             {
-                var t = new Thread(Code.Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
+                var t = new Thread(Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
                 t.Start();
             }
         }
@@ -399,12 +392,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             try
             {
-                done &= await bot.UpdateUsername(from: "PoliAssociazioni", to: "PoliAssociazioni2");
+                done &= await bot.UpdateUsername("PoliAssociazioni", "PoliAssociazioni2");
             }
             catch (Exception e1)
             {
                 ;
             }
+
             ;
 
             return done;

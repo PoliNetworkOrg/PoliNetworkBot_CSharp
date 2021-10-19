@@ -5,8 +5,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class WordToBeFirst
     {
-        private readonly string word;
         private readonly List<string> similarWords;
+        private readonly string word;
 
         public WordToBeFirst(string word)
         {
@@ -26,16 +26,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (t == word)
                 return new Tuple<bool, string>(true, word);
 
-            if (similarWords == null || similarWords.Count == 0)
-            {
-                return new Tuple<bool, string>(false, word);
-            }
+            if (similarWords == null || similarWords.Count == 0) return new Tuple<bool, string>(false, word);
 
             foreach (var x in similarWords)
-            {
                 if (x == t)
                     return new Tuple<bool, string>(true, word);
-            }
 
             return new Tuple<bool, string>(false, word);
         }
@@ -43,17 +38,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal bool IsTaken(List<string> taken)
         {
             foreach (var r in taken)
-            {
-                if (r == this.word)
+                if (r == word)
                     return true;
-            }
 
             return false;
         }
 
         internal string GetWord()
         {
-            return this.word;
+            return word;
         }
     }
 }

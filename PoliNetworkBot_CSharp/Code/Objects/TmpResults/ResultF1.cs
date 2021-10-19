@@ -5,10 +5,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TmpResults
 {
     internal class ResultF1
     {
-        public readonly bool? returnobject;
         public readonly int? idMessageAdded;
         public readonly TLAbsUpdates r;
         public readonly Tuple<TLAbsUpdates, Exception> r2;
+        public readonly bool? returnobject;
 
         public ResultF1(bool? returnobject, int? idMessageAdded, TLAbsUpdates r, Tuple<TLAbsUpdates, Exception> r2)
         {

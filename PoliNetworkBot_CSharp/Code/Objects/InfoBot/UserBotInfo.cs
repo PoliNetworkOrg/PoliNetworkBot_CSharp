@@ -1,7 +1,7 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -158,7 +158,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                string s = Convert.ToString(KeyValuePairs[ConstConfigBot.Method]);
+                var s = Convert.ToString(KeyValuePairs[ConstConfigBot.Method]);
                 if (string.IsNullOrEmpty(s))
                     return null;
 

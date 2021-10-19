@@ -14,9 +14,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             ANSWERED
         }
 
+        private bool _answeredProcessed;
+
         private State _currentState;
         internal Action<object> WorkCompleted;
-        private bool _answeredProcessed;
 
         public AnswerTelegram()
         {
@@ -49,17 +50,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal void SetState(State state)
         {
-            this._currentState = state;
+            _currentState = state;
         }
 
         internal void SetAnswerProcessed(bool v)
         {
-            this._answeredProcessed = v;
+            _answeredProcessed = v;
         }
 
         internal bool GetAlreadyProcessedAnswer()
         {
-            return this._answeredProcessed;
+            return _answeredProcessed;
         }
     }
 }

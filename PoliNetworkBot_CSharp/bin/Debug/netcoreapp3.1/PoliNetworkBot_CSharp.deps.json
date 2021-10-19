@@ -13,6 +13,7 @@
           "Microsoft.Data.Sqlite.Core": "5.0.3",
           "System.Data.SQLite.Core": "1.0.113.7",
           "Telegram.Bot": "15.7.1",
+          "JsonPolimi_Core_nf": "1.0.0.0",
           "TeleSharp.TL": "1.0.0.0",
           "TLSharp.Core": "1.0.0.0"
         },
@@ -809,6 +810,14 @@
           }
         }
       },
+      "JsonPolimi_Core_nf/1.0.0.0": {
+        "runtime": {
+          "JsonPolimi_Core_nf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "TeleSharp.TL/1.0.0.0": {
         "runtime": {
           "TeleSharp.TL.dll": {
@@ -1420,6 +1429,11 @@
       "sha512": "sha512-jIznYng1gO+F5XJBv1hZRKdL11BsixBrNY53gwjBAXbF17rYVlbMSJum4x1DPqc4RqxhgWBt6g6qifa9XEXOwg==",
       "path": "telegram.bot/15.7.1",
       "hashPath": "telegram.bot.15.7.1.nupkg.sha512"
+    },
+    "JsonPolimi_Core_nf/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     },
     "TeleSharp.TL/1.0.0.0": {
       "type": "reference",

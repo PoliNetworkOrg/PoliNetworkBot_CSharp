@@ -1,10 +1,11 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System.Collections.Generic;
-using System.Linq;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 
 #endregion
@@ -17,43 +18,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
-            if (CheckSpamLink(text, groupId) == SpamType.SPAM_LINK)
-            {
-                return SpamType.SPAM_LINK;
-            }
-            return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS ? SpamType.NOT_ALLOWED_WORDS : CheckForFormatMistakes(text, groupId);
+            if (CheckSpamLink(text, groupId) == SpamType.SPAM_LINK) return SpamType.SPAM_LINK;
+            return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
+                ? SpamType.NOT_ALLOWED_WORDS
+                : CheckForFormatMistakes(text, groupId);
         }
 
         private static SpamType CheckForFormatMistakes(string text, long? groupId)
         {
             if (groupId == null)
                 return SpamType.ALL_GOOD;
-            var specialGroups = new List<long>{-1001175999519, -1001495422899, -1001164044303};
-            if (specialGroups.All(@group => groupId != @group))
+            var specialGroups = new List<long> {-1001175999519, -1001495422899, -1001164044303};
+            if (specialGroups.All(group => groupId != group))
                 return SpamType.ALL_GOOD;
             var textLower = text.ToLower();
             if (groupId == specialGroups[0])
-            {
-                return textLower.Contains("#cerco") || textLower.Contains("#offro") || textLower.Contains("#searching") ||
+                return textLower.Contains("#cerco") || textLower.Contains("#offro") ||
+                       textLower.Contains("#searching") ||
                        textLower.Contains("#offering")
                     ? SpamType.ALL_GOOD
                     : SpamType.FORMAT_INCORRECT;
-            }
             if (groupId == specialGroups[1])
-            {
                 return textLower.Contains("#richiesta") || textLower.Contains("#offerta")
                     ? SpamType.ALL_GOOD
                     : SpamType.FORMAT_INCORRECT;
-            }
             if (groupId == specialGroups[2])
-            {
                 return textLower.Contains("#cerco") || textLower.Contains("#vendo")
                     ? SpamType.ALL_GOOD
                     : SpamType.FORMAT_INCORRECT;
-            }
             return SpamType.ALL_GOOD;
         }
-        
+
         private static SpamType CheckNotAllowedWords(string text, long? groupId)
         {
             text = text.ToLower();
@@ -61,10 +56,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var s = text.Split(' ');
             foreach (var s2 in s)
             {
-                string s3 = RemoveUselessCharacters(s2);
+                var s3 = RemoveUselessCharacters(s2);
 
                 if (!string.IsNullOrEmpty(s3))
-                {
                     switch (s3)
                     {
                         case "porcodio":
@@ -76,11 +70,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         case "negre":
                             return SpamType.NOT_ALLOWED_WORDS;
                     }
-                }
             }
-            
-            var specialGroups = new List<long>{-1001361547847, -452591994, -1001320704409};
-            if (groupId != null && text.Contains("bitcoin") && (text.Contains("guadagno") || text.Contains("rischio")) && specialGroups.All(@group => groupId != @group) )
+
+            var specialGroups = new List<long> {-1001361547847, -452591994, -1001320704409};
+            if (groupId != null && text.Contains("bitcoin") &&
+                (text.Contains("guadagno") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
                 return SpamType.NOT_ALLOWED_WORDS;
 
             return SpamType.ALL_GOOD;
@@ -91,14 +85,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(s3))
                 return null;
 
-            string r = "";
+            var r = "";
             foreach (var c in s3)
-            {
-                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-                {
+                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
                     r += c;
-                }
-            }
 
             return r;
         }
@@ -108,14 +98,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (groupId)
             {
                 case -1001307671408: //gruppo politica
-                    {
-                        return SpamType.ALL_GOOD;
-                    }
+                {
+                    return SpamType.ALL_GOOD;
+                }
 
                 default:
-                    {
-                        return CheckSpamLink_DefaultGroup(text);
-                    }
+                {
+                    return CheckSpamLink_DefaultGroup(text);
+                }
             }
         }
 
@@ -123,18 +113,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (!text.Contains("t.me/"))
             {
-                bool b1 = text.Contains("facebook.com") ||
-                       text.Contains("whatsapp.com") ||
-                       text.Contains("instagram.com") ||
-                       text.Contains("bit.ly") ||
-                       text.Contains("is.gd") ||
-                       text.Contains("amzn.to") ||
-                       text.Contains("goo.gl") ||
-                       text.Contains("forms.gle") ||
-                       text.Contains("docs.google.com") ||
-                       text.Contains("amazon.it/gp/student") ||
-                       text.Contains("amazon.com/gp/student") ||
-                       text.Contains("discord.gg");
+                var b1 = text.Contains("facebook.com") ||
+                         text.Contains("whatsapp.com") ||
+                         text.Contains("instagram.com") ||
+                         text.Contains("bit.ly") ||
+                         text.Contains("is.gd") ||
+                         text.Contains("amzn.to") ||
+                         text.Contains("goo.gl") ||
+                         text.Contains("forms.gle") ||
+                         text.Contains("docs.google.com") ||
+                         text.Contains("amazon.it/gp/student") ||
+                         text.Contains("amazon.com/gp/student") ||
+                         text.Contains("discord.gg");
                 return b1 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
             }
 
@@ -145,7 +135,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 text = text.ToLower();
                 var t2 = text.Split("/");
-                int? t3 = Find(t2, "t.me");
+                var t3 = Find(t2, "t.me");
                 if (t3 != null)
                 {
                     var t4 = t2[t3.Value + 1];
@@ -156,31 +146,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var isOurLink = CheckIfIsOurTgLink(text);
-            bool b2 = isOurLink != null && !isOurLink.Value;
+            var b2 = isOurLink != null && !isOurLink.Value;
             return b2 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
         }
 
         private static SpamType CheckIfAllowedTag(string t4)
         {
-            if (string.IsNullOrEmpty(t4))
-            {
-                return SpamType.ALL_GOOD;
-            }
+            if (string.IsNullOrEmpty(t4)) return SpamType.ALL_GOOD;
 
-            if (t4.StartsWith("@"))
-            {
-                t4 = t4[1..];
-            }
+            if (t4.StartsWith("@")) t4 = t4[1..];
 
-            bool b = GlobalVariables.AllowedTags.Contains(t4);
+            var b = GlobalVariables.AllowedTags.Contains(t4);
             return b ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
 
         private static int? Find(string[] t2, string v)
         {
-            for (int i = 0; i < t2.Length; i++)
+            for (var i = 0; i < t2.Length; i++)
             {
-                string t3 = t2[i];
+                var t3 = t2[i];
                 if (t3 == v)
                     return i;
             }
@@ -196,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(link))
                 return null;
 
-            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
+            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@link", link}});
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
                 return false;
@@ -212,7 +196,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         internal static SpamType IsSpam(PhotoSize[] photo)
         {
-            PhotoSize biggerphoto = Utils.UtilsMedia.UtilsPhoto.GetLargest(photo);
+            var biggerphoto = UtilsPhoto.GetLargest(photo);
             if (biggerphoto == null)
                 return SpamType.ALL_GOOD;
 

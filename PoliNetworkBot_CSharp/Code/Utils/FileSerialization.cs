@@ -45,6 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     ;
                 }
+
                 return new Tuple<bool, Exception>(false, e);
             }
         }
@@ -64,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var binaryFormatter = new BinaryFormatter();
                 try
                 {
-                    var r = (T)binaryFormatter.Deserialize(stream);
+                    var r = (T) binaryFormatter.Deserialize(stream);
                     try
                     {
                         stream.Close();
@@ -73,6 +74,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         ;
                     }
+
                     return r;
                 }
                 catch
@@ -85,6 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         ;
                     }
+
                     return default;
                 }
             }
@@ -98,6 +101,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     ;
                 }
+
                 return default;
             }
         }

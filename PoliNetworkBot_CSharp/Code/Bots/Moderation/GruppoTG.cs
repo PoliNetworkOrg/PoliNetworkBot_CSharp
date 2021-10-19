@@ -1,28 +1,28 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     public class GruppoTG
     {
         public string idLink;
-        public string nome;
-        public long? permanentId;
-        public string newLink;
-        public List<string> oldLinks;
         public DateTime? LastUpdateInviteLinkTimeDateTime;
         public string LastUpdateInviteLinkTimeString;
+        public string newLink;
+        public string nome;
+        public List<string> oldLinks;
+        public long? permanentId;
 
         public GruppoTG(JToken idLink, JToken nome, JToken id, JToken LastUpdateInviteLinkTime)
         {
             this.idLink = idLink.ToString();
-            this.oldLinks = new List<string>() { this.idLink };
+            oldLinks = new List<string> {this.idLink};
             this.nome = nome.ToString();
 
             try
             {
-                this.permanentId = Convert.ToInt64(id.ToString());
+                permanentId = Convert.ToInt64(id.ToString());
             }
             catch
             {
@@ -31,10 +31,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             try
             {
-                this.LastUpdateInviteLinkTimeString = LastUpdateInviteLinkTime.ToString();
-                if (this.LastUpdateInviteLinkTimeString.Contains(" "))
+                LastUpdateInviteLinkTimeString = LastUpdateInviteLinkTime.ToString();
+                if (LastUpdateInviteLinkTimeString.Contains(" "))
                 {
-                    var s1 = this.LastUpdateInviteLinkTimeString.Split(' ');
+                    var s1 = LastUpdateInviteLinkTimeString.Split(' ');
                     var s2 = s1[0]; //2021-06-30
                     var s3 = s1[1]; //22:12:06.399
 
@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 var minute = s7[1];
                                 var second = s7[2];
 
-                                this.LastUpdateInviteLinkTimeDateTime = new DateTime(
+                                LastUpdateInviteLinkTimeDateTime = new DateTime(
                                     Convert.ToInt32(year),
                                     Convert.ToInt32(month),
                                     Convert.ToInt32(day),
@@ -80,12 +80,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         internal void UpdateID(long value)
         {
-            this.permanentId = value;
+            permanentId = value;
         }
 
         internal void UpdateNewLink(string link)
         {
-            this.newLink = link;
+            newLink = link;
         }
     }
 }

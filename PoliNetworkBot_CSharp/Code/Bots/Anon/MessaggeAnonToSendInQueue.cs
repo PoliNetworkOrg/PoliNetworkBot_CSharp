@@ -1,6 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -16,89 +19,69 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public MessaggeAnonToSendInQueue(WebPost webPost)
         {
-            this.e2 = webPost;
+            e2 = webPost;
         }
 
         internal string GetUsername()
         {
-            if (this.e != null)
-            {
-                return this.e.Message.From.Username;
-            }
+            if (e != null) return e.Message.From.Username;
 
             return null;
         }
 
         internal string GetLanguageCode()
         {
-            if (this.e != null)
-            {
-                return this.e.Message.From.LanguageCode;
-            }
+            if (e != null) return e.Message.From.LanguageCode;
 
             return null;
         }
 
         internal bool FromTelegram()
         {
-            return this.e != null;
+            return e != null;
         }
 
         internal Message GetMessage()
         {
-            if (this.e != null)
-            {
-                return this.e.Message;
-            }
+            if (e != null) return e.Message;
 
             return null;
         }
 
         internal long? GetFromUserId()
         {
-            if (this.e != null)
-            {
-                return this.e.Message.From.Id;
-            }
+            if (e != null) return e.Message.From.Id;
 
             return null;
         }
 
         internal long? GetFromUserIdOrPostId()
         {
-            if (this.e != null)
-            {
-                return this.e.Message.From.Id;
-            }
+            if (e != null) return e.Message.From.Id;
 
-            if (this.e2 != null)
-            {
-                return this.e2.postid;
-            }
+            if (e2 != null) return e2.postid;
 
             return null;
         }
 
-        internal async System.Threading.Tasks.Task<MessageSentResult> SendMessageInQueueAsync(Objects.TelegramBotAbstract telegramBotAbstract)
+        internal async Task<MessageSentResult> SendMessageInQueueAsync(TelegramBotAbstract telegramBotAbstract)
         {
             if (telegramBotAbstract == null)
                 return null;
 
-            if (this.e2 != null)
-            {
-                return await SendMessageInQueue2Async(telegramBotAbstract);
-            }
+            if (e2 != null) return await SendMessageInQueue2Async(telegramBotAbstract);
 
             return null;
         }
 
-        private async System.Threading.Tasks.Task<MessageSentResult> SendMessageInQueue2Async(TelegramBotAbstract telegramBotAbstract)
+        private async Task<MessageSentResult> SendMessageInQueue2Async(TelegramBotAbstract telegramBotAbstract)
         {
-            Language text = new Language(dict: new System.Collections.Generic.Dictionary<string, string>() {
-                {"en", this.e2.text }
+            var text = new Language(new Dictionary<string, string>
+            {
+                {"en", e2.text}
             });
-            var m1 = await telegramBotAbstract.SendTextMessageAsync(Code.Bots.Anon.ConfigAnon.ModAnonCheckGroup, text,
-                Telegram.Bot.Types.Enums.ChatType.Group, "en", Telegram.Bot.Types.Enums.ParseMode.Html, null, null, null, false);
+            var m1 = await telegramBotAbstract.SendTextMessageAsync(ConfigAnon.ModAnonCheckGroup, text,
+                ChatType.Group, "en", ParseMode.Html, null, null);
             return m1;
         }
     }

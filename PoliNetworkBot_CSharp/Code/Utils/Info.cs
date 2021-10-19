@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -10,7 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Info
     {
-        internal static async Task<Code.Objects.UserIdFound> GetTargetUserIdAsync(string target, TelegramBotAbstract telegramBotAbstract)
+        internal static async Task<UserIdFound> GetTargetUserIdAsync(string target,
+            TelegramBotAbstract telegramBotAbstract)
         {
             if (string.IsNullOrEmpty(target))
                 return null;
@@ -43,7 +44,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static async Task<Code.Objects.UserIdFound> GetIdFromUsernameAsync(string target, TelegramBotAbstract telegramBotAbstract)
+        private static async Task<UserIdFound> GetIdFromUsernameAsync(string target,
+            TelegramBotAbstract telegramBotAbstract)
         {
             return await telegramBotAbstract.GetIdFromUsernameAsync(target);
         }

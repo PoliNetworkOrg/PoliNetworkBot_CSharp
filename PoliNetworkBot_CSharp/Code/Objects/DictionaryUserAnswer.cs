@@ -1,7 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -12,30 +12,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public DictionaryUserAnswer()
         {
-            this.d = new Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>>();
+            d = new Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>>();
         }
 
         internal void Reset(long idUser, long botId)
         {
             if (!d.ContainsKey(idUser))
-            {
                 d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
-            }
 
             if (d[idUser] == null)
-            {
                 d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
-            }
 
             if (!d[idUser].ContainsKey(botId))
-            {
                 d[idUser][botId] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
-            }
 
-            if (d[idUser][botId] == null)
-            {
-                d[idUser][botId] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
-            }
+            if (d[idUser][botId] == null) d[idUser][botId] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
 
             d[idUser][botId].Item1 = null;
             d[idUser][botId].Item1 = new AnswerTelegram();
@@ -50,17 +41,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal void SetAnswerProcessed(long idUser, long botId, bool v)
         {
-            this.d[idUser][botId].Item1.SetAnswerProcessed(v);
+            d[idUser][botId].Item1.SetAnswerProcessed(v);
         }
 
-        internal void AddWorkCompleted(long idUser, long botId, bool sendMessageConfirmationChoice, TelegramBotAbstract telegramBotAbstract, string lang, string username)
+        internal void AddWorkCompleted(long idUser, long botId, bool sendMessageConfirmationChoice,
+            TelegramBotAbstract telegramBotAbstract, string lang, string username)
         {
-            this.d[idUser][botId].Item1.WorkCompleted += async result =>
+            d[idUser][botId].Item1.WorkCompleted += async result =>
             {
-                bool crashed = true;
+                var crashed = true;
                 try
                 {
-                    if (this.d[idUser][botId].Item1.GetState() == AnswerTelegram.State.ANSWERED && this.d[idUser][botId].Item1.GetAlreadyProcessedAnswer() == false)
+                    if (d[idUser][botId].Item1.GetState() == AnswerTelegram.State.ANSWERED &&
+                        d[idUser][botId].Item1.GetAlreadyProcessedAnswer() == false)
                     {
                         if (sendMessageConfirmationChoice)
                         {
@@ -77,11 +70,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                         ;
 
-                        this.d[idUser][botId].Item1.SetAnswerProcessed(true);
+                        d[idUser][botId].Item1.SetAnswerProcessed(true);
 
                         var resultstring = result.ToString();
                         crashed = false;
-                        var done = this.d[idUser][botId].Item2.TrySetResult(resultstring);
+                        var done = d[idUser][botId].Item2.TrySetResult(resultstring);
 
                         ;
                     }
@@ -91,38 +84,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     ;
                 }
 
-                if (crashed)
-                {
-                    this.d[idUser][botId].Item2.TrySetResult("");
-                }
+                if (crashed) d[idUser][botId].Item2.TrySetResult("");
             };
         }
 
         internal TaskCompletionSource<string> GetNewTCS(long idUser, long botId)
         {
-            this.d[idUser][botId].Item2 = new TaskCompletionSource<string>();
-            return this.d[idUser][botId].Item2;
+            d[idUser][botId].Item2 = new TaskCompletionSource<string>();
+            return d[idUser][botId].Item2;
         }
 
         internal bool ContainsUser(int userId, long botId)
         {
-            return this.d.ContainsKey(userId) ? this.d[userId].ContainsKey(botId) : false;
+            return d.ContainsKey(userId) ? d[userId].ContainsKey(botId) : false;
         }
 
         internal AnswerTelegram.State? GetState(int userId, long botId)
         {
-            if (this.d[userId][botId] != null)
-            {
-                if (this.d[userId][botId].Item1 != null)
-                    return this.d[userId][botId].Item1.GetState();
-            }
+            if (d[userId][botId] != null)
+                if (d[userId][botId].Item1 != null)
+                    return d[userId][botId].Item1.GetState();
 
             return null;
         }
 
         internal void RecordAnswer(int userId, long botId, string text)
         {
-            this.d[userId][botId].Item1.RecordAnswer(text);
+            d[userId][botId].Item1.RecordAnswer(text);
         }
     }
 }
