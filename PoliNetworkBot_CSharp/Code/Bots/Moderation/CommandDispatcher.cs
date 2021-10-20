@@ -183,7 +183,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
 
-                case "/allowMessage":
                 case "/allowmessage":
                 {
                     if ((Owners.CheckIfOwner(e.Message.From.Id))
@@ -202,13 +201,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         AllowedMessages.AddMessage(e.Message.ReplyToMessage.Text);
+                        return;
                     }
 
                     await DefaultCommand(sender, e);
 
                     return;
                 }
+                
+                case "/unallowmessage":
+                {
+                    if ((Owners.CheckIfOwner(e.Message.From.Id))
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+                        {
+                            var text = new Language(new Dictionary<string, string>
+                            {
+                                {"en", "You have to reply to a message containing the message"}
+                            });
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                                e.Message.MessageId);
+                            return;
+                        }
 
+                        AllowedMessages.removeMessage(e.Message.ReplyToMessage.Text);
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
 
                 case "/updateGroups":
                 {

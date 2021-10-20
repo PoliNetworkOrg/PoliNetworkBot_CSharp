@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal class NotifyUtil
     {
         private const long group_exception = -438352042;
-        private const long permitted_spam_group = 736428640;
+        private const long permitted_spam_group = -736428640;
         private const string default_lang = "en";
 
         internal static async Task NotifyOwnersPermittedSpam(string message, TelegramBotAbstract sender)
@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"it", message},
             });
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
-                ParseMode.Default, group_exception, false, 0);
+                ParseMode.Default, group_exception, true, 0);
         }
         internal static async Task NotifyOwners(ExceptionNumbered exception,
             TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang,

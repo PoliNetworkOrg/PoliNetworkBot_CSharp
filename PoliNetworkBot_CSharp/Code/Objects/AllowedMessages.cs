@@ -25,11 +25,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return SpamType.UNDEFINED;
             if (ApprovedMessages.Count == 0)
                 return SpamType.UNDEFINED;
-            if(ApprovedMessages.TryGetValue(message, out var datetime) && datetime.AddHours(24) > DateTime.Now)
+            if (ApprovedMessages.ContainsKey(message))
             {
-                return SpamType.SPAM_PERMITTED;
+                var datetime = ApprovedMessages[message];
+                if (datetime.AddHours(24) > DateTime.Now)
+                {
+                    return SpamType.SPAM_PERMITTED;
+                }
             }
-
             return SpamType.UNDEFINED;
         }
 
@@ -45,5 +48,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
+        public static void removeMessage(string text)
+        {
+            if (ApprovedMessages.ContainsKey(text))
+                ApprovedMessages.Remove(text);
+        }
     }
 }

@@ -507,6 +507,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (messageEventArgs is {Message: { }})
             {
                 var message = "Permitted spam in group " + title + " of message " + messageEventArgs.Message.Text;
+                message += "\n" + "#IDGroup_" + (messageEventArgs.Message.Chat.Id < 0 ? "n"+messageEventArgs.Message.Chat.Id.ToString() : messageEventArgs.Message.Chat.Id.ToString());
+                message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
                 await Utils.NotifyUtil.NotifyOwnersPermittedSpam(message, telegramBotClient);
             }
         }
