@@ -396,7 +396,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
             catch (Exception e1)
             {
-                ;
+                Console.WriteLine(e1);
             }
 
             ;
@@ -404,7 +404,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return done;
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<bool> TestThingsAsync(long userId)
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             /*
             _ = Data.GlobalVariables.Bots[user_id].SendMessageReactionAsync(chatId: 415600477, //test group

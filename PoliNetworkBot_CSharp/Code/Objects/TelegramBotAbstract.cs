@@ -547,7 +547,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                     catch (Exception e)
                     {
-                        ;
+                        Console.WriteLine(e);
                     }
 
                     return new MessageSentResult(false, null, chatType);
@@ -1111,7 +1111,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                                 catch (Exception e2)
                                 {
-                                    ;
+                                    Console.WriteLine(e2);
                                 }
 
                         return false;
