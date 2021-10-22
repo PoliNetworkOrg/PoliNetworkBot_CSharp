@@ -1,12 +1,13 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -21,6 +22,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
+            var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
+            t1.Start();
+        }
+
+        private static object CheckAllowedMessageExpiration(object sender, MessageEventArgs messageEventArgs)
+        {
+            while (true)
+            {
+                AllowedMessages.CheckTimestamp();
+                Thread.Sleep(1000 * 3600 * 24);
+            }
         }
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
@@ -40,42 +52,46 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
-                    string itemToPrint = MemberListToString(toExit.Item2);
-                    string itemToPrint2 = ListIntToString(toExit.Item3);
-                    string itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                    string itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat?.Title;
+                    var itemToPrint = MemberListToString(toExit.Item2);
+                    var itemToPrint2 = ListIntToString(toExit.Item3);
+                    var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
+                    var itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat?.Title;
                     itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                    itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id.ToString();
+                    itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
                     itemToPrintFull += "\n@@@@@@";
 
                     throw new ToExitException(itemToPrintFull);
                 }
 
-                List<long> NotAuthorizedBotHasBeenAddedBool = await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
+                var NotAuthorizedBotHasBeenAddedBool =
+                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
                 if (NotAuthorizedBotHasBeenAddedBool != null && NotAuthorizedBotHasBeenAddedBool.Count > 0)
-                {
                     foreach (var bot in NotAuthorizedBotHasBeenAddedBool)
-                    {
-                        await Utils.RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
-                    }
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
 
-                    //todo: send messagge "Bots not allowed here!"
+                //todo: send messagge "Bots not allowed here!"
+
+                if (banMessageDetected(e))
+                {
+                    CommandDispatcher.banMessageActions(telegramBotClient, e);
+                    return;
                 }
 
-                var toExitBecauseUsernameAndNameCheck = await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+                var toExitBecauseUsernameAndNameCheck =
+                    await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
-                if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.FORMAT_INCORRECT)
+                if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
                 {
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
                 
-                if (checkSpam == SpamType.FORMAT_INCORRECT)
+                if (checkSpam == SpamType.SPAM_PERMITTED)
                 {
-                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                    await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
 
@@ -88,8 +104,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 Console.WriteLine(exception.Message);
 
-                await Utils.NotifyUtil.NotifyOwners(exception, telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
+        }
+
+        private static bool banMessageDetected(MessageEventArgs messageEventArgs)
+        {
+            return false; //todo
         }
 
         private static string StringToStringToBePrinted(string item4)
@@ -111,11 +132,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item3.Count() == 0)
                 return "[EMPTY]";
 
-            string r = "";
-            foreach (var item4 in item3)
-            {
-                r += item4 + "\n";
-            }
+            var r = "";
+            foreach (var item4 in item3) r += item4 + "\n";
             return r;
         }
 
@@ -127,11 +145,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item2.Count() == 0)
                 return "[EMPTY]";
 
-            string r = "";
-            foreach (var item3 in item2)
-            {
-                r += item3?.User?.Username + " " + item3?.Status + "\n";
-            }
+            var r = "";
+            foreach (var item3 in item2) r += item3?.User?.Username + " " + item3?.Status + "\n";
             return r;
         }
     }

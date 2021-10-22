@@ -6,9 +6,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class MessageSentResult
     {
-        private readonly bool success;
-        private readonly object message;
         private readonly ChatType? chatType;
+        private readonly object message;
+        private readonly bool success;
         private int? messageId;
 
         public MessageSentResult(bool success, object message, ChatType? chatType)
@@ -22,18 +22,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private void SetMessageId()
         {
-            if (this.message == null)
+            if (message == null)
                 return;
 
-            if (this.message is TLMessage m1)
-            {
-                this.messageId = m1.Id;
-            }
+            if (message is TLMessage m1) messageId = m1.Id;
 
-            if (this.message is Message m2)
-            {
-                this.messageId = m2.MessageId;
-            }
+            if (message is Message m2) messageId = m2.MessageId;
         }
 
         internal object GetMessage()
@@ -43,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal ChatType? GetChatType()
         {
-            return this.chatType;
+            return chatType;
         }
 
         internal bool IsSuccess()
@@ -59,9 +53,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal string GetLink(string chatId, bool IsPrivate)
         {
             if (IsPrivate)
-                return "https://t.me/c/" + chatId + "/" + this.GetMessageID();
+                return "https://t.me/c/" + chatId + "/" + GetMessageID();
 
-            return "https://t.me/" + chatId + "/" + this.GetMessageID();
+            return "https://t.me/" + chatId + "/" + GetMessageID();
         }
     }
 }

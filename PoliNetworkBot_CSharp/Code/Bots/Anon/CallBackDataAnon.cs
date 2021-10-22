@@ -7,100 +7,101 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 #pragma warning disable IDE0052 // Rimuovi i membri privati non letti
         private readonly string data;
 #pragma warning restore IDE0052 // Rimuovi i membri privati non letti
-
-        public ResultQueueEnum? resultQueueEnum;
-        public long? messageIdGroup;
-        public long? userId;
+        public bool? from_telegram;
         public int? identity;
         public string langUser;
-        public string username;
+        public long? messageIdGroup;
+        internal Tuple<long?, ResultQueueEnum?> messageIdToReplyTo;
         public long? messageIdUser;
-        internal Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo;
-        public bool? from_telegram;
+
+        public ResultQueueEnum? resultQueueEnum;
+        public long? userId;
+        public string username;
 
         public CallBackDataAnon(string data)
         {
             this.data = data;
 
             var s = data.Split(ConfigAnon.splitCallback);
-            this.resultQueueEnum = GetResult(s[0]);
+            resultQueueEnum = GetResult(s[0]);
 
             try
             {
-                this.messageIdGroup = Convert.ToInt32(s[1]);
+                messageIdGroup = Convert.ToInt32(s[1]);
             }
             catch
             {
-                this.messageIdGroup = null;
-            }
-
-            try
-            {
-                this.userId = Convert.ToInt32(s[2]);
-            }
-            catch
-            {
-                this.userId = null;
+                messageIdGroup = null;
             }
 
             try
             {
-                this.identity = Convert.ToInt32(s[3]);
+                userId = Convert.ToInt32(s[2]);
             }
             catch
             {
-                this.identity = null;
-            }
-
-            this.langUser = s[4];
-            this.username = s[5];
-
-            try
-            {
-                this.messageIdUser = Convert.ToInt32(s[6]);
-            }
-            catch
-            {
-                this.messageIdUser = null;
+                userId = null;
             }
 
             try
             {
-                this.messageIdToReplyTo = new Tuple<long?, ResultQueueEnum?>(Convert.ToInt64(s[7]), GetChosenQueue(s[8]));
+                identity = Convert.ToInt32(s[3]);
             }
             catch
             {
-                this.messageIdToReplyTo = null;
+                identity = null;
+            }
+
+            langUser = s[4];
+            username = s[5];
+
+            try
+            {
+                messageIdUser = Convert.ToInt32(s[6]);
+            }
+            catch
+            {
+                messageIdUser = null;
             }
 
             try
             {
-                string s9 = s[9];
-                this.from_telegram = s9 == "S" || s9 == "Y";
+                messageIdToReplyTo = new Tuple<long?, ResultQueueEnum?>(Convert.ToInt64(s[7]), GetChosenQueue(s[8]));
             }
             catch
             {
-                this.from_telegram = null;
+                messageIdToReplyTo = null;
             }
+
+            try
+            {
+                var s9 = s[9];
+                from_telegram = s9 == "S" || s9 == "Y";
+            }
+            catch
+            {
+                from_telegram = null;
+            }
+        }
+
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode,
+            string username, long? messageIdUser1, Tuple<long?, ResultQueueEnum?> messageIdToReplyTo,
+            bool from_telegram)
+        {
+            resultQueueEnum = v;
+            messageIdGroup = messageIdGroup1;
+            this.userId = userId;
+            this.identity = identity;
+            langUser = langcode;
+            this.username = username;
+            messageIdUser = messageIdUser1;
+            this.messageIdToReplyTo = messageIdToReplyTo;
+            this.from_telegram = from_telegram;
         }
 
         private ResultQueueEnum? GetChosenQueue(string v)
         {
             return GetResult(v);
-        }
-
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode,
-            string username, long? messageIdUser1, Tuple<long?, Anon.ResultQueueEnum?> messageIdToReplyTo, bool from_telegram)
-        {
-            this.resultQueueEnum = v;
-            this.messageIdGroup = messageIdGroup1;
-            this.userId = userId;
-            this.identity = identity;
-            this.langUser = langcode;
-            this.username = username;
-            this.messageIdUser = messageIdUser1;
-            this.messageIdToReplyTo = messageIdToReplyTo;
-            this.from_telegram = from_telegram;
         }
 
         private ResultQueueEnum? GetResult(string v)
@@ -109,10 +110,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             {
                 null => null,
                 "" => null,
-                "a" => Anon.ResultQueueEnum.APPROVED_MAIN,
-                "u" => Anon.ResultQueueEnum.GO_TO_UNCENSORED,
-                "d" => Anon.ResultQueueEnum.DELETE,
-                _ => null,
+                "a" => ResultQueueEnum.APPROVED_MAIN,
+                "u" => ResultQueueEnum.GO_TO_UNCENSORED,
+                "d" => ResultQueueEnum.DELETE,
+                _ => null
             };
         }
 
@@ -120,24 +121,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             ;
             // split
-            string r = "";
+            var r = "";
 
-            r += ResultToString(this.resultQueueEnum);
-            r += Anon.ConfigAnon.splitCallback;
-            r += (messageIdGroup == null ? "null" : messageIdGroup.Value.ToString());
-            r += Anon.ConfigAnon.splitCallback;
+            r += ResultToString(resultQueueEnum);
+            r += ConfigAnon.splitCallback;
+            r += messageIdGroup == null ? "null" : messageIdGroup.Value.ToString();
+            r += ConfigAnon.splitCallback;
             r += userId;
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
             r += identity;
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
             r += langUser;
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
             r += username;
-            r += Anon.ConfigAnon.splitCallback;
-            r += (messageIdUser == null ? "null" : messageIdUser.Value.ToString());
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
+            r += messageIdUser == null ? "null" : messageIdUser.Value.ToString();
+            r += ConfigAnon.splitCallback;
             r += PrintReplyTo();
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
             r += from_telegram != null && from_telegram == true ? "Y" : "N";
 
             return r;
@@ -145,32 +146,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private string PrintReplyTo()
         {
-            if (this.messageIdToReplyTo == null)
-            {
-                return "null" + Anon.ConfigAnon.splitCallback + "null";
-            }
+            if (messageIdToReplyTo == null) return "null" + ConfigAnon.splitCallback + "null";
 
-            string r = "";
+            var r = "";
 
-            if (this.messageIdToReplyTo.Item1 == null)
-            {
+            if (messageIdToReplyTo.Item1 == null)
                 r += "null";
-            }
             else
-            {
-                r += this.messageIdToReplyTo.Item1.ToString();
-            }
+                r += messageIdToReplyTo.Item1.ToString();
 
-            r += Anon.ConfigAnon.splitCallback;
+            r += ConfigAnon.splitCallback;
 
-            if (this.messageIdToReplyTo.Item2 == null)
-            {
+            if (messageIdToReplyTo.Item2 == null)
                 r += "null";
-            }
             else
-            {
-                r += ResultToString(this.messageIdToReplyTo.Item2);
-            }
+                r += ResultToString(messageIdToReplyTo.Item2);
 
             return r;
         }

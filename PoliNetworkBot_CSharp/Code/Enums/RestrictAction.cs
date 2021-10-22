@@ -2,6 +2,9 @@
 {
     internal enum RestrictAction
     {
-        BAN, UNBAN, MUTE, UNMUTE
+        BAN,
+        UNBAN,
+        MUTE,
+        UNMUTE
     }
 }

@@ -1,8 +1,10 @@
-﻿using InstagramApiSharp.API.Builder;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
-using System;
-using System.IO;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {
@@ -10,18 +12,18 @@ namespace PoliNetworkBot_CSharp.Test.IG
     {
         //https://github.com/ramtinak/InstagramApiSharp
 
-        public static async System.Threading.Tasks.Task<bool> MainIGAsync()
+        public static async Task<bool> MainIGAsync()
         {
             Console.WriteLine("Starting demo of InstagramApiSharp project");
 
             string[] c = null;
             try
             {
-                c = File.ReadAllLines(PoliNetworkBot_CSharp.Code.Data.Constants.Paths.IG.CREDENTIALS);
+                c = File.ReadAllLines(Paths.IG.CREDENTIALS);
             }
             catch
             {
-                File.WriteAllText(Code.Data.Constants.Paths.IG.CREDENTIALS, "");
+                File.WriteAllText(Paths.IG.CREDENTIALS, "");
             }
 
             if (c == null || c.Length < 2)
@@ -39,10 +41,10 @@ namespace PoliNetworkBot_CSharp.Test.IG
             var delay = RequestDelay.FromSeconds(2, 2);
             // create new InstaApi instance using Builder
             var x = InstaApiBuilder.CreateBuilder()
-                        .SetUser(userSession)
-                        .UseLogger(new DebugLogger(LogLevel.All)) // use logger for requests and debug messages
-                        .SetRequestDelay(delay)
-                        .Build();
+                .SetUser(userSession)
+                .UseLogger(new DebugLogger(LogLevel.All)) // use logger for requests and debug messages
+                .SetRequestDelay(delay)
+                .Build();
             // create account
 
             ;
@@ -55,7 +57,6 @@ namespace PoliNetworkBot_CSharp.Test.IG
                 var logInResult = await x.LoginAsync();
                 delay.Enable();
                 if (!logInResult.Succeeded)
-                {
                     if (logInResult.Value == InstaLoginResult.ChallengeRequired)
                     {
                         var challenge = await x.GetChallengeRequireVerifyMethodAsync();
@@ -69,14 +70,8 @@ namespace PoliNetworkBot_CSharp.Test.IG
                             {
                                 if (challenge.Value.StepData != null)
                                 {
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber))
-                                    {
-                                        ;
-                                    }
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.Email))
-                                    {
-                                        ;
-                                    }
+                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber)) ;
+                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.Email)) ;
 
                                     ;
                                 }
@@ -87,7 +82,6 @@ namespace PoliNetworkBot_CSharp.Test.IG
                             ;
                         }
                     }
-                }
 
                 ;
 

@@ -1,15 +1,17 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
@@ -44,6 +46,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             {
                 ;
             }
+
             if (lines == null)
                 return;
 
@@ -274,7 +277,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
             var r = JsonConvert.DeserializeObject<JObject>(s);
             var r2 = r.Children();
             foreach (var r3 in r2)
-            {
                 if (r3 is JProperty r4)
                 {
                     var name = r4.Name;
@@ -285,18 +287,15 @@ namespace PoliNetworkBot_CSharp.Code.Config
                         {
                             var r7 = r6.Children();
                             foreach (var r8 in r7)
-                            {
                                 if (r8 is JObject r9)
                                 {
                                     var r10 = r9.Children();
 
                                     AddGroupToDb(r10, botIdWhoInsertedThem);
                                 }
-                            }
                         }
                     }
                 }
-            }
         }
 
         private static Tuple<bool, List<Exception>> AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
@@ -307,7 +306,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             DateTime? lastUpdateLinkTime = null;
             bool? we_are_admin = null;
 
-            List<Exception> exceptions = new List<Exception>();
+            var exceptions = new List<Exception>();
             foreach (var r2 in r1)
             {
                 ;
@@ -320,13 +319,11 @@ namespace PoliNetworkBot_CSharp.Code.Config
                     }
                     else if (r3.Name == "LastUpdateInviteLinkTime")
                     {
-                        Objects.ValueWithException<DateTime?> d1 = GetLastUpdateLinkTimeFromJson(r3);
+                        var d1 = GetLastUpdateLinkTimeFromJson(r3);
                         if (d1.HasValue())
                             lastUpdateLinkTime = d1.GetValue();
                         else
-                        {
                             exceptions.AddRange(d1.GetExceptions());
-                        }
                     }
                     else if (r3.Name == "we_are_admin")
                     {
@@ -345,17 +342,17 @@ namespace PoliNetworkBot_CSharp.Code.Config
             try
             {
                 const string q1 = "INSERT INTO Groups (id, bot_id, type, title, link, last_update_link, valid) " +
-                    " VALUES " +
-                    " (@id, @botid, @type, @title, @link, @lul, @valid)";
+                                  " VALUES " +
+                                  " (@id, @botid, @type, @title, @link, @lul, @valid)";
                 SqLite.Execute(q1, new Dictionary<string, object>
                 {
                     {"@id", chat.id},
-                    {"@botid", botIdWhoInsertedThem },
+                    {"@botid", botIdWhoInsertedThem},
                     {"@type", chat.type},
                     {"@title", chat.title},
-                    {"@link", chat.invite_link },
+                    {"@link", chat.invite_link},
                     {"@lul", lastUpdateLinkTime},
-                    {"@valid", we_are_admin }
+                    {"@valid", we_are_admin}
                 });
             }
             catch
@@ -382,10 +379,11 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
                 return false;
             }
+
             return null;
         }
 
-        private static Objects.ValueWithException<DateTime?> GetLastUpdateLinkTimeFromJson(JProperty r3)
+        private static ValueWithException<DateTime?> GetLastUpdateLinkTimeFromJson(JProperty r3)
         {
             ;
             var r4 = r3.First;
@@ -396,9 +394,10 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 if (r5.Value == null)
                     return null;
 
-                return Utils.DateTimeClass.GetFromString(r5.Value.ToString());
+                return DateTimeClass.GetFromString(r5.Value.ToString());
             }
-            return new Objects.ValueWithException<DateTime?>(null, new Code.Exceptions.JsonDateTimeNotFound());
+
+            return new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound());
         }
 
         private static ChatJson GetChatFromJson(JProperty r3)
@@ -420,25 +419,15 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 {
                     ;
                     if (r7.Name == "id")
-                    {
                         id = GetIdFromJson(r7);
-                    }
                     else if (r7.Name == "type")
-                    {
                         type = GetTypeFromJson(r7);
-                    }
                     else if (r7.Name == "title")
-                    {
                         title = GetTitleFromJson(r7);
-                    }
                     else if (r7.Name == "invite_link")
-                    {
                         invite_link = GetInviteLinkFromJson(r7);
-                    }
                     else
-                    {
                         ;
-                    }
                 }
             }
 
@@ -495,7 +484,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
             var r8 = r7.First;
 
             if (r8 is JValue r9)
-            {
                 try
                 {
                     return Convert.ToInt64(r9.Value);
@@ -504,7 +492,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 {
                     ;
                 }
-            }
 
             return null;
         }
@@ -528,12 +515,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            _ = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
+            _ = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
 
             Tables.FixIdTable("Entities", "id", "name");
 
             const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
@@ -558,7 +545,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                _ = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+                _ = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
             }
 
             return true;

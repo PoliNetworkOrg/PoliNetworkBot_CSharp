@@ -3,9 +3,9 @@
     internal class ChatJson
     {
         public long? id;
-        public string type;
-        public string title;
         public string invite_link;
+        public string title;
+        public string type;
 
         public ChatJson(long? id, string type, string title, string invite_link)
         {

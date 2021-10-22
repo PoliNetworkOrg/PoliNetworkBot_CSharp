@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.WebObject
 
         internal bool IsValid()
         {
-            switch (this.statusCode)
+            switch (statusCode)
             {
                 case HttpStatusCode.Continue:
                     break;

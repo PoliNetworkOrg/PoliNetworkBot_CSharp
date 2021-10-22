@@ -54,27 +54,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (options2 == null)
                 return null;
 
-            for (int i = 0; i < options2.Count; i++)
-            {
+            for (var i = 0; i < options2.Count; i++)
                 if (options2[i]._dict[languageCode] == r)
                     return i;
-            }
 
             return null;
         }
 
         internal bool Matches(string r)
         {
-            if (this._dict.Keys.Count == 0)
+            if (_dict.Keys.Count == 0)
                 return false;
 
-            foreach (var key in this._dict.Keys)
-            {
-                if (this._dict[key] == r)
-                {
+            foreach (var key in _dict.Keys)
+                if (_dict[key] == r)
                     return true;
-                }
-            }
 
             return false;
         }

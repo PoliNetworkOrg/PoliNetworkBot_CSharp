@@ -1,13 +1,13 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class ExceptionNumbered : Exception
     {
-        private int v;
-
         private const int default_v = 1;
+        private int v;
 
         public ExceptionNumbered(Exception item1, int v = default_v) : base(item1.Message, item1)
         {
@@ -31,7 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal bool AreTheySimilar(Exception item2)
         {
-            if (this.Message == item2.Message)
+            if (Message == item2.Message)
                 return true;
 
             return false;
@@ -42,12 +42,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return v;
         }
 
-        internal static async System.Threading.Tasks.Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract)
+        internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract)
         {
             if (telegramBotAbstract == null)
                 return false;
 
-            await Utils.NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
             return true;
         }
     }

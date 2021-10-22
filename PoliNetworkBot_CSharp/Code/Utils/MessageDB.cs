@@ -1,12 +1,14 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -64,7 +66,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (times < 0) return null;
 
                 const string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
-                var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
+                var keyValuePairs = new Dictionary<string, object> {{"@name", type.ToString()}};
                 var r1 = SqLite.ExecuteSelect(q1, keyValuePairs);
                 var r2 = SqLite.GetFirstValueFromDataTable(r1);
                 if (r1 == null || r1.Rows.Count == 0 || r2 == null)
@@ -88,16 +90,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static void AddMessageType(MessageType type)
         {
             const string q = "INSERT INTO MessageTypes (name) VALUES (@name)";
-            var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
+            var keyValuePairs = new Dictionary<string, object> {{"@name", type.ToString()}};
             SqLite.Execute(q, keyValuePairs);
             Tables.FixIdTable("MessageTypes", "id", "name");
         }
 
-        public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue, TelegramBotAbstract telegramBotAbstract)
+        public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
+            TelegramBotAbstract telegramBotAbstract)
         {
             DataTable dt = null;
-            string q = "SELECT * " +
-                "FROM Messages ";
+            var q = "SELECT * " +
+                    "FROM Messages ";
 
             dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)
@@ -106,90 +109,89 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             foreach (DataRow dr in dt.Rows)
                 try
                 {
-                    TelegramBotAbstract botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                    var r1 = await SendMessageToSend(dr, null, schedule: !force_send_everything_in_queue, botToReportException);
+                    var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
+                    var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
-                    if (telegramBotAbstract != null && r1 != null)// && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
-                    {
+                    if (telegramBotAbstract != null &&
+                        r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                         switch (r1.scheduleMessageSentResult)
                         {
-                            case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
-                            case Enums.ScheduleMessageSentResult.FAILED_SEND:
-                            case Enums.ScheduleMessageSentResult.SUCCESS:
-                            case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
-                                {
-                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
-                                    break;
-                                }
+                            case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+                            case ScheduleMessageSentResult.FAILED_SEND:
+                            case ScheduleMessageSentResult.SUCCESS:
+                            case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
+                            {
+                                await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
+                                break;
+                            }
 
-                            case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
-                            case Enums.ScheduleMessageSentResult.ALREADY_SENT:
+                            case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
+                            case ScheduleMessageSentResult.ALREADY_SENT:
                                 break;
                         }
-                    }
                 }
                 catch (Exception e)
                 {
-                    await Utils.NotifyUtil.NotifyOwners(e, Utils.BotUtil.GetFirstModerationRealBot(telegramBotAbstract), 0);
+                    await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract));
                 }
 
             return true;
         }
 
-        private static TelegramBotAbstract FindBotIfNeeded(MessageSendScheduled r1, TelegramBotAbstract telegramBotAbstract)
+        private static TelegramBotAbstract FindBotIfNeeded(MessageSendScheduled r1,
+            TelegramBotAbstract telegramBotAbstract)
         {
             if (telegramBotAbstract != null)
                 return telegramBotAbstract;
 
             if (r1 == null)
-                return Utils.BotUtil.GetFirstModerationRealBot();
+                return BotUtil.GetFirstModerationRealBot();
 
             var r2 = r1.scheduleMessageSentResult;
 
             switch (r2)
             {
-                case Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+                case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
                     return null;
 
-                case Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
+                case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                     return null;
 
-                case Enums.ScheduleMessageSentResult.FAILED_SEND:
+                case ScheduleMessageSentResult.FAILED_SEND:
                     break;
 
-                case Enums.ScheduleMessageSentResult.SUCCESS:
+                case ScheduleMessageSentResult.SUCCESS:
                     return null;
 
-                case Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
+                case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
                     break;
 
-                case Enums.ScheduleMessageSentResult.ALREADY_SENT:
+                case ScheduleMessageSentResult.ALREADY_SENT:
                     return null;
             }
 
-            return Utils.BotUtil.GetFirstModerationRealBot();
+            return BotUtil.GetFirstModerationRealBot();
         }
 
-        private static async Task NotifyOwnersOfResultAsync(MessageSendScheduled r1, TelegramBotAbstract telegramBotAbstract)
+        private static async Task NotifyOwnersOfResultAsync(MessageSendScheduled r1,
+            TelegramBotAbstract telegramBotAbstract)
         {
-            string s3 = r1.ToString();
-            string s4 = r1?.r1?.Item2.ToString();
+            var s3 = r1.ToString();
+            var s4 = r1?.r1?.Item2.ToString();
             if (string.IsNullOrEmpty(s4))
                 s4 = "[NULL(1)]";
             s3 += "\n[Id1]: " + s4 + "\n";
-            string s5 = r1?.r1?.Item3.ToString();
-            if (string.IsNullOrEmpty(s5))
-            {
-                s5 = "[NULL(2)]";
-            }
+            var s5 = r1?.r1?.Item3;
+            if (string.IsNullOrEmpty(s5)) s5 = "[NULL(2)]";
             s3 += "[Id2]: " + s5 + "\n";
-            s3 += "[Id3]: " + r1?.scheduleMessageSentResult.ToString() + "\n";
+            s3 += "[Id3]: " + r1?.scheduleMessageSentResult + "\n";
             s3 += "CheckMessagesToSend\n\n";
-            Exception e3 = new Exception(s3);
-            await Utils.NotifyUtil.NotifyOwners(e3, telegramBotAbstract, 0);
+            var e3 = new Exception(s3);
+            await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
         }
 
-        private static async Task<Code.Objects.MessageSendScheduled> SendMessageToSend(DataRow dr, TelegramBotAbstract telegramBotAbstract,
+        private static async Task<MessageSendScheduled> SendMessageToSend(DataRow dr,
+            TelegramBotAbstract telegramBotAbstract,
             bool schedule, TelegramBotAbstract botToReportException)
         {
             bool? has_been_sent = null;
@@ -200,25 +202,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e3)
             {
-                await Utils.NotifyUtil.NotifyOwners(e3, botToReportException, 0);
+                await NotifyUtil.NotifyOwners(e3, botToReportException);
             }
 
-            if (r1 != null)
-            {
-                has_been_sent = r1.Item1;
-            }
+            if (r1 != null) has_been_sent = r1.Item1;
 
             if (has_been_sent == null)
-                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null, r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null,
+                    r1);
 
-            if (has_been_sent.Value == true)
-                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.ALREADY_SENT, null, null, r1);
+            if (has_been_sent.Value)
+                return new MessageSendScheduled(ScheduleMessageSentResult.ALREADY_SENT, null, null, r1);
 
             DateTime? dt = null;
 
             try
             {
-                dt = (DateTime)dr["sent_date"];
+                dt = (DateTime) dr["sent_date"];
             }
             catch
             {
@@ -226,32 +226,32 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (schedule && dt == null)
-                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null, r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null, r1);
 
             if (schedule && dt > DateTime.Now)
-                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
 
-            var done = await SendMessageFromDataRow(dr, null, null, extraInfo: false, telegramBotAbstract, 0);
+            var done = await SendMessageFromDataRow(dr, null, null, false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
-                return new MessageSendScheduled(Enums.ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
             var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
             SqLite.Execute(q2);
 
-            return new MessageSendScheduled(Enums.ScheduleMessageSentResult.SUCCESS, null, null, r1);
+            return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
         }
 
         private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
         {
             try
             {
-                bool b1 = (bool)dr["has_been_sent"];
+                var b1 = (bool) dr["has_been_sent"];
 
-                string s1 = b1 ? "S" : "N";
+                var s1 = b1 ? "S" : "N";
                 s1 += "\n";
                 s1 += "GetHasBeenSentAsync";
-                Exception e1 = new Exception(s1);
-                await Utils.NotifyUtil.NotifyOwners(e1, sender);
+                var e1 = new Exception(s1);
+                await NotifyUtil.NotifyOwners(e1, sender);
                 return new Tuple<bool?, int, string>(b1, 1, s1); //todo: change to "return b1"
             }
             catch
@@ -261,14 +261,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                string s = dr["has_been_sent"].ToString();
-                bool b2 = (s == "1" || s == "S");
+                var s = dr["has_been_sent"].ToString();
+                var b2 = s == "1" || s == "S";
 
-                string s2 = b2 ? "S" : "N";
+                var s2 = b2 ? "S" : "N";
                 s2 += "\n";
                 s2 += "GetHasBeenSentAsync";
-                Exception e2 = new Exception(s2);
-                await Utils.NotifyUtil.NotifyOwners(e2, sender, 0);
+                var e2 = new Exception(s2);
+                await NotifyUtil.NotifyOwners(e2, sender);
                 return new Tuple<bool?, int, string>(b2, 2, s2); //todo: change to "return b2"
             }
             catch
@@ -276,7 +276,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
-            string s4 = "[WE DON'T KNOW]";
+            var s4 = "[WE DON'T KNOW]";
             try
             {
                 s4 = dr["has_been_sent"].ToString();
@@ -286,11 +286,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
-            string s3 = s4;
+            var s3 = s4;
             s3 += "\n";
             s3 += "GetHasBeenSentAsync";
-            Exception e3 = new Exception(s3);
-            await Utils.NotifyUtil.NotifyOwners(e3, sender, 0);
+            var e3 = new Exception(s3);
+            await NotifyUtil.NotifyOwners(e3, sender);
             return new Tuple<bool?, int, string>(null, 3, s3);
         }
 
@@ -301,29 +301,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (extraInfo)
             {
-                var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract, count);
+                var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo,
+                    telegramBotAbstract, count);
                 return r2;
             }
 
             return r1;
         }
 
-        private async static Task<MessageSentResult> SendExtraInfoDbForThisMessage(MessageSentResult r1, DataRow dr,
+        private static async Task<MessageSentResult> SendExtraInfoDbForThisMessage(MessageSentResult r1, DataRow dr,
             int? chatIdToSendTo, ChatType? chatTypeToSendTo, TelegramBotAbstract telegramBotAbstract, int count)
         {
-            if (r1 == null || r1.IsSuccess() == false)
-            {
-                return r1;
-            }
+            if (r1 == null || r1.IsSuccess() == false) return r1;
 
-            if (chatIdToSendTo == null)
-            {
-                return new MessageSentResult(false, null, chatTypeToSendTo);
-            }
+            if (chatIdToSendTo == null) return new MessageSentResult(false, null, chatTypeToSendTo);
 
-            object dto = dr["sent_date"];
-            object fieo = dr["from_id_entity"];
-            object fipo = dr["from_id_person"];
+            var dto = dr["sent_date"];
+            var fieo = dr["from_id_entity"];
+            var fipo = dr["from_id_person"];
 
             DateTime? dt = null;
             int? from_id_entity = null;
@@ -331,7 +326,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                dt = (DateTime?)dto;
+                dt = (DateTime?) dto;
             }
             catch
             {
@@ -340,7 +335,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                from_id_entity = (int?)fieo;
+                from_id_entity = (int?) fieo;
             }
             catch
             {
@@ -349,37 +344,35 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                from_id_person = (int?)fipo;
+                from_id_person = (int?) fipo;
             }
             catch
             {
                 ;
             }
 
-            string text1 = "📌 ID: " + count.ToString() + "\n";
-            if (dt != null)
-            {
-                text1 += "📅 " + Utils.DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
-            }
+            var text1 = "📌 ID: " + count + "\n";
+            if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
             if (from_id_entity != null)
             {
-                string entity_name = Utils.Assoc.GetNameOfEntityFromItsID(from_id_entity.Value);
+                var entity_name = Assoc.GetNameOfEntityFromItsID(from_id_entity.Value);
                 text1 += "👥 " + entity_name + "\n";
             }
-            if (from_id_person != null)
-            {
-                text1 += "✍ " + from_id_person.ToString() + "\n";
-            }
 
-            Dictionary<string, string> dict = new Dictionary<string, string>() {
-                {"en", text1 }
+            if (from_id_person != null) text1 += "✍ " + from_id_person + "\n";
+
+            var dict = new Dictionary<string, string>
+            {
+                {"en", text1}
             };
-            Language text2 = new Language(dict: dict);
-            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "", ParseMode.Html,
+            var text2 = new Language(dict);
+            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
+                ParseMode.Html,
                 null, null, r1.GetMessageID(), true);
         }
 
-        private static async Task<Objects.MessageSentResult> SendMessageFromDataRowSingle(DataRow dr, int? chatIdToSendTo, ChatType? chatTypeToSendTo)
+        private static async Task<MessageSentResult> SendMessageFromDataRowSingle(DataRow dr, int? chatIdToSendTo,
+            ChatType? chatTypeToSendTo)
         {
             var botId = Convert.ToInt32(dr["from_id_bot"]);
             var botClass = GlobalVariables.Bots[botId];
@@ -532,7 +525,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (videoId == null)
                 return new MessageSentResult(false, null, chatTypeToSendTo);
 
-            var chatIdToSendTo = (long)dr["id_chat_sent_into"];
+            var chatIdToSendTo = (long) dr["id_chat_sent_into"];
             if (chatIdToSendTo2 != null)
                 chatIdToSendTo = chatIdToSendTo2.Value;
 
@@ -573,7 +566,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (photoId == null)
                 return new MessageSentResult(false, null, chatTypeToSendTo);
 
-            var chatIdToSendTo = (long)dr["id_chat_sent_into"];
+            var chatIdToSendTo = (long) dr["id_chat_sent_into"];
             if (chatIdToSendTo2 != null)
                 chatIdToSendTo = chatIdToSendTo2.Value;
 
@@ -607,28 +600,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 caption, parseMode, typeOfChatSentInto.Value);
         }
 
-        internal async static Task CheckMessageToDelete()
+        internal static async Task CheckMessageToDelete()
         {
-            if (Code.Data.GlobalVariables.MessagesToDelete == null)
-            {
-                return;
-            }
+            if (GlobalVariables.MessagesToDelete == null) return;
 
-            for (int i = 0; i < Code.Data.GlobalVariables.MessagesToDelete.Count;)
+            for (var i = 0; i < GlobalVariables.MessagesToDelete.Count;)
             {
-                var m = Code.Data.GlobalVariables.MessagesToDelete[i];
+                var m = GlobalVariables.MessagesToDelete[i];
                 if (m.ToDelete())
                 {
-                    bool success = await m.Delete();
+                    var success = await m.Delete();
                     if (success)
-                    {
-                        lock (Code.Data.GlobalVariables.MessagesToDelete)
+                        lock (GlobalVariables.MessagesToDelete)
                         {
-                            Code.Data.GlobalVariables.MessagesToDelete.RemoveAt(i);
-                            Utils.FileSerialization.WriteToBinaryFile(Code.Data.Constants.Paths.Bin.MessagesToDelete, Code.Data.GlobalVariables.MessagesToDelete);
+                            GlobalVariables.MessagesToDelete.RemoveAt(i);
+                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                GlobalVariables.MessagesToDelete);
                             continue;
                         }
-                    }
                 }
 
                 i++;

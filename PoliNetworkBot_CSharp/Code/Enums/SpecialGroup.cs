@@ -2,6 +2,8 @@
 {
     public enum SpecialGroup
     {
-        PIANO_DI_STUDI, ASK_POLIMI, DSU
+        PIANO_DI_STUDI,
+        ASK_POLIMI,
+        DSU
     }
 }

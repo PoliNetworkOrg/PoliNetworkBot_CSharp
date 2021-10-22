@@ -1,11 +1,13 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Enums
 {
-    internal enum SpamType
+    public enum SpamType
     {
         SPAM_LINK,
         NOT_ALLOWED_WORDS,
         ALL_GOOD,
         FOREIGN,
-        FORMAT_INCORRECT
+        FORMAT_INCORRECT,
+        SPAM_PERMITTED,
+        UNDEFINED
     }
 }

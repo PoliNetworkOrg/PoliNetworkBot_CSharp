@@ -7,9 +7,9 @@
         private readonly string _lastName;
         private readonly int _userId;
         private readonly string _usernameString;
+        private readonly int? messageId;
         public readonly bool Name;
         public readonly bool UsernameBool;
-        private readonly int? messageId;
 
         public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
             string usernameString, int userId, string firstName, string lastName, int? messageId)
@@ -51,7 +51,7 @@
 
         internal int? GetMessageId()
         {
-            return this.messageId;
+            return messageId;
         }
     }
 }

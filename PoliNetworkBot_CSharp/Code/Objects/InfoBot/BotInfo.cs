@@ -1,8 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -28,10 +29,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
+                {
+                    var x = new List<UpdateType>
                     {
-                        var x = new List<UpdateType>() { UpdateType.CallbackQuery, UpdateType.Message, UpdateType.InlineQuery, UpdateType.ChosenInlineResult };
-                        return x.ToArray();
-                    }
+                        UpdateType.CallbackQuery, UpdateType.Message, UpdateType.InlineQuery,
+                        UpdateType.ChosenInlineResult
+                    };
+                    return x.ToArray();
+                }
             }
 
             return null;
@@ -42,9 +47,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                    {
-                        return true;
-                    }
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -55,9 +60,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                    {
-                        return Bots.Anon.MainAnon.CallbackMethod;
-                    }
+                {
+                    return MainAnon.CallbackMethod;
+                }
             }
 
             return null;

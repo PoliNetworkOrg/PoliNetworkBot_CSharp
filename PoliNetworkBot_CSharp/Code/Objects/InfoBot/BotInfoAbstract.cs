@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Args;
 
 #endregion
@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             try
             {
                 var s = KeyValuePairs[ConstConfigBot.OnMessages].ToString();
-                EventHandler<MessageEventArgs> r1 = BotStartMethods.GetMethodFromString(s);
+                var r1 = BotStartMethods.GetMethodFromString(s);
                 return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
             }
             catch
@@ -85,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
         internal bool AcceptsMessages()
         {
-            return (bool)KeyValuePairs[ConstConfigBot.AcceptsMessages];
+            return (bool) KeyValuePairs[ConstConfigBot.AcceptsMessages];
         }
 
         internal string GetWebsite()

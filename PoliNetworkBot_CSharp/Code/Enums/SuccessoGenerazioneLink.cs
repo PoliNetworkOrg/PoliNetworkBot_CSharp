@@ -2,6 +2,8 @@
 {
     public enum SuccessoGenerazioneLink
     {
-        ERRORE, NUOVO_LINK, RICICLATO
+        ERRORE,
+        NUOVO_LINK,
+        RICICLATO
     }
 }

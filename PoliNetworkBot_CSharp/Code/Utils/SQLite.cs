@@ -1,10 +1,10 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 
 #endregion
 
@@ -33,23 +33,31 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public static DataTable ExecuteSelect(string query, Dictionary<string, object> args = null)
         {
-            if (string.IsNullOrEmpty(query.Trim()))
-                return null;
+            try
+            {
+                if (string.IsNullOrEmpty(query.Trim()))
+                    return null;
 
-            using var con = new SQLiteConnection(Paths.Db);
-            con.Open();
-            using var cmd = new SQLiteCommand(query, con);
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
+                using var con = new SQLiteConnection(Paths.Db);
+                con.Open();
+                using var cmd = new SQLiteCommand(query, con);
+                if (args != null)
+                    foreach (var (key, value) in args)
+                        cmd.Parameters.AddWithValue(key, value);
 
-            var da = new SQLiteDataAdapter(cmd);
+                var da = new SQLiteDataAdapter(cmd);
 
-            var dt = new DataTable();
-            da.Fill(dt);
+                var dt = new DataTable();
+                da.Fill(dt);
 
-            da.Dispose();
-            return dt;
+                da.Dispose();
+                return dt;
+            }
+            catch (SQLiteException e)
+            {
+                Console.WriteLine(e);
+                throw new SQLiteException(e.Message);
+            }
         }
 
         internal static object GetFirstValueFromDataTable(DataTable dt)

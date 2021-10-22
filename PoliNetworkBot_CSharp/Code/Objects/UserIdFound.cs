@@ -2,8 +2,8 @@
 {
     internal class UserIdFound
     {
-        private readonly int? i = null;
-        private readonly string v = null;
+        private readonly int? i;
+        private readonly string v;
 
         public UserIdFound(int? i)
         {

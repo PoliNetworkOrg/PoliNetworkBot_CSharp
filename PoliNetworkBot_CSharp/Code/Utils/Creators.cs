@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types;
+﻿using PoliNetworkBot_CSharp.Code.Data;
+using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -15,10 +16,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(chatMember.User.Username))
                 return false;
 
-            if (Data.GlobalVariables.Creators.Contains(chatMember.User.Username.ToLower()))
+            if (GlobalVariables.Creators.Contains(chatMember.User.Username.ToLower()))
                 return true;
 
-            if (Data.GlobalVariables.SubCreators.Contains(chatMember.User.Username.ToLower()))
+            if (GlobalVariables.SubCreators.Contains(chatMember.User.Username.ToLower()))
                 return true;
 
             return false;

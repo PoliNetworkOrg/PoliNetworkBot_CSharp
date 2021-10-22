@@ -1,8 +1,11 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Threading;
+using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -24,13 +27,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                TelegramBotAbstract bot = GlobalVariables.Bots[768169879];
+                var bot = GlobalVariables.Bots[768169879];
                 if (bot == null)
                     return;
 
                 try
                 {
-                    await bot.DeleteMessageAsync(-1001314601927, 32, Telegram.Bot.Types.Enums.ChatType.Channel, null);
+                    await bot.DeleteMessageAsync(-1001314601927, 32, ChatType.Channel, null);
                 }
                 catch
                 {
@@ -39,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 try
                 {
-                    await bot.DeleteMessageAsync(-1001314601927, 32, Telegram.Bot.Types.Enums.ChatType.Channel, null);
+                    await bot.DeleteMessageAsync(-1001314601927, 32, ChatType.Channel, null);
                 }
                 catch
                 {
@@ -65,13 +68,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 */
 
-                string toSend = "<a href='tg://resolve?domain=-1393901944'>PoliAssociazioni 3</a>";
-                System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>() {
-                    {"it" , toSend}
+                var toSend = "<a href='tg://resolve?domain=-1393901944'>PoliAssociazioni 3</a>";
+                var dict = new Dictionary<string, string>
+                {
+                    {"it", toSend}
                 };
-                Language text = new Language(dict: dict);
-                await bot.SendTextMessageAsync(GlobalVariables.Owners[0].Item1, text, Telegram.Bot.Types.Enums.ChatType.Private, "it",
-                    Telegram.Bot.Types.Enums.ParseMode.Html,
+                var text = new Language(dict);
+                await bot.SendTextMessageAsync(GlobalVariables.Owners[0].Item1, text, ChatType.Private, "it",
+                    ParseMode.Html,
                     null, "armef97", null, true);
 
                 /*
@@ -81,24 +85,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e)
             {
-                await Utils.NotifyUtil.NotifyOwners(e, GetFirstBot());
+                await NotifyUtil.NotifyOwners(e, GetFirstBot());
             }
         }
 
         private static TelegramBotAbstract GetFirstBot()
         {
-            foreach (var bot in Code.Data.GlobalVariables.Bots.Keys)
+            foreach (var bot in GlobalVariables.Bots.Keys)
             {
-                var bot2 = Code.Data.GlobalVariables.Bots[bot];
+                var bot2 = GlobalVariables.Bots[bot];
                 switch (bot2.GetBotType())
                 {
-                    case Enums.BotTypeApi.REAL_BOT:
+                    case BotTypeApi.REAL_BOT:
                         return bot2;
 
-                    case Enums.BotTypeApi.USER_BOT:
+                    case BotTypeApi.USER_BOT:
                         break;
 
-                    case Enums.BotTypeApi.DISGUISED_BOT:
+                    case BotTypeApi.DISGUISED_BOT:
                         break;
                 }
             }

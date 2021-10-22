@@ -1,94 +1,96 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Net.Cache;
 using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class ThreadAsync
     {
-        public static Random random = new Random();
         public const int timesleep = 1000 * 30;
+
+        public const string pathwebdict = "webposts.bin";
+        public static Random random = new Random();
+
+        public static Dictionary<long, WebPost> dictionary_webpost;
 
         private static string GenerateRandomString(int length)
         {
-            string r = "";
-            for (int i = 0; i < length; i++)
+            var r = "";
+            for (var i = 0; i < length; i++)
             {
-                double r2 = random.NextDouble() * 26;
-                int r3 = (int)r2;
-                int r4 = 'A' + r3;
-                char r5 = (char)r4;
+                var r2 = random.NextDouble() * 26;
+                var r3 = (int) r2;
+                var r4 = 'A' + r3;
+                var r5 = (char) r4;
                 r += r5;
             }
+
             return r;
         }
 
         internal static async void DoThingsAsyncBotAsync(object obj)
         {
-            var bot = await Code.Bots.Anon.WebPost.GetAnonBotAsync();
+            var bot = await WebPost.GetAnonBotAsync();
             if (bot == null)
                 return;
 
-            if (string.IsNullOrEmpty(Anon.ConfigAnon.password))
+            if (string.IsNullOrEmpty(ConfigAnon.password))
                 return;
 
             try
             {
-                await Utils.NotifyUtil.NotifyOwners(new Exception(message: "Check anon message started."), bot);
+                await NotifyUtil.NotifyOwners(new Exception("Check anon message started."), bot);
             }
             catch
             {
                 ;
             }
 
-            if (dictionary_webpost == null)
-            {
-                dictionary_webpost = GetDictionary();
-            }
+            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
 
             while (true)
-            {
                 lock (random)
                 {
                     _ = IterationAsync2Async(bot);
                     Thread.Sleep(timesleep);
                 }
-            }
         }
 
-        private static async System.Threading.Tasks.Task IterationAsync2Async(Objects.TelegramBotAbstract bot)
+        private static async Task IterationAsync2Async(TelegramBotAbstract bot)
         {
             await IterationAsync(bot);
         }
 
-        private static async System.Threading.Tasks.Task IterationAsync(Objects.TelegramBotAbstract bot)
+        private static async Task IterationAsync(TelegramBotAbstract bot)
         {
             try
             {
-                string url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
+                var url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
 
-                string urlFinal = url + Anon.ConfigAnon.password;
-                string randomstring = GenerateRandomString(30);
+                var urlFinal = url + ConfigAnon.password;
+                var randomstring = GenerateRandomString(30);
                 urlFinal += "&random=" + randomstring;
 
-                Objects.WebObject.WebReply x = await Utils.Web.DownloadHtmlAsync(urlFinal, System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                if (x == null || x.IsValid() == false)
-                {
-                    return;
-                }
+                var x = await Web.DownloadHtmlAsync(urlFinal, RequestCacheLevel.NoCacheNoStore);
+                if (x == null || x.IsValid() == false) return;
 
-                string data = x.GetData();
+                var data = x.GetData();
 
                 await DoThingsAsyncBotAsync2Async(data);
             }
             catch (Exception e)
             {
-                await Utils.ExceptionNumbered.SendExceptionAsync(e, bot);
+                await ExceptionNumbered.SendExceptionAsync(e, bot);
             }
         }
 
-        public static async System.Threading.Tasks.Task DoThingsAsyncBotAsync2Async(string data)
+        public static async Task DoThingsAsyncBotAsync2Async(string data)
         {
             ;
 
@@ -97,18 +99,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 var result = JsonConvert.DeserializeObject<object>(data);
                 ;
 
-                if (result is Newtonsoft.Json.Linq.JArray r2)
+                if (result is JArray r2)
                 {
                     ;
-                    foreach (Newtonsoft.Json.Linq.JToken r3 in r2)
+                    foreach (var r3 in r2)
                     {
                         ;
 
-                        if (r3 is Newtonsoft.Json.Linq.JObject r4)
+                        if (r3 is JObject r4)
                         {
                             ;
 
-                            WebPost webPost = new WebPost(r4);
+                            var webPost = new WebPost(r4);
                             await DoThingsAsyncBotAsync3Async(webPost);
                         }
                     }
@@ -120,14 +122,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public static Dictionary<long, WebPost> dictionary_webpost = null;
-
-        private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync3Async(WebPost webPost)
+        private static async Task DoThingsAsyncBotAsync3Async(WebPost webPost)
         {
-            if (dictionary_webpost == null)
-            {
-                dictionary_webpost = GetDictionary();
-            }
+            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
 
             lock (dictionary_webpost)
             {
@@ -135,7 +132,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        private static async System.Threading.Tasks.Task DoThingsAsyncBotAsync4Async(WebPost webPost)
+        private static async Task DoThingsAsyncBotAsync4Async(WebPost webPost)
         {
             if (webPost == null)
                 return;
@@ -143,15 +140,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             if (webPost.seen == 'Y')
                 return;
 
-            if (dictionary_webpost == null)
-            {
-                dictionary_webpost = GetDictionary();
-            }
+            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
 
-            if (dictionary_webpost.ContainsKey(webPost.postid) && dictionary_webpost[webPost.postid].seen == 'Y')
-            {
-                return;
-            }
+            if (dictionary_webpost.ContainsKey(webPost.postid) &&
+                dictionary_webpost[webPost.postid].seen == 'Y') return;
 
             ;
 
@@ -174,7 +166,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             try
             {
-                Utils.FileSerialization.WriteToBinaryFile(pathwebdict, dictionary_webpost);
+                FileSerialization.WriteToBinaryFile(pathwebdict, dictionary_webpost);
             }
             catch
             {
@@ -182,14 +174,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public const string pathwebdict = "webposts.bin";
-
         private static Dictionary<long, WebPost> GetDictionary()
         {
-            bool done = false;
+            var done = false;
             try
             {
-                dictionary_webpost = Utils.FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(pathwebdict);
+                dictionary_webpost = FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(pathwebdict);
                 if (dictionary_webpost != null)
                     done = true;
             }
@@ -198,10 +188,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 ;
             }
 
-            if (!done)
-            {
-                dictionary_webpost = new Dictionary<long, WebPost>();
-            }
+            if (!done) dictionary_webpost = new Dictionary<long, WebPost>();
 
             WriteDict();
             return dictionary_webpost;

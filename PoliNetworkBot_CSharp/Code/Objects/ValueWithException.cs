@@ -10,28 +10,28 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public ValueWithException(T d2, Exception p)
         {
-            this.SuccessWithException = new SuccessWithException(d2 != null && p == null, p);
-            this.value = d2;
+            SuccessWithException = new SuccessWithException(d2 != null && p == null, p);
+            value = d2;
         }
 
         internal List<Exception> GetExceptions()
         {
-            return this.SuccessWithException.GetExceptions();
+            return SuccessWithException.GetExceptions();
         }
 
         internal bool ContainsExceptions()
         {
-            return this.SuccessWithException.ContainsExceptions();
+            return SuccessWithException.ContainsExceptions();
         }
 
         internal T GetValue()
         {
-            return this.value;
+            return value;
         }
 
         internal bool HasValue()
         {
-            return this.value != null;
+            return value != null;
         }
     }
 }

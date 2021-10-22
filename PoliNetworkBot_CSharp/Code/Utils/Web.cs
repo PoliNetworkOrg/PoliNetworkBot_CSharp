@@ -1,33 +1,32 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.WebObject;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Text;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Web
     {
-        internal static async System.Threading.Tasks.Task<WebReply> DownloadHtmlAsync(string urlAddress, System.Net.Cache.RequestCacheLevel requestCacheLevel)
+        internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress, RequestCacheLevel requestCacheLevel)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-            request.CachePolicy = new System.Net.Cache.RequestCachePolicy(requestCacheLevel);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            var request = (HttpWebRequest) WebRequest.Create(urlAddress);
+            request.CachePolicy = new RequestCachePolicy(requestCacheLevel);
+            var response = (HttpWebResponse) request.GetResponse();
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                Stream receiveStream = response.GetResponseStream();
+                var receiveStream = response.GetResponseStream();
                 try
                 {
                     StreamReader readStream;
-                    if (String.IsNullOrWhiteSpace(response.CharacterSet))
+                    if (string.IsNullOrWhiteSpace(response.CharacterSet))
                         readStream = new StreamReader(receiveStream);
                     else
-                    {
                         readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-                    }
 
-                    string data = readStream.ReadToEnd();
+                    var data = readStream.ReadToEnd();
 
                     response.Close();
                     readStream.Close();

@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using TeleSharp.TL;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
@@ -40,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var numberToAuthenticate = userbot.GetPhoneNumber();
             var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
-            string code = "";
+            var code = "";
             var passwordToAuthenticate = userbot.GetPasswordToAuthenticate();
 
             ;

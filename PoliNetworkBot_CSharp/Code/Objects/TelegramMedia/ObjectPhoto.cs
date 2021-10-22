@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -16,10 +16,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
     {
         private readonly long _chatId;
         private readonly ChatType _chatType;
-        private readonly string _uniqueId;
         private readonly int _fileSize;
         private readonly int _idPhotoDb;
         private readonly int? _messageIdFrom;
+        private readonly string _uniqueId;
 
         public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,
             string uniqueId, int? messageIdFrom, long chatId, ChatType chatType)

@@ -1,14 +1,15 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using System.IO;
+﻿using System.IO;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 {
     internal class UtilsFileText
     {
-        internal static TelegramFile GenerateFileFromString(string data, string fileName, string caption, string mimeType)
+        internal static TelegramFile GenerateFileFromString(string data, string fileName, string caption,
+            string mimeType)
         {
-            System.IO.Stream stream = GenerateStreamFromString(data);
-            TelegramFile telegramFile = new TelegramFile(stream, fileName, caption, mimeType);
+            var stream = GenerateStreamFromString(data);
+            var telegramFile = new TelegramFile(stream, fileName, caption, mimeType);
             return telegramFile;
         }
 

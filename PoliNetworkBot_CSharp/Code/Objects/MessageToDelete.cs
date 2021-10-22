@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -8,16 +11,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [Serializable]
     public class MessageToDelete
     {
-        private readonly int messageId;
-        private readonly long chatId;
-        private readonly DateTime timeToDelete;
-        private readonly long botId;
-        private readonly ChatType? chatType;
         private readonly long? accessHash;
+        private readonly long botId;
+        private readonly long chatId;
+        private readonly ChatType? chatType;
+        private readonly int messageId;
+        private readonly DateTime timeToDelete;
 
-        public MessageToDelete(TLMessage r3, long chatId, System.DateTime timeToDelete, long botId, ChatType? chatType, long? accessHash)
+        public MessageToDelete(TLMessage r3, long chatId, DateTime timeToDelete, long botId, ChatType? chatType,
+            long? accessHash)
         {
-            this.messageId = r3.Id;
+            messageId = r3.Id;
             this.chatId = chatId;
             this.timeToDelete = timeToDelete;
             this.botId = botId;
@@ -25,9 +29,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.accessHash = accessHash;
         }
 
-        public MessageToDelete(Telegram.Bot.Types.Message r4, long chatId, DateTime timeToDelete, long botId, ChatType? chatType, long? accessHash)
+        public MessageToDelete(Message r4, long chatId, DateTime timeToDelete, long botId, ChatType? chatType,
+            long? accessHash)
         {
-            this.messageId = r4.MessageId;
+            messageId = r4.MessageId;
             this.chatId = chatId;
             this.timeToDelete = timeToDelete;
             this.botId = botId;
@@ -44,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<bool> Delete()
         {
-            TelegramBotAbstract bot = Code.Data.GlobalVariables.Bots[this.botId];
+            var bot = GlobalVariables.Bots[botId];
             if (bot == null)
                 return false;
 
@@ -54,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
             catch (Exception e)
             {
-                await Utils.NotifyUtil.NotifyOwners(e, bot);
+                await NotifyUtil.NotifyOwners(e, bot);
             }
 
             return false;
