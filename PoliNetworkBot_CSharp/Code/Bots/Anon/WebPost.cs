@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net.Cache;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Net.Cache;
+using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -42,59 +42,59 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                         switch (r6.Name)
                         {
                             case "PostID":
-                            {
-                                postid = Convert.ToInt64(r7.Value);
-                                break;
-                            }
+                                {
+                                    postid = Convert.ToInt64(r7.Value);
+                                    break;
+                                }
 
                             case "Text":
-                            {
-                                text = r7.Value.ToString();
-                                break;
-                            }
+                                {
+                                    text = r7.Value.ToString();
+                                    break;
+                                }
 
                             case "PhotoID":
-                            {
-                                long? p = null;
-                                try
                                 {
-                                    p = Convert.ToInt64(r7.Value);
+                                    long? p = null;
+                                    try
+                                    {
+                                        p = Convert.ToInt64(r7.Value);
+                                    }
+                                    catch
+                                    {
+                                        ;
+                                    }
+
+                                    photoid = p;
+
+                                    if (photoid <= 0) photoid = null;
+
+                                    break;
                                 }
-                                catch
-                                {
-                                    ;
-                                }
-
-                                photoid = p;
-
-                                if (photoid <= 0) photoid = null;
-
-                                break;
-                            }
 
                             case "Approved":
-                            {
-                                approved = r7.Value.ToString()[0];
-                                break;
-                            }
+                                {
+                                    approved = r7.Value.ToString()[0];
+                                    break;
+                                }
 
                             case "Password":
-                            {
-                                password = r7.Value.ToString();
-                                break;
-                            }
+                                {
+                                    password = r7.Value.ToString();
+                                    break;
+                                }
 
                             case "Seen":
-                            {
-                                seen = r7.Value.ToString()[0];
-                                break;
-                            }
+                                {
+                                    seen = r7.Value.ToString()[0];
+                                    break;
+                                }
 
                             case "WhenSubmitted":
-                            {
-                                whensubmitted = Convert.ToDateTime(r7.Value);
-                                break;
-                            }
+                                {
+                                    whensubmitted = Convert.ToDateTime(r7.Value);
+                                    break;
+                                }
                         }
                 }
             }

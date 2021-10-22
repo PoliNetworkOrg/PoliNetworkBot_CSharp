@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.Collections.Generic;
 using System.Net.Cache;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -25,9 +25,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             for (var i = 0; i < length; i++)
             {
                 var r2 = random.NextDouble() * 26;
-                var r3 = (int) r2;
+                var r3 = (int)r2;
                 var r4 = 'A' + r3;
-                var r5 = (char) r4;
+                var r5 = (char)r4;
                 r += r5;
             }
 

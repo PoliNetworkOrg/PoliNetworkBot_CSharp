@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal bool ContainsUser(int userId, long botId)
         {
-            return d.ContainsKey(userId) ? d[userId].ContainsKey(botId) : false;
+            return d.ContainsKey(userId) && d[userId].ContainsKey(botId);
         }
 
         internal AnswerTelegram.State? GetState(int userId, long botId)

@@ -1,13 +1,13 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             const string q =
                 "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
-            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> {{"@idp", id}});
+            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@idp", id } });
             if (r == null || r.Rows.Count == 0) return null;
 
             if (r.Rows.Count == 1) return Convert.ToInt32(r.Rows[0].ItemArray[0]);
@@ -94,9 +94,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             );
 
-            var opt1 = new Language(new Dictionary<string, string> {{"it", "Metti in coda"}, {"en", "Place in queue"}});
+            var opt1 = new Language(new Dictionary<string, string> { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
-                new Dictionary<string, string> {{"it", "Scegli la data"}, {"en", "Choose the date"}});
+                new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
                 new List<Language> {opt1, opt2}
@@ -151,10 +151,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                {
-                    await Assoc_ObjectToSendNotValid(sender, e);
-                    return false;
-                }
+                    {
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false;
+                    }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -409,7 +409,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
 
                 conditionOnIdEntity = "from_id_entity = @id AND";
-                dict2 = new Dictionary<string, object> {{"@id", messageFromIdEntity.Value}};
+                dict2 = new Dictionary<string, object> { { "@id", messageFromIdEntity.Value } };
             }
 
             var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
@@ -446,9 +446,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                {
-                    return false;
-                }
+                    {
+                        return false;
+                    }
             }
 
             var q = "SELECT COUNT (*) " +

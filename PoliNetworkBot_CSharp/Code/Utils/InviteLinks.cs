@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                var success = await CreateInviteLinkAsync((long) dr.ItemArray[0], sender, e);
+                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender, e);
                 switch (success.isNuovo)
                 {
                     case SuccessoGenerazioneLink.NUOVO_LINK:
@@ -156,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 var obj = JsonConvert.DeserializeObject(text);
                 Console.WriteLine(obj.GetType());
-                var jArray = (JArray) obj;
+                var jArray = (JArray)obj;
 
                 var L = new ListaGruppiTG_Update();
 
@@ -164,7 +164,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 foreach (var x in jArray)
                     try
                     {
-                        var jObject = (JObject) x;
+                        var jObject = (JObject)x;
                         var gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"], jObject["permanentId"],
                             jObject["LastUpdateInviteLinkTime"]);
                         gruppoTGs.Add(gruppoTG);
@@ -274,7 +274,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                         else
                         {
-                            result.query1Fallita = true;
+                            result.Query1Fallita = true;
                         }
                     }
                 }
@@ -310,7 +310,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
                     {
-                        var r1 = SqLite.ExecuteSelect(sql2, new Dictionary<string, object> {{"@nome", gruppoTG.nome}});
+                        var r1 = SqLite.ExecuteSelect(sql2, new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
                         if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null &&
                             r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                         {
@@ -320,7 +320,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                         else
                         {
-                            result.query2Fallita = true;
+                            result.Query2Fallita = true;
                         }
                     }
                 }
@@ -386,7 +386,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex3m;
                     result.ExceptionObject = ex3;
-                    result.createInviteLinkFallita = true;
+                    result.CreateInviteLinkFallita = true;
                     L.Add(result);
 
                     return;
@@ -414,15 +414,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return new List<GruppoTG>();
 
             for (var i = 0; i < gruppoTGs.Count; i++)
-            for (var j = i + 1; j < gruppoTGs.Count; j++)
-                if (i != j)
-                    if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
-                        if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
-                        {
-                            gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
-                            gruppoTGs.RemoveAt(j);
-                            j--;
-                        }
+                for (var j = i + 1; j < gruppoTGs.Count; j++)
+                    if (i != j)
+                        if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
+                            if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
+                            {
+                                gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
+                                gruppoTGs.RemoveAt(j);
+                                j--;
+                            }
 
             return gruppoTGs;
         }

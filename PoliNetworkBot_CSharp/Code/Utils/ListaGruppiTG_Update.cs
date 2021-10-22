@@ -1,8 +1,8 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -54,9 +54,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     s3 += "]" + "\n" +
                           "ExceptionMessage: " + StringNotNull(HttpUtility.HtmlEncode(l2.ExceptionMessage)) + "\n" +
-                          "q1: " + StringNotNullFromBool(l2.query1Fallita) + "\n" +
-                          "q2: " + StringNotNullFromBool(l2.query2Fallita) + "\n" +
-                          "q3: " + StringNotNullFromBool(l2.createInviteLinkFallita) + "\n" +
+                          "q1: " + StringNotNullFromBool(l2.Query1Fallita) + "\n" +
+                          "q2: " + StringNotNullFromBool(l2.Query2Fallita) + "\n" +
+                          "q3: " + StringNotNullFromBool(l2.CreateInviteLinkFallita) + "\n" +
                           "Nome: " + StringNotNull(l2.gruppoTG.nome);
                     st += s3 + "\n\n";
 

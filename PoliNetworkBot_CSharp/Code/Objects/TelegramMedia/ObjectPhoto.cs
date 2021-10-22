@@ -1,8 +1,9 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -35,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             _chatType = chatType;
         }
 
-        public async Task<TLAbsInputFile> GetTelegramUserBotInputPhoto(TelegramClient userbot)
+        public async Task<Tuple<TLAbsInputFile, string>> GetTelegramUserBotInputPhoto(TelegramClient userbot)
         {
             if (_messageIdFrom == null)
                 return null;
@@ -76,6 +77,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
                                 if (t7 is TLPhotoSize t8)
                                 {
                                     //todo
+                                    return new Tuple<TLAbsInputFile, string>(new TLInputFile() { }, filename);
                                 }
 
                                 //var fileResult = (TLInputFile)await userbot.UploadFile(filename, new StreamReader("tmp/" + filename));

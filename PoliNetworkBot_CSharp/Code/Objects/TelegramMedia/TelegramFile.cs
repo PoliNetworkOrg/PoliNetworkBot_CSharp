@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             var r = await client.UploadFile(_fileName, streamReader);
 
             var attributes = new TLVector<TLAbsDocumentAttribute>();
-            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename {FileName = _fileName};
+            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename { FileName = _fileName };
             attributes.Add(att1);
             return r switch
             {

@@ -1,6 +1,6 @@
-﻿using System;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -17,8 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public string ExceptionMessage { get; internal set; }
         public Exception ExceptionObject { get; internal set; }
-        public bool? query1Fallita { get; internal set; }
-        public bool? query2Fallita { get; internal set; }
-        public bool? createInviteLinkFallita { get; internal set; }
+        public bool? Query1Fallita { get; internal set; }
+        public bool? Query2Fallita { get; internal set; }
+        public bool? CreateInviteLinkFallita { get; internal set; }
     }
 }

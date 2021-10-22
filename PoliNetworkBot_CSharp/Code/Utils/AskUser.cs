@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -102,19 +102,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(reply))
                 return null;
 
-            switch (reply)
+            return reply switch
             {
-                case "Milano Leonardo":
-                    return "MIA";
-
-                case "Milano Bovisa":
-                    return "MIB";
-
-                case "Como":
-                    return "COE";
-            }
-
-            return null;
+                "Milano Leonardo" => "MIA",
+                "Milano Bovisa" => "MIB",
+                "Como" => "COE",
+                _ => null,
+            };
         }
 
         internal static async Task<bool> AskYesNo(int id, Language question, bool defaultBool,

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using TeleSharp.TL;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Administration
@@ -50,12 +50,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                 while (chatID == null)
                                     chatID = await telegramBotAbstract.CreateGroup(name, desc, members);
                                 Thread.Sleep(1 * 1000 * 10);
-                                var channel = await telegramBotAbstract.upgradeGroupIntoSupergroup(chatID);
+                                var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
                                 if (channel == null)
                                     return;
                                 //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
                                 Thread.Sleep(1 * 1000 * 10);
-                                await telegramBotAbstract.addUserIntoChannel("@polinetwork3bot", channel);
+                                await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel);
 
                                 var admins = new List<TLInputUser>();
 
@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                             telegramBotAbstract._userbotClient);
                                     if (u is TLInputPeerUser u2)
                                     {
-                                        var user1 = new TLInputUser {AccessHash = u2.AccessHash, UserId = u2.UserId};
+                                        var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
                                         admins.Add(user1);
                                     }
                                 }

@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -169,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int) sender.GetId(), replyTo.MessageId,
+                    (int)sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
@@ -186,7 +186,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int) sender.GetId(), replyTo.MessageId,
+                    (int)sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, null, videoIdDb.Value);
             }
             else

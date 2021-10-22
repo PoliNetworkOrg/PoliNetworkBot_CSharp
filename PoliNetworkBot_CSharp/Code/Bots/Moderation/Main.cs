@@ -1,13 +1,13 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -73,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 if (banMessageDetected(e))
                 {
-                    CommandDispatcher.banMessageActions(telegramBotClient, e);
+                    CommandDispatcher.BanMessageActions(telegramBotClient, e);
                     return;
                 }
 
@@ -88,7 +88,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
-                
+
                 if (checkSpam == SpamType.SPAM_PERMITTED)
                 {
                     await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
