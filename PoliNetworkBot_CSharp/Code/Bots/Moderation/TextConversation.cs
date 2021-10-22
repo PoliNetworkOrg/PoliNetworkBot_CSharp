@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -37,19 +37,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                {
-                    await PrivateMessage(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await PrivateMessage(telegramBotClient, e);
+                        break;
+                    }
                 case ChatType.Channel:
                     break;
 
                 case ChatType.Group:
                 case ChatType.Supergroup:
-                {
-                    await MessageInGroup(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await MessageInGroup(telegramBotClient, e);
+                        break;
+                    }
             }
         }
 
@@ -159,10 +159,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 if (text.Contains("esiste un gruppo"))
                 {
-                    var text2 = new Language(new Dictionary<string, string>
-                    {
+                    var text2 = new Language(
+                        new Dictionary<string, string>
                         {
-
                             {
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
@@ -175,7 +174,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "We advice you to visit our website, " +
                                  "<a href='https://polinetwork.github.io/'>click here</a>!"
                             }
-                        });
+                        }
+                    );
                     await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
                         lang: e.Message.From.LanguageCode,
                         text: text2,
@@ -184,7 +184,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         parseMode: ParseMode.Html,
                         replyToMessageId: e.Message.MessageId,
                         disablePreviewLink: true);
-
                 }
             }
 
