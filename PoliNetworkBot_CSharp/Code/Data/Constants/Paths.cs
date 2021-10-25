@@ -7,6 +7,7 @@
         public static class Info
         {
             public const string ConfigBotsInfo = "config/bots_info.txt";
+            public const string GitHubConfigInfo = "config/git_info.json";
             public const string ConfigUserBotsInfo = "config/userbots_info.txt";
             public const string ConfigBotDisguisedAsUserBotsInfo = "config/botdisguisedasuserbots_info.txt";
         }

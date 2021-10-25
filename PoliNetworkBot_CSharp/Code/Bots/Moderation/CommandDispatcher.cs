@@ -12,12 +12,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Server;
+using PoliNetworkBot_CSharp.Code.Config;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+using File = System.IO.File;
 
 #endregion
 
@@ -235,23 +241,57 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
 
-                case "/updateGroups":
+                case "/updategroups":
                     {
                         if ((GlobalVariables.Creators.Contains(e.Message.From.Username) ||
                              Owners.CheckIfOwner(e.Message.From.Id))
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            //System.Data.DataTable groups = Groups.GetAllGroups();
-                            //var jsonFile = JObject.Parse(groups.ToString());
+                            var groups = Groups.GetAllGroups();
+            
                             if (Variabili.L == null) Variabili.L = new ListaGruppo();
 
-                            Variabili.L.ImportaGruppiDaTabellaTelegramGruppiBot_PuntoBin();
+                            Variabili.L.HandleSerializedObject(groups);
 
                             var json =
                                 JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                                     false);
+                            byte[] byteArray = Encoding.ASCII.GetBytes(json);
+                            string path = GitHubConfig.GetPath() + "groupsGenerated.json";
+                            await File.WriteAllBytesAsync(path, byteArray);
+                            using (PowerShell powershell = PowerShell.Create())
+                            {
+                                string cd = GitHubConfig.GetPath();
+                                powershell.AddScript("cd " + cd);
+                                powershell.Invoke();
+                                powershell.AddScript(@"git pull");
+                                powershell.Invoke();
+                                powershell.Commands.Clear();
+                                powershell.AddScript(@"git add . --ignore-errors");
+                                var results = powershell.Invoke().ToList();
+                                for (int i = 0; i < results.Count(); i++)
+                                {
+                                    Console.WriteLine(results[i].ToString());
+                                }
 
-                            //todo: fare qualcosa con "json"
+                                var commit = @"git commit -m ""[Automatic Commit] Updated Group List""" +
+                                             @" --author=""PoliNetworkDev <" + GitHubConfig.GetEmail() +
+                                             @">""";
+                                
+                                powershell.AddScript(commit);
+                                results = powershell.Invoke().ToList();
+                                for (int i = 0; i < results.Count(); i++)
+                                {
+                                    Console.WriteLine(results[i].ToString());
+                                }
+
+                                var push = @"git push https://PoliNetworkOrg:" + GitHubConfig.GetPassword() + "@" +
+                                           GitHubConfig.GetRepo() + @".git --all";
+                                powershell.AddScript(push);
+                                results = powershell.Invoke().ToList();
+                                powershell.Commands.Clear();
+                                powershell.Stop();
+                            }
                         }
 
                         await DefaultCommand(sender, e);
