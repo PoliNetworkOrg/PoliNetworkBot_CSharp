@@ -314,7 +314,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (Owners.CheckIfOwner(e.Message.From.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
-                        await BackupHandler(e, sender);
+                        await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username);
 
                         return;
                     }
@@ -418,7 +418,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task BackupHandler(MessageEventArgs e, TelegramBotAbstract botAbstract)
+        public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username)
         {
             var stream = File.OpenRead("./data/db.db");
 
@@ -427,14 +427,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"it", "Backup:"}
             });
 
-            TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) e.Message.From.Id};
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
-
-            string username = null;
-            if (!string.IsNullOrEmpty(e.Message.From.Username))
-                username = e.Message.From.Username;
-
-
+            TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) sendTo};
+            var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+            
             await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
