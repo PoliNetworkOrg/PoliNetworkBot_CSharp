@@ -216,7 +216,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
                             var text = new Language(new Dictionary<string, string>
                             {
-                                {"en", "You have to reply to a message containing the message"}
+                                {"en", "You have to reply to a message containing the message"},
+                                {"it", "You have to reply to a message containing the message"}
                             });
                             await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                 e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
@@ -226,6 +227,38 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         AllowedMessages.AddMessage(e.Message.ReplyToMessage.Text);
                         return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
+                
+                case "/allowedmessages":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        var text = new Language(new Dictionary<string, string>
+                        {
+                            {"it", "List of messages: "},
+                            {"en", "List of messages: "}
+                        });
+                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                            e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                            e.Message.MessageId);
+                        List<string> messages = AllowedMessages.GetAllMessages();
+                        foreach (var message in messages)
+                        {
+                            text = new Language(new Dictionary<string, string>
+                            {
+                                {"uni", message},
+                            });
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                "uni", ParseMode.Html, null, e.Message.From.Username);
+                        }
+                        return;
+
                     }
 
                     await DefaultCommand(sender, e);
@@ -250,7 +283,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             return;
                         }
 
-                        AllowedMessages.removeMessage(e.Message.ReplyToMessage.Text);
+                        AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
                         return;
                     }
 

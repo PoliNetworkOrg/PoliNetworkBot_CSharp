@@ -18,12 +18,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Main
     {
+        private static TelegramBotClient _telegramBotClientBot = null;
+        private static TelegramBotAbstract _telegramBotClient = null;
+        static AutoResetEvent autoEvent = new AutoResetEvent(false);
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
-            var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
-            t1.Start();
+            //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
+            //t1.Start();
+            //var t2 = new Thread(() => _ = BackupHandler(Data.Constants.Groups.BackupGroup, _telegramBotClient, null));
+            //t2.Start();
+        }
+
+        private static async Task BackupHandler(long backupGroup, TelegramBotAbstract telegramBotClient, object o)
+        {
+            autoEvent.WaitOne();
+            while (true)
+            {
+                await CommandDispatcher.BackupHandler(Data.Constants.Groups.BackupGroup, _telegramBotClient, null);
+                Thread.Sleep(1000 * 3600 * 24 * 7);
+            }
         }
 
         private static object CheckAllowedMessageExpiration(object sender, MessageEventArgs messageEventArgs)
@@ -37,19 +52,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
-            TelegramBotClient telegramBotClientBot = null;
-            TelegramBotAbstract telegramBotClient = null;
 
             try
             {
-                if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
+                if (sender is TelegramBotClient tmp) _telegramBotClientBot = tmp;
 
-                if (telegramBotClientBot == null)
+                if (_telegramBotClientBot == null)
                     return;
 
-                telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+                _telegramBotClient = TelegramBotAbstract.GetFromRam(_telegramBotClientBot);
 
-                var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+                //autoEvent.Set();
+
+                var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(_telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
                     var itemToPrint = MemberListToString(toExit.Item2);
@@ -64,47 +79,47 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
 
                 var notAuthorizedBotHasBeenAddedBool =
-                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
+                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, _telegramBotClient);
                 if (notAuthorizedBotHasBeenAddedBool != null && notAuthorizedBotHasBeenAddedBool.Count > 0)
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
-                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
+                        await RestrictUser.BanUserFromGroup(_telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
 
                 //todo: send messagge "Bots not allowed here!"
 
                 if (banMessageDetected(e))
                 {
-                    CommandDispatcher.BanMessageActions(telegramBotClient, e);
+                    CommandDispatcher.BanMessageActions(_telegramBotClient, e);
                     return;
                 }
 
                 var toExitBecauseUsernameAndNameCheck =
-                    await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+                    await ModerationCheck.CheckUsernameAndName(e, _telegramBotClient);
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
                 if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
                 {
-                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                    await ModerationCheck.AntiSpamMeasure(_telegramBotClient, e, checkSpam);
                     return;
                 }
 
                 if (checkSpam == SpamType.SPAM_PERMITTED)
                 {
-                    await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
+                    await ModerationCheck.PermittedSpamMeasure(_telegramBotClient, e, checkSpam);
                     return;
                 }
 
                 if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
-                    await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+                    await CommandDispatcher.CommandDispatcherMethod(_telegramBotClient, e);
                 else
-                    await TextConversation.DetectMessage(telegramBotClient, e);
+                    await TextConversation.DetectMessage(_telegramBotClient, e);
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
 
-                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, _telegramBotClient);
             }
         }
 
