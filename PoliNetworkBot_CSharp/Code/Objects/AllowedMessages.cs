@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
@@ -45,10 +46,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        public static void removeMessage(string text)
+        public static void RemoveMessage(string text)
         {
             if (ApprovedMessages.ContainsKey(text))
                 ApprovedMessages.Remove(text);
+        }
+
+        public static List<string> GetAllMessages()
+        {
+            return ApprovedMessages.Keys.ToList();
         }
     }
 }
