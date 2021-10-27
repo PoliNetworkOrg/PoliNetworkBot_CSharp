@@ -278,31 +278,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await File.WriteAllBytesAsync(path, byteArray);
                         using (var powershell = PowerShell.Create())
                         {
+                            var debug = true;
                             var cd = GitHubConfig.GetPath();
-                            powershell.AddScript("cd " + cd);
-                            powershell.Invoke();
-                            powershell.AddScript(@"git pull");
-                            powershell.Invoke();
-                            powershell.Commands.Clear();
-                            powershell.AddScript(@"git add . --ignore-errors");
-                            var results = powershell.Invoke().ToList();
-                            for (var i = 0; i < results.Count(); i++) Console.WriteLine(results[i].ToString());
+                            DoScript(powershell, "cd" + cd, debug);
+                            DoScript(powershell, "git fetch org", debug);
+                            DoScript(powershell, "git pull", debug);
+                            DoScript(powershell, "git add . --ignore-errors", debug);
 
                             var commit = @"git commit -m ""[Automatic Commit] Updated Group List""" +
                                          @" --author=""PoliNetworkDev <" + GitHubConfig.GetEmail() +
                                          @">""";
-
-                            powershell.AddScript(commit);
-                            results = powershell.Invoke().ToList();
-                            for (var i = 0; i < results.Count(); i++) Console.WriteLine(results[i].ToString());
-
-                            var push = @"git push https://PoliNetworkOrg:" + GitHubConfig.GetPassword() + "@" +
+                            DoScript(powershell, commit, debug);
+                            var push = @"git push https://PoliNetworkDev:" + GitHubConfig.GetPassword() + "@" +
                                        GitHubConfig.GetRepo() + @".git --all";
-                            powershell.AddScript(push);
-                            results = powershell.Invoke().ToList();
-                            powershell.Commands.Clear();
+                            DoScript(powershell, push, debug);
+                            var hub_pr =
+                                @"C:\Users\eliam\Downloads\hub-windows-amd64-2.14.2\bin\hub.exe pull-request -m ""[AutoCommit] Groups Update"" --base PoliNetworkOrg:main --head PoliNetworkDev:main -l bot";
+                            DoScript(powershell, hub_pr, debug);
                             powershell.Stop();
                         }
+                        Dictionary<string, string> text = new Dictionary<string, string>()
+                        {
+                            {"it", "Done"},
+                            {"en", "Done"}
+                        };
+                        await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                            e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
+                            ParseMode.Default, null);
+                        
+                        return;
                     }
 
                     await DefaultCommand(sender, e);
@@ -416,6 +420,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
                 }
             }
+        }
+
+        private static void DoScript(PowerShell powershell, string script, bool debug)
+        {
+            powershell.AddScript(script);
+            var results = powershell.Invoke().ToList();
+            if(debug)
+                for (var i = 0; i < results.Count(); i++) Console.WriteLine(results[i].ToString());
+            powershell.Commands.Clear();
         }
 
         public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username)
