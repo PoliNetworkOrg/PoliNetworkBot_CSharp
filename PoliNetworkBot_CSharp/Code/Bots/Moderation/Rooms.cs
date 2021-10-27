@@ -1,13 +1,13 @@
-﻿using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -30,23 +30,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var options2 = new List<Language>
             {
-                new Language(new Dictionary<string, string>
+                new(new Dictionary<string, string>
                 {
                     {"it", "Cerca aule"},
                     {"en", "Search classroom"}
                 }),
-                new Language(new Dictionary<string, string>
+                new(new Dictionary<string, string>
                 {
                     {"it", "Aule libere"},
                     {"en", "Free classroom"}
                 }),
-                new Language(new Dictionary<string, string>
+                new(new Dictionary<string, string>
                 {
                     {"it", "Occupazioni del giorno"},
                     {"en", "Occupancies of the day"}
                 }),
 
-                new Language(new Dictionary<string, string>
+                new(new Dictionary<string, string>
                 {
                     {"it", "Aiuto"},
                     {"en", "Help"}
@@ -64,28 +64,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (chosen.Value)
             {
                 case 0:
-                    {
-                        await SearchClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await SearchClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 1:
-                    {
-                        await FreeClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await FreeClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 2:
-                    {
-                        await OccupanciesOfTheDayAsync(sender, e);
-                        return;
-                    }
+                {
+                    await OccupanciesOfTheDayAsync(sender, e);
+                    return;
+                }
 
                 case 3:
-                    {
-                        await HelpAsync(sender, e);
-                        return;
-                    }
+                {
+                    await HelpAsync(sender, e);
+                    return;
+                }
             }
 
             var text = new Language(new Dictionary<string, string>

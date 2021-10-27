@@ -1,10 +1,10 @@
-﻿using InstagramApiSharp.API.Builder;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {

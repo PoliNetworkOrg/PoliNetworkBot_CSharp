@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -78,21 +78,21 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             Owners = new List<Tuple<long, string>>
             {
-                new Tuple<long, string>(5651789, "armef97"),
-                new Tuple<long, string>(107050697, "eliamaggioni")
+                new(5651789, "armef97"),
+                new(107050697, "eliamaggioni")
             };
 
             wordToBeFirsts = new List<WordToBeFirst>
             {
-                new WordToBeFirst("primo", new List<string> {"prima"}),
-                new WordToBeFirst("secondo", new List<string> {"seconda"}),
-                new WordToBeFirst("terzo", new List<string> {"terza"}),
-                new WordToBeFirst("kebabbaro", new List<string> {"kebabbara"}),
+                new("primo", new List<string> {"prima"}),
+                new("secondo", new List<string> {"seconda"}),
+                new("terzo", new List<string> {"terza"}),
+                new("kebabbaro", new List<string> {"kebabbara"}),
                 //new WordToBeFirst("foco"),
-                new WordToBeFirst("boomer"),
+                new("boomer"),
                 //new WordToBeFirst("upkara"),
                 //new WordToBeFirst("snitch"),
-                new WordToBeFirst("pizzaiolo", new List<string> {"pizzaiola"})
+                new("pizzaiolo", new List<string> {"pizzaiola"})
                 //new WordToBeFirst("lasagna")
             };
 

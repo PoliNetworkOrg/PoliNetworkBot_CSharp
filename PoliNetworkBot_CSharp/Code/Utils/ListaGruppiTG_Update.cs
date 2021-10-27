@@ -1,14 +1,14 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class ListaGruppiTG_Update
     {
-        public List<GruppoTG_Update> L = new List<GruppoTG_Update>();
+        public List<GruppoTG_Update> L = new();
 
         internal int Count()
         {

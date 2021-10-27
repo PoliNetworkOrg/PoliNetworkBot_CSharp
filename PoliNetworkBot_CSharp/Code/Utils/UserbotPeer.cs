@@ -13,13 +13,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static TLAbsInputPeer GetPeerFromIdAndType(long chatid, ChatType? chatType)
         {
-            if (chatType == null) return new TLInputPeerChat { ChatId = (int)chatid };
+            if (chatType == null) return new TLInputPeerChat {ChatId = (int) chatid};
 
             return chatType switch
             {
-                ChatType.Private => new TLInputPeerUser { UserId = (int)chatid },
-                ChatType.Channel => new TLInputPeerChannel { ChannelId = (int)chatid },
-                _ => new TLInputPeerChat { ChatId = (int)chatid }
+                ChatType.Private => new TLInputPeerUser {UserId = (int) chatid},
+                ChatType.Channel => new TLInputPeerChannel {ChannelId = (int) chatid},
+                _ => new TLInputPeerChat {ChatId = (int) chatid}
             };
         }
 
@@ -28,9 +28,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 if (accessHash != null)
-                    return new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value };
+                    return new TLInputChannel {ChannelId = (int) chatid, AccessHash = accessHash.Value};
 
-                return new TLInputChannel { ChannelId = (int)chatid };
+                return new TLInputChannel {ChannelId = (int) chatid};
             }
             catch
             {
@@ -38,11 +38,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static TLAbsInputUser GetPeerUserFromdId(int userId)
+        internal static TLAbsInputUser GetPeerUserFromdId(long userId)
         {
             try
             {
-                return new TLInputUser { UserId = userId };
+                return new TLInputUser {UserId = (int) userId};
             }
             catch
             {
@@ -62,7 +62,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
 
             return user2.AccessHash != null
-                ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
+                ? new TLInputPeerUser {AccessHash = user2.AccessHash.Value, UserId = user2.Id}
                 : null;
         }
     }

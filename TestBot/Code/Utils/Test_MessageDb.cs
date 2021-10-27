@@ -1,4 +1,5 @@
-﻿#region
+﻿/*
+#region
 
 using NUnit.Framework;
 
@@ -24,3 +25,5 @@ namespace TestBot.Code.Utils
         }
     }
 }
+*/
+

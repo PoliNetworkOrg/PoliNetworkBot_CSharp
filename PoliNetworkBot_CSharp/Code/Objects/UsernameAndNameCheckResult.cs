@@ -5,14 +5,14 @@
         private readonly string _firstName;
         private readonly string _language;
         private readonly string _lastName;
-        private readonly int _userId;
+        private readonly long? _userId;
         private readonly string _usernameString;
         private readonly int? messageId;
         public readonly bool Name;
         public readonly bool UsernameBool;
 
         public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
-            string usernameString, int userId, string firstName, string lastName, int? messageId)
+            string usernameString, long? userId, string firstName, string lastName, int? messageId)
         {
             UsernameBool = usernameBool;
             Name = name;
@@ -34,7 +34,7 @@
             return _usernameString;
         }
 
-        public int GetUserId()
+        public long? GetUserId()
         {
             return _userId;
         }

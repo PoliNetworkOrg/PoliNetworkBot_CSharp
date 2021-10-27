@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async Task<MessageSentResult> SendMessageInPrivateOrAGroup(
             TelegramBotAbstract telegramBotClient,
-            Language text, string lang, string username, int userId, string firstName, string lastName, long chatId,
+            Language text, string lang, string username, long? userId, string firstName, string lastName, long chatId,
             ChatType chatType, ParseMode parseMode = ParseMode.Html)
         {
             MessageSentResult r = null;
@@ -50,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 lang, parseMode, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
         }
 
-        private static string GetMessageTo(string firstname, string lastname, long messageFromUserId)
+        private static string GetMessageTo(string firstname, string lastname, long? messageFromUserId)
         {
             var name = firstname + " " + lastname;
             name = name.Trim();
@@ -145,7 +145,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         public static SuccessQueue PlaceMessageInQueue(Message replyTo, DateTimeSchedule sentDate,
-            int messageFromIdPerson, int? messageFromIdEntity,
+            long messageFromIdPerson, int? messageFromIdEntity,
             long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
         {
             if (sentDate == null)
@@ -169,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int)sender.GetId(), replyTo.MessageId,
+                    (int) sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, photoIdDb.Value, null);
             }
             else if (replyTo.Video != null)
@@ -186,7 +186,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     replyTo.Caption, messageFromIdPerson,
                     messageFromIdEntity,
                     idChatSentInto, sentDate.GetDate(), false,
-                    (int)sender.GetId(), replyTo.MessageId,
+                    (int) sender.GetId(), replyTo.MessageId,
                     typeChatSentInto, null, videoIdDb.Value);
             }
             else

@@ -1,13 +1,13 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -63,11 +63,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     throw new ToExitException(itemToPrintFull);
                 }
 
-                var NotAuthorizedBotHasBeenAddedBool =
+                var notAuthorizedBotHasBeenAddedBool =
                     await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
-                if (NotAuthorizedBotHasBeenAddedBool != null && NotAuthorizedBotHasBeenAddedBool.Count > 0)
-                    foreach (var bot in NotAuthorizedBotHasBeenAddedBool)
-                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null);
+                if (notAuthorizedBotHasBeenAddedBool != null && notAuthorizedBotHasBeenAddedBool.Count > 0)
+                    foreach (var bot in notAuthorizedBotHasBeenAddedBool)
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
 
                 //todo: send messagge "Bots not allowed here!"
 

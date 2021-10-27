@@ -1,5 +1,11 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -10,12 +16,6 @@ using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Test.IG;
 using PoliNetworkBot_CSharp.Test.Spam;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using ThreadAsync = PoliNetworkBot_CSharp.Code.Bots.Moderation.ThreadAsync;
@@ -41,67 +41,67 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 switch (readChoice)
                 {
                     case '1': //reset everything
-                        {
-                            ResetEverything(true);
+                    {
+                        ResetEverything(true);
 
-                            return;
-                        }
+                        return;
+                    }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                        {
-                            var toExit = LoadBotConfig();
-                            if (toExit == ToExit.EXIT)
-                                return;
-
-                            var toExit2 = LoadUserBotConfig();
-                            if (toExit2 == ToExit.EXIT)
-                                return;
-
-                            var toExit3 = LoadBotDisguisedAsUserBotConfig();
-                            if (toExit3 == ToExit.EXIT)
-                                return;
-
-                            GlobalVariables.LoadToRam();
-
-                            Console.WriteLine("\nTo kill this process, you have to check the process list");
-
-                            _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-
-                            while (true) Console.ReadKey();
+                    {
+                        var toExit = LoadBotConfig();
+                        if (toExit == ToExit.EXIT)
                             return;
-                        }
+
+                        var toExit2 = LoadUserBotConfig();
+                        if (toExit2 == ToExit.EXIT)
+                            return;
+
+                        var toExit3 = LoadBotDisguisedAsUserBotConfig();
+                        if (toExit3 == ToExit.EXIT)
+                            return;
+
+                        GlobalVariables.LoadToRam();
+
+                        Console.WriteLine("\nTo kill this process, you have to check the process list");
+
+                        _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
+
+                        while (true) Console.ReadKey();
+                        return;
+                    }
 
                     case '4':
-                        {
-                            ResetEverything(false);
-                            return;
-                        }
+                    {
+                        ResetEverything(false);
+                        return;
+                    }
 
                     case '5':
-                        {
-                            _ = await Test_IG.MainIGAsync();
-                            return;
-                        }
+                    {
+                        _ = await Test_IG.MainIGAsync();
+                        return;
+                    }
 
                     case '6':
-                        {
-                            NewConfig.NewConfigMethod(true, false, false, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(true, false, false, false, false);
+                        return;
+                    }
 
                     case '7':
-                        {
-                            NewConfig.NewConfigMethod(false, false, true, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        return;
+                    }
                     case 't':
-                        {
-                            SpamTest.Main2();
-                            return;
-                        }
+                    {
+                        SpamTest.Main2();
+                        return;
+                    }
                 }
             }
         }
@@ -265,24 +265,27 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
-                    GlobalVariables.Bots[botClient.BotId] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
-                    if (!bot.AcceptsMessages())
-                        continue;
+                    if (botClient.BotId != null)
+                    {
+                        GlobalVariables.Bots[botClient.BotId.Value] =
+                            new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                                BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
+                        if (!bot.AcceptsMessages())
+                            continue;
 
-                    var onmessageMethod2 = bot.GetOnMessage();
-                    if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
-                        continue;
+                        var onmessageMethod2 = bot.GetOnMessage();
+                        if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
+                            continue;
 
-                    botClient.OnMessage += onmessageMethod2.Item1;
-                    botClient.StartReceiving(bot.GetAllowedUpdates());
+                        botClient.OnMessage += onmessageMethod2.Item1;
+                        botClient.StartReceiving(bot.GetAllowedUpdates());
 
-                    if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
+                        if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
+                        if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
+                        if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
+                    }
                 }
 
             if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
@@ -313,10 +316,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 case 'a':
                                 case 'A': //Administration
-                                    {
-                                        _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                        break;
-                                    }
+                                {
+                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                    break;
+                                }
                             }
                     }
                     else

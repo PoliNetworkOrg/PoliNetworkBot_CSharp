@@ -1,6 +1,6 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {

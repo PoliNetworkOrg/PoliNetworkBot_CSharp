@@ -1,6 +1,6 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+﻿using System;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
-using System;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {

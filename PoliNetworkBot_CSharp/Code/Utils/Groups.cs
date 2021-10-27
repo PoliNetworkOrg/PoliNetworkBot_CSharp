@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System.Data;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return SqLite.ExecuteSelect(q1);
         }
 
-        internal static async Task<SuccessWithException> CheckIfAdminAsync(int userId, string username, long chatId,
+        internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
             TelegramBotAbstract telegramBotAbstract)
         {
             if (GlobalVariables.Creators.Contains(username))

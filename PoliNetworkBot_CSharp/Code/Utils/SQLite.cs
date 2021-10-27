@@ -1,10 +1,10 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 
 #endregion
 
