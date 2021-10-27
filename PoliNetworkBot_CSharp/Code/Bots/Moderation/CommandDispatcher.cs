@@ -276,11 +276,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var byteArray = Encoding.ASCII.GetBytes(json);
                         var path = GitHubConfig.GetPath() + "groupsGenerated.json";
                         await File.WriteAllBytesAsync(path, byteArray);
+                        List<String> result = new List<string>();
                         using (var powershell = PowerShell.Create())
                         {
                             var debug = true;
                             var cd = GitHubConfig.GetPath();
-                            DoScript(powershell, "cd" + cd, debug);
+                            DoScript(powershell, "cd " + cd, debug);
                             DoScript(powershell, "git fetch org", debug);
                             DoScript(powershell, "git pull", debug);
                             DoScript(powershell, "git add . --ignore-errors", debug);
@@ -294,14 +295,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             DoScript(powershell, push, debug);
                             var hub_pr =
                                 @"C:\Users\eliam\Downloads\hub-windows-amd64-2.14.2\bin\hub.exe pull-request -m ""[AutoCommit] Groups Update"" --base PoliNetworkOrg:main --head PoliNetworkDev:main -l bot";
-                            DoScript(powershell, hub_pr, debug);
+                            result = DoScript(powershell, hub_pr, debug);
+
                             powershell.Stop();
                         }
-                        Dictionary<string, string> text = new Dictionary<string, string>()
-                        {
-                            {"it", "Done"},
-                            {"en", "Done"}
-                        };
+
+                        Dictionary<string, string> text = result.Count > 0
+                            ? new Dictionary<string, string>()
+                            {
+                                {"it", "Done"},
+                                {"en", "Done"}
+                            }
+                            : new Dictionary<string, string>()
+                            {
+                                {"it", "Error in execution"},
+                                {"en", "Error in execution"},
+                            };
+
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                             e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
                             ParseMode.Default, null);
@@ -422,13 +432,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static void DoScript(PowerShell powershell, string script, bool debug)
+        private static List<String> DoScript(PowerShell powershell, string script, bool debug)
         {
             powershell.AddScript(script);
             var results = powershell.Invoke().ToList();
+            List<String> liststring = new List<string>();
             if(debug)
-                for (var i = 0; i < results.Count(); i++) Console.WriteLine(results[i].ToString());
+                for (var i = 0; i < results.Count(); i++)
+                {
+                    Console.WriteLine(results[i].ToString());
+                    liststring.Add(results[i].ToString());
+                }
             powershell.Commands.Clear();
+            return liststring;
         }
 
         public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username)
