@@ -1,7 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -14,14 +14,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task NotifyOwnersPermittedSpam(string message, TelegramBotAbstract sender)
         {
-            string langCode = "it";
+            var langCode = "it";
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"it", message},
+                {"it", message}
             });
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
-                ParseMode.Default, group_exception, true, 0);
+                ParseMode.Default, group_exception, true);
         }
+
         internal static async Task NotifyOwners(ExceptionNumbered exception,
             TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang,
             long? replyToMessageId2 = null)

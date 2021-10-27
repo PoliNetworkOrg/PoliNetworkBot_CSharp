@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class AskUser
     {
-        public static readonly DictionaryUserAnswer UserAnswers = new DictionaryUserAnswer();
+        public static readonly DictionaryUserAnswer UserAnswers = new();
 
         internal static async Task<string> AskAsync(long idUser, Language question,
             TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
@@ -82,9 +82,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var options = new List<List<Language>>
             {
-                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Milano Leonardo"}})},
-                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Milano Bovisa"}})},
-                new List<Language> {new Language(new Dictionary<string, string> {{"en", "Como"}})}
+                new() {new Language(new Dictionary<string, string> {{"en", "Milano Leonardo"}})},
+                new() {new Language(new Dictionary<string, string> {{"en", "Milano Bovisa"}})},
+                new() {new(new Dictionary<string, string> {{"en", "Como"}})}
             };
             var question = new Language(new Dictionary<string, string>
             {
@@ -107,7 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 "Milano Leonardo" => "MIA",
                 "Milano Bovisa" => "MIB",
                 "Como" => "COE",
-                _ => null,
+                _ => null
             };
         }
 
@@ -127,7 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var options = new List<List<Language>>
             {
-                new List<Language>
+                new()
                 {
                     l1, l2
                 }

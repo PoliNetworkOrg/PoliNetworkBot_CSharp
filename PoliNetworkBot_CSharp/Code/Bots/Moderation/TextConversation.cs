@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -14,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class TextConversation
     {
-        public static Dictionary<SpecialGroup, long> excludedGroups = new Dictionary<SpecialGroup, long>
+        public static Dictionary<SpecialGroup, long> excludedGroups = new()
         {
             {SpecialGroup.PIANO_DI_STUDI, -1001208900229},
             {SpecialGroup.ASK_POLIMI, -1001251460298},
@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         };
 
         public static Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch =
-            new Dictionary<SpecialGroup, List<SpecialGroup>>
+            new()
             {
                 {SpecialGroup.ASK_POLIMI, new List<SpecialGroup> {SpecialGroup.ASK_POLIMI}},
                 {SpecialGroup.DSU, new List<SpecialGroup> {SpecialGroup.DSU, SpecialGroup.ASK_POLIMI}},
@@ -37,19 +37,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                    {
-                        await PrivateMessage(telegramBotClient, e);
-                        break;
-                    }
+                {
+                    await PrivateMessage(telegramBotClient, e);
+                    break;
+                }
                 case ChatType.Channel:
                     break;
 
                 case ChatType.Group:
                 case ChatType.Supergroup:
-                    {
-                        await MessageInGroup(telegramBotClient, e);
-                        break;
-                    }
+                {
+                    await MessageInGroup(telegramBotClient, e);
+                    break;
+                }
             }
         }
 
@@ -166,24 +166,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
                                 "Ti consigliamo di visitare il nostro sito, " +
-                                 "<a href='https://polinetwork.github.io/'>clicca qui</a>!"
+                                "<a href='https://polinetwork.github.io/'>clicca qui</a>!"
                             },
                             {
                                 "en",
                                 "Hi 👋 it seems you are asking questions about groups. " +
                                 "We advice you to visit our website, " +
-                                 "<a href='https://polinetwork.github.io/'>click here</a>!"
+                                "<a href='https://polinetwork.github.io/'>click here</a>!"
                             }
                         }
                     );
-                    await SendMessage.SendMessageInAGroup(telegramBotClient: telegramBotClient,
-                        lang: e.Message.From.LanguageCode,
-                        text: text2,
-                        chatId: e.Message.Chat.Id,
-                        chatType: e.Message.Chat.Type,
-                        parseMode: ParseMode.Html,
-                        replyToMessageId: e.Message.MessageId,
-                        disablePreviewLink: true);
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From.LanguageCode,
+                        text2,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
                 }
             }
 
@@ -205,7 +205,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            long? botId = telegramBotClient.GetId();
+            var botId = telegramBotClient.GetId();
 
             if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
                 if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)

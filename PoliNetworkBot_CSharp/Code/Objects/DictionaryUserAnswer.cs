@@ -1,7 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -47,17 +47,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal void SetAnswerProcessed(long idUser, long? botId, bool v)
         {
-            if (botId != null)
-            {
-                d[idUser][botId.Value].Item1.SetAnswerProcessed(v);
-            }
+            if (botId != null) d[idUser][botId.Value].Item1.SetAnswerProcessed(v);
         }
 
         internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
             TelegramBotAbstract telegramBotAbstract, string lang, string username)
         {
             if (botId != null)
-            {
                 d[idUser][botId.Value].Item1.WorkCompleted += async result =>
                 {
                     var crashed = true;
@@ -97,7 +93,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     if (crashed) d[idUser][botId.Value].Item2.TrySetResult("");
                 };
-            }
         }
 
         internal TaskCompletionSource<string> GetNewTCS(long idUser, long? botId)
@@ -113,21 +108,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal bool ContainsUser(long userId, long? botId)
         {
-            if (botId == null)
-            {
-                return false;
-            }
+            if (botId == null) return false;
 
             return d.ContainsKey(userId) && d[userId].ContainsKey(botId.Value);
         }
 
         internal AnswerTelegram.State? GetState(long userId, long? botId)
-        { 
-            if (botId != null){
+        {
+            if (botId != null)
                 if (d[userId][botId.Value] != null)
                     if (d[userId][botId.Value].Item1 != null)
                         return d[userId][botId.Value].Item1.GetState();
-            }
             return null;
         }
 

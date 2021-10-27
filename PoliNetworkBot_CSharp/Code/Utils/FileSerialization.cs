@@ -65,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var binaryFormatter = new BinaryFormatter();
                 try
                 {
-                    var r = (T)binaryFormatter.Deserialize(stream);
+                    var r = (T) binaryFormatter.Deserialize(stream);
                     try
                     {
                         stream.Close();

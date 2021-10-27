@@ -1,5 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using System;
+﻿using System;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects

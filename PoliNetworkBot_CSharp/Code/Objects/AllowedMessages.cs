@@ -1,14 +1,14 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public static class AllowedMessages
     {
-        private static readonly Dictionary<string, DateTime> ApprovedMessages = new Dictionary<string, DateTime>();
+        private static readonly Dictionary<string, DateTime> ApprovedMessages = new();
 
-        public static bool AddMessage(String message)
+        public static bool AddMessage(string message)
         {
             if (message == null)
                 return false;
@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return true;
         }
 
-        public static SpamType CheckMessage(String message)
+        public static SpamType CheckMessage(string message)
         {
             if (message == null)
                 return SpamType.UNDEFINED;
@@ -27,11 +27,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (ApprovedMessages.ContainsKey(message))
             {
                 var datetime = ApprovedMessages[message];
-                if (datetime.AddHours(24) > DateTime.Now)
-                {
-                    return SpamType.SPAM_PERMITTED;
-                }
+                if (datetime.AddHours(24) > DateTime.Now) return SpamType.SPAM_PERMITTED;
             }
+
             return SpamType.UNDEFINED;
         }
 

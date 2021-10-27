@@ -1,13 +1,13 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Errors;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Errors;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -115,84 +115,85 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             switch (banTarget)
             {
                 case RestrictAction.BAN:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null, revokeMessage);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long) dr["id"];
+                            var success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null,
+                                revokeMessage);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
 
                 case RestrictAction.UNBAN:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long) dr["id"];
+                            var success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
 
                 case RestrictAction.MUTE:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var chatType = GetChatType(dr);
-                                var success = await MuteUser(sender, e, targetId.GetID().Value, groupChatId, until,
-                                    chatType);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long) dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, e, targetId.GetID().Value, groupChatId, until,
+                                chatType);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
             }
 
             LogBanAction(targetId.GetID().Value, banTarget, sender, e.Message.From.Id);

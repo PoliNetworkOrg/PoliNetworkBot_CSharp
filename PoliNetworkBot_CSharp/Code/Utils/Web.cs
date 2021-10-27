@@ -1,9 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.WebObject;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -11,9 +11,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress, RequestCacheLevel requestCacheLevel)
         {
-            var request = (HttpWebRequest)WebRequest.Create(urlAddress);
+            var request = (HttpWebRequest) WebRequest.Create(urlAddress);
             request.CachePolicy = new RequestCachePolicy(requestCacheLevel);
-            var response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse) request.GetResponse();
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
