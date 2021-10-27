@@ -80,7 +80,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
-                            _ = MuteAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                            _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username, false);
                         else
                             await DefaultCommand(sender, e);
                         return;
@@ -95,11 +95,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                            _ = BanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                            _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username, false);
                         else
                             await DefaultCommand(sender, e);
                         return;
                     }
+                
+                case "/banDeleteAll":
+                {
+                    if (e.Message.Chat.Type != ChatType.Private)
+                    {
+                        await CommandNotSentInPrivateAsync(sender, e);
+                        return;
+                    }
+
+                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username, true);
+                    else
+                        await DefaultCommand(sender, e);
+                    return;
+                }
 
                 /*
             case "/massiveSend":
@@ -128,15 +143,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/ban":
                     {
-                        _ = BanUserAsync(sender, e, cmdLines);
+                        _ = BanUserAsync(sender, e, cmdLines, false);
                         return;
                     }
-                case "/banAllHistory":
+                /*case "/banAllHistory":
                     {
                         // _ = BanUserAsync(sender, e, cmdLines);
-                        _ = BanUserHistoryAsync(sender, e);
+                        _ = BanUserHistoryAsync(sender, e, false);
                         return;
-                    }
+                    }*/
 
                 case "/unbanAll":
                     {
@@ -147,7 +162,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                            _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
+                            _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username, false);
                         else
                             await DefaultCommand(sender, e);
                         return;
@@ -243,8 +258,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/updategroups":
                     {
-                        if ((GlobalVariables.Creators.Contains(e.Message.From.Username) ||
-                             Owners.CheckIfOwner(e.Message.From.Id))
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             var groups = Groups.GetAllGroups();
@@ -298,6 +312,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                case "/backup":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        await BackupHandler(e, sender);
+                        
+                        return;
+                    }
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
                 case "/testtime":
                     {
                         if (e.Message.Chat.Type == ChatType.Private) await TestTime(sender, e);
@@ -391,6 +418,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task BackupHandler(MessageEventArgs e, TelegramBotAbstract botAbstract)
+        {
+            var stream = File.OpenRead("./data/db.db");
+
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                {"it", "Backup:"}
+            });
+                        
+            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)e.Message.From.Id };
+            var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
+                        
+            string username = null;
+            if (!string.IsNullOrEmpty(e.Message.From.Username))
+                username = e.Message.From.Username;
+            
+            
+            
+            await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
+                    null, "application/octet-stream"), peer,
+                text2, TextAsCaption.BEFORE_FILE,
+                botAbstract, username, "it", null, true);
         }
 
         private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
@@ -500,7 +551,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return true;
         }
 
-        private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e, bool? revokeMessage)
         {
             var r = Owners.CheckIfOwner(e.Message.From.Id);
             if (!r) return r;
@@ -549,7 +600,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             foreach (DataRow element in x.Rows)
             {
                 var userToBeBanned = Convert.ToInt64(element.ItemArray[0]);
-                await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Convert.ToInt64(channel), null);
+                await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Convert.ToInt64(channel), null, revokeMessage);
                 counter++;
             }
 
@@ -609,7 +660,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var x2 = StreamSerialization.SerializeToStream(x);
             var documentInput =
                 new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = e.Message.From.Id };
+            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int) e.Message.From.Id };
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -714,7 +765,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<SuccessWithException> BanUserAsync(
             TelegramBotAbstract sender, MessageEventArgs e,
-            string[] stringInfo)
+            string[] stringInfo, bool? revokeMessage)
         {
             var r =
                 await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id, sender);
@@ -738,36 +789,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return new SuccessWithException(false, e2);
                 }
 
-                return await RestrictUser.BanUserFromGroup(sender, e, targetId.Value, e.Message.Chat.Id, null);
+                return await RestrictUser.BanUserFromGroup(sender, e, targetId.Value, e.Message.Chat.Id, null, revokeMessage);
             }
 
             var targetInt = e.Message.ReplyToMessage.From.Id;
-            return await RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo);
+            return await RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo, revokeMessage);
         }
 
         private static async Task<SuccessWithException> UnbanAllAsync(
-            TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
+            TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username, bool? revokeMessage)
         {
             return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
-                RestrictAction.UNBAN);
+                RestrictAction.UNBAN, revokeMessage);
         }
 
         private static async Task<SuccessWithException> BanAllAsync(
             TelegramBotAbstract sender, MessageEventArgs e,
-            string[] target, string lang, string username)
+            string[] target, string lang, string username, bool? revokeMessage)
         {
-            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN);
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN, revokeMessage);
         }
 
         private static async Task<SuccessWithException> MuteAllAsync(
-            TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username)
+            TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username, bool? revokeMessage)
         {
-            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE);
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE, revokeMessage);
         }
 
         private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract sender,
             MessageEventArgs e,
-            string[] target, string lang, string username, RestrictAction bAN)
+            string[] target, string lang, string username, RestrictAction bAN,
+            bool? revokeMessage)
         {
             var d1 = GetDateTime(target);
             try
@@ -775,12 +827,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (d1 == null)
                 {
                     await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username,
-                        null);
+                        null, revokeMessage);
                     return new SuccessWithException(true);
                 }
 
                 var d2 = d1.GetValue();
-                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username, d2);
+                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username, d2, revokeMessage);
             }
             catch (Exception ex)
             {
@@ -818,7 +870,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task BanAllUnbanAllMethod1Async(RestrictAction restrictAction,
             string finalTarget,
-            MessageEventArgs e, TelegramBotAbstract sender, string lang, string username, DateTime? until)
+            MessageEventArgs e, TelegramBotAbstract sender, string lang, string username, DateTime? until, bool? revokeMessage)
         {
             if (string.IsNullOrEmpty(finalTarget))
             {
@@ -835,7 +887,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var done =
-                await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until);
+                await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
             var text2 = done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,

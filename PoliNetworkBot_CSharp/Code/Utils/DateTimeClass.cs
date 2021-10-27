@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(int id, string text,
+        internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long id, string text,
             string lang,
             TelegramBotAbstract sender,
             string username)
@@ -149,7 +149,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await AskDate2Async(id, lang, sender, username);
         }
 
-        private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(int id, string lang,
+        private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long id, string lang,
             TelegramBotAbstract sender,
             string username)
         {

@@ -38,11 +38,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static TLAbsInputUser GetPeerUserFromdId(int userId)
+        internal static TLAbsInputUser GetPeerUserFromdId(long userId)
         {
             try
             {
-                return new TLInputUser { UserId = userId };
+                return new TLInputUser { UserId = (int) userId };
             }
             catch
             {

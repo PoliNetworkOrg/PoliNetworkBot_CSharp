@@ -51,7 +51,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
-        internal static async Task<string> AskBetweenRangeAsync(int idUser, Language question,
+        internal static async Task<string> AskBetweenRangeAsync(long idUser, Language question,
             TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options,
             string username,
             bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
         }
 
-        internal static async Task<bool> AskYesNo(int id, Language question, bool defaultBool,
+        internal static async Task<bool> AskYesNo(long id, Language question, bool defaultBool,
             TelegramBotAbstract sender, string lang, string username)
         {
             var l1 = new Language(new Dictionary<string, string>

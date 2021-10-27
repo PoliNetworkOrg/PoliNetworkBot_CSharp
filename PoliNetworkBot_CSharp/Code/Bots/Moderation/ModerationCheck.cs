@@ -215,9 +215,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var r = new List<UsernameAndNameCheckResult>
             {
-                CheckUsername2(e.Message.From.Username, e.Message.From.FirstName,
-                    lastName: e.Message.From.LastName, language: e.Message.From.LanguageCode,
-                    userId: e.Message.From.Id, messageId: e.Message.MessageId)
+                CheckUsername2(e.Message.From?.Username, e.Message.From?.FirstName,
+                    lastName: e.Message.From?.LastName, language: e.Message.From?.LanguageCode,
+                    userId: e.Message.From?.Id, messageId: e.Message.MessageId)
             };
 
             if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
@@ -231,15 +231,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return r;
         }
 
-        private static UsernameAndNameCheckResult CheckUsername2(string fromUsername, string fromFirstName, int userId,
+        private static UsernameAndNameCheckResult CheckUsername2(string fromUsername, string fromFirstName, long? userId,
             string lastName, string language, int? messageId)
         {
             var username = false;
             var name = false;
-
+            
             if (string.IsNullOrEmpty(fromUsername))
             {
-                if (GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId))
+                
+                if (userId != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId.Value))
                     username = false;
                 else
                     username = true;
@@ -301,7 +302,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
             bool username, bool name, string lang, string usernameOfUser,
-            long chatId, int userId, int? messageId, ChatType messageChatType,
+            long chatId, long? userId, int? messageId, ChatType messageChatType,
             string firstName, string lastName, User[] newChatMembers)
         {
             var s1I =
@@ -340,13 +341,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
                             var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
                             var TimeToDelete = DateTime.Now + timeUntilDelete;
+                            var botid = telegramBotClient.GetId();
+                            if (botid != null)
+                            {
+                                var toDelete = new MessageToDelete(r3, chatId, TimeToDelete, botid.Value,
+                                    r1.GetChatType(), null);
+                                GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                            var toDelete = new MessageToDelete(r3, chatId, TimeToDelete, telegramBotClient.GetId(),
-                                r1.GetChatType(), null);
-                            GlobalVariables.MessagesToDelete.Add(toDelete);
-
-                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                GlobalVariables.MessagesToDelete);
+                                FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                    GlobalVariables.MessagesToDelete);
+                            }
                         }
                     }
                     else if (r2 is Message r4)
@@ -354,14 +358,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         lock (GlobalVariables.MessagesToDelete)
                         {
                             var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
-                            var TimeToDelete = DateTime.Now + timeUntilDelete;
+                            var timeToDelete = DateTime.Now + timeUntilDelete;
+                            var botId = telegramBotClient.GetId();
+                            if (botId != null)
+                            {
+                                var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
+                                    r1.GetChatType(), null);
+                                GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                            var toDelete = new MessageToDelete(r4, chatId, TimeToDelete, telegramBotClient.GetId(),
-                                r1.GetChatType(), null);
-                            GlobalVariables.MessagesToDelete.Add(toDelete);
-
-                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                GlobalVariables.MessagesToDelete);
+                                FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                    GlobalVariables.MessagesToDelete);
+                            }
                         }
                     }
                     else

@@ -205,7 +205,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            var botId = telegramBotClient.GetId();
+            long? botId = telegramBotClient.GetId();
 
             if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
                 if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)

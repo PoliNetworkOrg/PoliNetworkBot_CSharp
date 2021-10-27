@@ -32,7 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly TelegramBotClient _botClient;
         private readonly string _contactString;
 
-        private readonly long _id;
+        private readonly long? _id;
         private readonly BotTypeApi _isbot;
 
         public readonly TelegramClient _userbotClient;
@@ -42,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private string username;
 
         private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi,
-            string website, string contactString, long id)
+            string website, string contactString, long? id)
         {
             _userbotClient = userBotClient;
             _botClient = botClient;
@@ -242,7 +242,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal static TelegramBotAbstract GetFromRam(TelegramBotClient telegramBotClientBot)
         {
-            return GlobalVariables.Bots[telegramBotClientBot.BotId];
+            if (telegramBotClientBot.BotId == null)
+                return null;
+            return GlobalVariables.Bots[telegramBotClientBot.BotId.Value];
         }
 
         internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, ChatType? chatType, long? accessHash)
@@ -402,7 +404,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task RestrictChatMemberAsync(long chatId, int userId, ChatPermissions permissions,
+        internal async Task RestrictChatMemberAsync(long chatId, long? userId, ChatPermissions permissions,
             DateTime untilDate, ChatType? chatType)
         {
             switch (_isbot)
@@ -413,7 +415,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             case ChatType.Supergroup:
                                 {
-                                    await _botClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate);
+                                    if (userId != null)
+                                    {
+                                        await _botClient.RestrictChatMemberAsync(chatId, userId.Value, permissions,
+                                            untilDate);
+                                    }
+
                                     break;
                                 }
 
@@ -495,7 +502,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        internal long GetId()
+        internal long? GetId()
         {
             switch (_isbot)
             {
@@ -650,14 +657,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             case MessageType.MigratedFromGroup:
                                 break;
 
-                            case MessageType.Animation:
-                                break;
-
-                            case MessageType.Poll:
-                                break;
-
-                            case MessageType.Dice:
-                                break;
 
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -751,7 +750,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             case BotTypeApi.REAL_BOT:
                                 {
                                     var m1 = await _botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message),
-                                        message.Video.Duration, message.Video.Width, message.Video.Height, message.Caption,
+                                        message.Video.Duration, message.Video.Width, message.Video.Height, null, message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                     break;
@@ -774,7 +773,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             case BotTypeApi.REAL_BOT:
                                 {
-                                    var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message),
+                                    var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), null,
                                         message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
@@ -864,15 +863,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
 
                 case MessageType.MigratedFromGroup:
-                    break;
-
-                case MessageType.Animation:
-                    break;
-
-                case MessageType.Poll:
-                    break;
-
-                case MessageType.Dice:
                     break;
             }
 
@@ -975,15 +965,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case MessageType.MigratedFromGroup:
                     break;
-
-                case MessageType.Animation:
-                    break;
-
-                case MessageType.Poll:
-                    break;
-
-                case MessageType.Dice:
-                    break;
+                
             }
 
             return null;
@@ -1126,7 +1108,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _contactString;
         }
 
-        internal async Task<SuccessWithException> IsAdminAsync(int userId, long chatId)
+        internal async Task<SuccessWithException> IsAdminAsync(long userId, long chatId)
         {
             try
             {
@@ -1212,7 +1194,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e,
-            string[] time)
+            string[] time, bool? revokeMessage)
         {
             switch (_isbot)
             {
@@ -1224,11 +1206,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         if (untilDate == null)
                         {
-                            await _botClient.KickChatMemberAsync(groupChatId, (int)target);
+                            await _botClient.KickChatMemberAsync(groupChatId, (int)target, default, revokeMessage);
+                            
                             return new SuccessWithException(true);
                         }
-
-                        await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value);
+                        
+                        await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value,  revokeMessage);
                         return new SuccessWithException(true);
                     }
                     catch (Exception e1)

@@ -265,24 +265,27 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
-                    GlobalVariables.Bots[botClient.BotId] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
-                    if (!bot.AcceptsMessages())
-                        continue;
+                    if (botClient.BotId != null)
+                    {
+                        GlobalVariables.Bots[botClient.BotId.Value] =
+                            new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                                BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
+                        if (!bot.AcceptsMessages())
+                            continue;
 
-                    var onmessageMethod2 = bot.GetOnMessage();
-                    if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
-                        continue;
+                        var onmessageMethod2 = bot.GetOnMessage();
+                        if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
+                            continue;
 
-                    botClient.OnMessage += onmessageMethod2.Item1;
-                    botClient.StartReceiving(bot.GetAllowedUpdates());
+                        botClient.OnMessage += onmessageMethod2.Item1;
+                        botClient.StartReceiving(bot.GetAllowedUpdates());
 
-                    if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
+                        if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
+                        if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
+                        if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
+                    }
                 }
 
             if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
