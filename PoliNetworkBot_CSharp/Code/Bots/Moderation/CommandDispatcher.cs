@@ -248,6 +248,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                             e.Message.MessageId);
                         List<string> messages = AllowedMessages.GetAllMessages();
+                        foreach (var message in messages)
+                        {
+                            text = new Language(new Dictionary<string, string>
+                            {
+                                {"uni", message},
+                            });
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                "uni", ParseMode.Html, null, e.Message.From.Username);
+                        }
                         return;
 
                     }
