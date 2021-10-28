@@ -26,11 +26,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             t.Start();
             //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
             //t1.Start();
-            //var t2 = new Thread(() => _ = BackupHandler(Data.Constants.Groups.BackupGroup, _telegramBotClient, null));
-            //t2.Start();
+
         }
 
-        private static async Task BackupHandler(long backupGroup, TelegramBotAbstract telegramBotClient, object o)
+        public static async Task BackupHandler(long backupGroup, TelegramBotAbstract telegramBotClient, object o)
         {
             autoEvent.WaitOne();
             while (true)

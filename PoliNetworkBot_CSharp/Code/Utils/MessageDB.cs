@@ -138,6 +138,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
+
         private static TelegramBotAbstract FindBotIfNeeded(MessageSendScheduled r1,
             TelegramBotAbstract telegramBotAbstract)
         {

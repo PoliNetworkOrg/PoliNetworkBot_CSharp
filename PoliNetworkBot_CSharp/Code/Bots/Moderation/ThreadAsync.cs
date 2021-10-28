@@ -19,8 +19,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t2 = new Thread(CheckMessagesToDeleteAsync);
             t2.Start();
 
-            var t3 = new Thread(FixThings);
-            t3.Start();
+
+            var t4 = new Thread(DoBackup);
+            t4.Start();
+
+            //var t3 = new Thread(FixThings);
+            //t3.Start();
+        }
+
+        private static void DoBackup(object obj)
+        {
+            var bots = Utils.BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+            if (bots == null || bots.Count == 0)
+                return;
+
+            foreach (var bot in bots)
+            {
+                Thread t = new(() => DoBackup2Async(bot));
+                t.Start();
+            }
+        }
+
+        private static async void DoBackup2Async(TelegramBotAbstract bot)
+        {
+            await Main.BackupHandler(Data.Constants.Groups.BackupGroup, bot, null);
         }
 
         private static async void FixThings()

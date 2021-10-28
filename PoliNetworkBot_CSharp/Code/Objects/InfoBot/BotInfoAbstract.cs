@@ -126,7 +126,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             public const string NumberCountry = "nc";
             public const string NumberNumber = "nn";
             public const string PasswordToAuthenticate = "pta";
-            public static string Method = "method";
+            public const string Method = "method";
         }
     }
 }

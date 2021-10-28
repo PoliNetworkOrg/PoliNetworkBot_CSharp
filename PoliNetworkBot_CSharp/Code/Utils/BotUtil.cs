@@ -2,6 +2,7 @@
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -35,6 +36,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return null;
+        }
+
+        public static List<TelegramBotAbstract> GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
+        {
+            List<TelegramBotAbstract> r = new();
+            foreach (var x in GlobalVariables.Bots.Keys)
+            {
+                var bot = GlobalVariables.Bots[x];
+                var botType = bot.GetBotType();
+                if (botType == botTypeApi)
+                {
+                    var botMode = bot.GetMode();
+                    if (botMode == botModeParam)
+                        r.Add(bot);
+                }
+
+            }
+
+            return r;
         }
     }
 }
