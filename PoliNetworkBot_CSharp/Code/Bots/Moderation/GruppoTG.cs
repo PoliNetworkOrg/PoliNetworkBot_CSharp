@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public GruppoTG(JToken idLink, JToken nome, JToken id, JToken LastUpdateInviteLinkTime)
         {
             this.idLink = idLink.ToString();
-            oldLinks = new List<string> {this.idLink};
+            oldLinks = new List<string> { this.idLink };
             this.nome = nome.ToString();
 
             try

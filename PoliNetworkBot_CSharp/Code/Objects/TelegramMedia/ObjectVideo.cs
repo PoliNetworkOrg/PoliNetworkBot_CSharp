@@ -60,7 +60,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             throw new NotImplementedException();
         }
 
-        public TLAbsInputMedia GetTLabsInputMedia()
+        public static TLAbsInputMedia GetTLabsInputMedia()
         {
             TLAbsInputMedia r = new TLInputMediaPhoto();
 

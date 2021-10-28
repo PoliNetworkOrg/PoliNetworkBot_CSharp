@@ -1,13 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -20,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         private static TelegramBotClient _telegramBotClientBot = null;
         private static TelegramBotAbstract _telegramBotClient = null;
-        static AutoResetEvent autoEvent = new AutoResetEvent(false);
+        static readonly AutoResetEvent autoEvent = new(false);
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
@@ -86,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 //todo: send messagge "Bots not allowed here!"
 
-                if (banMessageDetected(e))
+                if (BanMessageDetected(e))
                 {
                     CommandDispatcher.BanMessageActions(_telegramBotClient, e);
                     return;
@@ -123,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static bool banMessageDetected(MessageEventArgs messageEventArgs)
+        private static bool BanMessageDetected(MessageEventArgs messageEventArgs)
         {
             return false; //todo
         }
@@ -144,7 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item3 == null)
                 return "[NULL]";
 
-            if (item3.Count() == 0)
+            if (item3.Count == 0)
                 return "[EMPTY]";
 
             var r = "";
@@ -157,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item2 == null)
                 return "[NULL]";
 
-            if (item2.Count() == 0)
+            if (item2.Length == 0)
                 return "[EMPTY]";
 
             var r = "";

@@ -1,11 +1,11 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot.Types;
 
 #endregion
@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (groupId == null)
                 return SpamType.ALL_GOOD;
-            var specialGroups = new List<long> {-1001175999519, -1001495422899, -1001164044303};
+            var specialGroups = new List<long> { -1001175999519, -1001495422899, -1001164044303 };
             if (specialGroups.All(group => groupId != group))
                 return SpamType.ALL_GOOD;
             var textLower = text.ToLower();
@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
             }
 
-            var specialGroups = new List<long> {-1001361547847, -452591994, -1001320704409};
+            var specialGroups = new List<long> { -1001361547847, -452591994, -1001320704409 };
             if (groupId != null && text.Contains("bitcoin") &&
                 (text.Contains("guadagno") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
                 return SpamType.NOT_ALLOWED_WORDS;
@@ -98,14 +98,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (groupId)
             {
                 case -1001307671408: //gruppo politica
-                {
-                    return SpamType.ALL_GOOD;
-                }
+                    {
+                        return SpamType.ALL_GOOD;
+                    }
 
                 default:
-                {
-                    return CheckSpamLink_DefaultGroup(text);
-                }
+                    {
+                        return CheckSpamLink_DefaultGroup(text);
+                    }
             }
         }
 
@@ -180,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(link))
                 return null;
 
-            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@link", link}});
+            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
                 return false;

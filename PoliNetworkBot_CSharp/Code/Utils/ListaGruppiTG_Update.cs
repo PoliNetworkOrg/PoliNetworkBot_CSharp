@@ -1,8 +1,8 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -77,7 +77,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return st;
         }
 
-        private string StringNotNullFromBool(bool? query2Fallita)
+        private static string StringNotNullFromBool(bool? query2Fallita)
         {
             if (query2Fallita == null) return StringNotNull(null);
 

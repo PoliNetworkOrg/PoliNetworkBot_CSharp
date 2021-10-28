@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public SuccessWithException(bool v, Exception e2)
         {
             success = v;
-            ex = new List<Exception> {e2};
+            ex = new List<Exception> { e2 };
         }
 
         public SuccessWithException(bool v, List<Exception> e2)

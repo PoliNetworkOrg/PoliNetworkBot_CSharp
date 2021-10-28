@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils

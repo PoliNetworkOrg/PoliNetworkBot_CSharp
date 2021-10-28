@@ -19,13 +19,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 switch (botType)
                 {
                     case BotTypeApi.REAL_BOT:
-                    {
-                        var botMode = bot.GetMode();
-                        if (botMode == BotStartMethods.Moderation)
-                            return bot;
+                        {
+                            var botMode = bot.GetMode();
+                            if (botMode == BotStartMethods.Moderation)
+                                return bot;
 
-                        break;
-                    }
+                            break;
+                        }
                     case BotTypeApi.USER_BOT:
                         break;
 

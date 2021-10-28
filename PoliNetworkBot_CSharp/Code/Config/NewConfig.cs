@@ -1,9 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -12,6 +8,10 @@ using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 
 #endregion
 
@@ -40,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             string[] lines = null;
             try
             {
-                File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
+                lines = File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
             }
             catch
             {
@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 bot.SetApiHash(lineInfo[1].Trim());
                 bot.SetUserId(lineInfo[2].Trim());
                 bot.SetToken(lineInfo[3].Trim());
-                bot.SetIsBot(BotTypeApi.DISGUISED_BOT);
+                BotDisguisedAsUserBotInfo.SetIsBot(BotTypeApi.DISGUISED_BOT);
 
                 botInfos.Add(bot);
             }
@@ -101,7 +101,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 bot.SetNumberCountry(lineInfo[3].Trim());
                 bot.SetNumberNumber(lineInfo[4].Trim());
                 bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
-                bot.SetIsBot(BotTypeApi.USER_BOT);
                 bot.SetMethod(lineInfo[6].Trim());
 
                 botInfos.Add(bot);
@@ -142,7 +141,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 var bot = new BotInfo();
                 bot.SetToken(lineInfo[0].Trim());
                 bot.SetWebsite(lineInfo[1].Trim());
-                bot.SetIsBot(BotTypeApi.REAL_BOT);
+                BotInfo.SetIsBot(BotTypeApi.REAL_BOT);
                 bot.SetAcceptMessages(true);
                 bot.SetOnMessages(lineInfo[2].Trim());
                 bot.SetContactString(lineInfo[3].Trim());
@@ -515,12 +514,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            _ = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
+            _ = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
 
             Tables.FixIdTable("Entities", "id", "name");
 
             const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
@@ -545,7 +544,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                _ = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
+                _ = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
             }
 
             return true;
@@ -559,7 +558,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                     if (r4.Name == "users")
                     {
                         var r5 = r4.Value;
-                        if (!(r5 is JArray r6))
+                        if (r5 is not JArray r6)
                             continue;
 
                         var users = new List<long>();

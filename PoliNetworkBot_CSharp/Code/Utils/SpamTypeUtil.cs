@@ -9,14 +9,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             switch (spamType1)
             {
                 case SpamType.ALL_GOOD:
-                {
-                    return spamType2;
-                }
+                    {
+                        return spamType2;
+                    }
 
                 default:
-                {
-                    return spamType1;
-                }
+                    {
+                        return spamType1;
+                    }
             }
         }
     }

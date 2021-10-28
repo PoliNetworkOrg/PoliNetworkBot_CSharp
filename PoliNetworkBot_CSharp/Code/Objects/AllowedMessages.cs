@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {

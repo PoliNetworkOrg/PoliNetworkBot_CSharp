@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
+using System.Collections.Generic;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -14,12 +14,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
     [Serializable]
     public class BotInfo : BotInfoAbstract
     {
-        internal new bool SetIsBot(BotTypeApi v)
+        internal new static bool SetIsBot(BotTypeApi v)
         {
             return false;
         }
 
-        internal new BotTypeApi? IsBot()
+        internal new static BotTypeApi? IsBot()
         {
             return BotTypeApi.REAL_BOT;
         }
@@ -29,16 +29,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                {
-                    var x = new List<UpdateType>
+                    {
+                        var x = new List<UpdateType>
                     {
                         UpdateType.CallbackQuery,
                         UpdateType.Message,
                         UpdateType.InlineQuery,
                         UpdateType.ChosenInlineResult
                     };
-                    return x.ToArray();
-                }
+                        return x.ToArray();
+                    }
             }
 
             return null;
@@ -49,9 +49,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                {
-                    return true;
-                }
+                    {
+                        return true;
+                    }
             }
 
             return false;
@@ -62,9 +62,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             switch (KeyValuePairs[ConstConfigBot.OnMessages])
             {
                 case "a":
-                {
-                    return MainAnon.CallbackMethod;
-                }
+                    {
+                        return MainAnon.CallbackMethod;
+                    }
             }
 
             return null;

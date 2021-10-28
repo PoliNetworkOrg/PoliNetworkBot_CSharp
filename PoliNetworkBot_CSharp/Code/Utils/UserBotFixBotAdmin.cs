@@ -1,10 +1,10 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -187,7 +187,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (x5.AccessHash == null)
                 return null;
 
-            var x7 = new TLInputChannel {AccessHash = x5.AccessHash.Value, ChannelId = x5.Id};
+            var x7 = new TLInputChannel { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
             var isOurBotPresent = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
             if (isOurBotPresent.Item2 != null) return new Tuple<bool?, DateTime?>(null, isOurBotPresent.Item2);
 
@@ -204,7 +204,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (id_of_chats_we_know_are_ok.ContainsKey(x5.ChannelId))
                 return new Tuple<bool?, DateTime?>(id_of_chats_we_know_are_ok[x5.ChannelId], null);
 
-            TLAbsInputChannel channel = new TLInputChannel {ChannelId = x5.ChannelId, AccessHash = x5.AccessHash};
+            TLAbsInputChannel channel = new TLInputChannel { ChannelId = x5.ChannelId, AccessHash = x5.AccessHash };
             TLChatFull x = null;
             try
             {
@@ -247,7 +247,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return false;
 
             const long userIdOfOurBot = 768169879;
-            var channel = new TLInputChannel {AccessHash = x5.AccessHash.Value, ChannelId = x5.Id};
+            var channel = new TLInputChannel { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
 
             var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)
@@ -323,7 +323,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {
                                 idMessageAdded.Value
                             };
-                            TLAbsInputChannel x7 = new TLInputChannel {AccessHash = accessHash.Value, ChannelId = id};
+                            TLAbsInputChannel x7 = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = id };
                             await telegramBotAbstract._userbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
                         }
                         catch
@@ -460,7 +460,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             accessHashUser = u5.AccessHash;
 
-            TLAbsInputUser u2 = new TLInputUser {UserId = (int) userIdOfOurBot, AccessHash = accessHashUser};
+            TLAbsInputUser u2 = new TLInputUser { UserId = (int)userIdOfOurBot, AccessHash = accessHashUser };
             users.Add(u2);
             TLAbsUpdates r = null;
             try
@@ -511,9 +511,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             TLInputChannel channel = null;
             if (accessHash != null)
-                channel = new TLInputChannel {AccessHash = accessHash.Value, ChannelId = x5.Id};
+                channel = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id };
             else
-                channel = new TLInputChannel {ChannelId = x5.Id};
+                channel = new TLInputChannel { ChannelId = x5.Id };
 
             var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)

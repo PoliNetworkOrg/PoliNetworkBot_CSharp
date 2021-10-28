@@ -1,11 +1,11 @@
-﻿using System;
+﻿using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
@@ -113,7 +113,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var r2 = new List<string>();
             foreach (DataRow dr in r.Rows)
             {
-                var dt = (DateTime) dr["when_king"];
+                var dt = (DateTime)dr["when_king"];
                 if (dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year)
                     r2.Add(dr["title"].ToString());
             }
@@ -140,7 +140,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 return;
 
             var q = "SELECT * FROM Primo WHERE title = @t";
-            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> {{"@t", t}});
+            var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@t", t } });
             if (r == null || r.Rows.Count == 0)
             {
                 await MaybeKing(telegramBotClient, e, t, true);
@@ -148,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 return;
             }
 
-            var datetime = (DateTime) r.Rows[0]["when_king"];
+            var datetime = (DateTime)r.Rows[0]["when_king"];
             if (datetime.Day != DateTime.Now.Day || datetime.Month != DateTime.Now.Month ||
                 datetime.Year != DateTime.Now.Year)
             {
@@ -263,10 +263,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 if (dr == null)
                     continue;
 
-                var id = (long) dr["king_id"];
+                var id = (long)dr["king_id"];
                 if (id == e.Message.From.Id)
                 {
-                    var dt = (DateTime) dr["when_king"];
+                    var dt = (DateTime)dr["when_king"];
                     if (DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day)
                         r3.Add(dr["title"].ToString());
                 }

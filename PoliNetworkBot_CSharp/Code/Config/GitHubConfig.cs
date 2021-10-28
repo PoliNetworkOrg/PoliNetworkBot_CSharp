@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using System.IO;
 
 namespace PoliNetworkBot_CSharp.Code.Config
 {
@@ -12,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             var json = File.ReadAllText(Path);
             var data = JObject.Parse(json);
-            return (string) data[param];
+            return (string)data[param];
         }
 
         public static string GetUser()

@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
@@ -16,19 +16,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         public static Dictionary<SpecialGroup, long> excludedGroups = new()
         {
-            {SpecialGroup.PIANO_DI_STUDI, -1001208900229},
-            {SpecialGroup.ASK_POLIMI, -1001251460298},
-            {SpecialGroup.DSU, -1001241129618}
+            { SpecialGroup.PIANO_DI_STUDI, -1001208900229 },
+            { SpecialGroup.ASK_POLIMI, -1001251460298 },
+            { SpecialGroup.DSU, -1001241129618 }
         };
 
         public static Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch =
             new()
             {
-                {SpecialGroup.ASK_POLIMI, new List<SpecialGroup> {SpecialGroup.ASK_POLIMI}},
-                {SpecialGroup.DSU, new List<SpecialGroup> {SpecialGroup.DSU, SpecialGroup.ASK_POLIMI}},
+                { SpecialGroup.ASK_POLIMI, new List<SpecialGroup> { SpecialGroup.ASK_POLIMI } },
+                { SpecialGroup.DSU, new List<SpecialGroup> { SpecialGroup.DSU, SpecialGroup.ASK_POLIMI } },
                 {
                     SpecialGroup.PIANO_DI_STUDI,
-                    new List<SpecialGroup> {SpecialGroup.PIANO_DI_STUDI, SpecialGroup.ASK_POLIMI}
+                    new List<SpecialGroup> { SpecialGroup.PIANO_DI_STUDI, SpecialGroup.ASK_POLIMI }
                 }
             };
 
@@ -37,19 +37,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                {
-                    await PrivateMessage(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await PrivateMessage(telegramBotClient, e);
+                        break;
+                    }
                 case ChatType.Channel:
                     break;
 
                 case ChatType.Group:
                 case ChatType.Supergroup:
-                {
-                    await MessageInGroup(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await MessageInGroup(telegramBotClient, e);
+                        break;
+                    }
             }
         }
 
