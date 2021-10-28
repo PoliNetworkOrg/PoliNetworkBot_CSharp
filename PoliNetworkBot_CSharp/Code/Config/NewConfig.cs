@@ -79,34 +79,41 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
         private static void ResetUserbotMethod()
         {
-            var lines = File.ReadAllText(Paths.Info.ConfigUserBotsInfo).Split(RowSeparator);
-            var botInfos = new List<UserBotInfo>();
-            foreach (var t in lines)
+            try
             {
-                var line = t;
-                if (string.IsNullOrEmpty(line))
-                    continue;
+                var lines = File.ReadAllText(Paths.Info.ConfigUserBotsInfo).Split(RowSeparator);
+                var botInfos = new List<UserBotInfo>();
+                foreach (var t in lines)
+                {
+                    var line = t;
+                    if (string.IsNullOrEmpty(line))
+                        continue;
 
-                line = line.Trim();
+                    line = line.Trim();
 
-                if (string.IsNullOrEmpty(line))
-                    continue;
+                    if (string.IsNullOrEmpty(line))
+                        continue;
 
-                var lineInfo = line.Split(ColumnSeparator);
+                    var lineInfo = line.Split(ColumnSeparator);
 
-                var bot = new UserBotInfo();
-                bot.SetApiId(lineInfo[0].Trim());
-                bot.SetApiHash(lineInfo[1].Trim());
-                bot.SetUserId(lineInfo[2].Trim());
-                bot.SetNumberCountry(lineInfo[3].Trim());
-                bot.SetNumberNumber(lineInfo[4].Trim());
-                bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
-                bot.SetMethod(lineInfo[6].Trim());
+                    var bot = new UserBotInfo();
+                    bot.SetApiId(lineInfo[0].Trim());
+                    bot.SetApiHash(lineInfo[1].Trim());
+                    bot.SetUserId(lineInfo[2].Trim());
+                    bot.SetNumberCountry(lineInfo[3].Trim());
+                    bot.SetNumberNumber(lineInfo[4].Trim());
+                    bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
+                    bot.SetMethod(lineInfo[6].Trim());
 
-                botInfos.Add(bot);
+                    botInfos.Add(bot);
+                }
+                FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigUserbot, botInfos);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("Skipping userbot config");
             }
 
-            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigUserbot, botInfos);
         }
 
         private static void ResetBotMethod()
