@@ -482,20 +482,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username)
         {
-            var stream = File.OpenRead("./data/db.db");
+            try
+            {
+                var stream = File.OpenRead("./data/db.db");
 
-            var text2 = new Language(new Dictionary<string, string>
+                var text2 = new Language(new Dictionary<string, string>
             {
                 {"it", "Backup:"}
             });
 
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
+                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
 
-            await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                botAbstract, username, "it", null, true);
+                await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    botAbstract, username, "it", null, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
