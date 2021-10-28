@@ -10,11 +10,11 @@ TestBot/Old/
 
 PoliNetworkBot_CSharp.sln.DotSettings.user
 
-PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/backup/
+PoliNetworkBot_CSharp/bin/Debug/*/backup/
 
-PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/config/
+PoliNetworkBot_CSharp/bin/Debug/*/config/
 
-PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/data/
+PoliNetworkBot_CSharp/bin/Debug/*/data/
 
 
 *.dat
