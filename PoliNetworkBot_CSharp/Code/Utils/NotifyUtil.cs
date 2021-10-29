@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NotifyUtil
     {
-        private const long group_exception = -438352042;
+        private const long group_exception = -1001456960264;
         private const long permitted_spam_group = -736428640;
         private const string default_lang = "en";
 
