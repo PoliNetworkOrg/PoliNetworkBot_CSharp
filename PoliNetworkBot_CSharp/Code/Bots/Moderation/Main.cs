@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         private static TelegramBotClient _telegramBotClientBot = null;
         private static TelegramBotAbstract _telegramBotClient = null;
-        static readonly AutoResetEvent autoEvent = new(false);
+
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
@@ -28,26 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //t1.Start();
 
         }
-
-        public static async Task BackupHandler(long backupGroup, TelegramBotAbstract telegramBotClient, object o)
-        {
-            autoEvent.WaitOne();
-            while (true)
-            {
-                await CommandDispatcher.BackupHandler(Data.Constants.Groups.BackupGroup, _telegramBotClient, null);
-                Thread.Sleep(1000 * 3600 * 24 * 7);
-            }
-        }
-
-        private static object CheckAllowedMessageExpiration(object sender, MessageEventArgs messageEventArgs)
-        {
-            while (true)
-            {
-                AllowedMessages.CheckTimestamp();
-                Thread.Sleep(1000 * 3600 * 24);
-            }
-        }
-
+        
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
 
@@ -59,9 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
 
                 _telegramBotClient = TelegramBotAbstract.GetFromRam(_telegramBotClientBot);
-
-                //autoEvent.Set();
-
+                
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(_telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {

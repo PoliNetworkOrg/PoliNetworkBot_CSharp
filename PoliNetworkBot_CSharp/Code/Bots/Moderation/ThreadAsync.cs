@@ -11,38 +11,74 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     public class ThreadAsync
     {
-        public static void DoThingsAsyncBot(object obj)
+        public static void DoThingsAsyncBot()
         {
             var t = new Thread(CheckMessagesToSend);
             t.Start();
 
             var t2 = new Thread(CheckMessagesToDeleteAsync);
             t2.Start();
-
-
+            
             var t4 = new Thread(DoBackup);
             t4.Start();
-
+            
+            var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
+            t5.Start();
+            
             //var t3 = new Thread(FixThings);
             //t3.Start();
         }
 
-        private static void DoBackup(object obj)
+        private static void DoBackup()
         {
-            var bots = Utils.BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
             if (bots == null || bots.Count == 0)
                 return;
-
-            foreach (var bot in bots)
-            {
-                Thread t = new(() => DoBackup2Async(bot));
-                t.Start();
-            }
+            
+            Thread t = new(() => DoBackup2Async(bots[0]));
+            t.Start();
         }
 
         private static async void DoBackup2Async(TelegramBotAbstract bot)
         {
-            await Main.BackupHandler(Data.Constants.Groups.BackupGroup, bot, null);
+            if (bot == null)
+                return;
+            try
+            {
+                while (true)
+                {
+                    await CommandDispatcher.BackupHandler(Data.Constants.Groups.BackupGroup, bot, null);
+                    Thread.Sleep(1000 * 3600 * 24 * 7);
+                }
+            }
+            catch (Exception e)
+            {
+                await NotifyUtil.NotifyOwners(e, bot);
+            }
+        }
+        
+        private static async void DoCheckAllowedMessageExpiration2Async()
+        {
+            try
+            {
+                CheckAllowedMessageExpiration();
+            }
+            catch (Exception e)
+            {
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                if (bots == null || bots.Count == 0)
+                    return;
+                await NotifyUtil.NotifyOwners(e, bots[0]);
+            }
+        }
+        
+        private static async void CheckAllowedMessageExpiration()
+        {
+            while (true)
+            {
+                AllowedMessages.CheckTimestamp();
+                Thread.Sleep(1000 * 3600 * 24);
+            }
         }
 
         private static async void FixThings()
