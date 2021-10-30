@@ -17,8 +17,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Main
     {
-        private static TelegramBotClient _telegramBotClientBot = null;
-        private static TelegramBotAbstract _telegramBotClient = null;
 
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
@@ -31,17 +29,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
+            TelegramBotClient telegramBotClientBot = null;
+            TelegramBotAbstract telegramBotClient = null;
 
             try
             {
-                if (sender is TelegramBotClient tmp) _telegramBotClientBot = tmp;
+                if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
-                if (_telegramBotClientBot == null)
+                if (telegramBotClientBot == null)
                     return;
 
-                _telegramBotClient = TelegramBotAbstract.GetFromRam(_telegramBotClientBot);
-                
-                var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(_telegramBotClient, e);
+                telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+
+                var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
                     var itemToPrint = MemberListToString(toExit.Item2);
@@ -56,54 +56,55 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
 
                 var notAuthorizedBotHasBeenAddedBool =
-                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, _telegramBotClient);
+                    await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
                 if (notAuthorizedBotHasBeenAddedBool != null && notAuthorizedBotHasBeenAddedBool.Count > 0)
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
-                        await RestrictUser.BanUserFromGroup(_telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
 
                 //todo: send messagge "Bots not allowed here!"
 
-                if (BanMessageDetected(e))
-                {
-                    CommandDispatcher.BanMessageActions(_telegramBotClient, e);
-                    return;
-                }
+                //if (BanMessageDetected(e)) todo:BanMessageDetected
+                //{
+                //   await CommandDispatcher.BanMessageActions(telegramBotClient, e);
+                //    return;
+                //}
 
                 var toExitBecauseUsernameAndNameCheck =
-                    await ModerationCheck.CheckUsernameAndName(e, _telegramBotClient);
+                    await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
                 var checkSpam = ModerationCheck.CheckSpam(e);
                 if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
                 {
-                    await ModerationCheck.AntiSpamMeasure(_telegramBotClient, e, checkSpam);
+                    await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
 
                 if (checkSpam == SpamType.SPAM_PERMITTED)
                 {
-                    await ModerationCheck.PermittedSpamMeasure(_telegramBotClient, e, checkSpam);
+                    await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
                     return;
                 }
 
                 if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
-                    await CommandDispatcher.CommandDispatcherMethod(_telegramBotClient, e);
+                    await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                 else
-                    await TextConversation.DetectMessage(_telegramBotClient, e);
+                    await TextConversation.DetectMessage(telegramBotClient, e);
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
 
-                await NotifyUtil.NotifyOwners(exception, _telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }
 
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs)
         {
-            return false; //todo
+            throw new NotImplementedException();
         }
+        
 
         private static string StringToStringToBePrinted(string item4)
         {
