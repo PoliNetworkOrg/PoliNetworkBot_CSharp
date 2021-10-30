@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task NotifyOwners(ExceptionNumbered exception,
-            TelegramBotAbstract sender, int v = 0, string extrainfo = null, string langCode = default_lang,
+            TelegramBotAbstract sender, int loopNumber = 0, string extrainfo = null, string langCode = default_lang,
             long? replyToMessageId2 = null)
         {
             if (sender == null)
@@ -90,7 +90,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"en", "Exception! " + message3}
             });
 
-            var r1 = await NotifyOwners2Async(text, sender, v, langCode, replyToMessageId2);
+            var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2);
             if (r1 == null)
                 return;
         }
@@ -102,9 +102,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
 
-        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, int v = 0)
+        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, int loopNumber = 0)
         {
-            await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, v);
+            await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, loopNumber);
         }
 
         private static async Task<MessageSentResult> NotifyOwners2Async(Language text, TelegramBotAbstract sender,

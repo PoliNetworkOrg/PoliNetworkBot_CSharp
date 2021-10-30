@@ -824,6 +824,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
             string lang)
         {
+            await Groups.FixAllGroupsNames();
             var groups = Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);

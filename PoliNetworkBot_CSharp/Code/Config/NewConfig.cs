@@ -107,13 +107,13 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
                     botInfos.Add(bot);
                 }
+
                 FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigUserbot, botInfos);
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine("Skipping userbot config");
             }
-
         }
 
         private static void ResetBotMethod()
@@ -279,29 +279,40 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static void FillGroups(int botIdWhoInsertedThem)
         {
             //read groups from polinetwork python config file and fill db
-            var s = File.ReadAllText("../../../Old/data/groups.json");
-            var r = JsonConvert.DeserializeObject<JObject>(s);
-            var r2 = r.Children();
-            foreach (var r3 in r2)
-                if (r3 is JProperty r4)
-                {
-                    var name = r4.Name;
-                    if (name == "Gruppi")
+            try
+            {
+                var s = File.ReadAllText("../../../Old/data/groups.json");
+                var r = JsonConvert.DeserializeObject<JObject>(s);
+                var r2 = r.Children();
+                foreach (var r3 in r2)
+                    if (r3 is JProperty r4)
                     {
-                        var r5 = r4.Children();
-                        foreach (var r6 in r5)
+                        var name = r4.Name;
+                        if (name == "Gruppi")
                         {
-                            var r7 = r6.Children();
-                            foreach (var r8 in r7)
-                                if (r8 is JObject r9)
-                                {
-                                    var r10 = r9.Children();
+                            var r5 = r4.Children();
+                            foreach (var r6 in r5)
+                            {
+                                var r7 = r6.Children();
+                                foreach (var r8 in r7)
+                                    if (r8 is JObject r9)
+                                    {
+                                        var r10 = r9.Children();
 
-                                    AddGroupToDb(r10, botIdWhoInsertedThem);
-                                }
+                                        AddGroupToDb(r10, botIdWhoInsertedThem);
+                                    }
+                            }
                         }
                     }
-                }
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("Skipping Old bot groups import");
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine("Skipping Old bot groups import");
+            }
         }
 
         private static Tuple<bool, List<Exception>> AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
@@ -504,29 +515,40 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
         private static void FillAssoc()
         {
-            //read assoc from polinetwork python config file and fill db
-            var s = File.ReadAllText("../../../Old/config/assoc.json");
-            var r = JsonConvert.DeserializeObject<JObject>(s);
-            var r2 = r.Children();
-            foreach (var r3 in r2)
-                if (r3 is JProperty r4)
-                {
-                    var name = r4.Name;
-                    var r5 = r4.Value;
-                    var users = GetUsersFromAssocJson(r5);
-                    AddAssocToDb(name, users);
-                }
+            try
+            {
+                //read assoc from polinetwork python config file and fill db
+                var s = File.ReadAllText("../../../Old/config/assoc.json");
+                var r = JsonConvert.DeserializeObject<JObject>(s);
+                var r2 = r.Children();
+                foreach (var r3 in r2)
+                    if (r3 is JProperty r4)
+                    {
+                        var name = r4.Name;
+                        var r5 = r4.Value;
+                        var users = GetUsersFromAssocJson(r5);
+                        AddAssocToDb(name, users);
+                    }
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("Skipping assoc.json import");
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine("Skipping assoc.json import");
+            }
         }
 
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            _ = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
+            _ = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
 
             Tables.FixIdTable("Entities", "id", "name");
 
             const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
@@ -551,7 +573,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                _ = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+                _ = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
             }
 
             return true;

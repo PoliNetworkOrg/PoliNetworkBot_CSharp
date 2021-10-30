@@ -25,5 +25,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
+
+        public static async Task FixAllGroupsNames()
+        {
+            const string q1 = "SELECT * FROM Groups";
+            var groups =  SqLite.ExecuteSelect(q1);
+            groups.Rows[0].ToString();
+        }
     }
 }
