@@ -499,20 +499,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var stream = File.OpenRead("./data/db.db");
+                var db = await File.ReadAllTextAsync("./data/db.db");
 
+                if (String.IsNullOrEmpty(db))
+                    return;
+
+                byte[] byteArray = Encoding.ASCII.GetBytes( db );
+                
+                var stream = new MemoryStream( byteArray );
+                
                 var text2 = new Language(new Dictionary<string, string>
-            {
-                {"it", "Backup:"}
-            });
-
-                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
+                {
+                    {"it", "Backup:"}
+                });
+                
+                TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) sendTo};
                 var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
 
                 await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
                         null, "application/octet-stream"), peer,
                     text2, TextAsCaption.BEFORE_FILE,
                     botAbstract, username, "it", null, true);
+            
             }
             catch (Exception ex)
             {
