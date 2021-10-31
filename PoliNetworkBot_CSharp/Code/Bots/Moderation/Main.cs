@@ -94,7 +94,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                Logger.WriteLine(exception.Message);
 
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }

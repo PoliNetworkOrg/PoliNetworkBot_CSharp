@@ -332,7 +332,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             catch (Exception e1)
             {
                 ;
-                Console.WriteLine(e1.Message);
+                Logger.WriteLine(e1.Message);
             }
 
             ;

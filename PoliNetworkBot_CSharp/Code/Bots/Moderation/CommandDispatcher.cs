@@ -488,7 +488,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (debug)
                 foreach (var t in results)
                 {
-                    Console.WriteLine(t.ToString());
+                    Logger.WriteLine(t.ToString());
                     listString.Add(t.ToString());
                 }
             powershell.Commands.Clear();
@@ -519,7 +519,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.WriteLine(ex);
                 await NotifyUtil.NotifyOwners(ex, botAbstract);
             }
         }

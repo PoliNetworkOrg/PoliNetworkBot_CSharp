@@ -43,23 +43,35 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         oldTitle = (string)groups.Rows[i][indexTitle];
-                        newTitle = telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]).Result.Title;
+                        newTitle = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]))?.Item1?.Title;
+                        if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
+                        {
+                            throw new Exception("oldTitle and newTitle both null at line: " + i);
+                        }
+                        if (String.IsNullOrEmpty(newTitle))
+                        {
+                            throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
+                        }
+                        if (String.IsNullOrEmpty(oldTitle))
+                        {
+                            Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
+                        }
                         if (oldTitle == newTitle) continue;
-                        Console.WriteLine("Changing name of group: " + oldTitle + " to: " + newTitle);
+                        Logger.WriteLine("Changing name of group: " + oldTitle + " to: " + newTitle);
                         var id = groups.Rows[i][indexId] as long?;
                         var q = "UPDATE Groups SET title = @title WHERE id = @id";
                         if (id == null) continue;
                         var d = new Dictionary<string, object>
-                    {
-                        {"@title", newTitle},
-                        {"@id", id.Value}
-                    };
-                        SqLite.Execute(q, d);
+                        {
+                            {"@title", newTitle},
+                            {"@id", id.Value}
+                        };
+                            SqLite.Execute(q, d);
                     }
                     catch (Exception e2)
                     {
                         await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
-                        await NotifyUtil.NotifyOwners(oldTitle + "\n\n" + newTitle, telegramBotAbstract);
+                        await NotifyUtil.NotifyOwners("oldTitle: " + oldTitle + "\n\n NewTitle:" + newTitle, telegramBotAbstract);
                     }
                 }
             }

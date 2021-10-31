@@ -5,6 +5,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {
@@ -14,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Test.IG
 
         public static async Task<bool> MainIGAsync()
         {
-            Console.WriteLine("Starting demo of InstagramApiSharp project");
+            Logger.WriteLine("Starting demo of InstagramApiSharp project");
 
             string[] c = null;
             try
@@ -52,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Test.IG
             if (!x.IsUserAuthenticated)
             {
                 // login
-                Console.WriteLine($"Logging in as {userSession.UserName}");
+                Logger.WriteLine($"Logging in as {userSession.UserName}");
                 delay.Disable();
                 var logInResult = await x.LoginAsync();
                 delay.Enable();

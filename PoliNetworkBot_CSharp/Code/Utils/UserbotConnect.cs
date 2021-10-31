@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (CloudPasswordNeededException ex)
             {
-                Console.WriteLine(ex.Message);
+                Logger.WriteLine(ex.Message);
 
                 var passwordSetting = await telegramClient.GetPasswordSetting();
                 var password = passwordToAuthenticate;

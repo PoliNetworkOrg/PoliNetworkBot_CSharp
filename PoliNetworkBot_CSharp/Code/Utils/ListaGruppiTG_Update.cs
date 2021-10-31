@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception ex2)
                 {
-                    Console.WriteLine(ex2);
+                    Logger.WriteLine(ex2);
                 }
 
             //Thread.Sleep(500);

@@ -112,7 +112,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine("Skipping userbot config");
+                Logger.WriteLine("Skipping userbot config");
             }
         }
 
@@ -307,11 +307,11 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine("Skipping Old bot groups import");
+                Logger.WriteLine("Skipping Old bot groups import");
             }
             catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine("Skipping Old bot groups import");
+                Logger.WriteLine("Skipping Old bot groups import");
             }
         }
 
@@ -444,7 +444,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
                     else if (r7.Name == "invite_link")
                         invite_link = GetInviteLinkFromJson(r7);
                     else
-                        Console.WriteLine(r7);
+                        Logger.WriteLine(r7);
                 }
             }
 
@@ -532,11 +532,11 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine("Skipping assoc.json import");
+                Logger.WriteLine("Skipping assoc.json import");
             }
             catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine("Skipping assoc.json import");
+                Logger.WriteLine("Skipping assoc.json import");
             }
         }
 

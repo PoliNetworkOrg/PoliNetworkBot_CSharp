@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                     catch (Exception e7)
                     {
-                        Console.WriteLine(e7);
+                        Logger.WriteLine(e7);
                     }
                 }
 
@@ -304,7 +304,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e3)
                 {
-                    Console.WriteLine(e3);
+                    Logger.WriteLine(e3);
 
                     try
                     {
@@ -485,7 +485,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e2)
             {
-                Console.WriteLine(e2);
+                Logger.WriteLine(e2);
             }
 
             ;

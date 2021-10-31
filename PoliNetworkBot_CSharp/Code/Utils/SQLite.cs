@@ -56,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (SQLiteException e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e);
                 throw new SQLiteException(e.Message);
             }
         }

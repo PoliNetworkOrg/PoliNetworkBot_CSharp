@@ -66,7 +66,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                             GlobalVariables.LoadToRam();
 
-                            Console.WriteLine("\nTo kill this process, you have to check the process list");
+                            Logger.WriteLine("\nTo kill this process, you have to check the process list");
 
                             _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
@@ -116,14 +116,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         private static void ResetEverything(bool alsoFillTablesFromJson)
         {
             NewConfig.NewConfigMethod(true, true, true, true, alsoFillTablesFromJson);
-            Console.WriteLine("Reset done!");
+            Logger.WriteLine("Reset done!");
         }
 
         private static char MainGetMenuChoice()
         {
             while (true)
             {
-                Console.WriteLine("Welcome to our bots system!\n" +
+                Logger.WriteLine("Welcome to our bots system!\n" +
                                   "What do you want to do?\n" +
                                   "1) Reset everything\n" +
                                   "2) Normal mode (no disguised)\n" +
@@ -156,14 +156,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             if (_botDisguisedAsUserBotInfos != null && _botDisguisedAsUserBotInfos.Count != 0)
                 return ToExit.STAY;
 
-            Console.WriteLine(
+            Logger.WriteLine(
                 "It seems that the bot disguised as userbot configuration isn't available. Do you want to reset it? (Y/N)");
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(false, false, true, false, false);
 
-                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
@@ -174,7 +174,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 }
                 else
                 {
-                    Console.WriteLine("Ok, bye!");
+                    Logger.WriteLine("Ok, bye!");
                     return ToExit.SKIP;
                 }
             }
@@ -192,14 +192,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             if (_userBotsInfos != null && _userBotsInfos.Count != 0)
                 return ToExit.STAY;
 
-            Console.WriteLine(
+            Logger.WriteLine(
                 "It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(false, true, false, false, false);
 
-                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
@@ -208,7 +208,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 }
                 else
                 {
-                    Console.WriteLine("Ok, bye!");
+                    Logger.WriteLine("Ok, bye!");
                     return ToExit.SKIP;
                 }
             }
@@ -226,14 +226,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             if (_botInfos != null && _botInfos.Count != 0)
                 return ToExit.STAY;
 
-            Console.WriteLine(
+            Logger.WriteLine(
                 "It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
             var readChoice2 = Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(true, false, false, false, false);
 
-                Console.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
+                Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
@@ -242,7 +242,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 }
                 else
                 {
-                    Console.WriteLine("Ok, bye!");
+                    Logger.WriteLine("Ok, bye!");
                     return ToExit.SKIP;
                 }
             }
@@ -399,7 +399,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
             catch (Exception e1)
             {
-                Console.WriteLine(e1);
+                Logger.WriteLine(e1);
             }
 
             ;

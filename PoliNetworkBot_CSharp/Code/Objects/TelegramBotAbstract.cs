@@ -194,21 +194,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<Chat> GetChat(long chatId)
+        internal async Task<Tuple<Chat,Exception>> GetChat(long chatId)
         {
+            Exception e = null;
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     {
                         try
                         {
-                            return await _botClient.GetChatAsync(chatId);
+                            return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), e);
                         }
-                        catch
+                        catch (Exception e2)
                         {
-                            ;
+                            e = e2;
                         }
-
+                        
                         if (chatId > 0)
                         {
                             await Task.Delay(100);
@@ -217,10 +218,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             chatidS = "-100" + chatidS;
                             var chatidSl = Convert.ToInt64(chatidS);
 
-                            return await _botClient.GetChatAsync(chatidSl);
+                            return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatidSl), e);
                         }
 
-                        return null;
+                        return new Tuple<Chat, Exception>(null, e);
                     }
             }
 
@@ -421,7 +422,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                             case ChatType.Group:
                                 {
-                                    Console.WriteLine("Can't restrict a user in a group");
+                                    Logger.WriteLine("Can't restrict a user in a group");
                                     break;
                                 }
                         }
@@ -549,7 +550,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        Logger.WriteLine(e);
                     }
 
                     return new MessageSentResult(false, null, chatType);
@@ -1088,7 +1089,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 }
                                 catch (Exception e2)
                                 {
-                                    Console.WriteLine(e2);
+                                    Logger.WriteLine(e2);
                                 }
 
                         return false;
@@ -1382,7 +1383,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 if (c1 is TLChat c2)
                                 {
                                     //todo add description
-                                    Console.WriteLine(description);
+                                    Logger.WriteLine(description);
 
                                     return c2.Id;
                                 }
@@ -1390,7 +1391,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        Logger.WriteLine(e.Message);
                         Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
                         return null;
                     }

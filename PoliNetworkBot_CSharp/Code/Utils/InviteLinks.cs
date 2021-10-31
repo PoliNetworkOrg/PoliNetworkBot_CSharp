@@ -79,7 +79,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 await Task.Delay(100);
-                chat = await sender.GetChat(chatId);
+                chat = (await sender.GetChat(chatId))?.Item1;
                 if (chat == null)
                     return null;
 
@@ -87,7 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception ex1)
             {
-                Console.WriteLine(ex1);
+                Logger.WriteLine(ex1);
                 var ex3m = "5" +
                     "\n\n" + ex1.Message +
                     "\n\n" + chatId +
@@ -149,13 +149,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 var d = e.Message.ReplyToMessage.Document;
                 var f = await sender.DownloadFileAsync(d);
-                Console.WriteLine(f.Item2.Length);
+                Logger.WriteLine(f.Item2.Length);
                 f.Item2.Seek(0, SeekOrigin.Begin);
                 var reader = new StreamReader(f.Item2);
                 var text = reader.ReadToEnd();
 
                 var obj = JsonConvert.DeserializeObject(text);
-                Console.WriteLine(obj.GetType());
+                Logger.WriteLine(obj.GetType());
                 var jArray = (JArray)obj;
 
                 var L = new ListaGruppiTG_Update();
@@ -193,7 +193,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
+                        Logger.WriteLine(ex);
                         var ex4m = "4" + "\n\n" + ex.Message;
                         await sender.SendTextMessageAsync(e.Message.From.Id,
                             new Language(
@@ -240,7 +240,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.WriteLine(ex);
             }
         }
 
@@ -280,7 +280,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception ex1)
                 {
-                    Console.WriteLine(ex1);
+                    Logger.WriteLine(ex1);
                     var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink + "\n\n" +
                                gruppoTG.nome + "\n\n" + gruppoTG.newLink + "\n\n" + gruppoTG.permanentId;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
@@ -326,7 +326,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception ex2)
                 {
-                    Console.WriteLine(ex2);
+                    Logger.WriteLine(ex2);
                     var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(
@@ -369,7 +369,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception ex3)
                 {
-                    Console.WriteLine(ex3);
+                    Logger.WriteLine(ex3);
                     var ex3m = "3" + "\n\n" + ex3.Message;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(

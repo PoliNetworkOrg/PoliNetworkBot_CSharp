@@ -89,19 +89,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                     sw.WriteLine(group + " $ " + link);
                                 }
 
-                                Console.WriteLine("added: " + group + " $ " + link);
+                                Logger.WriteLine("added: " + group + " $ " + link);
                                 Thread.Sleep(5 * 1000 * 60);
                                 toBeDone = false;
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(e.Message + " -> In Main Thread!");
+                                Logger.WriteLine(e.Message + " -> In Main Thread!");
                                 Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
                                 await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
                             }
                 }
 
-                Console.WriteLine("====== CREATION COMPLETE ======");
+                Logger.WriteLine("====== CREATION COMPLETE ======");
             }
             catch (Exception ignore)
             {
