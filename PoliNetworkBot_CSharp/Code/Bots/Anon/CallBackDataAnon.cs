@@ -99,7 +99,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             this.from_telegram = from_telegram;
         }
 
-        private ResultQueueEnum? GetChosenQueue(string v)
+        private static ResultQueueEnum? GetChosenQueue(string v)
         {
             return GetResult(v);
         }
