@@ -49,7 +49,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         oldTitle = (string)groups.Rows[i][indexTitle];
+                        
                         var newTitleWithException = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]));
+                       
+                        await Task.Delay(100);
+                        
                         newTitle = newTitleWithException?.Item1?.Title;
                         if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
                         {
