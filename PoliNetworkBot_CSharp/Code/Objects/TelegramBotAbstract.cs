@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -245,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId.Value];
         }
 
-        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, ChatType? chatType, long? accessHash)
+        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, long? accessHash)
         {
             switch (_isbot)
             {
@@ -1082,7 +1081,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         var c5 = c.Chats[0];
                         if (c5 is TLChannel c6)
-                            if (c2 is TLPeerChannel c3)
+                            if (c2 is TLPeerChannel)
                                 try
                                 {
                                     return await _userbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
@@ -1161,8 +1160,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
+#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+
         internal async Task<bool> SendMessageReactionAsync(int chatId, string emojiReaction, int messageId,
+
+#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+#pragma warning disable IDE0060 // Rimuovere il parametro inutilizzato
             ChatType chatType)
+#pragma warning restore IDE0060 // Rimuovere il parametro inutilizzato
         {
             switch (_isbot)
             {
@@ -1189,7 +1194,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId, MessageEventArgs e,
+        internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId,
             string[] time, bool? revokeMessage)
         {
             switch (_isbot)
@@ -1270,7 +1275,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<SuccessWithException> UnBanUserFromGroup(int target, long groupChatId, MessageEventArgs e)
+        internal async Task<SuccessWithException> UnBanUserFromGroup(int target, long groupChatId)
         {
             switch (_isbot)
             {

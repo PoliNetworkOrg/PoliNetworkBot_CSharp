@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //t1.Start();
 
         }
-        
+
         private static async Task MainMethod2(object sender, MessageEventArgs e)
         {
             TelegramBotClient telegramBotClientBot = null;
@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
                 if (notAuthorizedBotHasBeenAddedBool != null && notAuthorizedBotHasBeenAddedBool.Count > 0)
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
-                        await RestrictUser.BanUserFromGroup(telegramBotClient, e, bot, e.Message.Chat.Id, null, true);
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
 
                 //todo: send messagge "Bots not allowed here!"
 
@@ -104,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             throw new NotImplementedException();
         }
-        
+
 
         private static string StringToStringToBePrinted(string item4)
         {

@@ -384,7 +384,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
 
             if (messageId != null)
-                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, messageChatType, null);
+                await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, null);
         }
 
         public static async Task AntiSpamMeasure(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
@@ -467,8 +467,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }
 
-            await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type,
-                null);
+            await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
         }
 
         public static async Task<bool> CheckUsernameAndName(MessageEventArgs e, TelegramBotAbstract telegramBotClient)

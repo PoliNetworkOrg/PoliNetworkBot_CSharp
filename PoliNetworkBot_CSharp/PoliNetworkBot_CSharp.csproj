@@ -20,6 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Include="..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="JsonPolimi_Core_nf">
             <HintPath>dll\JsonPolimi_Core_nf.dll</HintPath>
         </Reference>

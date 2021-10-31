@@ -14,7 +14,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly long? accessHash;
         private readonly long botId;
         private readonly long chatId;
+#pragma warning disable IDE0052 // Rimuovi i membri privati non letti
         private readonly ChatType? chatType;
+#pragma warning restore IDE0052 // Rimuovi i membri privati non letti
         private readonly int messageId;
         private readonly DateTime timeToDelete;
 
@@ -55,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             try
             {
-                return await bot.DeleteMessageAsync(chatId, messageId, chatType, accessHash);
+                return await bot.DeleteMessageAsync(chatId, messageId, accessHash);
             }
             catch (Exception e)
             {

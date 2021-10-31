@@ -122,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             try
                             {
                                 var groupChatId = (long)dr["id"];
-                                var success = await BanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId, null,
+                                var success = await BanUserFromGroup(sender, targetId.GetID().Value, groupChatId, null,
                                     revokeMessage);
                                 if (success.IsSuccess())
                                     done.Add(dr);
@@ -149,7 +149,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             try
                             {
                                 var groupChatId = (long)dr["id"];
-                                var success = await UnBanUserFromGroup(sender, e, targetId.GetID().Value, groupChatId);
+                                var success = await UnBanUserFromGroup(sender, targetId.GetID().Value, groupChatId);
                                 if (success.IsSuccess())
                                     done.Add(dr);
                                 else
@@ -176,7 +176,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {
                                 var groupChatId = (long)dr["id"];
                                 var chatType = GetChatType(dr);
-                                var success = await MuteUser(sender, e, targetId.GetID().Value, groupChatId, until,
+                                var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
                                     chatType);
                                 if (success.IsSuccess())
                                     done.Add(dr);
@@ -241,7 +241,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
-        private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract sender, MessageEventArgs e,
+        private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract sender,
             int value, long groupChatId, DateTime? until, ChatType? chatType)
         {
             try
@@ -346,19 +346,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return false;
         }
 
-        private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender,
-            MessageEventArgs e, int target,
+        private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, int target,
             long groupChatId)
         {
-            return await sender.UnBanUserFromGroup(target, groupChatId, e);
+            return await sender.UnBanUserFromGroup(target, groupChatId);
         }
 
-        public static async Task<SuccessWithException> BanUserFromGroup(TelegramBotAbstract sender, MessageEventArgs e,
+        public static async Task<SuccessWithException> BanUserFromGroup(TelegramBotAbstract sender,
             long target,
             long groupChatId, string[] time,
             bool? revokeMessage)
         {
-            return await sender.BanUserFromGroup(target, groupChatId, e, time, revokeMessage);
+            return await sender.BanUserFromGroup(target, groupChatId, time, revokeMessage);
         }
     }
 }

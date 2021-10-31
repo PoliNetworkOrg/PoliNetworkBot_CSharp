@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA2208: Creare istanze di eccezioni di argomento in modo corretto
+dotnet_diagnostic.CA2208.severity = none

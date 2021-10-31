@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core.Network.Exceptions;
@@ -301,8 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Supergroup,
-                        accessHash);
+                    await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, accessHash);
                 }
                 catch (Exception e3)
                 {
@@ -310,8 +308,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     try
                     {
-                        await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, ChatType.Group,
-                            accessHash);
+                        await telegramBotAbstract.DeleteMessageAsync(id, idMessageAdded.Value, accessHash);
                     }
                     catch
                     {
@@ -400,7 +397,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<Tuple<TLAbsUpdates, Exception>> PromoteToAdminAsync(TLAbsInputUser u2,
             TLInputChannel channel, TelegramBotAbstract telegramBotAbstract)
         {
-            TLAbsUpdates r2 = null;
+            TLAbsUpdates r2;
             try
             {
                 TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
@@ -447,9 +444,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var users = new TLVector<TLAbsInputUser>();
             if (u == null)
                 return new ResultF1(false, null, null, null);
-
-            long accessHashUser = 0;
-
             ;
 
             TLInputPeerUser u5 = null;
@@ -458,8 +452,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (u5 == null)
                 return new ResultF1(false, null, null, null);
 
-            accessHashUser = u5.AccessHash;
-
+            long accessHashUser = u5.AccessHash;
             TLAbsInputUser u2 = new TLInputUser { UserId = (int)userIdOfOurBot, AccessHash = accessHashUser };
             users.Add(u2);
             TLAbsUpdates r = null;
@@ -509,7 +502,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             const long userIdOfOurBot = 768169879;
 
-            TLInputChannel channel = null;
+            TLInputChannel channel;
             if (accessHash != null)
                 channel = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id };
             else
@@ -591,7 +584,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var x6 = x5.MigratedTo;
-            TLInputChannel x8 = null;
+            TLInputChannel x8;
             if (x6 is TLInputChannel x7)
             {
                 x8 = x7;
@@ -605,8 +598,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (x5.MigratedTo == null) return null;
 
             TLAbsInputChannel channel = x8;
-            TLChatFull x = null;
-
             var channel2 = GetChannel(channel);
             if (channel2 == null)
                 return new Tuple<bool?, DateTime?>(false, null);

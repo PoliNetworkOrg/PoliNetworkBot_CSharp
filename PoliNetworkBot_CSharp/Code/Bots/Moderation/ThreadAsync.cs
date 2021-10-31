@@ -3,9 +3,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -18,13 +16,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t2 = new Thread(CheckMessagesToDeleteAsync);
             t2.Start();
-            
+
             var t4 = new Thread(DoBackup);
             t4.Start();
-            
+
             var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
             t5.Start();
-            
+
             //var t3 = new Thread(FixThings);
             //t3.Start();
         }
@@ -34,7 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
             if (bots == null || bots.Count == 0)
                 return;
-            
+
             Thread t = new(() => DoBackup2Async(bots[0]));
             t.Start();
         }
@@ -56,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await NotifyUtil.NotifyOwners(e, bot);
             }
         }
-        
+
         private static async void DoCheckAllowedMessageExpiration2Async()
         {
             try
@@ -71,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await NotifyUtil.NotifyOwners(e, bots[0]);
             }
         }
-        
+
         private static async void CheckAllowedMessageExpiration()
         {
             while (true)
@@ -81,73 +79,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async void FixThings()
-        {
-            try
-            {
-                var bot = GlobalVariables.Bots[768169879];
-                if (bot == null)
-                    return;
 
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 32, ChatType.Channel, null);
-                }
-                catch
-                {
-                    ;
-                }
 
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 32, ChatType.Channel, null);
-                }
-                catch
-                {
-                    ;
-                }
-                /*
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 30, Telegram.Bot.Types.Enums.ChatType.Supergroup, null);
-                }
-                catch
-                {
-                    ;
-                }
-
-                try
-                {
-                    await bot.DeleteMessageAsync(-1001314601927, 31, Telegram.Bot.Types.Enums.ChatType.Supergroup, null);
-                }
-                catch
-                {
-                    ;
-                }
-                */
-
-                var toSend = "<a href='tg://resolve?domain=-1393901944'>PoliAssociazioni 3</a>";
-                var dict = new Dictionary<string, string>
-                {
-                    {"it", toSend}
-                };
-                var text = new Language(dict);
-                await bot.SendTextMessageAsync(GlobalVariables.Owners[0].Item1, text, ChatType.Private, "it",
-                    ParseMode.Html,
-                    null, "armef97", null, true);
-
-                /*
-                await bot.PromoteChatMember(userId: 149620444, //raif
-                     chatId: -1001314601927);
-                */
-            }
-            catch (Exception e)
-            {
-                await NotifyUtil.NotifyOwners(e, GetFirstBot());
-            }
-        }
-
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static TelegramBotAbstract GetFirstBot()
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             foreach (var bot in GlobalVariables.Bots.Keys)
             {

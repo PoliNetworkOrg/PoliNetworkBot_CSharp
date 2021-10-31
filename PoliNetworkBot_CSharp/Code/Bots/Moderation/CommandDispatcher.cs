@@ -307,7 +307,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                                     false);
                             var byteArray = Encoding.ASCII.GetBytes(json);
-                            if(!Directory.Exists(GitHubConfig.GetPath()))
+                            if (!Directory.Exists(GitHubConfig.GetPath()))
                             {
                                 Directory.CreateDirectory("./data/");
                                 InitGithubRepo();
@@ -327,12 +327,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                          @" --author=""" + GitHubConfig.GetUser() + "<" + GitHubConfig.GetEmail() +
                                          @">""";
                             DoScript(powershell, commit, debug);
-                            
-                            var push = @"git push https://" + GitHubConfig.GetUser() + ":" + 
+
+                            var push = @"git push https://" + GitHubConfig.GetUser() + ":" +
                                        GitHubConfig.GetPassword() + "@" +
                                        GitHubConfig.GetRepo() + @" --all";
                             DoScript(powershell, push, debug);
-                            
+
                             var hub_pr =
                                 @"hub pull-request -m ""[AutoCommit] Groups Update"" --base PoliNetworkOrg:main --head PoliNetworkDev:main -l bot";
                             result = DoScript(powershell, hub_pr, debug);
@@ -504,23 +504,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (String.IsNullOrEmpty(db))
                     return;
 
-                byte[] byteArray = Encoding.ASCII.GetBytes( db );
-                
-                var stream = new MemoryStream( byteArray );
-                
+                byte[] byteArray = Encoding.ASCII.GetBytes(db);
+
+                var stream = new MemoryStream(byteArray);
+
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "Backup:"}
                 });
-                
-                TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) sendTo};
+
+                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
                 var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
 
                 await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
                         null, "application/octet-stream"), peer,
                     text2, TextAsCaption.BEFORE_FILE,
                     botAbstract, username, "it", null, true);
-            
+
             }
             catch (Exception ex)
             {
@@ -635,7 +635,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return true;
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e,
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
             bool? revokeMessage)
         {
             var r = Owners.CheckIfOwner(e.Message.From.Id);
@@ -685,7 +687,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             foreach (DataRow element in x.Rows)
             {
                 var userToBeBanned = Convert.ToInt64(element.ItemArray[0]);
-                await RestrictUser.BanUserFromGroup(sender, e, userToBeBanned, Convert.ToInt64(channel), null,
+                await RestrictUser.BanUserFromGroup(sender, userToBeBanned, Convert.ToInt64(channel), null,
                     revokeMessage);
                 counter++;
             }
@@ -876,12 +878,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return new SuccessWithException(false, e2);
                 }
 
-                return await RestrictUser.BanUserFromGroup(sender, e, targetId.Value, e.Message.Chat.Id, null,
+                return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);
             }
 
             var targetInt = e.Message.ReplyToMessage.From.Id;
-            return await RestrictUser.BanUserFromGroup(sender, e, targetInt, e.Message.Chat.Id, stringInfo,
+            return await RestrictUser.BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
                 revokeMessage);
         }
 
@@ -1071,7 +1073,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 lang, e.Message.From.LanguageCode, e.Message.From.Username, e.Message.From.Id,
                 e.Message.From.FirstName, e.Message.From.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
 
-            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, e.Message.Chat.Type, null);
+            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
         }
 
         private static async Task HelpPrivate(TelegramBotAbstract sender, MessageEventArgs e)
