@@ -475,9 +475,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             using var powershell = PowerShell.Create();
             DoScript(powershell, "cd ./data/", true);
-            DoScript(powershell, "git clone https://" + GitHubConfig.GetRemote(), true);
+            DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
             DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-            DoScript(powershell, "git remote add org https://github.com/PoliNetworkOrg/polinetworkWebsiteData", true);
+            DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
         }
 
         private static List<String> DoScript(PowerShell powershell, string script, bool debug)

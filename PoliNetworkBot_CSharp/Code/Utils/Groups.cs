@@ -13,6 +13,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Groups
     {
+
+        public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
+        {
+            await FixAllGroupsNames(telegramBotAbstract);
+            return GetAllGroups();
+        }
         internal static DataTable GetAllGroups()
         {
             const string q1 = "SELECT * FROM Groups";
