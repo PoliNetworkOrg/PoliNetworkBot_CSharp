@@ -499,15 +499,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var db = await File.ReadAllTextAsync("./data/db.db");
+                var db = await File.ReadAllBytesAsync("./data/db.db");
 
-                if (String.IsNullOrEmpty(db))
-                    return;
-
-                byte[] byteArray = Encoding.ASCII.GetBytes(db);
-
-                var stream = new MemoryStream(byteArray);
-
+                var stream = new MemoryStream( db );
+                
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "Backup:"}
@@ -525,6 +520,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                await NotifyUtil.NotifyOwners(ex, botAbstract);
             }
         }
 

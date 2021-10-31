@@ -42,12 +42,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     var newTitle = telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]).Result.Title;
                     if (oldTitle == newTitle) continue;
                     Console.WriteLine("Changing name of group: " + oldTitle + " to: " + newTitle);
-                    if (newTitle.Contains('"') || newTitle.Contains("'"))
-                    {
-                        await NotifyUtil.NotifyOwners(new Exception("Can't change name of group in db Groups: " 
-                                                                    + oldTitle + " because new title is not sql safe"), telegramBotAbstract);
-                        continue;
-                    }
                     var id = groups.Rows[i][indexId] as long?;
                     var q = "UPDATE Groups SET title = @title WHERE id = @id";
                     if (id == null) continue;
