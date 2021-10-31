@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -9,18 +10,36 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal class NotifyUtil
     {
         private const long group_exception = -1001456960264;
-        private const long permitted_spam_group = -736428640;
+        private const long permitted_spam_group = -1001685451643;
         private const string default_lang = "en";
 
-        internal static async Task NotifyOwnersPermittedSpam(string message, TelegramBotAbstract sender)
+        internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract sender,
+            MessageEventArgs messageEventArgs)
         {
-            var langCode = "it";
-            var text2 = new Language(new Dictionary<string, string>
+            var title = messageEventArgs.Message.Chat.Title;
+            if (messageEventArgs is {Message: { }})
             {
-                {"it", message}
-            });
-            await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
-                ParseMode.Default, group_exception, true);
+                var message = "Permitted spam in group: ";
+                message += "\n";
+                message += title;
+                message += "\n\n";
+                message += "@@@@@@@";
+                message += "\n\n";
+                message += messageEventArgs.Message.Text;
+                message += "\n\n";
+                message += "@@@@@@@";
+                message += "\n\n";
+                message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0 ? messageEventArgs.Message.Chat.Id.ToString() : "n"+((-1)*messageEventArgs.Message.Chat.Id));
+                message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
+
+                var langCode = "it";
+                var text2 = new Language(new Dictionary<string, string>
+                {
+                    {"it", message}
+                });
+                await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
+                    ParseMode.Default, group_exception, true);
+            }
         }
 
         internal static async Task NotifyOwners(ExceptionNumbered exception,

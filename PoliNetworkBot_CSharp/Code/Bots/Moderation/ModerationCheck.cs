@@ -504,27 +504,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task PermittedSpamMeasure(TelegramBotAbstract telegramBotClient,
             MessageEventArgs messageEventArgs, SpamType checkSpam)
         {
-            var title = "";
-            if (messageEventArgs is
-                {
-                    Message:
-                    {
-                        Chat:
-                        {
-                            Title: { }
-                        }
-                    }
-                })
-                title = messageEventArgs.Message.Chat.Title;
-            if (messageEventArgs is { Message: { } })
-            {
-                var message = "Permitted spam in group " + title + " of message " + messageEventArgs.Message.Text;
-                message += "\n" + "#IDGroup_" + (messageEventArgs.Message.Chat.Id < 0
-                    ? "n" + messageEventArgs.Message.Chat.Id
-                    : messageEventArgs.Message.Chat.Id.ToString());
-                message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
-                await NotifyUtil.NotifyOwnersPermittedSpam(message, telegramBotClient);
-            }
+            await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
         }
     }
 }
