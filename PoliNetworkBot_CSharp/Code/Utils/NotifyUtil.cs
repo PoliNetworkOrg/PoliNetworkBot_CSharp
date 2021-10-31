@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs)
         {
             var title = messageEventArgs.Message.Chat.Title;
-            if (messageEventArgs is {Message: { }})
+            if (messageEventArgs is { Message: { } })
             {
                 var message = "Permitted spam in group: ";
                 message += "\n";
@@ -29,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";
-                message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0 ? messageEventArgs.Message.Chat.Id.ToString() : "n"+((-1)*messageEventArgs.Message.Chat.Id));
+                message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0 ? messageEventArgs.Message.Chat.Id.ToString() : "n" + ((-1) * messageEventArgs.Message.Chat.Id));
                 message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
 
                 var langCode = "it";
@@ -112,6 +112,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2);
             if (r1 == null)
                 return;
+        }
+
+        internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract)
+        {
+            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract, null, 0, null);
         }
 
         private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
