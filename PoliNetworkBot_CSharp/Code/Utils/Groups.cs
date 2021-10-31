@@ -1,5 +1,7 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System.Data;
@@ -26,11 +28,41 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
 
-        public static async Task FixAllGroupsNames()
+        public static async Task FixAllGroupsNames(TelegramBotAbstract telegramBotAbstract)
         {
-            const string q1 = "SELECT * FROM Groups";
-            var groups =  SqLite.ExecuteSelect(q1);
-            groups.Rows[0].ToString();
+            try
+            {
+                const string q1 = "SELECT * FROM Groups";
+                var groups = SqLite.ExecuteSelect(q1);
+                var indexTitle = groups.Columns.IndexOf("title");
+                var indexId = groups.Columns.IndexOf("id");
+                for (var i = 0; i < groups.Rows.Count; i++)
+                {
+                    var oldTitle = (string)groups.Rows[i][indexTitle];
+                    var newTitle = telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]).Result.Title;
+                    if (oldTitle == newTitle) continue;
+                    Console.WriteLine("Changing name of group: " + oldTitle + " to: " + newTitle);
+                    if (newTitle.Contains('"') || newTitle.Contains("'"))
+                    {
+                        await NotifyUtil.NotifyOwners(new Exception("Can't change name of group in db Groups: " 
+                                                                    + oldTitle + " because new title is not sql safe"), telegramBotAbstract);
+                        continue;
+                    }
+                    var id = groups.Rows[i][indexId] as long?;
+                    var q = "UPDATE Groups SET title = @title WHERE id = @id";
+                    if (id == null) continue;
+                    var d = new Dictionary<string, object>
+                    {
+                        {"@title", newTitle},
+                        {"@id", id.Value}
+                    };
+                    SqLite.Execute(q, d);
+                }
+            }
+            catch (Exception e)
+            {
+                await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            }
         }
     }
 }
