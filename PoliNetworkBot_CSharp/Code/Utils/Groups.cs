@@ -49,13 +49,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         oldTitle = (string)groups.Rows[i][indexTitle];
-                        newTitle = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]))?.Item1?.Title;
+                        var newTitleWithException = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]));
+                        newTitle = newTitleWithException?.Item1?.Title;
                         if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
                         {
                             throw new Exception("oldTitle and newTitle both null at line: " + i);
                         }
                         if (String.IsNullOrEmpty(newTitle))
                         {
+                            if (newTitleWithException.Item2 != null)
+                            {
+                                Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
+                            }
                             throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
                         }
                         if (String.IsNullOrEmpty(oldTitle))

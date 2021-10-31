@@ -297,7 +297,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var groups = Groups.GetAllGroups();
+                            
+                            var groups = Groups.GetGroupsAndFixNames(sender);
 
                             if (Variabili.L == null) Variabili.L = new ListaGruppo();
 

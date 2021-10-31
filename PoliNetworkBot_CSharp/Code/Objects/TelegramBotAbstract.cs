@@ -217,8 +217,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             var chatidS = chatId.ToString();
                             chatidS = "-100" + chatidS;
                             var chatidSl = Convert.ToInt64(chatidS);
-
-                            return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatidSl), e);
+                            try
+                            {
+                                return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatidSl), e);
+                            }
+                            catch (Exception e3)
+                            {
+                                return new Tuple<Chat, Exception>(null, e3);
+                            }
                         }
 
                         return new Tuple<Chat, Exception>(null, e);
