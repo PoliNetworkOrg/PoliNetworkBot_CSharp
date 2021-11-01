@@ -2,3 +2,6 @@
 
 # CA2208: Creare istanze di eccezioni di argomento in modo corretto
 dotnet_diagnostic.CA2208.severity = none
+
+# CA2211: I campi non costanti non devono essere visibili
+dotnet_diagnostic.CA2211.severity = none

@@ -52,6 +52,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
                     itemToPrintFull += "\n@@@@@@";
 
+                    await telegramBotClient.ExitGroupAsync(e);
+
                     throw new ToExitException(itemToPrintFull);
                 }
 

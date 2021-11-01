@@ -55,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (targetId == null || targetId.GetID() == null)
             {
                 var exception2 = "";
-                if (targetId != null) exception2 += "\n" + targetId.getError();
+                if (targetId != null) exception2 += "\n" + targetId.GetError();
 
                 var text2 = new Language(new Dictionary<string, string>
                 {
