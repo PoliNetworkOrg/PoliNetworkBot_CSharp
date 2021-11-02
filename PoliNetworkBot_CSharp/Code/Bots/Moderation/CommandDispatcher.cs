@@ -389,7 +389,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (Owners.CheckIfOwner(e.Message.From.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
-                        Logger.Subscribe(e.Message.From.Id, sender);
+                        Logger.SubscribeAsync(e.Message.From.Id, sender);
                         
                         return;
                     }
