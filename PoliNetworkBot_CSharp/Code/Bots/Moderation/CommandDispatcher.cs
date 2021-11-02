@@ -305,10 +305,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             if (Variabili.L == null) Variabili.L = new ListaGruppo();
 
                             Variabili.L.HandleSerializedObject(groups);
+                            
+                            Variabili.L.CheckSeILinkVanno(false);
 
                             var json =
                                 JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                                     false);
+
                             var byteArray = Encoding.ASCII.GetBytes(json);
                             if (!Directory.Exists(GitHubConfig.GetPath()))
                             {
