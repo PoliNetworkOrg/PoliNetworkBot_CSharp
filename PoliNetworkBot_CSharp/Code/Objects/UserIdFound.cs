@@ -20,7 +20,7 @@
             return i;
         }
 
-        internal string getError()
+        internal string GetError()
         {
             return v;
         }

@@ -299,7 +299,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
 
                             await Groups.FixAllGroupsNames(sender);
-                            
+
                             var groups = Groups.GetAllGroups();
 
                             if (Variabili.L == null) Variabili.L = new ListaGruppo();
@@ -486,7 +486,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
         }
 
-        private static List<String> DoScript(PowerShell powershell, string script, bool debug)
+        private static List<string> DoScript(PowerShell powershell, string script, bool debug)
         {
             powershell.AddScript(script);
             var results = powershell.Invoke().ToList();
@@ -507,8 +507,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var db = await File.ReadAllBytesAsync("./data/db.db");
 
-                var stream = new MemoryStream( db );
-                
+                var stream = new MemoryStream(db);
+
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "Backup:"}

@@ -58,7 +58,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
 
             var user = r.Users[0];
-            if (!(user is TLUser user2))
+            if (user is not TLUser user2)
                 return null;
 
             return user2.AccessHash != null

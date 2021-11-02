@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TLSharp.Core;
@@ -55,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return _width;
         }
 
-        public async Task<TLAbsInputFile> GetTelegramUserBotInputVideo(TelegramClient userbotClient)
+        public TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient userbotClient)
         {
             throw new NotImplementedException();
         }

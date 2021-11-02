@@ -70,7 +70,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async void CheckAllowedMessageExpiration()
+        private static void CheckAllowedMessageExpiration()
         {
             while (true)
             {

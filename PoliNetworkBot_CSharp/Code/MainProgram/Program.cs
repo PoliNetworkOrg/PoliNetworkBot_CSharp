@@ -254,6 +254,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
+        [Obsolete]
         public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot,
             bool runOnlyNormalBot)
         {
@@ -279,6 +280,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         botClient.OnMessage += onmessageMethod2.Item1;
                         botClient.StartReceiving(bot.GetAllowedUpdates());
+
 
                         if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
 
@@ -408,7 +410,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
-        private static async Task<bool> TestThingsAsync(long userId)
+        private static bool TestThings(long userId)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             /*

@@ -52,6 +52,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
                     itemToPrintFull += "\n@@@@@@";
 
+                    await Utils.Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
+
+
+
                     throw new ToExitException(itemToPrintFull);
                 }
 
@@ -100,7 +104,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs)
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             throw new NotImplementedException();
         }

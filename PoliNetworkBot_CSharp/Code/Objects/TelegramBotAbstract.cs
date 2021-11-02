@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -62,6 +63,29 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             BotTypeApi botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
         {
             this.mode = mode;
+        }
+
+        internal async Task ExitGroupAsync(MessageEventArgs e)
+        {
+            try
+            {
+                switch (this._isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                        {
+                            await this._botClient.LeaveChatAsync(e.Message.From.Id);
+                        }
+                        break;
+                    case BotTypeApi.USER_BOT:
+                        break;
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                await NotifyUtil.NotifyOwners(ex, this);
+            }
         }
 
         internal string GetMode()
@@ -194,7 +218,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<Tuple<Chat,Exception>> GetChat(long chatId)
+        internal async Task<Tuple<Chat, Exception>> GetChat(long chatId)
         {
             Exception e = null;
             switch (_isbot)
@@ -209,7 +233,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             e = e2;
                         }
-                        
+
                         if (chatId > 0)
                         {
                             await Task.Delay(100);
@@ -673,8 +697,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         var r = await media2.SendMedia(peer, _userbotClient, caption, username, lang);
                         return r != null;
-
-                        break;
                     }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -1432,7 +1454,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
+                        var videoFile = video.GetTelegramUserBotInputVideo(_userbotClient);
                         if (videoFile == null)
                             return new MessageSentResult(false, null, chatTypeToSendTo);
 
