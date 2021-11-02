@@ -73,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 {
                     case BotTypeApi.REAL_BOT:
                         {
-                            await this._botClient.LeaveChatAsync(e.Message.From.Id);
+                            await this._botClient.LeaveChatAsync(e.Message.Chat.Id);
                         }
                         break;
                     case BotTypeApi.USER_BOT:
