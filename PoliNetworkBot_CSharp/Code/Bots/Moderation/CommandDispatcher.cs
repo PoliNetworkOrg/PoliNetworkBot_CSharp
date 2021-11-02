@@ -267,30 +267,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
                 case "/unallowmessage":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        if (Owners.CheckIfOwner(e.Message.From.Id)
-                            && e.Message.Chat.Type == ChatType.Private)
+                        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
                         {
-                            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
-                            {
-                                var text = new Language(new Dictionary<string, string>
+                            var text = new Language(new Dictionary<string, string>
                             {
                                 {"en", "You have to reply to a message containing the message"}
                             });
-                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                                    e.Message.MessageId);
-                                return;
-                            }
-
-                            AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                                e.Message.MessageId);
                             return;
                         }
 
-                        await DefaultCommand(sender, e);
-
+                        AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
                         return;
                     }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
 
                 case "/updategroups":
                     {
@@ -382,6 +382,48 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                case "/subscribe_log":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        Logger.Subscribe(e.Message.From.Id, sender);
+                        
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
+                case "/unsubscribe_log":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        Logger.Unsubscribe(e.Message.From.Id);
+
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
+                case "/getlog":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        await Logger.PrintLog(sender, e.Message.From.Id);
+
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
                 case "/testtime":
                     {
                         if (e.Message.Chat.Type == ChatType.Private) await TestTime(sender, e);
