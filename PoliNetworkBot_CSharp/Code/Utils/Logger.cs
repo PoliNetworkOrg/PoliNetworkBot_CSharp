@@ -45,6 +45,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     Console.WriteLine(e);
                     Console.WriteLine("------");
                 }
+
+                int? size = null;
+                lock (Queue)
+                {
+                    size = Queue.Count;
+                }
+
+                if (size == null || size.Value == 0)
+                {
+                    await Task.Delay(30 * 1000);
+                }
+                else
+                {
+                    //don't wait
+                }
             }
         }
 
