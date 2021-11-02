@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -30,6 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class CommandDispatcher
     {
+
         public static async Task CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var cmdLines = e.Message.Text.Split(' ');
@@ -531,6 +533,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static List<string> DoScript(PowerShell powershell, string script, bool debug)
         {
             powershell.AddScript(script);
+            Logger.WriteLine("Executing command: " + script);
             var results = powershell.Invoke().ToList();
             List<String> listString = new();
             if (debug)

@@ -23,6 +23,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
             t5.Start();
 
+            var t6 = new Thread(Logger.MainMethod);
+            t6.Start();
+
             //var t3 = new Thread(FixThings);
             //t3.Start();
         }

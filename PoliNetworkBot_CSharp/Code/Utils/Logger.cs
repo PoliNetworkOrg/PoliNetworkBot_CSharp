@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -14,6 +17,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     public static class Logger
     {
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
+        private static readonly List<Task> Queue = new();
+
+        internal static void MainMethod()
+        {
+            while (true)
+            {
+                try
+                {
+                    Monitor.Wait(Queue);
+                    Queue[^1].Start();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERROR IN LOGGER APPLICATION!");
+                    Console.WriteLine(e);
+                    Console.WriteLine("------");
+                }
+            }
+        }
+        
         public static void WriteLine(object log)
         {
             try
@@ -24,11 +47,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var text = new Language(new Dictionary<string, string>
                     {
-                        {"un", "You have to reply to a message containing the message"}
+                        {"un", log.ToString()}
                     });
-                    subscriber.Value.SendTextMessageAsync(subscriber.Key, text, ChatType.Private,
+                    Queue.Add(subscriber.Value.SendTextMessageAsync(subscriber.Key, text, ChatType.Private,
                         "dc", ParseMode.Html, null, "un",
-                        null);
+                        null));
+                    Monitor.PulseAll(Queue);
                 }
                 if (log != null)
                     File.AppendAllLinesAsync("./data/log.txt", new[] { log.ToString() });
@@ -41,35 +65,58 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public static void Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract)
         {
-            Subscribers.Add(fromId, telegramBotAbstract);
+            try
+            {
+                Subscribers.Add(fromId, telegramBotAbstract);
+            }
+            catch (Exception e)
+            {
+                NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            }
         }
 
         public static void Unsubscribe(long fromId)
         {
-            Subscribers.Remove(fromId);
+            try
+            {
+                Subscribers.Remove(fromId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR IN LOGGER APPLICATION!");
+                Console.WriteLine(e);
+                Console.WriteLine("------");
+            }
         }
 
         public static async Task PrintLog(TelegramBotAbstract sender, long sendTo)
         {
-            const string path = "./data/log.txt";
-            var file = await File.ReadAllBytesAsync(path);
-
-            var stream = new MemoryStream(file);
-
-            var text2 = new Language(new Dictionary<string, string>
+            try
             {
-                {"it", "LOG:"}
-            });
+                const string path = "./data/log.txt";
+                var file = await File.ReadAllBytesAsync(path);
 
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+                var stream = new MemoryStream(file);
 
-            await SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true);
-            
-            await File.WriteAllTextAsync(path, "");
+                var text2 = new Language(new Dictionary<string, string>
+                {
+                    {"it", "LOG:"}
+                });
+
+                TLAbsInputPeer peer2 = new TLInputPeerUser {UserId = (int) sendTo};
+                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+
+                await SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    sender, null, "it", null, true);
+
+                await File.WriteAllTextAsync(path, "");
+            }
+            catch (Exception e)
+            {
+                await NotifyUtil.NotifyOwners(e, sender);
+            }
         }
     }
 }
