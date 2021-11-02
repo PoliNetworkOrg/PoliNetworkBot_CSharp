@@ -5,3 +5,15 @@ dotnet_diagnostic.CA2208.severity = none
 
 # CA2211: I campi non costanti non devono essere visibili
 dotnet_diagnostic.CA2211.severity = none
+
+# IDE0052: Rimuovi i membri privati non letti
+dotnet_diagnostic.IDE0052.severity = none
+
+# IDE0059: Assegnazione non necessaria di un valore
+dotnet_diagnostic.IDE0059.severity = none
+
+# IDE0079: Rimuovere l'eliminazione non necessaria
+dotnet_diagnostic.IDE0079.severity = none
+
+# IDE0060: Rimuovere il parametro inutilizzato
+dotnet_diagnostic.IDE0060.severity = none

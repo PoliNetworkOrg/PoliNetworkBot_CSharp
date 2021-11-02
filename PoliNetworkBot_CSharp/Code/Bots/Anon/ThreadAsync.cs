@@ -82,7 +82,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 var data = x.GetData();
 
-                await DoThingsAsyncBotAsync2Async(data);
+                DoThingsAsyncBotAsync2(data);
             }
             catch (Exception e)
             {
@@ -90,7 +90,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public static async Task DoThingsAsyncBotAsync2Async(string data)
+        public static void DoThingsAsyncBotAsync2(string data)
         {
             ;
 
@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             ;
 
                             var webPost = new WebPost(r4);
-                            await DoThingsAsyncBotAsync3Async(webPost);
+                            DoThingsAsyncBotAsync3(webPost);
                         }
                     }
                 }
@@ -122,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        private static async Task DoThingsAsyncBotAsync3Async(WebPost webPost)
+        private static void DoThingsAsyncBotAsync3(WebPost webPost)
         {
             if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
 

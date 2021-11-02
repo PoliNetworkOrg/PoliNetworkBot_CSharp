@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Telegram.Bot.Args;
 
 #endregion
 
@@ -49,11 +50,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     try
                     {
                         oldTitle = (string)groups.Rows[i][indexTitle];
-                        
+
                         var newTitleWithException = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]));
-                       
+
                         await Task.Delay(100);
-                        
+
                         newTitle = newTitleWithException?.Item1?.Title;
                         if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
                         {
@@ -81,7 +82,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {"@title", newTitle},
                             {"@id", id.Value}
                         };
-                            SqLite.Execute(q, d);
+                        SqLite.Execute(q, d);
                     }
                     catch (Exception e2)
                     {
@@ -94,6 +95,55 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
             }
+        }
+
+        internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            try
+            {
+                switch (e.Message.Chat.Type)
+                {
+                    case Telegram.Bot.Types.Enums.ChatType.Group:
+                    case Telegram.Bot.Types.Enums.ChatType.Supergroup:
+                        {
+                            try
+                            {
+                                Dictionary<string, string> dict = new()
+                                {
+                                    {
+                                        "it",
+                                        "Il bot non è autorizzato in questo gruppo. Contattare gli amministratori di PoliNetwork."
+                                    },
+                                    {
+                                        "en",
+                                        "The bot is not authorized in this group. Contact the PoliNetwork administrators."
+                                    }
+                                };
+                                Language lang = new(dict);
+
+                                await Utils.SendMessage.SendMessageInAGroup(
+                                        telegramBotClient, e.Message.From.LanguageCode, lang,
+                                        e.Message.Chat.Id, e.Message.Chat.Type,
+                                        Telegram.Bot.Types.Enums.ParseMode.Default, null, true
+                                    );
+                            }
+                            catch
+                            {
+                                ;
+                            }
+
+                            await telegramBotClient.ExitGroupAsync(e);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch
+            {
+                ;
+            }
+
         }
     }
 }

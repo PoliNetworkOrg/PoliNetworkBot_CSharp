@@ -491,7 +491,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (datetime.Item2 != null)
             {
                 throw datetime.Item2;
-                return null;
             }
 
             var d2 = datetime.Item1.GetDate();

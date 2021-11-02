@@ -697,8 +697,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                         var r = await media2.SendMedia(peer, _userbotClient, caption, username, lang);
                         return r != null;
-
-                        break;
                     }
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -1456,7 +1454,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var videoFile = await video.GetTelegramUserBotInputVideo(_userbotClient);
+                        var videoFile = video.GetTelegramUserBotInputVideo(_userbotClient);
                         if (videoFile == null)
                             return new MessageSentResult(false, null, chatTypeToSendTo);
 
