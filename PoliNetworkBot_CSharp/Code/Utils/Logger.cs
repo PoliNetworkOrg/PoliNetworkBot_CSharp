@@ -65,6 +65,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public static void WriteLine(object log)
         {
+            if (log == null)
+                return;
+
             try
             {
                 Console.WriteLine(log);
@@ -87,8 +90,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             );
                     }
                 }
-                if (log != null)
-                    File.AppendAllLinesAsync("./data/log.txt", new[] { log.ToString() });
+
+                if (Directory.Exists("./data/") == false)
+                {
+                    Directory.CreateDirectory("./data/");
+                }
+                if (!File.Exists("./data/log.txt"))
+                {
+                    File.WriteAllText("./data/log.txt", "");
+                }
+                File.AppendAllLinesAsync("./data/log.txt", new[] { log.ToString() });
             }
             catch (Exception e)
             {
