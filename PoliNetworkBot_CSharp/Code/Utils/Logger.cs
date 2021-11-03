@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -13,31 +14,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     public static class Logger
     {
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
-        private static readonly List<LoggerItem> Queue = new();
+        private static readonly BufferBlock<MessageQueue> Buffer = new();
+
 
         internal static async Task MainMethodAsync()
         {
-            while (true)
+            while (await Buffer.OutputAvailableAsync())
             {
                 try
                 {
-                    LoggerItem loggerItem = null;
-                    lock (Queue)
-                    {
-                        if (Queue.Count > 0)
-                        {
-                            int where = 0;
-                            loggerItem = Queue[where];
-                            Queue.RemoveAt(where);
-                        }
-
-                    }
-
-                    if (loggerItem != null)
-                    {
-                        await loggerItem.key.Value.SendTextMessageAsync(loggerItem.key.Key, loggerItem.text, loggerItem.@private,
-                            loggerItem.v1, loggerItem.html, null, loggerItem.v2, null);
-                    }
+                    var messageToBeSent = await Buffer.ReceiveAsync();
+                    await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, messageToBeSent.text, 
+                        messageToBeSent.ChatType, messageToBeSent.Language, messageToBeSent.Parsemode, 
+                        null, messageToBeSent.Username, null);
                 }
                 catch (Exception e)
                 {
@@ -45,52 +34,31 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     Console.WriteLine(e);
                     Console.WriteLine("------");
                 }
-
-                int? size = null;
-                lock (Queue)
-                {
-                    size = Queue.Count;
-                }
-
-                if (size == null || size.Value == 0)
-                {
-                    await Task.Delay(30 * 1000);
-                }
-                else
-                {
-                    //don't wait
-                }
             }
         }
 
         public static void WriteLine(object log)
         {
-            if (log == null)
+            if (log == null || string.IsNullOrEmpty(log.ToString()))
                 return;
-
             try
             {
                 Console.WriteLine(log);
-                lock (Queue)
+                foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
                 {
-                    foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
+                    var text = new Language(new Dictionary<string, string>
                     {
-                        var text = new Language(new Dictionary<string, string>
-                        {
-                            {"un", log.ToString()}
-                        });
+                        {"un", log.ToString()}
+                    });
 
-
-                        Queue.Add(
-                            new LoggerItem(
-                                    subscriber, text, ChatType.Private,
-                                    "dc", ParseMode.Html,
-                                    "un"
-                                )
-                            );
-                    }
+                    Buffer.Post(
+                        new MessageQueue(
+                                subscriber, text, ChatType.Private,
+                                "dc", ParseMode.Default,
+                                "un"
+                            )
+                        );
                 }
-
                 if (Directory.Exists("./data/") == false)
                 {
                     Directory.CreateDirectory("./data/");
@@ -107,11 +75,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static async Task SubscribeAsync(long fromId, TelegramBotAbstract telegramBotAbstract)
+        public static async Task Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract)
         {
             try
             {
-                Subscribers.Add(fromId, telegramBotAbstract);
+                Subscribers.TryAdd(fromId, telegramBotAbstract);
             }
             catch (Exception e)
             {

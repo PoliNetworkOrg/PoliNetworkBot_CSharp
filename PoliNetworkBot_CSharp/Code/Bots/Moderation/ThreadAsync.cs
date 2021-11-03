@@ -23,11 +23,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
             t5.Start();
 
-            var t6 = new Thread(async () => { await Logger.MainMethodAsync(); });
+            var t6 = new Thread(StartLogger);
             t6.Start();
 
             //var t3 = new Thread(FixThings);
             //t3.Start();
+        }
+
+        private static async void StartLogger()
+        {
+            await Logger.MainMethodAsync();
         }
 
         private static void DoBackup()
