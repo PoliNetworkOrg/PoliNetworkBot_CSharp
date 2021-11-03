@@ -110,8 +110,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case char b:
                     {
                         return b != 'Y'
-                            ? new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 6 },
-                                b.ToString())
+                            ? await PreExitChecks(b.ToString(), e, telegramBotClient)
                             : new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 7 },
                                 b.ToString());
                     }
@@ -148,6 +147,24 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
             }
         }
+        
+        private static async Task<Tuple<ToExit, ChatMember[], List<int>, string>> PreExitChecks(string oldValid, MessageEventArgs messageEventArgs, 
+            TelegramBotAbstract telegramBotAbstract)
+        {
+            var (item1, item2, item3) = await CheckIfToExit_NullValue2Async(telegramBotAbstract, messageEventArgs);
+            if (item1 != ToExit.EXIT)
+            {
+                var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+                var valid = "Y";
+                var d = new Dictionary<string, object>
+                {
+                    {"@valid", valid},
+                    {"@id", messageEventArgs.Message.Chat.Id}
+                };
+                SqLite.Execute(q, d);
+            }
+            return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, item3, oldValid);
+        }
 
         private static async Task<Tuple<ToExit, ChatMember[], List<int>>> CheckIfToExit_NullValueAndUpdateIt(
             TelegramBotAbstract telegramBotClient,
@@ -175,7 +192,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var r = await telegramBotClient.GetChatAdministratorsAsync(e.Message.Chat.Id);
             if (r == null)
-                return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, r, new List<int> { 3 });
+                return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, null, new List<int> { 3 });
 
             foreach (var chatMember in r)
             {
