@@ -154,14 +154,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var (item1, item2, item3) = await CheckIfToExit_NullValue2Async(telegramBotAbstract, messageEventArgs);
             if (item1 != ToExit.EXIT)
             {
-                var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
-                var valid = "Y";
-                var d = new Dictionary<string, object>
+                try
                 {
-                    {"@valid", valid},
-                    {"@id", messageEventArgs.Message.Chat.Id}
-                };
-                SqLite.Execute(q, d);
+                    var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+                    var valid = "Y";
+                    var d = new Dictionary<string, object>
+                    {
+                        {"@valid", valid},
+                        {"@id", messageEventArgs.Message.Chat.Id}
+                    };
+                    SqLite.Execute(q, d);
+                    Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + " to valid");
+                }
+                catch (Exception e)
+                {
+                    await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                }
             }
             return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, item3, oldValid);
         }
