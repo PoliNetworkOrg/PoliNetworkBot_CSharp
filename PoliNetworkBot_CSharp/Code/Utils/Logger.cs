@@ -192,11 +192,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 foreach (var exceptionType in exceptionTypes)
                 {
                     toReturn += exceptionType.GetType() + ":\n";
-                    toReturn += "[GroupId , oldTitle]";
+                    toReturn += "[GroupId , oldTitle]\n";
                     foreach (var groupId in newNull.Keys)
                     {
                         if(newNull[groupId].Value == exceptionType)
-                            toReturn += groupId + " , " + groupId;
+                            toReturn += groupId + " , " + groupId + "\n";
                     }
                 }
 
