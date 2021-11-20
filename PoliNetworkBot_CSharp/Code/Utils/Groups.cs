@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
         {
-            await FixAllGroupsNames(telegramBotAbstract);
+            await FixAllGroupsName(telegramBotAbstract);
             return GetAllGroups();
         }
         internal static DataTable GetAllGroups()
@@ -35,7 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
 
-        public static async Task FixAllGroupsNames(TelegramBotAbstract telegramBotAbstract)
+        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract)
         {
             try
             {
@@ -58,22 +58,31 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         newTitle = newTitleWithException?.Item1?.Title;
                         if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
                         {
-                            throw new Exception("oldTitle and newTitle both null at line: " + i);
+                            Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id,(long)groups.Rows[i][indexId]);
+                            Logger.GroupsFixLog.CountIgnored();
+                            //throw new Exception("oldTitle and newTitle both null at line: " + i);
+                            return;
                         }
                         if (String.IsNullOrEmpty(newTitle))
                         {
-                            if (newTitleWithException.Item2 != null)
-                            {
-                                Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
-                            }
-                            throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
+                            Logger.GroupsFixLog.NewNull((long)groups.Rows[i][indexId] ,oldTitle, newTitleWithException?.Item2);
+                            Logger.GroupsFixLog.CountIgnored();
+                            return;
+                            //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
+                            //throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
                         }
                         if (String.IsNullOrEmpty(oldTitle))
                         {
-                            Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
+                            Logger.GroupsFixLog.OldNull(newTitle);
+                            oldTitle = "[previously null]";
+                            //Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
                         }
-                        if (oldTitle == newTitle) continue;
-                        Logger.WriteLine("Changing name of group: " + oldTitle + " to: " + newTitle);
+                        if (oldTitle == newTitle)
+                        {
+                            Logger.GroupsFixLog.CountIgnored();
+                            continue;
+                        }
+                        Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
                         var id = groups.Rows[i][indexId] as long?;
                         var q = "UPDATE Groups SET title = @title WHERE id = @id";
                         if (id == null) continue;
@@ -86,10 +95,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                     catch (Exception e2)
                     {
-                        await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
-                        await NotifyUtil.NotifyOwners("oldTitle: " + oldTitle + "\n\n NewTitle:" + newTitle, telegramBotAbstract);
+                        var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
+                            "\n NewTitle: " + newTitle + e2.Message);
+                        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
                     }
                 }
+                Logger.GroupsFixLog.SendLog(telegramBotAbstract);
             }
             catch (Exception e)
             {
