@@ -191,7 +191,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 foreach (var exceptionType in exceptionTypes)
                 {
-                    toReturn += exceptionType + ":\n";
+                    toReturn += "#" + exceptionType + ":\n";
                     toReturn += "[GroupId , oldTitle]\n";
                     foreach (var group in newNull)
                     {
