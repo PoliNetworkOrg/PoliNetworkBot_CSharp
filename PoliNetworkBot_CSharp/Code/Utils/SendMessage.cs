@@ -97,7 +97,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     username: null,
                     replyMarkupObject: null,
                     replyToMessageId: replyToMessageId,
-                    disablePreviewLink: disablePreviewLink);
+                    disablePreviewLink: disablePreviewLink,
+                    splitMessage: true);
             }
             catch (Exception e1)
             {

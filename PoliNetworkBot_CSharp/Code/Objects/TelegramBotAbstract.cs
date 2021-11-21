@@ -551,16 +551,25 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<MessageSentResult> SendTextMessageAsync(long? chatid, Language text,
             ChatType? chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null,
-            bool disablePreviewLink = false)
+            bool disablePreviewLink = false, bool splitMessage = false)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     IReplyMarkup reply = null;
                     if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
-                    var m2 = replyToMessageId == null ? 0 : replyToMessageId.Value;
-                    var m1 = await _botClient.SendTextMessageAsync(chatid, text.Select(lang), parseMode,
-                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
+                    var m2 = replyToMessageId ?? 0;
+                    var message = text.Select(lang);
+                    Message m1;
+                    while (splitMessage && message.Length > 4096)
+                    {
+                        m1 = await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
+                            replyMarkup: reply, replyToMessageId: (int) m2, disableWebPagePreview: disablePreviewLink);
+                        message = message[4095..];
+                        Thread.Sleep(100);
+                    }
+                    m1 = await _botClient.SendTextMessageAsync(chatid, message, parseMode,
+                        replyMarkup: reply, replyToMessageId: (int) m2, disableWebPagePreview: disablePreviewLink);
                     var b1 = m1 != null;
                     return new MessageSentResult(b1, m1, chatType);
 

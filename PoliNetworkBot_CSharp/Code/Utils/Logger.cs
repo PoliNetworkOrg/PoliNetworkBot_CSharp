@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using InstagramApiSharp.Helpers;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -24,10 +25,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    var messageToBeSent = await Buffer.ReceiveAsync();
-                    await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, messageToBeSent.text, 
-                        messageToBeSent.ChatType, messageToBeSent.Language, messageToBeSent.Parsemode, 
-                        null, messageToBeSent.Username, null);
+                    var messageToBeSent = Buffer.Receive();
+                    string escaped = System.Web.HttpUtility.HtmlEncode(messageToBeSent.text);
+                    var text = new Language(new Dictionary<string, string>
+                    {
+                        {"un", escaped}
+                    });
+                    await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, text, 
+                        messageToBeSent.ChatType, "un", ParseMode.Html, 
+                        null, null, null, splitMessage: true);
                 }
                 catch (Exception e)
                 {
@@ -47,17 +53,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Console.WriteLine(log);
                 foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
                 {
-                    var text = new Language(new Dictionary<string, string>
-                    {
-                        {"un", log.ToString()}
-                    });
-
                     Buffer.Post(
                         new MessageQueue(
-                                subscriber, text, ChatType.Private,
-                                "dc", ParseMode.Default,
-                                "un"
-                            )
+                                subscriber, log.ToString(), ChatType.Group, ParseMode.Html
+                        )
                         );
                 }
                 if (Directory.Exists("./data/") == false)
@@ -164,8 +163,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "Fixed: " + _countFixed;
                 message += "\nIgnored (already ok): " + _countIgnored;
                 
+                string escaped = System.Web.HttpUtility.HtmlEncode(message);
                 Logger.WriteLine(message);
-                Utils.NotifyUtil.NotifyOwners(message, telegramBotAbstract);
+                Utils.NotifyUtil.NotifyOwners(escaped, telegramBotAbstract);
                 Reset();
             }
 
@@ -182,21 +182,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             private static string HandleNewTitleNull(Dictionary<long, KeyValuePair<string, Exception>> newNull)
             {
                 var toReturn ="";
-                var exceptionTypes = new List<Exception>();
+                var exceptionTypes = new List<Type>();
                 foreach (var (_, exception) in newNull.Values)
                 {
-                    if(!exceptionTypes.Contains(exception))
-                        exceptionTypes.Add(exception);
+                    if(!exceptionTypes.Contains(exception.GetType()))
+                        exceptionTypes.Add(exception.GetType());
                 }
 
                 foreach (var exceptionType in exceptionTypes)
                 {
-                    toReturn += exceptionType.GetType() + ":\n";
+                    toReturn += exceptionType + ":\n";
                     toReturn += "[GroupId , oldTitle]\n";
-                    foreach (var groupId in newNull.Keys)
+                    foreach (var group in newNull)
                     {
-                        if(newNull[groupId].Value == exceptionType)
-                            toReturn += groupId + " , " + groupId + "\n";
+                        if(newNull[group.Key].Value.GetType() == exceptionType)
+                            toReturn += group.Key + " , " + group.Value.Key + "\n";
                     }
                 }
 
