@@ -97,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     catch (Exception e2)
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
-                            "\n NewTitle: " + newTitle + e2.Message);
+                            "\n NewTitle: " + newTitle + "\n\n" + e2.Message);
                         await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
                     }
                 }
