@@ -338,7 +338,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                             var push = @"git push https://" + GitHubConfig.GetUser() + ":" +
                                        GitHubConfig.GetPassword() + "@" +
-                                       GitHubConfig.GetRepo() + @" --all";
+                                       GitHubConfig.GetRepo() + @" --all -f";
                             DoScript(powershell, push, debug);
 
                             var hub_pr =
