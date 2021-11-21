@@ -62,13 +62,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id,(long)groups.Rows[i][indexId]);
                             Logger.GroupsFixLog.CountIgnored();
                             //throw new Exception("oldTitle and newTitle both null at line: " + i);
-                            return;
+                            continue;
                         }
                         if (String.IsNullOrEmpty(newTitle))
                         {
                             Logger.GroupsFixLog.NewNull((long)groups.Rows[i][indexId] ,oldTitle, newTitleWithException?.Item2);
                             Logger.GroupsFixLog.CountIgnored();
-                            return;
+                            continue;
                             //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
                             //throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
                         }
