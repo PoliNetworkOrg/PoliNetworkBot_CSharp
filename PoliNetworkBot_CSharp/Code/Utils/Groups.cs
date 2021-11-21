@@ -39,6 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
+                Logger.WriteLine("Starting fix of groups name");
                 const string q1 = "SELECT * FROM Groups";
                 var groups = SqLite.ExecuteSelect(q1);
                 var indexTitle = groups.Columns.IndexOf("title");

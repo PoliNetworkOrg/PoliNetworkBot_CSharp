@@ -328,7 +328,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var cd = GitHubConfig.GetPath();
                             DoScript(powershell, "cd " + cd, debug);
                             DoScript(powershell, "git fetch org", debug);
-                            DoScript(powershell, "git pull", debug);
+                            DoScript(powershell, "git pull --force", debug);
                             DoScript(powershell, "git add . --ignore-errors", debug);
 
                             var commit = @"git commit -m ""[Automatic Commit] Updated Group List""" +
