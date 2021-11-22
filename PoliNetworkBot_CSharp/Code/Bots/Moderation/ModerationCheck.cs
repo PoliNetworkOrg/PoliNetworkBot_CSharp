@@ -132,10 +132,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case string s:
                     {
                         s = s.Trim();
-
+                        
                         if (!(s == "Y" || s == "1"))
-                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null, new List<int> { 8 },
-                                s);
+                            return await PreExitChecks(s, e, telegramBotClient);
                         return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 }, s);
                     }
                 default:

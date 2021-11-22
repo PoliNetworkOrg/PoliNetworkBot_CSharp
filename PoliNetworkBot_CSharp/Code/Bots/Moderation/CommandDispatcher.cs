@@ -704,7 +704,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
             return true;
         }
+        
+        private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, long idGroup)
+        {
+            return false;
+            var queryForBannedUsers =
+                "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
+            var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers);
+            List<long> bannedUsersIdArray = new();
+            var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
+            foreach (var user in bannedUsersId)
+            {
+                bannedUsersIdArray.Add(Int64.Parse(user.ToString()));
+            }
 
+
+            return true;
+        }
+        
+        /*    
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
@@ -740,7 +758,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await sender.SendTextMessageAsync(e.Message.From.Id, text2, ChatType.Private, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId, false);
                 return false;
             }
-            */
+
             var counter = 0;
             var channel = Regex.Match(e.Message.Text, @"\d+").Value;
             if (groups.Select("id = " + "'" + channel + "'").Length != 1)
@@ -770,6 +788,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
             return true;
         }
+        */
 
         private static async Task<int?> QueryBot(bool execute_true_select_false, MessageEventArgs e,
             TelegramBotAbstract sender)
