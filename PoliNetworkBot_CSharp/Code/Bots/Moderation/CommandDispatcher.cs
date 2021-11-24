@@ -490,14 +490,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                     false);
 
-            var byteArray = Encoding.Unicode.GetBytes(json);
             if (!Directory.Exists(GitHubConfig.GetPath()))
             {
                 Directory.CreateDirectory("./data/");
                 InitGithubRepo();
             }
             var path = GitHubConfig.GetPath() + "groupsGenerated.json";
-            await File.WriteAllBytesAsync(path, byteArray);
+            await File.WriteAllTextAsync(path, json, Encoding.Unicode);
             if (dry)
             {
                 Logger.WriteLine(await File.ReadAllTextAsync(path));
