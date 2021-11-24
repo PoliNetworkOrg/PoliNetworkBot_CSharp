@@ -496,7 +496,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 InitGithubRepo();
             }
             var path = GitHubConfig.GetPath() + "groupsGenerated.json";
-            await File.WriteAllTextAsync(path, json, Encoding.Unicode);
+            await File.WriteAllTextAsync(path, json, Encoding.UTF8);
             if (dry)
             {
                 Logger.WriteLine(await File.ReadAllTextAsync(path));
