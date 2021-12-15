@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -18,7 +18,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
-            if (CheckSpamLink(text, groupId) == SpamType.SPAM_LINK) return SpamType.SPAM_LINK;
+
+
+            string[] words = text.Contains(" ") ? text.Split(' ') : new string[] { text };
+            if (words != null && words.Length > 0)
+            {
+                var words2 = words.ToList().Select(x => x.Trim());
+
+                foreach (var word in words2)
+                {
+                    if (CheckSpamLink(word, groupId) == SpamType.SPAM_LINK)
+                        return SpamType.SPAM_LINK;
+                }
+            }
+
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId);
@@ -124,6 +137,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                          text.Contains("docs.google.com") ||
                          text.Contains("amazon.it/gp/student") ||
                          text.Contains("amazon.com/gp/student") ||
+                         text.Contains("polinetwork.it") ||
                          text.Contains("discord.gg");
                 return b1 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
             }
