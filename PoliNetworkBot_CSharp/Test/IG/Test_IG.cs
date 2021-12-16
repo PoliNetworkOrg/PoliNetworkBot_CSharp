@@ -2,10 +2,9 @@
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
-using System;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System.IO;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {

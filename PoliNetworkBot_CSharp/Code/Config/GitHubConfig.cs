@@ -34,7 +34,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             return GetInfo("password");
         }
-        
+
         public static object GetRepo()
         {
             return GetInfo("data_repo");

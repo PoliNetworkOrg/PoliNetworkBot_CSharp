@@ -543,12 +543,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
         private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users)
         {
             const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-            _ = SqLite.Execute(q1, new Dictionary<string, object> {{"@name", name}});
+            _ = SqLite.Execute(q1, new Dictionary<string, object> { { "@name", name } });
 
             Tables.FixIdTable("Entities", "id", "name");
 
             const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> {{"@name", name}});
+            var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
             int? r4 = null;
@@ -573,7 +573,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var u in users)
             {
                 const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-                _ = SqLite.Execute(q3, new Dictionary<string, object> {{"@ide", r4.Value}, {"@idp", u}});
+                _ = SqLite.Execute(q3, new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
             }
 
             return true;

@@ -408,6 +408,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     }
                 }
+
+                Thread.Sleep(1000);
             }
 
 

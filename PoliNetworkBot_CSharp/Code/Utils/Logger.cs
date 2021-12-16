@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using InstagramApiSharp.Helpers;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -31,8 +30,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         {"un", escaped}
                     });
-                    await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, text, 
-                        messageToBeSent.ChatType, "un", ParseMode.Html, 
+                    await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, text,
+                        messageToBeSent.ChatType, "un", ParseMode.Html,
                         null, null, null, splitMessage: true);
                 }
                 catch (Exception e)
@@ -162,7 +161,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "\n\n";
                 message += "Fixed: " + _countFixed;
                 message += "\nIgnored (already ok): " + _countIgnored;
-                
+
                 string escaped = System.Web.HttpUtility.HtmlEncode(message);
                 Logger.WriteLine(message);
                 Utils.NotifyUtil.NotifyOwners(escaped, telegramBotAbstract);
@@ -181,11 +180,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             private static string HandleNewTitleNull(Dictionary<long, KeyValuePair<string, Exception>> newNull)
             {
-                var toReturn ="";
+                var toReturn = "";
                 var exceptionTypes = new List<Type>();
                 foreach (var (_, exception) in newNull.Values)
                 {
-                    if(!exceptionTypes.Contains(exception.GetType()))
+                    if (!exceptionTypes.Contains(exception.GetType()))
                         exceptionTypes.Add(exception.GetType());
                 }
 
@@ -195,7 +194,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     toReturn += "[GroupId , oldTitle]\n";
                     foreach (var group in newNull)
                     {
-                        if(newNull[group.Key].Value.GetType() == exceptionType)
+                        if (newNull[group.Key].Value.GetType() == exceptionType)
                             toReturn += group.Key + " , " + group.Value.Key + "\n";
                     }
                 }
@@ -217,7 +216,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 _newNull.TryAdd(id, new KeyValuePair<string, Exception>(oldTitle, exception));
             }
-            
+
             public static void OldNull(string newTitle)
             {
                 _oldNull.Add(newTitle ?? "[NULL VALUE]");
@@ -228,8 +227,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 _nameChange.Add(oldTitle + " [->] " + newTitle);
                 _countFixed++;
             }
-            
-            
+
+
             public static void CountIgnored()
             {
                 _countIgnored++;
