@@ -1,12 +1,12 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 
 #endregion
 
@@ -59,14 +59,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         newTitle = newTitleWithException?.Item1?.Title;
                         if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
                         {
-                            Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id,(long)groups.Rows[i][indexId]);
+                            Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, (long)groups.Rows[i][indexId]);
                             Logger.GroupsFixLog.CountIgnored();
                             //throw new Exception("oldTitle and newTitle both null at line: " + i);
                             continue;
                         }
                         if (String.IsNullOrEmpty(newTitle))
                         {
-                            Logger.GroupsFixLog.NewNull((long)groups.Rows[i][indexId] ,oldTitle, newTitleWithException?.Item2);
+                            Logger.GroupsFixLog.NewNull((long)groups.Rows[i][indexId], oldTitle, newTitleWithException?.Item2);
                             Logger.GroupsFixLog.CountIgnored();
                             continue;
                             //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
@@ -136,7 +136,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 await Utils.SendMessage.SendMessageInAGroup(
                                         telegramBotClient, e.Message.From.LanguageCode, lang,
                                         e.Message.Chat.Id, e.Message.Chat.Type,
-                                        Telegram.Bot.Types.Enums.ParseMode.Default, null, true
+                                        Telegram.Bot.Types.Enums.ParseMode.Html, null, true
                                     );
                             }
                             catch

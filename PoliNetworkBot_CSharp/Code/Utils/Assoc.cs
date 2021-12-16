@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -83,7 +83,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"en", "I'm sorry! In this period you have sent too many messages"}
                 });
                 await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
-                    ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
                 return false;
             }
 
@@ -132,7 +132,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     });
                     await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
                         ChatType.Private, e.Message.From.LanguageCode,
-                        ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                         e.Message.From.Username);
                     return false;
                 }
@@ -175,7 +175,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
             await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
                 ChatType.Private, e.Message.From.LanguageCode,
-                ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                 e.Message.From.Username);
             return true;
         }
@@ -208,7 +208,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await sender.SendTextMessageAsync(e.Message.From.Id,
                 lang2,
                 ChatType.Private, e.Message.From.LanguageCode,
-                ParseMode.Default,
+                ParseMode.Html,
                 new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
         }
 
@@ -369,7 +369,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
             });
             await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, default,
-                ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
         }
 
         internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e, bool allAssoc)

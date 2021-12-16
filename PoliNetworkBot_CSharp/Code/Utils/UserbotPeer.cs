@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
         }
 
-        internal static TLAbsInputChannel GetPeerChannelFromIdAndType(long chatid, long? accessHash)
+        internal static TLAbsInputChannel GetPeerChannelFromIdAndType(long? chatid, long? accessHash)
         {
             try
             {

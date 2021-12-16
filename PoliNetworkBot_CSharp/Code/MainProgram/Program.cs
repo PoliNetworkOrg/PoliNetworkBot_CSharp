@@ -278,11 +278,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
                             continue;
 
-                        botClient.OnMessage += onmessageMethod2.Item1;
-                        botClient.StartReceiving(bot.GetAllowedUpdates());
-
-
-                        if (bot.Callback()) botClient.OnCallbackQuery += bot.GetCallbackEvent();
+                        BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
+                        Thread t = new(start: () =>
+                        {
+                            _ = StartBotsAsync2Async(botClientWhole);
+                        });
 
                         if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
 
@@ -375,6 +375,70 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 var t = new Thread(Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
                 t.Start();
             }
+        }
+
+        private static async Task StartBotsAsync2Async(BotClientWhole botClientWhole)
+        {
+            while (true)
+            {
+                Telegram.Bot.Types.Update[] updates = await botClientWhole.botClient.GetUpdatesAsync();
+                if (updates != null && updates.Length > 0)
+                {
+                    foreach (Telegram.Bot.Types.Update update in updates)
+                    {
+                        try
+                        {
+                            switch (update.Type)
+                            {
+                                case UpdateType.Unknown:
+                                    break;
+                                case UpdateType.Message:
+                                    {
+                                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
+                                        break;
+                                    }
+                                case UpdateType.InlineQuery:
+                                    break;
+                                case UpdateType.ChosenInlineResult:
+                                    break;
+                                case UpdateType.CallbackQuery:
+                                    {
+                                        var callback = botClientWhole.bot.GetCallbackEvent();
+                                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                                        break;
+                                    }
+                                case UpdateType.EditedMessage:
+                                    break;
+                                case UpdateType.ChannelPost:
+                                    break;
+                                case UpdateType.EditedChannelPost:
+                                    break;
+                                case UpdateType.ShippingQuery:
+                                    break;
+                                case UpdateType.PreCheckoutQuery:
+                                    break;
+                                case UpdateType.Poll:
+                                    break;
+                                case UpdateType.PollAnswer:
+                                    break;
+                                case UpdateType.MyChatMember:
+                                    break;
+                                case UpdateType.ChatMember:
+                                    break;
+                                case UpdateType.ChatJoinRequest:
+                                    break;
+                            }
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
+                }
+            }
+
+
+
         }
 
         private static async Task<bool> TestThingsDisguisedAsync(long userbotId)

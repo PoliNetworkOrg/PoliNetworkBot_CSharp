@@ -38,8 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
                 ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
-                ReplyMarkupEnum.CHOICE => new ReplyKeyboardMarkup(_list.GetMatrixKeyboardButton(),
-                    oneTimeKeyboard: true),
+                ReplyMarkupEnum.CHOICE => new ReplyKeyboardMarkup(_list.GetMatrixKeyboardButton()) { OneTimeKeyboard = true },
                 ReplyMarkupEnum.INLINE => inlineKeyboardMarkup,
                 _ => throw new ArgumentOutOfRangeException()
             };

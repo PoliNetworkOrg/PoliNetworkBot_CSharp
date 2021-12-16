@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -72,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text2,
-                    ParseMode.Default,
+                    ParseMode.Html,
                     e.Message.MessageId);
                 return null;
             }
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text3,
-                    ParseMode.Default,
+                    ParseMode.Html,
                     e.Message.MessageId);
                 return null;
             }
@@ -271,7 +271,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 e.Message.From.LanguageCode,
                 e.Message.From.Username,
                 text7,
-                ParseMode.Default,
+                ParseMode.Html,
                 e.Message.MessageId);
         }
 

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -132,7 +131,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 case string s:
                     {
                         s = s.Trim();
-                        
+
                         if (!(s == "Y" || s == "1"))
                             return await PreExitChecks(s, e, telegramBotClient);
                         return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 }, s);
@@ -146,8 +145,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
             }
         }
-        
-        private static async Task<Tuple<ToExit, ChatMember[], List<int>, string>> PreExitChecks(string oldValid, MessageEventArgs messageEventArgs, 
+
+        private static async Task<Tuple<ToExit, ChatMember[], List<int>, string>> PreExitChecks(string oldValid, MessageEventArgs messageEventArgs,
             TelegramBotAbstract telegramBotAbstract)
         {
             var (item1, item2, item3) = await CheckIfToExit_NullValue2Async(telegramBotAbstract, messageEventArgs);
@@ -432,7 +431,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
-                            e.Message.From.Username, text2, ParseMode.Default, null);
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
                         break;
                     }
@@ -446,7 +445,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
-                            e.Message.From.Username, text2, ParseMode.Default, null);
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
                         break;
                     }
@@ -460,7 +459,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
-                            e.Message.From.Username, text2, ParseMode.Default, null);
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
                         break;
                     }
@@ -479,7 +478,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                             e.Message.From.LanguageCode,
                             e.Message.From.Username, text2,
-                            ParseMode.Default, null);
+                            ParseMode.Html, null);
                         break;
                     }
 

@@ -3,6 +3,7 @@
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -10,16 +11,13 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -269,45 +267,45 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     }
 
                 case "/unallowmessage":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = new Language(new Dictionary<string, string>
+                            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+                            {
+                                var text = new Language(new Dictionary<string, string>
                             {
                                 {"en", "You have to reply to a message containing the message"}
                             });
-                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                                e.Message.MessageId);
+                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                                    e.Message.MessageId);
+                                return;
+                            }
+
+                            AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
                             return;
                         }
 
-                        AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
+                        await DefaultCommand(sender, e);
+
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/updategroups_dry":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
 
-                        await UpdateGroups(sender, e, true, true);
+                            await UpdateGroups(sender, e, true, true);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
 
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/updategroups":
                     {
                         if (Owners.CheckIfOwner(e.Message.From.Id)
@@ -338,47 +336,47 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
                 case "/subscribe_log":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        await Logger.Subscribe(e.Message.From.Id, sender);
-                        
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            await Logger.Subscribe(e.Message.From.Id, sender);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/unsubscribe_log":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        Logger.Unsubscribe(e.Message.From.Id);
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            Logger.Unsubscribe(e.Message.From.Id);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
 
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/getlog":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        await Logger.PrintLog(sender, e.Message.From.Id);
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            await Logger.PrintLog(sender, e.Message.From.Id);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
 
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/testtime":
                     {
                         if (e.Message.Chat.Type == ChatType.Private) await TestTime(sender, e);
@@ -394,7 +392,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     });
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                             usernameToSendTo: e.Message.From.Username, langCode: e.Message.From.LanguageCode,
-                            text: lang, parseMode: ParseMode.Default, messageIdToReplyTo: null);
+                            text: lang, parseMode: ParseMode.Html, messageIdToReplyTo: null);
                         return;
                     }
 
@@ -483,7 +481,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (Variabili.L == null) Variabili.L = new ListaGruppo();
 
             Variabili.L.HandleSerializedObject(groups);
-            
+
             Variabili.L.CheckSeILinkVanno(false);
 
             var json =
@@ -540,7 +538,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
-                ParseMode.Default, null);
+                ParseMode.Html, null);
         }
 
         private static void InitGithubRepo()
@@ -609,7 +607,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var text = new Language(dict);
             try
             {
-                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en", ParseMode.Default,
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en", ParseMode.Html,
                     null, null);
             }
             catch
@@ -703,8 +701,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
             return true;
         }
-        
+
+#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, long idGroup)
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
+#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {
             return false;
             var queryForBannedUsers =
@@ -720,7 +722,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             return true;
         }
-        
+
         /*    
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e,
@@ -869,7 +871,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var text = new Language(dict);
             return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode, e.Message.From.Username,
-                text, ParseMode.Default, e.Message.MessageId);
+                text, ParseMode.Html, e.Message.MessageId);
         }
 
         private static async Task<MessageSentResult> Rules(TelegramBotAbstract sender, MessageEventArgs e)
@@ -1065,7 +1067,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"it", "Non riusciamo a trovare il bersaglio"}
                 });
                 await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
-                    lang, ParseMode.Default, username: username,
+                    lang, ParseMode.Html, username: username,
                     replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
 
                 return;
@@ -1078,7 +1080,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
-                ParseMode.Default,
+                ParseMode.Html,
                 e.Message.MessageId);
 
             await SendReportOfSuccessAndFailures(sender, e, done);
@@ -1136,7 +1138,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
-                ParseMode.Default,
+                ParseMode.Html,
                 null);
 
             return true;
@@ -1210,7 +1212,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             });
             await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
                 lang2, e.Message.Chat.Type, e.Message.From.LanguageCode,
-                ParseMode.Default,
+                ParseMode.Html,
                 new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username
             );
         }
@@ -1238,7 +1240,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
-                ParseMode.Default,
+                ParseMode.Html,
                 e.Message.MessageId);
         }
 
@@ -1261,7 +1263,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await telegramBotClient.SendTextMessageAsync(e.Message.Chat.Id,
                 lang2,
                 e.Message.Chat.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: e.Message.From.LanguageCode, username: e.Message.From.Username, parseMode: ParseMode.Default
+                lang: e.Message.From.LanguageCode, username: e.Message.From.Username, parseMode: ParseMode.Html
             );
         }
 
@@ -1280,7 +1282,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 0,
                 lang2,
                 ChatType.Supergroup, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: "it", username: e.Message.From.Username, parseMode: ParseMode.Default
+                lang: "it", username: e.Message.From.Username, parseMode: ParseMode.Html
             );
         }
     }

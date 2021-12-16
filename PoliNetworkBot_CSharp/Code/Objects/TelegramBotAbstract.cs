@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -141,7 +140,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<TLChannel?> UpgradeGroupIntoSupergroup(long? chatID)
+        internal async Task<TLChannelClass> UpgradeGroupIntoSupergroup(long? chatID)
         {
             switch (_isbot)
             {
@@ -155,7 +154,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             if (r2.Chats != null && r2.Chats.Count == 2)
                             {
                                 var c1 = r2.Chats[1];
-                                if (c1 is TLChannel c2) return c2;
+                                if (c1 is TLChannel c2)
+                                {
+
+                                    return new TLChannelClass(c2);
+
+                                };
                             }
                     }
                     break;
@@ -564,12 +568,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     while (splitMessage && message.Length > 4096)
                     {
                         m1 = await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
-                            replyMarkup: reply, replyToMessageId: (int) m2, disableWebPagePreview: disablePreviewLink);
+                            replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                         message = message[4095..];
                         Thread.Sleep(100);
                     }
                     m1 = await _botClient.SendTextMessageAsync(chatid, message, parseMode,
-                        replyMarkup: reply, replyToMessageId: (int) m2, disableWebPagePreview: disablePreviewLink);
+                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                     var b1 = m1 != null;
                     return new MessageSentResult(b1, m1, chatType);
 

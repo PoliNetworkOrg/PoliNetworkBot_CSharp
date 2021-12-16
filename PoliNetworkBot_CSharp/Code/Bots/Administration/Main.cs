@@ -50,12 +50,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                 while (chatID == null)
                                     chatID = await telegramBotAbstract.CreateGroup(name, desc, members);
                                 Thread.Sleep(1 * 1000 * 10);
-                                var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
+                                TLChannelClass channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
                                 if (channel == null)
                                     return;
                                 //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
                                 Thread.Sleep(1 * 1000 * 10);
-                                await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel);
+                                await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel.channel);
 
                                 var admins = new List<TLInputUser>();
 
@@ -77,12 +77,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                                 foreach (var admin in admins)
                                 {
                                     Thread.Sleep(1 * 1000 * 10);
-                                    await telegramBotAbstract.PromoteChatMember(admin, channel.Id, channel.AccessHash);
+                                    await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id, channel.channel.AccessHash);
                                 }
 
                                 Thread.Sleep(1 * 1000 * 10);
-                                var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.Id,
-                                    channel.AccessHash);
+                                var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.channel.Id,
+                                    channel.channel.AccessHash);
                                 links.Add(link);
                                 using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                                 {

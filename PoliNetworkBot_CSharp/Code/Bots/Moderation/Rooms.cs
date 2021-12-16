@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //wrong choice: (should be impossible)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
                 e.Message.From.Username, text,
-                ParseMode.Default,
+                ParseMode.Html,
                 null);
         }
 
@@ -108,7 +108,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"en", "Use /rooms to find rooms!"}
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username, text, ParseMode.Default, null);
+                e.Message.From.LanguageCode, e.Message.From.Username, text, ParseMode.Html, null);
         }
 
         private static async Task FreeClassroomAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text4,
-                    ParseMode.Default, null);
+                    ParseMode.Html, null);
                 return;
             }
 
@@ -143,7 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text3,
-                    ParseMode.Default, null);
+                    ParseMode.Html, null);
                 return;
             }
 
@@ -427,7 +427,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text2,
-                    ParseMode.Default, null);
+                    ParseMode.Html, null);
                 return;
             }
 
@@ -453,7 +453,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
                     text2,
-                    ParseMode.Default, null);
+                    ParseMode.Html, null);
                 return;
             }
 

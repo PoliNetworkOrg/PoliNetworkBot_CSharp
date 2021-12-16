@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -43,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 return;
             }
 
-            var textLower = e.Message.Text.ToLower();
+            string textLower = e.Message.Text.ToLower();
             if (textLower.StartsWith("/"))
                 switch (textLower)
                 {
@@ -323,7 +322,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             try
             {
-                var inlineKeyboard = new InlineKeyboardButton { Text = "-", CallbackData = "-" };
+                var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
                 var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
                 await telegramBotAbstract.EditText(ConfigAnon.ModAnonCheckGroup, e.CallbackQuery.Message.MessageId,
@@ -500,7 +499,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                     });
 
                     await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l6, ChatType.Private,
-                        e.GetLanguageCode(), ParseMode.Default, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        e.GetLanguageCode(), ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                         e.GetUsername());
 
                     return false;
@@ -530,9 +529,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 messageIdReplyTo.Item2 == ResultQueueEnum.APPROVED_MAIN)
                 x2.Add(new List<InlineKeyboardButton>
                 {
-                    new()
+                    new( "Si, principale")
                     {
-                        Text = "Si, principale", CallbackData =
+                        CallbackData =
                             FormatDataCallBack(ResultQueueEnum.APPROVED_MAIN,
                                 x.GetMessageID(),
                                 e.GetFromUserIdOrPostId(),
@@ -548,9 +547,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 messageIdReplyTo.Item2 == ResultQueueEnum.GO_TO_UNCENSORED)
                 x2.Add(new List<InlineKeyboardButton>
                 {
-                    new()
+                    new("Si, uncensored")
                     {
-                        Text = "Si, uncensored", CallbackData =
+                         CallbackData =
                             FormatDataCallBack(ResultQueueEnum.GO_TO_UNCENSORED, x.GetMessageID(),
                                 e.GetFromUserIdOrPostId(), identity,
                                 e.GetLanguageCode(), e.GetUsername(), m3, messageIdReplyTo, e.FromTelegram())
@@ -558,9 +557,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 });
             x2.Add(new List<InlineKeyboardButton>
             {
-                new()
+                new("No, elimina")
                 {
-                    Text = "No, elimina", CallbackData =
+                    CallbackData =
                         FormatDataCallBack(ResultQueueEnum.DELETE, x.GetMessageID(), e.GetFromUserIdOrPostId(),
                             identity,
                             e.GetLanguageCode(), e.GetUsername(), m3, messageIdReplyTo, e.FromTelegram())

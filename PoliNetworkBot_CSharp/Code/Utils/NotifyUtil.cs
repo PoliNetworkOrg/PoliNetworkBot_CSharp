@@ -1,8 +1,8 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"it", message}
                 });
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
-                    ParseMode.Default, group_exception, true);
+                    ParseMode.Html, group_exception, true);
             }
         }
 

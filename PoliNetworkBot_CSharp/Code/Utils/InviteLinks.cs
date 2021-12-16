@@ -2,6 +2,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -11,7 +12,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -103,7 +103,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 ex3m
                             }
                         }),
-                    ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
                 return null;
             }
 
@@ -204,7 +204,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                         ex4m
                                     }
                                 }),
-                            ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                            ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
                         return;
                     }
                 }
@@ -224,7 +224,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 s2
                             }
                         }),
-                    ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
                 var st = L.GetStringList();
 
@@ -292,7 +292,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                     ex1m
                                 }
                             }),
-                        ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                        ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
                     result.gruppoTG = gruppoTG;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -337,7 +337,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                     ex2m
                                 }
                             }),
-                        ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                        ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
                     result.gruppoTG = gruppoTG;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -380,7 +380,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                     ex3m
                                 }
                             }),
-                        ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
+                        ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
                     result.gruppoTG = gruppoTG;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
