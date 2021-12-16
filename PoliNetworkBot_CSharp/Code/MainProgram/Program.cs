@@ -381,57 +381,30 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             while (true)
             {
-                Telegram.Bot.Types.Update[] updates = await botClientWhole.botClient.GetUpdatesAsync();
+                Telegram.Bot.Types.Update[] updates = null;
+                try
+                {
+                    updates = await botClientWhole.botClient.GetUpdatesAsync();
+                }
+                catch
+                {
+                    ;
+                }
+
                 if (updates != null && updates.Length > 0)
                 {
                     foreach (Telegram.Bot.Types.Update update in updates)
                     {
-                        try
+                        if (update != null)
                         {
-                            switch (update.Type)
+                            try
                             {
-                                case UpdateType.Unknown:
-                                    break;
-                                case UpdateType.Message:
-                                    {
-                                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
-                                        break;
-                                    }
-                                case UpdateType.InlineQuery:
-                                    break;
-                                case UpdateType.ChosenInlineResult:
-                                    break;
-                                case UpdateType.CallbackQuery:
-                                    {
-                                        var callback = botClientWhole.bot.GetCallbackEvent();
-                                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                                        break;
-                                    }
-                                case UpdateType.EditedMessage:
-                                    break;
-                                case UpdateType.ChannelPost:
-                                    break;
-                                case UpdateType.EditedChannelPost:
-                                    break;
-                                case UpdateType.ShippingQuery:
-                                    break;
-                                case UpdateType.PreCheckoutQuery:
-                                    break;
-                                case UpdateType.Poll:
-                                    break;
-                                case UpdateType.PollAnswer:
-                                    break;
-                                case UpdateType.MyChatMember:
-                                    break;
-                                case UpdateType.ChatMember:
-                                    break;
-                                case UpdateType.ChatJoinRequest:
-                                    break;
+                                HandleUpdate(update, botClientWhole);
                             }
-                        }
-                        catch
-                        {
-                            ;
+                            catch
+                            {
+                                ;
+                            }
                         }
                     }
                 }
@@ -439,6 +412,50 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
 
 
+        }
+
+        private static void HandleUpdate(Telegram.Bot.Types.Update update, BotClientWhole botClientWhole)
+        {
+            switch (update.Type)
+            {
+                case UpdateType.Unknown:
+                    break;
+                case UpdateType.Message:
+                    {
+                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
+                        break;
+                    }
+                case UpdateType.InlineQuery:
+                    break;
+                case UpdateType.ChosenInlineResult:
+                    break;
+                case UpdateType.CallbackQuery:
+                    {
+                        var callback = botClientWhole.bot.GetCallbackEvent();
+                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                        break;
+                    }
+                case UpdateType.EditedMessage:
+                    break;
+                case UpdateType.ChannelPost:
+                    break;
+                case UpdateType.EditedChannelPost:
+                    break;
+                case UpdateType.ShippingQuery:
+                    break;
+                case UpdateType.PreCheckoutQuery:
+                    break;
+                case UpdateType.Poll:
+                    break;
+                case UpdateType.PollAnswer:
+                    break;
+                case UpdateType.MyChatMember:
+                    break;
+                case UpdateType.ChatMember:
+                    break;
+                case UpdateType.ChatJoinRequest:
+                    break;
+            }
         }
 
         private static async Task<bool> TestThingsDisguisedAsync(long userbotId)
