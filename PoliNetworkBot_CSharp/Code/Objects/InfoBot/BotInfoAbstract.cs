@@ -127,6 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             public const string NumberNumber = "nn";
             public const string PasswordToAuthenticate = "pta";
             public const string Method = "method";
+            public const string Offset = "offset";
         }
     }
 }

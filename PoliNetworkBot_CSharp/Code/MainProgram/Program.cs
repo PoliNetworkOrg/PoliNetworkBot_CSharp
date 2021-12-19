@@ -284,6 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
                             continue;
 
+
                         BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
                         Thread t = new(start: () =>
                         {
@@ -396,12 +397,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             const int MAX_WAIT = 1000 * 60 * 5; //5 minutes
             int i = 0;
+            int? offset = null;
+
             while (true)
             {
                 Telegram.Bot.Types.Update[] updates = null;
                 try
                 {
-                    updates = await botClientWhole.botClient.GetUpdatesAsync();
+                    updates = await botClientWhole.botClient.GetUpdatesAsync(offset);
                 }
                 catch (Exception ex)
                 {
@@ -423,6 +426,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 Console.WriteLine(e);
                             }
+
+                            offset = update.Id + 1;
                         }
                     }
                 }

@@ -30,12 +30,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
                 case "a":
                     {
                         var x = new List<UpdateType>
-                    {
-                        UpdateType.CallbackQuery,
-                        UpdateType.Message,
-                        UpdateType.InlineQuery,
-                        UpdateType.ChosenInlineResult
-                    };
+                        {
+                            UpdateType.CallbackQuery,
+                            UpdateType.Message,
+                            UpdateType.InlineQuery,
+                            UpdateType.ChosenInlineResult
+                        };
                         return x.ToArray();
                     }
             }
@@ -68,5 +68,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
             return null;
         }
+
     }
 }
