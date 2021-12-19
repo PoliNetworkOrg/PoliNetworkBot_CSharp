@@ -448,7 +448,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 ;
 
-                //var r = await telegramBotAbstract.ForwardMessageAsync((int)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+                //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
                 var r = await telegramBotAbstract.ForwardMessageAnonAsync(
                     x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN
                         ? ConfigAnon.WhereToPublishAnonMain

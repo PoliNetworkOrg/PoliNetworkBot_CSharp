@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             for (var i = 0; i < length; i++)
             {
                 var r2 = random.NextDouble() * 26;
-                var r3 = (int)r2;
+                var r3 = (long)r2;
                 var r4 = 'A' + r3;
                 var r5 = (char)r4;
                 r += r5;

@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static bool AddMessage(MessageType type, string messageText,
             long messageFromIdPerson, int? messageFromIdEntity,
             long idChatSentInto, DateTime? sentDate,
-            bool hasBeenSent, int messageFromIdBot,
+            bool hasBeenSent, long messageFromIdBot,
             int messageIdTgFrom, ChatType type_chat_sent_into,
             int? photo_id, int? video_id)
         {
