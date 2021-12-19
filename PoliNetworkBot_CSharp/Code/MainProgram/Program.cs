@@ -52,25 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     case '8':
                     case '9':
                         {
-                            var toExit = LoadBotConfig();
-                            if (toExit == ToExit.EXIT)
-                                return;
-
-                            var toExit2 = LoadUserBotConfig();
-                            if (toExit2 == ToExit.EXIT)
-                                return;
-
-                            var toExit3 = LoadBotDisguisedAsUserBotConfig();
-                            if (toExit3 == ToExit.EXIT)
-                                return;
-
-                            GlobalVariables.LoadToRam();
-
-                            Logger.WriteLine("\nTo kill this process, you have to check the process list");
-
-                            _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-
-                            while (true) Console.ReadKey();
+                            MainBot(readChoice);
                             return;
                         }
 
@@ -104,6 +86,30 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                 }
             }
+        }
+
+        private static void MainBot(char readChoice)
+        {
+            var toExit = LoadBotConfig();
+            if (toExit == ToExit.EXIT)
+                return;
+
+            var toExit2 = LoadUserBotConfig();
+            if (toExit2 == ToExit.EXIT)
+                return;
+
+            var toExit3 = LoadBotDisguisedAsUserBotConfig();
+            if (toExit3 == ToExit.EXIT)
+                return;
+
+            GlobalVariables.LoadToRam();
+
+            Logger.WriteLine("\nTo kill this process, you have to check the process list");
+
+            _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
+
+            while (true)
+                Console.ReadKey();
         }
 
         private static void FirstThingsToDo()
@@ -254,7 +260,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        [Obsolete]
+
         public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot,
             bool runOnlyNormalBot)
         {
@@ -283,6 +289,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             _ = StartBotsAsync2Async(botClientWhole);
                         });
+                        t.Start();
 
                         if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
 
@@ -379,6 +386,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static async Task StartBotsAsync2Async(BotClientWhole botClientWhole)
         {
+            const int MAX_WAIT = 1000 * 60 * 5; //5 minutes
+            int i = 0;
             while (true)
             {
                 Telegram.Bot.Types.Update[] updates = null;
@@ -393,6 +402,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                 if (updates != null && updates.Length > 0)
                 {
+                    i = 0;
                     foreach (Telegram.Bot.Types.Update update in updates)
                     {
                         if (update != null)
@@ -409,7 +419,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 }
 
-                Thread.Sleep(1000);
+                i++;
+
+                int wait = i * 500;
+                Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
             }
 
 
