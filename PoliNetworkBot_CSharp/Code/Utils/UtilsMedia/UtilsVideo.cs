@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             return replyToVideo;
         }
 
-        public static int? AddVideoToDb(Video video)
+        public static long? AddVideoToDb(Video video)
         {
             var photoId = GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId);
             if (photoId != null) return photoId.Value;
@@ -45,13 +45,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId);
         }
 
-        private static int? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
+        private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
         {
             var a = GetVideoId_From_FileId(fileId);
             return a ?? GetVideoId_From_UniqueFileId(fileUniqueId);
         }
 
-        private static int? GetVideoId_From_UniqueFileId(string fileUniqueId)
+        private static long? GetVideoId_From_UniqueFileId(string fileUniqueId)
         {
             const string q2 = "SELECT id_video FROM Videos WHERE unique_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
@@ -74,7 +74,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             }
         }
 
-        private static int? GetVideoId_From_FileId(string fileId)
+        private static long? GetVideoId_From_FileId(string fileId)
         {
             const string q2 = "SELECT id_video FROM Videos WHERE file_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
@@ -97,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             }
         }
 
-        public static ObjectVideo GetVideoByIdFromDb(int videoId, int? messageIdFrom,
+        public static ObjectVideo GetVideoByIdFromDb(long videoId, long? messageIdFrom,
             in long chatIdFromIdPerson, ChatType chatType)
         {
             var q = "SELECT * FROM Videos WHERE id_video = " + videoId;

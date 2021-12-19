@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramClient telegramClient = null;
             try
             {
-                telegramClient = new TelegramClient(apiId.Value, userbot.GetApiHash(),
+                telegramClient = new TelegramClient((int)apiId.Value, userbot.GetApiHash(),
                     sessionUserId: userbot.GetSessionUserId());
             }
             catch
@@ -78,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (apiId == null)
                 return null;
 
-            var t = new TelegramClient(apiId.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
+            var t = new TelegramClient((int)apiId.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
             await t.ConnectAsync();
 
             if (t.IsUserAuthorized())

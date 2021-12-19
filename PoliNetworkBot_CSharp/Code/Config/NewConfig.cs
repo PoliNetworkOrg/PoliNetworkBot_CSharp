@@ -556,7 +556,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             var r2 = SqLite.ExecuteSelect(q2, new Dictionary<string, object> { { "@name", name } });
 
             var r3 = SqLite.GetFirstValueFromDataTable(r2);
-            int? r4 = null;
+            long? r4 = null;
             try
             {
                 r4 = Convert.ToInt32(r3);

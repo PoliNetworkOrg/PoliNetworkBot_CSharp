@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             return BotTypeApi.USER_BOT;
         }
 
-        internal int? GetApiId()
+        internal long? GetApiId()
         {
             try
             {

@@ -287,13 +287,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r4.r != null && r4.r2.Item1 != null;
         }
 
-        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChannel x5,
+        private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChannel x5,
             TelegramBotAbstract telegramBotAbstract)
         {
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, x5.AccessHash, telegramBotAbstract);
         }
 
-        private static async Task DeleteMessageAddedAsync2(int? idMessageAdded, int id, long? accessHash,
+        private static async Task DeleteMessageAddedAsync2(long? idMessageAdded, int id, long? accessHash,
             TelegramBotAbstract telegramBotAbstract)
         {
             if (idMessageAdded != null)
@@ -318,7 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             var messageToDelete = new TLVector<int>
                             {
-                                idMessageAdded.Value
+                                (int)idMessageAdded.Value
                             };
                             TLAbsInputChannel x7 = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = id };
                             await telegramBotAbstract._userbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
@@ -350,7 +350,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static int? GetIdMessageAdded(TLAbsUpdates r)
+        private static long? GetIdMessageAdded(TLAbsUpdates r)
         {
             if (r == null)
                 return null;
@@ -362,7 +362,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return null;
         }
 
-        private static int? GetIdMessageAdded2(TLUpdates r2)
+        private static long? GetIdMessageAdded2(TLUpdates r2)
         {
             if (r2 == null)
                 return null;
@@ -540,7 +540,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         }
 
-        private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChat x5, long? accessHash,
+        private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat x5, long? accessHash,
             TelegramBotAbstract telegramBotAbstract)
         {
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, accessHash, telegramBotAbstract);

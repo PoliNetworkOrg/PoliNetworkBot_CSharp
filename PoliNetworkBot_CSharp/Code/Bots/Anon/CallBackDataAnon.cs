@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         private readonly string data;
 #pragma warning restore IDE0052 // Rimuovi i membri privati non letti
         public bool? from_telegram;
-        public int? identity;
+        public long? identity;
         public string langUser;
         public long? messageIdGroup;
         internal Tuple<long?, ResultQueueEnum?> messageIdToReplyTo;
@@ -84,7 +84,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
         }
 
-        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, int identity, string langcode,
+        public CallBackDataAnon(ResultQueueEnum v, long? messageIdGroup1, long? userId, long identity, string langcode,
             string username, long? messageIdUser1, Tuple<long?, ResultQueueEnum?> messageIdToReplyTo,
             bool from_telegram)
         {

@@ -153,7 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         }
 
         private static async Task AskForMessageToReplyTo(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e,
-            int identity)
+            long identity)
         {
             var question = new Language(new Dictionary<string, string>
             {
@@ -176,7 +176,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         }
 
         private static async Task AskForMessageToReplyTo2(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e,
-            int identity)
+            long identity)
         {
             //ask link
 
@@ -462,7 +462,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         }
 
         public static async Task<bool> PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract,
-            MessaggeAnonToSendInQueue e, int identity, Tuple<long?, ResultQueueEnum?> messageIdReplyTo)
+            MessaggeAnonToSendInQueue e, long identity, Tuple<long?, ResultQueueEnum?> messageIdReplyTo)
         {
             ;
 
@@ -574,7 +574,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return m4 != null;
         }
 
-        private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, long? userId, int identity,
+        private static string FormatDataCallBack(ResultQueueEnum v, long? messageIdGroup, long? userId, long identity,
             string langcode, string username, long? messageIdUser, Tuple<long?, ResultQueueEnum?> messageIdReplyTo,
             bool from_telegram)
         {
@@ -583,7 +583,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             return callBackDataAnon.ToDataString();
         }
 
-        private static int? GetIdentityFromReply(string r)
+        private static long? GetIdentityFromReply(string r)
         {
             if (string.IsNullOrEmpty(r))
                 return null;

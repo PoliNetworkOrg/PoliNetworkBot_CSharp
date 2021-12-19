@@ -256,7 +256,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static UsernameAndNameCheckResult CheckUsername2(string fromUsername, string fromFirstName,
             long? userId,
-            string lastName, string language, int? messageId)
+            string lastName, string language, long? messageId)
         {
             var username = false;
             var name = false;
@@ -325,7 +325,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
             bool username, bool name, string lang, string usernameOfUser,
-            long chatId, long? userId, int? messageId, ChatType messageChatType,
+            long chatId, long? userId, long? messageId, ChatType messageChatType,
             string firstName, string lastName, User[] newChatMembers)
         {
             var s1I =

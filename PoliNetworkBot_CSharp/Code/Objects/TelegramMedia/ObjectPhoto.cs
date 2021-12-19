@@ -19,11 +19,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         private readonly ChatType _chatType;
         private readonly int _fileSize;
         private readonly int _idPhotoDb;
-        private readonly int? _messageIdFrom;
+        private readonly long? _messageIdFrom;
         private readonly string _uniqueId;
 
         public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,
-            string uniqueId, int? messageIdFrom, long chatId, ChatType chatType)
+            string uniqueId, long? messageIdFrom, long chatId, ChatType chatType)
         {
             _idPhotoDb = idPhotoDb;
             _fileId = fileId;
@@ -44,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             var filename = "photo" + _uniqueId;
             var peer = UserbotPeer.GetPeerFromIdAndType(_chatId, _chatType);
             const int offsetDate = 0;
-            var r = await userbot.GetHistoryAsync(peer, _messageIdFrom.Value,
+            var r = await userbot.GetHistoryAsync(peer, (int)_messageIdFrom.Value,
                 offsetDate, 0, 1);
 
             if (r == null) return null;

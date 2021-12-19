@@ -7,12 +7,12 @@
         private readonly string _lastName;
         private readonly long? _userId;
         private readonly string _usernameString;
-        private readonly int? messageId;
+        private readonly long? messageId;
         public readonly bool Name;
         public readonly bool UsernameBool;
 
         public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
-            string usernameString, long? userId, string firstName, string lastName, int? messageId)
+            string usernameString, long? userId, string firstName, string lastName, long? messageId)
         {
             UsernameBool = usernameBool;
             Name = name;
@@ -49,7 +49,7 @@
             return _lastName;
         }
 
-        internal int? GetMessageId()
+        internal long? GetMessageId()
         {
             return messageId;
         }

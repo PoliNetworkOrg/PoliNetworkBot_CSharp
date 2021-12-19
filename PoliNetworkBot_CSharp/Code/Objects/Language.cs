@@ -49,7 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return aValue == bValue;
         }
 
-        internal static int? FindChosen(List<Language> options2, string r, string languageCode)
+        internal static long? FindChosen(List<Language> options2, string r, string languageCode)
         {
             if (options2 == null)
                 return null;

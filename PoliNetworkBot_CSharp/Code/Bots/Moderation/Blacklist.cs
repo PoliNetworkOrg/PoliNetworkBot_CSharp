@@ -174,7 +174,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return b ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
 
-        private static int? Find(string[] t2, string v)
+        private static long? Find(string[] t2, string v)
         {
             for (var i = 0; i < t2.Length; i++)
             {

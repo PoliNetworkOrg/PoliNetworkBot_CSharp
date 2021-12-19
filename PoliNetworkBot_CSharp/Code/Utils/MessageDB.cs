@@ -20,11 +20,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static readonly Dictionary<int, string> MessageTypesInRam = new();
 
         internal static bool AddMessage(MessageType type, string messageText,
-            long messageFromIdPerson, int? messageFromIdEntity,
+            long messageFromIdPerson, long? messageFromIdEntity,
             long idChatSentInto, DateTime? sentDate,
             bool hasBeenSent, long messageFromIdBot,
             int messageIdTgFrom, ChatType type_chat_sent_into,
-            int? photo_id, int? video_id)
+            long? photo_id, long? video_id)
         {
             const string q = "INSERT INTO Messages " +
                              "(id, from_id_person, from_id_entity, type, " +
@@ -59,7 +59,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-        private static int? GetMessageTypeByName(MessageType type, int times = 1)
+        private static long? GetMessageTypeByName(MessageType type, int times = 1)
         {
             while (true)
             {
@@ -322,8 +322,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var fipo = dr["from_id_person"];
 
             DateTime? dt = null;
-            int? from_id_entity = null;
-            int? from_id_person = null;
+            long? from_id_entity = null;
+            long? from_id_person = null;
 
             try
             {
@@ -336,7 +336,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                from_id_entity = (int?)fieo;
+                from_id_entity = (long?)fieo;
             }
             catch
             {
@@ -345,7 +345,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                from_id_person = (int?)fipo;
+                from_id_person = (long?)fipo;
             }
             catch
             {
@@ -524,7 +524,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var caption = dr["message_text"].ToString();
             var chatIdFromIdPerson = Convert.ToInt64(dr["from_id_person"]);
-            int? messageIdFrom = null;
+            long? messageIdFrom = null;
             try
             {
                 messageIdFrom = Convert.ToInt32(dr["message_id_tg_from"]);
@@ -565,7 +565,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var caption = dr["message_text"].ToString();
             var chatIdFromIdPerson = Convert.ToInt64(dr["from_id_person"]);
-            int? messageIdFrom = null;
+            long? messageIdFrom = null;
             try
             {
                 messageIdFrom = Convert.ToInt32(dr["message_id_tg_from"]);

@@ -34,7 +34,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             }
         }
 
-        internal int? GetApiId()
+        internal long? GetApiId()
         {
             try
             {

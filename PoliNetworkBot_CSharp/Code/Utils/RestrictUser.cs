@@ -242,7 +242,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract sender,
-            int value, long groupChatId, DateTime? until, ChatType? chatType)
+            long value, long groupChatId, DateTime? until, ChatType? chatType)
         {
             try
             {
@@ -306,7 +306,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return e1.AreTheySimilar(item2);
         }
 
-        private static bool LogBanAction(int targetId, RestrictAction banned_true_unbanned_false,
+        private static bool LogBanAction(long targetId, RestrictAction banned_true_unbanned_false,
             TelegramBotAbstract bot, long who_banned)
         {
             if (banned_true_unbanned_false == RestrictAction.BAN || banned_true_unbanned_false == RestrictAction.UNBAN)
@@ -346,7 +346,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return false;
         }
 
-        private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, int target,
+        private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, long target,
             long groupChatId)
         {
             return await sender.UnBanUserFromGroup(target, groupChatId);

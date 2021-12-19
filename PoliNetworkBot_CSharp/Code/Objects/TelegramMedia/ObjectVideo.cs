@@ -16,11 +16,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
         private readonly int _durationVideo;
         private readonly int _fileSize;
         private readonly int _idVideoDb;
-        private readonly int? _messageIdFrom;
+        private readonly long? _messageIdFrom;
         private readonly string _uniqueId;
 
         public ObjectVideo(int idVideoDb, string fileId, int fileSize, int height, int width,
-            string uniqueId, int? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
+            string uniqueId, long? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
         {
             _idVideoDb = idVideoDb;
             _fileId = fileId;

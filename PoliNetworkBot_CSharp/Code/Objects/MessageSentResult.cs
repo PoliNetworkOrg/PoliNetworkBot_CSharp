@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly ChatType? chatType;
         private readonly object message;
         private readonly bool success;
-        private int? messageId;
+        private long? messageId;
 
         public MessageSentResult(bool success, object message, ChatType? chatType)
         {

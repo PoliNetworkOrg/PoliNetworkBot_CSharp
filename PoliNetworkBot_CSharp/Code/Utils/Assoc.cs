@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Assoc
     {
-        private static async Task<int?> GetIdEntityFromPersonAsync(long id, Language question,
+        private static async Task<long?> GetIdEntityFromPersonAsync(long id, Language question,
             TelegramBotAbstract sender, string lang, string username)
         {
             const string q =
@@ -267,7 +267,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r1 = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, sender,
                 e.Message.From.LanguageCode, options, e.Message.From.Username);
 
-            int? index = null;
+            long? index = null;
             try
             {
                 index = Convert.ToInt32(r1);
@@ -282,7 +282,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await DeleteMessageFromQueueAsync(messages, index.Value, sender, e);
         }
 
-        private static async Task<bool> DeleteMessageFromQueueAsync(DataRowCollection messages, int v,
+        private static async Task<bool> DeleteMessageFromQueueAsync(DataRowCollection messages, long v,
             TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
         {
             var r = DeleteMessageFromQueueSingle(messages, v);
@@ -312,14 +312,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r;
         }
 
-        private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, int v)
+        private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v)
         {
             var q = "DELETE FROM Messages WHERE ID = @id";
             DataRow dr = null;
 
             try
             {
-                dr = messages[v];
+                dr = messages[(int)v];
             }
             catch
             {
@@ -340,7 +340,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-        internal static string GetNameOfEntityFromItsID(int value)
+        internal static string GetNameOfEntityFromItsID(long value)
         {
             var q = "SELECT name FROM Entities WHERE id = " + value;
             var r = SqLite.ExecuteSelect(q);
@@ -393,7 +393,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs e, bool allAssoc)
         {
             Language languageList = null;
-            int? messageFromIdEntity = null;
+            long? messageFromIdEntity = null;
             var conditionOnIdEntity = "";
             Dictionary<string, object> dict2 = null;
 
@@ -440,7 +440,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 count);
         }
 
-        private static bool? CheckIfEntityReachedItsMaxLimit(int messageFromIdEntity)
+        private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity)
         {
             switch (messageFromIdEntity)
             {
@@ -463,7 +463,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (dt.Rows == null)
                 return null;
 
-            int? count = null;
+            long? count = null;
 
             try
             {

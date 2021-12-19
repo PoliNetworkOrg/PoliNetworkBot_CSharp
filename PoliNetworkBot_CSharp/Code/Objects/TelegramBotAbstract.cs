@@ -277,7 +277,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GlobalVariables.Bots[telegramBotClientBot.BotId.Value];
         }
 
-        internal async Task<bool> DeleteMessageAsync(long chatId, int messageId, long? accessHash)
+        internal async Task<bool> DeleteMessageAsync(long chatId, long messageId, long? accessHash)
         {
             switch (_isbot)
             {
@@ -285,7 +285,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         try
                         {
-                            await _botClient.DeleteMessageAsync(chatId, messageId);
+                            await _botClient.DeleteMessageAsync(chatId, (int)messageId);
                         }
                         catch
                         {
@@ -300,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         var peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
 
                         var r1 = await _userbotClient.ChannelsDeleteMessageAsync(peer,
-                            new TLVector<int> { messageId });
+                            new TLVector<int> { (int)messageId });
 
                         return r1 != null;
                     }
@@ -993,7 +993,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        private static int? FindMax(PhotoSize[] photo)
+        private static long? FindMax(PhotoSize[] photo)
         {
             if (photo == null || photo.Length == 0)
                 return null;
@@ -1301,7 +1301,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return null;
         }
 
-        internal async Task<SuccessWithException> UnBanUserFromGroup(int target, long groupChatId)
+        internal async Task<SuccessWithException> UnBanUserFromGroup(long target, long groupChatId)
         {
             switch (_isbot)
             {

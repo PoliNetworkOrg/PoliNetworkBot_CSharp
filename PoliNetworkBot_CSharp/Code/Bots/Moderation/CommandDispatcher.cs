@@ -790,7 +790,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
         */
 
-        private static async Task<int?> QueryBot(bool execute_true_select_false, MessageEventArgs e,
+        private static async Task<long?> QueryBot(bool execute_true_select_false, MessageEventArgs e,
             TelegramBotAbstract sender)
         {
             if (e.Message.ForwardFrom != null)
@@ -805,7 +805,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return null;
         }
 
-        private static async Task<int?> QueryBot2(bool execute_true_select_false, MessageEventArgs e,
+        private static async Task<long?> QueryBot2(bool execute_true_select_false, MessageEventArgs e,
             TelegramBotAbstract sender)
         {
             if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
@@ -1218,7 +1218,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            int? n = null;
+            long? n = null;
             try
             {
                 n = await InviteLinks.FillMissingLinksIntoDB_Async(sender, e);

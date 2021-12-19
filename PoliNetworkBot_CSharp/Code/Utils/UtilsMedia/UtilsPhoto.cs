@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
     {
         internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
         {
-            if (photo == null || photo.Count() == 0)
+            if (photo == null || !photo.Any())
                 return null;
 
             var max = -1;
@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             return r;
         }
 
-        internal static int? AddPhotoToDb(PhotoSize photoLarge)
+        internal static long? AddPhotoToDb(PhotoSize photoLarge)
         {
             var photoId = GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId);
             if (photoId != null) return photoId.Value;
@@ -52,13 +52,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId);
         }
 
-        private static int? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
+        private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
         {
             var a = GetPhotoId_From_FileId(fileId);
             return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId);
         }
 
-        private static int? GetPhotoId_From_UniqueFileId(string fileUniqueId)
+        private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId)
         {
             const string q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
@@ -81,7 +81,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             }
         }
 
-        private static int? GetPhotoId_From_FileId(string fileId)
+        private static long? GetPhotoId_From_FileId(string fileId)
         {
             const string q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
@@ -104,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             }
         }
 
-        public static ObjectPhoto GetPhotoByIdFromDb(int photoIdFromFb, int? messageIdFrom, long chatId,
+        public static ObjectPhoto GetPhotoByIdFromDb(long photoIdFromFb, long? messageIdFrom, long chatId,
             ChatType chatType)
         {
             var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;

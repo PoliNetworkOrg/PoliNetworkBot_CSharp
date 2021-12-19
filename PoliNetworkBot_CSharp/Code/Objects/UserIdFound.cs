@@ -2,20 +2,20 @@
 {
     internal class UserIdFound
     {
-        private readonly int? i;
+        private readonly long? i;
         private readonly string v;
 
-        public UserIdFound(int? i)
+        public UserIdFound(long? i)
         {
             this.i = i;
         }
 
-        public UserIdFound(int? i, string v) : this(i)
+        public UserIdFound(long? i, string v) : this(i)
         {
             this.v = v;
         }
 
-        internal int? GetID()
+        internal long? GetID()
         {
             return i;
         }

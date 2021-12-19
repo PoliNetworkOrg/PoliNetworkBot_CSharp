@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (string.IsNullOrEmpty(time[1]) || string.IsNullOrEmpty(time[2]))
                 return null;
 
-            int? number;
+            long? number;
             try
             {
                 number = Convert.ToInt32(time[1]);
@@ -41,7 +41,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return DateTime.Now.AddSeconds(timeSecondsElapsed);
         }
 
-        private static int? GetHowManySeconds(string v)
+        private static long? GetHowManySeconds(string v)
         {
             if (string.IsNullOrEmpty(v))
                 return null;

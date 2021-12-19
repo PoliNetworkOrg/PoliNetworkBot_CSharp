@@ -75,7 +75,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static int? GetIntFromColumn(DataRow dr, string columnName)
+        public static long? GetIntFromColumn(DataRow dr, string columnName)
         {
             var o = dr[columnName];
             if (o == null || o is DBNull)

@@ -327,7 +327,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             ;
 
-            var t4 = t3[roomIndex.Value];
+            var t4 = t3[(int)roomIndex.Value];
 
             ;
 
@@ -371,7 +371,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 text2, ParseMode.Html, null);
         }
 
-        private static int? FindRoomIndex(List<HtmlNode> t3, string sigla)
+        private static long? FindRoomIndex(List<HtmlNode> t3, string sigla)
         {
             if (t3 == null || t3.Count == 0)
                 return null;
@@ -537,11 +537,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
 
             var result = new List<HtmlNode>();
-            var roomIndex = FindRoom(table, roomName);
+            var roomIndex = (int?)FindRoom(table, roomName);
             if (roomIndex == null)
                 return null;
 
-            var titleIndex = FindTitleIndex(table, roomIndex.Value);
+            var titleIndex = (int?)FindTitleIndex(table, roomIndex.Value);
             if (titleIndex == null)
                 return null;
 
@@ -553,9 +553,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return result;
         }
 
-        private static int? FindTitleIndex(HtmlNode table, int roomIndex)
+        private static long? FindTitleIndex(HtmlNode table, long roomIndex)
         {
-            for (var i = roomIndex; i >= 0; i--)
+            for (var i = (int)roomIndex; i >= 0; i--)
             {
                 var child = table.ChildNodes[i];
                 if (child.GetClasses().Contains("normalRow") == false) return i - 2;
@@ -564,7 +564,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return null;
         }
 
-        private static int? FindRoom(HtmlNode table, string roomName)
+        private static long? FindRoom(HtmlNode table, string roomName)
         {
             for (var i = 0; i < table.ChildNodes.Count; i++)
             {

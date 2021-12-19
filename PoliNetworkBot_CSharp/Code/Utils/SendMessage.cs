@@ -146,7 +146,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         public static SuccessQueue PlaceMessageInQueue(Message replyTo, DateTimeSchedule sentDate,
-            long messageFromIdPerson, int? messageFromIdEntity,
+            long messageFromIdPerson, long? messageFromIdEntity,
             long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
         {
             if (sentDate == null)
