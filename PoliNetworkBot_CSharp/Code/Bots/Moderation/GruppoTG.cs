@@ -60,13 +60,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 var second = s7[2];
 
                                 LastUpdateInviteLinkTimeDateTime = new DateTime(
-                                    Convert.ToInt32(year),
-                                    Convert.ToInt32(month),
-                                    Convert.ToInt32(day),
-                                    Convert.ToInt32(hour),
-                                    Convert.ToInt32(minute),
-                                    Convert.ToInt32(second),
-                                    Convert.ToInt32(millisecond));
+                                    (int)Convert.ToInt64(year),
+                                  (int)Convert.ToInt64(month),
+                                 (int)Convert.ToInt64(day),
+                               (int)Convert.ToInt64(hour),
+                                (int)Convert.ToInt64(minute),
+                               (int)Convert.ToInt64(second),
+                               (int)Convert.ToInt64(millisecond));
                             }
                         }
                     }

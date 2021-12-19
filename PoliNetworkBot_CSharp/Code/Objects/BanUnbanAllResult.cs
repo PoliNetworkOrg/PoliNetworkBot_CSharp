@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             this.failed = failed;
         }
 
-        internal Language GetLanguage(RestrictAction ban_true_unban_false, string target, int nExceptions)
+        internal Language GetLanguage(RestrictAction ban_true_unban_false, string target, long nExceptions)
         {
             switch (ban_true_unban_false)
             {

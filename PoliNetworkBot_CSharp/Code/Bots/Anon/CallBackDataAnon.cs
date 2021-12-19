@@ -27,7 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                messageIdGroup = Convert.ToInt32(s[1]);
+                messageIdGroup = Convert.ToInt64(s[1]);
             }
             catch
             {
@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                userId = Convert.ToInt32(s[2]);
+                userId = Convert.ToInt64(s[2]);
             }
             catch
             {
@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                identity = Convert.ToInt32(s[3]);
+                identity = Convert.ToInt64(s[3]);
             }
             catch
             {
@@ -57,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                messageIdUser = Convert.ToInt32(s[6]);
+                messageIdUser = Convert.ToInt64(s[6]);
             }
             catch
             {

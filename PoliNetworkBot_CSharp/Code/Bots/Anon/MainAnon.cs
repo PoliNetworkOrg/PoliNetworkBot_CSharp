@@ -594,7 +594,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                var x = Convert.ToInt32(r);
+                var x = Convert.ToInt64(r);
                 if (x >= 1)
                     return x;
             }

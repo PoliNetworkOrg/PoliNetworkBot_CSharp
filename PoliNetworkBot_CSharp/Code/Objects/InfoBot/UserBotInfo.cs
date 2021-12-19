@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.ApiId]);
+                return Convert.ToInt64(KeyValuePairs[ConstConfigBot.ApiId]);
             }
             catch
             {
@@ -92,7 +92,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                KeyValuePairs[ConstConfigBot.UserId] = Convert.ToInt32(v);
+                KeyValuePairs[ConstConfigBot.UserId] = Convert.ToInt64(v);
                 return true;
             }
             catch
@@ -107,7 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                KeyValuePairs[ConstConfigBot.ApiId] = Convert.ToInt32(v);
+                KeyValuePairs[ConstConfigBot.ApiId] = Convert.ToInt64(v);
                 return true;
             }
             catch
@@ -128,7 +128,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                return Convert.ToInt32(KeyValuePairs[ConstConfigBot.UserId]);
+                return Convert.ToInt64(KeyValuePairs[ConstConfigBot.UserId]);
             }
             catch
             {

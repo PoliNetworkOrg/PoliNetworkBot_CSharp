@@ -559,7 +559,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             long? r4 = null;
             try
             {
-                r4 = Convert.ToInt32(r3);
+                r4 = Convert.ToInt64(r3);
             }
             catch
             {

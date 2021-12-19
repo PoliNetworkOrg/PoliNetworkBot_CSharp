@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (target.StartsWith("-"))
                 try
                 {
-                    var i = Convert.ToInt32(target);
+                    var i = Convert.ToInt64(target);
                     return new UserIdFound(i, "FailedParsingInt(1)");
                 }
                 catch
@@ -35,12 +35,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                var i3 = Convert.ToInt32(target);
+                var i3 = Convert.ToInt64(target);
                 return new UserIdFound(i3, "FailedParsingInt(3)");
             }
             catch
             {
-                return null;
+                return new UserIdFound(null, "FailedParsingInt(4)");
             }
         }
 

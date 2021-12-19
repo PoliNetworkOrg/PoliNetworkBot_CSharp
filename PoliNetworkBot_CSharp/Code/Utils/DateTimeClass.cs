@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? number;
             try
             {
-                number = Convert.ToInt32(time[1]);
+                number = Convert.ToInt64(time[1]);
             }
             catch
             {
@@ -220,13 +220,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                                 try
                                 {
-                                    var seconds = 0;
-                                    if (s3.Length == 3) seconds = Convert.ToInt32(s3[2]);
+                                    long seconds = 0;
+                                    if (s3.Length == 3) seconds = Convert.ToInt64(s3[2]);
 
-                                    var d1 = new DateTime(Convert.ToInt32(s2[2]),
-                                        Convert.ToInt32(s2[1]), Convert.ToInt32(s2[0]),
-                                        Convert.ToInt32(s3[0]), Convert.ToInt32(s3[1]),
-                                        seconds);
+                                    var d1 = new DateTime((int)Convert.ToInt64(s2[2]),
+                                        (int)Convert.ToInt64(s2[1]),
+                                        (int)Convert.ToInt64(s2[0]),
+                                       (int)Convert.ToInt64(s3[0]),
+                                       (int)Convert.ToInt64(s3[1]),
+                                        (int)seconds);
 
                                     return new Tuple<DateTime?, Exception>(d1, null);
                                 }
@@ -267,8 +269,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         var x = x2.Split("-");
                         var orario = x1[1];
                         var orario2 = orario.Split(":");
-                        var d3 = new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2]),
-                            Convert.ToInt32(orario2[0]), Convert.ToInt32(orario2[1]), 0);
+                        var d3 = new DateTime((int)Convert.ToInt64(x[0]),
+                            (int)Convert.ToInt64(x[1]),
+                            (int)Convert.ToInt64(x[2]),
+                            (int)Convert.ToInt64(orario2[0]),
+                            (int)Convert.ToInt64(orario2[1]),
+                            0);
+
                         return new Tuple<DateTime?, Exception>(d3, null);
                     }
                     catch (Exception e2)
@@ -279,7 +286,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var x = reply.Split('-');
                     return new Tuple<DateTime?, Exception>(
-                        new DateTime(Convert.ToInt32(x[0]), Convert.ToInt32(x[1]), Convert.ToInt32(x[2])), null);
+                        new DateTime(
+                            (int)Convert.ToInt64(x[0]),
+                            (int)Convert.ToInt64(x[1]),
+                            (int)Convert.ToInt64(x[2])),
+                            null
+                        );
                 }
             }
             else
@@ -388,9 +400,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             if (v4[0].Contains(':'))
                             {
                                 var orario = v4[0].Split(':');
-                                var d2 = new DateTime(Convert.ToInt32(data[0]), Convert.ToInt32(data[1]),
-                                    Convert.ToInt32(data[2]), Convert.ToInt32(orario[0]), Convert.ToInt32(orario[1]),
-                                    Convert.ToInt32(orario[2]), Convert.ToInt32(v4[1].Trim()[..3]));
+                                var d2 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]),
+                                    (int)Convert.ToInt64(data[2]), (int)Convert.ToInt64(orario[0]), (int)Convert.ToInt64(orario[1]),
+                                    (int)Convert.ToInt64(orario[2]), (int)Convert.ToInt64(v4[1].Trim()[..3]));
                                 return new ValueWithException<DateTime?>(d2, null);
                             }
                         }
@@ -399,7 +411,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 else if (v.Contains('-'))
                 {
                     var data = v.Split('-');
-                    var d1 = new DateTime(Convert.ToInt32(data[0]), Convert.ToInt32(data[1]), Convert.ToInt32(data[2]));
+                    var d1 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]), (int)Convert.ToInt64(data[2]));
                     return new ValueWithException<DateTime?>(d1, null);
                 }
             }

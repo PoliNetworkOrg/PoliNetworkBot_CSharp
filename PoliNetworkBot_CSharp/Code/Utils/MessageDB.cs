@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public static class MessageDb
     {
-        private static readonly Dictionary<int, string> MessageTypesInRam = new();
+        private static readonly Dictionary<long, string> MessageTypesInRam = new();
 
         internal static bool AddMessage(MessageType type, string messageText,
             long messageFromIdPerson, long? messageFromIdEntity,
@@ -78,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 try
                 {
-                    return Convert.ToInt32(r2);
+                    return Convert.ToInt64(r2);
                 }
                 catch
                 {
@@ -375,10 +375,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<MessageSentResult> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
             ChatType? chatTypeToSendTo)
         {
-            var botId = Convert.ToInt32(dr["from_id_bot"]);
+            var botId = Convert.ToInt64(dr["from_id_bot"]);
             var botClass = GlobalVariables.Bots[botId];
 
-            var typeI = Convert.ToInt32(dr["type"]);
+            long typeI = Convert.ToInt64(dr["type"]);
             var typeT = GetMessageTypeClassById(typeI);
             if (typeT == null)
                 return new MessageSentResult(false, null, chatTypeToSendTo);
@@ -474,7 +474,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new MessageSentResult(false, null, chatTypeToSendTo);
         }
 
-        public static MessageType? GetMessageTypeClassById(in int typeI)
+        public static MessageType? GetMessageTypeClassById(in long typeI)
         {
             var typeS = GetMessageTypeNameById(typeI);
 
@@ -495,7 +495,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             throw new NotImplementedException();
         }
 
-        private static string GetMessageTypeNameById(in int typeI)
+        private static string GetMessageTypeNameById(in long typeI)
         {
             if (MessageTypesInRam.ContainsKey(typeI))
                 return MessageTypesInRam[typeI];
@@ -527,7 +527,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? messageIdFrom = null;
             try
             {
-                messageIdFrom = Convert.ToInt32(dr["message_id_tg_from"]);
+                messageIdFrom = Convert.ToInt64(dr["message_id_tg_from"]);
             }
             catch
             {
@@ -568,7 +568,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? messageIdFrom = null;
             try
             {
-                messageIdFrom = Convert.ToInt32(dr["message_id_tg_from"]);
+                messageIdFrom = Convert.ToInt64(dr["message_id_tg_from"]);
             }
             catch
             {

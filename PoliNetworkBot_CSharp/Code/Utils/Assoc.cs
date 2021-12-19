@@ -25,13 +25,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@idp", id } });
             if (r == null || r.Rows.Count == 0) return null;
 
-            if (r.Rows.Count == 1) return Convert.ToInt32(r.Rows[0].ItemArray[0]);
+            if (r.Rows.Count == 1) return Convert.ToInt64(r.Rows[0].ItemArray[0]);
 
-            var l = new Dictionary<string, int>();
+            var l = new Dictionary<string, long>();
             foreach (DataRow dr in r.Rows)
             {
                 var s = dr.ItemArray[1].ToString();
-                if (!string.IsNullOrEmpty(s)) l[s] = Convert.ToInt32(dr.ItemArray[0]);
+                if (!string.IsNullOrEmpty(s)) l[s] = Convert.ToInt64(dr.ItemArray[0]);
             }
 
             var l3 = l.Keys.Select(
@@ -270,7 +270,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? index = null;
             try
             {
-                index = Convert.ToInt32(r1);
+                index = Convert.ToInt64(r1);
             }
             catch
             {
@@ -329,7 +329,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (dr == null)
                 return false;
 
-            var id = Convert.ToInt32(dr["id"]);
+            var id = Convert.ToInt64(dr["id"]);
 
             var args = new Dictionary<string, object>
             {
@@ -467,7 +467,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                count = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                count = Convert.ToInt64(dt.Rows[0].ItemArray[0]);
             }
             catch
             {

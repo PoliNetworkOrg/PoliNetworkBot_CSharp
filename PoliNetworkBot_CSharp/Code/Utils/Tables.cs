@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static int GetMaxId(string tableName, string columnIdName)
+        internal static long GetMaxId(string tableName, string columnIdName)
         {
             var q = "SELECT MAX(" + columnIdName + ") FROM " + tableName;
             var r = SqLite.ExecuteSelect(q);
@@ -37,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                return Convert.ToInt32(r2);
+                return Convert.ToInt64(r2);
             }
             catch
             {

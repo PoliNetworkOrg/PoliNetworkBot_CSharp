@@ -116,7 +116,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             }
                             else
                             {
-                                users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt32(userID)));
+                                users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userID)));
                             }
 
                             var tLInputChannel = new TLInputChannel { ChannelId = channel.Id };
@@ -1174,7 +1174,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     return await _botClient.ExportChatInviteLinkAsync(chatId);
                     ;
                 case BotTypeApi.USER_BOT:
-                    var channel = new TLChannel { AccessHash = accessHash, Id = Convert.ToInt32(chatId) };
+                    var channel = new TLChannel { AccessHash = accessHash, Id = (int)Convert.ToInt64(chatId) };
                     var invite = await _userbotClient.ChannelsGetInviteLink(channel);
                     if (invite is TLChatInviteExported c1) return c1.Link;
                     return null;

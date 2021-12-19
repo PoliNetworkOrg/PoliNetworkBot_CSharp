@@ -83,7 +83,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                return Convert.ToInt32(o);
+                return Convert.ToInt64(o);
             }
             catch
             {

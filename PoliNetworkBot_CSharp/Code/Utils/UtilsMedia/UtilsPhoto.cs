@@ -73,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 
             try
             {
-                return Convert.ToInt32(r2);
+                return Convert.ToInt64(r2);
             }
             catch
             {
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 
             try
             {
-                return Convert.ToInt32(r2);
+                return Convert.ToInt64(r2);
             }
             catch
             {
@@ -114,9 +114,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 
             var dr = dt.Rows[0];
 
-            return new ObjectPhoto(Convert.ToInt32(dr["id_photo"]), dr["file_id"].ToString(),
-                Convert.ToInt32(dr["file_size"]), Convert.ToInt32(dr["height"]),
-                Convert.ToInt32(dr["width"]), dr["unique_id"].ToString(),
+            return new ObjectPhoto((int)Convert.ToInt64(dr["id_photo"]), dr["file_id"].ToString(),
+              (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
+              (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
                 messageIdFrom, chatId, chatType);
         }
     }

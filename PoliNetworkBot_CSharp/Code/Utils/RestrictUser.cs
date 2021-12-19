@@ -46,7 +46,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate.Value, chatType);
         }
 
-        internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int>> BanAllAsync(
+        internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>> BanAllAsync(
             TelegramBotAbstract sender, MessageEventArgs e,
             string target, RestrictAction banTarget, DateTime? until,
             bool? revokeMessage)
@@ -214,7 +214,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var r5 = new BanUnbanAllResult(done, failed);
-            return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int>(r5, exceptions, nExceptions);
+            return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>(r5, exceptions, nExceptions);
         }
 
         private static ChatType? GetChatType(DataRow dr)

@@ -1086,7 +1086,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         private static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract sender, MessageEventArgs e,
-            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, int> done)
+            Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long> done)
         {
             try
             {

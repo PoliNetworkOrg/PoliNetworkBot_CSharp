@@ -187,8 +187,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 try
                 {
-                    var dt1 = new DateTime(2000, 1, 1, Convert.ToInt32(start2[0]), Convert.ToInt32(start2[1]), 0);
-                    var dt2 = new DateTime(2000, 1, 1, Convert.ToInt32(end2[0]), Convert.ToInt32(end2[1]), 0);
+                    var dt1 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(start2[0]), (int)Convert.ToInt64(start2[1]), 0);
+                    var dt2 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(end2[0]), (int)Convert.ToInt64(end2[1]), 0);
                     return new Tuple<DateTime, DateTime>(dt1, dt2);
                 }
                 catch
@@ -267,7 +267,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 int colsize;
                 if (node.ChildNodes[i].Attributes.Contains("colspan"))
-                    colsize = Convert.ToInt32(node.ChildNodes[i].Attributes["colspan"].Value);
+                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
                 else
                     colsize = 1;
 
