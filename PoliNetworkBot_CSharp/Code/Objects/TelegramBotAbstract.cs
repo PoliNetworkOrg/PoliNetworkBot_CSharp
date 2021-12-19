@@ -1222,7 +1222,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        [Obsolete]
+
         internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId,
             string[] time, bool? revokeMessage)
         {
@@ -1236,12 +1236,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         if (untilDate == null)
                         {
-                            await _botClient.KickChatMemberAsync(groupChatId, (int)target, default, revokeMessage);
+                            await _botClient.BanChatMemberAsync(groupChatId, (long)target, default, revokeMessage);
 
                             return new SuccessWithException(true);
                         }
 
-                        await _botClient.KickChatMemberAsync(groupChatId, (int)target, untilDate.Value, revokeMessage);
+                        await _botClient.BanChatMemberAsync(groupChatId, (long)target, untilDate.Value, revokeMessage);
                         return new SuccessWithException(true);
                     }
                     catch (Exception e1)
