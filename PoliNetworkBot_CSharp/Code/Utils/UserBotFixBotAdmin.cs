@@ -538,7 +538,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return r4.r != null && r4.r2.Item1 != null;
 
-            return null;
         }
 
         private static async Task DeleteMessageAddedAsync(int? idMessageAdded, TLChat x5, long? accessHash,

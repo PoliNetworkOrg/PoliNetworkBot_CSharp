@@ -106,8 +106,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
                 return null;
             }
-
-            return null;
         }
 
         private static void SalvaNuovoLink(string nuovoLink, long chatId)

@@ -29,7 +29,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return MessageType.Contact;
         }
 
+#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         public override async Task<TlFileToSend> GetMediaTl(TelegramClient telegramClient)
+#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {
             var r = new TLInputMediaContact
             {

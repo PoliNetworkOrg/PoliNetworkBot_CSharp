@@ -708,7 +708,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {
-            return false;
             var queryForBannedUsers =
                 "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
             var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers);

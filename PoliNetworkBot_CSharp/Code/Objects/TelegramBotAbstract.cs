@@ -128,7 +128,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         }
                         catch (Exception e)
                         {
-                            ;
+                            Console.WriteLine(e);
                         }
                     }
                     break;
@@ -184,7 +184,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         var r = await _userbotClient.Channels_EditDescription(channel, desc);
                         return r;
                     }
-                    break;
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -210,7 +209,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         username = u1;
                         return username;
                     }
-                    break;
 
                 case BotTypeApi.USER_BOT:
                     break;
@@ -424,7 +422,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         var m = await _botClient.ForwardMessageAsync(idChatMessageTo, idChatMessageFrom, messageId);
                         return new MessageSentResult(true, m, m.Chat.Type);
-                        break;
                     }
                 case BotTypeApi.USER_BOT:
                     break;
@@ -601,8 +598,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return new MessageSentResult(false, null, chatType);
         }
 
         internal async Task<bool> SendMedia(GenericFile genericFile, long chatid, ChatType chatType, string username,
@@ -744,8 +739,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                     var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
-
-                                    break;
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
@@ -766,7 +759,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                         message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
-                                    break;
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
@@ -791,7 +783,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                         message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
-                                    break;
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
@@ -815,7 +806,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                         message.Caption,
                                         ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
-                                    break;
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
@@ -835,7 +825,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                     var m1 = await _botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message),
                                         replyToMessageId: messageIdToReplyToInt);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
-                                    break;
                                 }
                             case BotTypeApi.USER_BOT:
                                 break;
@@ -924,7 +913,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             return null;
 
                         return new InputOnlineFile(message.Photo[idMax.Value].FileId);
-                        break;
                     }
                 case MessageType.Audio:
                     break;
@@ -932,7 +920,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Video:
                     {
                         return new InputOnlineFile(message.Video.FileId);
-                        break;
                     }
                 case MessageType.Voice:
                     break;
@@ -940,12 +927,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case MessageType.Document:
                     {
                         return new InputOnlineFile(message.Document.FileId);
-                        break;
                     }
                 case MessageType.Sticker:
                     {
                         return new InputOnlineFile(message.Sticker.FileId);
-                        break;
                     }
                 case MessageType.Location:
                     break;
@@ -1033,34 +1018,35 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                    var inputOnlineFile = documentInput.GetOnlineFile();
-                    switch (textAsCaption)
                     {
-                        case TextAsCaption.AS_CAPTION:
-                            {
-                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile, text.Select(lang));
-                                return true;
-                            }
+                        var inputOnlineFile = documentInput.GetOnlineFile();
+                        switch (textAsCaption)
+                        {
+                            case TextAsCaption.AS_CAPTION:
+                                {
+                                    _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile, text.Select(lang));
+                                    return true;
+                                }
 
-                        case TextAsCaption.BEFORE_FILE:
-                            {
-                                _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
-                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
-                                return true;
-                            }
+                            case TextAsCaption.BEFORE_FILE:
+                                {
+                                    _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
+                                    _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                                    return true;
+                                }
 
-                        case TextAsCaption.AFTER_FILE:
-                            {
-                                _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
-                                _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
-                                return true;
-                            }
+                            case TextAsCaption.AFTER_FILE:
+                                {
+                                    _ = await _botClient.SendDocumentAsync(peer.Item2, inputOnlineFile);
+                                    _ = await _botClient.SendTextMessageAsync(peer.Item2, text.Select(lang));
+                                    return true;
+                                }
 
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                        }
                     }
 
-                    return false;
 
                 case BotTypeApi.USER_BOT:
                     switch (textAsCaption)
@@ -1236,6 +1222,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
+        [Obsolete]
         internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId,
             string[] time, bool? revokeMessage)
         {
@@ -1262,7 +1249,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return new SuccessWithException(false, e1);
                     }
 
-                    return new SuccessWithException(true);
                     ;
                 case BotTypeApi.USER_BOT:
                     return new SuccessWithException(false, new NotImplementedException());
@@ -1273,8 +1259,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return new SuccessWithException(false, new NotImplementedException());
         }
 
         internal async Task<TLAbsDialogs> GetLastDialogsAsync()

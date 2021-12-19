@@ -3,6 +3,7 @@ using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -70,8 +71,16 @@ namespace PoliNetworkBot_CSharp.Test.IG
                             {
                                 if (challenge.Value.StepData != null)
                                 {
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber)) ;
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.Email)) ;
+                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber))
+                                    {
+                                        ;
+                                        Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber)");
+                                    }
+                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.Email))
+                                    {
+                                        ;
+                                        Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.Email)");
+                                    }
 
                                     ;
                                 }

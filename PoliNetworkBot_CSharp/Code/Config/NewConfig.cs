@@ -112,6 +112,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
+                Console.WriteLine(e);
                 Logger.WriteLine("Skipping userbot config");
             }
         }
@@ -307,10 +308,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
+                Console.WriteLine(e);
                 Logger.WriteLine("Skipping Old bot groups import");
             }
             catch (DirectoryNotFoundException e)
             {
+                Console.WriteLine(e);
                 Logger.WriteLine("Skipping Old bot groups import");
             }
         }
@@ -532,10 +535,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
             }
             catch (FileNotFoundException e)
             {
+                Console.WriteLine(e);
                 Logger.WriteLine("Skipping assoc.json import");
             }
             catch (DirectoryNotFoundException e)
             {
+                Console.WriteLine(e);
                 Logger.WriteLine("Skipping assoc.json import");
             }
         }

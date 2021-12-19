@@ -40,7 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             }
             catch (Exception e)
             {
-                ;
+                Console.WriteLine(e);
             }
 
             if (r2 != null)
@@ -57,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             }
             catch (Exception e2)
             {
-                return null;
+                Console.WriteLine(e2);
             }
 
             return null;
@@ -77,6 +77,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return null;
                 }
 

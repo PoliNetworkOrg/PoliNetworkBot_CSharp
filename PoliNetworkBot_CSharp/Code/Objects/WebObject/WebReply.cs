@@ -31,7 +31,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.WebObject
 
                 case HttpStatusCode.OK:
                     return true;
-                    break;
 
                 case HttpStatusCode.Created:
                     break;

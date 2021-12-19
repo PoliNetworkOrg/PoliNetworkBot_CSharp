@@ -287,7 +287,15 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
                         Thread t = new(start: () =>
                         {
-                            _ = StartBotsAsync2Async(botClientWhole);
+                            try
+                            {
+                                _ = StartBotsAsync2Async(botClientWhole);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+
                         });
                         t.Start();
 
@@ -395,9 +403,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     updates = await botClientWhole.botClient.GetUpdatesAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    ;
+                    Console.WriteLine(ex);
                 }
 
                 if (updates != null && updates.Length > 0)
@@ -411,9 +419,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 HandleUpdate(update, botClientWhole);
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                ;
+                                Console.WriteLine(e);
                             }
                         }
                     }
