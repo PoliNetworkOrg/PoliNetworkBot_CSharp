@@ -162,7 +162,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {"@id", messageEventArgs.Message.Chat.Id}
                     };
                     SqLite.Execute(q, d);
-                    Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + " to valid");
+                    string name = "";
+                    if (messageEventArgs != null 
+                        && messageEventArgs.Message != null 
+                        && messageEventArgs.Message.Chat != null 
+                        && messageEventArgs.Message.Chat.Title != null)
+                    {
+                        name = messageEventArgs.Message.Chat.Title;
+                    }
+
+                    Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + ", name:" + name + " to valid");
                 }
                 catch (Exception e)
                 {
