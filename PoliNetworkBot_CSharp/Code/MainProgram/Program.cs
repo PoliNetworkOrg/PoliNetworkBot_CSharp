@@ -409,6 +409,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                    Console.WriteLine("\n");
                 }
 
                 if (updates != null && updates.Length > 0)
