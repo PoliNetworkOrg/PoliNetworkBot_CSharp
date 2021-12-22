@@ -1033,24 +1033,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var d1 = GetDateTime(target);
             try
             {
-                if (d1 == null)
-                {
-                    await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username,
-                        null, revokeMessage);
-                    return new SuccessWithException(true);
-                }
-
-                var d2 = d1.GetValue();
-                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username, d2,
-                    revokeMessage);
+                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username,
+                                 d1?.GetValue(), revokeMessage);
+                return new SuccessWithException(true, d1?.GetExceptions());
             }
             catch (Exception ex)
             {
                 var ex2 = Concat(ex, d1);
                 return new SuccessWithException(false, ex2);
             }
-
-            return new SuccessWithException(true, d1.GetExceptions());
         }
 
         private static List<Exception> Concat(Exception ex, ValueWithException<DateTime?> d1)
