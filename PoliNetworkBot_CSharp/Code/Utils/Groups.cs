@@ -121,7 +121,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                     if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
                     {
-                        await NotifyUtil.NotifyOwners("Fixed link for group " + nuovoLink + " id: " + e.Message.Chat.Id, telegramBotClient);
+                        await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient);
                     }
                 }
             }
