@@ -27,6 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         };
 
         private static readonly object Lock = new();
+
         public static async Task<Tuple<ToExit, ChatMember[], List<int>, string>> CheckIfToExitAndUpdateGroupList(
             TelegramBotAbstract sender, MessageEventArgs e)
         {
@@ -56,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             lock (Lock)
             {
                 const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
-                var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
+                var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;

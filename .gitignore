@@ -34,3 +34,6 @@ PoliNetworkBot_CSharp/Old/data/groups_old_001.json
 PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/psw_anon.txt
 
 PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/WriteLines.txt
+*.ps1xml
+*.psd1
+*.psm1

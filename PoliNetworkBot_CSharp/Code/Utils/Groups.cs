@@ -4,12 +4,12 @@ using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -93,7 +93,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
                     return;
-                if(_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
+                if (_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
                     return;
                 _inhibitionPeriod.Remove(e.Message.Chat.Id);
                 _inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);

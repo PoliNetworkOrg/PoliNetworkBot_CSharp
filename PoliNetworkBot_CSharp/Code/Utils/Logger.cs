@@ -16,8 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
         private static readonly BufferBlock<MessageQueue> Buffer = new();
-        private static readonly Object Lock = new ();
-
+        private static readonly Object Lock = new();
 
         internal static async Task MainMethodAsync()
         {
