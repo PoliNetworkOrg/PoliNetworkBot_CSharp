@@ -100,7 +100,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
-        } 
+        }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
