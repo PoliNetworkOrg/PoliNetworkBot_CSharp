@@ -87,9 +87,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-
-
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static TelegramBotAbstract GetFirstBot()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {

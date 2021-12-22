@@ -68,6 +68,5 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
             return null;
         }
-
     }
 }

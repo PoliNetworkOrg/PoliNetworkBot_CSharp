@@ -75,8 +75,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             await this._botClient.LeaveChatAsync(e.Message.Chat.Id);
                         }
                         break;
+
                     case BotTypeApi.USER_BOT:
                         break;
+
                     case BotTypeApi.DISGUISED_BOT:
                         break;
                 }
@@ -91,7 +93,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             return mode;
         }
-
 
         public async Task<TLAbsUpdates> AddUserIntoChannel(string userID, TLChannel channel)
         {
@@ -156,9 +157,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 var c1 = r2.Chats[1];
                                 if (c1 is TLChannel c2)
                                 {
-
                                     return new TLChannelClass(c2);
-
                                 };
                             }
                     }
@@ -170,7 +169,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return null;
         }
-
 
         public async Task<bool?> EditDescriptionChannel(TLChannel channel, string desc)
         {
@@ -691,7 +689,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             case MessageType.MigratedFromGroup:
                                 break;
 
-
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -1047,7 +1044,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         }
                     }
 
-
                 case BotTypeApi.USER_BOT:
                     switch (textAsCaption)
                     {
@@ -1178,6 +1174,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     var invite = await _userbotClient.ChannelsGetInviteLink(channel);
                     if (invite is TLChatInviteExported c1) return c1.Link;
                     return null;
+
                 case BotTypeApi.DISGUISED_BOT:
                     break;
 
@@ -1221,7 +1218,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return false;
         }
-
 
         internal async Task<SuccessWithException> BanUserFromGroup(long target, long groupChatId,
             string[] time, bool? revokeMessage)

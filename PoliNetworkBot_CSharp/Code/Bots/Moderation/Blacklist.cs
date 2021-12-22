@@ -19,7 +19,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
 
-
             string[] words = text.Contains(" ") ? text.Split(' ') : new string[] { text };
             if (words != null && words.Length > 0)
             {

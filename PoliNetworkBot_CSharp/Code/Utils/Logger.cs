@@ -17,7 +17,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
         private static readonly BufferBlock<MessageQueue> Buffer = new();
 
-
         internal static async Task MainMethodAsync()
         {
             while (await Buffer.OutputAvailableAsync())
@@ -235,7 +234,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 WriteLine("[Group Name Changed]: " + oldTitle + " is now " + newTitle);
                 _countFixed++;
             }
-
 
             public static void CountIgnored()
             {

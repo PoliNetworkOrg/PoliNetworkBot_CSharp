@@ -29,7 +29,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class CommandDispatcher
     {
-
         public static async Task CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var cmdLines = e.Message.Text.Split(' ');
@@ -258,7 +257,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                     "uni", ParseMode.Html, null, e.Message.From.Username);
                             }
                             return;
-
                         }
 
                         await DefaultCommand(sender, e);
@@ -296,7 +294,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-
                             await UpdateGroups(sender, e, true, true, false);
 
                             return;
@@ -311,7 +308,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-
                             await UpdateGroups(sender, e, false, true, false);
 
                             return;
@@ -326,7 +322,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-
                             await UpdateGroups(sender, e, false, true, true);
 
                             return;
@@ -341,7 +336,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-
                             await UpdateGroups(sender, e, true, true, true);
 
                             return;
@@ -619,7 +613,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         null, "application/octet-stream"), peer,
                     text2, TextAsCaption.BEFORE_FILE,
                     botAbstract, username, "it", null, true);
-
             }
             catch (Exception ex)
             {
@@ -650,17 +643,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static async Task<object> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
             string textToSend)
         {
             /*
-             
+
             textToSend =        "Buonasera a tutti, vi ricordiamo che lunedì 24 fino al 27 verranno aperti i seggi online per le elezioni, fate sentire la vostra voce mi raccomando. <b>Votate!</b>\nPotete informarvi su modalità di voto e candidati al sito\npolinetworkelezioni.github.io/it" +
                     "\n\n\n" +
                     "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en"
-             
-             
+
              */
 
             var groups = SqLite.ExecuteSelect("Select id From Groups");
@@ -737,6 +730,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, long idGroup)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
@@ -751,11 +745,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 bannedUsersIdArray.Add(Int64.Parse(user.ToString()));
             }
 
-
             return true;
         }
 
-        /*    
+        /*
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, MessageEventArgs e,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati

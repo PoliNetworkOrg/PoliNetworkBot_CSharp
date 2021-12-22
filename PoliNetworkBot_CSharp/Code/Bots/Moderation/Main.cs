@@ -17,14 +17,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class Main
     {
-
         internal static void MainMethod(object sender, MessageEventArgs e)
         {
             var t = new Thread(() => _ = MainMethod2(sender, e));
             t.Start();
             //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
             //t1.Start();
-
         }
 
         private static async Task MainMethod2(object sender, MessageEventArgs e)
@@ -53,8 +51,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     itemToPrintFull += "\n@@@@@@";
 
                     await Utils.Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
-
-
 
                     throw new ToExitException(itemToPrintFull);
                 }
@@ -107,12 +103,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             throw new NotImplementedException();
         }
-
 
         private static string StringToStringToBePrinted(string item4)
         {

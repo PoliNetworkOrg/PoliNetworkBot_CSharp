@@ -16,14 +16,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Groups
     {
-
-        private static Dictionary<long, DateTime> _inhibitionPeriod = new Dictionary<long, DateTime>();
+        private static readonly Dictionary<long, DateTime> _inhibitionPeriod = new();
 
         public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
         {
             await FixAllGroupsName(telegramBotAbstract);
             return GetAllGroups();
         }
+
         internal static DataTable GetAllGroups()
         {
             const string q1 = "SELECT * FROM Groups";
@@ -119,7 +119,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                 }
-
             }
             catch (Exception ex)
             {
@@ -210,6 +209,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             await telegramBotClient.ExitGroupAsync(e);
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -218,7 +218,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 ;
             }
-
         }
     }
 }

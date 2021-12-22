@@ -260,7 +260,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-
         public static async Task StartBotsAsync(bool advancedModeDebugDisguised, bool runOnlyUserBot,
             bool runOnlyNormalBot)
         {
@@ -284,7 +283,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
                             continue;
 
-
                         BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
                         Thread t = new(start: () =>
                         {
@@ -296,7 +294,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 Console.WriteLine(ex);
                             }
-
                         });
                         t.Start();
 
@@ -438,9 +435,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 int wait = i * 500;
                 Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
             }
-
-
-
         }
 
         private static void HandleUpdate(Telegram.Bot.Types.Update update, BotClientWhole botClientWhole)
@@ -449,6 +443,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             {
                 case UpdateType.Unknown:
                     break;
+
                 case UpdateType.Message:
                     {
                         botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
@@ -456,8 +451,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 case UpdateType.InlineQuery:
                     break;
+
                 case UpdateType.ChosenInlineResult:
                     break;
+
                 case UpdateType.CallbackQuery:
                     {
                         var callback = botClientWhole.bot.GetCallbackEvent();
@@ -466,22 +463,31 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     }
                 case UpdateType.EditedMessage:
                     break;
+
                 case UpdateType.ChannelPost:
                     break;
+
                 case UpdateType.EditedChannelPost:
                     break;
+
                 case UpdateType.ShippingQuery:
                     break;
+
                 case UpdateType.PreCheckoutQuery:
                     break;
+
                 case UpdateType.Poll:
                     break;
+
                 case UpdateType.PollAnswer:
                     break;
+
                 case UpdateType.MyChatMember:
                     break;
+
                 case UpdateType.ChatMember:
                     break;
+
                 case UpdateType.ChatJoinRequest:
                     break;
             }
@@ -520,6 +526,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static bool TestThings(long userId)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
