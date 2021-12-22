@@ -30,6 +30,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const string q1 = "SELECT * FROM Groups";
             return SqLite.ExecuteSelect(q1);
         }
+        
+        internal static DataTable GetGroupsByTitle(string query)
+        {
+            const string q1 = "SELECT id,title,link FROM Groups WHERE title LIKE @title AND valid = 'Y' COLLATE NOCASE LIMIT 5";
+            return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", '%' + query + '%' } });
+        }
+        
 
         internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
             TelegramBotAbstract telegramBotAbstract)
@@ -101,10 +108,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexId = groups.Columns.IndexOf("id");
-                var indexLink = groups.Columns.IndexOf("link");
-                var linkInTable = groups.Rows[0]?[indexLink].ToString();
-                var indexIdInTable = (long)groups.Rows[0]?[indexId];
-                var oldTitle = (string)groups.Rows[0]?[indexTitle];
+                var indexIdInTable = (long)groups.Rows[0][indexId];
+                var oldTitle = (string)groups.Rows[0][indexTitle];
                 var newChat = e.Message.Chat;
                 var newTitleWithException = new Tuple<Telegram.Bot.Types.Chat, Exception>(newChat, null);
 
@@ -118,7 +123,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {
-                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
+                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient);
                     if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
                     {
                         await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient);
@@ -127,7 +132,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception ex)
             {
-                Logger.WriteLine(ex);
                 _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
             }
         }

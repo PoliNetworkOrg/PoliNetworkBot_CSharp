@@ -246,7 +246,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<NuovoLink> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender, e);
+            return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
         }
 
         private static List<UsernameAndNameCheckResult> CheckUsername(MessageEventArgs e)
