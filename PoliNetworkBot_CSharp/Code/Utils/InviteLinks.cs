@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender, e);
+                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
                 switch (success.isNuovo)
                 {
                     case SuccessoGenerazioneLink.NUOVO_LINK:
@@ -46,11 +46,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return n;
         }
 
-        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender,
-            MessageEventArgs e)
+        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
             var successoGenerazione = SuccessoGenerazioneLink.ERRORE;
-            var r = await TryGetCurrentInviteLinkAsync(chatId, sender, e);
+            var r = await TryGetCurrentInviteLinkAsync(chatId, sender);
             if (string.IsNullOrEmpty(r))
                 try
                 {
@@ -72,8 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new NuovoLink(successoGenerazione, r);
         }
 
-        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender,
-            MessageEventArgs e)
+        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender)
         {
             Chat chat = null;
             try
@@ -88,22 +86,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             catch (Exception ex1)
             {
                 Logger.WriteLine(ex1);
-                var ex3m = "5" +
+                var ex3M = "5" +
                     "\n\n" + ex1.Message +
                     "\n\n" + chatId +
                     "\n\n" + chat == null ? "[null class]" :
                     string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title;
 
-                await sender.SendTextMessageAsync(e.Message.From.Id,
-                    new Language(
-                        new Dictionary<string, string>
-                        {
-                            {
-                                "it",
-                                ex3m
-                            }
-                        }),
-                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                await NotifyUtil.NotifyOwners(ex3M, sender);
                 return null;
             }
         }
@@ -361,7 +350,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         gruppoTG.UpdateID(group_id.Value);
 
-                        s3 = await CreateInviteLinkAsync(group_id.Value, sender, e);
+                        s3 = await CreateInviteLinkAsync(group_id.Value, sender);
                         if (s3 != null) gruppoTG.UpdateNewLink(s3.link);
                     }
                 }

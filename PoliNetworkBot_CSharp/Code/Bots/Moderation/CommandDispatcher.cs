@@ -186,6 +186,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await SendRecommendedGroupsAsync(sender, e);
                         return;
                     }
+                
+                case "/search":
+                {
+                    var query = "";
+                    for (var i = 1; i < cmdLines.Length; i++)
+                    {
+                        query += cmdLines[i];
+                    }
+
+                    _ = SendGroupsByTitle(query, sender, e);
+                    
+                    return;
+                }
 
                 case "/getGroups":
                     {
@@ -494,6 +507,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,
+            MessageEventArgs e)
+        {
+            if (e.Message?.From?.Id == null)
+                return null;
+            
+            var groups = Groups.GetGroupsByTitle(query);
+            
+            var indexTitle = groups.Columns.IndexOf("title");
+            var indexLink = groups.Columns.IndexOf("link");
+            var groupsMessage = "";
+            foreach (DataRow row in groups.Rows)
+            {
+                if(string.IsNullOrEmpty(row[indexLink].ToString()))
+                    continue;
+                groupsMessage += row[indexTitle] + " [->] " + row[indexLink];
+                groupsMessage += "\n";
+            }
+            
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                {"en", "Here are the groups (max 5):\n" + groupsMessage},
+                {"it", "Ecco i gruppi (max 5):\n" + groupsMessage}
+            });
+
+            return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode, null, text2, ParseMode.Html, null);
         }
 
         private static async Task UpdateGroups(TelegramBotAbstract sender, MessageEventArgs e, bool dry, bool debug, bool updateDB)
@@ -948,7 +990,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
             string lang)
         {
-            await Groups.FixAllGroupsName(sender);
             var groups = Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);
