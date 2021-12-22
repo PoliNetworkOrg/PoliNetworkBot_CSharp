@@ -36,9 +36,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR IN LOGGER APPLICATION!");
+                    Console.WriteLine("##########################");
+                    Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
                     Console.WriteLine(e);
-                    Console.WriteLine("------");
+                    Console.WriteLine("##########################");
                 }
             }
         }
@@ -50,13 +51,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 Console.WriteLine(log);
+                string log1 = log.ToString();
                 foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
                 {
                     Buffer.Post(
-                        new MessageQueue(
-                                subscriber, log.ToString(), ChatType.Group, ParseMode.Html
-                        )
-                        );
+                        new MessageQueue(subscriber,
+                                log1, 
+                                ChatType.Group, 
+                                ParseMode.Html)
+                    );
                 }
                 if (Directory.Exists("./data/") == false)
                 {
@@ -66,11 +69,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     File.WriteAllText("./data/log.txt", "");
                 }
-                File.AppendAllLinesAsync("./data/log.txt", new[] { log.ToString() });
+                File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + log1 });
             }
             catch (Exception e)
             {
+                Console.WriteLine("##########################");
+                Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
                 Console.WriteLine(e);
+                Console.WriteLine("##########################");
             }
         }
 
@@ -94,9 +100,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e)
             {
-                Console.WriteLine("ERROR IN LOGGER APPLICATION!");
+                Console.WriteLine("##########################");
+                Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
                 Console.WriteLine(e);
-                Console.WriteLine("------");
+                Console.WriteLine("##########################");
             }
         }
 
@@ -122,7 +129,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     text2, TextAsCaption.BEFORE_FILE,
                     sender, null, "it", null, true);
 
-                await File.WriteAllTextAsync(path, "");
+                await File.WriteAllTextAsync(path, "\n");
             }
             catch (Exception e)
             {
@@ -225,6 +232,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             public static void NameChange(string oldTitle, string newTitle)
             {
                 _nameChange.Add(oldTitle + " [->] " + newTitle);
+                WriteLine("[Group Name Changed]: " + oldTitle + " is now " + newTitle);
                 _countFixed++;
             }
 

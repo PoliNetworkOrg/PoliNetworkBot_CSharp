@@ -297,7 +297,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             && e.Message.Chat.Type == ChatType.Private)
                         {
 
-                            await UpdateGroups(sender, e, true, true);
+                            await UpdateGroups(sender, e, true, true, false);
 
                             return;
                         }
@@ -312,7 +312,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             && e.Message.Chat.Type == ChatType.Private)
                         {
 
-                            await UpdateGroups(sender, e, false, true);
+                            await UpdateGroups(sender, e, false, true, false);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
+                        return;
+                    }
+                case "/updategroupsandfixnames":
+                    {
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+
+                            await UpdateGroups(sender, e, false, true, true);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
+                        return;
+                    }
+                case "/updategroupsandfixnames_dry":
+                    {
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+
+                            await UpdateGroups(sender, e, true, true, true);
 
                             return;
                         }
@@ -472,9 +502,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task UpdateGroups(TelegramBotAbstract sender, MessageEventArgs e, bool dry, bool debug)
+        private static async Task UpdateGroups(TelegramBotAbstract sender, MessageEventArgs e, bool dry, bool debug, bool updateDB)
         {
-            await Groups.FixAllGroupsName(sender);
+            if (updateDB)
+            {
+                await Groups.FixAllGroupsName(sender);
+            }
 
             var groups = Groups.GetAllGroups();
 

@@ -1,5 +1,7 @@
 ﻿#region
 
+using JsonPolimi_Core_nf.Data;
+using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -14,6 +16,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Groups
     {
+
+        private static Dictionary<long, DateTime> _inhibitionPeriod = new Dictionary<long, DateTime>();
 
         public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
         {
@@ -46,58 +50,32 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var indexId = groups.Columns.IndexOf("id");
                 for (var i = 0; i < groups.Rows.Count; i++)
                 {
-                    string oldTitle = "";
+                    long indexIdInTable = (long)groups.Rows[i]?[indexId];
+                    var oldTitle = (string)groups.Rows[i]?[indexTitle];
                     string newTitle = "";
                     try
                     {
-                        oldTitle = (string)groups.Rows[i][indexTitle];
-
-                        var newTitleWithException = (await telegramBotAbstract.GetChat((long)groups.Rows[i][indexId]));
-
-                        await Task.Delay(100);
-
+                        await Task.Delay(300);
+                        Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException = null;
+                        int e = 0;
+                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException) 
+                            && e < 3)
+                        {
+                            newTitleWithException = await telegramBotAbstract.GetChat(indexIdInTable);
+                            if(newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
+                            {
+                                await Task.Delay(1000 * 60 * 5);
+                            }
+                            e++;
+                        }
                         newTitle = newTitleWithException?.Item1?.Title;
-                        if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
-                        {
-                            Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, (long)groups.Rows[i][indexId]);
-                            Logger.GroupsFixLog.CountIgnored();
-                            //throw new Exception("oldTitle and newTitle both null at line: " + i);
-                            continue;
-                        }
-                        if (String.IsNullOrEmpty(newTitle))
-                        {
-                            Logger.GroupsFixLog.NewNull((long)groups.Rows[i][indexId], oldTitle, newTitleWithException?.Item2);
-                            Logger.GroupsFixLog.CountIgnored();
-                            continue;
-                            //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
-                            //throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
-                        }
-                        if (String.IsNullOrEmpty(oldTitle))
-                        {
-                            Logger.GroupsFixLog.OldNull(newTitle);
-                            oldTitle = "[previously null]";
-                            //Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
-                        }
-                        if (oldTitle == newTitle)
-                        {
-                            Logger.GroupsFixLog.CountIgnored();
-                            continue;
-                        }
-                        Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
-                        var id = groups.Rows[i][indexId] as long?;
-                        var q = "UPDATE Groups SET title = @title WHERE id = @id";
-                        if (id == null) continue;
-                        var d = new Dictionary<string, object>
-                        {
-                            {"@title", newTitle},
-                            {"@id", id.Value}
-                        };
-                        SqLite.Execute(q, d);
+                        GroupCheckAndUpdate(telegramBotAbstract, indexIdInTable, oldTitle, newTitleWithException);
                     }
                     catch (Exception e2)
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
-                            "\n NewTitle: " + newTitle + "\n\n" + e2.Message);
+                            "\n NewTitle: " + newTitle + "\n\n" + e2);
+                        Logger.WriteLine(e3);
                         await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
                     }
                 }
@@ -107,6 +85,90 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
             }
+        }
+
+        internal static async Task CheckForGroupTitleUpdateAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        {
+            try
+            {
+                if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
+                    return;
+                //if(_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
+                //    return;
+                //_inhibitionPeriod.Add(e.Message.Chat.Id, DateTime.Now);
+                var q1 = "SELECT * FROM Groups WHERE id = " + e.Message.Chat.Id;
+                var groups = SqLite.ExecuteSelect(q1);
+                var indexTitle = groups.Columns.IndexOf("title");
+                var indexId = groups.Columns.IndexOf("id");
+                var indexLink = groups.Columns.IndexOf("link");
+                var linkInTable = groups.Rows[0]?[indexLink].ToString();
+                var indexIdInTable = (long)groups.Rows[0]?[indexId];
+                var oldTitle = (string)groups.Rows[0]?[indexTitle];
+                var newChat = e.Message.Chat;
+                var newTitleWithException = new Tuple<Telegram.Bot.Types.Chat, Exception>(newChat, null);
+
+                GroupCheckAndUpdate(telegramBotClient, indexIdInTable, oldTitle, newTitleWithException);
+
+                if (Variabili.L == null) Variabili.L = new ListaGruppo();
+
+                Variabili.L.HandleSerializedObject(groups);
+
+                var linkFunzionante = Variabili.L.GetElem(0).CheckSeIlLinkVa(false);
+
+                if (linkFunzionante != null && !linkFunzionante.Value)
+                {
+                    await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
+                }
+
+            } catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
+            }
+        }
+
+        private static void GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
+            long indexIdInTable,
+            string oldTitle,
+            Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException)
+        {
+            string newTitle = newTitleWithException?.Item1?.Title;
+            if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
+            {
+                Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, indexIdInTable);
+                Logger.GroupsFixLog.CountIgnored();
+                //throw new Exception("oldTitle and newTitle both null at line: " + i);
+                return;
+            }
+            if (String.IsNullOrEmpty(newTitle))
+            {
+                Logger.GroupsFixLog.NewNull(indexIdInTable, oldTitle, newTitleWithException?.Item2);
+                Logger.GroupsFixLog.CountIgnored();
+                return;
+                //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
+                //throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
+            }
+            if (String.IsNullOrEmpty(oldTitle))
+            {
+                Logger.GroupsFixLog.OldNull(newTitle);
+                oldTitle = "[previously null]";
+                //Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
+            }
+            if (oldTitle == newTitle)
+            {
+                Logger.GroupsFixLog.CountIgnored();
+                return;
+            }
+            long? id = indexIdInTable;
+            var q = "UPDATE Groups SET title = @title WHERE id = @id";
+            if (id == null) return;
+            var d = new Dictionary<string, object>
+                        {
+                            {"@title", newTitle},
+                            {"@id", id.Value}
+                        };
+            SqLite.Execute(q, d);
+            Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
         }
 
         internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
