@@ -11,8 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         public BotInfo bot;
         public Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2;
 
-
-
         public BotClientWhole(TelegramBotClient botClient, BotInfo bot, Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2)
         {
             this.botClient = botClient;

@@ -39,6 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             return GetInfo("data_repo");
         }
+
         public static object GetRemote()
         {
             return GetInfo("remote_repo");

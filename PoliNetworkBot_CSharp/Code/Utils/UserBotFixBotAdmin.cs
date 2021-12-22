@@ -537,7 +537,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             id_of_chats_we_know_are_ok[x5.Id] = true;
 
             return r4.r != null && r4.r2.Item1 != null;
-
         }
 
         private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat x5, long? accessHash,

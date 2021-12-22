@@ -12,8 +12,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
     {
         public string SessionUserId;
 
-
-
         internal new static BotTypeApi? IsBot()
         {
             return BotTypeApi.USER_BOT;

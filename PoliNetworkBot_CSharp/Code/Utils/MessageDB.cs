@@ -138,7 +138,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-
         private static TelegramBotAbstract FindBotIfNeeded(MessageSendScheduled r1,
             TelegramBotAbstract telegramBotAbstract)
         {
@@ -465,7 +464,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 case MessageType.MigratedFromGroup:
                     break;
-
 
                 default:
                     throw new ArgumentOutOfRangeException();

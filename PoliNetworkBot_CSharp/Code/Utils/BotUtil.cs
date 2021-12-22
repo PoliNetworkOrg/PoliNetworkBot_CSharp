@@ -51,7 +51,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     if (botMode == botModeParam)
                         r.Add(bot);
                 }
-
             }
 
             return r;

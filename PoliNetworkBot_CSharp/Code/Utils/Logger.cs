@@ -18,6 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static readonly BufferBlock<MessageQueue> Buffer = new();
         private static readonly Object Lock = new ();
 
+
         internal static async Task MainMethodAsync()
         {
             while (await Buffer.OutputAvailableAsync())
@@ -56,8 +57,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     Buffer.Post(
                         new MessageQueue(subscriber,
-                                log1, 
-                                ChatType.Group, 
+                                log1,
+                                ChatType.Group,
                                 ParseMode.Html)
                     );
                 }
@@ -238,7 +239,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 WriteLine("[Group Name Changed]: " + oldTitle + " is now " + newTitle);
                 _countFixed++;
             }
-
 
             public static void CountIgnored()
             {

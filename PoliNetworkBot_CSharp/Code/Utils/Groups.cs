@@ -17,14 +17,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Groups
     {
-
-        private static Dictionary<long, DateTime> _inhibitionPeriod = new Dictionary<long, DateTime>();
+        private static readonly Dictionary<long, DateTime> _inhibitionPeriod = new();
 
         public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
         {
             await FixAllGroupsName(telegramBotAbstract);
             return GetAllGroups();
         }
+
         internal static DataTable GetAllGroups()
         {
             const string q1 = "SELECT * FROM Groups";
@@ -59,11 +59,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await Task.Delay(300);
                         Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException = null;
                         int e = 0;
-                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException) 
+                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
                             && e < 3)
                         {
                             newTitleWithException = await telegramBotAbstract.GetChat(indexIdInTable);
-                            if(newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
+                            if (newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
                             {
                                 await Task.Delay(1000 * 60 * 5);
                             }
@@ -124,8 +124,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await NotifyUtil.NotifyOwners("Fixed link for group " + nuovoLink + " id: " + e.Message.Chat.Id, telegramBotClient);
                     }
                 }
-
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Logger.WriteLine(ex);
                 _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
@@ -214,6 +214,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             await telegramBotClient.ExitGroupAsync(e);
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -222,7 +223,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 ;
             }
-
         }
     }
 }

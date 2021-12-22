@@ -10,6 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal class Web
     {
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+
         internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress, RequestCacheLevel requestCacheLevel)
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {
