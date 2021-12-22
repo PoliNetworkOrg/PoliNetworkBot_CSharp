@@ -58,11 +58,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await Task.Delay(300);
                         Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException = null;
                         int e = 0;
-                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException) 
+                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
                             && e < 3)
                         {
                             newTitleWithException = await telegramBotAbstract.GetChat(indexIdInTable);
-                            if(newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
+                            if (newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
                             {
                                 await Task.Delay(1000 * 60 * 5);
                             }
@@ -120,7 +120,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                 }
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Logger.WriteLine(ex);
                 _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);

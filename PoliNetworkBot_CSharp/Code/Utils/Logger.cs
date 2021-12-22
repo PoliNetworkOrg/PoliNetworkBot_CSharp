@@ -56,8 +56,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     Buffer.Post(
                         new MessageQueue(subscriber,
-                                log1, 
-                                ChatType.Group, 
+                                log1,
+                                ChatType.Group,
                                 ParseMode.Html)
                     );
                 }

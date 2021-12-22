@@ -163,9 +163,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     };
                     SqLite.Execute(q, d);
                     string name = "";
-                    if (messageEventArgs != null 
-                        && messageEventArgs.Message != null 
-                        && messageEventArgs.Message.Chat != null 
+                    if (messageEventArgs != null
+                        && messageEventArgs.Message != null
+                        && messageEventArgs.Message.Chat != null
                         && messageEventArgs.Message.Chat.Title != null)
                     {
                         name = messageEventArgs.Message.Chat.Title;
