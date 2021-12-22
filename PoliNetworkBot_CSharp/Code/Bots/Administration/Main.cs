@@ -108,7 +108,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                     }
                     catch (Exception e)
                     {
-                        Logger.WriteLine(e.Message + " -> In Main Thread!");
                         Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
                         await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
                     }

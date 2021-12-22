@@ -511,7 +511,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var groups = Groups.GetAllGroups();
 
-            if (Variabili.L == null) Variabili.L = new ListaGruppo();
+            Variabili.L = new ListaGruppo();
 
             Variabili.L.HandleSerializedObject(groups);
 
@@ -623,7 +623,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                Logger.WriteLine(ex);
                 await NotifyUtil.NotifyOwners(ex, botAbstract);
             }
         }

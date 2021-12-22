@@ -26,6 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             -1001394018284 //japan group
         };
 
+        private static readonly object Lock = new();
         public static async Task<Tuple<ToExit, ChatMember[], List<int>, string>> CheckIfToExitAndUpdateGroupList(
             TelegramBotAbstract sender, MessageEventArgs e)
         {
@@ -52,17 +53,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
                 return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 30 }, null);
             //end | exclude groups
-
-            const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
-            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
-            if (dt != null && dt.Rows.Count > 0)
+            lock (Lock)
             {
-                var r1 = await CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]);
-                r1.Item3.Insert(0, 11);
-                return r1;
+                const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
+                var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
+                    r1.Item3.Insert(0, 11);
+                    return r1;
+                }
+
+                InsertGroup(sender, e);
             }
 
-            InsertGroup(sender, e);
             var r2 = await CheckIfToExit(sender, e, null);
             var list2 = r2.Item3;
             list2.Insert(0, 12);
@@ -221,15 +225,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            const string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
-            SqLite.Execute(q1, new Dictionary<string, object>
+            try
             {
-                {"@id", e.Message.Chat.Id},
-                {"@botid", sender.GetId()},
-                {"@type", e.Message.Chat.Type.ToString()},
-                {"@title", e.Message.Chat.Title}
-            });
-            _ = CreateInviteLinkAsync(sender, e);
+                const string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
+                SqLite.Execute(q1, new Dictionary<string, object>
+                {
+                    {"@id", e.Message.Chat.Id},
+                    {"@botid", sender.GetId()},
+                    {"@type", e.Message.Chat.Type.ToString()},
+                    {"@title", e.Message.Chat.Title}
+                });
+                _ = CreateInviteLinkAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                _ = NotifyUtil.NotifyOwners(ex, sender);
+            }
         }
 
         private static async Task<NuovoLink> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)

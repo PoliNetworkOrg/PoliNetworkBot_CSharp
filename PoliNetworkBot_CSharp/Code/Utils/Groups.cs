@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -75,7 +76,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
                             "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        Logger.WriteLine(e3);
                         await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
                     }
                 }
@@ -93,11 +93,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
                     return;
-                //if(_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
-                //    return;
-                //_inhibitionPeriod.Add(e.Message.Chat.Id, DateTime.Now);
-                var q1 = "SELECT * FROM Groups WHERE id = " + e.Message.Chat.Id;
-                var groups = SqLite.ExecuteSelect(q1);
+                if(_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
+                    return;
+                _inhibitionPeriod.Remove(e.Message.Chat.Id);
+                _inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
+                const string q1 = "SELECT * FROM Groups WHERE id = @id";
+                var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexId = groups.Columns.IndexOf("id");
                 var indexLink = groups.Columns.IndexOf("link");
@@ -109,7 +110,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 GroupCheckAndUpdate(telegramBotClient, indexIdInTable, oldTitle, newTitleWithException);
 
-                if (Variabili.L == null) Variabili.L = new ListaGruppo();
+                Variabili.L = new ListaGruppo();
 
                 Variabili.L.HandleSerializedObject(groups);
 
@@ -117,7 +118,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {
-                    await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
+                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
+                    if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
+                    {
+                        await NotifyUtil.NotifyOwners("Fixed link for group " + nuovoLink + " id: " + e.Message.Chat.Id, telegramBotClient);
+                    }
                 }
 
             } catch (Exception ex)

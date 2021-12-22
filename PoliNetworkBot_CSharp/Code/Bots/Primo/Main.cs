@@ -41,8 +41,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             }
             catch (Exception exception)
             {
-                Logger.WriteLine(exception.Message);
-
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }

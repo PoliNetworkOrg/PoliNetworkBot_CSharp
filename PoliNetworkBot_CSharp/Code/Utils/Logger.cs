@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
         private static readonly BufferBlock<MessageQueue> Buffer = new();
-
+        private static readonly Object Lock = new ();
 
         internal static async Task MainMethodAsync()
         {
@@ -69,7 +69,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     File.WriteAllText("./data/log.txt", "");
                 }
-                File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + log1 });
+                lock (Lock)
+                {
+                    File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + log1 });
+                }
             }
             catch (Exception e)
             {

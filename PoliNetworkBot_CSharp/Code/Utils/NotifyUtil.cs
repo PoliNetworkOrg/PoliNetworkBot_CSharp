@@ -37,6 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"it", message}
                 });
+                Logger.WriteLine(text2.Select("it"));
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
                     ParseMode.Html, group_exception, true);
             }
@@ -122,6 +123,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
             long? replyToMessageId, int v, string langCode)
         {
+            Logger.WriteLine(text2.Select(langCode));
             return await SendMessage.SendMessageInAGroup(sender, langCode, text2, group_exception,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
