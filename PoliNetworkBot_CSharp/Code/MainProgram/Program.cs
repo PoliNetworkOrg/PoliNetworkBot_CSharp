@@ -36,9 +36,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             while (true)
             {
-                var readChoice = MainGetMenuChoice2(args);
+                Tuple<char, bool> readChoice = MainGetMenuChoice2(args);
 
-                switch (readChoice)
+                switch (readChoice.Item1)
                 {
                     case '1': //reset everything
                         {
@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     case '8':
                     case '9':
                         {
-                            MainBot(readChoice);
+                            MainBot(readChoice.Item1, readChoice.Item2);
                             return;
                         }
 
@@ -88,12 +88,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static char MainGetMenuChoice2(string[] args)
+        private static Tuple<char, bool> MainGetMenuChoice2(string[] args)
         {
 
             if (args == null || args.Length == 0)
             {
-                return MainGetMenuChoice();
+                return new Tuple<char, bool>(MainGetMenuChoice(), false);
             }
 
             int i = 0;
@@ -103,30 +103,25 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 Console.WriteLine(arg);
             }
 
-            if (args.Length == 1)
+            if (string.IsNullOrEmpty(args[0]))
             {
-                return MainGetMenuChoice();
+                return new Tuple<char, bool>(MainGetMenuChoice(), false);
             }
 
-            if (string.IsNullOrEmpty(args[1]))
-            {
-                return MainGetMenuChoice();
-            }
-
-            return args[1][0];
+            return new Tuple<char, bool>(args[0][0], true);
         }
 
-        private static void MainBot(char readChoice)
+        private static void MainBot(char readChoice, bool alwaysYes)
         {
-            var toExit = LoadBotConfig();
+            var toExit = LoadBotConfig(alwaysYes);
             if (toExit == ToExit.EXIT)
                 return;
 
-            var toExit2 = LoadUserBotConfig();
+            var toExit2 = LoadUserBotConfig(alwaysYes);
             if (toExit2 == ToExit.EXIT)
                 return;
 
-            var toExit3 = LoadBotDisguisedAsUserBotConfig();
+            var toExit3 = LoadBotDisguisedAsUserBotConfig(alwaysYes);
             if (toExit3 == ToExit.EXIT)
                 return;
 
@@ -182,7 +177,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static ToExit LoadBotDisguisedAsUserBotConfig()
+        private static ToExit LoadBotDisguisedAsUserBotConfig(bool alwaysYes)
         {
             _botDisguisedAsUserBotInfos =
                 FileSerialization.ReadFromBinaryFile<List<BotDisguisedAsUserBotInfo>>(Paths.Bin
@@ -192,13 +187,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             Logger.WriteLine(
                 "It seems that the bot disguised as userbot configuration isn't available. Do you want to reset it? (Y/N)");
-            var readChoice2 = Console.ReadLine();
+            var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(false, false, true, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
-                var readChoice3 = Console.ReadLine();
+                var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
@@ -220,7 +215,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static ToExit LoadUserBotConfig()
+        private static ToExit LoadUserBotConfig(bool alwaysYes)
         {
             _userBotsInfos = FileSerialization.ReadFromBinaryFile<List<UserBotInfo>>(Paths.Bin.ConfigUserbot);
             if (_userBotsInfos != null && _userBotsInfos.Count != 0)
@@ -228,13 +223,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             Logger.WriteLine(
                 "It seems that the userbot configuration isn't available. Do you want to reset it? (Y/N)");
-            var readChoice2 = Console.ReadLine();
+            var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(false, true, false, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
-                var readChoice3 = Console.ReadLine();
+                var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
@@ -254,7 +249,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             return ToExit.STAY;
         }
 
-        private static ToExit LoadBotConfig()
+        private static ToExit LoadBotConfig(bool alwaysYes)
         {
             _botInfos = FileSerialization.ReadFromBinaryFile<List<BotInfo>>(Paths.Bin.ConfigBot);
             if (_botInfos != null && _botInfos.Count != 0)
@@ -262,13 +257,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             Logger.WriteLine(
                 "It seems that the bot configuration isn't available. Do you want to reset it? (Y/N)");
-            var readChoice2 = Console.ReadLine();
+            var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
                 NewConfig.NewConfigMethod(true, false, false, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
-                var readChoice3 = Console.ReadLine();
+                var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
