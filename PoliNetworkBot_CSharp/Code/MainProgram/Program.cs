@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             while (true)
             {
-                var readChoice = MainGetMenuChoice();
+                var readChoice = MainGetMenuChoice2(args);
 
                 switch (readChoice)
                 {
@@ -86,6 +86,26 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                 }
             }
+        }
+
+        private static char MainGetMenuChoice2(string[] args)
+        {
+            if (args == null || args.Length == 0)
+            {
+                return MainGetMenuChoice();
+            }
+
+            if (args.Length == 1)
+            {
+                return MainGetMenuChoice();
+            }
+
+            if (string.IsNullOrEmpty(args[1]))
+            {
+                return MainGetMenuChoice();
+            }
+
+            return args[1][0];
         }
 
         private static void MainBot(char readChoice)
