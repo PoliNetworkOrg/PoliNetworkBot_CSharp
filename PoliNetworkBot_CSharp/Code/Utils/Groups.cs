@@ -30,13 +30,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const string q1 = "SELECT * FROM Groups";
             return SqLite.ExecuteSelect(q1);
         }
-        
+
         internal static DataTable GetGroupsByTitle(string query)
         {
             const string q1 = "SELECT id,title,link FROM Groups WHERE title LIKE @title AND valid = 'Y' COLLATE NOCASE LIMIT 5";
             return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", '%' + query + '%' } });
         }
-        
 
         internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
             TelegramBotAbstract telegramBotAbstract)
