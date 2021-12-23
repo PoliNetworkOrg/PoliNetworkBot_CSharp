@@ -533,6 +533,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (string.IsNullOrEmpty(row?[indexLink]?.ToString()) ||
                         string.IsNullOrEmpty(row?[indexTitle]?.ToString()))
                         continue;
+
                     var urlButton = new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
                     {
                         Url = row[indexLink].ToString()
@@ -543,21 +544,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     //groupsMessage += "\n";
                 }
 
-                var buttonsMatrix = Utils.KeyboardMarkup.ArrayToMatrixString(buttons);
+                var buttonsMatrix = (buttons != null && buttons.Count > 0) ? Utils.KeyboardMarkup.ArrayToMatrixString(buttons) : null;
 
-                var text2 = limit <= 0 ? new Language(
-                    new Dictionary<string, string>() {
-                        {"en", "<b>Here are the groups </b>:"},
-                        {"it", "<b>Ecco i gruppi</b>:"}
-                    })
-                    :
-                new Language(new Dictionary<string, string>
-                {
-                    {"en", "<b>Here are the groups </b> (max "+limit+"):"},
-                    {"it", "<b>Ecco i gruppi</b> (max "+limit+"):"}
-                });
+                var text2 = GetTextSearchResult(limit, buttonsMatrix);
 
-                var inline = new InlineKeyboardMarkup(buttonsMatrix);
+                var inline = (buttonsMatrix == null) ? null : new InlineKeyboardMarkup(buttonsMatrix);
 
                 return e.Message.Chat.Type switch
                 {
@@ -575,6 +566,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 _ = NotifyUtil.NotifyOwners(exception, sender);
                 return null;
+            }
+        }
+
+        private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>> buttonsMatrix)
+        {
+            if (buttonsMatrix == null)
+            {
+                return new Language(new Dictionary<string, string>() {
+                                   {"en", "<b>No results</b>."},
+                        {"it", "<b>Nessun risultato</b>."}
+                });
+            }
+
+            if (limit <= 0)
+            {
+                return new Language(
+                                new Dictionary<string, string>() {
+                        {"en", "<b>Here are the groups </b>:"},
+                        {"it", "<b>Ecco i gruppi</b>:"}
+                                });
+            }
+            else
+            {
+                return new Language(new Dictionary<string, string>
+                            {
+                    {"en", "<b>Here are the groups </b> (max "+limit+"):"},
+                    {"it", "<b>Ecco i gruppi</b> (max "+limit+"):"}
+                            });
             }
         }
 
