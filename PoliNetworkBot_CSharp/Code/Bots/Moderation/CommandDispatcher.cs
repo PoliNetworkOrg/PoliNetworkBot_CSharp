@@ -197,9 +197,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
 
                         if (!string.IsNullOrEmpty(query))
-                            query = query.Substring(0, query.Length - 1);
+                            query = query[0..^1];
 
-                        _ = SendGroupsByTitle(query, sender, e);
+                        _ = SendGroupsByTitle(query, sender, e, 6);
 
                         return;
                     }
@@ -516,14 +516,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,
-            MessageEventArgs e)
+            MessageEventArgs e, int limit)
         {
             try
             {
                 if (string.IsNullOrEmpty(query))
                     return null;
 
-                var groups = Groups.GetGroupsByTitle(query, 6);
+                var groups = Groups.GetGroupsByTitle(query, limit);
 
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexLink = groups.Columns.IndexOf("link");
@@ -545,10 +545,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 var buttonsMatrix = Utils.KeyboardMarkup.ArrayToMatrixString(buttons);
 
-                var text2 = new Language(new Dictionary<string, string>
+                var text2 = limit <= 0 ? new Language(
+                    new Dictionary<string, string>() {
+                        {"en", "<b>Here are the groups </b>:"},
+                        {"it", "<b>Ecco i gruppi</b>:"}
+                    })
+                    :
+                new Language(new Dictionary<string, string>
                 {
-                    {"en", "<b>Here are the groups </b> (max 5):"},
-                    {"it", "<b>Ecco i gruppi</b> (max 5):"}
+                    {"en", "<b>Here are the groups </b> (max "+limit+"):"},
+                    {"it", "<b>Ecco i gruppi</b> (max "+limit+"):"}
                 });
 
                 var inline = new InlineKeyboardMarkup(buttonsMatrix);
