@@ -403,10 +403,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     updates = await botClientWhole.botClient.GetUpdatesAsync(offset);
                 }
+#pragma warning disable CS0168 // La variabile è dichiarata, ma non viene mai usata
                 catch (Exception ex)
+#pragma warning restore CS0168 // La variabile è dichiarata, ma non viene mai usata
                 {
-                    Console.WriteLine(ex);
-                    Console.WriteLine("\n");
+                    //Console.WriteLine(ex);
+                    //Console.WriteLine("\n");
                 }
 
                 if (updates != null && updates.Length > 0)
