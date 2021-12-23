@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using JsonPolimi_Core_nf.Utils;
 
 #endregion
 
@@ -109,6 +110,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 _inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
                 const string q1 = "SELECT * FROM Groups WHERE id = @id";
                 var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+                if (groups.Rows.Count == 0)
+                {
+                    throw new Exception("No group found with id: " + e.Message.Chat.Id + " while running CheckForGroupTitleUpdateAsync");
+                }
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexId = groups.Columns.IndexOf("id");
                 var indexIdInTable = (long)groups.Rows[0][indexId];
@@ -121,6 +126,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Variabili.L = new ListaGruppo();
 
                 Variabili.L.HandleSerializedObject(groups);
+
+                if (Variabili.L.GetCount() == 0)
+                {
+                    throw new Exception("Variabili.L.GetCount(0) == 0 where Json is:\n" +
+                                        JsonBuilder.getJson(
+                                            new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3), false)
+                                        + "\nand groups:\n" + groups);
+                }
 
                 var linkFunzionante = Variabili.L.GetElem(0).CheckSeIlLinkVa(false);
 
