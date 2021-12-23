@@ -28,6 +28,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public ReplyMarkupObject(InlineKeyboardMarkup inlineKeyboardMarkup)
         {
+            if (inlineKeyboardMarkup == null)
+            {
+                _replyMarkupEnum = ReplyMarkupEnum.REMOVE;
+                return;
+            }
             this.inlineKeyboardMarkup = inlineKeyboardMarkup;
             _replyMarkupEnum = ReplyMarkupEnum.INLINE;
         }

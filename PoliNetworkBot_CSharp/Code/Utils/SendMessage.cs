@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 using TLSharp.Core;
 
@@ -21,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<MessageSentResult> SendMessageInPrivateOrAGroup(
             TelegramBotAbstract telegramBotClient,
             Language text, string lang, string username, long? userId, string firstName, string lastName, long chatId,
-            ChatType chatType, ParseMode parseMode = ParseMode.Html)
+            ChatType chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup inlineKeyboardMarkup = null)
         {
             MessageSentResult r = null;
             try
@@ -29,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 r = await telegramBotClient.SendTextMessageAsync(userId,
                     text, ChatType.Private, parseMode: parseMode,
                     lang: lang, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup));
                 if (r.IsSuccess()) return r;
             }
             catch
@@ -47,7 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
 
             return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
-                lang, parseMode, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), username);
+                lang, parseMode, new ReplyMarkupObject(inlineKeyboardMarkup), username);
         }
 
         private static string GetMessageTo(string firstname, string lastname, long? messageFromUserId)
@@ -59,14 +60,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<MessageSentResult> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
-            Language text, ParseMode parseMode, long? messageIdToReplyTo)
+            Language text, ParseMode parseMode, long? messageIdToReplyTo, InlineKeyboardMarkup inlineKeyboardMarkup = null)
         {
             try
             {
                 return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
                     ChatType.Private, parseMode: parseMode,
                     lang: langCode, username: usernameToSendTo,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
                     replyToMessageId: messageIdToReplyTo);
             }
             catch
@@ -78,7 +79,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task<MessageSentResult> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
             string lang, Language text,
             long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-            bool disablePreviewLink, int i = 0)
+            bool disablePreviewLink, int i = 0, InlineKeyboardMarkup inlineKeyboardMarkup = null)
         {
             MessageSentResult r1 = null;
 
@@ -95,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     lang,
                     parseMode,
                     username: null,
-                    replyMarkupObject: null,
+                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
                     replyToMessageId: replyToMessageId,
                     disablePreviewLink: disablePreviewLink,
                     splitMessage: true);
