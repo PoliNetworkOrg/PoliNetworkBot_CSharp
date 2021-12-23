@@ -571,30 +571,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>> buttonsMatrix)
         {
-            if (buttonsMatrix == null)
+            return buttonsMatrix switch
             {
-                return new Language(new Dictionary<string, string>() {
-                                   {"en", "<b>No results</b>."},
+                null => new Language(new Dictionary<string, string>()
+                    {
+                        {"en", "<b>No results</b>."},
                         {"it", "<b>Nessun risultato</b>."}
-                });
-            }
-
-            if (limit <= 0)
-            {
-                return new Language(
-                                new Dictionary<string, string>() {
-                        {"en", "<b>Here are the groups </b>:"},
-                        {"it", "<b>Ecco i gruppi</b>:"}
-                                });
-            }
-            else
-            {
-                return new Language(new Dictionary<string, string>
-                            {
-                    {"en", "<b>Here are the groups </b> (max "+limit+"):"},
-                    {"it", "<b>Ecco i gruppi</b> (max "+limit+"):"}
-                            });
-            }
+                    }
+                ),
+                _ => limit switch
+                {
+                    <= 0 => new Language(new Dictionary<string, string>()
+                        {
+                            {"en", "<b>Here are the groups </b>:"},
+                            {"it", "<b>Ecco i gruppi</b>:"}
+                        }
+                    ),
+                    _ => new Language(new Dictionary<string, string>
+                        {
+                            {"en", "<b>Here are the groups </b> (max "+limit+"):"},
+                            {"it", "<b>Ecco i gruppi</b> (max "+limit+"):"}
+                        }
+                    ),
+                },
+            };
         }
 
         private static async Task UpdateGroups(TelegramBotAbstract sender, MessageEventArgs e, bool dry, bool debug,
