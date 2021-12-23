@@ -193,8 +193,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         var query = "";
                         for (var i = 1; i < cmdLines.Length; i++)
                         {
-                            query += cmdLines[i];
+                            query += cmdLines[i] + " ";
                         }
+                        
+                        if (!string.IsNullOrEmpty(query))
+                            query = query.Substring(0, query.Length - 1);
 
                         _ = SendGroupsByTitle(query, sender, e);
 
@@ -519,7 +522,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 if (string.IsNullOrEmpty(query))
                     return null;
-
                 var groups = Groups.GetGroupsByTitle(query);
 
                 var indexTitle = groups.Columns.IndexOf("title");
