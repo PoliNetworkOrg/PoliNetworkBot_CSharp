@@ -520,7 +520,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (string.IsNullOrEmpty(query))
                     return null;
 
-                var groups = Groups.GetGroupsByTitle(query);
+                var groups = Groups.GetGroupsByTitle(query, 6);
 
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexLink = groups.Columns.IndexOf("link");
@@ -534,10 +534,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         Url = row[indexLink].ToString()
                     };
+
                     buttons.Add(urlButton);
                     //groupsMessage += row[indexTitle] + " [->] " + row[indexLink];
                     //groupsMessage += "\n";
                 }
+
+                var buttonsMatrix = Utils.KeyboardMarkup.ArrayToMatrixString(buttons);
 
                 var text2 = new Language(new Dictionary<string, string>
                 {
@@ -545,7 +548,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"it", "<b>Ecco i gruppi</b> (max 5):"}
                 });
 
-                var inline = new InlineKeyboardMarkup(buttons);
+                var inline = new InlineKeyboardMarkup(buttonsMatrix);
 
                 return e.Message.Chat.Type switch
                 {

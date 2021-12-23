@@ -23,100 +23,100 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             ).ToList()).ToList();
         }
 
-        internal static List<List<Language>> ArrayToMatrixString(List<Language> list)
+        internal static List<List<T>> ArrayToMatrixString<T>(List<T> list)
         {
             if (list == null || list.Count == 0)
                 return null;
 
-            var r = new List<List<Language>>();
+            var r = new List<List<T>>();
             switch (list.Count)
             {
                 case 1:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0]
+                        };
                         r.Add(r2);
                         return r;
                     }
 
                 case 2:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0],
-                        list[1]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0],
+                            list[1]
+                        };
                         r.Add(r2);
                         return r;
                     }
 
                 case 3:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0],
-                        list[1],
-                        list[2]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0],
+                            list[1],
+                            list[2]
+                        };
                         r.Add(r2);
                         return r;
                     }
 
                 case 4:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0],
-                        list[1]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0],
+                            list[1]
+                        };
                         r.Add(r2);
 
-                        var r3 = new List<Language>
-                    {
-                        list[2],
-                        list[3]
-                    };
+                        var r3 = new List<T>
+                        {
+                            list[2],
+                            list[3]
+                        };
                         r.Add(r3);
                         return r;
                     }
 
                 case 5:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0],
-                        list[1]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0],
+                            list[1]
+                        };
                         r.Add(r2);
 
-                        var r3 = new List<Language>
-                    {
-                        list[2],
-                        list[3],
-                        list[4]
-                    };
+                        var r3 = new List<T>
+                        {
+                            list[2],
+                            list[3],
+                            list[4]
+                        };
                         r.Add(r3);
                         return r;
                     }
 
                 case 6:
                     {
-                        var r2 = new List<Language>
-                    {
-                        list[0],
-                        list[1],
-                        list[2]
-                    };
+                        var r2 = new List<T>
+                        {
+                            list[0],
+                            list[1],
+                            list[2]
+                        };
                         r.Add(r2);
 
-                        var r3 = new List<Language>
-                    {
-                        list[3],
-                        list[4],
-                        list[5]
-                    };
+                        var r3 = new List<T>
+                        {
+                            list[3],
+                            list[4],
+                            list[5]
+                        };
                         r.Add(r3);
                         return r;
                     }
@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var lines = list.Count / 3;
             if (list.Count % 3 != 0) lines++;
 
-            for (var i = 0; i < lines; i++) r.Add(new List<Language>());
+            for (var i = 0; i < lines; i++) r.Add(new List<T>());
 
             for (var i = 0; i < list.Count; i++) r[i / 3].Add(list[i]);
 

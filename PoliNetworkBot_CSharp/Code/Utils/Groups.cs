@@ -31,9 +31,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return SqLite.ExecuteSelect(q1);
         }
 
-        internal static DataTable GetGroupsByTitle(string query)
+        internal static DataTable GetGroupsByTitle(string query, int limit)
         {
-            const string q1 = "SELECT id,title,link FROM Groups WHERE title LIKE @title AND ( valid = 'Y' or valid = 1 ) COLLATE NOCASE LIMIT 5";
+            string q1 = "SELECT id,title,link " +
+                "FROM Groups " +
+                "WHERE title LIKE @title " +
+                "AND ( valid = 'Y' or valid = 1 ) COLLATE NOCASE LIMIT " + limit.ToString();
+
             return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", '%' + query + '%' } });
         }
 
