@@ -103,12 +103,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                //if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
-                //    return;
-                //if (_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
-                //    return;
-                //_inhibitionPeriod.Remove(e.Message.Chat.Id);
-                //_inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
+                if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
+                    return;
+                if (_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
+                    return;
+                _inhibitionPeriod.Remove(e.Message.Chat.Id);
+                _inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
                 const string q1 = "SELECT * FROM Groups WHERE id = @id";
                 var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 if (groups.Rows.Count == 0)
