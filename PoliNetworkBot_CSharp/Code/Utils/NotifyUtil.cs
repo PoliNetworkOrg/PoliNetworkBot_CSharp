@@ -3,6 +3,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
@@ -37,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"it", message}
                 });
-                Logger.WriteLine(text2.Select("it"));
+                Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
                     ParseMode.Html, group_exception, true);
             }
@@ -123,7 +124,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
             long? replyToMessageId, int v, string langCode)
         {
-            Logger.WriteLine(text2.Select(langCode));
+            Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
             return await SendMessage.SendMessageInAGroup(sender, langCode, text2, group_exception,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }

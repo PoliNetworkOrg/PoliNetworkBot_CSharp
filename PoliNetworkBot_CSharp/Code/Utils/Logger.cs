@@ -44,13 +44,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static void WriteLine(object log)
+        public static void WriteLine(object log,  LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
         {
             if (log == null || string.IsNullOrEmpty(log.ToString()))
                 return;
             try
             {
-                Console.WriteLine(log);
+                Console.WriteLine( logSeverityLevel + " | " + log);
                 string log1 = log.ToString();
                 foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
                 {
@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 lock (Lock)
                 {
-                    File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + log1 });
+                    File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + logSeverityLevel + " | " + log1 });
                 }
             }
             catch (Exception e)
