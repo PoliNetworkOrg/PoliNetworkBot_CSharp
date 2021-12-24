@@ -26,8 +26,46 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t6 = new Thread(StartLogger);
             t6.Start();
 
+            var t7 = new Thread(SayYouRestarted);
+            t7.Start();
+
             //var t3 = new Thread(FixThings);
             //t3.Start();
+        }
+
+        private static void SayYouRestarted(object obj)
+        {
+            try
+            {
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                if (bots == null || bots.Count == 0)
+                    return;
+
+                Thread t = new(() => SayYouRestarted2(bots[0]));
+                t.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static void SayYouRestarted2(TelegramBotAbstract telegramBotAbstract)
+        {
+            if (telegramBotAbstract == null)
+                return;
+
+            try
+            {
+                Language text = new(new System.Collections.Generic.Dictionary<string, string>() {
+                { "en", "#restarted"}
+            });
+                _ = telegramBotAbstract.SendTextMessageAsync(Data.Constants.Groups.BackupGroup, text, Telegram.Bot.Types.Enums.ChatType.Supergroup, "en", Telegram.Bot.Types.Enums.ParseMode.Html, null, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         private static async void StartLogger()

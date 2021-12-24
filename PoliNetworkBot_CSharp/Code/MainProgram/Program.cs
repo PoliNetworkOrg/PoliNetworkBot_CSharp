@@ -90,7 +90,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static Tuple<char, bool> MainGetMenuChoice2(string[] args)
         {
-
             if (args == null || args.Length == 0)
             {
                 return new Tuple<char, bool>(MainGetMenuChoice(), false);
