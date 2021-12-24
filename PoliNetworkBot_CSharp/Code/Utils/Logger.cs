@@ -149,22 +149,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             private static int _countFixed = 0;
             private static int _countIgnored = 0;
 
-            public static void SendLog(TelegramBotAbstract telegramBotAbstract)
+            public static void SendLog(TelegramBotAbstract telegramBotAbstract,
+                GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
             {
                 var message = "Groups Fix Log:";
                 message += "\n\n";
-                message += "-NewTitle null && OldTitle null: [Group ID]";
-                message += "\n";
-                message = _bothNull.Aggregate(message, (current, @group) => current + @group + "\n");
-                message += "\n\n";
-                message += "-NewTitle null:";
-                message += "\n";
-                message += HandleNewTitleNull(_newNull);
-                message += "\n\n";
-                message += "-OldTitle null: [newTitle]";
-                message += "\n";
-                message = _oldNull.Aggregate(message, (current, newTitle) => current + newTitle + "\n");
-                message += "\n\n";
+                if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.ALL)
+                {
+                    message += "-NewTitle null && OldTitle null: [Group ID]";
+                    message += "\n";
+                    message = _bothNull.Aggregate(message, (current, @group) => current + @group + "\n");
+                    message += "\n\n";
+                    message += "-NewTitle null:";
+                    message += "\n";
+                    message += HandleNewTitleNull(_newNull);
+                    message += "\n\n";
+                    message += "-OldTitle null: [newTitle]";
+                    message += "\n";
+                    message = _oldNull.Aggregate(message, (current, newTitle) => current + newTitle + "\n");
+                    message += "\n\n";
+                }
                 message += "-Name Changed: [oldTitle [->] newTitle]";
                 message += "\n";
                 message = _nameChange.Aggregate(message, (current, nameChange) => current + (nameChange + "\n"));
@@ -235,7 +239,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             public static void NameChange(string oldTitle, string newTitle)
             {
                 _nameChange.Add(oldTitle + " [->] " + newTitle);
-                WriteLine("[Group Name Changed]: " + oldTitle + " is now " + newTitle);
                 _countFixed++;
             }
 

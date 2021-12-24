@@ -614,7 +614,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             Variabili.L.CheckSeILinkVanno(false);
 
             var json =
-                JsonBuilder.getJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
+                JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                     false);
 
             if (!Directory.Exists(GitHubConfig.GetPath()))

@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Utils;
 
@@ -98,16 +99,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        internal static async Task CheckForGroupTitleUpdateAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        internal static async Task CheckForGroupUpdateAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             try
             {
-                if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
-                    return;
-                if (_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
-                    return;
-                _inhibitionPeriod.Remove(e.Message.Chat.Id);
-                _inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
+                //if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
+                //    return;
+                //if (_inhibitionPeriod.TryGetValue(e.Message.Chat.Id, out var lastUpdate) && lastUpdate.AddHours(24) > DateTime.Now)
+                //    return;
+                //_inhibitionPeriod.Remove(e.Message.Chat.Id);
+                //_inhibitionPeriod.TryAdd(e.Message.Chat.Id, DateTime.Now);
                 const string q1 = "SELECT * FROM Groups WHERE id = @id";
                 var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 if (groups.Rows.Count == 0)
@@ -116,27 +117,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexId = groups.Columns.IndexOf("id");
+                var indexLink = groups.Columns.IndexOf("link");
                 var indexIdInTable = (long)groups.Rows[0][indexId];
                 var oldTitle = (string)groups.Rows[0][indexTitle];
                 var newChat = e.Message.Chat;
                 var newTitleWithException = new Tuple<Telegram.Bot.Types.Chat, Exception>(newChat, null);
 
-                GroupCheckAndUpdate(telegramBotClient, indexIdInTable, oldTitle, newTitleWithException);
+                var updatedOrNot = GroupCheckAndUpdate(telegramBotClient, indexIdInTable, oldTitle, newTitleWithException);
 
-                Variabili.L = new ListaGruppo();
-
-                Variabili.L.HandleSerializedObject(groups);
-
-                if (Variabili.L.GetCount() == 0)
+                if (updatedOrNot == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
-                    throw new Exception("Variabili.L.GetCount(0) == 0 where Json is:\n" +
-                                        JsonBuilder.getJson(
-                                            new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3), false)
-                                        + "\nand groups:\n" + groups);
+                    Logger.GroupsFixLog.SendLog(telegramBotClient, GroupsFixLogUpdatedEnum.NEW_NAME);
+                    groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> {{"@id", e.Message.Chat.Id}});
                 }
 
-                var linkFunzionante = Variabili.L.GetElem(0).CheckSeIlLinkVa(false);
-
+                var l = new ListaGruppo();
+                
+                var g = l.CreaGruppo(groups.Rows[0]);
+                
+                var linkFunzionante = g.CheckSeIlLinkVa(false);
+                
+                
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {
                     var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient);
@@ -152,7 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static void GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
+        private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
             long indexIdInTable,
             string oldTitle,
             Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException)
@@ -162,31 +163,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, indexIdInTable);
                 Logger.GroupsFixLog.CountIgnored();
-                //throw new Exception("oldTitle and newTitle both null at line: " + i);
-                return;
+                return GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
             if (String.IsNullOrEmpty(newTitle))
             {
                 Logger.GroupsFixLog.NewNull(indexIdInTable, oldTitle, newTitleWithException?.Item2);
                 Logger.GroupsFixLog.CountIgnored();
-                return;
-                //Logger.WriteLine(" exception in migrated: \n\n" + newTitleWithException.Item2);
-                //throw new Exception("newTitle is null where oldTitle: " + oldTitle + " migrated?");
+                return GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
             if (String.IsNullOrEmpty(oldTitle))
             {
                 Logger.GroupsFixLog.OldNull(newTitle);
                 oldTitle = "[previously null]";
-                //Logger.WriteLine("oldTitle in group (newtitle = " + newTitle + ")");
             }
             if (oldTitle == newTitle)
             {
                 Logger.GroupsFixLog.CountIgnored();
-                return;
+                return GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
             long? id = indexIdInTable;
             var q = "UPDATE Groups SET title = @title WHERE id = @id";
-            if (id == null) return;
+            if (id == null) return GroupsFixLogUpdatedEnum.DID_NOTHING;
             var d = new Dictionary<string, object>
                         {
                             {"@title", newTitle},
@@ -194,6 +191,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         };
             SqLite.Execute(q, d);
             Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
+            return GroupsFixLogUpdatedEnum.NEW_NAME;
         }
 
         internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
