@@ -100,7 +100,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task CheckForGroupUpdateAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
-        {
+        { 
             try
             {
                 if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
