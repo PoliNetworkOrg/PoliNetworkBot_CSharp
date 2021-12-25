@@ -1,4 +1,3 @@
-screen -S rebooter
 echo "Pulling changes"
 cd .. || exit
 git pull

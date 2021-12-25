@@ -203,6 +203,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                
+                case "/reboot":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        Reboot();
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
 
                 case "/getGroups":
                     {
@@ -513,6 +527,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static void Reboot()
+        {
+            using var powershell = PowerShell.Create();
+            DoScript(powershell, "cd /home/ubuntu/bot/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/", true);
+            DoScript(powershell, "screen -S rebooter -d -m rebooter.sh", true);
         }
 
         private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,
