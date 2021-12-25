@@ -153,8 +153,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             while (true)
             {
-                await MessageDb.CheckMessageToDelete();
-                Thread.Sleep(20 * 1000); //20 sec
+                try
+                {
+                    await MessageDb.CheckMessageToDelete();
+                    Thread.Sleep(20 * 1000); //20 sec
+                }
+                catch (Exception e)
+                {
+                    NotifyUtil.NotifyOwners(e, GetFirstBot());
+                }
             }
         }
 
