@@ -533,7 +533,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             using var powershell = PowerShell.Create();
             DoScript(powershell, "cd /home/ubuntu/bot/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/", true);
-            DoScript(powershell, "screen -S rebooter -d -m rebooter.sh", true);
+            DoScript(powershell, "screen -d -m -S rebooter ./rebooter.sh", true);
         }
 
         private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,
