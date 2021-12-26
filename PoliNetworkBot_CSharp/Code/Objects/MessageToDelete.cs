@@ -51,6 +51,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal async Task<bool> Delete()
         {
+            if (GlobalVariables.Bots.ContainsKey(botId) == false)
+                return false;
+
             var bot = GlobalVariables.Bots[botId];
             if (bot == null)
                 return false;

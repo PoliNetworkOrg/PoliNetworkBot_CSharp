@@ -602,6 +602,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var success = await m.Delete();
                     if (success)
+                    {
                         lock (GlobalVariables.MessagesToDelete)
                         {
                             GlobalVariables.MessagesToDelete.RemoveAt(i);
@@ -609,6 +610,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 GlobalVariables.MessagesToDelete);
                             continue;
                         }
+                    }
+                    else
+                    {
+                        //todo: che fare?
+                    }
                 }
 
                 i++;
