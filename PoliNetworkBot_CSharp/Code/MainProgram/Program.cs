@@ -527,8 +527,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {"en", "ciao test"},
                 {"it", "ciao test"}
             });
-            await bot.SendTextMessageAsync(5651789, text, ChatType.Private,
-                "", default, replyMarkupObject, "@ArmeF97");
+            await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
+                "", default, replyMarkupObject, "@polinetwork3bot");
 
             /*
             done &= await bot.CreateGroup("Gruppo test by bot",
