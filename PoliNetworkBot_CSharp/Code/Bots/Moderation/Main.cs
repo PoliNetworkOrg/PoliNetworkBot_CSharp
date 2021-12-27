@@ -55,7 +55,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     throw new ToExitException(itemToPrintFull);
                 }
 
-                await Groups.CheckForGroupUpdateAsync(telegramBotClient, e);
+                Groups.CheckForGroupUpdate(telegramBotClient, e);
 
                 var notAuthorizedBotHasBeenAddedBool =
                     await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);

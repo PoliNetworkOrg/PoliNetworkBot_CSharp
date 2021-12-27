@@ -4,6 +4,7 @@
     {
         DID_NOTHING,
         NEW_NAME,
-        ALL
+        ALL,
+        UNKNOWN
     }
 }
