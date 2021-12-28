@@ -5,7 +5,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class InfoChat
     {
-
         public InfoChat(Chat messageChat, DateTime now)
         {
             _Chat = messageChat;
@@ -15,7 +14,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private DateTime? _dateTime;
 
         public Chat _Chat { get; set; }
-
 
         public bool IsInhibited()
         {

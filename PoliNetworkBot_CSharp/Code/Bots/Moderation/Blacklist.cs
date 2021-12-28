@@ -159,8 +159,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var isOurLink = CheckIfIsOurTgLink(text);
-            var b2 = isOurLink != null && !isOurLink.Value;
-            return b2 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+            return isOurLink != null && !isOurLink.Value
+                ? SpamType.SPAM_LINK
+                : SpamType.ALL_GOOD;
         }
 
         private static SpamType CheckIfAllowedTag(string t4)
@@ -193,6 +194,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(link))
                 return null;
 
+            link = link.Trim();
+
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
@@ -203,7 +206,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static string GetTelegramLink(string text)
         {
-            var s = text.Split(' ');
+            string[] s = text.Contains(" ") ? text.Split(' ') : (new string[] { text });
             return s.FirstOrDefault(s2 => s2.Contains("t.me/"));
         }
 
