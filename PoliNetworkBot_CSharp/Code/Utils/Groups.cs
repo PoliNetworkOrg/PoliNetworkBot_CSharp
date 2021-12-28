@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using JsonPolimi_Core_nf.Tipi;
 using Telegram.Bot.Types;
 
 #endregion
@@ -16,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal static class Groups
     {
-        private static readonly Dictionary<long, Chat> _inhibitionPeriod = new();
+        private static readonly Dictionary<long, InfoChat> GroupsInRam = new();
 
         public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
         {
@@ -104,11 +105,76 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
 
                 GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
-
+                
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
                     Logger.GroupsFixLog.SendLog(telegramBotClient, GroupsFixLogUpdatedEnum.NEW_NAME);
                 }
+
+                _ = CheckIfInviteIsWorking(e, telegramBotClient);
+            }
+            catch (Exception ex)
+            {
+                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
+            }
+        }
+
+        private static async Task CheckIfInviteIsWorking(MessageEventArgs e, TelegramBotAbstract telegramBotClient)
+        {
+            try
+            {
+                if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
+                    return;
+                InfoChat infoChat;
+                bool? getDone;
+                
+                lock (GroupsInRam)
+                {
+                    getDone = GroupsInRam.TryGetValue(e.Message.Chat.Id, out infoChat);
+                }
+
+                if (infoChat != null && getDone.Value)
+                {
+                    if (infoChat.IsInhibited())
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    infoChat = new InfoChat(e.Message.Chat, DateTime.Now);
+                    lock (GroupsInRam)
+                    {
+                        GroupsInRam[e.Message.Chat.Id] = infoChat ;
+                    }
+                }
+                const string q1 = "SELECT * FROM Groups WHERE id = @id";
+                var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+                if (groups.Rows.Count == 0)
+                {
+                    throw new Exception("No group found with id: " + e.Message.Chat.Id + " while running CheckForGroupTitleUpdateAsync");
+                }
+                var indexId = groups.Columns.IndexOf("id");
+                var indexIdInTable = (long)groups.Rows[0][indexId];
+                
+                var l = new ListaGruppo();
+                
+                var g = l.CreaGruppo(groups.Rows[0]);
+                
+                var linkFunzionante = g.CheckSeIlLinkVa(false);
+                
+                
+                if (linkFunzionante != null && !linkFunzionante.Value)
+                {
+                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient);
+                    if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
+                    {
+                        await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient);
+                    }
+                }
+                
+                infoChat.UpdateTimeOfLastLinkCheck();
+                
             }
             catch (Exception ex)
             {
@@ -118,21 +184,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static GroupsFixLogUpdatedEnum CheckForGroupUpdateAsync2(Chat group)
         {
-            lock (_inhibitionPeriod)
+            InfoChat telegramGroup;
+            bool? groupInRamGetDone;
+            lock (GroupsInRam)
             {
-                if (_inhibitionPeriod.TryGetValue(group.Id, out var gruppoTelegram))
-                {
-                    if (gruppoTelegram != null)
-                    {
-                        if (group.Title != gruppoTelegram.Title)
-                        {
-                            return GroupCheckAndUpdate2(group.Id, group.Title, gruppoTelegram.Title);
-                        }
-                        return GroupsFixLogUpdatedEnum.DID_NOTHING;
-                    }
-                }
-
+                groupInRamGetDone = GroupsInRam.TryGetValue(group.Id, out telegramGroup);
             }
+            
+            
+            if (telegramGroup != null && groupInRamGetDone.Value)
+            {
+                return @group.Title != telegramGroup._Chat.Title 
+                    ? GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title) 
+                    : GroupsFixLogUpdatedEnum.DID_NOTHING;
+            }
+
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
             var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", group.Id } });
@@ -142,24 +208,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var row = groups.Rows[0];
+            
             if (row == null)
                 return GroupsFixLogUpdatedEnum.UNKNOWN;
 
 
-            lock (_inhibitionPeriod)
+            lock (GroupsInRam)
             {
-                _inhibitionPeriod[group.Id] = group;
+                if (!GroupsInRam.ContainsKey(group.Id))
+                    GroupsInRam[group.Id] = new InfoChat(group, DateTime.Now);
+                else
+                {
+                    GroupsInRam[group.Id]._Chat = group;
+                }
             }
-
+            
 
             var indexTitle = groups.Columns.IndexOf("title");
             var oldTitle = (string)row[indexTitle];
 
-            if (oldTitle != group.Title)
-                return GroupCheckAndUpdate2(group.Id, group.Title, oldTitle);
-
-            return GroupsFixLogUpdatedEnum.DID_NOTHING;
-
+            return oldTitle != @group.Title ? GroupCheckAndUpdate2(@group.Id, @group.Title, oldTitle) : GroupsFixLogUpdatedEnum.DID_NOTHING;
         }
 
         private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
