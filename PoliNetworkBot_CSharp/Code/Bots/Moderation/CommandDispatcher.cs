@@ -671,7 +671,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             DoScript(powershell, push, debug);
 
             var hub_pr =
-                @"hub pull-request -m ""[AutoCommit] Groups Update"" --base PoliNetworkOrg:main --head PoliNetworkDev:main -l bot -f";
+                @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
             result = DoScript(powershell, hub_pr, debug);
 
             powershell.Stop();
