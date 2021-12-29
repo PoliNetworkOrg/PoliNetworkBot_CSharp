@@ -146,8 +146,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (text.Contains("t.me/c/"))
                     return SpamType.ALL_GOOD;
 
-                text = text.ToLower();
-                var t2 = text.Split("/");
+                var text1 = text.ToLower();
+                var t2 = text1.Split("/");
                 var t3 = Find(t2, "t.me");
                 if (t3 != null)
                 {
@@ -169,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (t4.StartsWith("@")) t4 = t4[1..];
 
-            var b = GlobalVariables.AllowedTags.Contains(t4);
+            var b = GlobalVariables.AllowedTags.Contains(t4); //this part is useless, telegram does not have links t.me/@*
             return b ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
 
@@ -204,7 +204,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static string GetTelegramLink(string text)
         {
             var s = text.Split(' ');
-            return s.FirstOrDefault(s2 => s2.Contains("t.me/"));
+            return s.FirstOrDefault(s2 => s2.ToLower().Contains("t.me/"));
         }
 
         internal static SpamType IsSpam(PhotoSize[] photo)
