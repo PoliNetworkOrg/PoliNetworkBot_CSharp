@@ -1,5 +1,6 @@
 ﻿#region
 
+using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using JsonPolimi_Core_nf.Tipi;
 using Telegram.Bot.Types;
 
 #endregion
@@ -105,7 +105,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
 
                 GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
-                
+
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
                     Logger.GroupsFixLog.SendLog(telegramBotClient, GroupsFixLogUpdatedEnum.NEW_NAME);
@@ -127,7 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
                 InfoChat infoChat;
                 bool? getDone;
-                
+
                 lock (GroupsInRam)
                 {
                     getDone = GroupsInRam.TryGetValue(e.Message.Chat.Id, out infoChat);
@@ -145,7 +145,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     infoChat = new InfoChat(e.Message.Chat, DateTime.Now);
                     lock (GroupsInRam)
                     {
-                        GroupsInRam[e.Message.Chat.Id] = infoChat ;
+                        GroupsInRam[e.Message.Chat.Id] = infoChat;
                     }
                 }
                 const string q1 = "SELECT * FROM Groups WHERE id = @id";
@@ -156,14 +156,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 var indexId = groups.Columns.IndexOf("id");
                 var indexIdInTable = (long)groups.Rows[0][indexId];
-                
+
                 var l = new ListaGruppo();
-                
+
                 var g = l.CreaGruppo(groups.Rows[0]);
-                
+
                 var linkFunzionante = g.CheckSeIlLinkVa(false);
-                
-                
+
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {
                     var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient);
@@ -172,9 +171,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient);
                     }
                 }
-                
+
                 infoChat.UpdateTimeOfLastLinkCheck();
-                
             }
             catch (Exception ex)
             {
@@ -190,15 +188,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 groupInRamGetDone = GroupsInRam.TryGetValue(group.Id, out telegramGroup);
             }
-            
-            
+
             if (telegramGroup != null && groupInRamGetDone.Value)
             {
-                return @group.Title != telegramGroup._Chat.Title 
-                    ? GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title) 
+                return @group.Title != telegramGroup._Chat.Title
+                    ? GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title)
                     : GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
-
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
             var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", group.Id } });
@@ -208,10 +204,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             var row = groups.Rows[0];
-            
+
             if (row == null)
                 return GroupsFixLogUpdatedEnum.UNKNOWN;
-
 
             lock (GroupsInRam)
             {
@@ -222,7 +217,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     GroupsInRam[group.Id]._Chat = group;
                 }
             }
-            
 
             var indexTitle = groups.Columns.IndexOf("title");
             var oldTitle = (string)row[indexTitle];
@@ -260,7 +254,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle);
-
         }
 
         private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle)

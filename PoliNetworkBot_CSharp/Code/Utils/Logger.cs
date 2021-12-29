@@ -44,13 +44,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static void WriteLine(object log,  LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
+        public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
         {
             if (log == null || string.IsNullOrEmpty(log.ToString()))
                 return;
             try
             {
-                Console.WriteLine( logSeverityLevel + " | " + log);
+                Console.WriteLine(logSeverityLevel + " | " + log);
                 string log1 = log.ToString();
                 foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
                 {

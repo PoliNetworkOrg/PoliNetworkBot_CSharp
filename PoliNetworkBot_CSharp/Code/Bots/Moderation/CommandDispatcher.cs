@@ -203,20 +203,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
-                
+
                 case "/reboot":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        Reboot();
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            Reboot();
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
 
                 case "/getGroups":
                     {

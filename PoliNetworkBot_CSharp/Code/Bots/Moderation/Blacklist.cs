@@ -193,6 +193,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(link))
                 return null;
 
+            link = link.Trim();
+
             var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
@@ -203,7 +205,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static string GetTelegramLink(string text)
         {
-            var s = text.Split(' ');
+            string[] s = text.Contains(" ") ? text.Split(' ') : (new string[] { text });
             return s.FirstOrDefault(s2 => s2.ToLower().Contains("t.me/"));
         }
 
