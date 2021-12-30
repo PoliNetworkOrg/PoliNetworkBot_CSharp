@@ -1149,6 +1149,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
                 revokeMessage);
         }
+        
+        private static async Task<SuccessWithException> UnMuteAllAsync(
+            TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username,
+            bool? revokeMessage)
+        {
+            return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
+                revokeMessage);
+        }
 
         private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract sender,
             MessageEventArgs e,
