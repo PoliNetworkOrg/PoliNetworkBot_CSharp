@@ -12,6 +12,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         private const long group_exception = -1001456960264;
         private const long permitted_spam_group = -1001685451643;
+        private const long ban_notification_group = -1001710276126;
         private const string default_lang = "en";
 
         internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract sender,
@@ -237,6 +238,79 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             catch
             {
                 ;
+            }
+        }
+
+        public static async void NotifyOwnersBanAction(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+            RestrictAction restrictAction, Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long> done,
+            string finalTarget,
+            string reason)
+        {
+            try
+            {
+                {
+                    if (messageEventArgs is {Message: { }})
+                    {
+                        var message = "Restrict action: " + restrictAction;
+                        message += "\n";
+                        message += "Banned by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
+                                   messageEventArgs.Message.From?.Id + "]";
+                        message += "\n";
+                        message += "For reason: \n";
+                        message += reason;
+                        message += "\n";
+                        message += "-----";
+                        message += "\n";
+                        message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it");;
+
+                        const string langCode = "it";
+                        var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {"it", message}
+                        });
+                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
+                            ChatType.Group,
+                            ParseMode.Html, group_exception, true);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(e);
+            }
+        }
+
+        public static async void NotifyOwnersBanAction(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+            long? target, string username)
+        {
+            try
+            {
+                {
+                    if (messageEventArgs is {Message: { }})
+                    {
+                        var message = "Restrict action: " + "Simple Ban";
+                        message += "\n";
+                        message += "Restricted user: " + target + "[" + ( string.IsNullOrEmpty(username) ? "Unknown" : " @" + username )  + " ]" + " in group: " + messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title +"]";
+                        message += "\n";
+                        message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
+                                   messageEventArgs.Message.From?.Id + "]";
+
+                        const string langCode = "it";
+                        var text2 = new Language(new Dictionary<string, string>
+                        {
+                            {"it", message}
+                        });
+                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
+                            ChatType.Group,
+                            ParseMode.Html, group_exception, true);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(e);
             }
         }
     }

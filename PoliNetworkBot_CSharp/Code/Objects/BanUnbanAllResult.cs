@@ -85,6 +85,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                         return text2;
                     }
+                case RestrictAction.UNMUTE:
+                {
+                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        {
+                            "en",
+                            "Target " + target + " unmuted from " + done.Count + " groups" + "\n" +
+                            "not unmuted from " + failed.Count + " groups" + "\n" +
+                            "exception number = " + nExceptions
+                        },
+
+                        {
+                            "it",
+                            "Target " + target + " smutato da " + done.Count + " gruppi" + "\n" +
+                            "non smutato da " + failed.Count + " gruppi" + "\n" +
+                            "numero eccezioni = " + nExceptions
+                        }
+                    });
+
+                    return text2;
+                }
             }
 
             return null;

@@ -78,6 +78,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             return;
                         }
 
+                        if (e.Message.ReplyToMessage == null)
+                        {
+                            await CommandNeedsAReplyToMessage(sender, e);
+                            return;
+                        }
+
                         if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
                             _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                                 false);
@@ -85,12 +91,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await DefaultCommand(sender, e);
                         return;
                     }
+                case "/unmuteAll":
+                {
+                    if (e.Message.Chat.Type != ChatType.Private)
+                    {
+                        await CommandNotSentInPrivateAsync(sender, e);
+                        return;
+                    }
+
+                    if (e.Message.ReplyToMessage == null)
+                    {
+                        await CommandNeedsAReplyToMessage(sender, e);
+                        return;
+                    }
+
+                    if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
+                        _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                            false);
+                    else
+                        await DefaultCommand(sender, e);
+                    return;
+                }
 
                 case "/banAll":
                     {
                         if (e.Message.Chat.Type != ChatType.Private)
                         {
                             await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+                        
+                        if (e.Message.ReplyToMessage == null)
+                        {
+                            await CommandNeedsAReplyToMessage(sender, e);
                             return;
                         }
 
@@ -107,6 +140,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (e.Message.Chat.Type != ChatType.Private)
                         {
                             await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+                        
+                        if (e.Message.ReplyToMessage == null)
+                        {
+                            await CommandNeedsAReplyToMessage(sender, e);
                             return;
                         }
 
@@ -160,6 +199,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (e.Message.Chat.Type != ChatType.Private)
                         {
                             await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+                        
+                        if (e.Message.ReplyToMessage == null)
+                        {
+                            await CommandNeedsAReplyToMessage(sender, e);
                             return;
                         }
 
@@ -527,6 +572,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static async Task CommandNeedsAReplyToMessage(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            var lang = new Language(new Dictionary<string, string>
+            {
+                {"it", "E' necessario rispondere ad un messaggio per usare questo comando"},
+                {"en", "This command only works with a reply to message"}
+            });
+            await SendMessage.SendMessageInPrivateOrAGroup(sender,
+                lang, e.Message?.From?.LanguageCode, e.Message?.From?.Username, e.Message?.From?.Id,
+                e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
         }
 
         private static void Reboot()
@@ -1122,6 +1179,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var targetInt = e.Message.ReplyToMessage.From.Id;
+            
+            NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From.Username);
+            
             return await RestrictUser.BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
                 revokeMessage);
         }
@@ -1166,7 +1226,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var d1 = GetDateTime(target);
             try
             {
-                await BanAllUnbanAllMethod1Async(bAN, GetFinalTarget(e, target), e, sender, lang, username,
+                await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(e, target), e, sender, lang, username,
                     d1?.GetValue(), revokeMessage);
                 return new SuccessWithException(true, d1?.GetExceptions());
             }
@@ -1220,11 +1280,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 return;
             }
+            
+            if (string.IsNullOrEmpty(e.Message.ReplyToMessage?.Text))
+            {
+                var lang2 = new Language(new Dictionary<string, string>
+                {
+                    {"en", "The replied message cannot be empty!"},
+                    {"it", "Il messaggio a cui rispondi non può essere vuoto"}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
+                    lang, ParseMode.Html, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+
+                return;
+            }
 
             var done =
                 await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
             var text2 = done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
 
+            NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget, reason: e.Message.ReplyToMessage.Text);
+            
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
@@ -1263,6 +1339,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 sender, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
 
+        private static string GetFinalTargetForRestrictAll(MessageEventArgs e, IReadOnlyList<string> target)
+        {
+            return target[1];
+        }
         private static string GetFinalTarget(MessageEventArgs e, IReadOnlyList<string> target)
         {
             return e.Message.ReplyToMessage == null && target.Count >= 2
@@ -1415,23 +1495,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             );
         }
 
-        public static async Task BanMessageActions(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        public static void BanMessageActions(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            var bannedUser = e.Message.Text;
-            var bannedGroup = e.Message.Text;
-            var bannerAdmin = e.Message.Text;
-            var lang2 = new Language(new Dictionary<string, string>
-            {
-                {
-                    "it", "Utente " + bannedUser + " bannato dal gruppo " + bannedGroup + " da @" + bannerAdmin
-                }
-            });
-            await telegramBotClient.SendTextMessageAsync(
-                0,
-                lang2,
-                ChatType.Supergroup, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: "it", username: e.Message.From.Username, parseMode: ParseMode.Html
-            );
+            NotifyUtil.NotifyOwnersBanAction(telegramBotClient, e, e.Message.LeftChatMember?.Id, e.Message.LeftChatMember?.Username);
         }
     }
 }

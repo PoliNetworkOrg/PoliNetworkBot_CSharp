@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -65,11 +66,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 //todo: send messagge "Bots not allowed here!"
 
-                //if (BanMessageDetected(e)) todo:BanMessageDetected
-                //{
-                //   await CommandDispatcher.BanMessageActions(telegramBotClient, e);
-                //    return;
-                //}
+                if (BanMessageDetected(e, telegramBotClient))
+                {
+                    CommandDispatcher.BanMessageActions(telegramBotClient, e);
+                    return;
+                }
 
                 var toExitBecauseUsernameAndNameCheck =
                     await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
@@ -101,13 +102,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient);
             }
         }
-
-#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
-
-        private static bool BanMessageDetected(MessageEventArgs messageEventArgs)
-#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
+        
+        private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (messageEventArgs.Message.Text == null &&
+                    messageEventArgs.Message.Type == MessageType.ChatMemberLeft)
+                {
+                    if (messageEventArgs.Message.From?.Id != null)
+                    {
+                        if (messageEventArgs.Message.LeftChatMember?.Id != null)
+                        {
+                            if (messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception e)
+            {
+                _ = NotifyUtil.NotifyOwners(e, sender);
+                return false;
+            }
         }
 
         private static string StringToStringToBePrinted(string item4)
