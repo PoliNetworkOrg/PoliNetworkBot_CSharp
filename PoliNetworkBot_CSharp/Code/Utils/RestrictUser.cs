@@ -66,7 +66,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             
 
             if (untilDate == null)
-                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, default, chatType);
+                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, null, chatType);
             else
                 await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate.Value, chatType);
         }

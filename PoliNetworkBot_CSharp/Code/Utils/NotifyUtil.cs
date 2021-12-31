@@ -253,7 +253,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         var message = "Restrict action: " + restrictAction;
                         message += "\n";
-                        message += "Banned by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
+                        message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
                                    messageEventArgs.Message.From?.Id + "]";
                         message += "\n";
                         message += "For reason: \n";
@@ -268,7 +268,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             {"it", message}
                         });
-                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                         await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
                             ChatType.Group,
                             ParseMode.Html, group_exception, true);
@@ -301,7 +301,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {
                             {"it", message}
                         });
-                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                         await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
                             ChatType.Group,
                             ParseMode.Html, group_exception, true);

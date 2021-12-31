@@ -6,8 +6,10 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -116,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
                             if (messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id)
                             {
-                                return true;
+                                return GlobalVariables.Bots.Keys.All(botsKey => messageEventArgs.Message.From.Id != botsKey);
                             }
                         }
                     }
