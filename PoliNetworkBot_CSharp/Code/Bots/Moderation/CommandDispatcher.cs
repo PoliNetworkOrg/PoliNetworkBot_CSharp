@@ -92,26 +92,26 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
                 case "/unmuteAll":
-                {
-                    if (e.Message.Chat.Type != ChatType.Private)
                     {
-                        await CommandNotSentInPrivateAsync(sender, e);
+                        if (e.Message.Chat.Type != ChatType.Private)
+                        {
+                            await CommandNotSentInPrivateAsync(sender, e);
+                            return;
+                        }
+
+                        if (e.Message.ReplyToMessage == null)
+                        {
+                            await CommandNeedsAReplyToMessage(sender, e);
+                            return;
+                        }
+
+                        if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
+                            _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                                false);
+                        else
+                            await DefaultCommand(sender, e);
                         return;
                     }
-
-                    if (e.Message.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
-                        _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                            false);
-                    else
-                        await DefaultCommand(sender, e);
-                    return;
-                }
 
                 case "/banAll":
                     {
@@ -120,7 +120,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await CommandNotSentInPrivateAsync(sender, e);
                             return;
                         }
-                        
+
                         if (e.Message.ReplyToMessage == null)
                         {
                             await CommandNeedsAReplyToMessage(sender, e);
@@ -142,7 +142,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await CommandNotSentInPrivateAsync(sender, e);
                             return;
                         }
-                        
+
                         if (e.Message.ReplyToMessage == null)
                         {
                             await CommandNeedsAReplyToMessage(sender, e);
@@ -201,7 +201,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await CommandNotSentInPrivateAsync(sender, e);
                             return;
                         }
-                        
+
                         if (e.Message.ReplyToMessage == null)
                         {
                             await CommandNeedsAReplyToMessage(sender, e);
@@ -1179,9 +1179,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var targetInt = e.Message.ReplyToMessage.From.Id;
-            
+
             NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From.Username);
-            
+
             return await RestrictUser.BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
                 revokeMessage);
         }
@@ -1209,7 +1209,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
                 revokeMessage);
         }
-        
+
         private static async Task<SuccessWithException> UnMuteAllAsync(
             TelegramBotAbstract sender, MessageEventArgs e, string[] target, string lang, string username,
             bool? revokeMessage)
@@ -1280,7 +1280,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 return;
             }
-            
+
             if (string.IsNullOrEmpty(e.Message.ReplyToMessage?.Text))
             {
                 var lang2 = new Language(new Dictionary<string, string>
@@ -1300,7 +1300,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var text2 = done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
 
             NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget, reason: e.Message.ReplyToMessage.Text);
-            
+
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
@@ -1343,6 +1343,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             return target[1];
         }
+
         private static string GetFinalTarget(MessageEventArgs e, IReadOnlyList<string> target)
         {
             return e.Message.ReplyToMessage == null && target.Count >= 2
