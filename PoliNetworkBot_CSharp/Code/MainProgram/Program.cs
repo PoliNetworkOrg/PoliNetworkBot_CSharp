@@ -562,8 +562,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var done = true;
             _ = GlobalVariables.Bots[userId];
             //Objects.TelegramMedia.GenericFile media = new Objects.TelegramMedia.Contact("+39 1234567890", "Mario", "Rossi", null);
-            //done &= await bot.SendMedia(media, 5651789, ChatType.Private, "@ArmeF97", null, null);
-            //done &= await CommandDispatcher.GetAllGroups(5651789, "@ArmeF97", bot, "it");
+            //done &= await bot.SendMedia(media, 107050697, ChatType.Private, "@EliaMaggioni", null, null);
+            //done &= await CommandDispatcher.GetAllGroups(107050697, "@EliaMaggioni", bot, "it");
             return done;
         }
     }
