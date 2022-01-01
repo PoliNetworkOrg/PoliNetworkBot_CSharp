@@ -424,7 +424,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             if (newChatMembers == null || newChatMembers.Length == 0)
-                await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType);
+                await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType, RestrictAction.MUTE);
 
             if (messageId != null)
                 await telegramBotClient.DeleteMessageAsync(chatId, messageId.Value, null);
@@ -437,7 +437,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
 
             await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
-                e.Message.Chat.Type);
+                e.Message.Chat.Type, RestrictAction.MUTE);
 
             switch (checkSpam)
             {

@@ -432,7 +432,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         internal async Task RestrictChatMemberAsync(long chatId, long? userId, ChatPermissions permissions,
-            DateTime untilDate, ChatType? chatType)
+            DateTime? untilDate, ChatType? chatType)
         {
             switch (_isbot)
             {
@@ -1304,7 +1304,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.REAL_BOT:
                     try
                     {
-                        await _botClient.UnbanChatMemberAsync(groupChatId, target);
+                        await _botClient.UnbanChatMemberAsync(groupChatId, target, true);
                         return new SuccessWithException(true);
                     }
                     catch (Exception e1)

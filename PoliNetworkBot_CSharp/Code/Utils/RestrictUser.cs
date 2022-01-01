@@ -19,29 +19,54 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal static class RestrictUser
     {
         internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, long? userId,
-            ChatType chatType)
+            ChatType chatType, RestrictAction restrictAction)
         {
             var untilDate = DateTime.Now.AddSeconds(time);
-            await Mute2Async(untilDate, telegramBotClient, chatId, userId, chatType);
+            await Mute2Async(untilDate, telegramBotClient, chatId, userId, chatType, restrictAction);
         }
 
         private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract telegramBotClient, long chatId,
-            long? userId, ChatType? chatType)
+            long? userId, ChatType? chatType, RestrictAction restrictAction)
         {
-            var permissions = new ChatPermissions
+            ChatPermissions permissions;
+            switch (restrictAction)
             {
-                CanSendMessages = false,
-                CanInviteUsers = true,
-                CanSendOtherMessages = false,
-                CanSendPolls = false,
-                CanAddWebPagePreviews = false,
-                CanChangeInfo = false,
-                CanPinMessages = false,
-                CanSendMediaMessages = false
-            };
+                case RestrictAction.BAN:
+                case RestrictAction.UNBAN:
+                    throw new ArgumentException();
+                case RestrictAction.MUTE:
+                    permissions = new ChatPermissions
+                    {
+                        CanSendMessages = false,
+                        CanInviteUsers = true,
+                        CanSendOtherMessages = false,
+                        CanSendPolls = false,
+                        CanAddWebPagePreviews = false,
+                        CanChangeInfo = false,
+                        CanPinMessages = false,
+                        CanSendMediaMessages = false
+                    };
+                    break;
+                case RestrictAction.UNMUTE:
+                    permissions = new ChatPermissions
+                    {
+                        CanSendMessages = true,
+                        CanInviteUsers = true,
+                        CanSendOtherMessages = true,
+                        CanSendPolls = true,
+                        CanAddWebPagePreviews = true,
+                        CanChangeInfo = true,
+                        CanPinMessages = true,
+                        CanSendMediaMessages = true
+                    };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null);
+            }
+            
 
             if (untilDate == null)
-                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, default, chatType);
+                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, null, chatType);
             else
                 await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate.Value, chatType);
         }
@@ -177,7 +202,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 var groupChatId = (long)dr["id"];
                                 var chatType = GetChatType(dr);
                                 var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
-                                    chatType);
+                                    chatType, RestrictAction.MUTE);
                                 if (success.IsSuccess())
                                     done.Add(dr);
                                 else
@@ -194,6 +219,34 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                         break;
                     }
+                case RestrictAction.UNMUTE:
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
+                        {
+                            var groupChatId = (long)dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                                chatType, RestrictAction.UNMUTE);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
+
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
+                }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
             }
 
             LogBanAction(targetId.GetID().Value, banTarget, sender, e.Message.From.Id);
@@ -242,11 +295,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract sender,
-            long value, long groupChatId, DateTime? until, ChatType? chatType)
+            long value, long groupChatId, DateTime? until, ChatType? chatType, RestrictAction restrictAction)
         {
             try
             {
-                await Mute2Async(until, sender, groupChatId, value, chatType);
+                await Mute2Async(until, sender, groupChatId, value, chatType, restrictAction);
             }
             catch (Exception ex)
             {
