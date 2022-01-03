@@ -249,7 +249,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is {Message: { }})
+                    if (messageEventArgs is { Message: { } })
                     {
                         var message = "Restrict action: " + restrictAction;
                         message += "\n";
@@ -261,7 +261,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         message += "\n";
                         message += "-----";
                         message += "\n";
-                        message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it");;
+                        message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it"); ;
 
                         const string langCode = "it";
                         var text2 = new Language(new Dictionary<string, string>
@@ -287,11 +287,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is {Message: { }})
+                    if (messageEventArgs is { Message: { } })
                     {
                         var message = "Restrict action: " + "Simple Ban";
                         message += "\n";
-                        message += "Restricted user: " + target + "[" + ( string.IsNullOrEmpty(username) ? "Unknown" : " @" + username )  + " ]" + " in group: " + messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title +"]";
+                        message += "Restricted user: " + target + "[" + (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " + messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
                         message += "\n";
                         message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
                                    messageEventArgs.Message.From?.Id + "]";

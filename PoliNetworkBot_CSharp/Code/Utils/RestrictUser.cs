@@ -47,6 +47,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         CanSendMediaMessages = false
                     };
                     break;
+
                 case RestrictAction.UNMUTE:
                     permissions = new ChatPermissions
                     {
@@ -60,10 +61,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         CanSendMediaMessages = true
                     };
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null);
             }
-            
 
             if (untilDate == null)
                 await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, null, chatType);
@@ -220,31 +221,32 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         break;
                     }
                 case RestrictAction.UNMUTE:
-                {
-                    foreach (DataRow dr in dt.Rows)
                     {
-                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                        try
+                        foreach (DataRow dr in dt.Rows)
                         {
-                            var groupChatId = (long)dr["id"];
-                            var chatType = GetChatType(dr);
-                            var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
-                                chatType, RestrictAction.UNMUTE);
-                            if (success.IsSuccess())
-                                done.Add(dr);
-                            else
-                                failed.Add(dr);
+                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                            try
+                            {
+                                var groupChatId = (long)dr["id"];
+                                var chatType = GetChatType(dr);
+                                var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                                    chatType, RestrictAction.UNMUTE);
+                                if (success.IsSuccess())
+                                    done.Add(dr);
+                                else
+                                    failed.Add(dr);
 
-                            if (success.ContainsExceptions())
-                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                        }
-                        catch
-                        {
-                            ;
+                                if (success.ContainsExceptions())
+                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                            }
+                            catch
+                            {
+                                ;
+                            }
                         }
                     }
-                }
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
             }

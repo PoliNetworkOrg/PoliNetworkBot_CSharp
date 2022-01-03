@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private DateTime? _dateTime;
 
-        public Chat _Chat { get; set; }
+        public Chat _Chat;
 
         public bool IsInhibited()
         {
