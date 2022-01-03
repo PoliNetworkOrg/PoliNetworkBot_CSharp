@@ -5,10 +5,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class InfoChat
     {
-        public InfoChat(Chat messageChat, DateTime now)
+        public InfoChat(Chat messageChat, DateTime updatedAt)
         {
             _Chat = messageChat;
-            _dateTime = now;
+            _dateTime = updatedAt;
         }
 
         private DateTime? _dateTime;

@@ -191,9 +191,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (telegramGroup != null && groupInRamGetDone.Value)
             {
-                return @group.Title != telegramGroup._Chat.Title
-                    ? GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title)
-                    : GroupsFixLogUpdatedEnum.DID_NOTHING;
+                if (group.Title == telegramGroup._Chat.Title) return GroupsFixLogUpdatedEnum.DID_NOTHING;
+                lock (GroupsInRam)
+                {
+                    GroupsInRam.Remove(@group.Id);
+                    GroupsInRam.Add(@group.Id, new InfoChat(@group, DateTime.Now));
+                }
+                return GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title);
+
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
