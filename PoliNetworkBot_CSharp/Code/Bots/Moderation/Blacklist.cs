@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return SpamType.ALL_GOOD;
 
             List<string> words = new() { text };
-            List<string> splitBy = new() { " ", "\"", "'"};
+            List<string> splitBy = new() { " ", "\"", "'" };
             foreach (var splitBy2 in splitBy)
             {
                 words = SplitTextBy(words, splitBy2);
@@ -29,12 +29,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (words != null && words.Count > 0)
             {
                 var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
-
-                foreach (var word in words2)
-                {
-                    if (CheckSpamLink(word, groupId) == SpamType.SPAM_LINK)
-                        return SpamType.SPAM_LINK;
-                }
+                if (words2.Any(word => CheckSpamLink(word, groupId) == SpamType.SPAM_LINK))
+                    return SpamType.SPAM_LINK;
             }
 
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
@@ -145,6 +141,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static SpamType CheckSpamLink_DefaultGroup(string text)
         {
+            if (string.IsNullOrEmpty(text))
+                return SpamType.ALL_GOOD;
+
             if (!text.Contains("t.me/"))
             {
                 var b1 = text.Contains("facebook.com") ||
@@ -180,9 +179,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
             }
 
-            var isOurLink = CheckIfIsOurTgLink(text);
-            var b2 = isOurLink != null && !isOurLink.Value;
-            return b2 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+
+            return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+        }
+
+        private static bool MustBeTrue(bool? v)
+        {
+            return v != null && v.Value;
         }
 
         private static SpamType CheckIfAllowedTag(string t4)
