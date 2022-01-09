@@ -708,7 +708,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             Variabili.L.HandleSerializedObject(groups);
 
-            Variabili.L.CheckSeILinkVanno(10, true);
+            Variabili.L.CheckSeILinkVanno(5, true);
 
             var json =
                 JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
