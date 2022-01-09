@@ -23,6 +23,24 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
       working-directory: PoliNetworkBot_CSharp
+      
     - name: Test
       run: dotnet test --no-build --verbosity normal
       working-directory: PoliNetworkBot_CSharp
+      
+    - name: Git add
+      run: git add .
+
+    - name: Configure git (1)
+      run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+    - name: Configure git (2)
+      run: git config --global user.name "Github Action Bot"
+
+    - name: Git commit
+      run: git commit -m "artifact" 
+
+    - name: Git push
+      run: git push
+      
+
