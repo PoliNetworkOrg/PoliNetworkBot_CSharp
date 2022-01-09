@@ -31,7 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             t7.Start();
             
             var t8 = new Thread(UpdateGroups);
-            t7.Start();
+            t8.Start();
 
             //var t3 = new Thread(FixThings);
             //t3.Start();
