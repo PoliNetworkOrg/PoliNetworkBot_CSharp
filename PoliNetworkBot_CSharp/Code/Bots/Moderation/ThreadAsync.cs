@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task UpdateGroups2(TelegramBotAbstract bot)
+        private static void UpdateGroups2(TelegramBotAbstract bot)
         {
             if (bot == null)
                 return;
@@ -62,13 +62,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    await CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
+                    _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
                     Thread.Sleep(1000 * 3600 * 24 * 7);
                 }
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, bot);
+                Logger.WriteLine(e);
             }
         }
 
