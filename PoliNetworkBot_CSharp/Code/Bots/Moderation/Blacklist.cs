@@ -19,10 +19,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (string.IsNullOrEmpty(text))
                 return SpamType.ALL_GOOD;
 
-            string[] words = text.Contains(" ") ? text.Split(' ') : new string[] { text };
-            if (words != null && words.Length > 0)
+            List<string> words = new() { text };
+            List<string> splitBy = new() { " ", "\"", "'"};
+            foreach (var splitBy2 in splitBy)
             {
-                var words2 = words.ToList().Select(x => x.Trim());
+                words = SplitTextBy(words, splitBy2);
+            }
+
+            if (words != null && words.Count > 0)
+            {
+                var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
                 foreach (var word in words2)
                 {
@@ -34,6 +40,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId);
+        }
+
+        private static List<string> SplitTextBy(List<string> vs, string v)
+        {
+            if (vs == null)
+                return null;
+
+            List<string> r = new();
+            foreach (var vs2 in vs)
+            {
+                List<string> words = vs2.Split(v).ToList();
+                if (words!= null)
+                    r.AddRange(words);
+            }
+
+            return r;
         }
 
         private static SpamType CheckForFormatMistakes(string text, long? groupId)
