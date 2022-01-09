@@ -694,6 +694,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task<Dictionary<string, string>> UpdateGroups(TelegramBotAbstract sender, bool dry, bool debug,
             bool updateDb)
         {
+            
+            Logger.WriteLine("UpdateGroups started (dry: " + dry + ", debug: "+ debug +", updateDB: "+ updateDb +")", LogSeverityLevel.ALERT);
+            
             if (updateDb)
             {
                 await Groups.FixAllGroupsName(sender);
