@@ -4,6 +4,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -28,9 +29,47 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t7 = new Thread(SayYouRestarted);
             t7.Start();
+            
+            var t8 = new Thread(UpdateGroups);
+            t7.Start();
 
             //var t3 = new Thread(FixThings);
             //t3.Start();
+        }
+
+        private static void UpdateGroups()
+        {
+            try
+            {
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                if (bots == null || bots.Count == 0)
+                    return;
+
+                Thread t = new(() => UpdateGroups2(bots[0]));
+                t.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
+        }
+
+        private static async Task UpdateGroups2(TelegramBotAbstract bot)
+        {
+            if (bot == null)
+                return;
+            try
+            {
+                while (true)
+                {
+                    await CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
+                    Thread.Sleep(1000 * 3600 * 24 * 7);
+                }
+            }
+            catch (Exception e)
+            {
+                await NotifyUtil.NotifyOwners(e, bot);
+            }
         }
 
         private static void SayYouRestarted(object obj)
@@ -46,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.WriteLine(ex);
             }
         }
 
@@ -64,7 +103,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.WriteLine(ex);
             }
         }
 
@@ -75,12 +114,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void DoBackup()
         {
-            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
-            if (bots == null || bots.Count == 0)
-                return;
+            try
+            {
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                if (bots == null || bots.Count == 0)
+                    return;
 
-            Thread t = new(() => DoBackup2Async(bots[0]));
-            t.Start();
+                Thread t = new(() => DoBackup2Async(bots[0]));
+                t.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
         }
 
         private static async void DoBackup2Async(TelegramBotAbstract bot)

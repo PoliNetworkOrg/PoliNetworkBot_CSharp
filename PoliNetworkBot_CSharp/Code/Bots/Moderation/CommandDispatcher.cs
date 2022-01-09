@@ -371,8 +371,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await UpdateGroups(sender, e, true, true, false);
-
+                            var text = await UpdateGroups(sender,  true, true, false);
+                            
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
+                                ParseMode.Html, null);
+                            
                             return;
                         }
 
@@ -385,7 +389,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await UpdateGroups(sender, e, false, true, false);
+                            var text = await UpdateGroups(sender, false, true, false);
+                            
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
+                                ParseMode.Html, null);
 
                             return;
                         }
@@ -399,8 +407,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await UpdateGroups(sender, e, false, true, true);
-
+                            var text = await UpdateGroups(sender,  false, true, true);
+                            
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
+                                ParseMode.Html, null);
+                            
                             return;
                         }
 
@@ -413,8 +425,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await UpdateGroups(sender, e, true, true, true);
-
+                            var text = await UpdateGroups(sender,  true, true, true);
+                            
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
+                                ParseMode.Html, null);
+                            
                             return;
                         }
 
@@ -675,7 +691,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             };
         }
 
-        private static async Task UpdateGroups(TelegramBotAbstract sender, MessageEventArgs e, bool dry, bool debug,
+        public static async Task<Dictionary<string, string>> UpdateGroups(TelegramBotAbstract sender, bool dry, bool debug,
             bool updateDb)
         {
             if (updateDb)
@@ -706,10 +722,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (dry)
             {
                 Logger.WriteLine(await File.ReadAllTextAsync(path));
-                return;
+                return new Dictionary<string, string>()
+                {
+                    {"it", "Dry run completata"},
+                    {"en", "Dry run completed"}
+                };
             }
 
-            List<String> result;
             using var powershell = PowerShell.Create();
             var cd = GitHubConfig.GetPath();
             DoScript(powershell, "cd " + cd, debug);
@@ -729,15 +748,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var hub_pr =
                 @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
-            result = DoScript(powershell, hub_pr, debug);
+            
+            var result = DoScript(powershell, hub_pr, debug);
 
             powershell.Stop();
 
-            Dictionary<string, string> text = result.Count > 0
+            var toBeSent = result.Aggregate("", (current, s) => current + (s + "\n"));
+
+            var text = result.Count > 0
                 ? new Dictionary<string, string>()
                 {
-                    {"it", "Done"},
-                    {"en", "Done"}
+                    {"it", "Done \n" + toBeSent},
+                    {"en", "Done \n" + toBeSent}
                 }
                 : new Dictionary<string, string>()
                 {
@@ -745,9 +767,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"en", "Error in execution"},
                 };
 
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
-                ParseMode.Html, null);
+            _ = NotifyUtil.NotifyOwners( "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender);
+            
+            return text;
         }
 
         private static void InitGithubRepo()
