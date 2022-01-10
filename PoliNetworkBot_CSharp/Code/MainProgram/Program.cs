@@ -81,7 +81,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         }
                     case 't':
                         {
-                            SpamTest.Main2();
+                            //SpamTest.Main2();
+                            Test.CheckLink.Test_CheckLink.Test_CheckLink2();
                             return;
                         }
                 }
