@@ -708,7 +708,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             Variabili.L.HandleSerializedObject(groups);
 
-            Variabili.L.CheckSeILinkVanno(5, true);
+            CheckSeILinkVanno2(5, true);
+
 
             var json =
                 JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
@@ -773,6 +774,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             _ = NotifyUtil.NotifyOwners( "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender);
             
             return text;
+        }
+
+        public static void CheckSeILinkVanno2(int v1, bool v2)
+        {
+            var eventoLog = Variabili.L.CheckSeILinkVanno(v1, v2);
+            eventoLog.action.Invoke(null,null);
+            var log = eventoLog.GetLog();
+            for (int i =0; i <log.Item2; i++)
+            {
+                Logger.WriteLine(log.Item1[i]);
+            }
         }
 
         private static void InitGithubRepo()

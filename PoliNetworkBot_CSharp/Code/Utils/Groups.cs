@@ -161,7 +161,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 var g = l.CreaGruppo(groups.Rows[0]);
 
-                var linkFunzionante = g.CheckSeIlLinkVa(false);
+                var linkFunzionante = g.CheckSeIlLinkVa(false, null);
 
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {

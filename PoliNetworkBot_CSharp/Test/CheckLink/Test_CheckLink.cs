@@ -1,4 +1,5 @@
-﻿using JsonPolimi_Core_nf.Tipi;
+﻿using JsonPolimi_Core_nf.Data;
+using JsonPolimi_Core_nf.Tipi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,11 @@ namespace PoliNetworkBot_CSharp.Test.CheckLink
     {
         public static void Test_CheckLink2()
         {
-            ListaGruppo listaGruppo = new();
-            listaGruppo.Add(new Gruppo() { Platform = "TG", IdLink= "+gVzS0kgvwuA5OTlk", TipoLink= TipoLink.PLUS }, true);
-            listaGruppo.CheckSeILinkVanno(10, true);
+            if (Variabili.L == null)
+                Variabili.L = new ListaGruppo();
+
+            Variabili.L.Add(new Gruppo() { Platform = "TG", IdLink = "+gVzS0kgvwuA5OTlk", TipoLink = TipoLink.PLUS }, true);
+            Code.Bots.Moderation.CommandDispatcher.CheckSeILinkVanno2(5, true);
             ;
         }
     }
