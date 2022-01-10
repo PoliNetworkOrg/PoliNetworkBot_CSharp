@@ -785,9 +785,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione );
         }
 
-        private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> checkSeILinkVanno, ParametriFunzione parametriFunzione)
+        private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> func_event, ParametriFunzione parametriFunzione)
         {
-            var eventoLog = checkSeILinkVanno.Invoke(parametriFunzione);
+            var eventoLog = func_event.Invoke(parametriFunzione);
             eventoLog.RunAction();
             Logger.Log(eventoLog);
         }
