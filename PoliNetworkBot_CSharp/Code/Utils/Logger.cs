@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿using JsonPolimi_Core_nf.Tipi;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
@@ -245,6 +246,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             public static void CountIgnored()
             {
                 _countIgnored++;
+            }
+        }
+
+        internal static void Log(EventoConLog eventoLog)
+        {
+            var log = eventoLog.GetLog();
+            for (int i = 0; i < log.Item2; i++)
+            {
+                Logger.WriteLine(log.Item1[i]);
             }
         }
     }

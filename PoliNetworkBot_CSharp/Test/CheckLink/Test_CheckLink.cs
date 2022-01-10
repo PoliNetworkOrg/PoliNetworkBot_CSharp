@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Test.CheckLink
                 Variabili.L = new ListaGruppo();
 
             Variabili.L.Add(new Gruppo() { Platform = "TG", IdLink = "+gVzS0kgvwuA5OTlk", TipoLink = TipoLink.PLUS }, true);
-            Code.Bots.Moderation.CommandDispatcher.CheckSeILinkVanno2(5, true);
+            Code.Bots.Moderation.CommandDispatcher.CheckSeILinkVanno2(5, true, 10);
             ;
         }
     }

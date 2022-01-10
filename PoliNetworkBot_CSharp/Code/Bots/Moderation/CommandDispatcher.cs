@@ -708,7 +708,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             Variabili.L.HandleSerializedObject(groups);
 
-            CheckSeILinkVanno2(5, true);
+            CheckSeILinkVanno2(5, true, 10);
 
 
             var json =
@@ -776,15 +776,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return text;
         }
 
-        public static void CheckSeILinkVanno2(int v1, bool v2)
+        public static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo, int waitOgniVoltaCheCiRiprova)
         {
-            var eventoLog = Variabili.L.CheckSeILinkVanno(v1, v2);
-            eventoLog.action.Invoke(null,null);
-            var log = eventoLog.GetLog();
-            for (int i =0; i <log.Item2; i++)
-            {
-                Logger.WriteLine(log.Item1[i]);
-            }
+            ParametriFunzione parametriFunzione = new();
+            parametriFunzione.AddParam(volteCheCiRiprova, "volteCheCiRiprova");
+            parametriFunzione.AddParam(laPrimaVoltaControllaDaCapo, "laPrimaVoltaControllaDaCapo");
+            parametriFunzione.AddParam(waitOgniVoltaCheCiRiprova, "waitOgniVoltaCheCiRiprova");
+            RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione );
+        }
+
+        private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> checkSeILinkVanno, ParametriFunzione parametriFunzione)
+        {
+            var eventoLog = checkSeILinkVanno.Invoke(parametriFunzione);
+            eventoLog.RunAction();
+            Logger.Log(eventoLog);
         }
 
         private static void InitGithubRepo()
