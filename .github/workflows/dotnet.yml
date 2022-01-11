@@ -21,8 +21,11 @@ jobs:
       run: dotnet restore
       working-directory: PoliNetworkBot_CSharp
     - name: Build
-      run: dotnet build --no-restore
+      run: |
+        dotnet build --no-restore
+        date > build-date.txt
       working-directory: PoliNetworkBot_CSharp
+      
       
     - name: Test
       run: dotnet test --no-build --verbosity normal
