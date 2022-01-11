@@ -13,10 +13,12 @@ using PoliNetworkBot_CSharp.Test.Spam;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using ThreadAsync = PoliNetworkBot_CSharp.Code.Bots.Moderation.ThreadAsync;
 
@@ -139,7 +141,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (File.Exists("psw_anon.txt")) ConfigAnon.password = File.ReadAllText("psw_anon.txt");
+            if (System.IO.File.Exists("psw_anon.txt")) 
+                ConfigAnon.password = System.IO.File.ReadAllText("psw_anon.txt");
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -315,7 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(ex);
+                                Logger.WriteLine(ex);
                             }
                         });
                         t.Start();
@@ -437,7 +440,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (updates != null && updates.Length > 0)
                 {
                     i = 0;
-                    foreach (Telegram.Bot.Types.Update update in updates)
+
+                    List<Update> updates2 = updates.ToList();
+                    updates2.Sort((x,y) => x.Id - y.Id);
+
+                    foreach (Telegram.Bot.Types.Update update in updates2)
                     {
                         if (update != null)
                         {
