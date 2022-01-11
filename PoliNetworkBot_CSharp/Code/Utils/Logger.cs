@@ -127,18 +127,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 const string path = "./data/log.txt";
 
-                string text = null;
+                List<string> text = null;
                 try
                 {
-                    text = File.ReadAllText(path);
-                    text = text.Trim();
+                    text = File.ReadAllLines(path).ToList();
                 }
                 catch
                 {
                     ;
                 }
 
-                if (string.IsNullOrEmpty(text))
+                if (IsNullOrEmpty(text))
                 {
                     await EmptyLogAsync(sender, sendTo);
                 }
@@ -151,6 +150,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 await NotifyUtil.NotifyOwners(e, sender);
             }
+        }
+
+        private static bool IsNullOrEmpty(List<string> text)
+        {
+            return text == null || text.Count == 0 || !text.Any(t => t != null && !string.IsNullOrEmpty(t.Trim()));
         }
 
         private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
