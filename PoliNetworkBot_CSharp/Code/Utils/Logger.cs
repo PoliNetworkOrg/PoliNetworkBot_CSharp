@@ -111,14 +111,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static async Task PrintLog(TelegramBotAbstract sender, long sendTo)
+        public static object printLogLock = new();
+
+        public static void PrintLog(TelegramBotAbstract sender, long sendTo)
+        {
+            lock (printLogLock)
+            {
+                _ = PrintLog3Async(sender, sendTo);
+            }
+            
+        }
+
+        private static async Task PrintLog3Async(TelegramBotAbstract sender, long sendTo)
         {
             try
             {
                 const string path = "./data/log.txt";
-                
+
                 var file = await File.ReadAllBytesAsync(path);
-                
+
                 if (file == null || file.Length == 0)
                 {
                     await EmptyLogAsync(sender, sendTo);
