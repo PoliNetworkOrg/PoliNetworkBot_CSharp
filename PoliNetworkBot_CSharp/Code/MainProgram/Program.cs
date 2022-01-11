@@ -471,6 +471,16 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                 case UpdateType.Message:
                     {
+                        if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                        {
+                            if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                            {
+                                return;
+                            }
+                        }
+
+                        botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+
                         botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
                         break;
                     }
