@@ -47,7 +47,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             foreach (var vs2 in vs)
             {
                 List<string> words = vs2.Split(v).ToList();
-                if (words!= null)
+                if (words != null)
                     r.AddRange(words);
             }
 
@@ -178,7 +178,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return SpamType.ALL_GOOD;
                 }
             }
-
 
             return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
         }

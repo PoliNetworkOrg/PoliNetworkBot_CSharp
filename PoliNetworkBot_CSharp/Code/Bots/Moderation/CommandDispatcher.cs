@@ -371,12 +371,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender,  true, true, false);
-                            
+                            var text = await UpdateGroups(sender, true, true, false);
+
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
                                 ParseMode.Html, null);
-                            
+
                             return;
                         }
 
@@ -390,7 +390,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             var text = await UpdateGroups(sender, false, true, false);
-                            
+
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
                                 ParseMode.Html, null);
@@ -407,12 +407,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender,  false, true, true);
-                            
+                            var text = await UpdateGroups(sender, false, true, true);
+
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
                                 ParseMode.Html, null);
-                            
+
                             return;
                         }
 
@@ -425,12 +425,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender,  true, true, true);
-                            
+                            var text = await UpdateGroups(sender, true, true, true);
+
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
                                 ParseMode.Html, null);
-                            
+
                             return;
                         }
 
@@ -453,34 +453,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
                 case "/getrunningtime":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        try
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var lang = new Language(new Dictionary<string, string>
+                            try
+                            {
+                                var lang = new Language(new Dictionary<string, string>
                             {
                                 {"", await GetRunnigTime()}
                             });
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                                langCode: e.Message.From.LanguageCode,
-                                usernameToSendTo: e.Message.From.Username, text: lang, parseMode: ParseMode.Html,
-                                messageIdToReplyTo: null);
+                                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                    langCode: e.Message.From.LanguageCode,
+                                    usernameToSendTo: e.Message.From.Username, text: lang, parseMode: ParseMode.Html,
+                                    messageIdToReplyTo: null);
+                                return;
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = NotifyUtil.NotifyOwners(ex, sender);
+                            }
+
                             return;
                         }
-                        catch (Exception ex)
-                        {
-                            _ = NotifyUtil.NotifyOwners(ex, sender);
-                        }
+
+                        await DefaultCommand(sender, e);
 
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
                 case "/subscribe_log":
                     {
                         if (Owners.CheckIfOwner(e.Message.From.Id)
@@ -729,9 +729,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static async Task<Dictionary<string, string>> UpdateGroups(TelegramBotAbstract sender, bool dry, bool debug,
             bool updateDb)
         {
-            
-            Logger.WriteLine("UpdateGroups started (dry: " + dry + ", debug: "+ debug +", updateDB: "+ updateDb +")", LogSeverityLevel.ALERT);
-            
+            Logger.WriteLine("UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")", LogSeverityLevel.ALERT);
+
             if (updateDb)
             {
                 await Groups.FixAllGroupsName(sender);
@@ -744,7 +743,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             Variabili.L.HandleSerializedObject(groups);
 
             CheckSeILinkVanno2(5, true, 10);
-
 
             var json =
                 JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
@@ -787,7 +785,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var hub_pr =
                 @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
-            
+
             var result = DoScript(powershell, hub_pr, debug);
 
             powershell.Stop();
@@ -806,8 +804,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"en", "Error in execution"},
                 };
 
-            _ = NotifyUtil.NotifyOwners( "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender);
-            
+            _ = NotifyUtil.NotifyOwners("UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender);
+
             return text;
         }
 
@@ -817,7 +815,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             parametriFunzione.AddParam(volteCheCiRiprova, "volteCheCiRiprova");
             parametriFunzione.AddParam(laPrimaVoltaControllaDaCapo, "laPrimaVoltaControllaDaCapo");
             parametriFunzione.AddParam(waitOgniVoltaCheCiRiprova, "waitOgniVoltaCheCiRiprova");
-            RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione );
+            RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione);
         }
 
         private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> func_event, ParametriFunzione parametriFunzione)

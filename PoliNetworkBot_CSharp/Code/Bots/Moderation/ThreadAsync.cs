@@ -4,7 +4,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -29,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t7 = new Thread(SayYouRestarted);
             t7.Start();
-            
+
             var t8 = new Thread(UpdateGroups);
             t8.Start();
 
@@ -62,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    if(DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == new DateTime(1970, 1, 1, 3, 0, 0).Hour)
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == new DateTime(1970, 1, 1, 3, 0, 0).Hour)
                         _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
                     Thread.Sleep(1000 * 3600 * 59);
                 }

@@ -28,48 +28,35 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract telegramBotClient, long chatId,
             long? userId, ChatType? chatType, RestrictAction restrictAction)
         {
-            ChatPermissions permissions;
-            switch (restrictAction)
+            ChatPermissions permissions = restrictAction switch
             {
-                case RestrictAction.BAN:
-                case RestrictAction.UNBAN:
-                    throw new ArgumentException();
-                case RestrictAction.MUTE:
-                    permissions = new ChatPermissions
-                    {
-                        CanSendMessages = false,
-                        CanInviteUsers = true,
-                        CanSendOtherMessages = false,
-                        CanSendPolls = false,
-                        CanAddWebPagePreviews = false,
-                        CanChangeInfo = false,
-                        CanPinMessages = false,
-                        CanSendMediaMessages = false
-                    };
-                    break;
+                RestrictAction.BAN or RestrictAction.UNBAN => throw new ArgumentException(),
+                RestrictAction.MUTE => new ChatPermissions
+                {
+                    CanSendMessages = false,
+                    CanInviteUsers = true,
+                    CanSendOtherMessages = false,
+                    CanSendPolls = false,
+                    CanAddWebPagePreviews = false,
+                    CanChangeInfo = false,
+                    CanPinMessages = false,
+                    CanSendMediaMessages = false
+                },
+                RestrictAction.UNMUTE => new ChatPermissions
+                {
+                    CanSendMessages = true,
+                    CanInviteUsers = true,
+                    CanSendOtherMessages = true,
+                    CanSendPolls = true,
+                    CanAddWebPagePreviews = true,
+                    CanChangeInfo = true,
+                    CanPinMessages = true,
+                    CanSendMediaMessages = true
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null),
+            };
 
-                case RestrictAction.UNMUTE:
-                    permissions = new ChatPermissions
-                    {
-                        CanSendMessages = true,
-                        CanInviteUsers = true,
-                        CanSendOtherMessages = true,
-                        CanSendPolls = true,
-                        CanAddWebPagePreviews = true,
-                        CanChangeInfo = true,
-                        CanPinMessages = true,
-                        CanSendMediaMessages = true
-                    };
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null);
-            }
-
-            if (untilDate == null)
-                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, null, chatType);
-            else
-                await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate.Value, chatType);
+            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
         }
 
         internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>> BanAllAsync(

@@ -198,7 +198,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     GroupsInRam.Add(@group.Id, new InfoChat(@group, DateTime.Now));
                 }
                 return GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title);
-
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";

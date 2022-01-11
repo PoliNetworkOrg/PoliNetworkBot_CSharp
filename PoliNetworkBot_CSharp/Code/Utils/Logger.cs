@@ -119,7 +119,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 _ = PrintLog3Async(sender, sendTo);
             }
-            
         }
 
         private static async Task PrintLog3Async(TelegramBotAbstract sender, long sendTo)

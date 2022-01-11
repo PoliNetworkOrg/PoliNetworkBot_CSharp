@@ -254,7 +254,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         var message = "Restrict action: " + restrictAction;
                         message += "\n";
                         message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
-                                   "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">"+ messageEventArgs.Message.From?.Id +"</a>" + "]";
+                                   "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" + messageEventArgs.Message.From?.Id + "</a>" + "]";
                         message += "\n";
                         message += "For reason: \n";
                         message += reason;
@@ -294,7 +294,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         message += "Restricted user: " + target + "[" + (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " + messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
                         message += "\n";
                         message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
-                                   "<a href=tg://user?id=" + messageEventArgs.Message.From?.Id + ">"+ messageEventArgs.Message.From?.Id +"</a>" + "]";
+                                   "<a href=tg://user?id=" + messageEventArgs.Message.From?.Id + ">" + messageEventArgs.Message.From?.Id + "</a>" + "]";
 
                         const string langCode = "it";
                         var text2 = new Language(new Dictionary<string, string>

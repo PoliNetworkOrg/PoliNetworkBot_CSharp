@@ -9,10 +9,8 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Test.IG;
-using PoliNetworkBot_CSharp.Test.Spam;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -141,7 +139,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (System.IO.File.Exists("psw_anon.txt")) 
+            if (System.IO.File.Exists("psw_anon.txt"))
                 ConfigAnon.password = System.IO.File.ReadAllText("psw_anon.txt");
         }
 
@@ -442,7 +440,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     i = 0;
 
                     List<Update> updates2 = updates.ToList();
-                    updates2.Sort((x,y) => x.Id - y.Id);
+                    updates2.Sort((x, y) => x.Id - y.Id);
 
                     foreach (Telegram.Bot.Types.Update update in updates2)
                     {
