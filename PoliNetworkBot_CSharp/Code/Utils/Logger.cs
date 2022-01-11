@@ -132,7 +132,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         null, text, ParseMode.Html, null);
                     return;
                 }
-                
+                 
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "LOG:"}
