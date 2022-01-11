@@ -119,19 +119,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 
                 var file = await File.ReadAllBytesAsync(path);
                 
-                if (string.IsNullOrEmpty(file.ToString()))
+                var stream = new MemoryStream(file);
+                
+                if (stream.Length==0)
                 {
                     var text = new Language(new Dictionary<string, string>
                     {
-                        {"en", "No log available"}
+                        {"en", "No log available."}
                     });
 
                     await SendMessage.SendMessageInPrivate(sender, sendTo, "en",
                         null, text, ParseMode.Html, null);
+                    return;
                 }
                 
-                var stream = new MemoryStream(file);
-
                 var text2 = new Language(new Dictionary<string, string>
                 {
                     {"it", "LOG:"}
@@ -145,7 +146,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     text2, TextAsCaption.BEFORE_FILE,
                     sender, null, "it", null, true);
 
-                await File.WriteAllTextAsync(path, "\n");
+                await File.WriteAllTextAsync(path, "");
             }
             catch (Exception e)
             {
