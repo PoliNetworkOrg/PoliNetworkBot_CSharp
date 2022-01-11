@@ -127,15 +127,24 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 const string path = "./data/log.txt";
 
-                var file = await File.ReadAllBytesAsync(path);
+                string text = null;
+                try
+                {
+                    text = File.ReadAllText(path);
+                    text = text.Trim();
+                }
+                catch
+                {
+                    ;
+                }
 
-                if (file == null || file.Length == 0)
+                if (string.IsNullOrEmpty(text))
                 {
                     await EmptyLogAsync(sender, sendTo);
                 }
                 else
                 {
-                    await PrintLog2(sendTo, sender, path, file);
+                    await PrintLog2(sendTo, sender, path);
                 }
             }
             catch (Exception e)
@@ -144,8 +153,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path, byte[] file)
+        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {
+            var file = await File.ReadAllBytesAsync(path);
             var stream = new MemoryStream(file);
             var text2 = new Language(new Dictionary<string, string>
                     {
