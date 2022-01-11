@@ -142,7 +142,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    _ = NotifyUtil.NotifyOwners(e, sender);
+                    NotifyUtil.NotifyOwners(e, sender).Wait();
                 }
             }
         }
@@ -164,10 +164,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
 
-            _ = SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+            SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true);
+                sender, null, "it", null, true).Wait();
 
             File.WriteAllText(path, "");
         }
@@ -179,8 +179,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {"en", "No log available."}
                     });
 
-            _ = SendMessage.SendMessageInPrivate(sender, sendTo, "en",
-                null, text, ParseMode.Html, null);
+            SendMessage.SendMessageInPrivate(sender, sendTo, "en",
+                null, text, ParseMode.Html, null).Wait();
             return;
         }
 
