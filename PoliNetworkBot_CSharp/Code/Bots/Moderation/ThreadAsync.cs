@@ -62,8 +62,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
-                    Thread.Sleep(1000 * 3600 * 24 * 7);
+                    if(DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == new DateTime(1970, 1, 1, 3, 0, 0).Hour)
+                        _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
+                    Thread.Sleep(1000 * 3600 * 59);
                 }
             }
             catch (Exception e)
@@ -97,7 +98,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             try
             {
                 Language text = new(new System.Collections.Generic.Dictionary<string, string>() {
-                { "en", "#restarted"}
+                { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunnigTime().Result}
             });
                 _ = telegramBotAbstract.SendTextMessageAsync(Data.Constants.Groups.BackupGroup, text, Telegram.Bot.Types.Enums.ChatType.Supergroup, "en", Telegram.Bot.Types.Enums.ParseMode.Html, null, null);
             }

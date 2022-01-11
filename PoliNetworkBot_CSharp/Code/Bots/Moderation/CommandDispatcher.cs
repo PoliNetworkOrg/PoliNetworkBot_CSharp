@@ -452,6 +452,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                case "/getrunningtime":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        try
+                        {
+                            var lang = new Language(new Dictionary<string, string>
+                            {
+                                {"", await GetRunnigTime()}
+                            });
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                                langCode: e.Message.From.LanguageCode,
+                                usernameToSendTo: e.Message.From.Username, text: lang, parseMode: ParseMode.Html,
+                                messageIdToReplyTo: null);
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = NotifyUtil.NotifyOwners(ex, sender);
+                        }
+
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
                 case "/subscribe_log":
                     {
                         if (Owners.CheckIfOwner(e.Message.From.Id)
@@ -590,6 +619,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
+        public static async Task<string> GetRunnigTime()
+        {
+            using var powershell = PowerShell.Create();
+            const string path = "../../../build-date.txt";
+            return await File.ReadAllTextAsync(path);
+        }
+
         private static async Task CommandNeedsAReplyToMessage(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var lang = new Language(new Dictionary<string, string>
@@ -605,8 +641,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static void Reboot()
         {
             using var powershell = PowerShell.Create();
-            DoScript(powershell, "cd /home/ubuntu/bot/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/", true);
-            DoScript(powershell, "screen -d -m -S rebooter ./rebooter.sh", true);
+            DoScript(powershell, "screen -d -m -S rebooter ../../../rebooter.sh", true);
         }
 
         private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,
