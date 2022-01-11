@@ -117,38 +117,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             lock (printLogLock)
             {
-                _ = PrintLog3Async(sender, sendTo);
-            }
-        }
-
-        private static async Task PrintLog3Async(TelegramBotAbstract sender, long sendTo)
-        {
-            try
-            {
-                const string path = "./data/log.txt";
-
-                List<string> text = null;
                 try
                 {
-                    text = File.ReadAllLines(path).ToList();
-                }
-                catch
-                {
-                    ;
-                }
+                    const string path = "./data/log.txt";
 
-                if (IsNullOrEmpty(text))
-                {
-                    await EmptyLogAsync(sender, sendTo);
+                    List<string> text = null;
+                    try
+                    {
+                        text = File.ReadAllLines(path).ToList();
+                    }
+                    catch
+                    {
+                        ;
+                    }
+
+                    if (IsNullOrEmpty(text))
+                    {
+                        EmptyLog(sender, sendTo);
+                    }
+                    else
+                    {
+                        PrintLog2(sendTo, sender, path);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    await PrintLog2(sendTo, sender, path);
+                    _ = NotifyUtil.NotifyOwners(e, sender);
                 }
-            }
-            catch (Exception e)
-            {
-                await NotifyUtil.NotifyOwners(e, sender);
             }
         }
 
@@ -157,9 +152,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return text == null || text.Count == 0 || !text.Any(t => t != null && !string.IsNullOrEmpty(t.Trim()));
         }
 
-        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
+        private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {
-            var file = await File.ReadAllBytesAsync(path);
+            var file = File.ReadAllBytes(path);
             var stream = new MemoryStream(file);
             var text2 = new Language(new Dictionary<string, string>
                     {
@@ -169,22 +164,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
 
-            await SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+            _ = SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
                 sender, null, "it", null, true);
 
-            await File.WriteAllTextAsync(path, "");
+            File.WriteAllText(path, "");
         }
 
-        private static async Task EmptyLogAsync(TelegramBotAbstract sender, long sendTo)
+        private static void EmptyLog(TelegramBotAbstract sender, long sendTo)
         {
             var text = new Language(new Dictionary<string, string>
                     {
                         {"en", "No log available."}
                     });
 
-            await SendMessage.SendMessageInPrivate(sender, sendTo, "en",
+            _ = SendMessage.SendMessageInPrivate(sender, sendTo, "en",
                 null, text, ParseMode.Html, null);
             return;
         }
