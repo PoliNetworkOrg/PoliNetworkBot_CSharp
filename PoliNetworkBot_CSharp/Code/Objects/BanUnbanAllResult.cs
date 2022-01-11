@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal Language GetLanguage(RestrictAction ban_true_unban_false, string target1, long nExceptions)
         {
-            var target = "<a href=tg://user?id=" + target1 + ">" + target1 + "</a>";
+            var target = "<a href=\"tg://user?id=" + target1 + "\">" + target1 + "</a>";
             switch (ban_true_unban_false)
             {
                 case RestrictAction.UNBAN:
