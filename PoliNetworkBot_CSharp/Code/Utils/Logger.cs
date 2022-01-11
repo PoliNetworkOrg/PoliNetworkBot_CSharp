@@ -116,8 +116,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 const string path = "./data/log.txt";
+                
                 var file = await File.ReadAllBytesAsync(path);
+                
+                if (string.IsNullOrEmpty(file.ToString()))
+                {
+                    var text = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "No log available"}
+                    });
 
+                    await SendMessage.SendMessageInPrivate(sender, sendTo, "en",
+                        null, text, ParseMode.Html, null);
+                }
+                
                 var stream = new MemoryStream(file);
 
                 var text2 = new Language(new Dictionary<string, string>
