@@ -119,39 +119,50 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 
                 var file = await File.ReadAllBytesAsync(path);
                 
-                var stream = new MemoryStream(file);
-                
-                if (stream.Length==0)
+                if (file == null || file.Length == 0)
                 {
-                    var text = new Language(new Dictionary<string, string>
-                    {
-                        {"en", "No log available."}
-                    });
-
-                    await SendMessage.SendMessageInPrivate(sender, sendTo, "en",
-                        null, text, ParseMode.Html, null);
-                    return;
+                    await EmptyLogAsync(sender, sendTo);
                 }
-                 
-                var text2 = new Language(new Dictionary<string, string>
+                else
                 {
-                    {"it", "LOG:"}
-                });
-
-                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
-                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
-
-                await SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                        null, "application/octet-stream"), peer,
-                    text2, TextAsCaption.BEFORE_FILE,
-                    sender, null, "it", null, true);
-
-                await File.WriteAllTextAsync(path, "");
+                    await PrintLog2(sendTo, sender, path, file);
+                }
             }
             catch (Exception e)
             {
                 await NotifyUtil.NotifyOwners(e, sender);
             }
+        }
+
+        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path, byte[] file)
+        {
+            var stream = new MemoryStream(file);
+            var text2 = new Language(new Dictionary<string, string>
+                    {
+                        {"it", "LOG:"}
+                    });
+
+            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
+            var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+
+            await SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                    null, "application/octet-stream"), peer,
+                text2, TextAsCaption.BEFORE_FILE,
+                sender, null, "it", null, true);
+
+            await File.WriteAllTextAsync(path, "");
+        }
+
+        private static async Task EmptyLogAsync(TelegramBotAbstract sender, long sendTo)
+        {
+            var text = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "No log available."}
+                    });
+
+            await SendMessage.SendMessageInPrivate(sender, sendTo, "en",
+                null, text, ParseMode.Html, null);
+            return;
         }
 
         public static class GroupsFixLog
