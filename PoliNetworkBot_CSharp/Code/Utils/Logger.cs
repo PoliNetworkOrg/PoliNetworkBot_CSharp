@@ -53,15 +53,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Console.WriteLine(logSeverityLevel + " | " + log);
                 string log1 = log.ToString();
-                foreach (KeyValuePair<long, TelegramBotAbstract> subscriber in Subscribers)
-                {
-                    Buffer.Post(
-                        new MessageQueue(subscriber,
-                                log1,
-                                ChatType.Group,
-                                ParseMode.Html)
-                    );
-                }
                 if (Directory.Exists("./data/") == false)
                 {
                     Directory.CreateDirectory("./data/");
@@ -73,6 +64,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 lock (Lock)
                 {
                     File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + logSeverityLevel + " | " + log1 });
+                }
+                foreach (var subscriber in Subscribers)
+                {
+                    Buffer.Post(
+                        new MessageQueue(subscriber,
+                            log1,
+                            ChatType.Group,
+                            ParseMode.Html)
+                    );
                 }
             }
             catch (Exception e)

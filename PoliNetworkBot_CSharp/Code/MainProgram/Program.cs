@@ -416,54 +416,60 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static async Task StartBotsAsync2Async(BotClientWhole botClientWhole)
         {
-            const int MAX_WAIT = 1000 * 60 * 5; //5 minutes
+            const int MAX_WAIT = 1000 * 10; //10 seconds
             int i = 0;
             int? offset = null;
 
             while (true)
             {
-                Telegram.Bot.Types.Update[] updates = null;
                 try
                 {
-                    updates = await botClientWhole.botClient.GetUpdatesAsync(offset);
-                }
-#pragma warning disable CS0168 // La variabile è dichiarata, ma non viene mai usata
-                catch (Exception ex)
-#pragma warning restore CS0168 // La variabile è dichiarata, ma non viene mai usata
-                {
-                    //Console.WriteLine(ex);
-                    //Console.WriteLine("\n");
-                }
-
-                if (updates != null && updates.Length > 0)
-                {
-                    i = 0;
-
-                    List<Update> updates2 = updates.ToList();
-                    updates2.Sort((x, y) => x.Id - y.Id);
-
-                    foreach (Telegram.Bot.Types.Update update in updates2)
+                    Telegram.Bot.Types.Update[] updates = null;
+                    try
                     {
-                        if (update != null)
-                        {
-                            try
-                            {
-                                HandleUpdate(update, botClientWhole);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                            }
+                        updates = await botClientWhole.botClient.GetUpdatesAsync(offset, timeout: 250);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.EMERGENCY);
+                        Logger.WriteLine(ex, LogSeverityLevel.EMERGENCY);
+                        continue;
+                    }
 
-                            offset = update.Id + 1;
+                    if (updates.Length > 0)
+                    {
+                        i = 0;
+
+                        List<Update> updates2 = updates.OrderBy(o => o.Id).ToList();
+                        
+                        foreach (Telegram.Bot.Types.Update update in updates2)
+                        {
+                            if (update != null)
+                            {
+                                try
+                                {
+                                    HandleUpdate(update, botClientWhole);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+
+                                offset = update.Id + 1;
+                            }
                         }
                     }
+
+                    i++;
+
+                    int wait = i * 200;
+                    Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
                 }
-
-                i++;
-
-                int wait = i * 500;
-                Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
+                catch (Exception e)
+                {
+                    Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.CRITICAL);
+                    Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
+                }
             }
         }
 
