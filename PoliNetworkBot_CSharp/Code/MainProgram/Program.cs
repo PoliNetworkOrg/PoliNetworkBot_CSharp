@@ -436,7 +436,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         continue;
                     }
                     
-                    List<Update> duplicates = updates.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
+                    List<Update> duplicates = updates.GroupBy(s => s.Id).SelectMany(grp => grp.Skip(1)).ToList();
                     
                     if (duplicates.Count > 0)
                     {
