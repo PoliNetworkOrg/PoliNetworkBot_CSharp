@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: |
         dotnet build --no-restore
-        date > build-date.txt
+        TZ='Europe/Rome' date > build-date.txt
       working-directory: PoliNetworkBot_CSharp
       
       
