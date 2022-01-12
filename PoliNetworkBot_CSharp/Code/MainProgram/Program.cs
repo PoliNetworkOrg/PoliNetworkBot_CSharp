@@ -436,7 +436,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         continue;
                     }
                     
-                    List<Update> duplicates = updates.Intersect(updates).ToList();
+                    List<Update> duplicates = updates.GroupBy(s => s).SelectMany(grp => grp.Skip(1)).ToList();
+                    
                     if (duplicates.Count > 0)
                     {
                         foreach (var duplicate in duplicates)
@@ -444,6 +445,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             var msg = "I found a duplicated update";
                             msg += "\n";
                             msg += "----";
+                            msg += "\n";
                             msg += "ID: " + duplicate.Id;
                             msg += "\n";
                             msg += "Message: " + duplicate.Message;
