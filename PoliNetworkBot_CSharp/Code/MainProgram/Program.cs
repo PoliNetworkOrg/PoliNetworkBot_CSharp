@@ -414,7 +414,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static async Task StartBotsAsync2Async(BotClientWhole botClientWhole)
+        private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
         {
             const int MAX_WAIT = 1000 * 10; //10 seconds
             int i = 0;
