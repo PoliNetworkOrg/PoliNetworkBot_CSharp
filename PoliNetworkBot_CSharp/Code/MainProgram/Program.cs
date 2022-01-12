@@ -424,10 +424,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             {
                 try
                 {
-                    Telegram.Bot.Types.Update[] updates = null;
+                    List<Update> updates = null;
                     try
                     {
-                        updates = await botClientWhole.botClient.GetUpdatesAsync(offset, timeout: 250);
+                        updates = botClientWhole.botClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
                     }
                     catch (Exception ex)
                     {
@@ -435,8 +435,27 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         Logger.WriteLine(ex, LogSeverityLevel.EMERGENCY);
                         continue;
                     }
+                    
+                    List<Update> duplicates = updates.Intersect(updates).ToList();
+                    if (duplicates.Count > 0)
+                    {
+                        foreach (var duplicate in duplicates)
+                        {
+                            var msg = "I found a duplicated update";
+                            msg += "\n";
+                            msg += "----";
+                            msg += "ID: " + duplicate.Id;
+                            msg += "\n";
+                            msg += "Message: " + duplicate.Message;
+                            msg += "\n";
+                            msg += "Type: " + duplicate.Type;
+                            Logger.WriteLine(msg, LogSeverityLevel.ERROR);
+                        }
 
-                    if (updates.Length > 0)
+                        updates = updates.Distinct().ToList();
+                    }
+                        
+                    if (updates.Count > 0)
                     {
                         i = 0;
 
