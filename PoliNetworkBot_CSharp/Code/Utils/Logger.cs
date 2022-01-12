@@ -111,11 +111,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static object printLogLock = new();
+        private static readonly object PrintLogLock = new();
 
         public static void PrintLog(TelegramBotAbstract sender, long sendTo)
         {
-            lock (printLogLock)
+            lock (PrintLogLock)
             {
                 try
                 {
@@ -126,12 +126,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         text = File.ReadAllLines(path).ToList();
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        ;
+                        Logger.WriteLine(e);
                     }
 
-                    if (IsNullOrEmpty(text))
+                    if (text is {Count: <= 1})
                     {
                         EmptyLog(sender, sendTo);
                     }
@@ -169,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 text2, TextAsCaption.BEFORE_FILE,
                 sender, null, "it", null, true).Wait();
 
-            File.WriteAllText(path, "");
+            File.WriteAllText(path, "\n");
         }
 
         private static void EmptyLog(TelegramBotAbstract sender, long sendTo)
@@ -181,7 +181,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             SendMessage.SendMessageInPrivate(sender, sendTo, "en",
                 null, text, ParseMode.Html, null).Wait();
-            return;
         }
 
         public static class GroupsFixLog
