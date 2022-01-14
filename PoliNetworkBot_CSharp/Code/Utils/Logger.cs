@@ -147,10 +147,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static bool IsNullOrEmpty(List<string> text)
-        {
-            return text == null || text.Count == 0 || !text.Any(t => t != null && !string.IsNullOrEmpty(t.Trim()));
-        }
+
 
         private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {

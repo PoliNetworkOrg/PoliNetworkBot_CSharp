@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (words != null && words.Count > 0)
             {
-                var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+                var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
                 if (words2.Any(word => CheckSpamLink(word, groupId) == SpamType.SPAM_LINK))
                     return SpamType.SPAM_LINK;
             }
@@ -179,7 +179,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
             }
 
-            return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
+            return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
 
         private static bool MustBeTrue(bool? v)
@@ -193,8 +193,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (t4.StartsWith("@")) t4 = t4[1..];
 
-            var b = GlobalVariables.AllowedTags.Contains(t4); //this part is useless, telegram does not have links t.me/@*
-            return b ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+            return GlobalVariables.AllowedTags == null
+                ? SpamType.SPAM_LINK
+                : GlobalVariables.AllowedTags.Contains(t4) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
 
         private static long? Find(string[] t2, string v)
@@ -219,7 +220,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             link = link.Trim();
 
-            var dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
+            System.Data.DataTable dt = null;
+            try
+            {
+                dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
+            }
+            catch
+            {
+                ;
+            }
+
             var value = SqLite.GetFirstValueFromDataTable(dt);
             if (value == null)
                 return false;
