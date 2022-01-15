@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
@@ -37,8 +38,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 "FROM Groups " +
                 "WHERE title LIKE @title " +
                 "AND ( valid = 'Y' or valid = 1 ) COLLATE NOCASE LIMIT " + limit.ToString();
-
-            return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", '%' + query + '%' } });
+            var seo = query.Split(" ");
+            var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
+            query2 += "%";
+            return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", query2 } });
         }
 
         internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
