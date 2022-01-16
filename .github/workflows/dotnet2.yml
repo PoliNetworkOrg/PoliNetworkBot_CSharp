@@ -35,7 +35,7 @@ jobs:
       run: |
         git stash
         git switch --orphan release
-        git stash pop
+        git stash show -p | git apply && git stash drop
         git add "**/*.dll"
         git add "**/*.exe"
 
