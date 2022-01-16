@@ -34,7 +34,7 @@ jobs:
     - name: Git management
       run: |
         git stash
-        git checkout --orphan release
+        git switch --orphan release
         git stash pop
         git add "**/*.dll"
         git add "**/*.exe"
