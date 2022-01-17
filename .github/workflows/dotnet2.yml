@@ -36,7 +36,7 @@ jobs:
         git stash
         git switch --orphan release
         git stash show -p | git apply && git stash drop
-        git add */bin/* --ignore-missing --ignore-errors  
+        git add */bin/*  --ignore-errors  
 
 
     - name: Configure git (1)
