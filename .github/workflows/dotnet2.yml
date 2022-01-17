@@ -36,8 +36,8 @@ jobs:
         git stash
         git switch --orphan release
         git stash show -p | git apply && git stash drop
-        git add *.dll
-        git add *.exe
+        git add */bin/* --ignore-missing --ignore-errors  
+
 
     - name: Configure git (1)
       run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
