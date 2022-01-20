@@ -314,17 +314,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var toReturn = false;
             foreach (var entry in entries)
             {
-                if(string.IsNullOrEmpty(entry))
-                    continue;
-                var severityLevel = entry.Substring(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3);
-                if (severityLevel.StartsWith(LogSeverityLevel.NOTICE.ToString())
-                    || severityLevel.StartsWith(LogSeverityLevel.WARNING.ToString())
-                    || severityLevel.StartsWith(LogSeverityLevel.CRITICAL.ToString())
-                    || severityLevel.StartsWith(LogSeverityLevel.EMERGENCY.ToString())
-                   )
+                try
                 {
-                    s += entry;
-                    toReturn = true;
+                    var severityLevel = entry.Substring(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3);
+                    if (severityLevel.StartsWith(LogSeverityLevel.NOTICE.ToString())
+                        || severityLevel.StartsWith(LogSeverityLevel.WARNING.ToString())
+                        || severityLevel.StartsWith(LogSeverityLevel.CRITICAL.ToString())
+                        || severityLevel.StartsWith(LogSeverityLevel.EMERGENCY.ToString())
+                       )
+                    {
+                        s += entry;
+                        toReturn = true;
+                    }
+                }
+                catch (ArgumentOutOfRangeException ignore)
+                {
+                    
                 }
             }
             return toReturn;
