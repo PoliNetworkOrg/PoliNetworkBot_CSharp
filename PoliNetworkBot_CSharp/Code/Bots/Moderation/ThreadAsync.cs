@@ -61,8 +61,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == new DateTime(1970, 1, 1, 3, 0, 0).Hour)
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 3)
+                    {
                         _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
+                        Thread.Sleep(1000 * 3600 * 60 * 6);
+                    }
+
                     Thread.Sleep(1000 * 3600 * 59);
                 }
             }
