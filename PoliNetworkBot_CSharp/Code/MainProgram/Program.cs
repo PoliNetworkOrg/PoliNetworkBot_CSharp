@@ -314,7 +314,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             try
                             {
-                                Logger.WriteLine("test", LogSeverityLevel.CRITICAL);
                                 PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value]);
                                 _ = StartBotsAsync2Async(botClientWhole);
                             }
