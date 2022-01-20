@@ -12,9 +12,11 @@ using PoliNetworkBot_CSharp.Test.IG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -312,6 +314,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             try
                             {
+                                Logger.WriteLine("test", LogSeverityLevel.CRITICAL);
+                                PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value]);
                                 _ = StartBotsAsync2Async(botClientWhole);
                             }
                             catch (Exception ex)
@@ -411,6 +415,21 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             {
                 var t = new Thread(Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
                 t.Start();
+            }
+        }
+
+        private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract)
+        {
+            if (Logger.ContainsCriticalErrors(out var critics))
+            {
+                var toSend = "WARNING! \n";
+                toSend += "Critical errors found in log while starting up! \n" + critics;
+                NotifyUtil.NotifyOwners(toSend, telegramBotAbstract);
+            }
+            using var powershell = PowerShell.Create();
+            foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true))
+            {
+                Console.WriteLine(line);
             }
         }
 

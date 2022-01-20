@@ -4,8 +4,10 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Telegram.Bot.Types.Enums;
@@ -18,6 +20,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
         private static readonly BufferBlock<MessageQueue> Buffer = new();
         private static readonly Object Lock = new();
+        private const string DataLogPath = "./data/log.txt";
+        private const string LogSeparator = "#@#LOG ENTRY#@#";
+
 
         internal static async Task MainMethodAsync()
         {
@@ -57,13 +62,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     Directory.CreateDirectory("./data/");
                 }
-                if (!File.Exists("./data/log.txt"))
+
+                if (!File.Exists(DataLogPath))
                 {
-                    File.WriteAllText("./data/log.txt", "");
+                    File.WriteAllText(DataLogPath, "");
                 }
                 lock (Lock)
                 {
-                    File.AppendAllLinesAsync("./data/log.txt", new[] { DateTime.Now + " | " + logSeverityLevel + " | " + log1 });
+                    File.AppendAllLinesAsync(DataLogPath, new[] { "#@#LOG ENTRY#@#" +  DateTime.Now.ToString(CultureInfo.InvariantCulture) 
+                        + " | " + logSeverityLevel + " | " + log1 });
                 }
                 foreach (var subscriber in Subscribers)
                 {
@@ -152,6 +159,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {
             var file = File.ReadAllBytes(path);
+            file = Encoding.UTF8.GetBytes(file.ToString()?.Split(LogSeparator).ToString() ?? string.Empty); //remove "#@#LOG ENTRY#@#" from all the lines
             var stream = new MemoryStream(file);
             var text2 = new Language(new Dictionary<string, string>
                     {
@@ -168,6 +176,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             File.WriteAllText(path, "\n");
         }
+
 
         private static void EmptyLog(TelegramBotAbstract sender, long sendTo)
         {
@@ -295,6 +304,30 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Logger.WriteLine(log.Item1[i]);
             }
+        }
+
+        public static bool ContainsCriticalErrors(out string s)
+        {
+            var log = File.ReadAllText(DataLogPath);
+            var entries = log.Split(LogSeparator).ToList();
+            s = "";
+            var toReturn = false;
+            foreach (var entry in entries)
+            {
+                if(string.IsNullOrEmpty(entry))
+                    continue;
+                var severityLevel = entry.Substring(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3);
+                if (severityLevel.StartsWith(LogSeverityLevel.NOTICE.ToString())
+                    || severityLevel.StartsWith(LogSeverityLevel.WARNING.ToString())
+                    || severityLevel.StartsWith(LogSeverityLevel.CRITICAL.ToString())
+                    || severityLevel.StartsWith(LogSeverityLevel.EMERGENCY.ToString())
+                   )
+                {
+                    s += entry;
+                    toReturn = true;
+                }
+            }
+            return toReturn;
         }
     }
 }

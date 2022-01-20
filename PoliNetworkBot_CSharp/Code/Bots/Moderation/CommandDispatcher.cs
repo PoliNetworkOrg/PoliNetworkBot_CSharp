@@ -834,7 +834,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
         }
 
-        private static List<string> DoScript(PowerShell powershell, string script, bool debug)
+        public static List<string> DoScript(PowerShell powershell, string script, bool debug)
         {
             powershell.AddScript(script);
             Logger.WriteLine("Executing command: " + script);
