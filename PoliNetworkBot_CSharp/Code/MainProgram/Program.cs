@@ -428,7 +428,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             using var powershell = PowerShell.Create();
             foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true))
             {
-                Console.WriteLine(line);
+                Logger.WriteLine(line);
             }
         }
 

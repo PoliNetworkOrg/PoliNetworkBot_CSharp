@@ -156,11 +156,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
 
 
-        private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
+        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {
-            var file = File.ReadAllBytes(path);
-            file = Encoding.UTF8.GetBytes(file.ToString()?.Split(LogSeparator).ToString() ?? string.Empty); //remove "#@#LOG ENTRY#@#" from all the lines
-            var stream = new MemoryStream(file);
+            var file = await File.ReadAllTextAsync(path);
+            file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
+            Encoding encoding = Encoding.UTF8;
+            var stream = new MemoryStream(encoding.GetBytes(file));
             var text2 = new Language(new Dictionary<string, string>
                     {
                         {"it", "LOG:"}
