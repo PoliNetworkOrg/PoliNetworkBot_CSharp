@@ -53,28 +53,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task<object> MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        private static async Task MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
             if (e == null)
-                return null;
+                return;
 
             if (e.Message == null)
-                return null;
+                return;
 
             if (string.IsNullOrEmpty(e.Message.Text))
-                return null;
+                return;
 
             if (e.Message.Chat == null)
-                return null;
+                return;
 
             var text = e.Message.Text.ToLower();
             if (e.Message.Chat.Title.ToLower().Contains("polimi"))
             {
-                if (CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
-                    if (text.Contains("piano studi") || text.Contains("piano di studi") ||
-                        text.Contains("piano degli studi"))
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+                await MessageInGroup2Async(telegramBotClient, e, text);
+            }
+        }
+
+        private static async Task MessageInGroup2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text)
+        {
+            if (CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
+                if (text.Contains("piano studi") || text.Contains("piano di studi") ||
+                    text.Contains("piano degli studi"))
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                         {
                             {
                                 "it",
@@ -89,21 +95,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"
                             }
                         });
-                        await SendMessage.SendMessageInAGroup(telegramBotClient,
-                            e.Message.From.LanguageCode,
-                            text2,
-                            e.Message.Chat.Id,
-                            e.Message.Chat.Type,
-                            ParseMode.Html,
-                            e.Message.MessageId,
-                            true);
-                    }
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From.LanguageCode,
+                        text2,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
+                }
 
-                if (CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
-                    if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") ||
-                        text.ToLower().Contains("representative"))
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+            if (CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
+                if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") ||
+                    text.ToLower().Contains("representative"))
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                         {
                             {
                                 "it",
@@ -118,21 +124,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "<a href='https://t.me/askPolimi'>click here</a>!"
                             }
                         });
-                        await SendMessage.SendMessageInAGroup(telegramBotClient,
-                            e.Message.From.LanguageCode,
-                            text2,
-                            e.Message.Chat.Id,
-                            e.Message.Chat.Type,
-                            ParseMode.Html,
-                            e.Message.MessageId,
-                            true);
-                    }
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From.LanguageCode,
+                        text2,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
+                }
 
-                if (CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
-                    if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") ||
-                        text.Contains("dsu"))
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+            if (CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
+                if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") ||
+                    text.Contains("dsu"))
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                         {
                             {
                                 "it",
@@ -147,21 +153,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"
                             }
                         });
-                        await SendMessage.SendMessageInAGroup(telegramBotClient,
-                            e.Message.From.LanguageCode,
-                            text2,
-                            e.Message.Chat.Id,
-                            e.Message.Chat.Type,
-                            ParseMode.Html,
-                            e.Message.MessageId,
-                            true);
-                    }
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From.LanguageCode,
+                        text2,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
+                }
 
-                if (text.Contains("esiste un gruppo"))
-                {
-                    var text2 = new Language(
-                        new Dictionary<string, string>
-                        {
+            if (text.Contains("esiste un gruppo"))
+            {
+                var text2 = new Language(
+                    new Dictionary<string, string>
+                    {
                             {
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
@@ -174,20 +180,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "We advice you to visit our website, " +
                                 "<a href='https://polinetwork.github.io/'>click here</a>!"
                             }
-                        }
-                    );
-                    await SendMessage.SendMessageInAGroup(telegramBotClient,
-                        e.Message.From.LanguageCode,
-                        text2,
-                        e.Message.Chat.Id,
-                        e.Message.Chat.Type,
-                        ParseMode.Html,
-                        e.Message.MessageId,
-                        true);
-                }
+                    }
+                );
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e.Message.From.LanguageCode,
+                    text2,
+                    e.Message.Chat.Id,
+                    e.Message.Chat.Type,
+                    ParseMode.Html,
+                    e.Message.MessageId,
+                    true);
             }
-
-            return null;
         }
 
         private static bool CheckIfToSend(SpecialGroup s, long id)
