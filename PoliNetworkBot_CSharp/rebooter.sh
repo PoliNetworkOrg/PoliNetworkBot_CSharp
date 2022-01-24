@@ -1,6 +1,7 @@
 echo "Pulling changes"
 cd /home/ubuntu/bot/PoliNetworkBot_CSharp/
-git pull
+git fetch
+git switch release
 echo "rebooting bot"
 cd /home/ubuntu/bot/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/bin/Debug/net5.0/
 sleep  1
