@@ -23,7 +23,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private const string DataLogPath = "./data/log.txt";
         private const string LogSeparator = "#@#LOG ENTRY#@#";
 
-
         internal static async Task MainMethodAsync()
         {
             while (await Buffer.OutputAvailableAsync())
@@ -69,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 lock (Lock)
                 {
-                    File.AppendAllLinesAsync(DataLogPath, new[] { "#@#LOG ENTRY#@#" +  DateTime.Now.ToString(CultureInfo.InvariantCulture) 
+                    File.AppendAllLinesAsync(DataLogPath, new[] { "#@#LOG ENTRY#@#" +  DateTime.Now.ToString(CultureInfo.InvariantCulture)
                         + " | " + logSeverityLevel + " | " + log1 });
                 }
                 foreach (var subscriber in Subscribers)
@@ -138,7 +137,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         Logger.WriteLine(e);
                     }
 
-                    if (text is {Count: <= 1})
+                    if (text is { Count: <= 1 })
                     {
                         EmptyLog(sender, sendTo);
                     }
@@ -154,11 +153,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-
-
-        private static async Task PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
+        private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
         {
-            var file = await File.ReadAllTextAsync(path);
+            var file = File.ReadAllText(path);
             file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
             Encoding encoding = Encoding.UTF8;
             var stream = new MemoryStream(encoding.GetBytes(file));
@@ -177,7 +174,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             File.WriteAllText(path, "\n");
         }
-
 
         private static void EmptyLog(TelegramBotAbstract sender, long sendTo)
         {
@@ -317,7 +313,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    var severityLevel = entry.Substring(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3);
+                    var severityLevel = entry[(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3)..];
                     if (severityLevel.StartsWith(LogSeverityLevel.NOTICE.ToString())
                         || severityLevel.StartsWith(LogSeverityLevel.WARNING.ToString())
                         || severityLevel.StartsWith(LogSeverityLevel.CRITICAL.ToString())
@@ -328,9 +324,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         toReturn = true;
                     }
                 }
+#pragma warning disable CS0168 // La variabile è dichiarata, ma non viene mai usata
                 catch (ArgumentOutOfRangeException ignore)
+#pragma warning restore CS0168 // La variabile è dichiarata, ma non viene mai usata
                 {
-                    
                 }
             }
             return toReturn;

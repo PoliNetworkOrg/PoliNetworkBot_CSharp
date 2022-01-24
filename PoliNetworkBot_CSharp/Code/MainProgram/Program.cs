@@ -1,6 +1,7 @@
 ﻿#region
 
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -16,7 +17,6 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -453,9 +453,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         Logger.WriteLine(ex, LogSeverityLevel.EMERGENCY);
                         continue;
                     }
-                    
+
                     List<Update> duplicates = updates.GroupBy(s => s.Id).SelectMany(grp => grp.Skip(1)).ToList();
-                    
+
                     if (duplicates.Count > 0)
                     {
                         foreach (var duplicate in duplicates)
@@ -474,13 +474,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         updates = updates.Distinct().ToList();
                     }
-                        
+
                     if (updates.Count > 0)
                     {
                         i = 0;
 
                         List<Update> updates2 = updates.OrderBy(o => o.Id).ToList();
-                        
+
                         foreach (Telegram.Bot.Types.Update update in updates2)
                         {
                             if (update != null)
