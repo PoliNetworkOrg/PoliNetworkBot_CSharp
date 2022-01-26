@@ -68,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 lock (Lock)
                 {
-                    File.AppendAllLinesAsync(DataLogPath, new[] { "#@#LOG ENTRY#@#" +  DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                    File.AppendAllLinesAsync(DataLogPath, new[] { "#@#LOG ENTRY#@#" +  GetTime()
                         + " | " + logSeverityLevel + " | " + log1 });
                 }
                 foreach (var subscriber in Subscribers)
@@ -88,6 +88,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Console.WriteLine(e);
                 Console.WriteLine("##########################");
             }
+        }
+
+        private static string GetTime()
+        {
+            return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
 
         public static async Task Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract)
@@ -313,7 +318,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    var severityLevel = entry[(DateTime.Now.ToString(CultureInfo.InvariantCulture).Length + 3)..];
+                    var severityLevel = entry[(GetTime().Length + 3)..];
                     if (severityLevel.StartsWith(LogSeverityLevel.NOTICE.ToString())
                         || severityLevel.StartsWith(LogSeverityLevel.WARNING.ToString())
                         || severityLevel.StartsWith(LogSeverityLevel.CRITICAL.ToString())
