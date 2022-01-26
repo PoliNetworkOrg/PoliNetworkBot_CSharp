@@ -134,7 +134,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                     catch (Exception e)
                     {
-                        Logger.WriteLine(e);
+                        Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
                     }
 
                     if (text is { Count: <= 1 })
@@ -324,9 +324,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         toReturn = true;
                     }
                 }
-#pragma warning disable CS0168 // La variabile è dichiarata, ma non viene mai usata
-                catch (ArgumentOutOfRangeException ignore)
-#pragma warning restore CS0168 // La variabile è dichiarata, ma non viene mai usata
+                catch (ArgumentOutOfRangeException)
                 {
                 }
             }
