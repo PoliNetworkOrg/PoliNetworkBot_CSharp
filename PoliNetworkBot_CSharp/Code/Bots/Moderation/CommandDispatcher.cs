@@ -641,7 +641,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static void Reboot()
         {
             using var powershell = PowerShell.Create();
-            if (DoScript(powershell, "screen -ls", true).Contains("rebooter"))
+            if (DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a).Contains("rebooter"))
             {
                 return;
             }
