@@ -514,7 +514,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            Logger.PrintLog(sender, e.Message.From.Id);
+                            Logger.PrintLog(sender,  new List<long>() { e.Message.From.Id, NotifyUtil.group_exception });
 
                             return;
                         }

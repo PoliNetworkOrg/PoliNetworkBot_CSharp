@@ -119,7 +119,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static readonly object PrintLogLock = new();
 
-        public static void PrintLog(TelegramBotAbstract sender, long sendTo)
+        public static void PrintLog(TelegramBotAbstract sender, List<long> sendTo)
         {
             lock (PrintLogLock)
             {
@@ -153,7 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        private static void PrintLog2(long sendTo, TelegramBotAbstract sender, string path)
+        private static void PrintLog2(List<long> sendTo, TelegramBotAbstract sender, string path)
         {
             var file = File.ReadAllText(path);
             file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
@@ -164,26 +164,32 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {"it", "LOG:"}
                     });
 
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+            foreach (var sendToSingle in sendTo)
+            {
+                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendToSingle };
+                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendToSingle);
 
-            SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true).Wait();
+                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    sender, null, "it", null, true).Wait();
+            }
 
             File.WriteAllText(path, "\n");
         }
 
-        private static void EmptyLog(TelegramBotAbstract sender, long sendTo)
+        private static void EmptyLog(TelegramBotAbstract sender, List<long> sendTo)
         {
             var text = new Language(new Dictionary<string, string>
                     {
                         {"en", "No log available."}
                     });
 
-            SendMessage.SendMessageInPrivate(sender, sendTo, "en",
-                null, text, ParseMode.Html, null).Wait();
+            foreach (var sendToSingle in sendTo)
+            {
+                SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
+                    null, text, ParseMode.Html, null).Wait();
+            }
         }
 
         public static class GroupsFixLog
