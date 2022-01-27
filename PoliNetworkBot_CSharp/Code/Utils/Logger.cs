@@ -174,6 +174,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendToSingle };
                 var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendToSingle);
 
+                stream.Seek(0, SeekOrigin.Begin);
+
                 SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                         null, "application/octet-stream"), peer,
                     text2, TextAsCaption.BEFORE_FILE,
