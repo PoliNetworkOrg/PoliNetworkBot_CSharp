@@ -516,6 +516,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
                             Logger.PrintLog(sender,  new List<long>() { e.Message.From.Id, NotifyUtil.group_exception });
 
+
                             return;
                         }
 
