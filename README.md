@@ -1,3 +1,3 @@
 # PoliNetworkBot_CSharp
 
-https://docs.polinetwork.org/#/projects/tg_bot
+https://docs.polinetwork.org/#/projects/tg_bot  
