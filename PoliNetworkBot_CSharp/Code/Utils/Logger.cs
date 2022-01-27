@@ -160,10 +160,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static void PrintLog2(List<long> sendTo, TelegramBotAbstract sender, string path)
         {
-            var file = File.ReadAllText(path);
+            string file = File.ReadAllText(path);
             file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
             Encoding encoding = Encoding.UTF8;
-            var stream = new MemoryStream(encoding.GetBytes(file));
+
             var text2 = new Language(new Dictionary<string, string>
                     {
                         {"it", "LOG:"}
@@ -174,7 +174,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendToSingle };
                 var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendToSingle);
 
-                stream.Seek(0, SeekOrigin.Begin);
+                var stream = new MemoryStream(encoding.GetBytes(file));
 
                 SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                         null, "application/octet-stream"), peer,
