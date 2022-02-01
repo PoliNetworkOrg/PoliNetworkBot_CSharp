@@ -686,10 +686,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return e.Message.Chat.Type switch
                 {
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
-                                                                                    e.Message.From.Id, e.Message?.From?.LanguageCode,
+                                                                                    e.Message.From.Id,
+                                                                                    e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
                                                                                     "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage.SendMessageInAGroup(sender,
-                                                                                    e.Message?.From?.LanguageCode, text2,
+                                                                                    e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
+                                                                                    text2,
                                                                                     e.Message.Chat.Id, e.Message.Chat.Type,
                                                                                     ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
                     _ => throw new ArgumentOutOfRangeException(),
