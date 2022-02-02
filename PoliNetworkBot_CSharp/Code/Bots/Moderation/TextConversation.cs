@@ -204,13 +204,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 "it",
                                 "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi whatsapp. " +
                                 "Se non lo hai ancora fatto, leggi la guida in merito, " +
-                                "<a href='https://docs.polinetwork.org/#/about/groups/whatsapp'>clicca qui</a>!"
+                                "<a href='https://docs.polinetwork.org/#/it/about/groups/whatsapp'>clicca qui</a>!"
                             },
                             {
                                 "en",
                                 "Hi 👋 it seems you are asking questions about whatsapp groups. " +
                                 "If you have not already done it, we advice you to read the relative guide, " +
-                                "<a href='https://docs.polinetwork.org/#/about/groups/whatsapp'>click here</a>!"
+                                "<a href='https://docs.polinetwork.org/#/en/about/groups/whatsapp'>click here</a>!"
                             }
                         }
                     );
