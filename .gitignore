@@ -37,4 +37,5 @@ PoliNetworkBot_CSharp/bin/Debug/netcoreapp3.1/WriteLines.txt
 *.psd1
 *.psm1
 PoliNetworkBot_CSharp/bin/Debug/net5.0/PoliNetworkBot_CSharp.runtimeconfig.dev.json
+PoliNetworkBot_CSharp/bin/Debug/net5.0/PoliNetworkBot_CSharp.deps.json
 *.runtimeconfig.dev.json
