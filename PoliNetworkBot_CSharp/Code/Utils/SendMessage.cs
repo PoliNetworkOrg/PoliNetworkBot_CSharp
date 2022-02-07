@@ -104,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e1)
             {
-                await NotifyUtil.NotifyOwners(e1, telegramBotClient,  messageEventArgs, i + 1);
+                await NotifyUtil.NotifyOwners(e1, telegramBotClient, messageEventArgs, i + 1);
             }
 
             return r1;

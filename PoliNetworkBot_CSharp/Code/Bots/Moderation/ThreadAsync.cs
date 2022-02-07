@@ -37,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //t3.Start();
         }
 
-        private static void UpdateGroups( )
+        private static void UpdateGroups()
         {
             try
             {
@@ -200,7 +200,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return null;
         }
 
-        private static async void CheckMessagesToDeleteAsync( )
+        private static async void CheckMessagesToDeleteAsync()
         {
             while (true)
             {

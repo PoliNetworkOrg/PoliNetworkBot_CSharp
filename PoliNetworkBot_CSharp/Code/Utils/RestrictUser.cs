@@ -244,8 +244,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
             if (targetId2 == null)
             {
-                await NotifyUtil.NotifyOwnersAsync(r6, sender,e, "Ban/Unban All of [UNKNOWN]",
-                    e.Message.From.LanguageCode );
+                await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
+                    e.Message.From.LanguageCode);
             }
             else
             {

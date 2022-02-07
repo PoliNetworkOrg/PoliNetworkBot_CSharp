@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
 
-        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract , MessageEventArgs messageEventArgs)
+        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
                             "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract , messageEventArgs);
+                        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
                     }
                 }
                 Logger.GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);

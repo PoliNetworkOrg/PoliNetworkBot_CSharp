@@ -99,7 +99,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     message3 += "\n\n";
                 }
 
-
                 try
                 {
                     message3 += "MessageArgs:\n";

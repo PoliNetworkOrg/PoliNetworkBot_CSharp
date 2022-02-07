@@ -486,7 +486,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await Logger.Subscribe(e.Message.From.Id, sender ,e);
+                            await Logger.Subscribe(e.Message.From.Id, sender, e);
 
                             return;
                         }
@@ -691,7 +691,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                                                                     "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage.SendMessageInAGroup(sender,
                                                                                     e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
-                                                                                    text2,  e,
+                                                                                    text2, e,
                                                                                     e.Message.Chat.Id, e.Message.Chat.Type,
                                                                                     ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
                     _ => throw new ArgumentOutOfRangeException(),
@@ -1251,7 +1251,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (targetId == null)
                 {
                     var e2 = new Exception("Can't find userid (2)");
-                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender , e);
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
                     return new SuccessWithException(false, e2);
                 }
 
