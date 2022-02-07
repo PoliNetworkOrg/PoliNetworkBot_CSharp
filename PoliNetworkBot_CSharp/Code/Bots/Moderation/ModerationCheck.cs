@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class ModerationCheck
     {
-        public static List<long> whitelistForeignGroups = new()
+        private static readonly List<long> whitelistForeignGroups = new()
         {
             -1001394018284 //japan group
         };
@@ -116,10 +116,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 case string s when string.IsNullOrEmpty(s):
                 {
-                    var r3 = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    var list3 = r3.Item3;
-                    list3.Insert(0, 14);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(r3.Item1, r3.Item2, list3, s);
+                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                    ints.Insert(0, 14);
+                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, s);
                 }
                 case int i2:
                 {
@@ -141,10 +140,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 default:
                 {
-                    var r2 = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    var list2 = r2.Item3;
-                    list2.Insert(0, 10);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(r2.Item1, r2.Item2, list2, v?.ToString());
+                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                    ints.Insert(0, 10);
+                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, v?.ToString());
                 }
             }
         }
@@ -158,7 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, item3, oldValid);
             try
             {
-                var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+                const string q = "UPDATE Groups SET valid = @valid WHERE id = @id";
                 var valid = "Y";
                 var d = new Dictionary<string, object>
                 {
@@ -185,9 +183,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             TelegramBotAbstract telegramBotClient,
             MessageEventArgs e)
         {
-            var r2 = await CheckIfToExit_NullValue2Async(telegramBotClient, e);
-            var r = r2.Item1;
-            var valid = r == ToExit.STAY ? "Y" : "N";
+            var (toExit, chatMembers, ints) = await CheckIfToExit_NullValue2Async(telegramBotClient, e);
+            var valid = toExit == ToExit.STAY ? "Y" : "N";
 
             var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
             var d = new Dictionary<string, object>
@@ -197,9 +194,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             };
             SqLite.Execute(q, d);
 
-            var list1 = r2.Item3;
-            list1.Insert(0, 2);
-            return new Tuple<ToExit, ChatMember[], List<int>>(r, r2.Item2, list1);
+            ints.Insert(0, 2);
+            return new Tuple<ToExit, ChatMember[], List<int>>(toExit, chatMembers, ints);
         }
 
         private static async Task<Tuple<ToExit, ChatMember[], List<int>>> CheckIfToExit_NullValue2Async(

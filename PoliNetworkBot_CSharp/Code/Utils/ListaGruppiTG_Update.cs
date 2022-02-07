@@ -12,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class ListaGruppiTG_Update
     {
-        public List<GruppoTG_Update> L = new();
+        private List<GruppoTG_Update> L = new();
 
         internal int Count()
         {

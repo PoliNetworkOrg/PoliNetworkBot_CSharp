@@ -14,8 +14,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         internal readonly Tuple<long?, ResultQueueEnum?> messageIdToReplyTo;
         public readonly string username;
         public bool? from_telegram;
-        public long? identity;
-        public string langUser;
+        private long? identity;
+        public readonly string langUser;
         public long? messageIdGroup;
         public long? messageIdUser;
 

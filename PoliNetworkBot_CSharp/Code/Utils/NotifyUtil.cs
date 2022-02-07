@@ -210,11 +210,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
+            var (exceptionNumbereds, item2) = exceptions;
             try
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    { "en", "Number of exceptions: " + exceptions.Item2 + " - " + exceptions.Item1.Count }
+                    { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
                 });
                 _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -225,7 +226,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             try
             {
-                foreach (var e1 in exceptions.Item1)
+                foreach (var e1 in exceptionNumbereds)
                     try
                     {
                         await NotifyOwners(e1, sender, messageEventArgs);

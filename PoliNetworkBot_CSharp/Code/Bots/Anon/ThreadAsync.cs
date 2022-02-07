@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         public const int timesleep = 1000 * 30;
 
         public const string pathwebdict = "webposts.bin";
-        public static readonly Random random = new();
+        private static readonly Random random = new();
 
         public static Dictionary<long, WebPost> dictionary_webpost;
 
@@ -75,7 +75,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             try
             {
-                var url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
+                const string url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
 
                 var urlFinal = url + ConfigAnon.password;
                 var randomstring = GenerateRandomString(30);

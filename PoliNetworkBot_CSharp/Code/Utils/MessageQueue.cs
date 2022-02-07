@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public readonly ChatType ChatType;
         public readonly string text;
         public KeyValuePair<long, TelegramBotAbstract> key;
-        public ParseMode Parsemode;
+        private ParseMode Parsemode;
 
         public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType,
             ParseMode parsemode)

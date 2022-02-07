@@ -5,7 +5,7 @@
         public readonly string invite_link;
         public readonly string type;
         public long? id;
-        public string title;
+        public readonly string title;
 
         public ChatJson(long? id, string type, string title, string invite_link)
         {

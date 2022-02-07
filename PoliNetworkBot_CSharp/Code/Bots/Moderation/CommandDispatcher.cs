@@ -775,8 +775,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                        GitHubConfig.GetRepo() + @" --all -f";
             DoScript(powershell, push, debug);
 
-            var hub_pr =
-                @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
+            const string hub_pr = @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
 
             var result = DoScript(powershell, hub_pr, debug);
 
@@ -987,8 +986,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
         {
-            var queryForBannedUsers =
-                "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
+            const string queryForBannedUsers = "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
             var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers);
             var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
             var bannedUsersIdArray = bannedUsersId.Select(user => long.Parse(user.ToString())).ToList();
@@ -1124,18 +1122,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<MessageSentResult> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id,
+            var (dateTimeSchedule, exception, s) = await DateTimeClass.AskDateAsync(e.Message.From.Id,
                 e.Message.Text,
                 e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
-            if (sentDate.Item2 != null)
+            if (exception != null)
             {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
+                await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
 
                 return null;
             }
 
-            var sentDate2 = sentDate.Item1.GetDate();
+            var sentDate2 = dateTimeSchedule.GetDate();
 
             var dict = new Dictionary<string, string>
             {
@@ -1383,9 +1381,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(done.Item1.GetSuccess()),
+                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
                     "success.bin", sender, e);
-                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(done.Item1.GetFailed()),
+                await SendReportOfSuccessAndFailures2(StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
                     "failed.bin", sender, e);
             }
             catch

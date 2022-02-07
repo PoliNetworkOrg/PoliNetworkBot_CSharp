@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class CallbackQueryEventArgs
     {
-        internal CallbackQuery CallbackQuery;
+        internal readonly CallbackQuery CallbackQuery;
 
         public CallbackQueryEventArgs(CallbackQuery callbackQuery)
         {

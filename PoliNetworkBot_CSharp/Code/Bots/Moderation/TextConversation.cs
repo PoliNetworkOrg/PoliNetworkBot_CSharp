@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
     internal static class TextConversation
     {
-        public static Dictionary<SpecialGroup, long> excludedGroups = new()
+        public static readonly Dictionary<SpecialGroup, long> excludedGroups = new()
         {
             { SpecialGroup.PIANO_DI_STUDI, -1001208900229 },
             { SpecialGroup.ASK_POLIMI, -1001251460298 },

@@ -133,7 +133,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (string.IsNullOrEmpty(t))
                 return;
 
-            var q = "SELECT * FROM Primo WHERE title = @t";
+            const string q = "SELECT * FROM Primo WHERE title = @t";
             var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@t", t } });
             if (r == null || r.Rows.Count == 0)
             {
@@ -164,14 +164,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
         private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t,
             bool toInsert)
         {
-            var tooManyKingsForThisUser = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
-            if (tooManyKingsForThisUser.Item1 == false)
+            var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
+            if (b == false)
             {
                 if (toInsert)
                 {
-                    var q2 = "INSERT INTO Primo (title, firstname, lastname, when_king, king_id) " +
-                             " VALUES " +
-                             " (@title, @fn, @ln, @wk, @ki)";
+                    const string q2 = "INSERT INTO Primo (title, firstname, lastname, when_king, king_id) " +
+                                      " VALUES " +
+                                      " (@title, @fn, @ln, @wk, @ki)";
 
                     var r2 = SqLite.Execute(q2, new Dictionary<string, object>
                     {
@@ -201,7 +201,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 return;
             }
 
-            var roles = GetRoles(tooManyKingsForThisUser.Item2);
+            var roles = GetRoles(list);
             var dict4 = new Dictionary<string, string>
             {
                 { "it", "Hai già troppi ruoli!" + roles },

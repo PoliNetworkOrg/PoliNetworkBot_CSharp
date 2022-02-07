@@ -11,8 +11,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     public class GruppoTG
     {
         public string idLink;
-        public DateTime? LastUpdateInviteLinkTimeDateTime;
-        public string LastUpdateInviteLinkTimeString;
+        private DateTime? LastUpdateInviteLinkTimeDateTime;
+        private readonly string LastUpdateInviteLinkTimeString;
         public string newLink;
         public string nome;
         public List<string> oldLinks;

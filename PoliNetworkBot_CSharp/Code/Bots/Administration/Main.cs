@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
             {
                 ;
                 var links = new List<string>();
-                var groupsRaw = File.ReadAllText(@"C:\Users\eliam\Documents\groups.csv");
+                var groupsRaw = await File.ReadAllTextAsync(@"C:\Users\eliam\Documents\groups.csv");
                 var groups = Regex.Split(groupsRaw, "\r\n|\r|\n");
                 //using StreamWriter groupsFile = new StreamWriter(@"C:\Users\eliam\Documents\WriteLines.txt", append: true);
                 //await groupsFile.WriteLineAsync("Nome Gruppo $ Link di Invito");
@@ -57,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                             await sw.WriteLineAsync(group + " FAILED");
                         }
 
-                        var desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
+                        const string desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
 
                         var members = new List<long>(); //ID members to insert
                         long? chatID = null;

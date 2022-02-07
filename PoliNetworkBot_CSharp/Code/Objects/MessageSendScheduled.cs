@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class MessageSendScheduled : MessageSentResult
     {
-        public Tuple<bool?, int, string> r1;
+        public readonly Tuple<bool?, int, string> r1;
         public ScheduleMessageSentResult scheduleMessageSentResult;
 
         public MessageSendScheduled(ScheduleMessageSentResult scheduleMessageSentResult,

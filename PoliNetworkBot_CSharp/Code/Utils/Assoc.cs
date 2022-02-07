@@ -312,7 +312,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v)
         {
-            var q = "DELETE FROM Messages WHERE ID = @id";
+            const string q = "DELETE FROM Messages WHERE ID = @id";
             DataRow dr = null;
 
             try

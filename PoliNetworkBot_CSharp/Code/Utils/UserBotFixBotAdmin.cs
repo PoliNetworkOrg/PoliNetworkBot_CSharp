@@ -412,7 +412,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     TLAbsChannelParticipantRole role2 = new TLChannelRoleModerator();
-                    r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role2);
+                    await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role2);
                 }
                 catch (Exception e3)
                 {
@@ -661,7 +661,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             ;
 
             var r = CheckIfOurBotIsPresent(x);
-            if (r) id_of_chats_we_know_are_ok[x5.Id] = r;
+            if (r) id_of_chats_we_know_are_ok[x5.Id] = true;
 
             return new Tuple<bool?, DateTime?>(r, null);
         }
