@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class TLChannelClass
     {
-        public TLChannel channel;
+        public readonly TLChannel channel;
 
         public TLChannelClass(TLChannel channel)
         {

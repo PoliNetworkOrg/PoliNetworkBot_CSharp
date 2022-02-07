@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class DictionaryUserAnswer
     {
-        public Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>> d;
+        public readonly Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>> d;
 
         public DictionaryUserAnswer()
         {

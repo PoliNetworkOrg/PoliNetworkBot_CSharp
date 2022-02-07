@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 {
     public class BotClientWhole
     {
+        public readonly Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2;
         public BotInfo bot;
         public TelegramBotClient botClient;
-        public Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2;
         public Dictionary<long, long> updatesMessageLastId;
 
         public BotClientWhole(TelegramBotClient botClient, BotInfo bot,

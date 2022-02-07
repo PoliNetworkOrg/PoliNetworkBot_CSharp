@@ -2,10 +2,10 @@
 {
     internal class ChatJson
     {
+        public readonly string invite_link;
+        public readonly string type;
         public long? id;
-        public string invite_link;
         public string title;
-        public string type;
 
         public ChatJson(long? id, string type, string title, string invite_link)
         {

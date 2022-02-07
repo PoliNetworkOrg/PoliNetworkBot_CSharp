@@ -114,15 +114,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public static async Task<TelegramBotAbstract> GetAnonBotAsync()
         {
-            if (GlobalVariables.Bots == null)
-                try
-                {
-                    await Program.StartBotsAsync(false, false, true);
-                }
-                catch
-                {
-                    ;
-                }
+            if (GlobalVariables.Bots != null)
+                return (from key in GlobalVariables.Bots.Keys
+                    let m = GlobalVariables.Bots[key].GetMode()
+                    where m == BotStartMethods.Anon
+                    select GlobalVariables.Bots[key]).FirstOrDefault();
+            try
+            {
+                await Program.StartBotsAsync(false, false, true);
+            }
+            catch
+            {
+                ;
+            }
 
             return (from key in GlobalVariables.Bots.Keys
                 let m = GlobalVariables.Bots[key].GetMode()

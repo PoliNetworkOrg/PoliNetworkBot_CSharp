@@ -1155,8 +1155,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             UserbotPeer.GetPeerChannelFromIdAndType(chatId, null),
                             UserbotPeer.GetPeerUserFromdId(userId));
 
-                        var b2 = r.Participant is TLChannelParticipantModerator ||
-                                 r.Participant is TLChannelParticipantCreator;
+                        var b2 = r.Participant is TLChannelParticipantModerator or TLChannelParticipantCreator;
                         return new SuccessWithException(b2);
                         ;
                     case BotTypeApi.DISGUISED_BOT:
@@ -1408,18 +1407,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         var r = await _userbotClient.Messages_CreateChat(name, users);
-                        if (r is TLUpdates r2)
-                            if (r2.Chats is { Count: 1 })
+                        if (r is TLUpdates { Chats: { Count: 1 } } r2)
+                        {
+                            var c1 = r2.Chats[0];
+                            if (c1 is TLChat c2)
                             {
-                                var c1 = r2.Chats[0];
-                                if (c1 is TLChat c2)
-                                {
-                                    //todo add description
-                                    Logger.WriteLine(description);
+                                //todo add description
+                                Logger.WriteLine(description);
 
-                                    return c2.Id;
-                                }
+                                return c2.Id;
                             }
+                        }
                     }
                     catch (Exception e)
                     {

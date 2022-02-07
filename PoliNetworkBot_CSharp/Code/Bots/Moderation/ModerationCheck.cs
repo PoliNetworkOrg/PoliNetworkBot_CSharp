@@ -209,7 +209,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (r == null)
                 return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, null, new List<int> { 3 });
 
-            return r.Select(chatMember => Creators.CheckIfIsCreatorOrSubCreator(chatMember))
+            return r.Select(Creators.CheckIfIsCreatorOrSubCreator)
                 .Any(isCreator => isCreator != null && isCreator.Value)
                 ? new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, r, new List<int> { 4 })
                 : new Tuple<ToExit, ChatMember[], List<int>>(ToExit.EXIT, r, new List<int> { 5 });

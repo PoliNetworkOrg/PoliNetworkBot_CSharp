@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         public const int timesleep = 1000 * 30;
 
         public const string pathwebdict = "webposts.bin";
-        public static Random random = new();
+        public static readonly Random random = new();
 
         public static Dictionary<long, WebPost> dictionary_webpost;
 

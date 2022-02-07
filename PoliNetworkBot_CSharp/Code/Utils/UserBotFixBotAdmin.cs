@@ -504,8 +504,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             const long userIdOfOurBot = 768169879;
 
-            TLInputChannel channel;
-            channel = accessHash != null
+            var channel = accessHash != null
                 ? new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id }
                 : new TLInputChannel { ChannelId = x5.Id };
 

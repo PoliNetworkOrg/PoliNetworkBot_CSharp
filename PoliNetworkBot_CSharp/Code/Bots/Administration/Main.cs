@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                 //await groupsFile.WriteLineAsync("Nome Gruppo $ Link di Invito");
                 await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                 {
-                    sw.WriteLine("Nome Gruppo $ Link di Invito");
+                    await sw.WriteLineAsync("Nome Gruppo $ Link di Invito");
                 }
 
                 foreach (var group in groups) await MainMethodAsync2Async(group, telegramBotAbstract, links);
@@ -99,7 +99,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                         links.Add(link);
                         await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                         {
-                            sw.WriteLine(group + " $ " + link);
+                            await sw.WriteLineAsync(group + " $ " + link);
                         }
 
                         Logger.WriteLine("added: " + group + " $ " + link);

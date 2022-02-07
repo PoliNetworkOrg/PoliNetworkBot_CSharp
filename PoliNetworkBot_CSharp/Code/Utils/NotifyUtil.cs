@@ -132,8 +132,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
 
             var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
-            if (r1 == null)
-                return;
         }
 
         internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract,
@@ -174,7 +172,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var error = "Error (notifyIfFalse): ";
             error += "\n";
-            error += "String: " + r1?.Item2 + "\n";
+            error += "String: " + r1.Item2 + "\n";
             error += "Long: " + r1.Item3 + "\n";
             error += "Extra: " + extraInfo;
             error += "\n";
@@ -284,7 +282,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     message += "\n";
                     message += "-----";
                     message += "\n";
-                    message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it");
+                    var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                    message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3).Select("it");
                     ;
 
                     const string langCode = "it";

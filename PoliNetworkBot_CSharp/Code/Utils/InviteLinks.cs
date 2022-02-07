@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
         }
 
-        public static Stream GenerateStreamFromString(string s)
+        private static Stream GenerateStreamFromString(string s)
         {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
@@ -139,7 +139,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Logger.WriteLine(f.Item2.Length);
                 f.Item2.Seek(0, SeekOrigin.Begin);
                 var reader = new StreamReader(f.Item2);
-                var text = reader.ReadToEnd();
+                var text = await reader.ReadToEndAsync();
 
                 var obj = JsonConvert.DeserializeObject(text);
                 Logger.WriteLine(obj.GetType());

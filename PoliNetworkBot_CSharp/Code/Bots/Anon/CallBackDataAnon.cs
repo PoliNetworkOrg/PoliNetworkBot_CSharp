@@ -11,16 +11,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 #pragma warning disable IDE0052 // Rimuovi i membri privati non letti
         private readonly string data;
 #pragma warning restore IDE0052 // Rimuovi i membri privati non letti
+        internal readonly Tuple<long?, ResultQueueEnum?> messageIdToReplyTo;
+        public readonly string username;
         public bool? from_telegram;
         public long? identity;
         public string langUser;
         public long? messageIdGroup;
-        internal Tuple<long?, ResultQueueEnum?> messageIdToReplyTo;
         public long? messageIdUser;
 
         public ResultQueueEnum? resultQueueEnum;
         public long? userId;
-        public string username;
 
         public CallBackDataAnon(string data)
         {
