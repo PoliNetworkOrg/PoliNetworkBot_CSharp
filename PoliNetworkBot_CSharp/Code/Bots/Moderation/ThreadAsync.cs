@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -36,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             //t3.Start();
         }
 
-        private static void UpdateGroups()
+        private static void UpdateGroups( )
         {
             try
             {
@@ -44,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (bots == null || bots.Count == 0)
                     return;
 
-                Thread t = new(() => UpdateGroups2(bots[0]));
+                Thread t = new(() => UpdateGroups2(bots[0], null));
                 t.Start();
             }
             catch (Exception ex)
@@ -53,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static void UpdateGroups2(TelegramBotAbstract bot)
+        private static void UpdateGroups2(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
             if (bot == null)
                 return;
@@ -63,7 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 3)
                     {
-                        _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false);
+                        _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false, messageEventArgs);
                         Thread.Sleep(1000 * 3600 * 60 * 6);
                     }
 
@@ -124,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (bots == null || bots.Count == 0)
                     return;
 
-                Thread t = new(() => DoBackup2Async(bots[0]));
+                Thread t = new(() => DoBackup2Async(bots[0], null));
                 t.Start();
             }
             catch (Exception ex)
@@ -133,7 +134,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async void DoBackup2Async(TelegramBotAbstract bot)
+        private static async void DoBackup2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
             if (bot == null)
                 return;
@@ -147,7 +148,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, bot);
+                await NotifyUtil.NotifyOwners(e, bot, messageEventArgs);
             }
         }
 
@@ -162,7 +163,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
                 if (bots == null || bots.Count == 0)
                     return;
-                await NotifyUtil.NotifyOwners(e, bots[0]);
+                await NotifyUtil.NotifyOwners(e, bots[0], null);
             }
         }
 
@@ -199,17 +200,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return null;
         }
 
-        private static async void CheckMessagesToDeleteAsync()
+        private static async void CheckMessagesToDeleteAsync( )
         {
             while (true)
             {
                 try
                 {
-                    await MessageDb.CheckMessageToDelete();
+                    await MessageDb.CheckMessageToDelete(null);
                 }
                 catch (Exception e)
                 {
-                    _ = NotifyUtil.NotifyOwners(e, GetFirstBot());
+                    _ = NotifyUtil.NotifyOwners(e, GetFirstBot(), null);
                 }
 
                 try
@@ -227,7 +228,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             while (true)
             {
-                await MessageDb.CheckMessagesToSend(false, null);
+                await MessageDb.CheckMessagesToSend(false, null, null);
                 Thread.Sleep(20 * 1000); //20 sec
             }
 

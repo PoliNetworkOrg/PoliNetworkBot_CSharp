@@ -85,7 +85,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
             catch (Exception ex)
             {
-                await NotifyUtil.NotifyOwners(ex, this);
+                await NotifyUtil.NotifyOwners(ex, this, e);
             }
         }
 
@@ -325,7 +325,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         }
                         catch (Exception e)
                         {
-                            await NotifyUtil.NotifyOwners(e, this);
+                            await NotifyUtil.NotifyOwners(e, this, null);
                             return false;
                         }
 
@@ -345,7 +345,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         }
                         catch (Exception e)
                         {
-                            await NotifyUtil.NotifyOwners(e, this);
+                            await NotifyUtil.NotifyOwners(e, this, null);
                             return false;
                         }
 

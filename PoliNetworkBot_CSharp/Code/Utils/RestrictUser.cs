@@ -244,13 +244,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
             if (targetId2 == null)
             {
-                await NotifyUtil.NotifyOwnersAsync(r6, sender, "Ban/Unban All of [UNKNOWN]",
-                    e.Message.From.LanguageCode);
+                await NotifyUtil.NotifyOwnersAsync(r6, sender,e, "Ban/Unban All of [UNKNOWN]",
+                    e.Message.From.LanguageCode );
             }
             else
             {
                 var link2 = "tg://user?id=" + targetId2.Value;
-                await NotifyUtil.NotifyOwnersAsync(r6, sender,
+                await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
                     "Ban/Unban All of [<a href='" + link2 + "'>" + targetId2.Value + "</a>]",
                     e.Message.From.LanguageCode);
             }

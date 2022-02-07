@@ -371,7 +371,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender, true, true, false);
+                            var text = await UpdateGroups(sender, true, true, false, e);
 
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
@@ -389,7 +389,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender, false, true, false);
+                            var text = await UpdateGroups(sender, false, true, false, e);
 
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
@@ -407,7 +407,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender, false, true, true);
+                            var text = await UpdateGroups(sender, false, true, true, e);
 
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
@@ -425,7 +425,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            var text = await UpdateGroups(sender, true, true, true);
+                            var text = await UpdateGroups(sender, true, true, true, e);
 
                             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                 e.Message.From.LanguageCode, e.Message.From.Username, new Language(text),
@@ -471,7 +471,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             }
                             catch (Exception ex)
                             {
-                                _ = NotifyUtil.NotifyOwners(ex, sender);
+                                _ = NotifyUtil.NotifyOwners(ex, sender, e);
                             }
 
                             return;
@@ -486,7 +486,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await Logger.Subscribe(e.Message.From.Id, sender);
+                            await Logger.Subscribe(e.Message.From.Id, sender ,e);
 
                             return;
                         }
@@ -514,7 +514,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            Logger.PrintLog(sender, new List<long>() { e.Message.From.Id, Data.Constants.Groups.BackupGroup });
+                            Logger.PrintLog(sender, new List<long>() { e.Message.From.Id, Data.Constants.Groups.BackupGroup }, e);
 
                             return;
                         }
@@ -691,7 +691,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                                                                     "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage.SendMessageInAGroup(sender,
                                                                                     e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
-                                                                                    text2,
+                                                                                    text2,  e,
                                                                                     e.Message.Chat.Id, e.Message.Chat.Type,
                                                                                     ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
                     _ => throw new ArgumentOutOfRangeException(),
@@ -699,7 +699,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception exception)
             {
-                _ = NotifyUtil.NotifyOwners(exception, sender);
+                _ = NotifyUtil.NotifyOwners(exception, sender, e);
                 return null;
             }
         }
@@ -733,13 +733,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         public static async Task<Dictionary<string, string>> UpdateGroups(TelegramBotAbstract sender, bool dry, bool debug,
-            bool updateDb)
+            bool updateDb, MessageEventArgs messageEventArgs)
         {
             Logger.WriteLine("UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")", LogSeverityLevel.ALERT);
 
             if (updateDb)
             {
-                await Groups.FixAllGroupsName(sender);
+                await Groups.FixAllGroupsName(sender, messageEventArgs);
             }
 
             var groups = Groups.GetAllGroups();
@@ -810,7 +810,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {"en", "Error in execution"},
                 };
 
-            _ = NotifyUtil.NotifyOwners("UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender);
+            _ = NotifyUtil.NotifyOwners("UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null);
 
             return text;
         }
@@ -880,7 +880,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                await NotifyUtil.NotifyOwners(ex, botAbstract);
+                await NotifyUtil.NotifyOwners(ex, botAbstract, null);
             }
         }
 
@@ -948,7 +948,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         try
                         {
-                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), groupId,
+                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e, groupId,
                                 ChatType.Supergroup, ParseMode.Html, null, default);
                             counter++;
                         }
@@ -956,7 +956,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         {
                             try
                             {
-                                await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), groupId,
+                                await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e, groupId,
                                     ChatType.Group, ParseMode.Html, null, default);
                                 counter++;
                             }
@@ -1145,7 +1145,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (sentDate.Item2 != null)
             {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, 0, sentDate.Item3);
+                await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
 
                 return null;
             }
@@ -1243,7 +1243,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (userIdFound == null)
                 {
                     var e2 = new Exception("Can't find userid (1)");
-                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender);
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
                     return new SuccessWithException(false, e2);
                 }
 
@@ -1251,7 +1251,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (targetId == null)
                 {
                     var e2 = new Exception("Can't find userid (2)");
-                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender);
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender , e);
                     return new SuccessWithException(false, e2);
                 }
 
@@ -1536,7 +1536,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e2)
             {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender);
+                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
             }
 
             if (n == null)

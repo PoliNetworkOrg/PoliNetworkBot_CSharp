@@ -41,7 +41,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             }
             catch (Exception exception)
             {
-                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
             }
         }
 
@@ -96,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var text = new Language(dict);
             await SendMessage.SendMessageInAGroup(
                 telegramBotClient, e.Message.From.LanguageCode,
-                text,
+                text, e,
                 e.Message.Chat.Id, e.Message.Chat.Type,
                 ParseMode.Html, e.Message.MessageId, true);
         }
@@ -161,7 +161,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", "There is already " + user + " as the " + t + " king!"}
             };
             var text = new Language(dict4);
-            var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text,
+            var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
                 e.Message.Chat.Id, e.Message.Chat.Type, ParseMode.Html, e.Message.MessageId, true);
         }
 
@@ -212,7 +212,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", "You have already too many titles!" + roles}
             };
             var text = new Language(dict4);
-            var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text,
+            var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
                 e.Message.Chat.Id, e.Message.Chat.Type, ParseMode.Html, e.Message.MessageId, true);
         }
 
@@ -310,7 +310,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                 {"en", "Congratulations, you are the " + t + " king!"}
             };
             var text = new Language(dict);
-            var r = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text,
+            var r = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
                 e.Message.Chat.Id, e.Message.Chat.Type, ParseMode.Html, e.Message.MessageId, true);
             return r;
         }

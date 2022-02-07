@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Threading.Tasks;
 
@@ -42,12 +43,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return v;
         }
 
-        internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract)
+        internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             if (telegramBotAbstract == null)
                 return false;
 
-            await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+            await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
             return true;
         }
     }

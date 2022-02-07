@@ -314,7 +314,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             try
                             {
-                                PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value]);
+                                PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value], null);
                                 _ = StartBotsAsync2Async(botClientWhole);
                             }
                             catch (Exception ex)
@@ -417,13 +417,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract)
+        private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             if (Logger.ContainsCriticalErrors(out var critics))
             {
                 var toSend = "WARNING! \n";
                 toSend += "Critical errors found in log while starting up! \n" + critics;
-                NotifyUtil.NotifyOwners(toSend, telegramBotAbstract);
+                NotifyUtil.NotifyOwners(toSend, telegramBotAbstract, messageEventArgs);
             }
             using var powershell = PowerShell.Create();
             foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true))

@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -77,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task<MessageSentResult> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
-            string lang, Language text,
+            string lang, Language text, MessageEventArgs messageEventArgs,
             long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
             bool disablePreviewLink, int i = 0, InlineKeyboardMarkup inlineKeyboardMarkup = null)
         {
@@ -103,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e1)
             {
-                await NotifyUtil.NotifyOwners(e1, telegramBotClient, i + 1);
+                await NotifyUtil.NotifyOwners(e1, telegramBotClient,  messageEventArgs, i + 1);
             }
 
             return r1;

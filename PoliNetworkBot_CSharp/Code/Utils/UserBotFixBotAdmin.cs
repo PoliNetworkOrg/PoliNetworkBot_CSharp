@@ -261,7 +261,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "\n --- end --- ";
                 m += "\n";
                 var e2 = new Exception(m, r4.r2.Item2);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
 
                 await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
 
@@ -279,7 +279,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             catch (Exception e5)
             {
                 ;
-                await NotifyUtil.NotifyOwners(e5, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e5, telegramBotAbstract, null);
             }
 
             id_of_chats_we_know_are_ok[x5.Id] = true;
@@ -469,7 +469,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "\n --- end --- ";
                 m += "\n";
                 var e2 = new Exception(m, e);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
 
                 return new ResultF1(false, null, r, null);
             }
@@ -521,7 +521,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 m += "\n --- end --- ";
                 m += "\n";
                 var e2 = new Exception(m, r4.r2.Item2);
-                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
 
                 await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
 

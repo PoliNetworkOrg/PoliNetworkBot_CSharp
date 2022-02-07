@@ -40,13 +40,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {"it", message}
                 });
                 Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, permitted_spam_group, ChatType.Group,
+                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group, ChatType.Group,
                     ParseMode.Html, group_exception, true);
             }
         }
 
         internal static async Task NotifyOwners(ExceptionNumbered exception,
-            TelegramBotAbstract sender, int loopNumber = 0, string extrainfo = null, string langCode = default_lang,
+            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null, string langCode = default_lang,
             long? replyToMessageId2 = null)
         {
             if (sender == null)
@@ -99,6 +99,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     message3 += "\n\n";
                 }
 
+
+                try
+                {
+                    message3 += "MessageArgs:\n";
+                    message3 += Newtonsoft.Json.JsonConvert.SerializeObject(messageEventArgs);
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+
                 if (!string.IsNullOrEmpty(extrainfo)) message3 += "\n\n" + extrainfo;
             }
             catch (Exception e1)
@@ -112,33 +123,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {"en", "Exception! " + message3}
             });
 
-            var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2);
+            var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
             if (r1 == null)
                 return;
         }
 
-        internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract)
+        internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
-            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract, null, 0, null);
+            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract, null, 0, null, messageEventArgs);
         }
 
         private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
-            long? replyToMessageId, int v, string langCode)
+            long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
         {
             Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
-            return await SendMessage.SendMessageInAGroup(sender, langCode, text2, group_exception,
+            return await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, group_exception,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
 
-        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, int loopNumber = 0)
+        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs, int loopNumber = 0)
         {
-            await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, loopNumber);
+            await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
         }
 
         private static async Task<MessageSentResult> NotifyOwners2Async(Language text, TelegramBotAbstract sender,
-            int v, string langCode, long? replyto)
+            int v, string langCode, long? replyto, MessageEventArgs messageEventArgs)
         {
-            return await NotifyOwners3(text, sender, replyto, v, langCode);
+            return await NotifyOwners3(text, sender, replyto, v, langCode, messageEventArgs);
         }
 
         internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo,
@@ -161,22 +172,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             error += "\n";
 
             var exception = new ExceptionNumbered(error);
-            await NotifyOwners(exception, sender);
+            await NotifyOwners(exception, sender, null);
         }
 
         internal static async Task NotifyOwners(Exception item2, string message, TelegramBotAbstract sender,
-            string langCode, long? replyToMessageId = null)
+            string langCode, MessageEventArgs messageEventArgs, long? replyToMessageId = null)
         {
             var dict = new Dictionary<string, string>
             {
                 {"en", message}
             };
             var text = new Language(dict);
-            await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+            await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
         }
 
         internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,
-            TelegramBotAbstract sender, string v, string langCode, long? replyToMessageId = null)
+            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, string v, string langCode, long? replyToMessageId = null)
         {
             MessageSentResult m = null;
             try
@@ -185,7 +196,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"en", v}
                 });
-                m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+                m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
             catch
             {
@@ -198,7 +209,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"en", "Number of exceptions: " + exceptions.Item2 + " - " + exceptions.Item1.Count}
                 });
-                _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId);
+                _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
             catch
             {
@@ -210,7 +221,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 foreach (var e1 in exceptions.Item1)
                     try
                     {
-                        await NotifyOwners(e1, sender);
+                        await NotifyOwners(e1, sender, messageEventArgs);
                     }
                     catch
                     {
@@ -233,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
 
                 if (m != null) replyto = m.GetMessageID();
-                await NotifyOwners2Async(text2, sender, 0, langCode, replyto);
+                await NotifyOwners2Async(text2, sender, 0, langCode, replyto, messageEventArgs);
             }
             catch
             {
@@ -269,7 +280,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {"it", message}
                         });
                         Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
+                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, ban_notification_group,
                             ChatType.Group,
                             ParseMode.Html, group_exception, true);
                     }
@@ -302,7 +313,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {"it", message}
                         });
                         Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, ban_notification_group,
+                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, ban_notification_group,
                             ChatType.Group,
                             ParseMode.Html, group_exception, true);
                     }

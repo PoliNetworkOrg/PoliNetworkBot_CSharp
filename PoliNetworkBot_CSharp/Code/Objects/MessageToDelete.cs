@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return false;
         }
 
-        internal async Task<bool> Delete()
+        internal async Task<bool> Delete(MessageEventArgs e2)
         {
             if (GlobalVariables.Bots.ContainsKey(botId) == false)
                 return false;
@@ -64,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, bot);
+                await NotifyUtil.NotifyOwners(e, bot, e2);
             }
 
             return false;

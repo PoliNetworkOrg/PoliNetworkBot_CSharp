@@ -1,4 +1,5 @@
 ﻿using JsonPolimi_Core_nf.Tipi;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -95,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
 
-        public static async Task Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract)
+        public static async Task Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -103,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
             }
         }
 
@@ -124,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static readonly object PrintLogLock = new();
 
-        public static void PrintLog(TelegramBotAbstract sender, List<long> sendTo)
+        public static void PrintLog(TelegramBotAbstract sender, List<long> sendTo, MessageEventArgs messageEventArgs)
         {
             lock (PrintLogLock)
             {
@@ -153,7 +154,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    NotifyUtil.NotifyOwners(e, sender).Wait();
+                    NotifyUtil.NotifyOwners(e, sender, messageEventArgs).Wait();
                 }
             }
         }
@@ -208,7 +209,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             private static int _countFixed = 0;
             private static int _countIgnored = 0;
 
-            public static void SendLog(TelegramBotAbstract telegramBotAbstract,
+            public static void SendLog(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
                 GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
             {
                 var message = "Groups Fix Log:";
@@ -237,7 +238,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 string escaped = System.Web.HttpUtility.HtmlEncode(message);
                 Logger.WriteLine(message);
-                Utils.NotifyUtil.NotifyOwners(escaped, telegramBotAbstract);
+                Utils.NotifyUtil.NotifyOwners(escaped, telegramBotAbstract, messageEventArgs);
                 Reset();
             }
 

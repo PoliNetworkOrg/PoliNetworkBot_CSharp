@@ -101,7 +101,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 Logger.WriteLine(exception.Message);
 
-                await NotifyUtil.NotifyOwners(exception, telegramBotClient);
+                await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
             }
         }
 
@@ -128,7 +128,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e)
             {
-                _ = NotifyUtil.NotifyOwners(e, sender);
+                _ = NotifyUtil.NotifyOwners(e, sender, messageEventArgs);
                 return false;
             }
         }

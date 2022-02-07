@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (DataRow dr in dt.Rows)
             {
-                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender);
+                var success = await CreateInviteLinkAsync((long)dr.ItemArray[0], sender, e);
                 switch (success.isNuovo)
                 {
                     case SuccessoGenerazioneLink.NUOVO_LINK:
@@ -46,10 +46,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return n;
         }
 
-        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
         {
             var successoGenerazione = SuccessoGenerazioneLink.ERRORE;
-            var r = await TryGetCurrentInviteLinkAsync(chatId, sender);
+            var r = await TryGetCurrentInviteLinkAsync(chatId, sender, messageEventArgs);
             if (string.IsNullOrEmpty(r))
                 try
                 {
@@ -71,7 +71,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new NuovoLink(successoGenerazione, r);
         }
 
-        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender)
+        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
         {
             Chat chat = null;
             try
@@ -92,7 +92,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     "\n\n" + chat == null ? "[null class]" :
                     string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title;
 
-                await NotifyUtil.NotifyOwners(ex3M, sender);
+                await NotifyUtil.NotifyOwners(ex3M, sender, messageEventArgs);
                 return null;
             }
         }
@@ -350,7 +350,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         gruppoTG.UpdateID(group_id.Value);
 
-                        s3 = await CreateInviteLinkAsync(group_id.Value, sender);
+                        s3 = await CreateInviteLinkAsync(group_id.Value, sender, e);
                         if (s3 != null) gruppoTG.UpdateNewLink(s3.link);
                     }
                 }

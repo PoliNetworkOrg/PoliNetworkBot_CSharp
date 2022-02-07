@@ -118,7 +118,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (sentDate.Item2 != null)
                 {
-                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, 0, sentDate.Item3);
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
                     return false;
                 }
 
@@ -216,11 +216,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                return await MessageDb.CheckMessagesToSend(true, sender);
+                return await MessageDb.CheckMessagesToSend(true, sender, e);
             }
             catch (Exception e1)
             {
-                await NotifyUtil.NotifyOwners(e1, sender);
+                await NotifyUtil.NotifyOwners(e1, sender, e);
                 return false;
             }
         }

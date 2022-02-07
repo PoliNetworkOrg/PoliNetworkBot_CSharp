@@ -109,7 +109,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                     catch (Exception e)
                     {
                         Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
-                        await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                        await NotifyUtil.NotifyOwners(e, telegramBotAbstract, null);
                     }
         }
     }

@@ -1,5 +1,6 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -96,7 +97,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
-            TelegramBotAbstract telegramBotAbstract)
+            TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             DataTable dt = null;
             var q = "SELECT * " +
@@ -110,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                    var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException);
+                    var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException, messageEventArgs);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                     if (telegramBotAbstract != null &&
                         r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
@@ -121,7 +122,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             case ScheduleMessageSentResult.SUCCESS:
                             case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
                                 {
-                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract);
+                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
                                     break;
                                 }
 
@@ -132,7 +133,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract));
+                    await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract), messageEventArgs);
                 }
 
             return true;
@@ -174,7 +175,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static async Task NotifyOwnersOfResultAsync(MessageSendScheduled r1,
-            TelegramBotAbstract telegramBotAbstract)
+            TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             var s3 = r1.ToString();
             var s4 = r1?.r1?.Item2.ToString();
@@ -187,22 +188,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             s3 += "[Id3]: " + r1?.scheduleMessageSentResult + "\n";
             s3 += "CheckMessagesToSend\n\n";
             var e3 = new Exception(s3);
-            await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+            await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
         }
 
         private static async Task<MessageSendScheduled> SendMessageToSend(DataRow dr,
             TelegramBotAbstract telegramBotAbstract,
-            bool schedule, TelegramBotAbstract botToReportException)
+            bool schedule, TelegramBotAbstract botToReportException, MessageEventArgs messageEventArgs)
         {
             bool? has_been_sent = null;
             Tuple<bool?, int, string> r1 = null;
             try
             {
-                r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract);
+                r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract, messageEventArgs);
             }
             catch (Exception e3)
             {
-                await NotifyUtil.NotifyOwners(e3, botToReportException);
+                await NotifyUtil.NotifyOwners(e3, botToReportException, messageEventArgs);
             }
 
             if (r1 != null) has_been_sent = r1.Item1;
@@ -241,7 +242,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
         }
 
-        private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender)
+        private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -251,7 +252,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s1 += "\n";
                 s1 += "GetHasBeenSentAsync";
                 var e1 = new Exception(s1);
-                await NotifyUtil.NotifyOwners(e1, sender);
+                await NotifyUtil.NotifyOwners(e1, sender, messageEventArgs);
                 return new Tuple<bool?, int, string>(b1, 1, s1); //todo: change to "return b1"
             }
             catch
@@ -268,7 +269,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 s2 += "\n";
                 s2 += "GetHasBeenSentAsync";
                 var e2 = new Exception(s2);
-                await NotifyUtil.NotifyOwners(e2, sender);
+                await NotifyUtil.NotifyOwners(e2, sender, messageEventArgs);
                 return new Tuple<bool?, int, string>(b2, 2, s2); //todo: change to "return b2"
             }
             catch
@@ -290,7 +291,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             s3 += "\n";
             s3 += "GetHasBeenSentAsync";
             var e3 = new Exception(s3);
-            await NotifyUtil.NotifyOwners(e3, sender);
+            await NotifyUtil.NotifyOwners(e3, sender, messageEventArgs);
             return new Tuple<bool?, int, string>(null, 3, s3);
         }
 
@@ -591,7 +592,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 caption, parseMode, typeOfChatSentInto.Value);
         }
 
-        internal static async Task CheckMessageToDelete()
+        internal static async Task CheckMessageToDelete(MessageEventArgs messageEventArgs)
         {
             if (GlobalVariables.MessagesToDelete == null) return;
 
@@ -600,7 +601,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var m = GlobalVariables.MessagesToDelete[i];
                 if (m.ToDelete())
                 {
-                    var success = await m.Delete();
+                    var success = await m.Delete(messageEventArgs);
                     if (success)
                     {
                         lock (GlobalVariables.MessagesToDelete)

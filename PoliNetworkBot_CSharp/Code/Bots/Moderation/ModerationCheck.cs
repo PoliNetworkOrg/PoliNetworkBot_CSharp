@@ -180,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
                 catch (Exception e)
                 {
-                    await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                    await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
                 }
             }
             return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, item3, oldValid);
@@ -240,13 +240,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception ex)
             {
-                _ = NotifyUtil.NotifyOwners(ex, sender);
+                _ = NotifyUtil.NotifyOwners(ex, sender, e);
             }
         }
 
         private static async Task<NuovoLink> CreateInviteLinkAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender);
+            return await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender, e);
         }
 
         private static List<UsernameAndNameCheckResult> CheckUsername(MessageEventArgs e)
@@ -346,7 +346,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
             bool username, bool name, string lang, string usernameOfUser,
             long chatId, long? userId, long? messageId, ChatType messageChatType,
-            string firstName, string lastName, User[] newChatMembers)
+            string firstName, string lastName, User[] newChatMembers, MessageEventArgs messageEventArgs)
         {
             var s1I =
                 "Imposta un username e un nome più lungo dalle impostazioni di telegram per poter scrivere in questo gruppo\n";
@@ -418,7 +418,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     {
                         var e4 = "Attempted to add a message to be deleted in queue\n" + r2?.GetType() + " " + r2;
                         var e3 = new Exception(e4);
-                        await NotifyUtil.NotifyOwners(e3, telegramBotClient);
+                        await NotifyUtil.NotifyOwners(e3, telegramBotClient, messageEventArgs);
                     }
                 }
             }
@@ -535,7 +535,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             e.Message.Chat.Type,
                             usernameCheck2.GetFirstName(),
                             usernameCheck2.GetLastName(),
-                            e.Message.NewChatMembers);
+                            e.Message.NewChatMembers,
+                            e);
 
                         donesomething = true;
                     }

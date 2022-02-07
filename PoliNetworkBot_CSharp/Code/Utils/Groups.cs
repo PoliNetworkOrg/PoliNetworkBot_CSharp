@@ -20,9 +20,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         private static readonly Dictionary<long, InfoChat> GroupsInRam = new();
 
-        public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract)
+        public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
-            await FixAllGroupsName(telegramBotAbstract);
+            await FixAllGroupsName(telegramBotAbstract, messageEventArgs);
             return GetAllGroups();
         }
 
@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
 
-        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract)
+        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract , MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -90,14 +90,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
                             "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract);
+                        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract , messageEventArgs);
                     }
                 }
-                Logger.GroupsFixLog.SendLog(telegramBotAbstract);
+                Logger.GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwners(e, telegramBotAbstract);
+                await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
             }
         }
 
@@ -112,14 +112,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
-                    Logger.GroupsFixLog.SendLog(telegramBotClient, GroupsFixLogUpdatedEnum.NEW_NAME);
+                    Logger.GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
                 }
 
                 _ = CheckIfInviteIsWorking(e, telegramBotClient);
             }
             catch (Exception ex)
             {
-                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
+                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient, e);
             }
         }
 
@@ -169,10 +169,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (linkFunzionante != null && !linkFunzionante.Value)
                 {
-                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient);
+                    var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                     if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
                     {
-                        await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient);
+                        await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient, e);
                     }
                 }
 
@@ -180,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             catch (Exception ex)
             {
-                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient);
+                _ = NotifyUtil.NotifyOwners(ex, telegramBotClient, e);
             }
         }
 
@@ -303,7 +303,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 Language lang = new(dict);
 
                                 await Utils.SendMessage.SendMessageInAGroup(
-                                        telegramBotClient, e.Message.From.LanguageCode, lang,
+                                        telegramBotClient, e.Message.From.LanguageCode, lang, e,
                                         e.Message.Chat.Id, e.Message.Chat.Type,
                                         Telegram.Bot.Types.Enums.ParseMode.Html, null, true
                                     );

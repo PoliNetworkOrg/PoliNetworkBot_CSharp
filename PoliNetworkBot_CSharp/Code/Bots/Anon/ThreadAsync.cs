@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
             try
             {
-                await NotifyUtil.NotifyOwners(new Exception("Check anon message started."), bot);
+                await NotifyUtil.NotifyOwners(new Exception("Check anon message started."), bot, null);
             }
             catch
             {
@@ -57,17 +57,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             while (true)
                 lock (random)
                 {
-                    _ = IterationAsync2Async(bot);
+                    _ = IterationAsync2Async(bot, null);
                     Thread.Sleep(timesleep);
                 }
         }
 
-        private static async Task IterationAsync2Async(TelegramBotAbstract bot)
+        private static async Task IterationAsync2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
-            await IterationAsync(bot);
+            await IterationAsync(bot, messageEventArgs);
         }
 
-        private static async Task IterationAsync(TelegramBotAbstract bot)
+        private static async Task IterationAsync(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
             catch (Exception e)
             {
-                await ExceptionNumbered.SendExceptionAsync(e, bot);
+                await ExceptionNumbered.SendExceptionAsync(e, bot, messageEventArgs);
             }
         }
 
