@@ -219,9 +219,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/test_spam":
                 {
-                    if (e.Message == null)
-                        return;
-                    if (e.Message.ReplyToMessage == null)
+                    if (e.Message?.ReplyToMessage == null)
                         return;
 
                     await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
@@ -656,24 +654,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexLink = groups.Columns.IndexOf("link");
-                var buttons = new List<InlineKeyboardButton>();
-                foreach (DataRow row in groups.Rows)
-                {
-                    if (string.IsNullOrEmpty(row?[indexLink]?.ToString()) ||
-                        string.IsNullOrEmpty(row?[indexTitle]?.ToString()))
-                        continue;
+                var buttons = (from DataRow row in groups.Rows
+                    where !string.IsNullOrEmpty(row?[indexLink]?.ToString()) &&
+                          !string.IsNullOrEmpty(row?[indexTitle]?.ToString())
+                    select new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
+                        { Url = row[indexLink].ToString() }).ToList();
 
-                    var urlButton = new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
-                    {
-                        Url = row[indexLink].ToString()
-                    };
-
-                    buttons.Add(urlButton);
-                    //groupsMessage += row[indexTitle] + " [->] " + row[indexLink];
-                    //groupsMessage += "\n";
-                }
-
-                var buttonsMatrix = buttons != null && buttons.Count > 0
+                var buttonsMatrix = buttons is { Count: > 0 }
                     ? KeyboardMarkup.ArrayToMatrixString(buttons)
                     : null;
 
@@ -923,7 +910,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var groups = SqLite.ExecuteSelect("Select id From Groups");
 
-            if (groups == null || groups.Rows == null || groups.Rows.Count == 0)
+            if (groups?.Rows == null || groups.Rows.Count == 0)
             {
                 var dict = new Dictionary<string, string> { { "en", "No groups!" } };
                 await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private,
@@ -1003,9 +990,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var queryForBannedUsers =
                 "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
             var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers);
-            List<long> bannedUsersIdArray = new();
             var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
-            foreach (var user in bannedUsersId) bannedUsersIdArray.Add(long.Parse(user.ToString()));
+            var bannedUsersIdArray = bannedUsersId.Select(user => long.Parse(user.ToString())).ToList();
 
             return true;
         }

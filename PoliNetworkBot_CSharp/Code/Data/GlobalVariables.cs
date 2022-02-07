@@ -112,7 +112,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
         private static void LoadMessagesToDelete()
         {
             var m = FileSerialization.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
-            if (m == default || m == null)
+            if (m is null or null)
             {
                 MessagesToDelete = new List<MessageToDelete>();
                 return;

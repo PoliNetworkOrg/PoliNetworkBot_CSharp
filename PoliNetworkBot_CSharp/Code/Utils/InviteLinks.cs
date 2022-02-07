@@ -40,6 +40,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     case SuccessoGenerazioneLink.RICICLATO:
                         n++;
                         break;
+                    case SuccessoGenerazioneLink.ERRORE:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
@@ -248,8 +252,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     if (!string.IsNullOrEmpty(gruppoTG.idLink))
                     {
                         var r1 = SqLite.ExecuteSelect(sql1);
-                        if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null &&
-                            r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                        if (r1 is { Rows: { Count: > 0 } } && r1.Rows[0].ItemArray.Length > 0)
                         {
                             var r2 = r1.Rows[0];
                             var r3 = r2.ItemArray[0];
@@ -286,17 +289,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
                 }
 
-            var sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%' || @nome || '%'";
+            const string sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%' || @nome || '%'";
 
             if (group_id == null)
                 try
                 {
-                    if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
+                    if (!string.IsNullOrEmpty(gruppoTG.nome))
                     {
                         var r1 = SqLite.ExecuteSelect(sql2,
                             new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
-                        if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null &&
-                            r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
+                        if (r1 is { Rows: { Count: > 0 } } && r1.Rows[0].ItemArray.Length > 0)
                         {
                             var r2 = r1.Rows[0];
                             var r3 = r2.ItemArray[0];
@@ -386,10 +388,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static SuccessoGenerazioneLink GetSuccessoGenerazione(NuovoLink s3)
         {
-            if (s3 == null)
-                return SuccessoGenerazioneLink.ERRORE;
-
-            return s3.isNuovo;
+            return s3?.isNuovo ?? SuccessoGenerazioneLink.ERRORE;
         }
 
         private static List<GruppoTG> RimuoviDuplicati(List<GruppoTG> gruppoTGs)

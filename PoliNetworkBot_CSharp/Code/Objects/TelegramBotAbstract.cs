@@ -151,13 +151,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
                 {
                     var r = await _userbotClient.UpgradeGroupIntoSupergroup(chatID);
-                    if (r is TLUpdates r2)
-                        if (r2.Chats != null && r2.Chats.Count == 2)
-                        {
-                            var c1 = r2.Chats[1];
-                            if (c1 is TLChannel c2) return new TLChannelClass(c2);
-                            ;
-                        }
+                    if (r is TLUpdates { Chats: { Count: 2 } } r2)
+                    {
+                        var c1 = r2.Chats[1];
+                        if (c1 is TLChannel c2) return new TLChannelClass(c2);
+                        ;
+                    }
                 }
                     break;
 
@@ -249,6 +248,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                     return new Tuple<Chat, Exception>(null, e);
                 }
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return null;
@@ -447,6 +452,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             Logger.WriteLine("Can't restrict a user in a group");
                             break;
                         }
+                        case ChatType.Private:
+                            break;
+                        case ChatType.Channel:
+                            break;
+                        case ChatType.Sender:
+                            break;
+                        case null:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(chatType), chatType, null);
                     }
 
                     break;
@@ -473,6 +488,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                     return new Tuple<File, Stream>(f, stream);
                 }
+                case BotTypeApi.USER_BOT:
+                    break;
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return null;
@@ -711,7 +732,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             Tuple<long?, ResultQueueEnum?> messageIdToReplyToLong)
         {
             var messageIdToReplyToInt = 0;
-            if (messageIdToReplyToLong != null && messageIdToReplyToLong.Item1 != null)
+            if (messageIdToReplyToLong is { Item1: { } })
                 messageIdToReplyToInt = (int)messageIdToReplyToLong.Item1.Value;
 
             ;
@@ -1354,7 +1375,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
 
                     var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
-                    if (photoFile == null || photoFile.Item1 == null)
+                    if (photoFile?.Item1 == null)
                         return new MessageSentResult(false, null, chatTypeToSendTo);
 
                     var m2 = await _userbotClient.SendUploadedPhoto(
@@ -1388,7 +1409,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         var r = await _userbotClient.Messages_CreateChat(name, users);
                         if (r is TLUpdates r2)
-                            if (r2.Chats != null && r2.Chats.Count == 1)
+                            if (r2.Chats is { Count: 1 })
                             {
                                 var c1 = r2.Chats[0];
                                 if (c1 is TLChat c2)

@@ -291,7 +291,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     toReturn += "[GroupId , oldTitle]\n";
                     toReturn = newNull.Where(group => newNull[group.Key].Value.GetType() == exceptionType)
                         .Aggregate(toReturn,
-                            (current, group) => current + @group.Key + " , " + @group.Value.Key + "\n");
+                            (current, group) => current + group.Key + " , " + group.Value.Key + "\n");
                 }
 
                 return toReturn;

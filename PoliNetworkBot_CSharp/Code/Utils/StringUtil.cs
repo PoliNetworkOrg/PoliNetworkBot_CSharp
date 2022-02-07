@@ -39,7 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return j switch
             {
                 < 0 => false,
-                0 => IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false,
+                0 => IsRoomChar(nodeToFindTextInto.InnerHtml[textToFind.Length]) == false,
                 _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
                      IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
             };

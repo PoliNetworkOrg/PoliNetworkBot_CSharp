@@ -203,7 +203,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static List<string> GetFreeRooms(HtmlNode table, DateTime start, DateTime stop)
         {
-            if (table == null || table.ChildNodes == null)
+            if (table?.ChildNodes == null)
                 return null;
 
             var result = new List<string>();
@@ -220,7 +220,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 try
                 {
                     var a2 = child.ChildNodes[1];
-                    if (a2.ChildNodes != null && a2.ChildNodes.Count > 0)
+                    if (a2.ChildNodes is { Count: > 0 })
                     {
                         var toAdd = false;
                         var name = "";
@@ -252,7 +252,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static bool? IsRowEmpty(HtmlNode node, DateTime start, DateTime stop)
         {
-            if (node == null || node.ChildNodes == null)
+            if (node?.ChildNodes == null)
                 return null;
 
             var shiftStart = (start.Hour - 8) * 4;
@@ -273,9 +273,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 colsizetotal += colsize;
 
                 var v = i - 2 - 1 + colsizetotal;
-                if (v >= shiftStart && v <= shiftEnd)
-                    if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == false)
-                        return false;
+                if (v < shiftStart || v > shiftEnd) continue;
+                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == false)
+                    return false;
             }
 
             return true;
@@ -352,9 +352,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var t9 = t8.Attributes;
 
-            if (t9 == null) return; //todo: send to the user "room not found"
-
-            var t10 = t9["href"];
+            var t10 = t9?["href"];
 
             if (t10 == null) return; //todo: send to the user "room not found"
 
@@ -378,7 +376,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             for (var i = 0; i < t3.Count; i++)
             {
                 var t4 = t3[i];
-                if (t4 == null || t4.ChildNodes == null || t4.ChildNodes.Count < 2)
+                if (t4?.ChildNodes == null || t4.ChildNodes.Count < 2)
                     continue;
 
                 var t6 = HtmlUtil.GetElementsByTagAndClassName(t4, "td");
@@ -456,8 +454,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var htmlresult = "<html><head><style>td {border: 1px solid;}</style></head><body><table>";
-            foreach (var t5 in t4) htmlresult += t5.OuterHtml;
+            var htmlresult = t4.Aggregate("<html><head><style>td {border: 1px solid;}</style></head><body><table>",
+                (current, t5) => current + t5.OuterHtml);
             htmlresult += "</table></body></html>";
 
             ;

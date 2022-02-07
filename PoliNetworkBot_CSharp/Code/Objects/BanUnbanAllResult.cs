@@ -3,11 +3,10 @@
 using System.Collections.Generic;
 using System.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class BanUnbanAllResult
     {

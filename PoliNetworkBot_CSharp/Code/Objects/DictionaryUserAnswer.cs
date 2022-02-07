@@ -3,12 +3,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class DictionaryUserAnswer
     {

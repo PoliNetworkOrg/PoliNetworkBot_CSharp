@@ -162,11 +162,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
             try
             {
-                var replyDatetime = GetDateTimeFromString(reply);
-                if (replyDatetime.Item2 != null)
-                    return new Tuple<DateTimeSchedule, Exception, string>(null, replyDatetime.Item2, reply);
+                var (dateTime, exception) = GetDateTimeFromString(reply);
+                if (exception != null)
+                    return new Tuple<DateTimeSchedule, Exception, string>(null, exception, reply);
 
-                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(replyDatetime.Item1, true),
+                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(dateTime, true),
                     null, reply);
             }
             catch (Exception e1)
@@ -182,7 +182,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             reply = reply.ToLower();
 
-            if (reply == "now" || reply == "ora")
+            if (reply is "now" or "ora")
                 return new Tuple<DateTime?, Exception>(DateTime.Now, null);
 
             if (reply.StartsWith("in a"))

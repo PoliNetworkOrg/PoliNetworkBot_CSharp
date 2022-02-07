@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -123,13 +124,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                     ;
                 }
 
-            foreach (var key in GlobalVariables.Bots.Keys)
-            {
-                var m = GlobalVariables.Bots[key].GetMode();
-                if (m == BotStartMethods.Anon) return GlobalVariables.Bots[key];
-            }
-
-            return null;
+            return (from key in GlobalVariables.Bots.Keys
+                let m = GlobalVariables.Bots[key].GetMode()
+                where m == BotStartMethods.Anon
+                select GlobalVariables.Bots[key]).FirstOrDefault();
         }
 
         internal async Task SetAsSeenAsync()

@@ -101,12 +101,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (v)
             {
                 case null:
-                case DBNull _:
+                case DBNull:
                 {
-                    var r1 = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    var list1 = r1.Item3;
-                    list1.Insert(0, 1);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(r1.Item1, r1.Item2, list1, null);
+                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                    ints.Insert(0, 1);
+                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, null);
                 }
                 case char b:
                 {
@@ -135,7 +134,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     s = s.Trim();
 
-                    if (!(s == "Y" || s == "1"))
+                    if (s is not ("Y" or "1"))
                         return await PreExitChecks(s, e, telegramBotClient);
                     return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 },
                         s);
@@ -168,10 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 };
                 SqLite.Execute(q, d);
                 var name = "";
-                if (messageEventArgs != null
-                    && messageEventArgs.Message != null
-                    && messageEventArgs.Message.Chat != null
-                    && messageEventArgs.Message.Chat.Title != null)
+                if (messageEventArgs is { Message: { Chat: { Title: { } } } })
                     name = messageEventArgs.Message.Chat.Title;
 
                 Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + ", name:" + name +
@@ -213,14 +209,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (r == null)
                 return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, null, new List<int> { 3 });
 
-            foreach (var chatMember in r)
-            {
-                var isCreator = Creators.CheckIfIsCreatorOrSubCreator(chatMember);
-                if (isCreator != null && isCreator.Value)
-                    return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, r, new List<int> { 4 });
-            }
-
-            return new Tuple<ToExit, ChatMember[], List<int>>(ToExit.EXIT, r, new List<int> { 5 });
+            return r.Select(chatMember => Creators.CheckIfIsCreatorOrSubCreator(chatMember))
+                .Any(isCreator => isCreator != null && isCreator.Value)
+                ? new Tuple<ToExit, ChatMember[], List<int>>(ToExit.STAY, r, new List<int> { 4 })
+                : new Tuple<ToExit, ChatMember[], List<int>>(ToExit.EXIT, r, new List<int> { 5 });
         }
 
         private static void InsertGroup(TelegramBotAbstract sender, MessageEventArgs e)
@@ -252,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             if (GlobalVariables.NoUsernameCheckInThisChats.Contains(e.Message.Chat.Id)) return null;
 
-            if (e.Message != null && e.Message.From != null &&
+            if (e.Message is { From: { } } &&
                 GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(e.Message.From.Id))
                 return null;
 
@@ -267,7 +259,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return r;
 
             r.AddRange(from user in e.Message.NewChatMembers
-                where user != null && user.Id != r[0].GetUserId()
+                where user.Id != r[0].GetUserId()
                 select CheckUsername2(user.Username, user.FirstName, user.Id,
                     user.LastName, user.LanguageCode, e.Message.MessageId));
 
@@ -298,16 +290,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         public static SpamType CheckSpam(MessageEventArgs e)
         {
-            if (e.Message != null && e.Message.Chat != null && e.Message.Chat.Type == ChatType.Private)
-                return SpamType.ALL_GOOD;
-
-            if (e.Message != null && e.Message.From != null && e.Message.Chat != null &&
-                (e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id)) return SpamType.ALL_GOOD;
+            switch (e.Message)
+            {
+                case { Chat: { Type: ChatType.Private } }:
+                case { From: { }, Chat: { } }
+                    when e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id:
+                    return SpamType.ALL_GOOD;
+            }
 
             if (GlobalVariables.AllowedSpam.Contains(e.Message?.From?.Username?.ToLower()))
                 return SpamType.ALL_GOOD;
 
-            if (e.Message != null && e.Message.From != null && e.Message.Chat != null &&
+            if (e.Message is { From: { }, Chat: { } } &&
                 AllowedMessages.CheckMessage(e.Message.Text) == SpamType.SPAM_PERMITTED)
                 return SpamType.SPAM_PERMITTED;
 

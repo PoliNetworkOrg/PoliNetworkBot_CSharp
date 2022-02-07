@@ -103,68 +103,68 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLAbsChat x4,
             TLAbsInputPeer u, TelegramBotAbstract telegramBotAbstract)
         {
-            if (x4 == null)
-                return null;
-
-            if (x4 is TLChat x5)
+            switch (x4)
             {
-                if (GlobalVariables.ExcludedChatsForBot.Contains(x5.Id))
+                case null:
+                    return null;
+                case TLChat x5 when GlobalVariables.ExcludedChatsForBot.Contains(x5.Id):
                     return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-
-                var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                if (r5 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-
-                if (r5.Item2 == null) return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
-
-                WaitUntil(r5.Item2);
-                var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                if (r6 == null)
+                case TLChat x5:
                 {
+                    var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
+                    if (r5 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+
+                    if (r5.Item2 == null) return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
+
+                    WaitUntil(r5.Item2);
+                    var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
+                    if (r6 == null)
+                    {
+                        ;
+
+                        return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+                    }
+
+                    if (r6.Item2 == null)
+                        return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
                     ;
-
-                    return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+                    break;
                 }
-
-                if (r6.Item2 == null)
-                    return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
-                ;
-            }
-            else if (x4 is TLChannel x6)
-            {
-                if (GlobalVariables.ExcludedChatsForBot.Contains(x6.Id))
+                case TLChannel x6 when GlobalVariables.ExcludedChatsForBot.Contains(x6.Id):
                     return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-
-                var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-
-                if (r2 == null)
+                case TLChannel x6:
                 {
+                    var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
+
+                    if (r2 == null)
+                    {
+                        ;
+
+                        return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
+                    }
+
+                    if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
+
+                    WaitUntil(r2.Item2);
+                    var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
+                    if (r3 == null)
+                    {
+                        ;
+
+                        return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
+                    }
+
+                    if (r3.Item2 == null)
+                        return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
                     ;
-
-                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
+                    break;
                 }
-
-                if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
-
-                WaitUntil(r2.Item2);
-                var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-                if (r3 == null)
-                {
+                case TLChatForbidden chatForbidden:
                     ;
-
-                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                }
-
-                if (r3.Item2 == null)
-                    return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
-                ;
-            }
-            else if (x4 is TLChatForbidden chatForbidden)
-            {
-                ;
-            }
-            else
-            {
-                ;
+                    break;
+                default:
+                    ;
+                    break;
             }
 
             return null;

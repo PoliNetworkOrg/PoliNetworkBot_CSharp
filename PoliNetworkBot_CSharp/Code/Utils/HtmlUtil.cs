@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var empty_cn = string.IsNullOrEmpty(className);
             if (empty_tag && empty_cn) return null;
 
-            if (limit != null && limit.Value <= 0)
+            if (limit is <= 0)
                 return null;
 
             var result = new List<HtmlNode>();

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
@@ -42,7 +41,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool ContainsExceptions()
         {
-            return ex != null && ex.Count > 0;
+            return ex is { Count: > 0 };
         }
 
         internal ExceptionNumbered GetFirstException()

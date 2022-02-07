@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
@@ -62,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 var notAuthorizedBotHasBeenAddedBool =
                     await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
-                if (notAuthorizedBotHasBeenAddedBool != null && notAuthorizedBotHasBeenAddedBool.Count > 0)
+                if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
                         await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
 
@@ -128,10 +129,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item4 == null)
                 return "[NULL]";
 
-            if (item4.Length == 0)
-                return "[EMPTY]";
-
-            return item4;
+            return item4.Length == 0 ? "[EMPTY]" : item4;
         }
 
         private static string ListIntToString(List<int> item3)

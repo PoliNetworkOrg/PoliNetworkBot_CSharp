@@ -286,23 +286,19 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 var r = JsonConvert.DeserializeObject<JObject>(s);
                 var r2 = r.Children();
                 foreach (var r3 in r2)
-                    if (r3 is JProperty r4)
+                    if (r3 is JProperty { Name: "Gruppi" } r4)
                     {
-                        var name = r4.Name;
-                        if (name == "Gruppi")
+                        var r5 = r4.Children();
+                        foreach (var r6 in r5)
                         {
-                            var r5 = r4.Children();
-                            foreach (var r6 in r5)
-                            {
-                                var r7 = r6.Children();
-                                foreach (var r8 in r7)
-                                    if (r8 is JObject r9)
-                                    {
-                                        var r10 = r9.Children();
+                            var r7 = r6.Children();
+                            foreach (var r8 in r7)
+                                if (r8 is JObject r9)
+                                {
+                                    var r10 = r9.Children();
 
-                                        AddGroupToDb(r10, botIdWhoInsertedThem);
-                                    }
-                            }
+                                    AddGroupToDb(r10, botIdWhoInsertedThem);
+                                }
                         }
                     }
             }
@@ -560,19 +556,18 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             var r2 = r1.Children();
             foreach (var r3 in r2)
-                if (r3 is JProperty r4)
-                    if (r4.Name == "users")
-                    {
-                        var r5 = r4.Value;
-                        if (r5 is not JArray r6)
-                            continue;
+                if (r3 is JProperty { Name: "users" } r4)
+                {
+                    var r5 = r4.Value;
+                    if (r5 is not JArray r6)
+                        continue;
 
-                        var users = new List<long>();
-                        foreach (var r7 in r6)
-                            if (r7 is JValue r8)
-                                users.Add(Convert.ToInt64(r8.Value));
-                        return users;
-                    }
+                    var users = new List<long>();
+                    foreach (var r7 in r6)
+                        if (r7 is JValue r8)
+                            users.Add(Convert.ToInt64(r8.Value));
+                    return users;
+                }
 
             return null;
         }

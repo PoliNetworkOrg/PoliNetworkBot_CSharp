@@ -523,8 +523,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             });
 
             var x2 = new List<List<InlineKeyboardButton>>();
-            if (messageIdReplyTo == null || messageIdReplyTo.Item2 == null ||
-                messageIdReplyTo.Item2 == ResultQueueEnum.APPROVED_MAIN)
+            if (messageIdReplyTo?.Item2 == null || messageIdReplyTo.Item2 == ResultQueueEnum.APPROVED_MAIN)
                 x2.Add(new List<InlineKeyboardButton>
                 {
                     new("Si, principale")
@@ -541,8 +540,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                                 e.FromTelegram())
                     }
                 });
-            if (messageIdReplyTo == null || messageIdReplyTo.Item2 == null ||
-                messageIdReplyTo.Item2 == ResultQueueEnum.GO_TO_UNCENSORED)
+            if (messageIdReplyTo?.Item2 == null || messageIdReplyTo.Item2 == ResultQueueEnum.GO_TO_UNCENSORED)
                 x2.Add(new List<InlineKeyboardButton>
                 {
                     new("Si, uncensored")

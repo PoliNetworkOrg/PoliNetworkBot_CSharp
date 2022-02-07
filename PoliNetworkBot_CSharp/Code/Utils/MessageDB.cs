@@ -100,8 +100,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             DataTable dt = null;
-            var q = "SELECT * " +
-                    "FROM Messages ";
+            const string q = "SELECT * " +
+                             "FROM Messages ";
 
             dt = SqLite.ExecuteSelect(q);
             if (dt == null || dt.Rows.Count == 0)

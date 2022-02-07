@@ -33,14 +33,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             if (similarWords == null || similarWords.Count == 0) return new Tuple<bool, string>(false, word);
 
-            foreach (var x in similarWords)
-                if (x == t)
-                    return new Tuple<bool, string>(true, word);
-
-            return new Tuple<bool, string>(false, word);
+            return similarWords.Any(x => x == t)
+                ? new Tuple<bool, string>(true, word)
+                : new Tuple<bool, string>(false, word);
         }
 
-        internal bool IsTaken(List<string> taken)
+        internal bool IsTaken(IEnumerable<string> taken)
         {
             return taken.Any(r => r == word);
         }

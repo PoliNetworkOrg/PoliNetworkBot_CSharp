@@ -314,6 +314,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await telegramBotClient.ExitGroupAsync(e);
                     }
                         break;
+                    case ChatType.Private:
+                        break;
+                    case ChatType.Channel:
+                        break;
+                    case ChatType.Sender:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             catch

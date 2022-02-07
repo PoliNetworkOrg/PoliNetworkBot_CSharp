@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
         private static async Task HandleMessageAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e.Message.Chat.Id == 1001129635578 || e.Message.Chat.Id == -1001129635578)
+            if (e.Message.Chat.Id is 1001129635578 or -1001129635578)
                 await HandleMessage2Async(telegramBotClient, e);
         }
 
@@ -63,14 +63,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (string.IsNullOrEmpty(t))
                 return;
 
-            if (t == "/lista_primo@primopolibot" || t == "/lista_primo")
+            if (t is "/lista_primo@primopolibot" or "/lista_primo")
             {
                 await HandleListAsync(telegramBotClient, e);
                 return;
             }
 
-            var valid = CheckIfValid(t);
-            if (valid.Item1) await HandleMessage3Async(telegramBotClient, e, valid.Item2);
+            var (b, s) = CheckIfValid(t);
+            if (b) await HandleMessage3Async(telegramBotClient, e, s);
         }
 
         private static async Task HandleListAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
@@ -108,20 +108,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
         private static List<string> GetTaken()
         {
-            var q = "SELECT * FROM Primo";
+            const string q = "SELECT * FROM Primo";
             var r = SqLite.ExecuteSelect(q);
             if (r == null || r.Rows.Count == 0)
                 return new List<string>();
 
-            var r2 = new List<string>();
-            foreach (DataRow dr in r.Rows)
-            {
-                var dt = (DateTime)dr["when_king"];
-                if (dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year)
-                    r2.Add(dr["title"].ToString());
-            }
-
-            return r2;
+            return (from DataRow dr in r.Rows
+                let dt = (DateTime)dr["when_king"]
+                where dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year
+                select dr["title"].ToString()).ToList();
         }
 
         private static Tuple<bool, string> CheckIfValid(string t)
@@ -284,10 +279,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (string.IsNullOrEmpty(fn))
                 return ln;
 
-            if (string.IsNullOrEmpty(ln))
-                return fn;
-
-            return "[EMPTY]";
+            return string.IsNullOrEmpty(ln) ? fn : "[EMPTY]";
         }
 
         private static async Task<MessageSentResult> SendMessageYouAreKingAsync(TelegramBotAbstract telegramBotClient,

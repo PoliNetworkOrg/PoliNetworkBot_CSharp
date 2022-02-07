@@ -28,12 +28,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var receiveStream = response.GetResponseStream();
             try
             {
-                StreamReader readStream;
-                readStream = string.IsNullOrWhiteSpace(response.CharacterSet)
+                var readStream = string.IsNullOrWhiteSpace(response.CharacterSet)
                     ? new StreamReader(receiveStream)
                     : new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
 
-                var data = readStream.ReadToEnd();
+                var data = await readStream.ReadToEndAsync();
 
                 response.Close();
                 readStream.Close();

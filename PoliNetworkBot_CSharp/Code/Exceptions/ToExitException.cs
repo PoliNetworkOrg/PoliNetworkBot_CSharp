@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
+namespace PoliNetworkBot_CSharp.Code.Exceptions
 {
     [Serializable]
     internal class ToExitException : Exception

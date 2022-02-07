@@ -52,6 +52,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     await MessageInGroup(telegramBotClient, e);
                     break;
                 }
+                case ChatType.Sender:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -194,8 +198,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     true);
             }
 
-            if (DateTime.Now.Month >= 1 && DateTime.Now.Month <= 6 ||
-                DateTime.Now.Month >= 11 && DateTime.Now.Month <= 12)
+            if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
                 if (text.Contains("whatsapp") && text.Contains("grupp"))
                 {
                     var text2 = new Language(

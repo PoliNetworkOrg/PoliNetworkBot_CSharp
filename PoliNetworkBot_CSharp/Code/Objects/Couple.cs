@@ -1,4 +1,4 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Utils
+﻿namespace PoliNetworkBot_CSharp.Code.Objects
 {
     public class Couple<T, S>
     {

@@ -43,12 +43,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return null;
 
             List<string> r = new();
-            foreach (var vs2 in vs)
-            {
-                var words = vs2.Split(v).ToList();
-                if (words != null)
-                    r.AddRange(words);
-            }
+            foreach (var words in vs.Select(vs2 => vs2.Split(v).ToList()).Where(words => words != null))
+                r.AddRange(words);
 
             return r;
         }
@@ -113,7 +109,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             return string.IsNullOrEmpty(s3)
                 ? null
-                : s3.Where(c => c is >= 'a' and <= 'z' || c >= 'A' && c <= 'Z')
+                : s3.Where(c => c is >= 'a' and <= 'z' or >= 'A' and <= 'Z')
                     .Aggregate("", (current, c) => current + c);
         }
 
@@ -230,7 +226,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return s.FirstOrDefault(s2 => s2.ToLower().Contains("t.me/"));
         }
 
-        internal static SpamType IsSpam(PhotoSize[] photo)
+        internal static SpamType IsSpam(IEnumerable<PhotoSize> photo)
         {
             var biggerphoto = UtilsPhoto.GetLargest(photo);
             return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD;

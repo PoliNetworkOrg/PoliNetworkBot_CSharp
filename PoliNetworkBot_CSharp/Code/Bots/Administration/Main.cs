@@ -31,7 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                     sw.WriteLine("Nome Gruppo $ Link di Invito");
                 }
 
-                foreach (var group in groups) await MainMethodAsync2Async(@group, telegramBotAbstract, links);
+                foreach (var group in groups) await MainMethodAsync2Async(group, telegramBotAbstract, links);
 
                 Logger.WriteLine("====== CREATION COMPLETE ======");
             }
@@ -52,10 +52,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                         //    await telegramBotAbstract.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync();
                         //file,,,
                         if (group.Length > 255)
-                            await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\errorlist.txt"))
-                            {
-                                sw.WriteLine(group + " FAILED");
-                            }
+                        {
+                            await using var sw = File.AppendText(@"C:\Users\eliam\Documents\errorlist.txt");
+                            await sw.WriteLineAsync(group + " FAILED");
+                        }
 
                         var desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
 

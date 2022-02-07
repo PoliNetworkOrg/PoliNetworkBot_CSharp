@@ -3,11 +3,11 @@
 using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Objects
 {
     internal class ExceptionNumbered : Exception
     {

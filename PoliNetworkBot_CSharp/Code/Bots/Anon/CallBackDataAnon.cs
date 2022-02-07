@@ -80,7 +80,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             try
             {
                 var s9 = s[9];
-                from_telegram = s9 == "S" || s9 == "Y";
+                from_telegram = s9 is "S" or "Y";
             }
             catch
             {
@@ -143,7 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             r += ConfigAnon.splitCallback;
             r += PrintReplyTo();
             r += ConfigAnon.splitCallback;
-            r += from_telegram != null && from_telegram == true ? "Y" : "N";
+            r += from_telegram is true ? "Y" : "N";
 
             return r;
         }
