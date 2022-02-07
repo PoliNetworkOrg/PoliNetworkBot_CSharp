@@ -1,11 +1,11 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 #endregion
 
@@ -43,8 +43,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 return new WebReply(null, HttpStatusCode.ExpectationFailed);
             }
-
-            return new WebReply(null, response.StatusCode);
         }
     }
 }

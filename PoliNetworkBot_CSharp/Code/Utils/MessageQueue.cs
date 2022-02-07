@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Collections.Generic;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public readonly ChatType ChatType;
         public readonly string text;
         public KeyValuePair<long, TelegramBotAbstract> key;
-        private ParseMode Parsemode;
+        private readonly ParseMode Parsemode;
 
         public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType,
             ParseMode parsemode)

@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -102,48 +102,48 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 case null:
                 case DBNull:
-                {
-                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    ints.Insert(0, 1);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, null);
-                }
+                    {
+                        var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                        ints.Insert(0, 1);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, null);
+                    }
                 case char b:
-                {
-                    return b != 'Y'
-                        ? await PreExitChecks(b.ToString(), e, telegramBotClient)
-                        : new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 7 },
-                            b.ToString());
-                }
+                    {
+                        return b != 'Y'
+                            ? await PreExitChecks(b.ToString(), e, telegramBotClient)
+                            : new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 7 },
+                                b.ToString());
+                    }
                 case string s when string.IsNullOrEmpty(s):
-                {
-                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    ints.Insert(0, 14);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, s);
-                }
+                    {
+                        var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                        ints.Insert(0, 14);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, s);
+                    }
                 case int i2:
-                {
-                    if (i2 != 1)
-                        return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null,
-                            new List<int> { 41 },
+                    {
+                        if (i2 != 1)
+                            return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.EXIT, null,
+                                new List<int> { 41 },
+                                i2.ToString());
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 42 },
                             i2.ToString());
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 42 },
-                        i2.ToString());
-                }
+                    }
                 case string s:
-                {
-                    s = s.Trim();
+                    {
+                        s = s.Trim();
 
-                    if (s is not ("Y" or "1"))
-                        return await PreExitChecks(s, e, telegramBotClient);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 },
-                        s);
-                }
+                        if (s is not ("Y" or "1"))
+                            return await PreExitChecks(s, e, telegramBotClient);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(ToExit.STAY, null, new List<int> { 9 },
+                            s);
+                    }
                 default:
-                {
-                    var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
-                    ints.Insert(0, 10);
-                    return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, v?.ToString());
-                }
+                    {
+                        var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
+                        ints.Insert(0, 10);
+                        return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, v?.ToString());
+                    }
             }
         }
 
@@ -255,9 +255,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return r;
 
             r.AddRange(from user in e.Message.NewChatMembers
-                where user.Id != r[0].GetUserId()
-                select CheckUsername2(user.Username, user.FirstName, user.Id,
-                    user.LastName, user.LanguageCode, e.Message.MessageId));
+                       where user.Id != r[0].GetUserId()
+                       select CheckUsername2(user.Username, user.FirstName, user.Id,
+                           user.LastName, user.LanguageCode, e.Message.MessageId));
 
             return r;
         }
@@ -368,52 +368,52 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     switch (r2)
                     {
                         case TLMessage r3:
-                        {
-                            lock (GlobalVariables.MessagesToDelete)
                             {
-                                var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
-                                var TimeToDelete = DateTime.Now + timeUntilDelete;
-                                var botid = telegramBotClient.GetId();
-                                if (botid != null)
+                                lock (GlobalVariables.MessagesToDelete)
                                 {
-                                    var toDelete = new MessageToDelete(r3, chatId, TimeToDelete, botid.Value,
-                                        r1.GetChatType(), null);
-                                    GlobalVariables.MessagesToDelete.Add(toDelete);
+                                    var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
+                                    var TimeToDelete = DateTime.Now + timeUntilDelete;
+                                    var botid = telegramBotClient.GetId();
+                                    if (botid != null)
+                                    {
+                                        var toDelete = new MessageToDelete(r3, chatId, TimeToDelete, botid.Value,
+                                            r1.GetChatType(), null);
+                                        GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                        GlobalVariables.MessagesToDelete);
+                                        FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                            GlobalVariables.MessagesToDelete);
+                                    }
                                 }
-                            }
 
-                            break;
-                        }
+                                break;
+                            }
                         case Message r4:
-                        {
-                            lock (GlobalVariables.MessagesToDelete)
                             {
-                                var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
-                                var timeToDelete = DateTime.Now + timeUntilDelete;
-                                var botId = telegramBotClient.GetId();
-                                if (botId != null)
+                                lock (GlobalVariables.MessagesToDelete)
                                 {
-                                    var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
-                                        r1.GetChatType(), null);
-                                    GlobalVariables.MessagesToDelete.Add(toDelete);
+                                    var timeUntilDelete = TimeSpan.FromMinutes(MINUTES_WAIT);
+                                    var timeToDelete = DateTime.Now + timeUntilDelete;
+                                    var botId = telegramBotClient.GetId();
+                                    if (botId != null)
+                                    {
+                                        var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
+                                            r1.GetChatType(), null);
+                                        GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                        GlobalVariables.MessagesToDelete);
+                                        FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                            GlobalVariables.MessagesToDelete);
+                                    }
                                 }
-                            }
 
-                            break;
-                        }
+                                break;
+                            }
                         default:
-                        {
-                            var e4 = "Attempted to add a message to be deleted in queue\n" + r2?.GetType() + " " + r2;
-                            var e3 = new Exception(e4);
-                            await NotifyUtil.NotifyOwners(e3, telegramBotClient, messageEventArgs);
-                            break;
-                        }
+                            {
+                                var e4 = "Attempted to add a message to be deleted in queue\n" + r2?.GetType() + " " + r2;
+                                var e3 = new Exception(e4);
+                                await NotifyUtil.NotifyOwners(e3, telegramBotClient, messageEventArgs);
+                                break;
+                            }
                     }
             }
 
@@ -437,22 +437,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (checkSpam)
             {
                 case SpamType.SPAM_LINK:
-                {
-                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
                     {
                         { "en", "You sent a message with spam, and you were muted for 5 minutes" },
                         { "it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti" }
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
-                    break;
-                }
+                        break;
+                    }
                 case SpamType.NOT_ALLOWED_WORDS:
-                {
-                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
                     {
                         { "en", "You sent a message with banned words, and you were muted for 5 minutes" },
                         {
@@ -461,30 +461,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
-                    break;
-                }
+                        break;
+                    }
                 case SpamType.FORMAT_INCORRECT:
-                {
-                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
                     {
                         { "en", "You have sent a message that does not follow the group format" },
                         { "it", "Hai inviato un messaggio che non rispetta il format del gruppo" }
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username, text2, ParseMode.Html, null);
 
-                    break;
-                }
+                        break;
+                    }
 
                 case SpamType.FOREIGN:
-                {
-                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        var text2 = new Language(new Dictionary<string, string>
                     {
                         { "en", "You sent a message with banned characters, and you were muted for 5 minutes" },
                         {
@@ -493,12 +493,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         }
                     });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2,
-                        ParseMode.Html, null);
-                    break;
-                }
+                        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username, text2,
+                            ParseMode.Html, null);
+                        break;
+                    }
 
                 // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                 case SpamType.ALL_GOOD:

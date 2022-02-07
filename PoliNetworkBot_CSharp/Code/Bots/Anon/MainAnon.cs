@@ -1,12 +1,12 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -51,21 +51,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 switch (textLower)
                 {
                     case "/start":
-                    {
-                        await StartMessageAsync(telegramBotAbstract, e);
-                        return;
-                    }
+                        {
+                            await StartMessageAsync(telegramBotAbstract, e);
+                            return;
+                        }
 
                     case "/help":
-                    {
-                        await HelpMessageAsync(telegramBotAbstract, e);
-                        return;
-                    }
+                        {
+                            await HelpMessageAsync(telegramBotAbstract, e);
+                            return;
+                        }
                     default:
-                    {
-                        ;
-                        return;
-                    }
+                        {
+                            ;
+                            return;
+                        }
                 }
 
             await DetectMessageAsync(telegramBotAbstract, e);
@@ -341,103 +341,103 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             switch (x.resultQueueEnum)
             {
                 case ResultQueueEnum.APPROVED_MAIN:
-                {
-                    if (x.userId == null)
-                        return;
-
-                    var link = "";
-
-                    try
                     {
-                        var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
-                        if (messageSentResult != null)
-                            link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain.ToString(), true);
-                    }
-                    catch
-                    {
-                        ;
-                    }
+                        if (x.userId == null)
+                            return;
 
-                    if (x.from_telegram != null && x.from_telegram.Value)
-                    {
-                        var t1 = new Language(new Dictionary<string, string>
+                        var link = "";
+
+                        try
+                        {
+                            var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
+                            if (messageSentResult != null)
+                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain.ToString(), true);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                         });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
-                            x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                            x.messageIdUser);
-                    }
-                    else
-                    {
-                        await WebPost.SetApprovedStatusAsync(x);
-                    }
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
+                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
+                                x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case ResultQueueEnum.GO_TO_UNCENSORED:
-                {
-                    if (x.userId == null)
-                        return;
-
-                    var link = "";
-
-                    try
                     {
-                        var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
-                        if (messageSentResult != null)
-                            link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonUncensored.ToString(), true);
-                    }
-                    catch
-                    {
-                        ;
-                    }
+                        if (x.userId == null)
+                            return;
 
-                    if (x.from_telegram != null && x.from_telegram.Value)
-                    {
-                        var t1 = new Language(new Dictionary<string, string>
+                        var link = "";
+
+                        try
+                        {
+                            var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
+                            if (messageSentResult != null)
+                                link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonUncensored.ToString(), true);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato messo nella zona uncensored! " + link }
                         });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
-                            x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                            x.messageIdUser);
-                    }
-                    else
-                    {
-                        await WebPost.SetApprovedStatusAsync(x);
-                    }
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
+                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
+                                x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
 
-                    break;
-                }
+                        break;
+                    }
 
                 case ResultQueueEnum.DELETE:
-                {
-                    if (x.userId == null)
-                        return;
-
-                    if (x.from_telegram != null && x.from_telegram.Value)
                     {
-                        var t1 = new Language(new Dictionary<string, string>
+                        if (x.userId == null)
+                            return;
+
+                        if (x.from_telegram != null && x.from_telegram.Value)
+                        {
+                            var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato rifiutato!" }
                         });
-                        await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
-                            x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                            x.messageIdUser);
-                    }
-                    else
-                    {
-                        await WebPost.SetApprovedStatusAsync(x);
-                    }
+                            await telegramBotAbstract.SendTextMessageAsync(x.userId.Value, t1, ChatType.Private,
+                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
+                                x.messageIdUser);
+                        }
+                        else
+                        {
+                            await WebPost.SetApprovedStatusAsync(x);
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 default:
-                {
-                    //todo: error
-                    return;
-                }
+                    {
+                        //todo: error
+                        return;
+                    }
             }
         }
 

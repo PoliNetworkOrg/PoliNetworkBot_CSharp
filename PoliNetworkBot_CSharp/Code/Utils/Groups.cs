@@ -1,15 +1,15 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -284,42 +284,46 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     case ChatType.Group:
                     case ChatType.Supergroup:
-                    {
-                        try
                         {
-                            Dictionary<string, string> dict = new()
+                            try
                             {
+                                Dictionary<string, string> dict = new()
                                 {
-                                    "it",
-                                    "Il bot non è autorizzato in questo gruppo. Contattare gli amministratori di PoliNetwork."
-                                },
-                                {
-                                    "en",
-                                    "The bot is not authorized in this group. Contact the PoliNetwork administrators."
-                                }
-                            };
-                            Language lang = new(dict);
+                                    {
+                                        "it",
+                                        "Il bot non è autorizzato in questo gruppo. Contattare gli amministratori di PoliNetwork."
+                                    },
+                                    {
+                                        "en",
+                                        "The bot is not authorized in this group. Contact the PoliNetwork administrators."
+                                    }
+                                };
+                                Language lang = new(dict);
 
-                            await SendMessage.SendMessageInAGroup(
-                                telegramBotClient, e.Message.From.LanguageCode, lang, e,
-                                e.Message.Chat.Id, e.Message.Chat.Type,
-                                ParseMode.Html, null, true
-                            );
-                        }
-                        catch
-                        {
-                            ;
-                        }
+                                await SendMessage.SendMessageInAGroup(
+                                    telegramBotClient, e.Message.From.LanguageCode, lang, e,
+                                    e.Message.Chat.Id, e.Message.Chat.Type,
+                                    ParseMode.Html, null, true
+                                );
+                            }
+                            catch
+                            {
+                                ;
+                            }
 
-                        await telegramBotClient.ExitGroupAsync(e);
-                    }
+                            await telegramBotClient.ExitGroupAsync(e);
+                        }
                         break;
+
                     case ChatType.Private:
                         break;
+
                     case ChatType.Channel:
                         break;
+
                     case ChatType.Sender:
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

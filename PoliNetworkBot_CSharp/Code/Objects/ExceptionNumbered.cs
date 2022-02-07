@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Threading.Tasks;
 
 #endregion
 

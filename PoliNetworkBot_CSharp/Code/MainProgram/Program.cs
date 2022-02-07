@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
@@ -18,6 +11,13 @@ using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Test.CheckLink;
 using PoliNetworkBot_CSharp.Test.IG;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -45,50 +45,50 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 switch (readChoice.Item1)
                 {
                     case '1': //reset everything
-                    {
-                        ResetEverything(true);
+                        {
+                            ResetEverything(true);
 
-                        return;
-                    }
+                            return;
+                        }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                    {
-                        MainBot(readChoice.Item1, readChoice.Item2);
-                        return;
-                    }
+                        {
+                            MainBot(readChoice.Item1, readChoice.Item2);
+                            return;
+                        }
 
                     case '4':
-                    {
-                        ResetEverything(false);
-                        return;
-                    }
+                        {
+                            ResetEverything(false);
+                            return;
+                        }
 
                     case '5':
-                    {
-                        _ = await Test_IG.MainIGAsync();
-                        return;
-                    }
+                        {
+                            _ = await Test_IG.MainIGAsync();
+                            return;
+                        }
 
                     case '6':
-                    {
-                        NewConfig.NewConfigMethod(true, false, false, false, false);
-                        return;
-                    }
+                        {
+                            NewConfig.NewConfigMethod(true, false, false, false, false);
+                            return;
+                        }
 
                     case '7':
-                    {
-                        NewConfig.NewConfigMethod(false, false, true, false, false);
-                        return;
-                    }
+                        {
+                            NewConfig.NewConfigMethod(false, false, true, false, false);
+                            return;
+                        }
                     case 't':
-                    {
-                        //SpamTest.Main2();
-                        Test_CheckLink.Test_CheckLink2();
-                        return;
-                    }
+                        {
+                            //SpamTest.Main2();
+                            Test_CheckLink.Test_CheckLink2();
+                            return;
+                        }
                 }
             }
         }
@@ -322,6 +322,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         case BotStartMethods.Moderation:
                             moderationBots++;
                             break;
+
                         case BotStartMethods.Anon:
                             anonBots++;
                             break;
@@ -356,10 +357,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 case 'a':
                                 case 'A': //Administration
-                                {
-                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                    break;
-                                }
+                                    {
+                                        _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                        break;
+                                    }
                             }
                     }
                     else
@@ -512,17 +513,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.Message:
-                {
-                    if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                            return;
+                    {
+                        if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                            if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                                return;
 
-                    botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                        botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
-                        new MessageEventArgs(update.Message));
-                    break;
-                }
+                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
+                            new MessageEventArgs(update.Message));
+                        break;
+                    }
                 case UpdateType.InlineQuery:
                     break;
 
@@ -530,11 +531,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.CallbackQuery:
-                {
-                    var callback = botClientWhole.bot.GetCallbackEvent();
-                    callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                    break;
-                }
+                    {
+                        var callback = botClientWhole.bot.GetCallbackEvent();
+                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                        break;
+                    }
                 case UpdateType.EditedMessage:
                     break;
 

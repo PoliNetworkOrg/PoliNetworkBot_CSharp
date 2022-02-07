@@ -1,9 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -12,6 +8,10 @@ using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 
 #endregion
 
@@ -333,15 +333,16 @@ namespace PoliNetworkBot_CSharp.Code.Config
                     case "Chat":
                         chat = GetChatFromJson(r3);
                         break;
+
                     case "LastUpdateInviteLinkTime":
-                    {
-                        var d1 = GetLastUpdateLinkTimeFromJson(r3);
-                        if (d1.HasValue())
-                            lastUpdateLinkTime = d1.GetValue();
-                        else
-                            exceptions.AddRange(d1.GetExceptions());
-                        break;
-                    }
+                        {
+                            var d1 = GetLastUpdateLinkTimeFromJson(r3);
+                            if (d1.HasValue())
+                                lastUpdateLinkTime = d1.GetValue();
+                            else
+                                exceptions.AddRange(d1.GetExceptions());
+                            break;
+                        }
                     case "we_are_admin":
                         we_are_admin = GetWeAreAdminFromJson(r3);
                         break;
@@ -425,15 +426,19 @@ namespace PoliNetworkBot_CSharp.Code.Config
                         case "id":
                             id = GetIdFromJson(r7);
                             break;
+
                         case "type":
                             type = GetTypeFromJson(r7);
                             break;
+
                         case "title":
                             title = GetTitleFromJson(r7);
                             break;
+
                         case "invite_link":
                             invite_link = GetInviteLinkFromJson(r7);
                             break;
+
                         default:
                             Logger.WriteLine(r7);
                             break;

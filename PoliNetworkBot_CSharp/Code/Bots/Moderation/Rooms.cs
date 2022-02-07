@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
@@ -68,28 +68,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (chosen.Value)
             {
                 case 0:
-                {
-                    await SearchClassroomAsync(sender, e);
-                    return;
-                }
+                    {
+                        await SearchClassroomAsync(sender, e);
+                        return;
+                    }
 
                 case 1:
-                {
-                    await FreeClassroomAsync(sender, e);
-                    return;
-                }
+                    {
+                        await FreeClassroomAsync(sender, e);
+                        return;
+                    }
 
                 case 2:
-                {
-                    await OccupanciesOfTheDayAsync(sender, e);
-                    return;
-                }
+                    {
+                        await OccupanciesOfTheDayAsync(sender, e);
+                        return;
+                    }
 
                 case 3:
-                {
-                    await HelpAsync(sender, e);
-                    return;
-                }
+                    {
+                        await HelpAsync(sender, e);
+                        return;
+                    }
             }
 
             var text = new Language(new Dictionary<string, string>
@@ -197,8 +197,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 return null;
             }
-
-            return null;
         }
 
         private static List<string> GetFreeRooms(HtmlNode table, DateTime start, DateTime stop)

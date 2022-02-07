@@ -1,8 +1,8 @@
 ﻿#region
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     public class GruppoTG
     {
         public string idLink;
-        private DateTime? LastUpdateInviteLinkTimeDateTime;
+        private readonly DateTime? LastUpdateInviteLinkTimeDateTime;
         private readonly string LastUpdateInviteLinkTimeString;
         public string newLink;
         public string nome;

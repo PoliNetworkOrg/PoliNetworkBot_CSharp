@@ -30,9 +30,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case null:
                     return;
+
                 case TLMessage m1:
                     messageId = m1.Id;
                     break;
+
                 case Message m2:
                     messageId = m2.MessageId;
                     break;

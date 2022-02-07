@@ -1,8 +1,8 @@
 ﻿#region
 
-using System;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 
 #endregion
 
@@ -17,16 +17,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static bool IsRoomChar(char v)
         {
-            switch (v)
+            return v switch
             {
-                case >= 'A' and <= 'Z':
-                case >= 'a' and <= 'z':
-                case '.':
-                case >= '0' and <= '9':
-                    return true;
-                default:
-                    return false;
-            }
+                >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '.' or >= '0' and <= '9' => true,
+                _ => false,
+            };
         }
 
         internal static bool? CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string textToFind,
