@@ -1,6 +1,10 @@
-﻿using PoliNetworkBot_CSharp.Code.Utils;
+﻿#region
+
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Utils;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -43,13 +47,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal ExceptionNumbered GetFirstException()
         {
-            if (ContainsExceptions())
-            {
-                var ex2 = ex[0];
-                return new ExceptionNumbered(ex2);
-            }
-
-            return null;
+            if (!ContainsExceptions()) return null;
+            var ex2 = ex[0];
+            return new ExceptionNumbered(ex2);
         }
     }
 }

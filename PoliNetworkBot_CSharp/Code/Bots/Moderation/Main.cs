@@ -1,15 +1,15 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
                     itemToPrintFull += "\n@@@@@@";
 
-                    await Utils.Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
+                    await Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
 
                     throw new ToExitException(itemToPrintFull);
                 }
@@ -109,22 +109,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                if (messageEventArgs.Message.Text == null &&
-                    messageEventArgs.Message.Type == MessageType.ChatMemberLeft)
-                {
-                    if (messageEventArgs.Message.From?.Id != null)
-                    {
-                        if (messageEventArgs.Message.LeftChatMember?.Id != null)
-                        {
-                            if (messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id)
-                            {
-                                return GlobalVariables.Bots.Keys.All(botsKey => messageEventArgs.Message.From.Id != botsKey);
-                            }
-                        }
-                    }
-                }
-
-                return false;
+                if (messageEventArgs.Message.Text != null ||
+                    messageEventArgs.Message.Type != MessageType.ChatMemberLeft) return false;
+                if (messageEventArgs.Message.From?.Id == null) return false;
+                if (messageEventArgs.Message.LeftChatMember?.Id == null) return false;
+                return messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id &&
+                       GlobalVariables.Bots.Keys.All(botsKey => messageEventArgs.Message.From.Id != botsKey);
             }
             catch (Exception e)
             {
@@ -149,12 +139,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item3 == null)
                 return "[NULL]";
 
-            if (item3.Count == 0)
-                return "[EMPTY]";
-
-            var r = "";
-            foreach (var item4 in item3) r += item4 + "\n";
-            return r;
+            return item3.Count == 0 ? "[EMPTY]" : item3.Aggregate("", (current, item4) => current + (item4 + "\n"));
         }
 
         private static string MemberListToString(ChatMember[] item2)
@@ -162,12 +147,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (item2 == null)
                 return "[NULL]";
 
-            if (item2.Length == 0)
-                return "[EMPTY]";
-
-            var r = "";
-            foreach (var item3 in item2) r += item3?.User?.Username + " " + item3?.Status + "\n";
-            return r;
+            return item2.Length == 0
+                ? "[EMPTY]"
+                : item2.Aggregate("", (current, item3) => current + item3?.User?.Username + " " + item3?.Status + "\n");
         }
     }
 }

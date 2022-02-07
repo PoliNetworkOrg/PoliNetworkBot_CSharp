@@ -1,6 +1,10 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿#region
+
 using System;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {

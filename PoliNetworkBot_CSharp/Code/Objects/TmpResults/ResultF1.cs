@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TmpResults
 {

@@ -1,5 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -7,11 +12,6 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -46,7 +46,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return n;
         }
 
-        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
+        internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender,
+            MessageEventArgs messageEventArgs)
         {
             var successoGenerazione = SuccessoGenerazioneLink.ERRORE;
             var r = await TryGetCurrentInviteLinkAsync(chatId, sender, messageEventArgs);
@@ -71,17 +72,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new NuovoLink(successoGenerazione, r);
         }
 
-        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
+        private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender,
+            MessageEventArgs messageEventArgs)
         {
             Chat chat = null;
             try
             {
                 await Task.Delay(100);
                 chat = (await sender.GetChat(chatId))?.Item1;
-                if (chat == null)
-                    return null;
-
-                return chat.InviteLink;
+                return chat?.InviteLink;
             }
             catch (Exception ex1)
             {
@@ -102,9 +101,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
             SqLite.Execute(q1, new Dictionary<string, object>
             {
-                {"@link", nuovoLink},
-                {"@lul", DateTime.Now},
-                {"@id", chatId}
+                { "@link", nuovoLink },
+                { "@lul", DateTime.Now },
+                { "@id", chatId }
             });
         }
 
@@ -128,10 +127,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (!Owners.CheckIfOwner(e.Message.From.Id))
                     return;
 
-                if (e.Message.ReplyToMessage == null)
-                    return;
-
-                if (e.Message.ReplyToMessage.Document == null)
+                if (e.Message.ReplyToMessage?.Document == null)
                     return;
 
                 var d = e.Message.ReplyToMessage.Document;
@@ -217,7 +213,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 var dict = new Dictionary<string, string>
                 {
-                    {"it", "Gruppi con link rigenerati"}
+                    { "it", "Gruppi con link rigenerati" }
                 };
                 var stream = GenerateStreamFromString(st);
                 var tf = new TelegramFile(stream, "groups.txt", "Gruuppi con link rigenerati", "text/plain");
@@ -297,7 +293,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     if (group_id == null && !string.IsNullOrEmpty(gruppoTG.nome))
                     {
-                        var r1 = SqLite.ExecuteSelect(sql2, new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
+                        var r1 = SqLite.ExecuteSelect(sql2,
+                            new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
                         if (r1 != null && r1.Rows != null && r1.Rows.Count > 0 && r1.Rows[0] != null &&
                             r1.Rows[0].ItemArray != null && r1.Rows[0].ItemArray.Length > 0)
                         {
@@ -401,15 +398,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return new List<GruppoTG>();
 
             for (var i = 0; i < gruppoTGs.Count; i++)
-                for (var j = i + 1; j < gruppoTGs.Count; j++)
-                    if (i != j)
-                        if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
-                            if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
-                            {
-                                gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
-                                gruppoTGs.RemoveAt(j);
-                                j--;
-                            }
+            for (var j = i + 1; j < gruppoTGs.Count; j++)
+                if (i != j)
+                    if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
+                        if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
+                        {
+                            gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
+                            gruppoTGs.RemoveAt(j);
+                            j--;
+                        }
 
             return gruppoTGs;
         }

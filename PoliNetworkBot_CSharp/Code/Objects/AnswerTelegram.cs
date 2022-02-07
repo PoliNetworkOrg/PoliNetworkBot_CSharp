@@ -34,11 +34,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (_currentState != State.WAITING_FOR_ANSWER) return;
 
             _currentState = State.ANSWERED;
-            if (_answeredProcessed == false)
-            {
-                WorkCompleted.Invoke(text);
-                _answeredProcessed = true;
-            }
+            if (_answeredProcessed) return;
+            WorkCompleted.Invoke(text);
+            _answeredProcessed = true;
         }
 
         internal void Reset()

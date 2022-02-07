@@ -1,8 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using PoliNetworkBot_CSharp.Code.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -12,16 +16,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal int Count()
         {
-            if (L == null)
-                L = new List<GruppoTG_Update>();
+            L ??= new List<GruppoTG_Update>();
 
             return L.Count;
         }
 
         internal void Add(GruppoTG_Update tuple)
         {
-            if (L == null)
-                L = new List<GruppoTG_Update>();
+            L ??= new List<GruppoTG_Update>();
 
             L.Add(tuple);
         }
@@ -46,8 +48,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                     else
                     {
-                        var s4 = "";
-                        foreach (var l3 in l2.gruppoTG.oldLinks) s4 += "'" + l3 + "',";
+                        var s4 = l2.gruppoTG.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
                         s4 = s4.Remove(s4.Length - 1);
                         s3 += s4;
                     }
@@ -86,10 +87,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static string StringNotNullFromLong(long? permanentId)
         {
-            if (permanentId == null)
-                return "null";
-
-            return permanentId.Value.ToString();
+            return permanentId == null ? "null" : permanentId.Value.ToString();
         }
 
         private static string StringNotNull(string idLink)
@@ -97,16 +95,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (idLink == null)
                 return "[null]";
 
-            if (idLink == "")
-                return "[EMPTY]";
-
-            return idLink;
+            return idLink == "" ? "[EMPTY]" : idLink;
         }
 
         internal int GetCount_Filtered(SuccessoGenerazioneLink successoGenerazione)
         {
-            if (L == null)
-                L = new List<GruppoTG_Update>();
+            L ??= new List<GruppoTG_Update>();
 
             return L.Where(x => x.successoGenerazioneLink == successoGenerazione).ToList().Count;
         }

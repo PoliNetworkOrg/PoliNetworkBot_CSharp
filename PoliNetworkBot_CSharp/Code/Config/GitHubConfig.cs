@@ -1,6 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
+﻿#region
+
 using System.IO;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Config
 {

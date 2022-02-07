@@ -27,10 +27,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                if (accessHash != null)
-                    return new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value };
-
-                return new TLInputChannel { ChannelId = (int)chatid };
+                return accessHash != null
+                    ? new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value }
+                    : new TLInputChannel { ChannelId = (int)chatid };
             }
             catch
             {
@@ -54,10 +53,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramClient telegramClient)
         {
             var r = await telegramClient.ResolveUsernameAsync(username);
-            if (r?.Users == null)
-                return null;
 
-            var user = r.Users[0];
+            var user = r?.Users?[0];
             if (user is not TLUser user2)
                 return null;
 

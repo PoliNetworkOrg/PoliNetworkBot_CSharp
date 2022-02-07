@@ -1,14 +1,18 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core.Network.Exceptions;
 using TLChatFull = TeleSharp.TL.Messages.TLChatFull;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -56,32 +60,37 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
                 }
 
-                if (x == null)
-                    return i > 0;
+                switch (x)
+                {
+                    case null:
+                        return i > 0;
+                    case TLDialogs x2:
+                    {
+                        if (x2.Chats != null)
+                            foreach (var x4 in x2.Chats)
+                            {
+                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                    telegramBotAbstract);
+                                await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
+                            }
 
-                if (x is TLDialogs x2)
-                {
-                    if (x2.Chats != null)
-                        foreach (var x4 in x2.Chats)
-                        {
-                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
-                        }
-                }
-                else if (x is TLDialogsSlice x3)
-                {
-                    if (x3.Chats != null)
-                        foreach (var x4 in x3.Chats)
-                        {
-                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
-                        }
-                }
-                else
-                {
-                    ;
+                        break;
+                    }
+                    case TLDialogsSlice x3:
+                    {
+                        if (x3.Chats != null)
+                            foreach (var x4 in x3.Chats)
+                            {
+                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                    telegramBotAbstract);
+                                await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
+                            }
+
+                        break;
+                    }
+                    default:
+                        ;
+                        break;
                 }
 
                 i += LIMIT;
@@ -352,9 +361,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static long? GetIdMessageAdded(TLAbsUpdates r)
         {
-            if (r == null)
-                return null;
-
             if (r is TLUpdates r2)
                 return GetIdMessageAdded2(r2);
             ;
@@ -364,31 +370,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static long? GetIdMessageAdded2(TLUpdates r2)
         {
-            if (r2 == null)
-                return null;
-
-            if (r2.Updates == null || r2.Updates.Count == 0)
+            if (r2?.Updates == null || r2.Updates.Count == 0)
                 return null;
 
             foreach (var r3 in r2.Updates)
-                if (r3 is TLUpdateMessageID r4)
+                switch (r3)
                 {
-                    return r4.Id;
-                }
-                else if (r3 is TLUpdateReadChannelInbox r5)
-                {
-                    return r5.MaxId;
-                }
-                else if (r3 is TLUpdateNewChannelMessage r6)
-                {
-                    var r7 = r6.Message;
-                    if (r7 is TLMessageService r8)
-                        return r8.Id;
-                    ;
-                }
-                else
-                {
-                    ;
+                    case TLUpdateMessageID r4:
+                        return r4.Id;
+                    case TLUpdateReadChannelInbox r5:
+                        return r5.MaxId;
+                    case TLUpdateNewChannelMessage r6:
+                    {
+                        var r7 = r6.Message;
+                        if (r7 is TLMessageService r8)
+                            return r8.Id;
+                        ;
+                        break;
+                    }
+                    default:
+                        ;
+                        break;
                 }
 
             return null;
@@ -452,7 +454,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (u5 == null)
                 return new ResultF1(false, null, null, null);
 
-            long accessHashUser = u5.AccessHash;
+            var accessHashUser = u5.AccessHash;
             TLAbsInputUser u2 = new TLInputUser { UserId = (int)userIdOfOurBot, AccessHash = accessHashUser };
             users.Add(u2);
             TLAbsUpdates r = null;
@@ -503,10 +505,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const long userIdOfOurBot = 768169879;
 
             TLInputChannel channel;
-            if (accessHash != null)
-                channel = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id };
-            else
-                channel = new TLInputChannel { ChannelId = x5.Id };
+            channel = accessHash != null
+                ? new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id }
+                : new TLInputChannel { ChannelId = x5.Id };
 
             var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
             if (r4.returnobject != null)
@@ -547,10 +548,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static bool CheckIfOurBotIsPresent(TLChatFull x)
         {
-            if (x == null)
-                return false;
-
-            if (x.Users == null)
+            if (x?.Users == null)
                 return false;
 
             if (x.Users.Count == 0)
@@ -616,9 +614,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static TLInputChannel GetChannel(TLAbsInputChannel channel)
         {
-            if (channel == null)
-                return null;
-
             if (channel is TLInputChannel c2) return c2;
 
             return null;

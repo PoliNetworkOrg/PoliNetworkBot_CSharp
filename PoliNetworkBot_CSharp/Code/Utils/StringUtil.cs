@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Objects;
 
@@ -11,26 +12,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         public static string NotNull(Language caption, string lang)
         {
-            if (caption == null)
-                return "";
-            return caption.Select(lang);
+            return caption == null ? "" : caption.Select(lang);
         }
 
         internal static bool IsRoomChar(char v)
         {
-            if (v >= 'A' && v <= 'Z')
-                return true;
-
-            if (v >= 'a' && v <= 'z')
-                return true;
-
-            if (v == '.')
-                return true;
-
-            if (v >= '0' && v <= '9')
-                return true;
-
-            return false;
+            switch (v)
+            {
+                case >= 'A' and <= 'Z':
+                case >= 'a' and <= 'z':
+                case '.':
+                case >= '0' and <= '9':
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         internal static bool? CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string textToFind,
@@ -39,23 +35,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (nodeToFindTextInto == null)
                 return null;
 
-            var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind);
-            if (j < 0)
-                return false;
-
-            if (j == 0)
+            var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind, StringComparison.Ordinal);
+            return j switch
             {
-                if (IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false)
-                    return true;
-
-                return false;
-            }
-
-            if (IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
-                IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false)
-                return true;
-
-            return false;
+                < 0 => false,
+                0 => IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false,
+                _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
+                     IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
+            };
         }
 
         internal static char ToSN(bool? b)

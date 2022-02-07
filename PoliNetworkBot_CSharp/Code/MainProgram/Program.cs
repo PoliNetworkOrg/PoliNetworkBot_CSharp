@@ -1,5 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
@@ -9,17 +16,12 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Test.CheckLink;
 using PoliNetworkBot_CSharp.Test.IG;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using File = System.IO.File;
 using ThreadAsync = PoliNetworkBot_CSharp.Code.Bots.Moderation.ThreadAsync;
 
 #endregion
@@ -38,79 +40,73 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             while (true)
             {
-                Tuple<char, bool> readChoice = MainGetMenuChoice2(args);
+                var readChoice = MainGetMenuChoice2(args);
 
                 switch (readChoice.Item1)
                 {
                     case '1': //reset everything
-                        {
-                            ResetEverything(true);
+                    {
+                        ResetEverything(true);
 
-                            return;
-                        }
+                        return;
+                    }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                        {
-                            MainBot(readChoice.Item1, readChoice.Item2);
-                            return;
-                        }
+                    {
+                        MainBot(readChoice.Item1, readChoice.Item2);
+                        return;
+                    }
 
                     case '4':
-                        {
-                            ResetEverything(false);
-                            return;
-                        }
+                    {
+                        ResetEverything(false);
+                        return;
+                    }
 
                     case '5':
-                        {
-                            _ = await Test_IG.MainIGAsync();
-                            return;
-                        }
+                    {
+                        _ = await Test_IG.MainIGAsync();
+                        return;
+                    }
 
                     case '6':
-                        {
-                            NewConfig.NewConfigMethod(true, false, false, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(true, false, false, false, false);
+                        return;
+                    }
 
                     case '7':
-                        {
-                            NewConfig.NewConfigMethod(false, false, true, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        return;
+                    }
                     case 't':
-                        {
-                            //SpamTest.Main2();
-                            Test.CheckLink.Test_CheckLink.Test_CheckLink2();
-                            return;
-                        }
+                    {
+                        //SpamTest.Main2();
+                        Test_CheckLink.Test_CheckLink2();
+                        return;
+                    }
                 }
             }
         }
 
         private static Tuple<char, bool> MainGetMenuChoice2(string[] args)
         {
-            if (args == null || args.Length == 0)
-            {
-                return new Tuple<char, bool>(MainGetMenuChoice(), false);
-            }
+            if (args == null || args.Length == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
 
-            int i = 0;
+            var i = 0;
             foreach (var arg in args)
             {
                 Console.WriteLine("Arg [" + i + "]:");
                 Console.WriteLine(arg);
             }
 
-            if (string.IsNullOrEmpty(args[0]))
-            {
-                return new Tuple<char, bool>(MainGetMenuChoice(), false);
-            }
-
-            return new Tuple<char, bool>(args[0][0], true);
+            return string.IsNullOrEmpty(args[0])
+                ? new Tuple<char, bool>(MainGetMenuChoice(), false)
+                : new Tuple<char, bool>(args[0][0], true);
         }
 
         private static void MainBot(char readChoice, bool alwaysYes)
@@ -141,8 +137,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            if (System.IO.File.Exists("psw_anon.txt"))
-                ConfigAnon.password = System.IO.File.ReadAllText("psw_anon.txt");
+            if (File.Exists("psw_anon.txt"))
+                ConfigAnon.password = File.ReadAllText("psw_anon.txt");
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -156,27 +152,25 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             while (true)
             {
                 Logger.WriteLine("Welcome to our bots system!\n" +
-                                  "What do you want to do?\n" +
-                                  "1) Reset everything\n" +
-                                  "2) Normal mode (no disguised)\n" +
-                                  "3) Only Disguised bot\n" +
-                                  "4) Reset everything but don't fill tables\n" +
-                                  "5) Test IG\n" +
-                                  "6) Reset only bot config\n" +
-                                  "7) Reset only disguised bot config\n" +
-                                  "8) Run only userbots\n" +
-                                  "9) Run only normal bots\n" +
-                                  "t) Test\n" +
-                                  "\n");
+                                 "What do you want to do?\n" +
+                                 "1) Reset everything\n" +
+                                 "2) Normal mode (no disguised)\n" +
+                                 "3) Only Disguised bot\n" +
+                                 "4) Reset everything but don't fill tables\n" +
+                                 "5) Test IG\n" +
+                                 "6) Reset only bot config\n" +
+                                 "7) Reset only disguised bot config\n" +
+                                 "8) Run only userbots\n" +
+                                 "9) Run only normal bots\n" +
+                                 "t) Test\n" +
+                                 "\n");
 
                 var reply = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(reply))
-                {
-                    var first = reply[0];
+                if (string.IsNullOrEmpty(reply)) continue;
+                var first = reply[0];
 
-                    return first;
-                }
+                return first;
             }
         }
 
@@ -297,36 +291,40 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 foreach (var bot in _botInfos)
                 {
                     var botClient = new TelegramBotClient(bot.GetToken());
-                    if (botClient.BotId != null)
+                    if (botClient.BotId == null) continue;
+                    GlobalVariables.Bots[botClient.BotId.Value] =
+                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                            BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
+                    if (!bot.AcceptsMessages())
+                        continue;
+
+                    var onmessageMethod2 = bot.GetOnMessage();
+                    if (onmessageMethod2?.Item1 == null)
+                        continue;
+
+                    BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
+                    Thread t = new(() =>
                     {
-                        GlobalVariables.Bots[botClient.BotId.Value] =
-                            new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                                BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
-                        if (!bot.AcceptsMessages())
-                            continue;
-
-                        var onmessageMethod2 = bot.GetOnMessage();
-                        if (onmessageMethod2 == null || onmessageMethod2.Item1 == null)
-                            continue;
-
-                        BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
-                        Thread t = new(start: () =>
+                        try
                         {
-                            try
-                            {
-                                PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value], null);
-                                _ = StartBotsAsync2Async(botClientWhole);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.WriteLine(ex);
-                            }
-                        });
-                        t.Start();
+                            PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value], null);
+                            _ = StartBotsAsync2Async(botClientWhole);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.WriteLine(ex);
+                        }
+                    });
+                    t.Start();
 
-                        if (onmessageMethod2.Item2 == BotStartMethods.Moderation) moderationBots++;
-
-                        if (onmessageMethod2.Item2 == BotStartMethods.Anon) anonBots++;
+                    switch (onmessageMethod2.Item2)
+                    {
+                        case BotStartMethods.Moderation:
+                            moderationBots++;
+                            break;
+                        case BotStartMethods.Anon:
+                            anonBots++;
+                            break;
                     }
                 }
 
@@ -358,10 +356,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 case 'a':
                                 case 'A': //Administration
-                                    {
-                                        _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                        break;
-                                    }
+                                {
+                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                    break;
+                                }
                             }
                     }
                     else
@@ -417,7 +415,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             }
         }
 
-        private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
+        private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs)
         {
             if (Logger.ContainsCriticalErrors(out var critics))
             {
@@ -425,21 +424,18 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 toSend += "Critical errors found in log while starting up! \n" + critics;
                 NotifyUtil.NotifyOwners(toSend, telegramBotAbstract, messageEventArgs);
             }
+
             using var powershell = PowerShell.Create();
-            foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true))
-            {
-                Logger.WriteLine(line);
-            }
+            foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
         }
 
         private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
         {
             const int MAX_WAIT = 1000 * 10; //10 seconds
-            int i = 0;
+            var i = 0;
             int? offset = null;
 
             while (true)
-            {
                 try
                 {
                     List<Update> updates = null;
@@ -454,7 +450,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         continue;
                     }
 
-                    List<Update> duplicates = updates.GroupBy(s => s.Id).SelectMany(grp => grp.Skip(1)).ToList();
+                    var duplicates = updates.GroupBy(s => s.Id).SelectMany(grp => grp.Skip(1)).ToList();
 
                     if (duplicates.Count > 0)
                     {
@@ -479,29 +475,26 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     {
                         i = 0;
 
-                        List<Update> updates2 = updates.OrderBy(o => o.Id).ToList();
+                        var updates2 = updates.OrderBy(o => o.Id).ToList();
 
-                        foreach (Telegram.Bot.Types.Update update in updates2)
+                        foreach (var update in updates2.Where(update => update != null))
                         {
-                            if (update != null)
+                            try
                             {
-                                try
-                                {
-                                    HandleUpdate(update, botClientWhole);
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine(e);
-                                }
-
-                                offset = update.Id + 1;
+                                HandleUpdate(update, botClientWhole);
                             }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+
+                            offset = update.Id + 1;
                         }
                     }
 
                     i++;
 
-                    int wait = i * 200;
+                    var wait = i * 200;
                     Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
                 }
                 catch (Exception e)
@@ -509,10 +502,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.CRITICAL);
                     Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
-            }
         }
 
-        private static void HandleUpdate(Telegram.Bot.Types.Update update, BotClientWhole botClientWhole)
+        private static void HandleUpdate(Update update, BotClientWhole botClientWhole)
         {
             switch (update.Type)
             {
@@ -520,20 +512,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.Message:
-                    {
-                        if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        {
-                            if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                            {
-                                return;
-                            }
-                        }
+                {
+                    if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                        if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                            return;
 
-                        botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                    botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient, new MessageEventArgs(update.Message));
-                        break;
-                    }
+                    botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
+                        new MessageEventArgs(update.Message));
+                    break;
+                }
                 case UpdateType.InlineQuery:
                     break;
 
@@ -541,11 +530,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.CallbackQuery:
-                    {
-                        var callback = botClientWhole.bot.GetCallbackEvent();
-                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                        break;
-                    }
+                {
+                    var callback = botClientWhole.bot.GetCallbackEvent();
+                    callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                    break;
+                }
                 case UpdateType.EditedMessage:
                     break;
 
@@ -585,8 +574,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
             var text = new Language(new Dictionary<string, string>
             {
-                {"en", "ciao test"},
-                {"it", "ciao test"}
+                { "en", "ciao test" },
+                { "it", "ciao test" }
             });
             await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
                 "", default, replyMarkupObject, "@polinetwork3bot");

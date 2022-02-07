@@ -1,12 +1,16 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Net.Cache;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -52,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 ;
             }
 
-            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
+            dictionary_webpost ??= GetDictionary();
 
             while (true)
                 lock (random)
@@ -99,21 +103,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 var result = JsonConvert.DeserializeObject<object>(data);
                 ;
 
-                if (result is JArray r2)
+                if (result is not JArray r2) return;
+                ;
+                foreach (var r3 in r2)
                 {
                     ;
-                    foreach (var r3 in r2)
-                    {
-                        ;
 
-                        if (r3 is JObject r4)
-                        {
-                            ;
+                    if (r3 is not JObject r4) continue;
+                    ;
 
-                            var webPost = new WebPost(r4);
-                            DoThingsAsyncBotAsync3(webPost);
-                        }
-                    }
+                    var webPost = new WebPost(r4);
+                    DoThingsAsyncBotAsync3(webPost);
                 }
             }
             catch
@@ -124,7 +124,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         private static void DoThingsAsyncBotAsync3(WebPost webPost)
         {
-            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
+            dictionary_webpost ??= GetDictionary();
 
             lock (dictionary_webpost)
             {
@@ -140,7 +140,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             if (webPost.seen == 'Y')
                 return;
 
-            if (dictionary_webpost == null) dictionary_webpost = GetDictionary();
+            dictionary_webpost ??= GetDictionary();
 
             if (dictionary_webpost.ContainsKey(webPost.postid) &&
                 dictionary_webpost[webPost.postid].seen == 'Y') return;

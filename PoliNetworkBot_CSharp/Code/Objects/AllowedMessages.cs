@@ -1,7 +1,11 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -25,13 +29,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return SpamType.UNDEFINED;
             if (ApprovedMessages.Count == 0)
                 return SpamType.UNDEFINED;
-            if (ApprovedMessages.ContainsKey(message))
-            {
-                var datetime = ApprovedMessages[message];
-                if (datetime.AddHours(24) > DateTime.Now) return SpamType.SPAM_PERMITTED;
-            }
-
-            return SpamType.UNDEFINED;
+            if (!ApprovedMessages.ContainsKey(message)) return SpamType.UNDEFINED;
+            var datetime = ApprovedMessages[message];
+            return datetime.AddHours(24) > DateTime.Now ? SpamType.SPAM_PERMITTED : SpamType.UNDEFINED;
         }
 
         public static void CheckTimestamp()

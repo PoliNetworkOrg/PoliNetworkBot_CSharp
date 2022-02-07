@@ -1,15 +1,15 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -42,19 +42,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             SqLite.Execute(q, new Dictionary<string, object>
             {
-                {"@id", id},
-                {"@fip", messageFromIdPerson},
-                {"@fie", messageFromIdEntity},
-                {"@t", typeI},
-                {"@idp", photo_id},
-                {"@idv", video_id},
-                {"@mt", messageText},
-                {"@icsi", idChatSentInto},
-                {"@sent_date", sentDate},
-                {"@hbs", hasBeenSent},
-                {"@fib", messageFromIdBot},
-                {"@mitf", messageIdTgFrom},
-                {"@tcsi", type_chat_sent_into.ToString()}
+                { "@id", id },
+                { "@fip", messageFromIdPerson },
+                { "@fie", messageFromIdEntity },
+                { "@t", typeI },
+                { "@idp", photo_id },
+                { "@idv", video_id },
+                { "@mt", messageText },
+                { "@icsi", idChatSentInto },
+                { "@sent_date", sentDate },
+                { "@hbs", hasBeenSent },
+                { "@fib", messageFromIdBot },
+                { "@mitf", messageIdTgFrom },
+                { "@tcsi", type_chat_sent_into.ToString() }
             });
 
             return true;
@@ -111,7 +111,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                    var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException, messageEventArgs);
+                    var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException,
+                        messageEventArgs);
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                     if (telegramBotAbstract != null &&
                         r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
@@ -121,10 +122,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             case ScheduleMessageSentResult.FAILED_SEND:
                             case ScheduleMessageSentResult.SUCCESS:
                             case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
-                                {
-                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
-                                    break;
-                                }
+                            {
+                                await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
+                                break;
+                            }
 
                             case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                             case ScheduleMessageSentResult.ALREADY_SENT:
@@ -133,7 +134,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
                 catch (Exception e)
                 {
-                    await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract), messageEventArgs);
+                    await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
+                        messageEventArgs);
                 }
 
             return true;
@@ -226,11 +228,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ;
             }
 
-            if (schedule && dt == null)
-                return new MessageSendScheduled(ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null, r1);
-
-            if (schedule && dt > DateTime.Now)
-                return new MessageSendScheduled(ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
+            switch (schedule)
+            {
+                case true when dt == null:
+                    return new MessageSendScheduled(ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null,
+                        r1);
+                case true when dt > DateTime.Now:
+                    return new MessageSendScheduled(ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
+            }
 
             var done = await SendMessageFromDataRow(dr, null, null, false, telegramBotAbstract, 0);
             if (done.IsSuccess() == false)
@@ -242,7 +247,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
         }
 
-        private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender, MessageEventArgs messageEventArgs)
+        private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender,
+            MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -263,7 +269,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 var s = dr["has_been_sent"].ToString();
-                var b2 = s == "1" || s == "S";
+                var b2 = s is "1" or "S";
 
                 var s2 = b2 ? "S" : "N";
                 s2 += "\n";
@@ -300,14 +306,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo);
 
-            if (extraInfo)
-            {
-                var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo,
-                    telegramBotAbstract, count);
-                return r2;
-            }
-
-            return r1;
+            if (!extraInfo) return r1;
+            var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo,
+                telegramBotAbstract, count);
+            return r2;
         }
 
         private static async Task<MessageSentResult> SendExtraInfoDbForThisMessage(MessageSentResult r1, DataRow dr,
@@ -364,7 +366,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var dict = new Dictionary<string, string>
             {
-                {"en", text1}
+                { "en", text1 }
             };
             var text2 = new Language(dict);
             return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
@@ -378,7 +380,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var botId = Convert.ToInt64(dr["from_id_bot"]);
             var botClass = GlobalVariables.Bots[botId];
 
-            long typeI = Convert.ToInt64(dr["type"]);
+            var typeI = Convert.ToInt64(dr["type"]);
             var typeT = GetMessageTypeClassById(typeI);
             if (typeT == null)
                 return new MessageSentResult(false, null, chatTypeToSendTo);
@@ -603,7 +605,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var success = await m.Delete(messageEventArgs);
                     if (success)
-                    {
                         lock (GlobalVariables.MessagesToDelete)
                         {
                             GlobalVariables.MessagesToDelete.RemoveAt(i);
@@ -611,11 +612,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 GlobalVariables.MessagesToDelete);
                             continue;
                         }
-                    }
-                    else
-                    {
-                        //todo: che fare?
-                    }
                 }
 
                 i++;

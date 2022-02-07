@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -47,45 +47,30 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             var r = await userbot.GetHistoryAsync(peer, (int)_messageIdFrom.Value,
                 offsetDate, 0, 1);
 
-            if (r == null) return null;
+            if (r is not TLMessagesSlice tlMessagesSlice) return null;
 
-            if (r is TLMessagesSlice tlMessagesSlice)
-                if (tlMessagesSlice.Messages.Count == 1)
-                {
-                    var t = tlMessagesSlice.Messages[0];
-                    if (t == null)
-                        return null;
+            if (tlMessagesSlice.Messages.Count != 1) return null;
+            var t = tlMessagesSlice.Messages[0];
+            if (t is not TLMessage t2)
+                return null;
 
-                    if (t is TLMessage t2)
-                    {
-                        var t3 = t2.Media;
-                        if (t3 == null)
-                            return null;
+            var t3 = t2.Media;
 
-                        if (t3 is TLMessageMediaPhoto tlPhoto)
-                        {
-                            var t4 = tlPhoto.Photo;
-                            if (t4 == null) return null;
+            if (t3 is not TLMessageMediaPhoto tlPhoto) return null;
+            var t4 = tlPhoto.Photo;
+            if (t4 is not TLPhoto t5) return null;
 
-                            if (t4 is TLPhoto t5)
-                            {
-                                var t6 = t5.Sizes;
-                                var t7 = BestPhoto(t6);
-                                if (t7 == null)
-                                    return null;
-
-                                if (t7 is TLPhotoSize t8)
-                                    //todo
-                                    return new Tuple<TLAbsInputFile, string>(new TLInputFile(), filename);
-
-                                //var fileResult = (TLInputFile)await userbot.UploadFile(filename, new StreamReader("tmp/" + filename));
-                                //return fileResult;
-                            }
-                        }
-                    }
-                }
-
-            return null;
+            var t6 = t5.Sizes;
+            var t7 = BestPhoto(t6);
+            return t7 switch
+            {
+                null => null,
+                //todo
+                TLPhotoSize t8 => new Tuple<TLAbsInputFile, string>(new TLInputFile(), filename),
+                //var fileResult = (TLInputFile)await userbot.UploadFile(filename, new StreamReader("tmp/" + filename));
+                //return fileResult;
+                _ => null
+            };
         }
 
         private static TLAbsPhotoSize BestPhoto(IEnumerable<TLAbsPhotoSize> t6)

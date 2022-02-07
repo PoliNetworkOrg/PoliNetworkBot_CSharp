@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -39,11 +39,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
                 "INSERT INTO Photos (file_id, file_size, height, width, unique_id) VALUES (@fi, @fs, @h, @w, @u)";
             var keyValuePairs = new Dictionary<string, object>
             {
-                {"@fi", photoLarge.FileId},
-                {"@fs", photoLarge.FileSize},
-                {"@h", photoLarge.Height},
-                {"@w", photoLarge.Width},
-                {"@u", photoLarge.FileUniqueId}
+                { "@fi", photoLarge.FileId },
+                { "@fs", photoLarge.FileSize },
+                { "@h", photoLarge.Height },
+                { "@w", photoLarge.Width },
+                { "@u", photoLarge.FileUniqueId }
             };
 
             SqLite.Execute(q, keyValuePairs);
@@ -63,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             const string q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
             {
-                {"@fi", fileUniqueId}
+                { "@fi", fileUniqueId }
             };
             var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
             var r2 = SqLite.GetFirstValueFromDataTable(r1);
@@ -86,7 +86,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             const string q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
             {
-                {"@fi", fileId}
+                { "@fi", fileId }
             };
             var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
             var r2 = SqLite.GetFirstValueFromDataTable(r1);
@@ -115,8 +115,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             var dr = dt.Rows[0];
 
             return new ObjectPhoto((int)Convert.ToInt64(dr["id_photo"]), dr["file_id"].ToString(),
-              (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
-              (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
+                (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
+                (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
                 messageIdFrom, chatId, chatType);
         }
     }

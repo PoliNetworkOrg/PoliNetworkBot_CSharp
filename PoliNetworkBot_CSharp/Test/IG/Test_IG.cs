@@ -1,11 +1,15 @@
-﻿using InstagramApiSharp.API.Builder;
+﻿#region
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Test.IG
 {
@@ -20,11 +24,11 @@ namespace PoliNetworkBot_CSharp.Test.IG
             string[] c = null;
             try
             {
-                c = File.ReadAllLines(Paths.IG.CREDENTIALS);
+                c = await File.ReadAllLinesAsync(Paths.IG.CREDENTIALS);
             }
             catch
             {
-                File.WriteAllText(Paths.IG.CREDENTIALS, "");
+                await File.WriteAllTextAsync(Paths.IG.CREDENTIALS, "");
             }
 
             if (c == null || c.Length < 2)
@@ -50,52 +54,49 @@ namespace PoliNetworkBot_CSharp.Test.IG
 
             ;
 
-            if (!x.IsUserAuthenticated)
-            {
-                // login
-                Logger.WriteLine($"Logging in as {userSession.UserName}");
-                delay.Disable();
-                var logInResult = await x.LoginAsync();
-                delay.Enable();
-                if (!logInResult.Succeeded)
-                    if (logInResult.Value == InstaLoginResult.ChallengeRequired)
-                    {
-                        var challenge = await x.GetChallengeRequireVerifyMethodAsync();
-                        if (challenge.Succeeded)
-                        {
-                            if (challenge.Value.SubmitPhoneRequired)
-                            {
-                                ;
-                            }
-                            else
-                            {
-                                if (challenge.Value.StepData != null)
-                                {
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber))
-                                    {
-                                        ;
-                                        Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber)");
-                                    }
-                                    if (!string.IsNullOrEmpty(challenge.Value.StepData.Email))
-                                    {
-                                        ;
-                                        Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.Email)");
-                                    }
+            if (x.IsUserAuthenticated) return true;
+            // login
+            Logger.WriteLine($"Logging in as {userSession.UserName}");
+            delay.Disable();
+            var logInResult = await x.LoginAsync();
+            delay.Enable();
+            if (logInResult.Succeeded) return true;
 
-                                    ;
-                                }
-                            }
-                        }
-                        else
+            if (logInResult.Value != InstaLoginResult.ChallengeRequired) return true;
+
+            var challenge = await x.GetChallengeRequireVerifyMethodAsync();
+            if (challenge.Succeeded)
+            {
+                if (challenge.Value.SubmitPhoneRequired)
+                {
+                    ;
+                }
+                else
+                {
+                    if (challenge.Value.StepData != null)
+                    {
+                        if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber))
                         {
                             ;
+                            Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber)");
                         }
+
+                        if (!string.IsNullOrEmpty(challenge.Value.StepData.Email))
+                        {
+                            ;
+                            Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.Email)");
+                        }
+
+                        ;
                     }
-
-                ;
-
-                return true;
+                }
             }
+            else
+            {
+                ;
+            }
+
+            ;
 
             return true;
         }

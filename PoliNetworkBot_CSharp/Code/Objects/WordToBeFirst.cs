@@ -1,5 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -37,11 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool IsTaken(List<string> taken)
         {
-            foreach (var r in taken)
-                if (r == word)
-                    return true;
-
-            return false;
+            return taken.Any(r => r == word);
         }
 
         internal string GetWord()

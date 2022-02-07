@@ -1,9 +1,13 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.WebObject;
+﻿#region
+
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.WebObject;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -18,28 +22,27 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             request.CachePolicy = new RequestCachePolicy(requestCacheLevel);
             var response = (HttpWebResponse)request.GetResponse();
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
+                return new WebReply(null, response.StatusCode);
+
+            var receiveStream = response.GetResponseStream();
+            try
             {
-                var receiveStream = response.GetResponseStream();
-                try
-                {
-                    StreamReader readStream;
-                    if (string.IsNullOrWhiteSpace(response.CharacterSet))
-                        readStream = new StreamReader(receiveStream);
-                    else
-                        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                StreamReader readStream;
+                readStream = string.IsNullOrWhiteSpace(response.CharacterSet)
+                    ? new StreamReader(receiveStream)
+                    : new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
 
-                    var data = readStream.ReadToEnd();
+                var data = readStream.ReadToEnd();
 
-                    response.Close();
-                    readStream.Close();
+                response.Close();
+                readStream.Close();
 
-                    return new WebReply(data, HttpStatusCode.OK);
-                }
-                catch
-                {
-                    return new WebReply(null, HttpStatusCode.ExpectationFailed);
-                }
+                return new WebReply(data, HttpStatusCode.OK);
+            }
+            catch
+            {
+                return new WebReply(null, HttpStatusCode.ExpectationFailed);
             }
 
             return new WebReply(null, response.StatusCode);

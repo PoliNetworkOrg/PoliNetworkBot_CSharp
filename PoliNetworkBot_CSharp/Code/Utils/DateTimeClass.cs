@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -55,51 +55,51 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "years":
                 case "anni":
                 case "anno":
-                    {
-                        return 60 * 60 * 24 * 365;
-                    }
+                {
+                    return 60 * 60 * 24 * 365;
+                }
 
                 case "stagioni":
                 case "stagione":
-                    {
-                        return 60 * 60 * 24 * 91;
-                    }
+                {
+                    return 60 * 60 * 24 * 91;
+                }
 
                 case "mo":
                 case "month":
                 case "months":
                 case "mesi":
                 case "mese":
-                    {
-                        return 60 * 60 * 24 * 30;
-                    }
+                {
+                    return 60 * 60 * 24 * 30;
+                }
 
                 case "w":
                 case "week":
                 case "weeks":
                 case "settimane":
                 case "settimana":
-                    {
-                        return 60 * 60 * 24 * 7;
-                    }
+                {
+                    return 60 * 60 * 24 * 7;
+                }
 
                 case "d":
                 case "day":
                 case "days":
                 case "giorni":
                 case "giorno":
-                    {
-                        return 60 * 60 * 24;
-                    }
+                {
+                    return 60 * 60 * 24;
+                }
 
                 case "h":
                 case "hour":
                 case "hours":
                 case "ore":
                 case "ora":
-                    {
-                        return 60 * 60;
-                    }
+                {
+                    return 60 * 60;
+                }
 
                 case "m":
                 case "min":
@@ -108,14 +108,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "minutes":
                 case "minuti":
                 case "minuto":
-                    {
-                        return 60;
-                    }
+                {
+                    return 60;
+                }
 
                 default:
-                    {
-                        return 1;
-                    }
+                {
+                    return 1;
+                }
             }
         }
 
@@ -140,10 +140,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case "ora":
                 case "now":
-                    {
-                        return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(DateTime.Now, true),
-                            null, s[1]);
-                    }
+                {
+                    return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(DateTime.Now, true),
+                        null, s[1]);
+                }
             }
 
             return await AskDate2Async(id, lang, sender, username);
@@ -155,8 +155,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var lang2 = new Language(new Dictionary<string, string>
             {
-                {"it", "Inserisci una data (puoi scrivere anche 'fra un'ora')"},
-                {"en", "Insert a date (you can also write 'in an hour')"}
+                { "it", "Inserisci una data (puoi scrivere anche 'fra un'ora')" },
+                { "en", "Insert a date (you can also write 'in an hour')" }
             });
 
             var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
@@ -226,8 +226,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                     var d1 = new DateTime((int)Convert.ToInt64(s2[2]),
                                         (int)Convert.ToInt64(s2[1]),
                                         (int)Convert.ToInt64(s2[0]),
-                                       (int)Convert.ToInt64(s3[0]),
-                                       (int)Convert.ToInt64(s3[1]),
+                                        (int)Convert.ToInt64(s3[0]),
+                                        (int)Convert.ToInt64(s3[1]),
                                         (int)seconds);
 
                                     return new Tuple<DateTime?, Exception>(d1, null);
@@ -290,8 +290,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             (int)Convert.ToInt64(x[0]),
                             (int)Convert.ToInt64(x[1]),
                             (int)Convert.ToInt64(x[2])),
-                            null
-                        );
+                        null
+                    );
                 }
             }
             else
@@ -339,35 +339,35 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 case "un ora":
                 case "1 hour":
                 case "1 ora":
-                    {
-                        return new Tuple<DateTime?, Exception>(DateTime.Now.AddHours(1), null);
-                    }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddHours(1), null);
+                }
 
                 case "un mese":
                 case "month":
                 case "1 mese":
                 case "1 month":
-                    {
-                        return new Tuple<DateTime?, Exception>(DateTime.Now.AddMonths(1), null);
-                    }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddMonths(1), null);
+                }
 
                 case "giorno":
                 case "day":
                 case "un giorno":
                 case "1 giorno":
                 case "1 day":
-                    {
-                        return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
-                    }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
+                }
 
                 case "anno":
                 case "year":
                 case "un anno":
                 case "1 anno":
                 case "1 year":
-                    {
-                        return new Tuple<DateTime?, Exception>(DateTime.Now.AddYears(1), null);
-                    }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddYears(1), null);
+                }
             }
 
             if (reply.StartsWith("un'"))
@@ -377,9 +377,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (reply.Contains("-")) return GetDateTimeFromString(reply);
 
             var i = GetHowManySeconds(reply);
-            if (i == null) return null;
-
-            return new Tuple<DateTime?, Exception>(DateTime.Now.AddSeconds(i.Value), null);
+            return i == null ? null : new Tuple<DateTime?, Exception>(DateTime.Now.AddSeconds(i.Value), null);
         }
 
         internal static ValueWithException<DateTime?> GetFromString(string v)
@@ -401,7 +399,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             {
                                 var orario = v4[0].Split(':');
                                 var d2 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]),
-                                    (int)Convert.ToInt64(data[2]), (int)Convert.ToInt64(orario[0]), (int)Convert.ToInt64(orario[1]),
+                                    (int)Convert.ToInt64(data[2]), (int)Convert.ToInt64(orario[0]),
+                                    (int)Convert.ToInt64(orario[1]),
                                     (int)Convert.ToInt64(orario[2]), (int)Convert.ToInt64(v4[1].Trim()[..3]));
                                 return new ValueWithException<DateTime?>(d2, null);
                             }
@@ -411,7 +410,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 else if (v.Contains('-'))
                 {
                     var data = v.Split('-');
-                    var d1 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]), (int)Convert.ToInt64(data[2]));
+                    var d1 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]),
+                        (int)Convert.ToInt64(data[2]));
                     return new ValueWithException<DateTime?>(d1, null);
                 }
             }

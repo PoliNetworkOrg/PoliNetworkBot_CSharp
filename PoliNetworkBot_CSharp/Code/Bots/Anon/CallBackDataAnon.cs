@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {

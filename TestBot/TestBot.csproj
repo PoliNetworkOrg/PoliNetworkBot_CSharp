@@ -9,19 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="InstagramApiSharp" Version="1.7.1" />
-        <PackageReference Include="nunit" Version="3.13.2" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+        <PackageReference Include="InstagramApiSharp" Version="1.7.1"/>
+        <PackageReference Include="nunit" Version="3.13.2"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Code\Bots" />
-        <Folder Include="Code\Enums" />
+        <Folder Include="Code\Bots"/>
+        <Folder Include="Code\Enums"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj" />
+        <ProjectReference Include="..\PoliNetworkBot_CSharp\PoliNetworkBot_CSharp.csproj"/>
     </ItemGroup>
 
 </Project>

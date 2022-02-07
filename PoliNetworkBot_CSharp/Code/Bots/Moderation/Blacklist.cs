@@ -1,11 +1,12 @@
 #region
 
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System.Collections.Generic;
-using System.Linq;
 using Telegram.Bot.Types;
 
 #endregion
@@ -21,17 +22,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             List<string> words = new() { text };
             List<string> splitBy = new() { " ", "\"", "'" };
-            foreach (var splitBy2 in splitBy)
-            {
-                words = SplitTextBy(words, splitBy2);
-            }
+            words = splitBy.Aggregate(words, SplitTextBy);
 
-            if (words != null && words.Count > 0)
-            {
-                var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
-                if (words2.Any(word => CheckSpamLink(word, groupId) == SpamType.SPAM_LINK))
-                    return SpamType.SPAM_LINK;
-            }
+            if (words is not { Count: > 0 })
+                return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
+                    ? SpamType.NOT_ALLOWED_WORDS
+                    : CheckForFormatMistakes(text, groupId);
+            var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            if (words2.Any(word => CheckSpamLink(word, groupId) == SpamType.SPAM_LINK))
+                return SpamType.SPAM_LINK;
 
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
@@ -46,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             List<string> r = new();
             foreach (var vs2 in vs)
             {
-                List<string> words = vs2.Split(v).ToList();
+                var words = vs2.Split(v).ToList();
                 if (words != null)
                     r.AddRange(words);
             }
@@ -112,31 +111,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static string RemoveUselessCharacters(string s3)
         {
-            if (string.IsNullOrEmpty(s3))
-                return null;
-
-            var r = "";
-            foreach (var c in s3)
-                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
-                    r += c;
-
-            return r;
+            return string.IsNullOrEmpty(s3)
+                ? null
+                : s3.Where(c => c is >= 'a' and <= 'z' || c >= 'A' && c <= 'Z')
+                    .Aggregate("", (current, c) => current + c);
         }
 
         private static SpamType CheckSpamLink(string text, long? groupId)
         {
-            switch (groupId)
+            return groupId switch
             {
-                case -1001307671408: //gruppo politica
-                    {
-                        return SpamType.ALL_GOOD;
-                    }
-
-                default:
-                    {
-                        return CheckSpamLink_DefaultGroup(text);
-                    }
-            }
+                -1001307671408 => //gruppo politica
+                    SpamType.ALL_GOOD,
+                _ => CheckSpamLink_DefaultGroup(text)
+            };
         }
 
         private static SpamType CheckSpamLink_DefaultGroup(string text)
@@ -162,22 +150,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return b1 ? SpamType.SPAM_LINK : SpamType.ALL_GOOD;
             }
 
-            if (text.Contains("t.me/"))
-            {
-                if (text.Contains("t.me/c/"))
-                    return SpamType.ALL_GOOD;
+            if (!text.Contains("t.me/"))
+                return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+            if (text.Contains("t.me/c/"))
+                return SpamType.ALL_GOOD;
 
-                var text1 = text.ToLower();
-                var t2 = text1.Split("/");
-                var t3 = Find(t2, "t.me");
-                if (t3 != null)
-                {
-                    var t4 = t2[t3.Value + 1];
-                    var valid = CheckIfAllowedTag(t4);
-                    if (valid == SpamType.ALL_GOOD)
-                        return SpamType.ALL_GOOD;
-                }
-            }
+            var text1 = text.ToLower();
+            var t2 = text1.Split("/");
+            var t3 = Find(t2, "t.me");
+            if (t3 == null) return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+            var t4 = t2[t3.Value + 1];
+            var valid = CheckIfAllowedTag(t4);
+            if (valid == SpamType.ALL_GOOD)
+                return SpamType.ALL_GOOD;
 
             return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         }
@@ -195,7 +180,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             return GlobalVariables.AllowedTags == null
                 ? SpamType.SPAM_LINK
-                : GlobalVariables.AllowedTags.Contains(t4) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+                : GlobalVariables.AllowedTags.Contains(t4)
+                    ? SpamType.ALL_GOOD
+                    : SpamType.SPAM_LINK;
         }
 
         private static long? Find(string[] t2, string v)
@@ -220,7 +207,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             link = link.Trim();
 
-            System.Data.DataTable dt = null;
+            DataTable dt = null;
             try
             {
                 dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
@@ -246,12 +233,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         internal static SpamType IsSpam(PhotoSize[] photo)
         {
             var biggerphoto = UtilsPhoto.GetLargest(photo);
-            if (biggerphoto == null)
-                return SpamType.ALL_GOOD;
+            return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD;
 
             //todo: analizzare la foto con un ocr
-
-            return SpamType.ALL_GOOD;
         }
     }
 }

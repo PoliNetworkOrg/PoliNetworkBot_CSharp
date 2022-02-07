@@ -1,11 +1,15 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Utils;
+﻿#region
+
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -45,9 +49,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool ToDelete()
         {
-            if (DateTime.Now > timeToDelete)
-                return true;
-            return false;
+            return DateTime.Now > timeToDelete;
         }
 
         internal async Task<bool> Delete(MessageEventArgs e2)

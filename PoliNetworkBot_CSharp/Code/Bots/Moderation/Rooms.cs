@@ -1,17 +1,21 @@
-﻿using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -24,32 +28,32 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var question = new Language(new Dictionary<string, string>
             {
-                {"it", "Scegli:"},
-                {"en", "Choose:"}
+                { "it", "Scegli:" },
+                { "en", "Choose:" }
             });
 
             var options2 = new List<Language>
             {
                 new(new Dictionary<string, string>
                 {
-                    {"it", "Cerca aule"},
-                    {"en", "Search classroom"}
+                    { "it", "Cerca aule" },
+                    { "en", "Search classroom" }
                 }),
                 new(new Dictionary<string, string>
                 {
-                    {"it", "Aule libere"},
-                    {"en", "Free classroom"}
+                    { "it", "Aule libere" },
+                    { "en", "Free classroom" }
                 }),
                 new(new Dictionary<string, string>
                 {
-                    {"it", "Occupazioni del giorno"},
-                    {"en", "Occupancies of the day"}
+                    { "it", "Occupazioni del giorno" },
+                    { "en", "Occupancies of the day" }
                 }),
 
                 new(new Dictionary<string, string>
                 {
-                    {"it", "Aiuto"},
-                    {"en", "Help"}
+                    { "it", "Aiuto" },
+                    { "en", "Help" }
                 })
             };
             var o3 = KeyboardMarkup.ArrayToMatrixString(options2);
@@ -64,34 +68,34 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (chosen.Value)
             {
                 case 0:
-                    {
-                        await SearchClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await SearchClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 1:
-                    {
-                        await FreeClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await FreeClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 2:
-                    {
-                        await OccupanciesOfTheDayAsync(sender, e);
-                        return;
-                    }
+                {
+                    await OccupanciesOfTheDayAsync(sender, e);
+                    return;
+                }
 
                 case 3:
-                    {
-                        await HelpAsync(sender, e);
-                        return;
-                    }
+                {
+                    await HelpAsync(sender, e);
+                    return;
+                }
             }
 
             var text = new Language(new Dictionary<string, string>
             {
-                {"it", "Hai compiuto una scelta che non era possibile compiere."},
-                {"en", "You choose something that was not possible to choose"}
+                { "it", "Hai compiuto una scelta che non era possibile compiere." },
+                { "en", "You choose something that was not possible to choose" }
             });
             //wrong choice: (should be impossible)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
@@ -104,8 +108,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var text = new Language(new Dictionary<string, string>
             {
-                {"it", "Usa /rooms per cercare le aule!"},
-                {"en", "Use /rooms to find rooms!"}
+                { "it", "Usa /rooms per cercare le aule!" },
+                { "en", "Use /rooms to find rooms!" }
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode, e.Message.From.Username, text, ParseMode.Html, null);
@@ -118,8 +122,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var text4 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Errore nella consultazione del sito del polimi!"},
-                    {"en", "Error while getting polimi website!"}
+                    { "it", "Errore nella consultazione del sito del polimi!" },
+                    { "en", "Error while getting polimi website!" }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
@@ -136,8 +140,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var text3 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Nessuna aula libera trovata!"},
-                    {"en", "No free rooms found!"}
+                    { "it", "Nessuna aula libera trovata!" },
+                    { "en", "No free rooms found!" }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
@@ -147,12 +151,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var reply_text = "";
-            foreach (var room in t4) reply_text += room + "\n";
+            var reply_text = t4.Aggregate("", (current, room) => current + room + "\n");
 
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", reply_text}
+                { "en", reply_text }
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
@@ -166,35 +169,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var question = new Language(new Dictionary<string, string>
             {
-                {"it", "Ora di inizio? (esempio 8:15)"},
-                {"en", "Start time? (example 8:15)"}
+                { "it", "Ora di inizio? (esempio 8:15)" },
+                { "en", "Start time? (example 8:15)" }
             });
             var start = await AskUser.AskAsync(e.Message.From.Id, question,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
             var question2 = new Language(new Dictionary<string, string>
             {
-                {"it", "Ora di fine? (esempio 11:15)"},
-                {"en", "End time? (example 11:15)"}
+                { "it", "Ora di fine? (esempio 11:15)" },
+                { "en", "End time? (example 11:15)" }
             });
             var end = await AskUser.AskAsync(e.Message.From.Id, question2,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
-            if (start.Contains(":") && end.Contains(":"))
-            {
-                var start2 = start.Split(":");
-                var end2 = end.Split(":");
+            if (!start.Contains(":") || !end.Contains(":")) return null;
+            var start2 = start.Split(":");
+            var end2 = end.Split(":");
 
-                try
-                {
-                    var dt1 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(start2[0]), (int)Convert.ToInt64(start2[1]), 0);
-                    var dt2 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(end2[0]), (int)Convert.ToInt64(end2[1]), 0);
-                    return new Tuple<DateTime, DateTime>(dt1, dt2);
-                }
-                catch
-                {
-                    return null;
-                }
+            try
+            {
+                var dt1 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(start2[0]), (int)Convert.ToInt64(start2[1]), 0);
+                var dt2 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(end2[0]), (int)Convert.ToInt64(end2[1]), 0);
+                return new Tuple<DateTime, DateTime>(dt1, dt2);
+            }
+            catch
+            {
+                return null;
             }
 
             return null;
@@ -212,40 +213,38 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (child == null)
                     continue;
 
-                if (child.GetClasses().Contains("normalRow"))
-                    if (child.ChildNodes != null)
+                if (!child.GetClasses().Contains("normalRow")) continue;
+                if (child.ChildNodes == null) continue;
+                var isRowEmptyBool = IsRowEmpty(child, start, stop);
+                if (isRowEmptyBool == null || !isRowEmptyBool.Value) continue;
+                try
+                {
+                    var a2 = child.ChildNodes[1];
+                    if (a2.ChildNodes != null && a2.ChildNodes.Count > 0)
                     {
-                        var isRowEmptyBool = IsRowEmpty(child, start, stop);
-                        if (isRowEmptyBool != null && isRowEmptyBool.Value)
-                            try
-                            {
-                                var a2 = child.ChildNodes[1];
-                                if (a2.ChildNodes != null && a2.ChildNodes.Count > 0)
-                                {
-                                    var toAdd = false;
-                                    var name = "";
+                        var toAdd = false;
+                        var name = "";
 
-                                    var a1 = a2.ChildNodes[0];
-                                    name = a1.InnerHtml.Trim();
-                                    if (string.IsNullOrEmpty(name) == false)
-                                    {
-                                        toAdd = true;
-                                    }
-                                    else if (a2.ChildNodes.Count > 1)
-                                    {
-                                        var a3 = a2.ChildNodes[1];
-                                        name = a3.InnerHtml.Trim();
-                                        if (string.IsNullOrEmpty(name) == false) toAdd = true;
-                                    }
+                        var a1 = a2.ChildNodes[0];
+                        name = a1.InnerHtml.Trim();
+                        if (string.IsNullOrEmpty(name) == false)
+                        {
+                            toAdd = true;
+                        }
+                        else if (a2.ChildNodes.Count > 1)
+                        {
+                            var a3 = a2.ChildNodes[1];
+                            name = a3.InnerHtml.Trim();
+                            if (string.IsNullOrEmpty(name) == false) toAdd = true;
+                        }
 
-                                    if (toAdd) result.Add(name);
-                                }
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                        if (toAdd) result.Add(name);
                     }
+                }
+                catch
+                {
+                    ;
+                }
             }
 
             return result;
@@ -286,8 +285,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var question = new Language(new Dictionary<string, string>
             {
-                {"it", "Nome dell'aula?"},
-                {"en", "Name of the room?"}
+                { "it", "Nome dell'aula?" },
+                { "en", "Name of the room?" }
             });
             var sigla = await AskUser.AskAsync(e.Message.From.Id, question, sender,
                 e.Message.From.LanguageCode, e.Message.From.Username);
@@ -364,7 +363,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var result = "https://www7.ceda.polimi.it/spazi/spazi/controller/" + t10.Value;
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", result}
+                { "en", result }
             });
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode, e.Message.From.Username,
@@ -420,8 +419,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Errore nella consultazione del sito del polimi!"},
-                    {"en", "Error while getting polimi website!"}
+                    { "it", "Errore nella consultazione del sito del polimi!" },
+                    { "en", "Error while getting polimi website!" }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
@@ -433,8 +432,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var question = new Language(new Dictionary<string, string>
             {
-                {"en", "Which room? (example: 3.0.1)"},
-                {"it", "Quale aula? (esempio 3.0.1)"}
+                { "en", "Which room? (example: 3.0.1)" },
+                { "it", "Quale aula? (esempio 3.0.1)" }
             });
             var roomName = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
@@ -446,8 +445,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Aula non trovata!"},
-                    {"en", "Room not found!"}
+                    { "it", "Aula non trovata!" },
+                    { "en", "Room not found!" }
                 });
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
@@ -468,7 +467,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
             var text = new Language(new Dictionary<string, string>
             {
-                {"en", roomName}
+                { "en", roomName }
             });
             var document = UtilsFileText.GenerateFileFromString(htmlresult, roomName + ".html",
                 roomName, "text/html");
@@ -481,24 +480,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            int day;
-            int month;
-            int year;
-
-            var datetime = await DateTimeClass.AskDateAsync(e.Message.From.Id, "Scegli un giorno", "it", sender,
+            var (dateTimeSchedule, exception, item3) = await DateTimeClass.AskDateAsync(e.Message.From.Id,
+                "Scegli un giorno", "it", sender,
                 e.Message.From.Username);
 
-            if (datetime.Item2 != null)
-            {
-                throw datetime.Item2;
-            }
+            if (exception != null) throw exception;
 
-            var d2 = datetime.Item1.GetDate();
+            var d2 = dateTimeSchedule.GetDate();
             if (d2 == null) return null;
 
-            day = d2.Value.Day;
-            month = d2.Value.Month;
-            year = d2.Value.Year;
+            var day = d2.Value.Day;
+            var month = d2.Value.Month;
+            var year = d2.Value.Year;
 
             var sede = await AskUser.GetSedeAsync(sender, e);
             if (string.IsNullOrEmpty(sede)) return null;
@@ -570,13 +563,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 var child = table.ChildNodes[i];
 
-                if (child.ChildNodes != null && child.GetClasses().Contains("normalRow"))
-                    foreach (var child2 in child.ChildNodes)
-                    {
-                        var found = StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2);
-                        if (found != null && found.Value)
-                            return i;
-                    }
+                if (child.ChildNodes == null || !child.GetClasses().Contains("normalRow")) continue;
+                if (child.ChildNodes
+                    .Select(child2 => StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2))
+                    .Any(found => found != null && found.Value)) return i;
             }
 
             return null;

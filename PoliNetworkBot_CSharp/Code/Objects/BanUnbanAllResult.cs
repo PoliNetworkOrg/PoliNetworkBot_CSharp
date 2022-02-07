@@ -1,7 +1,11 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System.Collections.Generic;
 using System.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -22,8 +26,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             switch (ban_true_unban_false)
             {
                 case RestrictAction.UNBAN:
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {
                             "en",
@@ -40,12 +44,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                     });
 
-                        return text2;
-                    }
+                    return text2;
+                }
 
                 case RestrictAction.BAN:
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {
                             "en",
@@ -62,12 +66,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                     });
 
-                        return text2;
-                    }
+                    return text2;
+                }
 
                 case RestrictAction.MUTE:
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {
                             "en",
@@ -84,11 +88,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                     });
 
-                        return text2;
-                    }
+                    return text2;
+                }
                 case RestrictAction.UNMUTE:
-                    {
-                        var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                     {
                         {
                             "en",
@@ -105,8 +109,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         }
                     });
 
-                        return text2;
-                    }
+                    return text2;
+                }
             }
 
             return null;

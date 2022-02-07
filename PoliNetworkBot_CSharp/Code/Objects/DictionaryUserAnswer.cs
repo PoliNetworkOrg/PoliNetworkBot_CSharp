@@ -1,8 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -20,29 +24,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (!d.ContainsKey(idUser))
                 d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
 
-            if (d[idUser] == null)
-                d[idUser] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
-            if (botId != null)
-            {
-                if (!d[idUser].ContainsKey(botId.Value))
-                    d[idUser][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+            d[idUser] ??= new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
+            if (botId == null) return;
+            if (!d[idUser].ContainsKey(botId.Value))
+                d[idUser][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
 
-                if (d[idUser][botId.Value] == null)
-                    d[idUser][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+            d[idUser][botId.Value] ??= new Couple<AnswerTelegram, TaskCompletionSource<string>>();
 
-                d[idUser][botId.Value].Item1 = null;
-                d[idUser][botId.Value].Item1 = new AnswerTelegram();
-                d[idUser][botId.Value].Item1.Reset();
-            }
+            d[idUser][botId.Value].Item1 = null;
+            d[idUser][botId.Value].Item1 = new AnswerTelegram();
+            d[idUser][botId.Value].Item1.Reset();
         }
 
         internal void Delete(long idUser, long? botId)
         {
-            if (botId != null)
-            {
-                d[idUser][botId.Value].Item1 = null;
-                d[idUser][botId.Value].Item2 = null;
-            }
+            if (botId == null) return;
+            d[idUser][botId.Value].Item1 = null;
+            d[idUser][botId.Value].Item2 = null;
         }
 
         internal void SetAnswerProcessed(long idUser, long? botId, bool v)
@@ -67,8 +65,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
                                 var languageReply = new Language(new Dictionary<string, string>
                                 {
-                                    {"en", "You chose [" + result + "]"},
-                                    {"it", "Hai scelto [" + result + "]"}
+                                    { "en", "You chose [" + result + "]" },
+                                    { "it", "Hai scelto [" + result + "]" }
                                 });
                                 await telegramBotAbstract.SendTextMessageAsync(idUser,
                                     languageReply,
@@ -97,13 +95,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal TaskCompletionSource<string> GetNewTCS(long idUser, long? botId)
         {
-            if (botId != null)
-            {
-                d[idUser][botId.Value].Item2 = new TaskCompletionSource<string>();
-                return d[idUser][botId.Value].Item2;
-            }
-
-            return null;
+            if (botId == null) return null;
+            d[idUser][botId.Value].Item2 = new TaskCompletionSource<string>();
+            return d[idUser][botId.Value].Item2;
         }
 
         internal bool ContainsUser(long userId, long? botId)
@@ -115,10 +109,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal AnswerTelegram.State? GetState(long userId, long? botId)
         {
-            if (botId != null)
-                if (d[userId][botId.Value] != null)
-                    if (d[userId][botId.Value].Item1 != null)
-                        return d[userId][botId.Value].Item1.GetState();
+            if (botId == null) return null;
+            if (d[userId][botId.Value] == null) return null;
+            if (d[userId][botId.Value].Item1 != null)
+                return d[userId][botId.Value].Item1.GetState();
             return null;
         }
 

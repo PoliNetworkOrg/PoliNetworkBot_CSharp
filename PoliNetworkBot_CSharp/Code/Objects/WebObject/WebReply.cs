@@ -1,4 +1,8 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects.WebObject
 {

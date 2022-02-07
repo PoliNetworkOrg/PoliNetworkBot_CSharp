@@ -1,4 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿#region
+
+using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -6,11 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         internal static bool CheckIfOwner(long id)
         {
-            foreach (var x in GlobalVariables.Owners)
-                if (x.Item1 == id)
-                    return true;
-
-            return false;
+            return GlobalVariables.Owners.Any(x => x.Item1 == id);
         }
     }
 }

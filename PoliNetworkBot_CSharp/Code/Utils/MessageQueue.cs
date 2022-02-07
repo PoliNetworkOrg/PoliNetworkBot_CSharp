@@ -1,21 +1,26 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class MessageQueue
     {
+        public readonly ChatType ChatType;
         public KeyValuePair<long, TelegramBotAbstract> key;
-        public string text;
-        public ChatType ChatType;
         public ParseMode Parsemode;
+        public string text;
 
-        public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType, ParseMode parsemode)
+        public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType,
+            ParseMode parsemode)
         {
             this.key = key;
             this.text = text;
-            this.ChatType = chatType;
+            ChatType = chatType;
             Parsemode = parsemode;
         }
     }

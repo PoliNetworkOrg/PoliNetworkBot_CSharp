@@ -63,14 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool Matches(string r)
         {
-            if (_dict.Keys.Count == 0)
-                return false;
-
-            foreach (var key in _dict.Keys)
-                if (_dict[key] == r)
-                    return true;
-
-            return false;
+            return _dict.Keys.Count != 0 && _dict.Keys.Any(key => _dict[key] == r);
         }
     }
 }

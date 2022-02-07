@@ -1,4 +1,8 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿#region
+
+using PoliNetworkBot_CSharp.Code.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {

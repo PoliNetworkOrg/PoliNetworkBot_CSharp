@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia
             return _width;
         }
 
-        public TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient userbotClient)
+        public static TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient userbotClient)
         {
             throw new NotImplementedException();
         }

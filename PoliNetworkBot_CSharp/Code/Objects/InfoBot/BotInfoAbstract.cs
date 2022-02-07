@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
-using System;
-using System.Collections.Generic;
 
 #endregion
 

@@ -1,8 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -23,16 +27,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         internal string GetUsername()
         {
-            if (e != null) return e.Message.From.Username;
-
-            return null;
+            return e?.Message.From.Username;
         }
 
         internal string GetLanguageCode()
         {
-            if (e != null) return e.Message.From.LanguageCode;
-
-            return null;
+            return e?.Message.From.LanguageCode;
         }
 
         internal bool FromTelegram()
@@ -42,25 +42,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         internal Message GetMessage()
         {
-            if (e != null) return e.Message;
-
-            return null;
+            return e?.Message;
         }
 
         internal long? GetFromUserId()
         {
-            if (e != null) return e.Message.From.Id;
-
-            return null;
+            return e?.Message.From.Id;
         }
 
         internal long? GetFromUserIdOrPostId()
         {
-            if (e != null) return e.Message.From.Id;
-
-            if (e2 != null) return e2.postid;
-
-            return null;
+            return e != null ? e.Message.From.Id : e2?.postid;
         }
 
         internal async Task<MessageSentResult> SendMessageInQueueAsync(TelegramBotAbstract telegramBotAbstract)
@@ -77,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             var text = new Language(new Dictionary<string, string>
             {
-                {"en", e2.text}
+                { "en", e2.text }
             });
             var m1 = await telegramBotAbstract.SendTextMessageAsync(ConfigAnon.ModAnonCheckGroup, text,
                 ChatType.Group, "en", ParseMode.Html, null, null);

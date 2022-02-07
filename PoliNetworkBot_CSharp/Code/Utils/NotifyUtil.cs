@@ -1,10 +1,15 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -31,22 +36,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";
-                message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0 ? messageEventArgs.Message.Chat.Id.ToString() : "n" + ((-1) * messageEventArgs.Message.Chat.Id));
+                message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0
+                    ? messageEventArgs.Message.Chat.Id.ToString()
+                    : "n" + -1 * messageEventArgs.Message.Chat.Id);
                 message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
 
-                var langCode = "it";
+                const string langCode = "it";
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", message}
+                    { "it", message }
                 });
                 Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group, ChatType.Group,
+                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
+                    ChatType.Group,
                     ParseMode.Html, group_exception, true);
             }
         }
 
         internal static async Task NotifyOwners(ExceptionNumbered exception,
-            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null, string langCode = default_lang,
+            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null,
+            string langCode = default_lang,
             long? replyToMessageId2 = null)
         {
             if (sender == null)
@@ -102,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     message3 += "MessageArgs:\n";
-                    message3 += Newtonsoft.Json.JsonConvert.SerializeObject(messageEventArgs);
+                    message3 += JsonConvert.SerializeObject(messageEventArgs);
                 }
                 catch
                 {
@@ -118,8 +127,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var text = new Language(new Dictionary<string, string>
             {
-                {"it", "Eccezione! " + message3},
-                {"en", "Exception! " + message3}
+                { "it", "Eccezione! " + message3 },
+                { "en", "Exception! " + message3 }
             });
 
             var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
@@ -127,9 +136,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return;
         }
 
-        internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
+        internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs)
         {
-            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract, null, 0, null, messageEventArgs);
+            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract,
+                null, 0, null, messageEventArgs);
         }
 
         private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
@@ -140,7 +151,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
 
-        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs, int loopNumber = 0)
+        internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs, int loopNumber = 0)
         {
             await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
         }
@@ -154,10 +166,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo,
             TelegramBotAbstract sender)
         {
-            if (r1 == null)
-                return;
-
-            if (r1.Item1 == null)
+            if (r1?.Item1 == null)
                 return;
 
             if (r1.Item1.Value)
@@ -179,21 +188,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var dict = new Dictionary<string, string>
             {
-                {"en", message}
+                { "en", message }
             };
             var text = new Language(dict);
             await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
         }
 
         internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,
-            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, string v, string langCode, long? replyToMessageId = null)
+            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, string v, string langCode,
+            long? replyToMessageId = null)
         {
             MessageSentResult m = null;
             try
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    {"en", v}
+                    { "en", v }
                 });
                 m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -206,7 +216,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Number of exceptions: " + exceptions.Item2 + " - " + exceptions.Item1.Count}
+                    { "en", "Number of exceptions: " + exceptions.Item2 + " - " + exceptions.Item1.Count }
                 });
                 _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -236,7 +246,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "---End---"}
+                    { "en", "---End---" }
                 });
 
                 long? replyto = null;
@@ -259,30 +269,34 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is { Message: { } })
-                    {
-                        var message = "Restrict action: " + restrictAction;
-                        message += "\n";
-                        message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
-                                   "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" + messageEventArgs.Message.From?.Id + "</a>" + "]";
-                        message += "\n";
-                        message += "For reason: \n";
-                        message += reason;
-                        message += "\n";
-                        message += "-----";
-                        message += "\n";
-                        message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it"); ;
+                    if (messageEventArgs is not { Message: { } }) return;
 
-                        const string langCode = "it";
-                        var text2 = new Language(new Dictionary<string, string>
-                        {
-                            {"it", message}
-                        });
-                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, ban_notification_group,
-                            ChatType.Group,
-                            ParseMode.Html, group_exception, true);
-                    }
+                    var message = "Restrict action: " + restrictAction;
+                    message += "\n";
+                    message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null
+                                   ? "@" + messageEventArgs.Message.From?.Username
+                                   : "Unknown") + " [" +
+                               "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
+                               messageEventArgs.Message.From?.Id + "</a>" + "]";
+                    message += "\n";
+                    message += "For reason: \n";
+                    message += reason;
+                    message += "\n";
+                    message += "-----";
+                    message += "\n";
+                    message += done.Item1.GetLanguage(restrictAction, finalTarget, done.Item3).Select("it");
+                    ;
+
+                    const string langCode = "it";
+                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        { "it", message }
+                    });
+                    Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                    await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                        ban_notification_group,
+                        ChatType.Group,
+                        ParseMode.Html, group_exception, true);
                 }
             }
             catch (Exception e)
@@ -297,25 +311,29 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is { Message: { } })
-                    {
-                        var message = "Restrict action: " + "Simple Ban";
-                        message += "\n";
-                        message += "Restricted user: " + target + "[" + (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " + messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
-                        message += "\n";
-                        message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null ? "@" + messageEventArgs.Message.From?.Username : "Unknown") + " [" +
-                                   "<a href=tg://user?id=" + messageEventArgs.Message.From?.Id + ">" + messageEventArgs.Message.From?.Id + "</a>" + "]";
+                    if (messageEventArgs is not { Message: { } }) return;
+                    var message = "Restrict action: " + "Simple Ban";
+                    message += "\n";
+                    message += "Restricted user: " + target + "[" +
+                               (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " +
+                               messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
+                    message += "\n";
+                    message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null
+                                   ? "@" + messageEventArgs.Message.From?.Username
+                                   : "Unknown") + " [" +
+                               "<a href=tg://user?id=" + messageEventArgs.Message.From?.Id + ">" +
+                               messageEventArgs.Message.From?.Id + "</a>" + "]";
 
-                        const string langCode = "it";
-                        var text2 = new Language(new Dictionary<string, string>
-                        {
-                            {"it", message}
-                        });
-                        Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                        await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, ban_notification_group,
-                            ChatType.Group,
-                            ParseMode.Html, group_exception, true);
-                    }
+                    const string langCode = "it";
+                    var text2 = new Language(new Dictionary<string, string>
+                    {
+                        { "it", message }
+                    });
+                    Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                    await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                        ban_notification_group,
+                        ChatType.Group,
+                        ParseMode.Html, group_exception, true);
                 }
             }
             catch (Exception e)

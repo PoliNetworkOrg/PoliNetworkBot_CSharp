@@ -1,7 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HtmlAgilityPack;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -33,48 +37,47 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     if (lst[i].GetClasses().Contains(className)) result.Add(lst[i]);
 
                     var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                    if (childcollection == null) continue;
+                    lst.AddRange(childcollection);
                 }
 
                 return result;
             }
 
-            if (empty_cn && limit == null)
+            switch (empty_cn)
             {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
+                case true when limit == null:
                 {
-                    if (lst[i] == null) continue;
+                    lst.Add(doc);
+                    for (var i = 0; i < lst.Count; i++)
+                    {
+                        if (lst[i] == null) continue;
 
-                    if (lst[i].Name == tag) result.Add(lst[i]);
+                        if (lst[i].Name == tag) result.Add(lst[i]);
 
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                        var childcollection = lst[i].ChildNodes;
+                        if (childcollection == null) continue;
+                        lst.AddRange(childcollection);
+                    }
+
+                    return result;
                 }
-
-                return result;
-            }
-
-            if (empty_cn == false && empty_tag == false && limit == null)
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
+                case false when empty_tag == false && limit == null:
                 {
-                    if (lst[i] == null) continue;
+                    lst.Add(doc);
+                    for (var i = 0; i < lst.Count; i++)
+                    {
+                        if (lst[i] == null) continue;
 
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag) result.Add(lst[i]);
+                        if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag) result.Add(lst[i]);
 
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                        var childcollection = lst[i].ChildNodes;
+                        if (childcollection == null) continue;
+                        lst.AddRange(childcollection);
+                    }
+
+                    return result;
                 }
-
-                return result;
             }
 
             if (empty_tag && limit != null)
@@ -93,63 +96,62 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }
 
                     var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                    if (childcollection == null) continue;
+                    lst.AddRange(childcollection);
                 }
 
                 return result;
             }
 
-            if (empty_cn && limit != null)
+            switch (empty_cn)
             {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
+                case true when limit != null:
                 {
-                    if (lst[i] == null) continue;
-
-                    if (lst[i].Name == tag)
+                    lst.Add(doc);
+                    for (var i = 0; i < lst.Count; i++)
                     {
-                        result.Add(lst[i]);
+                        if (lst[i] == null) continue;
 
-                        if (result.Count == limit.Value)
-                            return result;
+                        if (lst[i].Name == tag)
+                        {
+                            result.Add(lst[i]);
+
+                            if (result.Count == limit.Value)
+                                return result;
+                        }
+
+                        var childcollection = lst[i].ChildNodes;
+                        if (childcollection == null) continue;
+                        lst.AddRange(childcollection);
                     }
 
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                    return result;
                 }
-
-                return result;
-            }
-
-            if (empty_cn == false && empty_tag == false && limit != null)
-            {
-                lst.Add(doc);
-                for (var i = 0; i < lst.Count; i++)
+                case false when empty_tag == false && limit != null:
                 {
-                    if (lst[i] == null) continue;
-
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
+                    lst.Add(doc);
+                    for (var i = 0; i < lst.Count; i++)
                     {
-                        result.Add(lst[i]);
+                        if (lst[i] == null) continue;
 
-                        if (result.Count == limit.Value)
-                            return result;
+                        if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
+                        {
+                            result.Add(lst[i]);
+
+                            if (result.Count == limit.Value)
+                                return result;
+                        }
+
+                        var childcollection = lst[i].ChildNodes;
+                        if (childcollection == null) continue;
+                        lst.AddRange(childcollection);
                     }
 
-                    var childcollection = lst[i].ChildNodes;
-                    if (childcollection != null)
-                        foreach (var child in childcollection)
-                            lst.Add(child);
+                    return result;
                 }
-
-                return result;
+                default:
+                    throw new ArgumentException();
             }
-
-            throw new ArgumentException();
         }
     }
 }

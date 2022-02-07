@@ -1,12 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#region
+
+using System;
+using System.Net.Cache;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Net.Cache;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
@@ -34,69 +38,67 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             foreach (var r5 in r4.Children())
             {
                 ;
-                if (r5 is JProperty r6)
-                {
-                    ;
+                if (r5 is not JProperty r6) continue;
+                ;
 
-                    if (r6.Value is JValue r7)
-                        switch (r6.Name)
+                if (r6.Value is JValue r7)
+                    switch (r6.Name)
+                    {
+                        case "PostID":
                         {
-                            case "PostID":
-                                {
-                                    postid = Convert.ToInt64(r7.Value);
-                                    break;
-                                }
-
-                            case "Text":
-                                {
-                                    text = r7.Value.ToString();
-                                    break;
-                                }
-
-                            case "PhotoID":
-                                {
-                                    long? p = null;
-                                    try
-                                    {
-                                        p = Convert.ToInt64(r7.Value);
-                                    }
-                                    catch
-                                    {
-                                        ;
-                                    }
-
-                                    photoid = p;
-
-                                    if (photoid <= 0) photoid = null;
-
-                                    break;
-                                }
-
-                            case "Approved":
-                                {
-                                    approved = r7.Value.ToString()[0];
-                                    break;
-                                }
-
-                            case "Password":
-                                {
-                                    password = r7.Value.ToString();
-                                    break;
-                                }
-
-                            case "Seen":
-                                {
-                                    seen = r7.Value.ToString()[0];
-                                    break;
-                                }
-
-                            case "WhenSubmitted":
-                                {
-                                    whensubmitted = Convert.ToDateTime(r7.Value);
-                                    break;
-                                }
+                            postid = Convert.ToInt64(r7.Value);
+                            break;
                         }
-                }
+
+                        case "Text":
+                        {
+                            text = r7.Value.ToString();
+                            break;
+                        }
+
+                        case "PhotoID":
+                        {
+                            long? p = null;
+                            try
+                            {
+                                p = Convert.ToInt64(r7.Value);
+                            }
+                            catch
+                            {
+                                ;
+                            }
+
+                            photoid = p;
+
+                            if (photoid <= 0) photoid = null;
+
+                            break;
+                        }
+
+                        case "Approved":
+                        {
+                            approved = r7.Value.ToString()[0];
+                            break;
+                        }
+
+                        case "Password":
+                        {
+                            password = r7.Value.ToString();
+                            break;
+                        }
+
+                        case "Seen":
+                        {
+                            seen = r7.Value.ToString()[0];
+                            break;
+                        }
+
+                        case "WhenSubmitted":
+                        {
+                            whensubmitted = Convert.ToDateTime(r7.Value);
+                            break;
+                        }
+                    }
             }
         }
 
@@ -141,17 +143,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
         {
             var approved = Approved(x);
-            if (x.userId != null)
-            {
-                var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.userId.Value + "&password=" +
-                          ConfigAnon.password + "&approved=" + approved;
-                var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
-                ThreadAsync.dictionary_webpost[x.userId.Value].approved = approved;
-                ThreadAsync.WriteDict();
-                return true;
-            }
-
-            return false;
+            if (x.userId == null) return false;
+            var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.userId.Value + "&password=" +
+                      ConfigAnon.password + "&approved=" + approved;
+            var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+            ThreadAsync.dictionary_webpost[x.userId.Value].approved = approved;
+            ThreadAsync.WriteDict();
+            return true;
         }
 
         private static char Approved(CallBackDataAnon x)

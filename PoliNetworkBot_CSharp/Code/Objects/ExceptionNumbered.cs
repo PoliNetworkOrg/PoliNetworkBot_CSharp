@@ -1,7 +1,11 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -32,10 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal bool AreTheySimilar(Exception item2)
         {
-            if (Message == item2.Message)
-                return true;
-
-            return false;
+            return Message == item2.Message;
         }
 
         internal int GetNumberOfTimes()
@@ -43,7 +44,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return v;
         }
 
-        internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
+        internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs)
         {
             if (telegramBotAbstract == null)
                 return false;

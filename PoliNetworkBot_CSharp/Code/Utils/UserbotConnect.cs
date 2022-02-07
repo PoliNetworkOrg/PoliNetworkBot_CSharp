@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using TeleSharp.TL;
 using TLSharp.Core;
 using TLSharp.Core.Exceptions;
@@ -55,9 +55,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 Logger.WriteLine(ex.Message);
 
                 var passwordSetting = await telegramClient.GetPasswordSetting();
-                var password = passwordToAuthenticate;
 
-                user = await telegramClient.MakeAuthWithPasswordAsync(passwordSetting, password);
+                user = await telegramClient.MakeAuthWithPasswordAsync(passwordSetting, passwordToAuthenticate);
             }
             catch (InvalidPhoneCodeException ex)
             {
@@ -78,7 +77,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (apiId == null)
                 return null;
 
-            var t = new TelegramClient((int)apiId.Value, userbot.GetApiHash(), sessionUserId: userbot.GetSessionUserId());
+            var t = new TelegramClient((int)apiId.Value, userbot.GetApiHash(),
+                sessionUserId: userbot.GetSessionUserId());
             await t.ConnectAsync();
 
             if (t.IsUserAuthorized())

@@ -1,5 +1,9 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -8,10 +12,6 @@ using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 
 #endregion
 
@@ -330,25 +330,25 @@ namespace PoliNetworkBot_CSharp.Code.Config
             foreach (var r2 in r1)
             {
                 ;
-                if (r2 is JProperty r3)
+                if (r2 is not JProperty r3) continue;
+                ;
+                switch (r3.Name)
                 {
-                    ;
-                    if (r3.Name == "Chat")
-                    {
+                    case "Chat":
                         chat = GetChatFromJson(r3);
-                    }
-                    else if (r3.Name == "LastUpdateInviteLinkTime")
+                        break;
+                    case "LastUpdateInviteLinkTime":
                     {
                         var d1 = GetLastUpdateLinkTimeFromJson(r3);
                         if (d1.HasValue())
                             lastUpdateLinkTime = d1.GetValue();
                         else
                             exceptions.AddRange(d1.GetExceptions());
+                        break;
                     }
-                    else if (r3.Name == "we_are_admin")
-                    {
+                    case "we_are_admin":
                         we_are_admin = GetWeAreAdminFromJson(r3);
-                    }
+                        break;
                 }
             }
 
@@ -366,13 +366,13 @@ namespace PoliNetworkBot_CSharp.Code.Config
                                   " (@id, @botid, @type, @title, @link, @lul, @valid)";
                 SqLite.Execute(q1, new Dictionary<string, object>
                 {
-                    {"@id", chat.id},
-                    {"@botid", botIdWhoInsertedThem},
-                    {"@type", chat.type},
-                    {"@title", chat.title},
-                    {"@link", chat.invite_link},
-                    {"@lul", lastUpdateLinkTime},
-                    {"@valid", we_are_admin}
+                    { "@id", chat.id },
+                    { "@botid", botIdWhoInsertedThem },
+                    { "@type", chat.type },
+                    { "@title", chat.title },
+                    { "@link", chat.invite_link },
+                    { "@lul", lastUpdateLinkTime },
+                    { "@valid", we_are_admin }
                 });
             }
             catch
@@ -388,19 +388,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
             ;
             var r4 = r3.First;
             ;
-            if (r4 is JValue r5)
-            {
-                ;
-                if (r5.Value == null)
-                    return null;
+            if (r4 is not JValue r5) return null;
+            ;
+            if (r5.Value == null)
+                return null;
 
-                if (r5.Value.ToString().ToLower() == "true")
-                    return true;
-
-                return false;
-            }
-
-            return null;
+            return r5.Value.ToString().ToLower() == "true";
         }
 
         private static ValueWithException<DateTime?> GetLastUpdateLinkTimeFromJson(JProperty r3)
@@ -408,16 +401,9 @@ namespace PoliNetworkBot_CSharp.Code.Config
             ;
             var r4 = r3.First;
             ;
-            if (r4 is JValue r5)
-            {
-                ;
-                if (r5.Value == null)
-                    return null;
-
-                return DateTimeClass.GetFromString(r5.Value.ToString());
-            }
-
-            return new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound());
+            if (r4 is not JValue r5) return new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound());
+            ;
+            return r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
         }
 
         private static ChatJson GetChatFromJson(JProperty r3)
@@ -438,16 +424,24 @@ namespace PoliNetworkBot_CSharp.Code.Config
                 if (r6 is JProperty r7)
                 {
                     ;
-                    if (r7.Name == "id")
-                        id = GetIdFromJson(r7);
-                    else if (r7.Name == "type")
-                        type = GetTypeFromJson(r7);
-                    else if (r7.Name == "title")
-                        title = GetTitleFromJson(r7);
-                    else if (r7.Name == "invite_link")
-                        invite_link = GetInviteLinkFromJson(r7);
-                    else
-                        Logger.WriteLine(r7);
+                    switch (r7.Name)
+                    {
+                        case "id":
+                            id = GetIdFromJson(r7);
+                            break;
+                        case "type":
+                            type = GetTypeFromJson(r7);
+                            break;
+                        case "title":
+                            title = GetTitleFromJson(r7);
+                            break;
+                        case "invite_link":
+                            invite_link = GetInviteLinkFromJson(r7);
+                            break;
+                        default:
+                            Logger.WriteLine(r7);
+                            break;
+                    }
                 }
             }
 
@@ -458,13 +452,7 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             var r8 = r7.First;
             ;
-            if (r8 is JValue r9)
-            {
-                if (r9.Value == null)
-                    return null;
-
-                return r9.Value.ToString();
-            }
+            if (r8 is JValue r9) return r9.Value?.ToString();
 
             return null;
         }
@@ -473,45 +461,29 @@ namespace PoliNetworkBot_CSharp.Code.Config
         {
             var r8 = r7.First;
             ;
-            if (r8 is JValue r9)
-            {
-                if (r9.Value == null)
-                    return null;
-
-                return r9.Value.ToString();
-            }
-
-            return null;
+            return r8 is not JValue r9 ? null : r9.Value?.ToString();
         }
 
         private static string GetTypeFromJson(JProperty r7)
         {
             var r8 = r7.First;
             ;
-            if (r8 is JValue r9)
-            {
-                if (r9.Value == null)
-                    return null;
-
-                return r9.Value.ToString();
-            }
-
-            return null;
+            return r8 is not JValue r9 ? null : r9.Value?.ToString();
         }
 
         private static long? GetIdFromJson(JProperty r7)
         {
             var r8 = r7.First;
 
-            if (r8 is JValue r9)
-                try
-                {
-                    return Convert.ToInt64(r9.Value);
-                }
-                catch
-                {
-                    ;
-                }
+            if (r8 is not JValue r9) return null;
+            try
+            {
+                return Convert.ToInt64(r9.Value);
+            }
+            catch
+            {
+                ;
+            }
 
             return null;
         }

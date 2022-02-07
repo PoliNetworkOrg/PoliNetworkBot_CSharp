@@ -1,5 +1,9 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+﻿#region
+
 using System.IO;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 {

@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -82,14 +82,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var options = new List<List<Language>>
             {
-                new() {new Language(new Dictionary<string, string> {{"en", "Milano Leonardo"}})},
-                new() {new Language(new Dictionary<string, string> {{"en", "Milano Bovisa"}})},
-                new() {new(new Dictionary<string, string> {{"en", "Como"}})}
+                new() { new Language(new Dictionary<string, string> { { "en", "Milano Leonardo" } }) },
+                new() { new Language(new Dictionary<string, string> { { "en", "Milano Bovisa" } }) },
+                new() { new Language(new Dictionary<string, string> { { "en", "Como" } }) }
             };
             var question = new Language(new Dictionary<string, string>
             {
-                {"it", "In che sede?"},
-                {"en", "In which territorial pole?"}
+                { "it", "In che sede?" },
+                { "en", "In which territorial pole?" }
             });
             var reply = await AskBetweenRangeAsync(e.Message.From.Id,
                 sender: sender,
@@ -116,13 +116,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var l1 = new Language(new Dictionary<string, string>
             {
-                {"it", "Si"},
-                {"en", "Yes"}
+                { "it", "Si" },
+                { "en", "Yes" }
             });
             var l2 = new Language(new Dictionary<string, string>
             {
-                {"it", "No"},
-                {"en", "No"}
+                { "it", "No" },
+                { "en", "No" }
             });
 
             var options = new List<List<Language>>
@@ -137,9 +137,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             if (l1.Matches(r)) return true;
 
-            if (l2.Matches(r)) return false;
-
-            return defaultBool;
+            return !l2.Matches(r) && defaultBool;
         }
     }
 }

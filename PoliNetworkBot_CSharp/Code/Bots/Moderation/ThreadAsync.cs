@@ -1,10 +1,19 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+﻿#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Threading;
+using Telegram.Bot.Types.Enums;
+using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {
@@ -41,7 +50,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
                 if (bots == null || bots.Count == 0)
                     return;
 
@@ -64,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 3)
                     {
-                        _ = CommandDispatcher.UpdateGroups(bot, dry: false, debug: true, updateDb: false, messageEventArgs);
+                        _ = CommandDispatcher.UpdateGroups(bot, false, true, false, messageEventArgs);
                         Thread.Sleep(1000 * 3600 * 60 * 6);
                     }
 
@@ -81,7 +90,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
                 if (bots == null || bots.Count == 0)
                     return;
 
@@ -101,10 +110,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             try
             {
-                Language text = new(new System.Collections.Generic.Dictionary<string, string>() {
-                { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunnigTime().Result}
-            });
-                _ = telegramBotAbstract.SendTextMessageAsync(Data.Constants.Groups.BackupGroup, text, Telegram.Bot.Types.Enums.ChatType.Supergroup, "en", Telegram.Bot.Types.Enums.ParseMode.Html, null, null);
+                Language text = new(new Dictionary<string, string>
+                {
+                    { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunnigTime().Result }
+                });
+                _ = telegramBotAbstract.SendTextMessageAsync(Groups.BackupGroup, text, ChatType.Supergroup, "en",
+                    ParseMode.Html, null, null);
             }
             catch (Exception ex)
             {
@@ -121,7 +132,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
                 if (bots == null || bots.Count == 0)
                     return;
 
@@ -142,7 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    await CommandDispatcher.BackupHandler(Data.Constants.Groups.BackupGroup, bot, null);
+                    await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null);
                     Thread.Sleep(1000 * 3600 * 24 * 7);
                 }
             }
@@ -160,7 +171,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             catch (Exception e)
             {
-                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, Data.Constants.BotStartMethods.Moderation);
+                var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
                 if (bots == null || bots.Count == 0)
                     return;
                 await NotifyUtil.NotifyOwners(e, bots[0], null);
@@ -181,9 +192,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static TelegramBotAbstract GetFirstBot()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
-            foreach (var bot in GlobalVariables.Bots.Keys)
-            {
-                var bot2 = GlobalVariables.Bots[bot];
+            foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
                 switch (bot2.GetBotType())
                 {
                     case BotTypeApi.REAL_BOT:
@@ -194,8 +203,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                     case BotTypeApi.DISGUISED_BOT:
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-            }
 
             return null;
         }

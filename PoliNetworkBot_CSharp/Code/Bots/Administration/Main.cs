@@ -1,12 +1,16 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Administration
 {
@@ -22,15 +26,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                 var groups = Regex.Split(groupsRaw, "\r\n|\r|\n");
                 //using StreamWriter groupsFile = new StreamWriter(@"C:\Users\eliam\Documents\WriteLines.txt", append: true);
                 //await groupsFile.WriteLineAsync("Nome Gruppo $ Link di Invito");
-                using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
+                await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                 {
                     sw.WriteLine("Nome Gruppo $ Link di Invito");
                 }
 
-                foreach (var group in groups)
-                {
-                    await MainMethodAsync2Async(group, telegramBotAbstract, links);
-                }
+                foreach (var group in groups) await MainMethodAsync2Async(@group, telegramBotAbstract, links);
 
                 Logger.WriteLine("====== CREATION COMPLETE ======");
             }
@@ -40,7 +41,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
             }
         }
 
-        private static async Task MainMethodAsync2Async(string group, TelegramBotAbstract telegramBotAbstract, List<string> links)
+        private static async Task MainMethodAsync2Async(string group, TelegramBotAbstract telegramBotAbstract,
+            List<string> links)
         {
             var toBeDone = true;
             while (toBeDone)
@@ -49,11 +51,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                     {
                         //    await telegramBotAbstract.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync();
                         //file,,,
-                        var name = group;
-                        if (name.Length > 255)
-                            using (var sw = File.AppendText(@"C:\Users\eliam\Documents\errorlist.txt"))
+                        if (group.Length > 255)
+                            await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\errorlist.txt"))
                             {
-                                sw.WriteLine(name + " FAILED");
+                                sw.WriteLine(group + " FAILED");
                             }
 
                         var desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
@@ -61,9 +62,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                         var members = new List<long>(); //ID members to insert
                         long? chatID = null;
                         while (chatID == null)
-                            chatID = await telegramBotAbstract.CreateGroup(name, desc, members);
+                            chatID = await telegramBotAbstract.CreateGroup(group, desc, members);
                         Thread.Sleep(1 * 1000 * 10);
-                        TLChannelClass channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
+                        var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
                         if (channel == null)
                             return;
                         //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
@@ -73,31 +74,30 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                         var admins = new List<TLInputUser>();
 
                         var adminTags = new List<string>
-                                    {"polinetwork3bot"}; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
+                            { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
                         foreach (var admin in adminTags)
                         {
                             Thread.Sleep(1 * 1000 * 10);
                             TLAbsInputPeer u =
                                 await UserbotPeer.GetPeerUserWithAccessHash(admin,
                                     telegramBotAbstract._userbotClient);
-                            if (u is TLInputPeerUser u2)
-                            {
-                                var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
-                                admins.Add(user1);
-                            }
+                            if (u is not TLInputPeerUser u2) continue;
+                            var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
+                            admins.Add(user1);
                         }
 
                         foreach (var admin in admins)
                         {
                             Thread.Sleep(1 * 1000 * 10);
-                            await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id, channel.channel.AccessHash);
+                            await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id,
+                                channel.channel.AccessHash);
                         }
 
                         Thread.Sleep(1 * 1000 * 10);
                         var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.channel.Id,
                             channel.channel.AccessHash);
                         links.Add(link);
-                        using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
+                        await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                         {
                             sw.WriteLine(group + " $ " + link);
                         }

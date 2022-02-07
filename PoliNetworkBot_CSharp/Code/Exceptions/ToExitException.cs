@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Runtime.Serialization;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 {

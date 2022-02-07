@@ -1,4 +1,8 @@
-﻿using Telegram.Bot.Types;
+﻿#region
+
+using Telegram.Bot.Types;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {

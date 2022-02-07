@@ -1,6 +1,10 @@
-﻿using Telegram.Bot.Types;
+﻿#region
+
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -22,12 +26,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private void SetMessageId()
         {
-            if (message == null)
-                return;
-
-            if (message is TLMessage m1) messageId = m1.Id;
-
-            if (message is Message m2) messageId = m2.MessageId;
+            switch (message)
+            {
+                case null:
+                    return;
+                case TLMessage m1:
+                    messageId = m1.Id;
+                    break;
+                case Message m2:
+                    messageId = m2.MessageId;
+                    break;
+            }
         }
 
         internal object GetMessage()

@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -30,13 +30,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
 
             var keyValuePairs = new Dictionary<string, object>
             {
-                {"@fi", video.FileId},
-                {"@fs", video.FileSize},
-                {"@h", video.Height},
-                {"@w", video.Width},
-                {"@u", video.FileUniqueId},
-                {"@d", video.Duration},
-                {"@mime", video.MimeType}
+                { "@fi", video.FileId },
+                { "@fs", video.FileSize },
+                { "@h", video.Height },
+                { "@w", video.Width },
+                { "@u", video.FileUniqueId },
+                { "@d", video.Duration },
+                { "@mime", video.MimeType }
             };
 
             SqLite.Execute(q, keyValuePairs);
@@ -56,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             const string q2 = "SELECT id_video FROM Videos WHERE unique_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
             {
-                {"@fi", fileUniqueId}
+                { "@fi", fileUniqueId }
             };
             var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
             var r2 = SqLite.GetFirstValueFromDataTable(r1);
@@ -79,7 +79,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             const string q2 = "SELECT id_video FROM Videos WHERE file_id = @fi";
             var keyValuePairs2 = new Dictionary<string, object>
             {
-                {"@fi", fileId}
+                { "@fi", fileId }
             };
             var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
             var r2 = SqLite.GetFirstValueFromDataTable(r1);
@@ -108,8 +108,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia
             var dr = dt.Rows[0];
 
             return new ObjectVideo((int)Convert.ToInt64(dr["id_video"]), dr["file_id"].ToString(),
-               (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
-              (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
+                (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
+                (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
                 messageIdFrom, chatIdFromIdPerson, chatType, (int)Convert.ToInt64(dr["duration"]));
         }
     }

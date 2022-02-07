@@ -1,10 +1,11 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -84,15 +85,15 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
             wordToBeFirsts = new List<WordToBeFirst>
             {
-                new("primo", new List<string> {"prima"}),
-                new("secondo", new List<string> {"seconda"}),
-                new("terzo", new List<string> {"terza"}),
-                new("kebabbaro", new List<string> {"kebabbara"}),
+                new("primo", new List<string> { "prima" }),
+                new("secondo", new List<string> { "seconda" }),
+                new("terzo", new List<string> { "terza" }),
+                new("kebabbaro", new List<string> { "kebabbara" }),
                 //new WordToBeFirst("foco"),
                 new("boomer"),
                 //new WordToBeFirst("upkara"),
                 //new WordToBeFirst("snitch"),
-                new("pizzaiolo", new List<string> {"pizzaiola"})
+                new("pizzaiolo", new List<string> { "pizzaiola" })
                 //new WordToBeFirst("lasagna")
             };
 
@@ -122,11 +123,7 @@ namespace PoliNetworkBot_CSharp.Code.Data
 
         internal static bool IsOwner(long id)
         {
-            foreach (var x in Owners)
-                if (x.Item1 == id)
-                    return true;
-
-            return false;
+            return Owners.Any(x => x.Item1 == id);
         }
     }
 }

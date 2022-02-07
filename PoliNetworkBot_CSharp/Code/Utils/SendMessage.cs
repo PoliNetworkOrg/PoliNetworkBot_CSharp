@@ -1,13 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -44,8 +44,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var messageTo = GetMessageTo(firstName, lastName, userId);
             var text3 = new Language(new Dictionary<string, string>
             {
-                {"en", "[Message for " + messageTo + "]\n\n" + text.Select("en")},
-                {"it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it")}
+                { "en", "[Message for " + messageTo + "]\n\n" + text.Select("en") },
+                { "it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it") }
             });
 
             return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
@@ -61,7 +61,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static async Task<MessageSentResult> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
             long userIdToSendTo, string langCode, string usernameToSendTo,
-            Language text, ParseMode parseMode, long? messageIdToReplyTo, InlineKeyboardMarkup inlineKeyboardMarkup = null)
+            Language text, ParseMode parseMode, long? messageIdToReplyTo,
+            InlineKeyboardMarkup inlineKeyboardMarkup = null)
         {
             try
             {

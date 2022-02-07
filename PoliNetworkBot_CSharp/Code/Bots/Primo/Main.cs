@@ -1,14 +1,19 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 {
@@ -91,7 +96,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
             var dict = new Dictionary<string, string>
             {
-                {"en", toSend}
+                { "en", toSend }
             };
             var text = new Language(dict);
             await SendMessage.SendMessageInAGroup(
@@ -121,12 +126,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
         private static Tuple<bool, string> CheckIfValid(string t)
         {
-            foreach (var x in GlobalVariables.wordToBeFirsts)
-            {
-                var x2 = x.Matches(t);
-                if (x2.Item1)
-                    return x2;
-            }
+            foreach (var x2 in GlobalVariables.wordToBeFirsts.Select(x => x.Matches(t)).Where(x2 => x2.Item1))
+                return x2;
 
             return new Tuple<bool, string>(false, null);
         }
@@ -157,8 +158,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var user = GenerateUserStringHtml(r.Rows[0]);
             var dict4 = new Dictionary<string, string>
             {
-                {"it", "C'è già " + user + " come re " + t + "!"},
-                {"en", "There is already " + user + " as the " + t + " king!"}
+                { "it", "C'è già " + user + " come re " + t + "!" },
+                { "en", "There is already " + user + " as the " + t + " king!" }
             };
             var text = new Language(dict4);
             var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
@@ -179,11 +180,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
 
                     var r2 = SqLite.Execute(q2, new Dictionary<string, object>
                     {
-                        {"@title", t},
-                        {"@fn", e.Message.From.FirstName},
-                        {"@ln", e.Message.From.LastName},
-                        {"@wk", DateTime.Now},
-                        {"@ki", e.Message.From.Id}
+                        { "@title", t },
+                        { "@fn", e.Message.From.FirstName },
+                        { "@ln", e.Message.From.LastName },
+                        { "@wk", DateTime.Now },
+                        { "@ki", e.Message.From.Id }
                     });
                 }
                 else
@@ -192,11 +193,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
                         "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                     var dict3 = new Dictionary<string, object>
                     {
-                        {"@t", t},
-                        {"@fn", e.Message.From.FirstName},
-                        {"@ln", e.Message.From.LastName},
-                        {"@wk", DateTime.Now},
-                        {"@ki", e.Message.From.Id}
+                        { "@t", t },
+                        { "@fn", e.Message.From.FirstName },
+                        { "@ln", e.Message.From.LastName },
+                        { "@wk", DateTime.Now },
+                        { "@ki", e.Message.From.Id }
                     };
                     var r3 = SqLite.Execute(q3, dict3);
                 }
@@ -208,8 +209,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             var roles = GetRoles(tooManyKingsForThisUser.Item2);
             var dict4 = new Dictionary<string, string>
             {
-                {"it", "Hai già troppi ruoli!" + roles},
-                {"en", "You have already too many titles!" + roles}
+                { "it", "Hai già troppi ruoli!" + roles },
+                { "en", "You have already too many titles!" + roles }
             };
             var text = new Language(dict4);
             var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
@@ -221,9 +222,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (item2 == null || item2.Count == 0)
                 return "";
 
-            var r = "\n";
-
-            foreach (var item3 in item2) r += item3 + ", ";
+            var r = item2.Aggregate("\n", (current, item3) => current + item3 + ", ");
 
             r = r.Remove(r.Length - 1);
             r = r.Remove(r.Length - 1);
@@ -244,10 +243,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (countOfUser == null)
                 return new Tuple<bool, List<string>>(false, null);
 
-            if (countOfUser.Count >= 2)
-                return new Tuple<bool, List<string>>(true, countOfUser);
-
-            return new Tuple<bool, List<string>>(false, null);
+            return countOfUser.Count >= 2
+                ? new Tuple<bool, List<string>>(true, countOfUser)
+                : new Tuple<bool, List<string>>(false, null);
         }
 
         private static List<string> CountOfUserMethod(DataTable r, MessageEventArgs e)
@@ -255,22 +253,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
             if (r == null || e == null || r.Rows == null)
                 return null;
 
-            var r3 = new List<string>();
-            foreach (DataRow dr in r.Rows)
-            {
-                if (dr == null)
-                    continue;
-
-                var id = (long)dr["king_id"];
-                if (id == e.Message.From.Id)
-                {
-                    var dt = (DateTime)dr["when_king"];
-                    if (DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day)
-                        r3.Add(dr["title"].ToString());
-                }
-            }
-
-            return r3;
+            return (from DataRow dr in r.Rows
+                where dr != null
+                let id = (long)dr["king_id"]
+                where id == e.Message.From.Id
+                let dt = (DateTime)dr["when_king"]
+                where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
+                select dr["title"].ToString()).ToList();
         }
 
         private static string GenerateUserStringHtml(DataRow dataRow)
@@ -306,8 +295,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Primo
         {
             var dict = new Dictionary<string, string>
             {
-                {"it", "Congratulazioni, sei il re " + t + "!"},
-                {"en", "Congratulations, you are the " + t + " king!"}
+                { "it", "Congratulazioni, sei il re " + t + "!" },
+                { "en", "Congratulations, you are the " + t + " king!" }
             };
             var text = new Language(dict);
             var r = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,

@@ -1,16 +1,18 @@
 ﻿#region
 
-using JsonPolimi_Core_nf.Tipi;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using JsonPolimi_Core_nf.Tipi;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -20,7 +22,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         private static readonly Dictionary<long, InfoChat> GroupsInRam = new();
 
-        public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
+        public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs)
         {
             await FixAllGroupsName(telegramBotAbstract, messageEventArgs);
             return GetAllGroups();
@@ -34,10 +37,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static DataTable GetGroupsByTitle(string query, int limit)
         {
-            string q1 = "SELECT id,title,link " +
-                "FROM Groups " +
-                "WHERE title LIKE @title " +
-                "AND ( valid = 'Y' or valid = 1 ) COLLATE NOCASE LIMIT " + limit.ToString();
+            var q1 = "SELECT id,title,link " +
+                     "FROM Groups " +
+                     "WHERE title LIKE @title " +
+                     "AND ( valid = 'Y' or valid = 1 ) COLLATE NOCASE LIMIT " + limit;
             var seo = query.Split(" ");
             var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
             query2 += "%";
@@ -53,7 +56,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         }
 
-        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
+        public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract,
+            MessageEventArgs messageEventArgs)
         {
             try
             {
@@ -65,34 +69,33 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var indexId = groups.Columns.IndexOf("id");
                 for (var i = 0; i < groups.Rows.Count; i++)
                 {
-                    long indexIdInTable = (long)groups.Rows[i]?[indexId];
+                    var indexIdInTable = (long)groups.Rows[i]?[indexId];
                     var oldTitle = (string)groups.Rows[i]?[indexTitle];
-                    string newTitle = "";
+                    var newTitle = "";
                     try
                     {
                         await Task.Delay(300);
-                        Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException = null;
-                        int e = 0;
-                        while ((newTitleWithException == null || newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
-                            && e < 3)
+                        Tuple<Chat, Exception> newTitleWithException = null;
+                        var e = 0;
+                        while ((newTitleWithException == null || newTitleWithException.Item2 is ApiRequestException)
+                               && e < 3)
                         {
                             newTitleWithException = await telegramBotAbstract.GetChat(indexIdInTable);
-                            if (newTitleWithException.Item2 is Telegram.Bot.Exceptions.ApiRequestException)
-                            {
-                                await Task.Delay(1000 * 60 * 5);
-                            }
+                            if (newTitleWithException.Item2 is ApiRequestException) await Task.Delay(1000 * 60 * 5);
                             e++;
                         }
+
                         newTitle = newTitleWithException?.Item1?.Title;
                         GroupCheckAndUpdate(telegramBotAbstract, indexIdInTable, oldTitle, newTitleWithException);
                     }
                     catch (Exception e2)
                     {
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
-                            "\n NewTitle: " + newTitle + "\n\n" + e2);
+                                               "\n NewTitle: " + newTitle + "\n\n" + e2);
                         await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
                     }
                 }
+
                 Logger.GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
             }
             catch (Exception e)
@@ -108,12 +111,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
                     return;
 
-                GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
+                var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
-                {
                     Logger.GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
-                }
 
                 _ = CheckIfInviteIsWorking(e, telegramBotClient);
             }
@@ -139,10 +140,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 if (infoChat != null && getDone.Value)
                 {
-                    if (infoChat.IsInhibited())
-                    {
-                        return;
-                    }
+                    if (infoChat.IsInhibited()) return;
                 }
                 else
                 {
@@ -152,12 +150,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         GroupsInRam[e.Message.Chat.Id] = infoChat;
                     }
                 }
+
                 const string q1 = "SELECT * FROM Groups WHERE id = @id";
                 var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
                 if (groups.Rows.Count == 0)
-                {
-                    throw new Exception("No group found with id: " + e.Message.Chat.Id + " while running CheckForGroupTitleUpdateAsync");
-                }
+                    throw new Exception("No group found with id: " + e.Message.Chat.Id +
+                                        " while running CheckForGroupTitleUpdateAsync");
                 var indexId = groups.Columns.IndexOf("id");
                 var indexIdInTable = (long)groups.Rows[0][indexId];
 
@@ -171,9 +169,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                     if (nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
-                    {
-                        await NotifyUtil.NotifyOwners("Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id, telegramBotClient, e);
-                    }
+                        await NotifyUtil.NotifyOwners(
+                            "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
+                            telegramBotClient, e);
                 }
 
                 infoChat.UpdateTimeOfLastLinkCheck();
@@ -198,18 +196,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (group.Title == telegramGroup._Chat.Title) return GroupsFixLogUpdatedEnum.DID_NOTHING;
                 lock (GroupsInRam)
                 {
-                    GroupsInRam.Remove(@group.Id);
-                    GroupsInRam.Add(@group.Id, new InfoChat(@group, DateTime.Now));
+                    GroupsInRam.Remove(group.Id);
+                    GroupsInRam.Add(group.Id, new InfoChat(group, DateTime.Now));
                 }
-                return GroupCheckAndUpdate2(@group.Id, @group.Title, telegramGroup._Chat.Title);
+
+                return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title);
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
             var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", group.Id } });
             if (groups.Rows.Count == 0)
-            {
-                throw new Exception("No group found with id: " + group.Id + " while running CheckForGroupTitleUpdateAsync");
-            }
+                throw new Exception("No group found with id: " + group.Id +
+                                    " while running CheckForGroupTitleUpdateAsync");
 
             var row = groups.Rows[0];
 
@@ -221,103 +219,100 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 if (!GroupsInRam.ContainsKey(group.Id))
                     GroupsInRam[group.Id] = new InfoChat(group, DateTime.Now);
                 else
-                {
                     GroupsInRam[group.Id]._Chat = group;
-                }
             }
 
             var indexTitle = groups.Columns.IndexOf("title");
             var oldTitle = (string)row[indexTitle];
 
-            return oldTitle != @group.Title ? GroupCheckAndUpdate2(@group.Id, @group.Title, oldTitle) : GroupsFixLogUpdatedEnum.DID_NOTHING;
+            return oldTitle != group.Title
+                ? GroupCheckAndUpdate2(group.Id, group.Title, oldTitle)
+                : GroupsFixLogUpdatedEnum.DID_NOTHING;
         }
 
         private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
             long indexIdInTable,
             string oldTitle,
-            Tuple<Telegram.Bot.Types.Chat, Exception> newTitleWithException)
+            Tuple<Chat, Exception> newTitleWithException)
         {
-            string newTitle = newTitleWithException?.Item1?.Title;
-            if (String.IsNullOrEmpty(oldTitle) && String.IsNullOrEmpty(newTitle))
+            var newTitle = newTitleWithException?.Item1?.Title;
+            if (string.IsNullOrEmpty(oldTitle) && string.IsNullOrEmpty(newTitle))
             {
                 Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, indexIdInTable);
                 Logger.GroupsFixLog.CountIgnored();
                 return GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
-            if (String.IsNullOrEmpty(newTitle))
+
+            if (string.IsNullOrEmpty(newTitle))
             {
                 Logger.GroupsFixLog.NewNull(indexIdInTable, oldTitle, newTitleWithException?.Item2);
                 Logger.GroupsFixLog.CountIgnored();
                 return GroupsFixLogUpdatedEnum.DID_NOTHING;
             }
-            if (String.IsNullOrEmpty(oldTitle))
+
+            if (string.IsNullOrEmpty(oldTitle))
             {
                 Logger.GroupsFixLog.OldNull(newTitle);
                 oldTitle = "[previously null]";
             }
-            if (oldTitle == newTitle)
-            {
-                Logger.GroupsFixLog.CountIgnored();
-                return GroupsFixLogUpdatedEnum.DID_NOTHING;
-            }
 
-            return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle);
+            if (oldTitle != newTitle) return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle);
+            Logger.GroupsFixLog.CountIgnored();
+            return GroupsFixLogUpdatedEnum.DID_NOTHING;
         }
 
         private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle)
         {
-            var q = "UPDATE Groups SET title = @title WHERE id = @id";
+            const string q = "UPDATE Groups SET title = @title WHERE id = @id";
 
             var d = new Dictionary<string, object>
-                        {
-                            {"@title", newTitle},
-                            {"@id", id}
-                        };
+            {
+                { "@title", newTitle },
+                { "@id", id }
+            };
             SqLite.Execute(q, d);
             Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
             return GroupsFixLogUpdatedEnum.NEW_NAME;
         }
 
-        internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+        internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient,
+            MessageEventArgs e)
         {
             try
             {
                 switch (e.Message.Chat.Type)
                 {
-                    case Telegram.Bot.Types.Enums.ChatType.Group:
-                    case Telegram.Bot.Types.Enums.ChatType.Supergroup:
+                    case ChatType.Group:
+                    case ChatType.Supergroup:
+                    {
+                        try
                         {
-                            try
+                            Dictionary<string, string> dict = new()
                             {
-                                Dictionary<string, string> dict = new()
                                 {
-                                    {
-                                        "it",
-                                        "Il bot non è autorizzato in questo gruppo. Contattare gli amministratori di PoliNetwork."
-                                    },
-                                    {
-                                        "en",
-                                        "The bot is not authorized in this group. Contact the PoliNetwork administrators."
-                                    }
-                                };
-                                Language lang = new(dict);
+                                    "it",
+                                    "Il bot non è autorizzato in questo gruppo. Contattare gli amministratori di PoliNetwork."
+                                },
+                                {
+                                    "en",
+                                    "The bot is not authorized in this group. Contact the PoliNetwork administrators."
+                                }
+                            };
+                            Language lang = new(dict);
 
-                                await Utils.SendMessage.SendMessageInAGroup(
-                                        telegramBotClient, e.Message.From.LanguageCode, lang, e,
-                                        e.Message.Chat.Id, e.Message.Chat.Type,
-                                        Telegram.Bot.Types.Enums.ParseMode.Html, null, true
-                                    );
-                            }
-                            catch
-                            {
-                                ;
-                            }
-
-                            await telegramBotClient.ExitGroupAsync(e);
+                            await SendMessage.SendMessageInAGroup(
+                                telegramBotClient, e.Message.From.LanguageCode, lang, e,
+                                e.Message.Chat.Id, e.Message.Chat.Type,
+                                ParseMode.Html, null, true
+                            );
                         }
-                        break;
+                        catch
+                        {
+                            ;
+                        }
 
-                    default:
+                        await telegramBotClient.ExitGroupAsync(e);
+                    }
                         break;
                 }
             }

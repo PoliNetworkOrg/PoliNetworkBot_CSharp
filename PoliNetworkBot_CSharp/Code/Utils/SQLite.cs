@@ -1,10 +1,10 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 
 #endregion
 
@@ -78,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public static long? GetIntFromColumn(DataRow dr, string columnName)
         {
             var o = dr[columnName];
-            if (o == null || o is DBNull)
+            if (o is null or DBNull)
                 return null;
 
             try

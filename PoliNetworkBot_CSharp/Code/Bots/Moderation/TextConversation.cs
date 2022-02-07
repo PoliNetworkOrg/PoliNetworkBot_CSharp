@@ -1,12 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -38,28 +39,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                    {
-                        await PrivateMessage(telegramBotClient, e);
-                        break;
-                    }
+                {
+                    await PrivateMessage(telegramBotClient, e);
+                    break;
+                }
                 case ChatType.Channel:
                     break;
 
                 case ChatType.Group:
                 case ChatType.Supergroup:
-                    {
-                        await MessageInGroup(telegramBotClient, e);
-                        break;
-                    }
+                {
+                    await MessageInGroup(telegramBotClient, e);
+                    break;
+                }
             }
         }
 
         private static async Task MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            if (e == null)
-                return;
-
-            if (e.Message == null)
+            if (e?.Message == null)
                 return;
 
             if (string.IsNullOrEmpty(e.Message.Text))
@@ -70,32 +68,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var text = e.Message.Text.ToLower();
             if (e.Message.Chat.Title.ToLower().Contains("polimi"))
-            {
                 await MessageInGroup2Async(telegramBotClient, e, text);
-            }
         }
 
-        private static async Task MessageInGroup2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string text)
+        private static async Task MessageInGroup2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+            string text)
         {
             if (CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
                 if (text.Contains("piano studi") || text.Contains("piano di studi") ||
                     text.Contains("piano degli studi"))
                 {
                     var text2 = new Language(new Dictionary<string, string>
+                    {
                         {
-                            {
-                                "it",
-                                "Ciao 👋 sembra tu stia chiedendo domande in merito al piano di studi. " +
-                                "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-                                "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>clicca qui</a>!"
-                            },
-                            {
-                                "en",
-                                "Hi 👋 it seems you are asking questions about 'piano di studi'. " +
-                                "PoliNetwork advice you to write in the dedicated group, " +
-                                "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"
-                            }
-                        });
+                            "it",
+                            "Ciao 👋 sembra tu stia chiedendo domande in merito al piano di studi. " +
+                            "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
+                            "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>clicca qui</a>!"
+                        },
+                        {
+                            "en",
+                            "Hi 👋 it seems you are asking questions about 'piano di studi'. " +
+                            "PoliNetwork advice you to write in the dedicated group, " +
+                            "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"
+                        }
+                    });
                     await SendMessage.SendMessageInAGroup(telegramBotClient,
                         e.Message.From.LanguageCode,
                         text2,
@@ -112,20 +109,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     text.ToLower().Contains("representative"))
                 {
                     var text2 = new Language(new Dictionary<string, string>
+                    {
                         {
-                            {
-                                "it",
-                                "Ciao 👋 sembra tu stia chiedendo domande in merito alla Rappresentanza. " +
-                                "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-                                "<a href='https://t.me/askPolimi'>clicca qui</a>!"
-                            },
-                            {
-                                "en",
-                                "Hi 👋 it seems you are asking questions about Representatives. " +
-                                "PoliNetwork advice you to write in the dedicated group, " +
-                                "<a href='https://t.me/askPolimi'>click here</a>!"
-                            }
-                        });
+                            "it",
+                            "Ciao 👋 sembra tu stia chiedendo domande in merito alla Rappresentanza. " +
+                            "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
+                            "<a href='https://t.me/askPolimi'>clicca qui</a>!"
+                        },
+                        {
+                            "en",
+                            "Hi 👋 it seems you are asking questions about Representatives. " +
+                            "PoliNetwork advice you to write in the dedicated group, " +
+                            "<a href='https://t.me/askPolimi'>click here</a>!"
+                        }
+                    });
                     await SendMessage.SendMessageInAGroup(telegramBotClient,
                         e.Message.From.LanguageCode,
                         text2,
@@ -142,20 +139,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     text.Contains("dsu"))
                 {
                     var text2 = new Language(new Dictionary<string, string>
+                    {
                         {
-                            {
-                                "it",
-                                "Ciao 👋 sembra tu stia chiedendo domande in merito al DSU. " +
-                                "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-                                "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!"
-                            },
-                            {
-                                "en",
-                                "Hi 👋 it seems you are asking questions about 'DSU'. " +
-                                "PoliNetwork advice you to write in the dedicated group, " +
-                                "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"
-                            }
-                        });
+                            "it",
+                            "Ciao 👋 sembra tu stia chiedendo domande in merito al DSU. " +
+                            "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
+                            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!"
+                        },
+                        {
+                            "en",
+                            "Hi 👋 it seems you are asking questions about 'DSU'. " +
+                            "PoliNetwork advice you to write in the dedicated group, " +
+                            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"
+                        }
+                    });
                     await SendMessage.SendMessageInAGroup(telegramBotClient,
                         e.Message.From.LanguageCode,
                         text2,
@@ -172,18 +169,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var text2 = new Language(
                     new Dictionary<string, string>
                     {
-                            {
-                                "it",
-                                "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
-                                "Ti consigliamo di visitare il nostro sito, " +
-                                "<a href='https://polinetwork.github.io/'>clicca qui</a>!"
-                            },
-                            {
-                                "en",
-                                "Hi 👋 it seems you are asking questions about groups. " +
-                                "We advice you to visit our website, " +
-                                "<a href='https://polinetwork.github.io/'>click here</a>!"
-                            }
+                        {
+                            "it",
+                            "Ciao 👋 sembra tu stia chiedendo domande in merito ai gruppi. " +
+                            "Ti consigliamo di visitare il nostro sito, " +
+                            "<a href='https://polinetwork.github.io/'>clicca qui</a>!"
+                        },
+                        {
+                            "en",
+                            "Hi 👋 it seems you are asking questions about groups. " +
+                            "We advice you to visit our website, " +
+                            "<a href='https://polinetwork.github.io/'>click here</a>!"
+                        }
                     }
                 );
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
@@ -197,9 +194,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     true);
             }
 
-            if ((DateTime.Now.Month >= 1 && DateTime.Now.Month <= 6) || (DateTime.Now.Month >= 11 && DateTime.Now.Month <= 12))
-            {
-                if (text.Contains("whatsapp") && (text.Contains("grupp")))
+            if (DateTime.Now.Month >= 1 && DateTime.Now.Month <= 6 ||
+                DateTime.Now.Month >= 11 && DateTime.Now.Month <= 12)
+                if (text.Contains("whatsapp") && text.Contains("grupp"))
                 {
                     var text2 = new Language(
                         new Dictionary<string, string>
@@ -228,20 +225,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         e.Message.MessageId,
                         true);
                 }
-            }
         }
 
         private static bool CheckIfToSend(SpecialGroup s, long id)
         {
             var x = excludedGroupsMatch[s];
-            foreach (var i in x)
-            {
-                var j = excludedGroups[i];
-                if (id == j)
-                    return false;
-            }
-
-            return true;
+            return x.Select(i => excludedGroups[i]).All(j => id != j);
         }
 
         private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)

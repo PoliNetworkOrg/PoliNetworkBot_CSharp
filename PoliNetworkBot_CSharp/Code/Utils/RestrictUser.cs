@@ -1,14 +1,14 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Errors;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Errors;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -28,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract telegramBotClient, long chatId,
             long? userId, ChatType? chatType, RestrictAction restrictAction)
         {
-            ChatPermissions permissions = restrictAction switch
+            var permissions = restrictAction switch
             {
                 RestrictAction.BAN or RestrictAction.UNBAN => throw new ArgumentException(),
                 RestrictAction.MUTE => new ChatPermissions
@@ -53,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     CanPinMessages = true,
                     CanSendMediaMessages = true
                 },
-                _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null),
+                _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
             };
 
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
@@ -65,7 +65,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             bool? revokeMessage)
         {
             var targetId = await Info.GetTargetUserIdAsync(target, sender);
-            if (targetId == null || targetId.GetID() == null)
+            if (targetId?.GetID() == null)
             {
                 var exception2 = "";
                 if (targetId != null) exception2 += "\n" + targetId.GetError();
@@ -128,110 +128,110 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             switch (banTarget)
             {
                 case RestrictAction.BAN:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var success = await BanUserFromGroup(sender, targetId.GetID().Value, groupChatId, null,
-                                    revokeMessage);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long)dr["id"];
+                            var success = await BanUserFromGroup(sender, targetId.GetID().Value, groupChatId, null,
+                                revokeMessage);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
 
                 case RestrictAction.UNBAN:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var success = await UnBanUserFromGroup(sender, targetId.GetID().Value, groupChatId);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long)dr["id"];
+                            var success = await UnBanUserFromGroup(sender, targetId.GetID().Value, groupChatId);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
 
                 case RestrictAction.MUTE:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var chatType = GetChatType(dr);
-                                var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
-                                    chatType, RestrictAction.MUTE);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long)dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                                chatType, RestrictAction.MUTE);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
                         }
-
-                        break;
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
+                }
                 case RestrictAction.UNMUTE:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        foreach (DataRow dr in dt.Rows)
+                        Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                        try
                         {
-                            Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
-                            try
-                            {
-                                var groupChatId = (long)dr["id"];
-                                var chatType = GetChatType(dr);
-                                var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
-                                    chatType, RestrictAction.UNMUTE);
-                                if (success.IsSuccess())
-                                    done.Add(dr);
-                                else
-                                    failed.Add(dr);
+                            var groupChatId = (long)dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                                chatType, RestrictAction.UNMUTE);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                                if (success.ContainsExceptions())
-                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
                         }
                     }
+                }
                     break;
 
                 default:
@@ -264,16 +264,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 var o1 = dr["type"].ToString().ToLower();
-                if (o1 == null)
-                    return null;
-                if (o1 == "supergroup")
-                    return ChatType.Supergroup;
-                if (o1 == "group")
-                    return ChatType.Group;
-                if (o1 == "channel")
-                    return ChatType.Channel;
-                if (o1 == "private")
-                    return ChatType.Private;
+                switch (o1)
+                {
+                    case null:
+                        return null;
+                    case "supergroup":
+                        return ChatType.Supergroup;
+                    case "group":
+                        return ChatType.Group;
+                    case "channel":
+                        return ChatType.Channel;
+                    case "private":
+                        return ChatType.Private;
+                }
             }
             catch
             {
@@ -351,39 +354,38 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static bool LogBanAction(long targetId, RestrictAction banned_true_unbanned_false,
             TelegramBotAbstract bot, long who_banned)
         {
-            if (banned_true_unbanned_false == RestrictAction.BAN || banned_true_unbanned_false == RestrictAction.UNBAN)
-                // ban/unban action
+            if (banned_true_unbanned_false != RestrictAction.BAN &&
+                banned_true_unbanned_false != RestrictAction.UNBAN) return false;
 
-                try
+            try
+            {
+                bool? b = banned_true_unbanned_false switch
                 {
-                    bool? b = null;
-                    if (banned_true_unbanned_false == RestrictAction.BAN)
-                        b = true;
-                    else if (banned_true_unbanned_false == RestrictAction.UNBAN) b = false;
+                    RestrictAction.BAN => true,
+                    RestrictAction.UNBAN => false,
+                    _ => null
+                };
 
-                    var q =
-                        "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
-                        " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
+                const string q =
+                    "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
+                    " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
 
-                    var dict = new Dictionary<string, object>
-                    {
-                        {"@fbi", bot.GetId()},
-                        {"@whob", who_banned},
-                        {"@whenb", DateTime.Now},
-                        {"@target", targetId},
-                        {"@btuf", StringUtil.ToSN(b)}
-                    };
-                    var done = SqLite.Execute(q, dict);
-
-                    if (done > 0)
-                        return true;
-
-                    return false;
-                }
-                catch
+                var dict = new Dictionary<string, object>
                 {
-                    return false;
-                }
+                    { "@fbi", bot.GetId() },
+                    { "@whob", who_banned },
+                    { "@whenb", DateTime.Now },
+                    { "@target", targetId },
+                    { "@btuf", StringUtil.ToSN(b) }
+                };
+                var done = SqLite.Execute(q, dict);
+
+                return done > 0;
+            }
+            catch
+            {
+                return false;
+            }
 
             return false;
         }

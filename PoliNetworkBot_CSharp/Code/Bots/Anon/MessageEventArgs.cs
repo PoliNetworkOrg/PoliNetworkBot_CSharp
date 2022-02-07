@@ -1,9 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿#region
+
+using System;
+using Newtonsoft.Json;
 using Telegram.Bot.Types;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
-    [System.Serializable]
+    [Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class MessageEventArgs
     {

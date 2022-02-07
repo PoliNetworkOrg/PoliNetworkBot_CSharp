@@ -1,14 +1,14 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 l2 => new Language(
                     new Dictionary<string, string>
                     {
-                        {"en", l2}
+                        { "en", l2 }
                     })
             ).ToList();
 
@@ -61,8 +61,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var languageList = new Language(new Dictionary<string, string>
             {
-                {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
-                {"en", "Choose the entity you are writing this message for"}
+                { "it", "Scegli l'entità per il quale stai componendo il messaggio" },
+                { "en", "Choose the entity you are writing this message for" }
             });
 
             var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
@@ -79,8 +79,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var languageList4 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Spiacente! In questo periodo hai inviato troppi messaggi"},
-                    {"en", "I'm sorry! In this period you have sent too many messages"}
+                    { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
+                    { "en", "I'm sorry! In this period you have sent too many messages" }
                 });
                 await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
                     ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
@@ -89,17 +89,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var languageList2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Data di pubblicazione?"},
-                    {"en", "Date of publication?"}
+                    { "it", "Data di pubblicazione?" },
+                    { "en", "Date of publication?" }
                 }
             );
 
-            var opt1 = new Language(new Dictionary<string, string> { { "it", "Metti in coda" }, { "en", "Place in queue" } });
+            var opt1 = new Language(new Dictionary<string, string>
+                { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
                 new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
-                new() {opt1, opt2}
+                new() { opt1, opt2 }
             };
 
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
@@ -127,8 +128,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     var lang4 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "The date you choose is invalid!"},
-                        {"it", "La data che hai scelto non è valida!"}
+                        { "en", "The date you choose is invalid!" },
+                        { "it", "La data che hai scelto non è valida!" }
                     });
                     await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
                         ChatType.Private, e.Message.From.LanguageCode,
@@ -151,10 +152,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                    {
-                        await Assoc_ObjectToSendNotValid(sender, e);
-                        return false;
-                    }
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return false;
+                }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -170,8 +171,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var lang3 = new Language(new Dictionary<string, string>
             {
-                {"en", "The message has been submitted correctly"},
-                {"it", "Il messaggio è stato inviato correttamente"}
+                { "en", "The message has been submitted correctly" },
+                { "it", "Il messaggio è stato inviato correttamente" }
             });
             await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
                 ChatType.Private, e.Message.From.LanguageCode,
@@ -191,19 +192,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (sdt.Value.Year == DateTime.Now.Year && sdt.Value.Month < DateTime.Now.Month)
                 return false;
 
-            if (sdt.Value.Year == DateTime.Now.Year && sdt.Value.Month == DateTime.Now.Month &&
-                sdt.Value.Day < DateTime.Now.Day)
-                return false;
-
-            return true;
+            return sdt.Value.Year != DateTime.Now.Year || sdt.Value.Month != DateTime.Now.Month ||
+                   sdt.Value.Day >= DateTime.Now.Day;
         }
 
         private static async Task Assoc_ObjectToSendNotValid(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var lang2 = new Language(new Dictionary<string, string>
             {
-                {"en", "You have to attach something! (A photo, for example)"},
-                {"it", "Devi allegare qualcosa! (Una foto, ad esempio)"}
+                { "en", "You have to attach something! (A photo, for example)" },
+                { "it", "Devi allegare qualcosa! (Una foto, ad esempio)" }
             });
             await sender.SendTextMessageAsync(e.Message.From.Id,
                 lang2,
@@ -243,15 +241,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var dict = new Dictionary<string, string>
             {
-                {"it", "Quale vuoi rimuovere dalla coda?"},
-                {"en", "Which one do you want to remove from queue?"}
+                { "it", "Quale vuoi rimuovere dalla coda?" },
+                { "en", "Which one do you want to remove from queue?" }
             };
             var question = new Language(dict);
             var list = new List<Language>();
             for (var i = 0; i < count; i++)
                 list.Add(new Language(new Dictionary<string, string>
                 {
-                    {"en", i.ToString()}
+                    { "en", i.ToString() }
                 }));
 
             var options = KeyboardMarkup.ArrayToMatrixString(list);
@@ -259,8 +257,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 new(new Dictionary<string, string>
                 {
-                    {"it", "Annulla"},
-                    {"en", "Cancel"}
+                    { "it", "Annulla" },
+                    { "en", "Cancel" }
                 })
             };
             options.Insert(0, options2);
@@ -290,8 +288,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text1 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Messaggio [" + v + "] eliminato con successo"},
-                    {"en", "Message [" + v + "] deleted successfully"}
+                    { "it", "Messaggio [" + v + "] eliminato con successo" },
+                    { "en", "Message [" + v + "] deleted successfully" }
                 });
                 await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text1,
                     e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
@@ -301,8 +299,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Messaggio [" + v + "] non eliminato, errore"},
-                    {"en", "Message [" + v + "] not deleted, error"}
+                    { "it", "Messaggio [" + v + "] non eliminato, errore" },
+                    { "en", "Message [" + v + "] not deleted, error" }
                 });
                 await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text2,
                     e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
@@ -333,7 +331,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var args = new Dictionary<string, object>
             {
-                {"@id", id}
+                { "@id", id }
             };
             SqLite.Execute(q, args);
 
@@ -414,21 +412,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
             var r = SqLite.ExecuteSelect(q, dict2);
-            if (r == null || r.Rows.Count == 0)
+            if (r != null && r.Rows.Count != 0) return r.Rows;
+            var text = new Language(new Dictionary<string, string>
             {
-                var text = new Language(new Dictionary<string, string>
-                {
-                    {"it", "Non ci sono messaggi in coda!"},
-                    {"en", "There are no message in the queue!"}
-                });
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
-                    e.Message.From.Username,
-                    text, ParseMode.Html, null);
+                { "it", "Non ci sono messaggi in coda!" },
+                { "en", "There are no message in the queue!" }
+            });
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
+                e.Message.From.Username,
+                text, ParseMode.Html, null);
 
-                return null;
-            }
-
-            return r.Rows;
+            return null;
         }
 
         private static async Task<MessageSentResult> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender,
@@ -446,9 +440,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                    {
-                        return false;
-                    }
+                {
+                    return false;
+                }
             }
 
             var q = "SELECT COUNT (*) " +
@@ -458,9 +452,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var dt = SqLite.ExecuteSelect(q);
 
-            if (dt == null) return null;
-
-            if (dt.Rows == null)
+            if (dt?.Rows == null)
                 return null;
 
             long? count = null;
