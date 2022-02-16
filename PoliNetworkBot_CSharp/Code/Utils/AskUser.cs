@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             UserAnswers.Reset(idUser, botId);
 
-            await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: default,
+            await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
                 replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
 
             var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
@@ -67,7 +67,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             );
 
             var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
-                parseMode: default, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
+                parseMode: ParseMode.Html, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
                 replyToMessageId: messageIdToReplyTo);
 
             ;
