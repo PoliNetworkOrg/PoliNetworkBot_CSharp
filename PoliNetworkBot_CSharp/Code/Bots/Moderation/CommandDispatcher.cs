@@ -749,7 +749,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (updateDb) await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
 
-            var groups = Utils.Groups.GetAllGroups();
+            var groups = Utils.Groups.GetAllGroups(true);
 
             Variabili.L = new ListaGruppo();
 

@@ -29,9 +29,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return GetAllGroups();
         }
 
-        internal static DataTable GetAllGroups()
+        internal static DataTable GetAllGroups(bool onlyValids = false)
         {
-            const string q1 = "SELECT * FROM Groups";
+            var q1 = onlyValids 
+                ? "SELECT * FROM Groups WHERE ( valid = 'Y' or valid = 1 )" 
+                : "SELECT * FROM Groups";
+
             return SqLite.ExecuteSelect(q1);
         }
 

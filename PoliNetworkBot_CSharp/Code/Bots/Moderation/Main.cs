@@ -42,7 +42,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return;
 
                 telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
-
                 var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
                 if (toExit.Item1 == ToExit.EXIT)
                 {
