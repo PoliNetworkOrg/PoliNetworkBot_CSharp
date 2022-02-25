@@ -69,7 +69,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 });
                                 await telegramBotAbstract.SendTextMessageAsync(idUser,
                                     languageReply,
-                                    ChatType.Private, lang, default, replyMarkup, username);
+                                    ChatType.Private, lang, ParseMode.Html, replyMarkup, username);
                             }
 
                             ;

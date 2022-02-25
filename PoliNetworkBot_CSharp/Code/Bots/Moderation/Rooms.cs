@@ -211,47 +211,79 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (child == null)
                     continue;
 
-                if (!child.GetClasses().Contains("normalRow")) continue;
-                if (child.ChildNodes == null) continue;
-                var isRowEmptyBool = IsRowEmpty(child, start, stop);
-                if (isRowEmptyBool == null || !isRowEmptyBool.Value) continue;
-                try
+                var toAdd = checkIfFree(child, start, stop);
+                if (!string.IsNullOrEmpty(toAdd))
                 {
-                    var a2 = child.ChildNodes[1];
-                    if (a2.ChildNodes is { Count: > 0 })
-                    {
-                        var toAdd = false;
-                        var name = "";
-
-                        var a1 = a2.ChildNodes[0];
-                        name = a1.InnerHtml.Trim();
-                        if (string.IsNullOrEmpty(name) == false)
-                        {
-                            toAdd = true;
-                        }
-                        else if (a2.ChildNodes.Count > 1)
-                        {
-                            var a3 = a2.ChildNodes[1];
-                            name = a3.InnerHtml.Trim();
-                            if (string.IsNullOrEmpty(name) == false) toAdd = true;
-                        }
-
-                        if (toAdd) result.Add(name);
-                    }
-                }
-                catch
-                {
-                    ;
+                    result.Add(toAdd);
                 }
             }
 
             return result;
         }
 
-        private static bool? IsRowEmpty(HtmlNode node, DateTime start, DateTime stop)
+        private static string checkIfFree(HtmlNode child, DateTime start, DateTime stop)
+        {
+            if (!child.GetClasses().Contains("normalRow")) return null;
+            if (child.ChildNodes == null) return null;
+
+            if (!child.ChildNodes.Any(x => x.HasClass("dove") && x.ChildNodes != null && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))))
+            { return null; }
+            
+            ;
+
+            var isRowEmptyBool = IsRowEmpty(child, start, stop);
+
+            ;
+
+            return isRowEmptyBool ? getNomeAula(child) : null;
+            /*
+            var isRowEmptyBool = IsRowEmpty(child, start, stop);
+            if (isRowEmptyBool == null || !isRowEmptyBool.Value) return null;
+            try
+            {
+                var a2 = child.ChildNodes[1];
+                if (a2.ChildNodes is { Count: > 0 })
+                {
+                    var toAdd = false;
+                    var name = "";
+
+                    var a1 = a2.ChildNodes[0];
+                    name = a1.InnerHtml.Trim();
+                    if (string.IsNullOrEmpty(name) == false)
+                    {
+                        toAdd = true;
+                    }
+                    else if (a2.ChildNodes.Count > 1)
+                    {
+                        var a3 = a2.ChildNodes[1];
+                        name = a3.InnerHtml.Trim();
+                        if (string.IsNullOrEmpty(name) == false) toAdd = true;
+                    }
+
+                    if (toAdd) return name;
+                }
+            }
+            catch
+            {
+                ;
+            }
+            */
+        }
+
+        private static string getNomeAula(HtmlNode child)
+        {
+            ;
+            var dove = child.ChildNodes.First(x => x.HasClass("dove"));
+            var a = dove.ChildNodes.First(x => x.Name == "a");
+            return a.InnerText.Trim();
+        }
+
+        private static bool IsRowEmpty(HtmlNode node, DateTime start, DateTime stop)
         {
             if (node?.ChildNodes == null)
-                return null;
+                return true;
+
+            // TODO: calcolare shiftStart e shiftEnd una sola volta e non ogni riga
 
             var shiftStart = (start.Hour - 8) * 4;
             var shiftEnd = (stop.Hour - 8) * 4;
@@ -268,10 +300,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 else
                     colsize = 1;
 
+                var vStart = colsizetotal;
                 colsizetotal += colsize;
+                var vEnd = colsizetotal;
 
-                var v = i - 2 - 1 + colsizetotal;
-                if (v < shiftStart || v > shiftEnd) continue;
+                if (vEnd < shiftStart || vStart > shiftEnd) continue;
                 if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == false)
                     return false;
             }
