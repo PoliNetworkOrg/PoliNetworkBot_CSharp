@@ -114,7 +114,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
             else
             {
-                sentDate = await DateTimeClass.AskDateAsync(e.Message.From.Id, e.Message.Text,
+                sentDate = await AskUser.AskDateAsync(e.Message.From.Id, e.Message.Text,
                     e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
                 if (sentDate.Item2 != null)

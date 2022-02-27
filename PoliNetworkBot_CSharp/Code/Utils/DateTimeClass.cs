@@ -125,57 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
         }
 
-        internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long id, string text,
-            string lang,
-            TelegramBotAbstract sender,
-            string username)
-        {
-            if (string.IsNullOrEmpty(text))
-                return await AskDate2Async(id, lang, sender, username);
-
-            var s = text.Split(' ');
-            if (s.Length == 1) return await AskDate2Async(id, lang, sender, username);
-
-            switch (s[1])
-            {
-                case "ora":
-                case "now":
-                    {
-                        return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(DateTime.Now, true),
-                            null, s[1]);
-                    }
-            }
-
-            return await AskDate2Async(id, lang, sender, username);
-        }
-
-        private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long id, string lang,
-            TelegramBotAbstract sender,
-            string username)
-        {
-            var lang2 = new Language(new Dictionary<string, string>
-            {
-                { "it", "Inserisci una data (puoi scrivere anche 'fra un'ora')" },
-                { "en", "Insert a date (you can also write 'in an hour')" }
-            });
-
-            var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
-            try
-            {
-                var (dateTime, exception) = GetDateTimeFromString(reply);
-                if (exception != null)
-                    return new Tuple<DateTimeSchedule, Exception, string>(null, exception, reply);
-
-                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(dateTime, true),
-                    null, reply);
-            }
-            catch (Exception e1)
-            {
-                return new Tuple<DateTimeSchedule, Exception, string>(null, e1, reply);
-            }
-        }
-
-        private static Tuple<DateTime?, Exception> GetDateTimeFromString(string reply)
+        public static Tuple<DateTime?, Exception> GetDateTimeFromString(string reply)
         {
             if (string.IsNullOrEmpty(reply))
                 return null;
@@ -300,6 +250,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     );
                 }
             }
+            else if (reply.Contains(":")) // 10:34
+            {
+                var s2 = reply.Split(":");
+                var dt = new DateTime(2000, 1, 1, Convert.ToInt32(s2[0]), Convert.ToInt32(s2[1]), 0);
+                return new Tuple<DateTime?, Exception>(dt, null);
+            }
             else
             {
                 if (reply[0] >= '0' && reply[0] <= '9')
@@ -315,6 +271,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             return null;
+        }
+
+        internal static DateTime? GetHours(string s)
+        {
+            var dt = DateTimeClass.GetDateTimeFromString(s);
+            ;
+            return dt.Item1;
         }
 
         internal static string DateTimeToItalianFormat(DateTime? dt)

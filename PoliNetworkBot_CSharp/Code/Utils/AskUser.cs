@@ -3,6 +3,7 @@
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -139,5 +140,63 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return !l2.Matches(r) && defaultBool;
         }
+
+        internal static async Task<DateTime?> AskHours(long id, Language question, TelegramBotAbstract sender, string languageCode, string username)
+        {
+            var s = await AskAsync(id, question, sender, languageCode, username);
+            return Utils.DateTimeClass.GetHours(s);
+        }
+
+
+        internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long id, string text,
+            string lang,
+            TelegramBotAbstract sender,
+            string username)
+        {
+            if (string.IsNullOrEmpty(text))
+                return await AskDate2Async(id, lang, sender, username);
+
+            var s = text.Split(' ');
+            if (s.Length == 1) return await AskDate2Async(id, lang, sender, username);
+
+            switch (s[1])
+            {
+                case "ora":
+                case "now":
+                    {
+                        return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(DateTime.Now, true),
+                            null, s[1]);
+                    }
+            }
+
+            return await AskDate2Async(id, lang, sender, username);
+        }
+
+        private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long id, string lang,
+            TelegramBotAbstract sender,
+            string username)
+        {
+            var lang2 = new Language(new Dictionary<string, string>
+            {
+                { "it", "Inserisci una data (puoi scrivere anche 'fra un'ora')" },
+                { "en", "Insert a date (you can also write 'in an hour')" }
+            });
+
+            var reply = await AskUser.AskAsync(id, lang2, sender, lang, username);
+            try
+            {
+                var (dateTime, exception) = Utils.DateTimeClass.GetDateTimeFromString(reply);
+                if (exception != null)
+                    return new Tuple<DateTimeSchedule, Exception, string>(null, exception, reply);
+
+                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(dateTime, true),
+                    null, reply);
+            }
+            catch (Exception e1)
+            {
+                return new Tuple<DateTimeSchedule, Exception, string>(null, e1, reply);
+            }
+        }
+
     }
 }

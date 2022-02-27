@@ -172,7 +172,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 { "it", "Ora di inizio? (esempio 8:15)" },
                 { "en", "Start time? (example 8:15)" }
             });
-            var start = await AskUser.AskAsync(e.Message.From.Id, question,
+            DateTime? start = await AskUser.AskHours(e.Message.From.Id, question,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
             var question2 = new Language(new Dictionary<string, string>
@@ -180,23 +180,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 { "it", "Ora di fine? (esempio 11:15)" },
                 { "en", "End time? (example 11:15)" }
             });
-            var end = await AskUser.AskAsync(e.Message.From.Id, question2,
+            DateTime? end = await AskUser.AskHours(e.Message.From.Id, question2,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
-            if (!start.Contains(":") || !end.Contains(":")) return null;
-            var start2 = start.Split(":");
-            var end2 = end.Split(":");
+            if (start != null && end != null)
+                return new Tuple<DateTime, DateTime>(start.Value, end.Value);
 
-            try
-            {
-                var dt1 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(start2[0]), (int)Convert.ToInt64(start2[1]), 0);
-                var dt2 = new DateTime(2000, 1, 1, (int)Convert.ToInt64(end2[0]), (int)Convert.ToInt64(end2[1]), 0);
-                return new Tuple<DateTime, DateTime>(dt1, dt2);
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
 
         private static List<string> GetFreeRooms(HtmlNode table, DateTime start, DateTime stop)
@@ -509,7 +499,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var (dateTimeSchedule, exception, item3) = await DateTimeClass.AskDateAsync(e.Message.From.Id,
+            var (dateTimeSchedule, exception, item3) = await Utils.AskUser.AskDateAsync(e.Message.From.Id,
                 "Scegli un giorno", "it", sender,
                 e.Message.From.Username);
 
