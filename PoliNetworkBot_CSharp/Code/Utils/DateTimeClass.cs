@@ -2,8 +2,6 @@
 
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 #endregion
 

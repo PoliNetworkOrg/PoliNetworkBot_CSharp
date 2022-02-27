@@ -196,12 +196,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var result = new List<string>();
 
+            int shiftStart = (start.Hour - 8) * 4;
+            int shiftEnd = (stop.Hour - 8) * 4;
+
+            shiftStart += start.Minute / 15;
+            shiftEnd += stop.Minute / 15;
+
             foreach (var child in table.ChildNodes)
             {
                 if (child == null)
                     continue;
 
-                var toAdd = CheckIfFree(child, start, stop);
+                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
                 if (!string.IsNullOrEmpty(toAdd))
                 {
                     result.Add(toAdd);
@@ -211,7 +217,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return result;
         }
 
-        private static string CheckIfFree(HtmlNode child, DateTime start, DateTime stop)
+        private static string CheckIfFree(HtmlNode child, int shiftStart, int shiftEnd)
         {
             if (!child.GetClasses().Contains("normalRow")) return null;
             if (child.ChildNodes == null) return null;
@@ -221,7 +227,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             ;
 
-            var isRowEmptyBool = IsRowEmpty(child, start, stop);
+            var isRowEmptyBool = IsRowEmpty(child, shiftStart, shiftEnd);
 
             ;
 
@@ -268,18 +274,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return a.InnerText.Trim();
         }
 
-        private static bool IsRowEmpty(HtmlNode node, DateTime start, DateTime stop)
+        private static bool IsRowEmpty(HtmlNode node, int shiftStart, int shiftEnd)
         {
             if (node?.ChildNodes == null)
                 return true;
-
-            // TODO: calcolare shiftStart e shiftEnd una sola volta e non ogni riga
-
-            var shiftStart = (start.Hour - 8) * 4;
-            var shiftEnd = (stop.Hour - 8) * 4;
-
-            shiftStart += start.Minute / 15;
-            shiftEnd += stop.Minute / 15;
 
             var colsizetotal = 0;
             for (var i = 2; i < node.ChildNodes.Count; i++)
@@ -294,7 +292,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 colsizetotal += colsize;
                 var vEnd = colsizetotal;
 
-                if (vEnd < shiftStart || vStart > shiftEnd) continue;
+                if (vEnd < shiftStart || vStart > shiftEnd)
+                    continue;
+
                 if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == false)
                     return false;
             }

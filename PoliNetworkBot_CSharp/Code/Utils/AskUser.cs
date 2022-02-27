@@ -147,7 +147,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return Utils.DateTimeClass.GetHours(s);
         }
 
-
         internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long id, string text,
             string lang,
             TelegramBotAbstract sender,
@@ -197,6 +196,5 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return new Tuple<DateTimeSchedule, Exception, string>(null, e1, reply);
             }
         }
-
     }
 }
