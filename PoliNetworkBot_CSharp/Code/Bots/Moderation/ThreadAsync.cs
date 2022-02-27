@@ -66,13 +66,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private static void UpdateGroups2(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
             if (bot == null)
+            {
+                Logger.WriteLine("Automatic routine failed", LogSeverityLevel.ERROR);
                 return;
+            }
+
             try
             {
+                Logger.WriteLine("Started automatic groups update routine");
                 while (true)
                 {
                     if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 3)
                     {
+                        Logger.WriteLine("Started automatic groups update", LogSeverityLevel.ALERT);
                         _ = CommandDispatcher.UpdateGroups(bot, false, true, false, messageEventArgs);
                         Thread.Sleep(1000 * 3600 * 60 * 6);
                     }
