@@ -258,27 +258,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
-                
+
                 case "/sendmessageinchannel":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message.ReplyToMessage == null || cmdLines.Length != 2)
-                            return;
-                        var text = new Language(new Dictionary<string, string>
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            if (e.Message.ReplyToMessage == null || cmdLines.Length != 2)
+                                return;
+                            var text = new Language(new Dictionary<string, string>
                         {
                             { "it", e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption },
                         });
-                        _ = await SendMessage.SendMessageInAGroup(sender, e.Message.From.LanguageCode, text, e, long.Parse(cmdLines[1]),
-                            ChatType.Channel, ParseMode.Html, null, false);
+                            _ = await SendMessage.SendMessageInAGroup(sender, e.Message.From.LanguageCode, text, e, long.Parse(cmdLines[1]),
+                                ChatType.Channel, ParseMode.Html, null, false);
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
 
                 case "/getGroups":
                     {

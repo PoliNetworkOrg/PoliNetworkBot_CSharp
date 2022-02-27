@@ -211,7 +211,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (child == null)
                     continue;
 
-                var toAdd = checkIfFree(child, start, stop);
+                var toAdd = CheckIfFree(child, start, stop);
                 if (!string.IsNullOrEmpty(toAdd))
                 {
                     result.Add(toAdd);
@@ -221,21 +221,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return result;
         }
 
-        private static string checkIfFree(HtmlNode child, DateTime start, DateTime stop)
+        private static string CheckIfFree(HtmlNode child, DateTime start, DateTime stop)
         {
             if (!child.GetClasses().Contains("normalRow")) return null;
             if (child.ChildNodes == null) return null;
 
             if (!child.ChildNodes.Any(x => x.HasClass("dove") && x.ChildNodes != null && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))))
             { return null; }
-            
+
             ;
 
             var isRowEmptyBool = IsRowEmpty(child, start, stop);
 
             ;
 
-            return isRowEmptyBool ? getNomeAula(child) : null;
+            return isRowEmptyBool ? GetNomeAula(child) : null;
             /*
             var isRowEmptyBool = IsRowEmpty(child, start, stop);
             if (isRowEmptyBool == null || !isRowEmptyBool.Value) return null;
@@ -270,7 +270,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             */
         }
 
-        private static string getNomeAula(HtmlNode child)
+        private static string GetNomeAula(HtmlNode child)
         {
             ;
             var dove = child.ChildNodes.First(x => x.HasClass("dove"));
