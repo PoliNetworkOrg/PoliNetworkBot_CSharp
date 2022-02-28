@@ -32,7 +32,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
             else
             {
-                //todo: se sono stati inviati troppi messaggi in gruppi diversi in poco tempo è spam
                 if (GroupsIdItHasBeenSentInto.Count > 1 && howManyTimesWeSawIt > 1)
                 {
                     if (insertTime == null || lastSeenTime == null)

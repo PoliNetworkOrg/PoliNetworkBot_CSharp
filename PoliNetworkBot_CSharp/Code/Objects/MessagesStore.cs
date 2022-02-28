@@ -21,7 +21,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return false;
             if (store.ContainsKey(message))
                 store.Remove(message);
-            store.Add(message, new StoredMessage() { message = message, insertTime = DateTime.Now, allowedSpam = true });
+
+            lock (store)
+            {
+                store.Add(message, new StoredMessage() { message = message, insertTime = DateTime.Now, allowedSpam = true });
+            }
+
             return true;
         }
 
@@ -33,14 +38,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 store.TryGetValue(message, out var storedMessage);
                 if (storedMessage.IsOutdated())
-                    store.Remove(message);
+                {
+                    lock (store)
+                    {
+                        store.Remove(message);
+                    }
+                }
             }
         }
 
         public static void RemoveMessage(string text)
         {
             if (store.ContainsKey(text))
-                store.Remove(text);
+            {
+                lock (store)
+                {
+                    store.Remove(text);
+                }
+            }
         }
 
         public static List<string> GetAllMessages()
@@ -64,28 +79,43 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
             else
             {
-                store[e.Message.Text] = new StoredMessage()
+                lock (store)
                 {
-                    insertTime = DateTime.Now,
-                    lastSeenTime = DateTime.Now,
-                    howManyTimesWeSawIt = 1,
-                    message = e.Message.Text,
-                    allowedSpam = false
-                };
+                    store[e.Message.Text] = new StoredMessage()
+                    {
+                        insertTime = DateTime.Now,
+                        lastSeenTime = DateTime.Now,
+                        howManyTimesWeSawIt = 1,
+                        message = e.Message.Text,
+                        allowedSpam = false
+                    };
+                }
             }
 
-            if (!store[e.Message.Text].FromUserId.Contains(e.Message.From.Id))
-                store[e.Message.Text].FromUserId.Add(e.Message.From.Id);
+            try
+            {
+                lock (store[e.Message.Text])
+                {
+                    if (!store[e.Message.Text].FromUserId.Contains(e.Message.From.Id))
+                        store[e.Message.Text].FromUserId.Add(e.Message.From.Id);
 
-            if (!store[e.Message.Text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
-                store[e.Message.Text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
+                    if (!store[e.Message.Text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
+                        store[e.Message.Text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
 
-            store[e.Message.Text].Messages.Add(e.Message);
+                    store[e.Message.Text].Messages.Add(e.Message);
 
-            if (store.Count == 0)
-                return SpamType.UNDEFINED;
+                    if (store.Count == 0)
+                        return SpamType.UNDEFINED;
 
-            return store[e.Message.Text].IsSpam();
+                    return store[e.Message.Text].IsSpam();
+                }
+            }
+            catch
+            {
+                ;
+            }
+
+            return SpamType.UNDEFINED;
         }
 
         internal static List<Message> GetMessages(string text)
