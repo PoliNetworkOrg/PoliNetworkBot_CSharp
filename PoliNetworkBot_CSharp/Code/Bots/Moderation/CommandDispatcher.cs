@@ -1521,7 +1521,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task ContactUs(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e.Message);
             var lang2 = new Language(new Dictionary<string, string>
             {
                 { "it", telegramBotClient.GetContactString() },
@@ -1563,7 +1563,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task Start(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
         {
-            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e);
+            await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e.Message);
             var lang2 = new Language(new Dictionary<string, string>
             {
                 {
