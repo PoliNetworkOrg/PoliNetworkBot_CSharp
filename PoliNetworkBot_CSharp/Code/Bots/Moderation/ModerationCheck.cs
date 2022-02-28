@@ -284,7 +284,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 fromUsername, userId, fromFirstName, lastName, messageId);
         }
 
-        public static SpamType CheckSpam(MessageEventArgs e)
+        public static async Task<SpamType> CheckSpamAsync(MessageEventArgs e, TelegramBotAbstract telegramBotClient)
         {
             switch (e.Message)
             {
@@ -297,9 +297,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (GlobalVariables.AllowedSpam.Contains(e.Message?.From?.Username?.ToLower()))
                 return SpamType.ALL_GOOD;
 
-            if (e.Message is { From: { }, Chat: { } } &&
-                AllowedMessages.CheckMessage(e.Message.Text) == SpamType.SPAM_PERMITTED)
-                return SpamType.SPAM_PERMITTED;
+            if (e.Message is { From: { }, Chat: { } })
+            {
+                var storedMessageResult = MessagesStore.StoreAndCheck(e);
+                switch (storedMessageResult)
+                {
+                    case SpamType.SPAM_LINK:
+                        {
+                            await Utils.DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(e.Message.Text), telegramBotClient);
+                            return SpamType.SPAM_LINK;
+                        }
+                    case SpamType.NOT_ALLOWED_WORDS:
+                        break;
+
+                    case SpamType.ALL_GOOD:
+                        break;
+
+                    case SpamType.FOREIGN:
+                        break;
+
+                    case SpamType.FORMAT_INCORRECT:
+                        break;
+
+                    case SpamType.SPAM_PERMITTED:
+                        return SpamType.SPAM_PERMITTED;
+
+                    case SpamType.UNDEFINED:
+                        break;
+                }
+            }
 
             if (string.IsNullOrEmpty(e.Message.Text))
                 return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption, e.Message.Chat.Id),

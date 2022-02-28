@@ -317,7 +317,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 return;
                             }
 
-                            AllowedMessages.AddMessage(e.Message.ReplyToMessage.Text);
+                            MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
                             return;
                         }
 
@@ -339,7 +339,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                 e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                                 e.Message.MessageId);
-                            var messages = AllowedMessages.GetAllMessages();
+                            var messages = MessagesStore.GetAllMessages();
                             foreach (var message in messages)
                             {
                                 text = new Language(new Dictionary<string, string>
@@ -375,7 +375,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                                 return;
                             }
 
-                            AllowedMessages.RemoveMessage(e.Message.ReplyToMessage.Text);
+                            MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
                             return;
                         }
 

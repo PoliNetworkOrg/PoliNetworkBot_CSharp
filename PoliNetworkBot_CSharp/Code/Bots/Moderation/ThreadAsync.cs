@@ -182,7 +182,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             while (true)
             {
-                AllowedMessages.CheckTimestamp();
+                MessagesStore.CheckTimestamp();
                 Thread.Sleep(1000 * 3600 * 24);
             }
         }

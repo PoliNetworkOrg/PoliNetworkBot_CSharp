@@ -79,7 +79,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (toExitBecauseUsernameAndNameCheck)
                     return;
 
-                var checkSpam = ModerationCheck.CheckSpam(e);
+                var checkSpam = await ModerationCheck.CheckSpamAsync(e, telegramBotClient);
                 if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
                 {
                     await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
