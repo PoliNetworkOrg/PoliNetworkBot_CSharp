@@ -1444,13 +1444,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return target[1];
         }
 
-        private static string GetFinalTarget(MessageEventArgs e, IReadOnlyList<string> target)
-        {
-            return e.Message.ReplyToMessage == null && target.Count >= 2
-                ? target[1]
-                : e.Message.ReplyToMessage.From.Id.ToString();
-        }
-
         private static async Task<bool> DefaultCommand(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var text2 = new Language(new Dictionary<string, string>

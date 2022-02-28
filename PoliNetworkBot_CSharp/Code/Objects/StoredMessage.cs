@@ -26,31 +26,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal SpamType IsSpam()
         {
-            if (allowedSpam)
-            {
-                if (insertTime == null)
-                    return SpamType.UNDEFINED;
+            return allowedSpam
+                ? insertTime == null
+                    ? SpamType.UNDEFINED
+                    : insertTime.Value.AddHours(24) > DateTime.Now ? SpamType.SPAM_PERMITTED : SpamType.UNDEFINED
+                : GroupsIdItHasBeenSentInto.Count > 1 && howManyTimesWeSawIt > 1 && (FromUserId.Count <= 1 || (FromUserId.Count > 1 && message.Length > 10))
+                    ? IsSpam2()
+                    : SpamType.UNDEFINED;
+        }
 
-                return insertTime.Value.AddHours(24) > DateTime.Now ? SpamType.SPAM_PERMITTED : SpamType.UNDEFINED;
-            }
-            else
-            {
-                if (GroupsIdItHasBeenSentInto.Count > 1 && howManyTimesWeSawIt > 1)
-                {
-                    if (insertTime == null || lastSeenTime == null)
-                        return SpamType.UNDEFINED;
+        const double averageLimit = 60;
 
-                    TimeSpan diff = lastSeenTime.Value - insertTime.Value;
-                    double average = diff.TotalSeconds / howManyTimesWeSawIt;
-
-                    if (average < 60)
-                        return SpamType.SPAM_LINK;
-
-                    return SpamType.UNDEFINED;
-                }
-
+        private SpamType IsSpam2()
+        {
+            if (insertTime == null || lastSeenTime == null)
                 return SpamType.UNDEFINED;
-            }
+
+            TimeSpan diff = lastSeenTime.Value - insertTime.Value;
+            double average = diff.TotalSeconds / howManyTimesWeSawIt;
+
+            return average < averageLimit ? SpamType.SPAM_LINK : SpamType.UNDEFINED;
         }
 
         internal bool IsOutdated()
