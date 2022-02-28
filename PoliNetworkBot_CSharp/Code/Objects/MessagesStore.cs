@@ -2,9 +2,11 @@
 
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 #endregion
@@ -130,6 +132,42 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
 
             return null;
+        }
+
+        internal static async Task SendMessageDetailsAsync(TelegramBotAbstract sender, MessageEventArgs e)
+        {
+            if (e == null || e.Message == null || e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+                return;
+
+            if (!store.ContainsKey(e.Message.ReplyToMessage.Text))
+            {
+                Language language1 = new(new Dictionary<string, string>() {
+                    {
+                        "it", "Non è stato trovato nessun messaggio"
+                    },
+                    {
+                        "en", "There are no messages"
+                    }
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, language1, Telegram.Bot.Types.Enums.ChatType.Private,
+                    e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, null, e.Message.From.Username);
+                return;
+            }
+
+            var storedMessage = store[e.Message.ReplyToMessage.Text];
+            string json = storedMessage.ToJson();
+            Language language2 = new(new Dictionary<string, string>() {
+                {
+                    "en", "Messages"
+                },
+                {
+                    "it", "Messaggi"
+                }
+            });
+            Tuple<TeleSharp.TL.TLAbsInputPeer, long> peer = new(null, e.Message.From.Id);
+            var stream = Utils.UtilsMedia.UtilsFileText.GenerateStreamFromString(json);
+            var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
+            await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
     }
 }

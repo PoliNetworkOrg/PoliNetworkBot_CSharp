@@ -113,16 +113,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
         }
 
-        private static Stream GenerateStreamFromString(string s)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
         internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             try
@@ -221,8 +211,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     { "it", "Gruppi con link rigenerati" }
                 };
-                var stream = GenerateStreamFromString(st);
-                var tf = new TelegramFile(stream, "groups.txt", "Gruuppi con link rigenerati", "text/plain");
+                var stream = Utils.UtilsMedia.UtilsFileText.GenerateStreamFromString(st);
+                var tf = new TelegramFile(stream, "groups.txt", "Gruppi con link rigenerati", "text/plain");
                 await sender.SendFileAsync(tf, new Tuple<TLAbsInputPeer, long>(null, e.Message.From.Id),
                     new Language(dict),
                     TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);

@@ -1,10 +1,13 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums;
+﻿using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
 using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
+    [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     internal class StoredMessage
     {
         internal string message;
@@ -56,6 +59,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return false;
 
             return insertTime.Value.AddHours(24) < DateTime.Now;
+        }
+
+        internal string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
     }
 }

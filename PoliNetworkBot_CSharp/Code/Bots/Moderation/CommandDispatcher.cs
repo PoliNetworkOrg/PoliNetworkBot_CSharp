@@ -540,6 +540,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                case "/getmessagesent":
+                    {
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private && e.Message.ReplyToMessage != null)
+                        {
+                            await MessagesStore.SendMessageDetailsAsync(sender, e);
+
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
+                        return;
+                    }
                 case "/testtime":
                     {
                         if (e.Message.Chat.Type == ChatType.Private) await TestTime(sender, e);
