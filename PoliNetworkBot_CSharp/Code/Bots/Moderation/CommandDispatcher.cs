@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using TeleSharp.TL;
 using File = System.IO.File;
 using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
@@ -290,7 +289,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             if (!string.IsNullOrEmpty(e.Message.From.Username))
                                 username = e.Message.From.Username;
 
-                            _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode);
+                            _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode, e.Message.Chat.Type);
                             return;
                         }
 
@@ -460,7 +459,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username);
+                            await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username, e.Message.Chat.Type);
 
                             return;
                         }
@@ -880,7 +879,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return listString;
         }
 
-        public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username)
+        public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string username, ChatType chatType)
         {
             try
             {
@@ -893,8 +892,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     { "it", "Backup:" }
                 });
 
-                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendTo };
-                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendTo);
+                var peer = new Objects.PeerAbstract(sendTo, chatType);
 
                 await SendMessage.SendFileAsync(new TelegramFile(stream, "db.db",
                         null, "application/octet-stream"), peer,
@@ -1144,12 +1142,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var x2 = StreamSerialization.SerializeToStream(x);
             var documentInput =
                 new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)e.Message.From.Id };
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
+
             var text2 = new Language(new Dictionary<string, string>
             {
                 { "en", "Query result" }
             });
+            PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
             var v = await sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
                 e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
             return v ? 1 : 0;
@@ -1228,13 +1226,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
-            string lang)
+            string lang, ChatType chatType)
         {
             var groups = Utils.Groups.GetAllGroups();
             Stream stream = new MemoryStream();
             FileSerialization.SerializeFile(groups, ref stream);
-            TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)chatId };
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, chatId);
+
+            var peer = new Objects.PeerAbstract(chatId, chatType);
 
             var text2 = new Language(new Dictionary<string, string>
             {
@@ -1432,7 +1430,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             TelegramBotAbstract sender, MessageEventArgs e)
         {
             var file = new TelegramFile(stream, filename, "", "application/octet-stream");
-            var peer = new Tuple<TLAbsInputPeer, long>(null, e.Message.From.Id);
+            var peer = new Objects.PeerAbstract(e.Message.From.Id, e.Message.Chat.Type);
             var text = new Language(new Dictionary<string, string>
             {
                 { "en", "" }

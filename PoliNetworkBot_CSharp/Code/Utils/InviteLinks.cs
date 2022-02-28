@@ -14,7 +14,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TeleSharp.TL;
 
 #endregion
 
@@ -213,7 +212,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 };
                 var stream = Utils.UtilsMedia.UtilsFileText.GenerateStreamFromString(st);
                 var tf = new TelegramFile(stream, "groups.txt", "Gruppi con link rigenerati", "text/plain");
-                await sender.SendFileAsync(tf, new Tuple<TLAbsInputPeer, long>(null, e.Message.From.Id),
+                await sender.SendFileAsync(tf, new Objects.PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
                     new Language(dict),
                     TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
             }

@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Web;
 using Telegram.Bot.Types.Enums;
-using TeleSharp.TL;
 
 #endregion
 
@@ -168,8 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (var sendToSingle in sendTo)
             {
-                TLAbsInputPeer peer2 = new TLInputPeerUser { UserId = (int)sendToSingle };
-                var peer = new Tuple<TLAbsInputPeer, long>(peer2, sendToSingle);
+                var peer = new Objects.PeerAbstract(sendToSingle, ChatType.Private);
 
                 var stream = new MemoryStream(encoding.GetBytes(file));
 

@@ -159,7 +159,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 while (true)
                 {
-                    await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null);
+                    await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null, ChatType.Group);
                     Thread.Sleep(1000 * 3600 * 24 * 7);
                 }
             }

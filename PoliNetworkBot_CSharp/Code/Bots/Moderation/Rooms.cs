@@ -12,7 +12,6 @@ using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
-using TeleSharp.TL;
 using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
 
 #endregion
@@ -481,9 +480,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             ;
 
-            var peer2 = UserbotPeer.GetPeerFromIdAndType(e.Message.From.Id,
-                ChatType.Private);
-            var peer = new Tuple<TLAbsInputPeer, long>(peer2, e.Message.From.Id);
+            var peer = new Objects.PeerAbstract(e.Message.From.Id, ChatType.Private);
             var text = new Language(new Dictionary<string, string>
             {
                 { "en", roomName }

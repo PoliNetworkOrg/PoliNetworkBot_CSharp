@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return r1;
         }
 
-        internal static async Task<bool> SendFileAsync(TelegramFile file, Tuple<TLAbsInputPeer, long> peer,
+        internal static async Task<bool> SendFileAsync(TelegramFile file, Objects.PeerAbstract peer,
             Language text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract,
             string username, string lang, long? replyToMessageId, bool disablePreviewLink)
         {
