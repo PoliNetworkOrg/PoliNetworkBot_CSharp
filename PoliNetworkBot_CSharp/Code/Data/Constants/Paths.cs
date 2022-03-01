@@ -6,17 +6,13 @@
 
         public static class Info
         {
-            public const string ConfigBotsInfo = "config/bots_info.txt";
+            public const string ConfigBotsInfo = "config/bots_info.json";
             public const string GitHubConfigInfo = "config/git_info.json";
-            public const string ConfigUserBotsInfo = "config/userbots_info.txt";
-            public const string ConfigBotDisguisedAsUserBotsInfo = "config/botdisguisedasuserbots_info.txt";
+            public const string ConfigUserBotsInfo = "config/userbots_info.json";
+            public const string ConfigBotDisguisedAsUserBotsInfo = "config/botdisguisedasuserbots_info.json";
         }
-
         public static class Bin
         {
-            public const string ConfigBot = "config/bots.bin";
-            public const string ConfigUserbot = "config/userbots.bin";
-            public const string ConfigBotDisguisedAsUserbot = "config/botdisguisedasuserbots.bin";
             public const string MessagesToDelete = "config/messagestodelete.bin";
         }
 

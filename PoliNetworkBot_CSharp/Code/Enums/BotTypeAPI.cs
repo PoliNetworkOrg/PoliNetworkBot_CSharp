@@ -1,9 +1,12 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿using System;
+
+namespace PoliNetworkBot_CSharp.Code.Enums
 {
+    [Serializable]
     public enum BotTypeApi
     {
-        REAL_BOT,
-        USER_BOT,
-        DISGUISED_BOT
+        REAL_BOT = 1,
+        USER_BOT = 2,
+        DISGUISED_BOT = 3
     }
 }

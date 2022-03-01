@@ -1,5 +1,6 @@
 ﻿#region
 
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -11,67 +12,51 @@ using System.Collections.Generic;
 namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 {
     [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class BotInfoAbstract
     {
-        protected readonly Dictionary<string, object> KeyValuePairs;
+        public BotTypeApi? botTypeApi;
+        public string token;
+        public string website;
+        public string contactString;
+        public string onMessages;
+        public bool? acceptedMessages;
+        public string SessionUserId;
+        public long? userId;
+        public long? apiId;
+        public string apiHash;
+        public string NumberCountry;
+        public string NumberNumber;
+        public string passwordToAuthenticate;
+        public string method;
 
         public BotInfoAbstract()
         {
-            KeyValuePairs = new Dictionary<string, object>();
+
         }
 
-        internal BotTypeApi? IsBot()
+        internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
         {
-            var done = Enum.TryParse(typeof(BotTypeApi), KeyValuePairs[ConstConfigBot.IsBot].ToString(),
-                out var result);
-            if (!done || result == null) return null;
-
-            if (result is BotTypeApi r) return r;
-
-            return null;
+            return onMessages switch
+            {
+                "a" => MainAnon.CallbackMethod,
+                _ => null
+            };
         }
 
-        internal bool SetIsBot(BotTypeApi v)
-        {
-            KeyValuePairs[ConstConfigBot.IsBot] = v;
-            return true;
-        }
 
         internal string GetToken()
         {
-            return KeyValuePairs[ConstConfigBot.Token].ToString();
+            return token;
         }
 
-        internal void SetWebsite(string v)
-        {
-            KeyValuePairs[ConstConfigBot.Website] = v;
-        }
 
-        internal void SetContactString(string v)
-        {
-            KeyValuePairs[ConstConfigBot.ContactString] = v;
-        }
-
-        internal void SetOnMessages(string v)
-        {
-            KeyValuePairs[ConstConfigBot.OnMessages] = v;
-        }
-
-        internal void SetAcceptMessages(bool v)
-        {
-            KeyValuePairs[ConstConfigBot.AcceptsMessages] = v;
-        }
-
-        internal void SetToken(string v)
-        {
-            KeyValuePairs[ConstConfigBot.Token] = v;
-        }
 
         internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
         {
             try
             {
-                var s = KeyValuePairs[ConstConfigBot.OnMessages].ToString();
+                var s = onMessages;
                 var r1 = BotStartMethods.GetMethodFromString(s);
                 return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
             }
@@ -83,16 +68,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             return new Tuple<EventHandler<MessageEventArgs>, string>(null, null);
         }
 
-        internal bool AcceptsMessages()
+        internal bool? AcceptsMessages()
         {
-            return (bool)KeyValuePairs[ConstConfigBot.AcceptsMessages];
+            return  acceptedMessages;
         }
 
         internal string GetWebsite()
         {
             try
             {
-                return KeyValuePairs[ConstConfigBot.Website].ToString();
+                return website;
             }
             catch
             {
@@ -104,7 +89,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             try
             {
-                return KeyValuePairs[ConstConfigBot.ContactString].ToString();
+                return contactString;
             }
             catch
             {
@@ -112,21 +97,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             }
         }
 
-        public class ConstConfigBot
-        {
-            public const string Token = "t";
-            public const string IsBot = "b";
-            public const string AcceptsMessages = "a";
-            public const string OnMessages = "o";
-            public const string Website = "w";
-            public const string ContactString = "c";
-            public const string ApiId = "ai";
-            public const string ApiHash = "ah";
-            public const string UserId = "u";
-            public const string NumberCountry = "nc";
-            public const string NumberNumber = "nn";
-            public const string PasswordToAuthenticate = "pta";
-            public const string Method = "method";
-        }
+
     }
 }

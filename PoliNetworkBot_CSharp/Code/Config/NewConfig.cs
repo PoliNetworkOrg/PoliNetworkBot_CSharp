@@ -19,145 +19,46 @@ namespace PoliNetworkBot_CSharp.Code.Config
 {
     public static class NewConfig
     {
-        private const string RowSeparator = "| _:r:_ |";
-        private const string ColumnSeparator = "| _:c:_ |";
+
 
         public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot,
-            bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
+                  bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
         {
-            if (resetBot) ResetBotMethod();
+            if (resetBot) ResetBotMethod(BotTypeApi.REAL_BOT);
 
-            if (resetUserBot) ResetUserbotMethod();
+            if (resetUserBot) ResetUserbotMethod(BotTypeApi.USER_BOT);
 
-            if (resetBotDisguisedAsUserBot) ResetBotDisguisedAsUserBotMethod();
+            if (resetBotDisguisedAsUserBot) ResetBotDisguisedAsUserBotMethod(BotTypeApi.DISGUISED_BOT);
 
             if (destroy_db_and_redo_it)
                 DestroyDB_And_Redo_it(alsoFillTablesFromJson);
         }
 
-        private static void ResetBotDisguisedAsUserBotMethod()
+        private static void ResetBotDisguisedAsUserBotMethod(BotTypeApi b)
         {
-            string[] lines = null;
-            try
-            {
-                lines = File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo).Split(RowSeparator);
-            }
-            catch
-            {
-                ;
-            }
-
-            if (lines == null)
-                return;
-
-            var botInfos = new List<BotDisguisedAsUserBotInfo>();
-            foreach (var t in lines)
-            {
-                var line = t;
-                if (string.IsNullOrEmpty(line))
-                    continue;
-
-                line = line.Trim();
-
-                if (string.IsNullOrEmpty(line))
-                    continue;
-
-                var lineInfo = line.Split(ColumnSeparator);
-
-                var bot = new BotDisguisedAsUserBotInfo();
-                bot.SetApiId(lineInfo[0].Trim());
-                bot.SetApiHash(lineInfo[1].Trim());
-                bot.SetUserId(lineInfo[2].Trim());
-                bot.SetToken(lineInfo[3].Trim());
-                BotDisguisedAsUserBotInfo.SetIsBot(BotTypeApi.DISGUISED_BOT);
-
-                botInfos.Add(bot);
-            }
-
-            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigBotDisguisedAsUserbot, botInfos);
+            Reset(Paths.Info.ConfigBotDisguisedAsUserBotsInfo, b);
         }
 
-        private static void ResetUserbotMethod()
+        private static void ResetUserbotMethod(BotTypeApi b)
         {
-            try
-            {
-                var lines = File.ReadAllText(Paths.Info.ConfigUserBotsInfo).Split(RowSeparator);
-                var botInfos = new List<UserBotInfo>();
-                foreach (var t in lines)
-                {
-                    var line = t;
-                    if (string.IsNullOrEmpty(line))
-                        continue;
-
-                    line = line.Trim();
-
-                    if (string.IsNullOrEmpty(line))
-                        continue;
-
-                    var lineInfo = line.Split(ColumnSeparator);
-
-                    var bot = new UserBotInfo();
-                    bot.SetApiId(lineInfo[0].Trim());
-                    bot.SetApiHash(lineInfo[1].Trim());
-                    bot.SetUserId(lineInfo[2].Trim());
-                    bot.SetNumberCountry(lineInfo[3].Trim());
-                    bot.SetNumberNumber(lineInfo[4].Trim());
-                    bot.SetPasswordToAuthenticate(lineInfo[5].Trim());
-                    bot.SetMethod(lineInfo[6].Trim());
-
-                    botInfos.Add(bot);
-                }
-
-                FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigUserbot, botInfos);
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e);
-                Logger.WriteLine("Skipping userbot config");
-            }
+            Reset(Paths.Info.ConfigUserBotsInfo, b);
         }
 
-        private static void ResetBotMethod()
+        private static void ResetBotMethod(BotTypeApi b)
         {
-            string[] lines = null;
-            try
+            Reset(Paths.Info.ConfigBotsInfo, b);
+        }
+
+        private static void Reset(string configBotsInfo, BotTypeApi b)
+        {
+            BotConfig t = new();
+            t.bots = new List<BotInfoAbstract>
             {
-                lines = File.ReadAllText(Paths.Info.ConfigBotsInfo).Split(RowSeparator);
-            }
-            catch
-            {
-                ;
-            }
-
-            if (lines == null)
-                return;
-
-            var botInfos = new List<BotInfo>();
-            foreach (var t in lines)
-            {
-                var line = t;
-                if (string.IsNullOrEmpty(line))
-                    continue;
-
-                line = line.Trim();
-
-                if (string.IsNullOrEmpty(line))
-                    continue;
-
-                var lineInfo = line.Split(ColumnSeparator);
-
-                var bot = new BotInfo();
-                bot.SetToken(lineInfo[0].Trim());
-                bot.SetWebsite(lineInfo[1].Trim());
-                BotInfo.SetIsBot(BotTypeApi.REAL_BOT);
-                bot.SetAcceptMessages(true);
-                bot.SetOnMessages(lineInfo[2].Trim());
-                bot.SetContactString(lineInfo[3].Trim());
-
-                botInfos.Add(bot);
-            }
-
-            FileSerialization.WriteToBinaryFile(Paths.Bin.ConfigBot, botInfos);
+                new BotInfoAbstract()
+            };
+            t.bots[0].botTypeApi = b;
+            var j = Newtonsoft.Json.JsonConvert.SerializeObject(t);
+            File.WriteAllText(configBotsInfo, j);
         }
 
         private static void DestroyDB_And_Redo_it(bool alsoFillTablesFromJson)

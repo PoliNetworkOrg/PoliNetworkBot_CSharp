@@ -1,5 +1,6 @@
 ﻿#region
 
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -13,6 +14,8 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
+    [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public static class MessagesStore
     {
         private static readonly Dictionary<string, StoredMessage> store = new();
