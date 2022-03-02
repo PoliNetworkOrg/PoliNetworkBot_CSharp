@@ -67,9 +67,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        public static List<string> GetAllMessages()
+        public static List<StoredMessage> GetAllMessages(Func<StoredMessage, bool> filter = null)
         {
-            return store.Keys.ToList();
+            List<StoredMessage> r = store.Values.ToList();
+            if (filter!=null)
+                r = r.Where(filter).ToList();
+
+            return r;
         }
 
         internal static SpamType StoreAndCheck(MessageEventArgs e)

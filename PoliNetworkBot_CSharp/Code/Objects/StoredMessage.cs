@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 {
     [Serializable]
     [JsonObject(MemberSerialization.Fields)]
-    internal class StoredMessage
+    public class StoredMessage
     {
         internal string message;
         internal DateTime? insertTime = null;

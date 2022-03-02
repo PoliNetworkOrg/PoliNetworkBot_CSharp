@@ -324,15 +324,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                 e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                                 e.Message.MessageId);
-                            var messages = MessagesStore.GetAllMessages();
-                            foreach (var message in messages)
+                            var messages = MessagesStore.GetAllMessages(x => x.allowedSpam);
+                            foreach (StoredMessage message in messages)
                             {
-                                text = new Language(new Dictionary<string, string>
-                            {
-                                { "uni", message }
-                            });
-                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                    "uni", ParseMode.Html, null, e.Message.From.Username);
+                                var m2 = message.Messages.First();
+                                if (m2 != null)
+                                {
+                                    var m3 = GetStringFromMessage(m2);
+                                    if (!string.IsNullOrEmpty(m3))
+                                    {
+                                        text = new Language(new Dictionary<string, string>
+                                    {
+                                        { "uni",  m3}
+                                    });
+                                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                            "uni", ParseMode.Html, null, e.Message.From.Username);
+                                    }
+                                }
                             }
 
                             return;
@@ -633,6 +641,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         return;
                     }
             }
+        }
+
+        private static string GetStringFromMessage(Message m2)
+        {
+            if (m2 == null)
+                return null;
+
+            if (!string.IsNullOrEmpty(m2.Text))
+                return m2.Text;
+
+            if (!string.IsNullOrEmpty(m2.Caption))
+                return m2.Caption;
+
+            return null;
         }
 
         private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
