@@ -76,7 +76,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 Logger.WriteLine("Started automatic groups update routine");
                 while (true)
                 {
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 3)
+                    if (DateTime.Now.Hour == 3)
                     {
                         Logger.WriteLine("Started automatic groups update", LogSeverityLevel.ALERT);
                         _ = CommandDispatcher.UpdateGroups(bot, false, true, false, messageEventArgs);
