@@ -654,7 +654,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (!string.IsNullOrEmpty(m2.Caption))
                 return m2.Caption;
 
-            return null;
+            return null;    
         }
 
         private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
