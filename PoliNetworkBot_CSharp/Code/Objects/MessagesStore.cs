@@ -24,6 +24,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             if (message == null)
                 return false;
+
+            if (string.IsNullOrEmpty(message))
+                return false;
+
             if (store.ContainsKey(message))
                 store.Remove(message);
 
@@ -74,19 +78,31 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return SpamType.UNDEFINED;
             if (e.Message == null)
                 return SpamType.UNDEFINED;
-            if (string.IsNullOrEmpty(e.Message.Text))
+
+            if (!string.IsNullOrEmpty(e.Message.Text))
+                return StoreAndCheck2(e, e.Message.Text);
+            else if (!string.IsNullOrEmpty(e.Message.Caption))
+                return StoreAndCheck2(e, e.Message.Caption);
+
+            return SpamType.UNDEFINED;
+        }
+
+        private static SpamType StoreAndCheck2(MessageEventArgs e, string text)
+        {
+
+            if (string.IsNullOrEmpty(text))
                 return SpamType.UNDEFINED;
 
-            if (store.ContainsKey(e.Message.Text))
+            if (store.ContainsKey(text))
             {
-                store[e.Message.Text].lastSeenTime = DateTime.Now;
-                store[e.Message.Text].howManyTimesWeSawIt++;
+                store[text].lastSeenTime = DateTime.Now;
+                store[text].howManyTimesWeSawIt++;
             }
             else
             {
                 lock (store)
                 {
-                    store[e.Message.Text] = new StoredMessage()
+                    store[text] = new StoredMessage()
                     {
                         insertTime = DateTime.Now,
                         lastSeenTime = DateTime.Now,
@@ -99,20 +115,20 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             try
             {
-                lock (store[e.Message.Text])
+                lock (store[text])
                 {
-                    if (!store[e.Message.Text].FromUserId.Contains(e.Message.From.Id))
-                        store[e.Message.Text].FromUserId.Add(e.Message.From.Id);
+                    if (!store[text].FromUserId.Contains(e.Message.From.Id))
+                        store[text].FromUserId.Add(e.Message.From.Id);
 
-                    if (!store[e.Message.Text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
-                        store[e.Message.Text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
+                    if (!store[text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
+                        store[text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
 
-                    store[e.Message.Text].Messages.Add(e.Message);
+                    store[text].Messages.Add(e.Message);
 
                     if (store.Count == 0)
                         return SpamType.UNDEFINED;
 
-                    return store[e.Message.Text].IsSpam();
+                    return store[text].IsSpam();
                 }
             }
             catch

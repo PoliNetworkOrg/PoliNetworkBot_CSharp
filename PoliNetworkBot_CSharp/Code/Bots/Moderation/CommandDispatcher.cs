@@ -303,21 +303,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         if (Owners.CheckIfOwner(e.Message.From.Id)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
-                            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
-                            {
-                                var text = new Language(new Dictionary<string, string>
-                            {
-                                { "en", "You have to reply to a message containing the message" },
-                                { "it", "You have to reply to a message containing the message" }
-                            });
-                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                                    e.Message.MessageId);
-                                return;
-                            }
-
-                            MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
-                            return;
+                            await AllowMessageAsync(e, sender);
                         }
 
                         await DefaultCommand(sender, e);
@@ -646,6 +632,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await DefaultCommand(sender, e);
                         return;
                     }
+            }
+        }
+
+        private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
+        {
+            if (e.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) && string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
+            {
+                var text = new Language(new Dictionary<string, string>
+                                {
+                                    { "en", "You have to reply to a message containing the message" },
+                                    { "it", "You have to reply to a message containing the message" }
+                                });
+
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                    e.Message.MessageId);
+            }
+            else
+            {
+                MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
+                MessagesStore.AddMessage(e.Message.ReplyToMessage.Caption);
             }
         }
 
