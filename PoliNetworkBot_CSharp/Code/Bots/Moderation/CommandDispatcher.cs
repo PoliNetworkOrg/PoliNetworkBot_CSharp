@@ -676,6 +676,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Caption);
+                Logger.WriteLine(
+                    e.Message.ReplyToMessage.Text == null ? 
+                        (e.Message.ReplyToMessage.Caption == null ? 
+                            "Error in allowmessage, both caption and text are null" 
+                            : e.Message.ReplyToMessage.Caption == null) 
+                        : e.Message.ReplyToMessage.Text);
             }
         }
 
