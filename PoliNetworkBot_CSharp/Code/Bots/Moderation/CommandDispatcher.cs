@@ -711,7 +711,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             using var powershell = PowerShell.Create();
             if (DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
                 .Contains("rebooter")) return;
-            DoScript(powershell, "screen -d -m -S rebooter ../../../rebooter.sh", true);
+            DoScript(powershell, "screen -d -m -S rebooter ./static/rebooter.sh", true);
         }
 
         private static async Task<object> SendGroupsByTitle(string query, TelegramBotAbstract sender,

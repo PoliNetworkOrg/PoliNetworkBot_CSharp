@@ -20,9 +20,11 @@ PoliNetworkBot_CSharp/bin/Debug/*/data/
 
 *.bin
 
-*.dll
+*/*.dll
 
 .dll
+
+*/*.exe
 
 *.pdb
 
