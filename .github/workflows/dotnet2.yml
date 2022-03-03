@@ -1,4 +1,4 @@
-name: Release
+name: .NET2
 
 on:
   push:
@@ -36,8 +36,7 @@ jobs:
     - name: Git management
       run: |
         git stash
-        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-        git reset HEAD^
+        git switch --orphan release
         git stash show -p | git apply && git stash drop
         git add */bin/*  --ignore-errors  
         git add *.dll  --ignore-errors  
@@ -56,6 +55,8 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: release
+        repository: PoliNetworkOrg/PNBot_Builds
 
 
