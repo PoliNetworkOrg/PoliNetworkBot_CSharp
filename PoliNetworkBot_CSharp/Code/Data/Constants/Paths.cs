@@ -2,7 +2,7 @@
 {
     public static class Paths
     {
-        public const string Db = "Data Source=data/db.db";
+        public const string Db = "Data Source=./../config/db.db";
 
         public static class Info
         {
