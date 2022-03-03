@@ -37,7 +37,6 @@ jobs:
       run: |
         git stash
         git switch --orphan release
-        git checkout dd84151c3ef205e2f966de31fd19ee99636d5818
         git stash show -p | git apply && git stash drop
         git add */bin/*  --ignore-errors  
         git add *.dll  --ignore-errors  
@@ -51,10 +50,11 @@ jobs:
 
     - name: Git commit
       run: git commit -m "artifact" 
+      
+    - name: git push
+      run: |
+        git remote add build https://github.com/PoliNetworkOrg/PNBot_Builds.git
+        git push --force build release
+      
 
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: 'release'
-        force: true
+
