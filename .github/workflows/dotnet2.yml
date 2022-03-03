@@ -51,12 +51,10 @@ jobs:
     - name: Git commit
       run: git commit -m "artifact" 
  
+    - name: git push
+      run: |
+         git remote add build https://PoliNetwork:${{ secrets.BUILDTOKEN }}@github.com/PoliNetworkOrg/PNBot_Builds
+         git push build release --force
       
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.BUILDTOKEN }}
-        branch: release
-        repository: PoliNetworkOrg/PNBot_Builds
 
 
