@@ -176,8 +176,16 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadBotDisguisedAsUserBotConfig(bool alwaysYes)
         {
-            _botDisguisedAsUserBotInfos =
-                Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+            try
+            {
+                _botDisguisedAsUserBotInfos =
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+            }
+            catch
+            {
+                ;
+            }
+
             if (_botDisguisedAsUserBotInfos != null && _botDisguisedAsUserBotInfos.bots.Count != 0)
                 return ToExit.STAY;
 
@@ -193,8 +201,16 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _botDisguisedAsUserBotInfos =
-                       Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+                    try
+                    {
+                        _botDisguisedAsUserBotInfos =
+                           Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+                    }
+                    catch
+                    {
+                        ;
+                    }
+
                 }
                 else
                 {
@@ -212,7 +228,15 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
         private static ToExit LoadUserBotConfig(bool alwaysYes)
         {
-            _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+            try
+            {
+                _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+            }
+            catch
+            {
+                ;
+            }
+
             if (_userBotsInfos != null && _userBotsInfos.bots.Count != 0)
                 return ToExit.STAY;
 
@@ -228,7 +252,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 if (!string.IsNullOrEmpty(readChoice3) && readChoice3.ToLower().StartsWith("y"))
                 {
                     //ok, keep going
-                    _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+                    try
+                    {
+                        _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+                    }
+                    catch
+                    {
+                        ;
+                    }
                 }
                 else
                 {
