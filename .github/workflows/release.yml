@@ -44,7 +44,14 @@ jobs:
         git config --global user.name "Github Action"
         git commit -m "artifact"
         git switch -c release
-        git push origin release -f
+    
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: release
+        force: true
+        repository: PoliNetworkOrg/PNBot_Builds
 
 
 
