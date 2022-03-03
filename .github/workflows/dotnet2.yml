@@ -35,6 +35,7 @@ jobs:
       run: |
         git stash
         git switch --orphan release
+        git checkout dd84151c3ef205e2f966de31fd19ee99636d5818
         git stash show -p | git apply && git stash drop
         git add */bin/*  --ignore-errors  
         git add *.dll  --ignore-errors  
