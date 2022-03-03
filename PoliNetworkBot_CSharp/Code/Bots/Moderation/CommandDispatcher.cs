@@ -680,7 +680,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     e.Message.ReplyToMessage.Text == null ? 
                         (e.Message.ReplyToMessage.Caption == null ? 
                             "Error in allowmessage, both caption and text are null" 
-                            : e.Message.ReplyToMessage.Caption == null) 
+                            : e.Message.ReplyToMessage.Caption) 
                         : e.Message.ReplyToMessage.Text);
             }
         }
