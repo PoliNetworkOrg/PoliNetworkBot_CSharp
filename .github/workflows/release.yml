@@ -36,7 +36,7 @@ jobs:
     - name: Git management
       run: |
         git stash
-        git switch release
+        git checkout release
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
         git reset HEAD --hard
         git stash drop
