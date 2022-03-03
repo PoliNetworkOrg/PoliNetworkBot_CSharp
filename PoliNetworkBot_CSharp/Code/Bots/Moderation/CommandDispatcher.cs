@@ -683,7 +683,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             try
             {
                 using var powershell = PowerShell.Create();
-                const string path = "../../../build-date.txt";
+                const string path = "./static/build-date.txt";
                 return await File.ReadAllTextAsync(path);
             }
             catch
@@ -921,7 +921,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var db = await File.ReadAllBytesAsync("./data/db.db");
+                var db = await File.ReadAllBytesAsync("./../config/db.db");
 
                 var stream = new MemoryStream(db);
 
