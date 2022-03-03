@@ -328,19 +328,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var messages = MessagesStore.GetAllMessages(x => x.allowedSpam);
                             foreach (StoredMessage message in messages)
                             {
+                                if(message.Messages.Count == 0) continue;
                                 var m2 = message.Messages.First();
                                 if (m2 != null)
                                 {
                                     var m3 = GetStringFromMessage(m2);
-                                    if (!string.IsNullOrEmpty(m3))
-                                    {
-                                        text = new Language(new Dictionary<string, string>
+                                    if (string.IsNullOrEmpty(m3)) continue;
+                                    text = new Language(new Dictionary<string, string>
                                     {
                                         { "uni",  m3}
                                     });
-                                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                            "uni", ParseMode.Html, null, e.Message.From.Username);
-                                    }
+                                    await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                        "uni", ParseMode.Html, null, e.Message.From.Username);
                                 }
                             }
 
