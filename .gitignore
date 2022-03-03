@@ -20,6 +20,10 @@ PoliNetworkBot_CSharp/bin/Debug/*/data/
 
 *.bin
 
+*.dll
+
+.dll
+
 *.pdb
 
 PoliNetworkBot_CSharp/Old/config/assoc.json
