@@ -51,7 +51,5 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: release
         force: true
-        repository: PoliNetworkOrg/PNBot_Builds
-
 
 
