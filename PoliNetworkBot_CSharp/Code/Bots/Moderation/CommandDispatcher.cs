@@ -680,9 +680,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         public static async Task<string> GetRunnigTime()
         {
-            using var powershell = PowerShell.Create();
-            const string path = "../../../build-date.txt";
-            return await File.ReadAllTextAsync(path);
+            try
+            {
+                using var powershell = PowerShell.Create();
+                const string path = "../../../build-date.txt";
+                return await File.ReadAllTextAsync(path);
+            }
+            catch
+            {
+                ;
+            }
+
+            return null;
         }
 
         private static async Task CommandNeedsAReplyToMessage(TelegramBotAbstract sender, MessageEventArgs e)
