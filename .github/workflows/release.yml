@@ -36,6 +36,7 @@ jobs:
     - name: Git management
       run: |
         cd /home/runner/work/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/dist/
+        cp -r ../static/ ./static
         git init
         git remote add origin https://git:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
         git add  .
