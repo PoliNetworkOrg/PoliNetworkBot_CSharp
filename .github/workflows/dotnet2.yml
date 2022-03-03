@@ -50,12 +50,7 @@ jobs:
 
     - name: Git commit
       run: git commit -m "artifact" 
-      
-    - name: git push
-      run: |
-        git remote add build https://github.com/PoliNetworkOrg/PNBot_Builds.git
-        git push --force build release
-      
+ 
       
     - name: Push changes
       uses: ad-m/github-push-action@master
