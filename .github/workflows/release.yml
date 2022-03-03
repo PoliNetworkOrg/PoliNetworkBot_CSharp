@@ -24,7 +24,7 @@ jobs:
       working-directory: PoliNetworkBot_CSharp
     - name: Publish
       run: |
-        dotnet publish -c Release -p:PublishReadyToRun=true -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained true -p:IncludeNativeLibrariesForSelfExtract=true -o dist
+        dotnet publish -c Release -r linux-x64 -p:PublishReadyToRun=true -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained true -p:IncludeNativeLibrariesForSelfExtract=true -o dist
         TZ='Europe/Rome' date > build-date.txt
       working-directory: PoliNetworkBot_CSharp
       
