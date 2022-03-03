@@ -24,7 +24,7 @@ jobs:
       working-directory: PoliNetworkBot_CSharp
     - name: Publish
       run: |
-        dotnet publish --no-restore -o dist
+        dotnet publish -c Release -r linux-x64 --self-contained false --no-restore -o dist
         TZ='Europe/Rome' date > build-date.txt
       working-directory: PoliNetworkBot_CSharp
       
