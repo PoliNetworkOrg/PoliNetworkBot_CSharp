@@ -18,6 +18,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -328,15 +329,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var messages = MessagesStore.GetAllMessages(x => x.allowedSpam);
                             foreach (StoredMessage message in messages)
                             {
-                                if(message.Messages.Count == 0) continue;
-                                var m2 = message.Messages.First();
-                                if (m2 != null)
+                                var m2 = message.message;
+                                if (!string.IsNullOrEmpty(m2))
                                 {
-                                    var m3 = GetStringFromMessage(m2);
-                                    if (string.IsNullOrEmpty(m3)) continue;
                                     text = new Language(new Dictionary<string, string>
                                     {
-                                        { "uni",  m3}
+                                        { "uni",  m2}
                                     });
                                     await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                         "uni", ParseMode.Html, null, e.Message.From.Username);
@@ -818,13 +816,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                     false);
 
-            if (!Directory.Exists(GitHubConfig.GetPath()))
+            if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
             {
-                Directory.CreateDirectory("./data/");
+                Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
                 InitGithubRepo();
             }
 
-            var path = GitHubConfig.GetPath() + "groupsGenerated.json";
+            var path = Paths.Data.PoliNetworkWebsiteData + "groupsGenerated.json";
             await File.WriteAllTextAsync(path, json, Encoding.UTF8);
             if (dry)
             {
@@ -837,7 +835,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             using var powershell = PowerShell.Create();
-            var cd = GitHubConfig.GetPath();
+            var cd = Paths.Data.PoliNetworkWebsiteData;
             DoScript(powershell, "cd " + cd, debug);
             DoScript(powershell, "git fetch org", debug);
             DoScript(powershell, "git pull --force", debug);
@@ -927,7 +925,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var db = await File.ReadAllBytesAsync("./../config/db.db");
+                var db = await File.ReadAllBytesAsync(Paths.Data.Db);
 
                 var stream = new MemoryStream(db);
 

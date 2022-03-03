@@ -32,7 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";
-                message += messageEventArgs.Message.Text;
+                message += messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";

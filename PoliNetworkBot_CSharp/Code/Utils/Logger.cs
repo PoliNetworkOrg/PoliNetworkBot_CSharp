@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Web;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -22,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     public static class Logger
     {
-        private const string DataLogPath = "./data/log.txt";
+        private const string DataLogPath = Paths.Data.Log;
         private const string LogSeparator = "#@#LOG ENTRY#@#";
         private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
         private static readonly BufferBlock<MessageQueue> Buffer = new();
@@ -72,7 +73,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Console.WriteLine(logSeverityLevel + " | " + log);
                 var log1 = log.ToString();
-                if (Directory.Exists("./data/") == false) Directory.CreateDirectory("./data/");
+                if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
 
                 if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
                 lock (Lock)
@@ -134,7 +135,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 try
                 {
-                    const string path = "./data/log.txt";
+                    const string path = Paths.Data.Log;
 
                     List<string> text = null;
                     try
