@@ -1,16 +1,16 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
 
@@ -67,28 +67,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (chosen.Value)
             {
                 case 0:
-                    {
-                        await SearchClassroomAsync(sender, e);
-                        return;
-                    }
+                    await SearchClassroomAsync(sender, e);
+                    return;
 
                 case 1:
-                    {
-                        await FreeClassroomAsync(sender, e);
-                        return;
-                    }
+                    await FreeClassroomAsync(sender, e);
+                    return;
 
                 case 2:
-                    {
-                        await OccupanciesOfTheDayAsync(sender, e);
-                        return;
-                    }
+                    await OccupanciesOfTheDayAsync(sender, e);
+                    return;
 
                 case 3:
-                    {
-                        await HelpAsync(sender, e);
-                        return;
-                    }
+                    await HelpAsync(sender, e);
+                    return;
             }
 
             var text = new Language(new Dictionary<string, string>
@@ -195,11 +187,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var result = new List<string>();
 
-            int shiftStart = (start.Hour - 8) * 4;
-            int shiftEnd = (stop.Hour - 8) * 4;
-
-            shiftStart += start.Minute / 15;
-            shiftEnd += stop.Minute / 15;
+            int shiftStart = GetShiftSlotFromTime(start);
+            int shiftEnd = GetShiftSlotFromTime(stop);
 
             foreach (var child in table.ChildNodes)
             {
@@ -216,88 +205,93 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return result;
         }
 
-        private static string CheckIfFree(HtmlNode child, int shiftStart, int shiftEnd)
+        /// <summary>
+        /// Retrieves the number of quarters elapsed from 8:00, for easier counting as this is how
+        /// the columns on the Polimi page are spread
+        /// </summary>
+        private static int GetShiftSlotFromTime(DateTime time)
         {
-            if (!child.GetClasses().Contains("normalRow")) return null;
-            if (child.ChildNodes == null) return null;
-
-            if (!child.ChildNodes.Any(x => x.HasClass("dove") && x.ChildNodes != null && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))))
-            { return null; }
-
-            ;
-
-            var isRowEmptyBool = IsRowEmpty(child, shiftStart, shiftEnd);
-
-            ;
-
-            return isRowEmptyBool ? GetNomeAula(child) : null;
-            /*
-            var isRowEmptyBool = IsRowEmpty(child, start, stop);
-            if (isRowEmptyBool == null || !isRowEmptyBool.Value) return null;
-            try
-            {
-                var a2 = child.ChildNodes[1];
-                if (a2.ChildNodes is { Count: > 0 })
-                {
-                    var toAdd = false;
-                    var name = "";
-
-                    var a1 = a2.ChildNodes[0];
-                    name = a1.InnerHtml.Trim();
-                    if (string.IsNullOrEmpty(name) == false)
-                    {
-                        toAdd = true;
-                    }
-                    else if (a2.ChildNodes.Count > 1)
-                    {
-                        var a3 = a2.ChildNodes[1];
-                        name = a3.InnerHtml.Trim();
-                        if (string.IsNullOrEmpty(name) == false) toAdd = true;
-                    }
-
-                    if (toAdd) return name;
-                }
-            }
-            catch
-            {
-                ;
-            }
-            */
+            int shiftSlot = (time.Hour - 8) * 4;
+            shiftSlot += time.Minute / 15;
+            return shiftSlot;
         }
 
-        private static string GetNomeAula(HtmlNode child)
+        /// <summary>
+        /// Recunstruct a readable time string from the number of slots in the Polimi webpage table
+        /// </summary>
+        private static string TimeStringFromSlot(int slot)
         {
-            ;
-            var dove = child.ChildNodes.First(x => x.HasClass("dove"));
+            var hours = (8 + slot / 4).ToString().PadLeft(2, '0');
+            var minutes = (15 * (slot % 4)).ToString().PadLeft(2, '0');
+            return $"{hours}:{minutes}";
+        }
+
+        /// <summary>
+        /// Checks if a room is empty given it's html node, and the start and end of the time period
+        /// </summary>
+        /// <returns>a string with the room name if the room is empty, null otherwise</returns>
+        private static string CheckIfFree(HtmlNode node, int shiftStart, int shiftEnd)
+        {
+            if (!node.GetClasses().Contains("normalRow")) return null;
+            if (node.ChildNodes == null) return null;
+
+            if (!node.ChildNodes.Any(x =>
+                x.HasClass("dove")
+                && x.ChildNodes != null
+                && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
+            ))
+            { return null; }
+
+            var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
+            return roomFree ? GetNomeAula(node) : null;
+        }
+
+        /// <summary>
+        /// retrieves the room name from the node
+        /// </summary>
+        private static string GetNomeAula(HtmlNode node)
+        {
+            var dove = node.ChildNodes.First(x => x.HasClass("dove"));
             var a = dove.ChildNodes.First(x => x.Name == "a");
             return a.InnerText.Trim();
         }
 
-        private static bool IsRowEmpty(HtmlNode node, int shiftStart, int shiftEnd)
+        /// <summary>
+        /// calculates if a room is free in the given time window
+        /// </summary>
+        private static bool IsRoomFree(HtmlNode node, int shiftStart, int shiftEnd)
         {
             if (node?.ChildNodes == null)
                 return true;
 
             var colsizetotal = 0;
+            // the first two children are not time slots
             for (var i = 2; i < node.ChildNodes.Count; i++)
             {
                 int colsize;
+                // for each column, take it's span as the colsize
                 if (node.ChildNodes[i].Attributes.Contains("colspan"))
                     colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
                 else
                     colsize = 1;
 
+                // the time start in shifts for each column, is the previous total
                 var vStart = colsizetotal;
                 colsizetotal += colsize;
-                var vEnd = colsizetotal;
+                var vEnd = colsizetotal;    // the end is the new total (prev + colsize)
 
+                // this is the trickery, if any column ends before the shift start or starts before
+                // the shift end, then we skip
                 if (vEnd < shiftStart || vStart > shiftEnd)
                     continue;
 
-                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == false)
+                // if one of the not-skipped column represents an actual lesson, then return false,
+                // the room is occupied
+                if (!string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()))
                     return false;
             }
 
+            // if no lesson takes place in the room in the time window, the room is free (duh)
             return true;
         }
 
@@ -429,10 +423,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             return null;
         }
 
+        /// <summary>
+        /// This method represents the Occupancies of The Day button within the /rooms command,
+        /// searches on the website a specific room and retrieves when said room is free to use or
+        /// is occupied
+        /// </summary>
         private static async Task OccupanciesOfTheDayAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var t3 = await GetDailySituationAsync(sender, e);
+            // Ask the user fot the date (which we'll need later)
+            var (dateTimeSchedule, exception, item3) = await Utils.AskUser.AskDateAsync(e.Message.From.Id,
+                "Scegli un giorno", "it", sender,
+                e.Message.From.Username);
 
+            if (exception != null) throw exception;
+            var d2 = dateTimeSchedule.GetDate();
+            if (d2 == null)
+            {
+                var text2 = new Language(new Dictionary<string, string>
+                {
+                    { "it", "La data inserita non è valida!" },
+                    { "en", "This date is not valid!" }
+                });
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username,
+                    text2,
+                    ParseMode.Html, null);
+                return;
+            };
+
+            // retrieves the table for the day
+            var t3 = await GetDailySituationOnDate(sender, e, d2.Value);
             if (t3 == null)
             {
                 var text2 = new Language(new Dictionary<string, string>
@@ -448,6 +469,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
+            // finds within the table, the row for a specific room
             var question = new Language(new Dictionary<string, string>
             {
                 { "en", "Which room? (example: 3.0.1)" },
@@ -456,8 +478,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var roomName = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
             var t4 = GetRoomTitleAndHours(t3[0], roomName);
-
-            ;
 
             if (t4 == null || t4.Count == 0)
             {
@@ -474,14 +494,72 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var htmlresult = t4.Aggregate("<html><head><style>td {border: 1px solid;}</style></head><body><table>",
+            var occupationRow = t4[3];
+            var slot = GetShiftSlotFromTime(d2.Value);
+
+            // Compose the message to send, start with room name and date:
+            var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
+            var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
+
+            if (d2.Value.Hour >= 8 || d2.Value.Hour < 20)
+            {
+                // if we are in a period between open hours, say more specific things
+                // add time (time is not important if we just consider the whole day)
+                text += $" alle <b>{d2.Value.ToString("HH:mm")}</b> ";
+                textEng += $" at <b>{d2.Value.ToString("HH:mm")}</b> ";
+
+                // say if it's free or not
+                var isFree = IsRoomFree(occupationRow, slot, slot + 1);
+                text += $" è <b>{(isFree ? "libera" : "occupata")}</b>";
+                textEng += $" is <b>{(isFree ? "free" : "occupied")}</b>";
+
+                // and add until when if the information is available 
+                var nextTransition = GetFirstSlotTransition(occupationRow, slot);
+
+                if (!string.IsNullOrEmpty(nextTransition))
+                {
+                    text += $"\ne lo rimarrà fino alle {nextTransition}";
+                    textEng += $"\nand will be until {nextTransition}";
+                }
+
+                text += "\n\nQuest'aula";
+                textEng += "\n\nThis room";
+            }
+
+            // add a list with all the free slots
+            var freeSlots = GetFreeTimeSlots(occupationRow);
+            text += " è libera nelle seguenti fasce orarie:\n";
+            textEng += " is free in the following time slots:\n";
+
+            foreach (var freeSlot in freeSlots)
+            {
+                text += $"• Dalle <b>{freeSlot.Item1}</b> alle <b>{freeSlot.Item2}</b>\n";
+                textEng += $"• From <b>{freeSlot.Item1}</b> to <b>{freeSlot.Item2}</b>\n";
+            }
+
+            text += "\nQua sotto trovi la tabella completa delle occupazioni dell'aula per questa giornata";
+            textEng += "\nBelow you'll find the complete table with all occupations of this room for this day";
+
+            var message = new Language(new Dictionary<string, string>
+                {
+                    { "it", text },
+                    { "en", textEng }
+                });
+
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                            e.Message.From.LanguageCode,
+                            e.Message.From.Username,
+                            message,
+                            ParseMode.Html, null);
+
+            // send the table as an html document for further info
+            var htmlresult = t4.Aggregate(
+                "<html><head><style>td {border: #333 1px solid;} td.slot {background: #cce6ff;}</style></head><body><table>",
                 (current, t5) => current + t5.OuterHtml);
             htmlresult += "</table></body></html>";
 
-            ;
-
             var peer = new Objects.PeerAbstract(e.Message.From.Id, ChatType.Private);
-            var text = new Language(new Dictionary<string, string>
+            message = new Language(new Dictionary<string, string>
             {
                 { "en", roomName }
             });
@@ -489,11 +567,101 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 roomName, "text/html");
 
             await sender.SendFileAsync(document,
-                peer, text,
+                peer, message,
                 TextAsCaption.AS_CAPTION,
                 e.Message.From.Username, e.Message.From.LanguageCode, null, true);
         }
 
+        /// <summary>
+        /// Returns the time string of the first transition (from free to occupied or vice versa) of
+        /// the occupancy state for a given room, if no transition can be found it returns null
+        /// </summary>
+        /// <param name="node">The HTML row for the room</param>
+        /// <param name="startSlot">the start time as a time slot</param>
+        /// <returns>a string with the time if a transition is found, null otherwise</returns>
+        private static string GetFirstSlotTransition(HtmlNode node, int startSlot)
+        {
+            int colsizetotal = 1;
+            bool isCurrentlyFree = false;
+            bool afterStartSlot = false;
+
+            // start from 8:15, the third child
+            for (var i = 3; i < node.ChildNodes.Count; i++)
+            {
+                int colsize = 1;
+                if (node.ChildNodes[i].Attributes.Contains("colspan"))
+                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+
+                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == !isCurrentlyFree)
+                {
+                    // check for a transition, from free to occupied or vice versa
+                    isCurrentlyFree = !isCurrentlyFree;
+                    // only return if we are after the starting time slot
+                    if (afterStartSlot)
+                        return TimeStringFromSlot(colsizetotal);
+                }
+                colsizetotal += colsize;    // keep track of the columns
+
+                // quit searching after 19, dont want to consider a transition this late
+                if (colsizetotal >= 44) break;
+                if (colsizetotal >= startSlot) afterStartSlot = true;
+            }
+
+            // if there is no transition after the startSlot, just return null
+            return null;
+        }
+
+        /// <summary>
+        /// Get a list of tuples with the start and end time of each free slot given the HTML row of
+        /// a room
+        /// </summary>
+        /// <param name="node">The HTML row for the room</param>
+        /// <returns>a list of tuples with starting and ending time strings for each slot</returns>
+        private static List<(string, string)> GetFreeTimeSlots(HtmlNode node)
+        {
+            var list = new List<(string, string)>();
+
+            int colsizetotal = 1;
+            bool isCurrentlyFree = false;
+            int currentSlotStart = 1;
+
+            // start from 8:15, the third child
+            for (var i = 3; i < node.ChildNodes.Count; i++)
+            {
+                int colsize = 1;
+                if (node.ChildNodes[i].Attributes.Contains("colspan"))
+                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+
+                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim())) // if the child is an empty slot
+                {
+                    if (!isCurrentlyFree)
+                    {
+                        // and if we come from a non-empty slot, set the start of this window
+                        isCurrentlyFree = true;
+                        currentSlotStart = colsizetotal;
+                    }
+                }
+                else if (isCurrentlyFree)
+                {
+                    // else we close this free slot, appending it to the list
+                    isCurrentlyFree = false;
+                    list.Add((TimeStringFromSlot(currentSlotStart), TimeStringFromSlot(colsizetotal)));
+                }
+
+                colsizetotal += colsize;    // keep track of the columns
+            }
+
+            if (isCurrentlyFree && currentSlotStart < 44)
+                // add one last element if the last thing ends before 19:00
+                list.Add((TimeStringFromSlot(currentSlotStart), "20:00"));
+
+            return list;
+        }
+
+        /// <summary>
+        /// Asks the user for date and site, returns the list of html nodes from the 
+        /// "OccupazioniGiornoEsatto" page
+        /// </summary>
         private static async Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             var (dateTimeSchedule, exception, item3) = await Utils.AskUser.AskDateAsync(e.Message.From.Id,
@@ -505,9 +673,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var d2 = dateTimeSchedule.GetDate();
             if (d2 == null) return null;
 
-            var day = d2.Value.Day;
-            var month = d2.Value.Month;
-            var year = d2.Value.Year;
+            return await GetDailySituationOnDate(sender, e, d2.Value);
+        }
+
+        /// <summary>
+        /// Given a date, asks the user for the site and returns the html table from the 
+        /// "OccupazioniGiornoEsatto" page
+        /// </summary>
+        private static async Task<List<HtmlNode>> GetDailySituationOnDate(TelegramBotAbstract sender, MessageEventArgs e, DateTime date)
+        {
+            var day = date.Day;
+            var month = date.Month;
+            var year = date.Year;
 
             var sede = await AskUser.GetSedeAsync(sender, e);
             if (string.IsNullOrEmpty(sede)) return null;
@@ -527,11 +704,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var doc = new HtmlDocument();
             doc.LoadHtml(html.GetData());
 
-            ;
-
             var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
-
-            ;
 
             var t3 = HtmlUtil.GetElementsByTagAndClassName(t1[0], "", "scrollContent");
             return t3;
