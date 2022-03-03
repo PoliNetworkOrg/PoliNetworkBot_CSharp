@@ -304,6 +304,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             await AllowMessageAsync(e, sender);
+                            return;
                         }
 
                         await DefaultCommand(sender, e);
