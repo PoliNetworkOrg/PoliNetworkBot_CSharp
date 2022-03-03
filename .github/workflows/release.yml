@@ -37,7 +37,7 @@ jobs:
       run: |
         cd /home/runner/work/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/dist/
         git init
-        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        git remote add origin https://github.com/PoliNetworkOrg/PoliNetworkBot_CSharp/
         git add .
 
     - name: Configure git (1)
