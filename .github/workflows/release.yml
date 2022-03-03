@@ -35,10 +35,13 @@ jobs:
       
     - name: Git management
       run: |
-        git stash
+        git stash *.dll
+        git switch release
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-        git stash show -p | git apply && git stash drop
+        git reset HEAD --hard
+        git stash drop
         git add .
+        git status
 
 
     - name: Configure git (1)
