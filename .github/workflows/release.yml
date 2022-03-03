@@ -1,4 +1,4 @@
-name: .NET2
+name: Release
 
 on:
   push:
@@ -43,10 +43,10 @@ jobs:
 
 
     - name: Configure git (1)
-      run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      run: git config --global user.email "polinetwork@outlook.com"
 
     - name: Configure git (2)
-      run: git config --global user.name "Github Action Bot"
+      run: git config --global user.name "PoliNetwork"
 
     - name: Git commit
       run: git commit -m "artifact" 
