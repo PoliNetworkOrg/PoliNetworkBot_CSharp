@@ -1,14 +1,16 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -33,7 +35,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             lock (store)
             {
-                store.Add(message, new StoredMessage() { message = message, insertTime = DateTime.Now, allowedSpam = true });
+                store.Add(message,
+                    new StoredMessage { message = message, insertTime = DateTime.Now, allowedSpam = true });
             }
 
             return true;
@@ -47,30 +50,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 store.TryGetValue(message, out var storedMessage);
                 if (storedMessage.IsOutdated())
-                {
                     lock (store)
                     {
                         store.Remove(message);
                     }
-                }
             }
         }
 
         public static void RemoveMessage(string text)
         {
             if (store.ContainsKey(text))
-            {
                 lock (store)
                 {
                     store.Remove(text);
                 }
-            }
         }
 
         public static List<StoredMessage> GetAllMessages(Func<StoredMessage, bool> filter = null)
         {
-            List<StoredMessage> r = store.Values.ToList();
-            if (filter!=null)
+            var r = store.Values.ToList();
+            if (filter != null)
                 r = r.Where(filter).ToList();
 
             return r;
@@ -85,7 +84,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             if (!string.IsNullOrEmpty(e.Message.Text))
                 return StoreAndCheck2(e, e.Message.Text);
-            else if (!string.IsNullOrEmpty(e.Message.Caption))
+            if (!string.IsNullOrEmpty(e.Message.Caption))
                 return StoreAndCheck2(e, e.Message.Caption);
 
             return SpamType.UNDEFINED;
@@ -93,7 +92,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private static SpamType StoreAndCheck2(MessageEventArgs e, string text)
         {
-
             if (string.IsNullOrEmpty(text))
                 return SpamType.UNDEFINED;
 
@@ -106,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 lock (store)
                 {
-                    store[text] = new StoredMessage()
+                    store[text] = new StoredMessage
                     {
                         insertTime = DateTime.Now,
                         lastSeenTime = DateTime.Now,
@@ -159,12 +157,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal static async Task SendMessageDetailsAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            if (e == null || e.Message == null || e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+            if (e == null || e.Message == null || e.Message.ReplyToMessage == null ||
+                string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
                 return;
 
             if (!store.ContainsKey(e.Message.ReplyToMessage.Text))
             {
-                Language language1 = new(new Dictionary<string, string>() {
+                Language language1 = new(new Dictionary<string, string>
+                {
                     {
                         "it", "Non è stato trovato nessun messaggio"
                     },
@@ -172,14 +172,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         "en", "There are no messages"
                     }
                 });
-                await sender.SendTextMessageAsync(e.Message.From.Id, language1, Telegram.Bot.Types.Enums.ChatType.Private,
-                    e.Message.From.LanguageCode, Telegram.Bot.Types.Enums.ParseMode.Html, null, e.Message.From.Username);
+                await sender.SendTextMessageAsync(e.Message.From.Id, language1, ChatType.Private,
+                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username);
                 return;
             }
 
             var storedMessage = store[e.Message.ReplyToMessage.Text];
-            string json = storedMessage.ToJson();
-            Language language2 = new(new Dictionary<string, string>() {
+            var json = storedMessage.ToJson();
+            Language language2 = new(new Dictionary<string, string>
+            {
                 {
                     "en", "Messages"
                 },
@@ -188,10 +189,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 }
             });
 
-            var stream = Utils.UtilsMedia.UtilsFileText.GenerateStreamFromString(json);
+            var stream = UtilsFileText.GenerateStreamFromString(json);
             var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
             PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-            await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
+            await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From.Username,
+                e.Message.From.LanguageCode, null, true);
         }
     }
 }

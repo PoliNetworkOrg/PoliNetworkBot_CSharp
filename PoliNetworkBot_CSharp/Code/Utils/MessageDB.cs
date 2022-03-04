@@ -1,15 +1,15 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -122,10 +122,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             case ScheduleMessageSentResult.FAILED_SEND:
                             case ScheduleMessageSentResult.SUCCESS:
                             case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
-                                {
-                                    await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
-                                    break;
-                                }
+                            {
+                                await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
+                                break;
+                            }
 
                             case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                             case ScheduleMessageSentResult.ALREADY_SENT:

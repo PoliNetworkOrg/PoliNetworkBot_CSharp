@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
+﻿#region
+
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Config
 {
@@ -9,6 +13,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
     [JsonObject(MemberSerialization.Fields)]
     internal class BotConfig
     {
-        public List<BotInfoAbstract> bots = null;
+        public List<BotInfoAbstract> bots;
     }
 }

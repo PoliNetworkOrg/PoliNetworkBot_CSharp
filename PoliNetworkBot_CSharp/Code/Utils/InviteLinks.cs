@@ -1,5 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -7,11 +12,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -210,9 +211,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     { "it", "Gruppi con link rigenerati" }
                 };
-                var stream = Utils.UtilsMedia.UtilsFileText.GenerateStreamFromString(st);
+                var stream = UtilsFileText.GenerateStreamFromString(st);
                 var tf = new TelegramFile(stream, "groups.txt", "Gruppi con link rigenerati", "text/plain");
-                await sender.SendFileAsync(tf, new Objects.PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
+                await sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
                     new Language(dict),
                     TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
             }
@@ -388,15 +389,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return new List<GruppoTG>();
 
             for (var i = 0; i < gruppoTGs.Count; i++)
-                for (var j = i + 1; j < gruppoTGs.Count; j++)
-                    if (i != j)
-                        if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
-                            if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
-                            {
-                                gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
-                                gruppoTGs.RemoveAt(j);
-                                j--;
-                            }
+            for (var j = i + 1; j < gruppoTGs.Count; j++)
+                if (i != j)
+                    if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
+                        if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
+                        {
+                            gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
+                            gruppoTGs.RemoveAt(j);
+                            j--;
+                        }
 
             return gruppoTGs;
         }

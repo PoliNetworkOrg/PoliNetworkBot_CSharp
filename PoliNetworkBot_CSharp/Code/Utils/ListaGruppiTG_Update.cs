@@ -1,10 +1,10 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 

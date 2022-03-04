@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿#region
+
 using System;
+using Newtonsoft.Json;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects
 {
@@ -20,10 +24,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (type)
             {
                 case ChatType.Private:
-                    {
-                        peer = new TLInputPeerUser() { UserId = (int)id };
-                        break;
-                    }
+                {
+                    peer = new TLInputPeerUser { UserId = (int)id };
+                    break;
+                }
 
                 case ChatType.Group:
                     break;

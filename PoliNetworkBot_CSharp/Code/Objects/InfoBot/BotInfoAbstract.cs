@@ -1,11 +1,10 @@
 ﻿#region
 
+using System;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -15,25 +14,20 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
     [JsonObject(MemberSerialization.Fields)]
     public class BotInfoAbstract
     {
-        public BotTypeApi? botTypeApi;
-        public string token;
-        public string website;
-        public string contactString;
-        public string onMessages;
         public bool? acceptedMessages;
-        public string SessionUserId;
-        public long? userId;
-        public long? apiId;
         public string apiHash;
+        public long? apiId;
+        public BotTypeApi? botTypeApi;
+        public string contactString;
+        public string method;
         public string NumberCountry;
         public string NumberNumber;
+        public string onMessages;
         public string passwordToAuthenticate;
-        public string method;
-
-        public BotInfoAbstract()
-        {
-
-        }
+        public string SessionUserId;
+        public string token;
+        public long? userId;
+        public string website;
 
         internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
         {
@@ -49,7 +43,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             return token;
         }
-
 
 
         internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
@@ -70,7 +63,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
 
         internal bool? AcceptsMessages()
         {
-            return  acceptedMessages;
+            return acceptedMessages;
         }
 
         internal string GetWebsite()
@@ -96,7 +89,5 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
                 return null;
             }
         }
-
-
     }
 }

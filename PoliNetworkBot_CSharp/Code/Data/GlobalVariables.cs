@@ -1,11 +1,11 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
@@ -49,7 +49,8 @@ namespace PoliNetworkBot_CSharp.Code.Data
             {
                 "carlogiova", "giovannieffe777", "testpolinetwork",
                 "albus25", "deet98", "alberto_fattori", "scala98",
-                "giulia_ye", "andre_crc", "perularrabeiti", "fllippo", "marcol_8", "@andre_crc", "@lucreziaal", "giada_marti", "raif9", "diegoaldarese"
+                "giulia_ye", "andre_crc", "perularrabeiti", "fllippo", "marcol_8", "@andre_crc", "@lucreziaal",
+                "giada_marti", "raif9", "diegoaldarese"
             };
 
             AllowedBanAll = new List<string>

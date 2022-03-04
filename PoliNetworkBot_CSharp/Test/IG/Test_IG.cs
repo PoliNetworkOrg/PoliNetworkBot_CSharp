@@ -1,13 +1,16 @@
 ﻿#region
 
-using InstagramApiSharp.API.Builder;
-using InstagramApiSharp.Classes;
-using InstagramApiSharp.Logger;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
+using InstagramApiSharp.API;
+using InstagramApiSharp.API.Builder;
+using InstagramApiSharp.Classes;
+using InstagramApiSharp.Logger;
+using Minista.Helpers;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
@@ -28,10 +31,13 @@ namespace PoliNetworkBot_CSharp.Test.IG
             }
             catch
             {
-                await File.WriteAllTextAsync(Paths.IG.CREDENTIALS, "");
+                await File.WriteAllTextAsync(Paths.IG.CREDENTIALS, "user\npassword");
+                c = new[] { "user", "password" };
             }
 
-            if (c == null || c.Length < 2)
+            ;
+
+            if (c == null || c.Length < 2 || c[0] == "user")
                 return false;
 
             // create user session data and provide login details
@@ -60,9 +66,16 @@ namespace PoliNetworkBot_CSharp.Test.IG
             delay.Disable();
             var logInResult = await x.LoginAsync();
             delay.Enable();
-            if (logInResult.Succeeded) return true;
+            if (logInResult.Succeeded)
+            {
+                DoThings(x);
+                return true;
+            }
 
-            if (logInResult.Value != InstaLoginResult.ChallengeRequired) return true;
+            ;
+
+            if (logInResult.Value != InstaLoginResult.ChallengeRequired)
+                return true;
 
             var challenge = await x.GetChallengeRequireVerifyMethodAsync();
             if (challenge.Succeeded)
@@ -99,6 +112,16 @@ namespace PoliNetworkBot_CSharp.Test.IG
             ;
 
             return true;
+        }
+
+        private static void DoThings(InstaApi x)
+        {
+            var album = new PhotoAlbumUploader();
+            StorageFile[] files = null;
+            string caption = null;
+            album.SetFiles(files, caption, x);
+            var singlePhotoUploader = new SinglePhotoUploader(album, x);
+            singlePhotoUploader.UploadSinglePhoto();
         }
     }
 }

@@ -1,5 +1,9 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -8,10 +12,6 @@ using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 
 #endregion
 
@@ -19,10 +19,8 @@ namespace PoliNetworkBot_CSharp.Code.Config
 {
     public static class NewConfig
     {
-
-
         public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot,
-                  bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
+            bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
         {
             if (resetBot) ResetBotMethod(BotTypeApi.REAL_BOT);
 
@@ -54,10 +52,10 @@ namespace PoliNetworkBot_CSharp.Code.Config
             BotConfig t = new();
             t.bots = new List<BotInfoAbstract>
             {
-                new BotInfoAbstract()
+                new()
             };
             t.bots[0].botTypeApi = b;
-            var j = Newtonsoft.Json.JsonConvert.SerializeObject(t);
+            var j = JsonConvert.SerializeObject(t);
             File.WriteAllText(configBotsInfo, j);
         }
 
@@ -236,14 +234,14 @@ namespace PoliNetworkBot_CSharp.Code.Config
                         break;
 
                     case "LastUpdateInviteLinkTime":
-                        {
-                            var d1 = GetLastUpdateLinkTimeFromJson(r3);
-                            if (d1.HasValue())
-                                lastUpdateLinkTime = d1.GetValue();
-                            else
-                                exceptions.AddRange(d1.GetExceptions());
-                            break;
-                        }
+                    {
+                        var d1 = GetLastUpdateLinkTimeFromJson(r3);
+                        if (d1.HasValue())
+                            lastUpdateLinkTime = d1.GetValue();
+                        else
+                            exceptions.AddRange(d1.GetExceptions());
+                        break;
+                    }
                     case "we_are_admin":
                         we_are_admin = GetWeAreAdminFromJson(r3);
                         break;

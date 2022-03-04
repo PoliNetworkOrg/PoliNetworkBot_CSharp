@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 
 #endregion
 
@@ -20,7 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return v switch
             {
                 >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '.' or >= '0' and <= '9' => true,
-                _ => false,
+                _ => false
             };
         }
 

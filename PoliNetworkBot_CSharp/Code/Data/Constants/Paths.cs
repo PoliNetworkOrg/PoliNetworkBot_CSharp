@@ -11,6 +11,7 @@
             public const string ConfigUserBotsInfo = "../config/userbots_info.json";
             public const string ConfigBotDisguisedAsUserBotsInfo = "../config/botdisguisedasuserbots_info.json";
         }
+
         public static class Bin
         {
             public const string MessagesToDelete = "../config/messagestodelete.bin";

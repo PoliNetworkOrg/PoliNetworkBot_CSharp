@@ -1,14 +1,14 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -152,10 +152,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                    {
-                        await Assoc_ObjectToSendNotValid(sender, e);
-                        return false;
-                    }
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return false;
+                }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -440,9 +440,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                    {
-                        return false;
-                    }
+                {
+                    return false;
+                }
             }
 
             var q = "SELECT COUNT (*) " +

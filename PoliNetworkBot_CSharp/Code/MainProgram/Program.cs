@@ -1,5 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
@@ -7,17 +16,8 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Test.CheckLink;
 using PoliNetworkBot_CSharp.Test.IG;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -45,50 +45,60 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 switch (readChoice.Item1)
                 {
                     case '1': //reset everything
-                        {
-                            ResetEverything(true);
+                    {
+                        ResetEverything(true);
 
-                            return;
-                        }
+                        return;
+                    }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                        {
-                            MainBot(readChoice.Item1, readChoice.Item2);
-                            return;
-                        }
+                    {
+                        MainBot(readChoice.Item1, readChoice.Item2);
+                        return;
+                    }
 
                     case '4':
-                        {
-                            ResetEverything(false);
-                            return;
-                        }
+                    {
+                        ResetEverything(false);
+                        return;
+                    }
 
                     case '5':
-                        {
-                            _ = await Test_IG.MainIGAsync();
-                            return;
-                        }
+                    {
+                        _ = await Test_IG.MainIGAsync();
+                        return;
+                    }
 
 
                     case '6':
-                        {
-                            NewConfig.NewConfigMethod(true,false, false,false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(true, false, false, false, false);
+                        return;
+                    }
                     case '7':
-                        {
-                            NewConfig.NewConfigMethod(false,false,true, false, false);
-                            return;
-                        }
+                    {
+                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        return;
+                    }
                     case 't':
+                    {
+                        try
                         {
                             //SpamTest.Main2();
-                            Test_CheckLink.Test_CheckLink2();
+                            //Test_CheckLink.Test_CheckLink2();
+                            await Test_IG.MainIGAsync();
                             return;
                         }
+                        catch
+                        {
+                            ;
+                        }
+
+                        break;
+                    }
                 }
             }
         }
@@ -139,11 +149,14 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             if (File.Exists("psw_anon.txt"))
                 ConfigAnon.password = File.ReadAllText("psw_anon.txt");
+
+            if (!Directory.Exists("../config"))
+                Directory.CreateDirectory("../config");
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
         {
-            NewConfig.NewConfigMethod(true,true,true, true, alsoFillTablesFromJson);
+            NewConfig.NewConfigMethod(true, true, true, true, alsoFillTablesFromJson);
             Logger.WriteLine("Reset done!");
         }
 
@@ -179,7 +192,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             try
             {
                 _botDisguisedAsUserBotInfos =
-                    Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+                    JsonConvert.DeserializeObject<BotConfig>(
+                        File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
             }
             catch
             {
@@ -194,7 +208,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod(false,false,true, false, false);
+                NewConfig.NewConfigMethod(false, false, true, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
@@ -204,13 +218,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     try
                     {
                         _botDisguisedAsUserBotInfos =
-                           Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
+                            JsonConvert.DeserializeObject<BotConfig>(
+                                File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
                     }
                     catch
                     {
                         ;
                     }
-
                 }
                 else
                 {
@@ -230,7 +244,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             try
             {
-                _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+                _userBotsInfos =
+                    JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
             }
             catch
             {
@@ -245,7 +260,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod( false,true,false,false, false);
+                NewConfig.NewConfigMethod(false, true, false, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
@@ -254,7 +269,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     //ok, keep going
                     try
                     {
-                        _userBotsInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
+                        _userBotsInfos =
+                            JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
                     }
                     catch
                     {
@@ -279,7 +295,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         {
             try
             {
-                _botInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText( Paths.Info.ConfigBotsInfo));
+                _botInfos = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
             }
             catch (Exception ex)
             {
@@ -294,7 +310,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
             var readChoice2 = alwaysYes ? "y" : Console.ReadLine();
             if (!string.IsNullOrEmpty(readChoice2) && readChoice2.ToLower().StartsWith("y"))
             {
-                NewConfig.NewConfigMethod( true,false,false,false, false);
+                NewConfig.NewConfigMethod(true, false, false, false, false);
 
                 Logger.WriteLine("Reset done! Do you wish to continue with the execution? (Y/N)");
                 var readChoice3 = alwaysYes ? "y" : Console.ReadLine();
@@ -303,7 +319,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     //ok, keep going
                     try
                     {
-                        _botInfos = Newtonsoft.Json.JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
+                        _botInfos = JsonConvert.DeserializeObject<BotConfig>(
+                            File.ReadAllText(Paths.Info.ConfigBotsInfo));
                     }
                     catch
                     {
@@ -405,13 +422,12 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             {
                                 case "a":
                                 case "A": //Administration
-                                    {
-                                        _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                        break;
-                                    }
+                                {
+                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                    break;
+                                }
                             }
                     }
-
                 }
 
             if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
@@ -426,7 +442,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                         _ = TestThingsDisguisedAsync(userId.Value);
                     }
-
                 }
 
             if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
@@ -539,17 +554,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.Message:
-                    {
-                        if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                            if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                                return;
+                {
+                    if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                        if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                            return;
 
-                        botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                    botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                        botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
-                            new MessageEventArgs(update.Message));
-                        break;
-                    }
+                    botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
+                        new MessageEventArgs(update.Message));
+                    break;
+                }
                 case UpdateType.InlineQuery:
                     break;
 
@@ -557,11 +572,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.CallbackQuery:
-                    {
-                        var callback = botClientWhole.botInfoAbstract.GetCallbackEvent();
-                        callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                        break;
-                    }
+                {
+                    var callback = botClientWhole.botInfoAbstract.GetCallbackEvent();
+                    callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                    break;
+                }
                 case UpdateType.EditedMessage:
                     break;
 

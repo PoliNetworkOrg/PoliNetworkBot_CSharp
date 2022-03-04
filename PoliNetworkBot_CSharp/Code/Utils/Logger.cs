@@ -1,10 +1,5 @@
 ﻿#region
 
-using JsonPolimi_Core_nf.Tipi;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,6 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Web;
+using JsonPolimi_Core_nf.Tipi;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -57,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
             Console.WriteLine(e);
             Console.WriteLine("#############2#############");
-            if(log == null)
+            if (log == null)
                 Console.WriteLine("[null]");
             else
                 Console.WriteLine(log);
@@ -171,7 +171,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             foreach (var sendToSingle in sendTo)
             {
-                var peer = new Objects.PeerAbstract(sendToSingle, ChatType.Private);
+                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
                 var stream = new MemoryStream(encoding.GetBytes(file));
 

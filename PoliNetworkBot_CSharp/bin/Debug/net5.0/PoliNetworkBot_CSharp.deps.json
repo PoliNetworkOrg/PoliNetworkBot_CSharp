@@ -8,9 +8,9 @@
     ".NETCoreApp,Version=v5.0": {
       "PoliNetworkBot_CSharp/1.0.0": {
         "dependencies": {
-          "HtmlAgilityPack": "1.11.39",
-          "InstagramApiSharp": "1.7.1",
-          "Microsoft.Data.Sqlite.Core": "6.0.1",
+          "HtmlAgilityPack": "1.11.42",
+          "InstagramApiSharp": "1.7.2",
+          "Microsoft.Data.Sqlite.Core": "6.0.2",
           "Microsoft.PowerShell.SDK": "7.1.5",
           "System.Data.SQLite.Core": "1.0.115.5",
           "System.Management.Automation": "7.1.5",
@@ -23,15 +23,15 @@
           "PoliNetworkBot_CSharp.dll": {}
         }
       },
-      "HtmlAgilityPack/1.11.39": {
+      "HtmlAgilityPack/1.11.42": {
         "runtime": {
           "lib/netstandard2.0/HtmlAgilityPack.dll": {
-            "assemblyVersion": "1.11.39.0",
-            "fileVersion": "1.11.39.0"
+            "assemblyVersion": "1.11.42.0",
+            "fileVersion": "1.11.42.0"
           }
         }
       },
-      "InstagramApiSharp/1.7.1": {
+      "InstagramApiSharp/1.7.2": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Newtonsoft.Json": "13.0.1",
@@ -39,8 +39,8 @@
         },
         "runtime": {
           "lib/netstandard2.0/InstagramApiSharp.dll": {
-            "assemblyVersion": "1.7.1.0",
-            "fileVersion": "1.7.1.0"
+            "assemblyVersion": "1.7.2.0",
+            "fileVersion": "1.7.2.0"
           }
         }
       },
@@ -176,14 +176,14 @@
         }
       },
       "Microsoft.CSharp/4.7.0": {},
-      "Microsoft.Data.Sqlite.Core/6.0.1": {
+      "Microsoft.Data.Sqlite.Core/6.0.2": {
         "dependencies": {
           "SQLitePCLRaw.core": "2.0.6"
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Data.Sqlite.dll": {
-            "assemblyVersion": "6.0.1.0",
-            "fileVersion": "6.0.121.56712"
+            "assemblyVersion": "6.0.2.0",
+            "fileVersion": "6.0.222.6404"
           }
         }
       },
@@ -1732,19 +1732,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HtmlAgilityPack/1.11.39": {
+    "HtmlAgilityPack/1.11.42": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-9xk8l+68NaHe3RmfzAOO0A5DcotDO4lAilUnmZpu6h/EpBCfDVrxr7aNClIGK/p3vPiypVzpUCENm72UKfIVjg==",
-      "path": "htmlagilitypack/1.11.39",
-      "hashPath": "htmlagilitypack.1.11.39.nupkg.sha512"
+      "sha512": "sha512-LDc1bEfF14EY2DZzak4xvzWvbpNXK3vi1u0KQbBpLUN4+cx/VrvXhgCAMSJhSU5vz0oMfW9JZIR20vj/PkDHPA==",
+      "path": "htmlagilitypack/1.11.42",
+      "hashPath": "htmlagilitypack.1.11.42.nupkg.sha512"
     },
-    "InstagramApiSharp/1.7.1": {
+    "InstagramApiSharp/1.7.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DsPsW/UnSoeyYoI+Te8oQehtyhXk+2ijSUAEL3Z5VXe9GOLopPdtNpi+yFrnOq5+33juUB7+gtNdPM/aUuQe5Q==",
-      "path": "instagramapisharp/1.7.1",
-      "hashPath": "instagramapisharp.1.7.1.nupkg.sha512"
+      "sha512": "sha512-8Jq5nGvyWxpYS/O10sioQg6DWYmhSAya//zJrJC56apjfddmK7NKvLM4DpWudo7uRVIyYLUpSPz40RwsgcfhIQ==",
+      "path": "instagramapisharp/1.7.2",
+      "hashPath": "instagramapisharp.1.7.2.nupkg.sha512"
     },
     "Markdig.Signed/0.21.1": {
       "type": "package",
@@ -1788,12 +1788,12 @@
       "path": "microsoft.csharp/4.7.0",
       "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
     },
-    "Microsoft.Data.Sqlite.Core/6.0.1": {
+    "Microsoft.Data.Sqlite.Core/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Z8MIjWmzxUjcc2HKTKFHfo7jqqVeVftkigrojGY4zEN8OwjLgJNb5/BqW3J2FiIiCrPBDGNkiVlOERazGfLizg==",
-      "path": "microsoft.data.sqlite.core/6.0.1",
-      "hashPath": "microsoft.data.sqlite.core.6.0.1.nupkg.sha512"
+      "sha512": "sha512-4q17iqpGkYdj5lyeCKpln6oT5/qBbZ3J0Tyzi8tIk1vkM8XtuG3Zx+YT5eYuXa/TrieM731nxl/lrDvtdSK6Ww==",
+      "path": "microsoft.data.sqlite.core/6.0.2",
+      "hashPath": "microsoft.data.sqlite.core.6.0.2.nupkg.sha512"
     },
     "Microsoft.Management.Infrastructure/2.0.0": {
       "type": "package",

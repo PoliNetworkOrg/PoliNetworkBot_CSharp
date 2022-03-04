@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -33,10 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (messages == null)
                 return;
 
-            foreach (var m in messages)
-            {
-                await DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
-            }
+            foreach (var m in messages) await DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
         }
     }
 }

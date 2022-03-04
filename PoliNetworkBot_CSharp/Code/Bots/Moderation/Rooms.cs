@@ -1,18 +1,17 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
-using StringUtil = PoliNetworkBot_CSharp.Code.Utils.StringUtil;
 
 #endregion
 
@@ -67,28 +66,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (chosen.Value)
             {
                 case 0:
-                    {
-                        await SearchClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await SearchClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 1:
-                    {
-                        await FreeClassroomAsync(sender, e);
-                        return;
-                    }
+                {
+                    await FreeClassroomAsync(sender, e);
+                    return;
+                }
 
                 case 2:
-                    {
-                        await OccupanciesOfTheDayAsync(sender, e);
-                        return;
-                    }
+                {
+                    await OccupanciesOfTheDayAsync(sender, e);
+                    return;
+                }
 
                 case 3:
-                    {
-                        await HelpAsync(sender, e);
-                        return;
-                    }
+                {
+                    await HelpAsync(sender, e);
+                    return;
+                }
             }
 
             var text = new Language(new Dictionary<string, string>
@@ -171,7 +170,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 { "it", "Ora di inizio? (esempio 8:15)" },
                 { "en", "Start time? (example 8:15)" }
             });
-            DateTime? start = await AskUser.AskHours(e.Message.From.Id, question,
+            var start = await AskUser.AskHours(e.Message.From.Id, question,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
             var question2 = new Language(new Dictionary<string, string>
@@ -179,7 +178,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 { "it", "Ora di fine? (esempio 11:15)" },
                 { "en", "End time? (example 11:15)" }
             });
-            DateTime? end = await AskUser.AskHours(e.Message.From.Id, question2,
+            var end = await AskUser.AskHours(e.Message.From.Id, question2,
                 sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
             if (start != null && end != null)
@@ -195,8 +194,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var result = new List<string>();
 
-            int shiftStart = (start.Hour - 8) * 4;
-            int shiftEnd = (stop.Hour - 8) * 4;
+            var shiftStart = (start.Hour - 8) * 4;
+            var shiftEnd = (stop.Hour - 8) * 4;
 
             shiftStart += start.Minute / 15;
             shiftEnd += stop.Minute / 15;
@@ -207,10 +206,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     continue;
 
                 var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
-                if (!string.IsNullOrEmpty(toAdd))
-                {
-                    result.Add(toAdd);
-                }
+                if (!string.IsNullOrEmpty(toAdd)) result.Add(toAdd);
             }
 
             return result;
@@ -221,8 +217,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (!child.GetClasses().Contains("normalRow")) return null;
             if (child.ChildNodes == null) return null;
 
-            if (!child.ChildNodes.Any(x => x.HasClass("dove") && x.ChildNodes != null && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))))
-            { return null; }
+            if (!child.ChildNodes.Any(x =>
+                    x.HasClass("dove") && x.ChildNodes != null && x.ChildNodes.Any(x2 =>
+                        x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA")))) return null;
 
             ;
 
@@ -480,7 +477,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             ;
 
-            var peer = new Objects.PeerAbstract(e.Message.From.Id, ChatType.Private);
+            var peer = new PeerAbstract(e.Message.From.Id, ChatType.Private);
             var text = new Language(new Dictionary<string, string>
             {
                 { "en", roomName }
@@ -496,7 +493,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var (dateTimeSchedule, exception, item3) = await Utils.AskUser.AskDateAsync(e.Message.From.Id,
+            var (dateTimeSchedule, exception, item3) = await AskUser.AskDateAsync(e.Message.From.Id,
                 "Scegli un giorno", "it", sender,
                 e.Message.From.Username);
 

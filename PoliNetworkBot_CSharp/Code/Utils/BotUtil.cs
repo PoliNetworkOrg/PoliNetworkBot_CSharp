@@ -1,11 +1,11 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -25,13 +25,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 switch (botType)
                 {
                     case BotTypeApi.REAL_BOT:
-                        {
-                            var botMode = bot.GetMode();
-                            if (botMode == BotStartMethods.Moderation)
-                                return bot;
+                    {
+                        var botMode = bot.GetMode();
+                        if (botMode == BotStartMethods.Moderation)
+                            return bot;
 
-                            break;
-                        }
+                        break;
+                    }
                     case BotTypeApi.USER_BOT:
                         break;
 
@@ -46,13 +46,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public static List<TelegramBotAbstract> GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
         {
             return (from x in GlobalVariables.Bots.Keys
-                    select GlobalVariables.Bots[x]
+                select GlobalVariables.Bots[x]
                 into bot
-                    let botType = bot.GetBotType()
-                    where botType == botTypeApi
-                    let botMode = bot.GetMode()
-                    where botMode == botModeParam
-                    select bot).ToList();
+                let botType = bot.GetBotType()
+                where botType == botTypeApi
+                let botMode = bot.GetMode()
+                where botMode == botModeParam
+                select bot).ToList();
         }
     }
 }
