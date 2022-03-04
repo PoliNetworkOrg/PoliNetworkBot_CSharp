@@ -1,6 +1,6 @@
 .idea/
 .vs/
-.bin/*
+PoliNetworkBot_CSharp/bin/
 PoliNetworkBot_CSharp/obj/
 TLSharp/
 .idea/.idea.PoliNetworkBot_CSharp/.idea/workspace.xml
@@ -21,11 +21,10 @@ PoliNetworkBot_CSharp/bin/Debug/*/data/
 
 *.bin
 
-*/*.dll
+*.dll
+!PoliNetworkBot_CSharp/dll/*
 
-.dll
-
-*/*.exe
+*.exe
 
 *.pdb
 

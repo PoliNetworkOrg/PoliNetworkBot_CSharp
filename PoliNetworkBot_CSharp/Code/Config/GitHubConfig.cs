@@ -29,11 +29,6 @@ namespace PoliNetworkBot_CSharp.Code.Config
             return GetInfo("email");
         }
 
-        public static string GetPath()
-        {
-            return GetInfo("path");
-        }
-
         public static object GetPassword()
         {
             return GetInfo("password");

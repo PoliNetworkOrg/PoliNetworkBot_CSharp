@@ -18,6 +18,15 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -301,10 +310,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 }
 
                 case "/allowmessage":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
-                        await AllowMessageAsync(e, sender);
+                    {
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            await AllowMessageAsync(e, sender);
+                        }
 
                     await DefaultCommand(sender, e);
 
@@ -330,12 +341,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var m2 = message.Messages.First();
                             if (m2 != null)
                             {
-                                var m3 = GetStringFromMessage(m2);
-                                if (!string.IsNullOrEmpty(m3))
+                                var m2 = message.Messages.First();
+                                if (m2 != null)
                                 {
                                     text = new Language(new Dictionary<string, string>
                                     {
-                                        { "uni", m3 }
+                                        text = new Language(new Dictionary<string, string>
+                                    {
+                                        { "uni",  m3}
                                     });
                                     await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                         "uni", ParseMode.Html, null, e.Message.From.Username);
@@ -676,6 +689,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Caption);
+                Logger.WriteLine(
+                    e.Message.ReplyToMessage.Text == null ? 
+                        (e.Message.ReplyToMessage.Caption == null ? 
+                            "Error in allowmessage, both caption and text are null" 
+                            : e.Message.ReplyToMessage.Caption) 
+                        : e.Message.ReplyToMessage.Text);
             }
         }
 
@@ -684,7 +703,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             try
             {
                 using var powershell = PowerShell.Create();
-                const string path = "../../../build-date.txt";
+                const string path = "./static/build-date.txt";
                 return await File.ReadAllTextAsync(path);
             }
             catch
@@ -813,13 +832,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                     false);
 
-            if (!Directory.Exists(GitHubConfig.GetPath()))
+            if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
             {
-                Directory.CreateDirectory("./data/");
+                Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
                 InitGithubRepo();
             }
 
-            var path = GitHubConfig.GetPath() + "groupsGenerated.json";
+            var path = Paths.Data.PoliNetworkWebsiteData + "groupsGenerated.json";
             await File.WriteAllTextAsync(path, json, Encoding.UTF8);
             if (dry)
             {
@@ -832,7 +851,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             using var powershell = PowerShell.Create();
-            var cd = GitHubConfig.GetPath();
+            var cd = Paths.Data.PoliNetworkWebsiteData;
             DoScript(powershell, "cd " + cd, debug);
             DoScript(powershell, "git fetch org", debug);
             DoScript(powershell, "git pull --force", debug);
@@ -924,7 +943,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                var db = await File.ReadAllBytesAsync("./data/db.db");
+                var db = await File.ReadAllBytesAsync(Paths.Data.Db);
 
                 var stream = new MemoryStream(db);
 
