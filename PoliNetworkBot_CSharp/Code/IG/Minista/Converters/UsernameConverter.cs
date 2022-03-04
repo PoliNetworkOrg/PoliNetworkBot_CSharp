@@ -14,7 +14,7 @@ namespace Minista.Converters
             if (value == null) return "";
             if (value is string data)
                 if (!string.IsNullOrEmpty(data))
-                    return data.Truncate(8);
+                    return data.Substring(0,8);
             return "";
         }
 

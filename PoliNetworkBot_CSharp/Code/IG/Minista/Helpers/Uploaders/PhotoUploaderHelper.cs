@@ -12,10 +12,10 @@ namespace Minista.Helpers
 {
     internal class PhotoUploaderHelper
     {
-        private CancellationTokenSource cts;
 
 
-        private StorageFile NotifyFile;
+
+
         private List<InstaUserTagUpload> UserTags = new();
 
         public PhotoUploaderHelper()

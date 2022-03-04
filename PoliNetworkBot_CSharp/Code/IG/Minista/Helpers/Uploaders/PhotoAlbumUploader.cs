@@ -302,7 +302,7 @@ namespace Minista.Helpers
     {
         public static Random Rnd = new();
         private PhotoAlbumUploader Album;
-        private CancellationTokenSource cts;
+
         private StorageFile File;
         private readonly InstaApi InstaApi;
 
