@@ -68,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Test.IG
             delay.Enable();
             if (logInResult.Succeeded)
             {
-                DoThings(x);
+                DoThingsAsync(x);
                 return true;
             }
 
@@ -114,14 +114,13 @@ namespace PoliNetworkBot_CSharp.Test.IG
             return true;
         }
 
-        private static void DoThings(InstaApi x)
+        private static async Task DoThingsAsync(InstaApi x)
         {
             var album = new PhotoAlbumUploader();
-            StorageFile[] files = null;
+            StorageFile file = await StorageFile.GetFileFromPathAsync("test.jpg");
+            StorageFile[] files = new StorageFile[] { file};
             string caption = null;
             album.SetFiles(files, caption, x);
-            var singlePhotoUploader = new SinglePhotoUploader(album, x);
-            singlePhotoUploader.UploadSinglePhoto();
         }
     }
 }

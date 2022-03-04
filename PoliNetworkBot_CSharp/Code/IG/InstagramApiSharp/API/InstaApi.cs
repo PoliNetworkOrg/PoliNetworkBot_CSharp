@@ -700,7 +700,9 @@ namespace InstagramApiSharp.API
         /// <param name="email">Email</param>
         /// <param name="firstName">First name (optional)</param>
         /// <param name="delay">Delay between requests. null = 2.5 seconds</param>
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private async Task<IResult<InstaAccountCreation>> CreateNewAccountAsync(string username, string password,
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
             string email, string firstName = "", TimeSpan? delay = null)
         {
             var createResponse = new InstaAccountCreation();
@@ -1354,7 +1356,9 @@ namespace InstagramApiSharp.API
             }
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private async Task GetNotificationBadge()
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             try
             {
@@ -1415,7 +1419,9 @@ namespace InstagramApiSharp.API
             }
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private async Task GetReadMsisdnHeader()
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             try
             {
@@ -2522,7 +2528,9 @@ namespace InstagramApiSharp.API
             }
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private async Task<IResult<bool>> AcceptFacebookConsentRequiredAsync(string email, string phone = null)
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             try
             {

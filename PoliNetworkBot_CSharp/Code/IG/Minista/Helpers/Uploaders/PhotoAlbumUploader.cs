@@ -314,7 +314,9 @@ namespace Minista.Helpers
 
         public string UploadId { get; private set; }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private static Uri GetMediaConfigureUri()
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             return new Uri("https://i.instagram.com/api/v1/media/configure/", UriKind.RelativeOrAbsolute);
         }
