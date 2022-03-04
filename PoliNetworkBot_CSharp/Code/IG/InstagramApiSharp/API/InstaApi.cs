@@ -2701,7 +2701,7 @@ namespace InstagramApiSharp.API
         /// <summary>
         ///     Get Accept Language
         /// </summary>
-        public string GetAcceptLanguage()
+        public static string GetAcceptLanguage()
         {
             try
             {
@@ -2718,7 +2718,7 @@ namespace InstagramApiSharp.API
         ///     <para>Returns something like: Asia/Tehran</para>
         /// </summary>
         /// <returns>Returns something like: Asia/Tehran</returns>
-        public string GetTimezone()
+        public static string GetTimezone()
         {
             return InstaApiConstants.TIMEZONE;
         }
@@ -2728,7 +2728,7 @@ namespace InstagramApiSharp.API
         ///     <para>Returns something like this: 16200</para>
         /// </summary>
         /// <returns>Returns something like this: 16200</returns>
-        public int GetTimezoneOffset()
+        public static int GetTimezoneOffset()
         {
             return InstaApiConstants.TIMEZONE_OFFSET;
         }

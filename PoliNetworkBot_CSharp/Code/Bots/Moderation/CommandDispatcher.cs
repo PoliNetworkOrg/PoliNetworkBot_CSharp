@@ -341,18 +341,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             var m2 = message.Messages.First();
                             if (m2 != null)
                             {
-                                var m2 = message.Messages.First();
-                                if (m2 != null)
+               
+                     
+
+                                text = new Language(new Dictionary<string, string>
                                 {
-                                    text = new Language(new Dictionary<string, string>
-                                    {
-                                        text = new Language(new Dictionary<string, string>
-                                    {
-                                        { "uni",  m3}
-                                    });
-                                    await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                        "uni", ParseMode.Html, null, e.Message.From.Username);
-                                }
+                                    { "uni",  m2.Text ?? m2.Caption}
+                                });
+                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                    "uni", ParseMode.Html, null, e.Message.From.Username);
+                          
                             }
                         }
 
@@ -656,19 +654,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static string GetStringFromMessage(Message m2)
-        {
-            if (m2 == null)
-                return null;
-
-            if (!string.IsNullOrEmpty(m2.Text))
-                return m2.Text;
-
-            if (!string.IsNullOrEmpty(m2.Caption))
-                return m2.Caption;
-
-            return null;
-        }
 
         private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
@@ -690,11 +675,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
                 MessagesStore.AddMessage(e.Message.ReplyToMessage.Caption);
                 Logger.WriteLine(
-                    e.Message.ReplyToMessage.Text == null ? 
-                        (e.Message.ReplyToMessage.Caption == null ? 
-                            "Error in allowmessage, both caption and text are null" 
-                            : e.Message.ReplyToMessage.Caption) 
-                        : e.Message.ReplyToMessage.Text);
+                    e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ?? "Error in allowmessage, both caption and text are null");
             }
         }
 

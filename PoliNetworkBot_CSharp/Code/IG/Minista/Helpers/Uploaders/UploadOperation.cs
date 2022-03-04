@@ -10,7 +10,7 @@ namespace Minista.Helpers
     internal class UploadOperation
     {
         internal string Guid;
-        private Uri instaUri;
+        private readonly Uri instaUri;
         private StorageFile file;
         private BackgroundUploader backgroundUploader;
 

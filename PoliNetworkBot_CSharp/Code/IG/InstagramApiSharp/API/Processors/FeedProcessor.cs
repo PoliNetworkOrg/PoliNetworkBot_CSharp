@@ -623,7 +623,7 @@ namespace InstagramApiSharp.API.Processors
                     { "phone_id", _deviceInfo.RankToken.ToString() },
                     { "client_session_id", Guid.NewGuid().ToString() },
                     { "session_id", Guid.NewGuid().ToString() },
-                    { "timezone_offset", _instaApi.GetTimezoneOffset().ToString() },
+                    { "timezone_offset", InstaApi.GetTimezoneOffset().ToString() },
                     { "battery_level", "100" },
                     { "is_charging", "0" },
                     { "rti_delivery_backend", "0" },

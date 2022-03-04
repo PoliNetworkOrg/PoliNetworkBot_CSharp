@@ -35,7 +35,7 @@ namespace Minista.Helpers
         public string Caption { get; set; }
         public event EventHandler<string> ReportCompleted;
 
-        internal string GenerateUploadId()
+        internal static string GenerateUploadId()
         {
             var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
             var uploadId = (long)timeSpan.TotalMilliseconds;
@@ -111,7 +111,7 @@ namespace Minista.Helpers
                     { "caption", Caption },
                     { "client_sidecar_id", clientSidecarId },
                     { "upload_id", clientSidecarId },
-                    { "timezone_offset", instaApi.GetTimezoneOffset() },
+                    { "timezone_offset", InstaApi.GetTimezoneOffset() },
                     { "source_type", "4" },
                     { "device_id", _deviceInfo.DeviceId },
                     { "creation_logger_session_id", Guid.NewGuid().ToString() },
@@ -162,7 +162,7 @@ namespace Minista.Helpers
             var _deviceInfo = instaApi.GetCurrentDevice();
             var imgData = new JObject
             {
-                { "timezone_offset", instaApi.GetTimezoneOffset() },
+                { "timezone_offset", InstaApi.GetTimezoneOffset() },
                 { "source_type", "4" },
                 { "upload_id", uploadId },
                 { "caption", "" },

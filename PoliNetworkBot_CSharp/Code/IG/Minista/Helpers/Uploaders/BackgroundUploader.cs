@@ -10,7 +10,7 @@ namespace Minista.Helpers
 {
     internal class BackgroundUploader
     {
-        List<Tuple<string, string>> list = new List<Tuple<string, string>>();
+        readonly List<Tuple<string, string>> list = new List<Tuple<string, string>>();
 
         internal void SetRequestHeader(string v1, string v2)
         {
