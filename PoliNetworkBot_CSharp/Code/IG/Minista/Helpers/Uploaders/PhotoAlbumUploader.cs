@@ -133,7 +133,7 @@ namespace Minista.Helpers
                 //}
 
                 var _httpRequestProcessor = instaApi.HttpRequestProcessor;
-                var request = instaApi._httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                var request = instaApi.HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
                 request.Headers.Add("retry_context", GetRetryContext());
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
@@ -275,7 +275,7 @@ namespace Minista.Helpers
             return vidData;
         }
         */
-        private string GetRetryContext()
+        private static string GetRetryContext()
         {
             return new JObject
             {
@@ -285,7 +285,7 @@ namespace Minista.Helpers
             }.ToString(Formatting.None);
         }
 
-        private void SendError(string text)
+        private static void SendError(string text)
         {
             try
             {
@@ -301,7 +301,7 @@ namespace Minista.Helpers
     internal class SinglePhotoUploader
     {
         public static Random Rnd = new();
-        private PhotoAlbumUploader Album;
+        private readonly PhotoAlbumUploader Album;
 
         private StorageFile File;
         private readonly InstaApi InstaApi;
@@ -325,7 +325,7 @@ namespace Minista.Helpers
                 UriKind.RelativeOrAbsolute);
         }
 
-        private string GetRetryContext()
+        private static string GetRetryContext()
         {
             return new JObject
             {
@@ -368,7 +368,7 @@ namespace Minista.Helpers
                 strCookies += $"{cook.Name}={cook.Value}; ";
             // header haye asli in ha hastan faghat
             BGU.SetRequestHeader("Cookie", strCookies);
-            var r = InstaApi._httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, device);
+            var r = InstaApi.HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, device);
             foreach (var item in r.Headers) BGU.SetRequestHeader(item.Key, string.Join(' ', item.Value));
 
 

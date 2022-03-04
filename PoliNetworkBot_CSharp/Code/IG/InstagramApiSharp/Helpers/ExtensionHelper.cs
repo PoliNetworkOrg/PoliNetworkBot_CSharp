@@ -153,8 +153,8 @@ namespace InstagramApiSharp
             var pubKeyId = api.GetLoggedUser().PublicKeyId;
             var randKey = new byte[32];
             var iv = new byte[12];
-            secureRandom.NextBytes(randKey, 0, randKey.Length);
-            secureRandom.NextBytes(iv, 0, iv.Length);
+            SecureRandom.NextBytes(randKey, 0, randKey.Length);
+            SecureRandom.NextBytes(iv, 0, iv.Length);
             var time = providedTime ?? DateTime.UtcNow.ToUnixTime();
             var associatedData = Encoding.UTF8.GetBytes(time.ToString());
             var pubKEY = Encoding.UTF8.GetString(Convert.FromBase64String(pubKey));
@@ -209,40 +209,28 @@ namespace InstagramApiSharp
 
         public static InstaTVChannelType GetChannelType(this string type)
         {
-            if (string.IsNullOrEmpty(type))
-                return InstaTVChannelType.User;
-            switch (type.ToLower())
+            return string.IsNullOrEmpty(type)
+                ? InstaTVChannelType.User
+                : type.ToLower() switch
             {
-                case "chrono_following":
-                    return InstaTVChannelType.ChronoFollowing;
-                case "continue_watching":
-                    return InstaTVChannelType.ContinueWatching;
-                case "for_you":
-                    return InstaTVChannelType.ForYou;
-                case "popular":
-                    return InstaTVChannelType.Popular;
-                default:
-                case "user":
-                    return InstaTVChannelType.User;
-            }
+                "chrono_following" => InstaTVChannelType.ChronoFollowing,
+                "continue_watching" => InstaTVChannelType.ContinueWatching,
+                "for_you" => InstaTVChannelType.ForYou,
+                "popular" => InstaTVChannelType.Popular,
+                _ => InstaTVChannelType.User,
+            };
         }
 
         public static string GetRealChannelType(this InstaTVChannelType type)
         {
-            switch (type)
+            return type switch
             {
-                case InstaTVChannelType.ChronoFollowing:
-                    return "chrono_following";
-                case InstaTVChannelType.ContinueWatching:
-                    return "continue_watching";
-                case InstaTVChannelType.Popular:
-                    return "popular";
-                case InstaTVChannelType.User:
-                    return "user";
-                case InstaTVChannelType.ForYou:
-                default:
-                    return "for_you";
-            }
+                InstaTVChannelType.ChronoFollowing => "chrono_following",
+                InstaTVChannelType.ContinueWatching => "continue_watching",
+                InstaTVChannelType.Popular => "popular",
+                InstaTVChannelType.User => "user",
+                _ => "for_you",
+            };
         }
 
         public static string GenerateRandomString(this int length)
@@ -445,11 +433,20 @@ namespace InstagramApiSharp
         }
     }
 
+
+
     internal class SecureRandom
     {
-        public void NextBytes(byte[] randKey, int p1, int randKeyLength)
+        public static Random random = new();
+        public static void NextBytes(byte[] randKey, int p1, int randKeyLength)
         {
-            throw new NotImplementedException();
+            int size = randKeyLength - p1;
+            byte[] r = new byte[size];
+            random.NextBytes(r);
+            for (int i=p1; i<randKeyLength; i++)
+            {
+                randKey[i] = r[i - p1];
+            }
         }
     }
 }

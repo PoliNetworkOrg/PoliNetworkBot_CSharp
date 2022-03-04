@@ -236,9 +236,9 @@ namespace InstagramApiSharp.API.Services
                 if (!obj.IsSucceed || response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaAccountCheck>(response, json);
 
-                _instaApi._user.PublicKey = _user.PublicKey = string.Join("",
+                _instaApi.User.PublicKey = _user.PublicKey = string.Join("",
                     response.Headers.GetValues(InstaApiConstants.RESPONSE_HEADER_IG_PASSWORD_ENC_PUB_KEY));
-                _instaApi._user.PublicKeyId = _user.PublicKeyId = string.Join("",
+                _instaApi.User.PublicKeyId = _user.PublicKeyId = string.Join("",
                     response.Headers.GetValues(InstaApiConstants.RESPONSE_HEADER_IG_PASSWORD_ENC_KEY_ID));
                 return Result.Success(obj);
             }
