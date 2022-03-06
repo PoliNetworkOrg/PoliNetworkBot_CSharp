@@ -98,8 +98,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
 
             var specialGroups = new List<long> { -1001361547847, -452591994, -1001320704409 };
-            if (groupId != null && text.Contains("bitcoin") &&
-                (text.Contains("guadagno") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
+            if (groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
+                (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
                 return SpamType.NOT_ALLOWED_WORDS;
 
             return SpamType.ALL_GOOD;
