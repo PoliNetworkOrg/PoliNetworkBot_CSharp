@@ -21,8 +21,11 @@ PoliNetworkBot_CSharp/bin/Debug/*/data/
 
 *.bin
 
+*/bin/*
+PoliNetworkBot_CSharp/bin/
+
 *.dll
-!PoliNetworkBot_CSharp/dll/*
+
 
 *.exe
 
