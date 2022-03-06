@@ -68,7 +68,7 @@ namespace PoliNetworkBot_CSharp.Test.IG
             delay.Enable();
             if (logInResult.Succeeded)
             {
-                DoThingsAsync(x);
+                await DoThingsAsync(x);
                 return true;
             }
 
@@ -120,7 +120,8 @@ namespace PoliNetworkBot_CSharp.Test.IG
             StorageFile file = await StorageFile.GetFileFromPathAsync("test.jpg");
             StorageFile[] files = new StorageFile[] { file};
             string caption = null;
-            album.SetFiles(files, caption, x);
+            await album.SetFiles(files, caption, x);
+            ;
         }
     }
 }

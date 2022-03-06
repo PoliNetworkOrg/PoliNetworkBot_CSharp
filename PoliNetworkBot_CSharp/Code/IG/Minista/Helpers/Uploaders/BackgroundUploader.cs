@@ -10,16 +10,16 @@ namespace Minista.Helpers
 {
     internal class BackgroundUploader
     {
-        readonly List<Tuple<string, string>> list = new();
+        public readonly List<Tuple<string, string>> list = new();
 
         internal void SetRequestHeader(string v1, string v2)
         {
             list.Add(new Tuple<string, string>(v1, v2));
         }
 
-        internal UploadOperation CreateUpload(Uri instaUri, StorageFile file)
+        internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstagramApiSharp.API.InstaApi instaApi)
         {
-            return new UploadOperation(instaUri, file, this);
+            return new UploadOperation(instaUri, file, this, instaApi);
         }
     }
 }

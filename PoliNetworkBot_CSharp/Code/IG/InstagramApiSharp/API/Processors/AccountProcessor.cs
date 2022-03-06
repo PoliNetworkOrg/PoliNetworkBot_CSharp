@@ -32,7 +32,9 @@ namespace InstagramApiSharp.API.Processors
         #region NOT COMPLETE FUNCTIONS
 
         //NOT COMPLETE
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
         private async Task<IResult<object>> GetCommentFilterAsync()
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             UserAuthValidator.Validate(_userAuthValidate);
             try

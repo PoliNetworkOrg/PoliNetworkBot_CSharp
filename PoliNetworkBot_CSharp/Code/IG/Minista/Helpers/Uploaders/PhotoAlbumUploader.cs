@@ -47,7 +47,7 @@ namespace Minista.Helpers
             return new Uri("https://i.instagram.com/api/v1/media/configure_sidecar/", UriKind.RelativeOrAbsolute);
         }
 
-        public async void SetFiles(StorageFile[] files, string caption, InstaApi instaApi)
+        public async Task SetFiles(StorageFile[] files, string caption, InstaApi instaApi)
         {
             Caption = caption;
             this.instaApi = instaApi;
@@ -58,7 +58,7 @@ namespace Minista.Helpers
             {
                 var uploadId = GenerateUploadId();
                 var b = new SinglePhotoUploader(this, instaApi);
-                b.UploadSinglePhoto(f, uploadId);
+                await b.UploadSinglePhotoAsync(f, uploadId, instaApi);
                 Uploads.Add(uploadId, b);
                 await Task.Delay(120);
             }
@@ -337,11 +337,11 @@ namespace Minista.Helpers
             }.ToString(Formatting.None);
         }
 
-        public void UploadSinglePhoto(StorageFile file, string uploadId)
+        public async Task UploadSinglePhotoAsync(StorageFile file, string uploadId, InstaApi instaApi)
         {
             File = file;
             UploadId = uploadId;
-            UploadSinglePhoto();
+            await UploadSinglePhoto(instaApi);
         }
 
         public static string GenerateRandomString(int length = 10)
@@ -352,7 +352,7 @@ namespace Minista.Helpers
             return "Telegram" + new string(chars.ToArray());
         }
 
-        public async void UploadSinglePhoto()
+        public async    Task UploadSinglePhoto(InstaApi instaApi)
         {
             var photoHashCode = Path.GetFileName(File.Path ?? $"C:\\{GenerateRandomString(13)}.jpg").GetHashCode();
             var photoEntityName = $"{UploadId}_0_{photoHashCode}";
@@ -396,9 +396,9 @@ namespace Minista.Helpers
             Debug.WriteLine("----------------------------------------Start upload----------------------------------");
 
             //var uploadX = await BGU.CreateUploadAsync(instaUri, parts, "", UploadId);
-            var upload = BGU.CreateUpload(instaUri, File);
+            var upload = BGU.CreateUpload(instaUri, File, instaApi );
             //upload.Priority = BackgroundTransferPriority.High;
-            upload.Start();
+            await upload.StartAsync();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace InstagramApiSharp.API
         private readonly IInstaLogger _logger;
         private InstaApiVersion _apiVersion;
         public HttpHelper HttpHelper { get; set; }
-        private AndroidDevice _deviceInfo;
+        public AndroidDevice _deviceInfo;
         private UserSessionData _userSession;
 
         internal UserSessionData User
@@ -2640,12 +2640,12 @@ namespace InstagramApiSharp.API
         ///     <para>Note: Set timeout more than 100 seconds!</para>
         /// </summary>
         /// <param name="timeout">Timeout (set more than 100 seconds!)</param>
-        public void SetTimeout(TimeSpan timeout)
+        public void SetTimeout(TimeSpan? timeout)
         {
             if (timeout == null)
                 timeout = TimeSpan.FromSeconds(350);
-
-            HttpClient.Timeout = timeout;
+            
+            HttpClient.Timeout = timeout.Value;
         }
 
         /// <summary>
