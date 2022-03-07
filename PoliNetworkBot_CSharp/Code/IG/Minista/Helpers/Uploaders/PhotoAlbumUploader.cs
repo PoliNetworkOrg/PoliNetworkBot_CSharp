@@ -1,5 +1,9 @@
 ﻿#region
 
+using InstagramApiSharp.API;
+using InstagramApiSharp.Classes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,13 +11,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
-using InstagramApiSharp.API;
-using InstagramApiSharp.Classes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 //using static Helper;
 
 #endregion
@@ -33,6 +33,7 @@ namespace Minista.Helpers
         }
 
         public string Caption { get; set; }
+
         public event EventHandler<string> ReportCompleted;
 
         internal static string GenerateUploadId()
@@ -80,7 +81,6 @@ namespace Minista.Helpers
                 await ConfigurePhotoAsync();
             }
         }
-
 
         private async Task<IResult<bool>> ConfigurePhotoAsync()
         {
@@ -137,7 +137,6 @@ namespace Minista.Helpers
                 request.Headers.Add("retry_context", GetRetryContext());
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-
 
                 //SendCompleted();
                 //IsUploading = false;
@@ -275,6 +274,7 @@ namespace Minista.Helpers
             return vidData;
         }
         */
+
         private static string GetRetryContext()
         {
             return new JObject
@@ -315,6 +315,7 @@ namespace Minista.Helpers
         public string UploadId { get; private set; }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static Uri GetMediaConfigureUri()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
@@ -352,7 +353,7 @@ namespace Minista.Helpers
             return "Telegram" + new string(chars.ToArray());
         }
 
-        public async    Task UploadSinglePhoto(InstaApi instaApi)
+        public async Task UploadSinglePhoto(InstaApi instaApi)
         {
             var photoHashCode = Path.GetFileName(File.Path ?? $"C:\\{GenerateRandomString(13)}.jpg").GetHashCode();
             var photoEntityName = $"{UploadId}_0_{photoHashCode}";
@@ -372,7 +373,6 @@ namespace Minista.Helpers
             BGU.SetRequestHeader("Cookie", strCookies);
             var r = InstaApi.HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, device);
             foreach (var item in r.Headers) BGU.SetRequestHeader(item.Key, string.Join(' ', item.Value));
-
 
             var photoUploadParamsObj = new JObject
             {
@@ -396,7 +396,7 @@ namespace Minista.Helpers
             Debug.WriteLine("----------------------------------------Start upload----------------------------------");
 
             //var uploadX = await BGU.CreateUploadAsync(instaUri, parts, "", UploadId);
-            var upload = BGU.CreateUpload(instaUri, File, instaApi );
+            var upload = BGU.CreateUpload(instaUri, File, instaApi);
             //upload.Priority = BackgroundTransferPriority.High;
             await upload.StartAsync();
         }

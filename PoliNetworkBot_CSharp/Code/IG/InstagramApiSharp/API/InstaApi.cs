@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.API.Processors;
 using InstagramApiSharp.API.Services;
 using InstagramApiSharp.API.Versions;
@@ -23,6 +15,14 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -639,7 +639,6 @@ namespace InstagramApiSharp.API
             }
         }
 
-
         private async Task<IResult<object>> GetRegistrationStepsAsync()
         {
             try
@@ -701,6 +700,7 @@ namespace InstagramApiSharp.API
         /// <param name="firstName">First name (optional)</param>
         /// <param name="delay">Delay between requests. null = 2.5 seconds</param>
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private async Task<IResult<InstaAccountCreation>> CreateNewAccountAsync(string username, string password,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
             string email, string firstName = "", TimeSpan? delay = null)
@@ -720,7 +720,6 @@ namespace InstagramApiSharp.API
                 var checkEmail = await CheckEmail(email, false);
                 if (!checkEmail.Succeeded)
                     return Result.Fail(checkEmail.Info.Message, (InstaAccountCreation)null);
-
 
                 await Task.Delay((int)delay.Value.TotalMilliseconds);
                 if (checkEmail.Value.GdprRequired)
@@ -987,7 +986,7 @@ namespace InstagramApiSharp.API
                 }
 
                 var needsRelogin = false;
-                ReloginLabel:
+            ReloginLabel:
                 //if (isNewLogin)
                 //    await GetToken();
                 var cookies =
@@ -1043,7 +1042,7 @@ namespace InstagramApiSharp.API
                     }
 
                     if (loginFailReason.ErrorType == "checkpoint_challenge_required"
-                        /* || !string.IsNullOrEmpty(loginFailReason.Message) && loginFailReason.Message == "challenge_required"*/
+                       /* || !string.IsNullOrEmpty(loginFailReason.Message) && loginFailReason.Message == "challenge_required"*/
                        )
                     {
                         ChallengeLoginInfo = loginFailReason.Challenge;
@@ -1357,6 +1356,7 @@ namespace InstagramApiSharp.API
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private async Task GetNotificationBadge()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
@@ -1420,6 +1420,7 @@ namespace InstagramApiSharp.API
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private async Task GetReadMsisdnHeader()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
@@ -1530,7 +1531,6 @@ namespace InstagramApiSharp.API
                             response.Headers.GetValues(InstaApiConstants.RESPONSE_HEADER_IG_PASSWORD_ENC_KEY_ID));
                     }
 
-
                     var mid = cookies[InstaApiConstants.COOKIES_MID]?.Value ??
                               (ContainsHeader(InstaApiConstants.RESPONSE_HEADER_IG_SET_X_MID)
                                   ? string.Join("",
@@ -1587,7 +1587,6 @@ namespace InstagramApiSharp.API
                     data.Add("server_config_retrieval", "1");
                     data.Add("experiments", InstaApiConstants.LOGIN_EXPERIMENTS_CONFIGS);
                 }
-
 
                 var uri = UriCreator.GetQeSyncUri();
                 var request = HttpHelper.GetSignedRequest(HttpMethod.Post, uri, _deviceInfo, data);
@@ -1831,7 +1830,6 @@ namespace InstagramApiSharp.API
                 return Result.Fail<InstaRecovery>(exception);
             }
         }
-
 
         /// <summary>
         ///     Send Two Factor Login SMS Again
@@ -2500,7 +2498,6 @@ namespace InstagramApiSharp.API
                     { "tos_accepted", "false" }
                 };
 
-
                 var instaUri = UriCreator.GetOnboardingStepsUri();
                 var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
                 var response = await HttpRequestProcessor.SendAsync(request);
@@ -2529,6 +2526,7 @@ namespace InstagramApiSharp.API
         }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private async Task<IResult<bool>> AcceptFacebookConsentRequiredAsync(string email, string phone = null)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
@@ -2644,7 +2642,7 @@ namespace InstagramApiSharp.API
         {
             if (timeout == null)
                 timeout = TimeSpan.FromSeconds(350);
-            
+
             HttpClient.Timeout = timeout.Value;
         }
 
@@ -3098,7 +3096,7 @@ namespace InstagramApiSharp.API
                 _deviceInfo = stateData.DeviceInfo;
             User = stateData.UserSession;
 
-            //Load Stream Edit 
+            //Load Stream Edit
             HttpRequestProcessor.RequestMessage.Username = stateData.UserSession.UserName;
             HttpRequestProcessor.RequestMessage.Password = stateData.UserSession.Password;
 

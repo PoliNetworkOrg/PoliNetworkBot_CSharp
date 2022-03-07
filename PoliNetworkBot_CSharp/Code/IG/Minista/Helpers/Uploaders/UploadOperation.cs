@@ -30,8 +30,6 @@ namespace Minista.Helpers
         {
             ;
 
-
-
             try
             {
                 ;

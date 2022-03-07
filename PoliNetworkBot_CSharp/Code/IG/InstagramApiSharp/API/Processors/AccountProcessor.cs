@@ -1,11 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -18,6 +12,12 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -33,6 +33,7 @@ namespace InstagramApiSharp.API.Processors
 
         //NOT COMPLETE
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private async Task<IResult<object>> GetCommentFilterAsync()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
@@ -41,7 +42,6 @@ namespace InstagramApiSharp.API.Processors
             {
                 var instaUri = new Uri(InstaApiConstants.BASE_INSTAGRAM_API_URL + "accounts/get_comment_filter/");
                 Debug.WriteLine(instaUri.ToString());
-
 
                 var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
                 var response = await _httpRequestProcessor.SendAsync(request);
@@ -1463,7 +1463,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<InstaBusinessUser>(exception);
             }
         }
-
 
         private async Task<IResult<bool>> EnableDisablePresenceAsync(bool enable)
         {

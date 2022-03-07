@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
@@ -19,6 +12,13 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 
 #endregion
 
@@ -212,13 +212,13 @@ namespace InstagramApiSharp
             return string.IsNullOrEmpty(type)
                 ? InstaTVChannelType.User
                 : type.ToLower() switch
-            {
-                "chrono_following" => InstaTVChannelType.ChronoFollowing,
-                "continue_watching" => InstaTVChannelType.ContinueWatching,
-                "for_you" => InstaTVChannelType.ForYou,
-                "popular" => InstaTVChannelType.Popular,
-                _ => InstaTVChannelType.User,
-            };
+                {
+                    "chrono_following" => InstaTVChannelType.ChronoFollowing,
+                    "continue_watching" => InstaTVChannelType.ContinueWatching,
+                    "for_you" => InstaTVChannelType.ForYou,
+                    "popular" => InstaTVChannelType.Popular,
+                    _ => InstaTVChannelType.User,
+                };
         }
 
         public static string GetRealChannelType(this InstaTVChannelType type)
@@ -433,17 +433,16 @@ namespace InstagramApiSharp
         }
     }
 
-
-
     internal class SecureRandom
     {
         public static Random random = new();
+
         public static void NextBytes(byte[] randKey, int p1, int randKeyLength)
         {
             int size = randKeyLength - p1;
             byte[] r = new byte[size];
             random.NextBytes(r);
-            for (int i=p1; i<randKeyLength; i++)
+            for (int i = p1; i < randKeyLength; i++)
             {
                 randKey[i] = r[i - p1];
             }
