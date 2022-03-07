@@ -1146,7 +1146,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal string GetContactString()
         {
-            return _contactString;
+            return string.IsNullOrEmpty(_contactString) 
+                ? "You can find all our contact on our website https://polinetwork.org"
+                : _contactString;
         }
 
         internal async Task<SuccessWithException> IsAdminAsync(long userId, long chatId)
