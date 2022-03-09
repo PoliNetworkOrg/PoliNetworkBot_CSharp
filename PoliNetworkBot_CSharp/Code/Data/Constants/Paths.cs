@@ -9,6 +9,7 @@
             public const string Log = "../data/log.txt";
             public const string PoliNetworkWebsiteData = "../data/polinetworkWebsiteData";
             public const string Db = "../data/db.db";
+            public const string PoliMaterialsData = "../data/materialbotconfig.json";
         }
 
         public static class Info

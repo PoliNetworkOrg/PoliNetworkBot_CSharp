@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
-    internal class CallbackQueryEventArgs
+    public class CallbackQueryEventArgs
     {
         internal readonly CallbackQuery CallbackQuery;
 

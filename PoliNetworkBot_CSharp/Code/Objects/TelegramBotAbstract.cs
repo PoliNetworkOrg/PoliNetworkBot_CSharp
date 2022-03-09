@@ -1505,5 +1505,44 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
             }
         }
+
+        public async Task AnswerCallbackQueryAsync(string callbackQueryId, string text)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    await _botClient.AnswerCallbackQueryAsync(callbackQueryId,
+                        text: $"Modification Denied! You need to be admin of this channel");
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                {
+                }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+        }
+        
+        public async Task EditMessageTextAsync(long chatId, int messageMessageId, string bMergedBBy, ParseMode parseMode)
+        {
+            switch (_isbot)
+            {
+                case BotTypeApi.REAL_BOT:
+                    await _botClient.EditMessageTextAsync(chatId,
+                        messageMessageId, "<b>MERGED</b> by " + bMergedBBy,
+                        parseMode);
+                    break;
+
+                case BotTypeApi.USER_BOT:
+                {
+                }
+                    break;
+
+                case BotTypeApi.DISGUISED_BOT:
+                    break;
+            }
+        }
     }
 }

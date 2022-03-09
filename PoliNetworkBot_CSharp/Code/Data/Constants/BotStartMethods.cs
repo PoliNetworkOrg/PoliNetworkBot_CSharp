@@ -13,6 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
         public const string Moderation = "m";
         public const string Primo = "p";
         public const string Anon = "a";
+        public const string Material = "mat";
 
         internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
         {
@@ -21,6 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants
                 Moderation => Main.MainMethod,
                 Primo => Bots.Primo.Main.MainMethod,
                 Anon => MainAnon.MainMethod,
+                Material => Bots.Materials.Program.BotClient_OnMessageAsync,
                 _ => null
             };
         }

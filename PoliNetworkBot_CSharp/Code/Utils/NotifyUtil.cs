@@ -54,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         internal static async Task NotifyOwners(ExceptionNumbered exception,
-            TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null,
+            TelegramBotAbstract sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string extrainfo = null,
             string langCode = default_lang,
             long? replyToMessageId2 = null)
         {
@@ -108,14 +108,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     message3 += "\n\n";
                 }
 
-                try
+                if (messageEventArgs != null)
                 {
-                    message3 += "MessageArgs:\n";
-                    message3 += JsonConvert.SerializeObject(messageEventArgs);
-                }
-                catch
-                {
-                    message3 += "\n\n";
+                    try
+                    {
+                        message3 += "MessageArgs:\n";
+                        message3 += JsonConvert.SerializeObject(messageEventArgs);
+                    }
+                    catch
+                    {
+                        message3 += "\n\n";
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(extrainfo)) message3 += "\n\n" + extrainfo;
@@ -153,6 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs, int loopNumber = 0)
         {
             await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
+            Logger.WriteLine(e);
         }
 
         private static async Task<MessageSentResult> NotifyOwners2Async(Language text, TelegramBotAbstract sender,
@@ -340,6 +344,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 Logger.WriteLine(e);
             }
+        }
+
+        public static async Task NotifyOwners(Exception exception, TelegramBotAbstract telegramBotAbstract, int loopNumber = 0)
+        {
+            await NotifyOwners(new ExceptionNumbered(exception), telegramBotAbstract, null, loopNumber);
+            Logger.WriteLine(exception);
         }
     }
 }
