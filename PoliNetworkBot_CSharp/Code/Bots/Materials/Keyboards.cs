@@ -51,13 +51,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var r = new List<List<InlineKeyboardButton>>();
             string testo = "";
             var options2 = new List<Language> ();
-            foreach (var corso in Navigator.ScuoleCorso[scuola])
+            if (Navigator.ScuoleCorso[scuola] != null)
             {
-                options2.Add(new(new Dictionary<string, string>
+                foreach (var corso in Navigator.ScuoleCorso[scuola])
                 {
-                    { "it", corso },
-                    { "en", corso }
-                }));
+                    options2.Add(new(new Dictionary<string, string>
+                    {
+                        {"it", corso},
+                        {"en", corso}
+                    }));
+                }
             }
             options2.Add(new(new Dictionary<string, string>
             {
@@ -75,7 +78,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             corso = corso.ToLower();
             string root = Program.Config.RootDir + corso;
             string percorso = Program.UsersConversations[id].getPercorso();
-            Logger.WriteLine(JsonConvert.SerializeObject(Program.UsersConversations[id]));
             if (!string.IsNullOrEmpty(percorso))
             {
                 root += @"/" + percorso;
@@ -97,7 +99,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var options2 = new List<Language> ();
             string[] subdirectoryEntries = GetDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
-            Logger.WriteLine("Trying to get path: " + percorso + " SubDir: " + subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
+            Logger.WriteLine("User " + id +" trying to get path: " + percorso + " SubDir: " + subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
             foreach (var v in subdirectoryEntries)
             {
                 options2.Add(new Language(new Dictionary<string, string>
