@@ -465,7 +465,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 return;
             }
 
-            if (e.Message == null || e.Message.Document == null)
+            if (e.Message?.Document == null)
             {
                 var dict = new Dictionary<string, string>
                 {
@@ -594,6 +594,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             
             if (e.Message.Document != null)
             {
+                var dict = new Dictionary<string, string>
+                {
+                    { "en", "File received. Send your files (can be multiple). Write anything to go back to the main menu" },
+                    { "it", "File ricevuto. Invia tutti i file che vuoi caricare in questa cartella, scrivi qualsiasi cosa per tornare al menu"}
+                };
+                var text = new Language(dict);
+
+                await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                    e.Message.From.LanguageCode,
+                    ParseMode.Html, null, null);
+                
                 UsersConversations[e.Message.From.Id].setStato(stati.AttesaFile);
                 await GestisciFileAsync(e, sender);
                 return;
