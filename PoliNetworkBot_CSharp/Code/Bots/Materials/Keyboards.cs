@@ -95,7 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var options2 = new List<Language> ();
             string[] subdirectoryEntries = GetDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
-            Logger.WriteLine("Trying to get path: " + percorso);
+            Logger.WriteLine("Trying to get path: " + percorso + " SubDir: " + subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
             if (percorso == null)
             {
                 options2.Add(new(new Dictionary<string, string>
