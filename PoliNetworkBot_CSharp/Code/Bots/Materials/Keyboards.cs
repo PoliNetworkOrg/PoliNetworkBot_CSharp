@@ -96,6 +96,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             string[] subdirectoryEntries = GetDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
             Logger.WriteLine("Trying to get path: " + percorso + " SubDir: " + subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
+            foreach (var v in subdirectoryEntries)
+            {
+                options2.Add(new Language(new Dictionary<string, string>
+                {
+                    { "it", v },
+                    { "en", v }
+                }));
+            }
             if (percorso == null)
             {
                 options2.Add(new(new Dictionary<string, string>
@@ -104,14 +112,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     { "en", "🔙 back" }
                 }));
                 return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
-            }
-            foreach (var v in subdirectoryEntries)
-            {
-                options2.Add(new Language(new Dictionary<string, string>
-                {
-                    { "it", v },
-                    { "en", v }
-                }));
             }
             options2.Add(new(new Dictionary<string, string>
             {
