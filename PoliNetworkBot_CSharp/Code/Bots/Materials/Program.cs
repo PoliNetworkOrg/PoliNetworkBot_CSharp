@@ -478,9 +478,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 await generaStartOnBackAndNull(e, telegramBotAbstract);
                 return;
             }
-
+            
             var file = Config.RootDir + UsersConversations[e.Message.From.Id].getcorso().ToLower() + "/" +
                        UsersConversations[e.Message.From.Id].getPercorso() + "/" + e.Message.Document.FileName;
+            BotUtils.Logger.WriteLine("File requested: " + file);
             string FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
             Boolean fileAlreadyPresent = false;
             string oldPath = null;

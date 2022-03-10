@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials
@@ -71,7 +72,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             if (string.IsNullOrEmpty(corso))
                 return null;
             corso = corso.ToLower();
-            string root = Program.Config + corso;
+            string root = Program.Config.RootDir + corso;
             string percorso = Program.UsersConversations[id].getPercorso();
             if (!string.IsNullOrEmpty(percorso))
             {
@@ -94,6 +95,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var options2 = new List<Language> ();
             string[] subdirectoryEntries = GetDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
+            Logger.WriteLine("Trying to get path: " + percorso);
             if (percorso == null)
             {
                 options2.Add(new(new Dictionary<string, string>
