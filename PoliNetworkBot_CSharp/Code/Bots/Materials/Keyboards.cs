@@ -102,8 +102,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             {
                 options2.Add(new Language(new Dictionary<string, string>
                 {
-                    { "it", v },
-                    { "en", v }
+                    { "it", v.Split("/").Last() },
+                    { "en", v.Split("/").Last() }
                 }));
             }
             if (percorso == null)
