@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials
@@ -43,19 +44,28 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             return replyKeyboard;
         }
 
-        internal static List<List<InlineKeyboardButton>> GetKeyboardCorsi(string scuola)
+        internal static List<List<Language>> GetKeyboardCorsi(string scuola)
         {
             var r = new List<List<InlineKeyboardButton>>();
             string testo = "";
+            var options2 = new List<Language> ();
             foreach (var corso in Navigator.ScuoleCorso[scuola])
             {
-                r.Add(new List<InlineKeyboardButton>() { new InlineKeyboardButton(corso ) });
+                options2.Add(new(new Dictionary<string, string>
+                {
+                    { "it", corso },
+                    { "en", corso }
+                }));
             }
-            r.Add(new List<InlineKeyboardButton>() { new InlineKeyboardButton("🔙 back" ) });
-            return r;
+            options2.Add(new(new Dictionary<string, string>
+            {
+                { "it", "🔙 Indietro" },
+                { "en", "🔙 Back" }
+            }));
+            return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }
 
-        internal static String[] getDir(long id)
+        internal static String[] GetDir(long id)
         {
             string corso = Program.UsersConversations[id].getcorso();
             if (string.IsNullOrEmpty(corso))
@@ -74,32 +84,52 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
             if (subdirectoryEntries != null)
             {
-                subdirectoryEntries = removeGit(subdirectoryEntries);
+                subdirectoryEntries = RemoveGit(subdirectoryEntries);
             }
             return subdirectoryEntries;
         }
-        internal static List<List<InlineKeyboardButton>> GetPathsKeyboard(long id)
+        
+        internal static List<List<Language>> GetPathsKeyboard(long id)
         {
-            string[] subdirectoryEntries = getDir(id);
+            var options2 = new List<Language> ();
+            string[] subdirectoryEntries = GetDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
-            List<List<InlineKeyboardButton>> k  =  Keyboards.GetKeyboard(subdirectoryEntries);
-            if (k == null) { k = new List<List<InlineKeyboardButton>>(); } 
             if (percorso == null)
             {
-                k.Insert(0, new List<InlineKeyboardButton>() {
-                new ("🔙 back")
-                });
-                return k;
+                options2.Add(new(new Dictionary<string, string>
+                {
+                    { "it", "🔙 back" },
+                    { "en", "🔙 back" }
+                }));
+                return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
             }
-            k.Insert(0, new List<InlineKeyboardButton>() { 
-                new ( "🔙 back"),
-                new ("🆗 Cartella Corrente"),
-                new ("🆕 New Folder")
-            });
-            return k;
+            foreach (var v in subdirectoryEntries)
+            {
+                options2.Add(new Language(new Dictionary<string, string>
+                {
+                    { "it", v },
+                    { "en", v }
+                }));
+            }
+            options2.Add(new(new Dictionary<string, string>
+            {
+                { "it", "🔙 Indietro" },
+                { "en", "🔙 Back" }
+            }));
+            options2.Add(new(new Dictionary<string, string>
+            {
+                { "it", "🆗 Cartella Corrente" },
+                { "en", "🆗 Current Folder" }
+            }));
+            options2.Add(new(new Dictionary<string, string>
+            {
+                { "it", "🆕 Nuova Cartella" },
+                { "en", "🆕 New Folder" }
+            }));
+            return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }
 
-        private static string[] removeGit(string[] subdirectoryEntries)
+        private static string[] RemoveGit(string[] subdirectoryEntries)
         {
             List<String> listadir = subdirectoryEntries.ToList();
             for (int i = 0; i < listadir.Count(); i++)
@@ -113,14 +143,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             return listadir.ToArray();
         }
 
-        internal static List<List<InlineKeyboardButton>> GetKeyboardSchools()
+        internal static List<List<Language>> GetKeyboardSchools()
         {
-            List<List<InlineKeyboardButton>> r = new List<List<InlineKeyboardButton>>();
+            var options2 = new List<Language> ();
             foreach (var v in Navigator.ScuoleCorso.Keys)
             {
-                r.Add(new List<InlineKeyboardButton> { new(text: v ) });
+                options2.Add(new(new Dictionary<string, string>
+                {
+                    { "it", v },
+                    { "en", v }
+                }));
+                //r.Add(new List<InlineKeyboardButton> { new(text: v ) });
             }
-            return r;
+            return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }
     }
 }

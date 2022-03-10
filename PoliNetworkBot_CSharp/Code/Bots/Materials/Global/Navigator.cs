@@ -29,6 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
         {
             foreach (var scuola in ScuoleCorso.Values)
             {
+                if(scuola == null) continue;
                 foreach (var corso in scuola)
                 {
                     if (messageText == corso)
@@ -48,8 +49,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
             foreach (var scuola in ScuoleCorso.Keys)
             {
                 if (messageText != scuola) continue;
-                conversation.setCorso(scuola);
-                conversation.setStato(stati.Scuola);
+                conversation.setScuola(scuola);
+                conversation.setStato(stati.Corso);
                 return true;
             }
 
