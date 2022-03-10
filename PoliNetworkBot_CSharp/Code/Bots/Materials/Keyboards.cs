@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 {
     static public class Keyboards
     {
-        static public List<List<KeyboardButton>> getKeyboard(string[] keyboardList)
+        static public List<List<InlineKeyboardButton>> GetKeyboard(string[] keyboardList)
         { 
             int i = 0;
 
@@ -27,31 +27,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             if (keyboadToArray == null || keyboadToArray.Count == 0)
                 return null;
 
-            List<List<KeyboardButton>> replyKeyboard = new List<List<KeyboardButton>>();
+            List<List<InlineKeyboardButton>> replyKeyboard = new List<List<InlineKeyboardButton>>();
 
             foreach (var l2 in keyboadToArray)
             {
-                List<KeyboardButton> x2 = new List<KeyboardButton>();
+                List<InlineKeyboardButton> x2 = new List<InlineKeyboardButton>();
                 foreach (string l3 in l2)
                 {   
                     string[] path = l3.Split(@"/");
                     var len = path.Length;
-                    x2.Add(new KeyboardButton(path[len-1]));
+                    x2.Add(new InlineKeyboardButton(path[len-1]));
                 }
                 replyKeyboard.Add(x2);
             }
             return replyKeyboard;
         }
 
-        internal static List<List<KeyboardButton>> getKeyboardCorsi(string scuola)
+        internal static List<List<InlineKeyboardButton>> GetKeyboardCorsi(string scuola)
         {
-            List<List<KeyboardButton>> r = new List<List<KeyboardButton>>();
+            var r = new List<List<InlineKeyboardButton>>();
             string testo = "";
             foreach (var corso in Navigator.ScuoleCorso[scuola])
             {
-                r.Add(new List<KeyboardButton>() { new KeyboardButton() { Text = corso } });
+                r.Add(new List<InlineKeyboardButton>() { new InlineKeyboardButton(corso ) });
             }
-            r.Add(new List<KeyboardButton>() { new KeyboardButton() { Text = "🔙 back" } });
+            r.Add(new List<InlineKeyboardButton>() { new InlineKeyboardButton("🔙 back" ) });
             return r;
         }
 
@@ -78,23 +78,23 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
             return subdirectoryEntries;
         }
-        internal static List<List<KeyboardButton>> getPathsKeyboard(long id)
+        internal static List<List<InlineKeyboardButton>> GetPathsKeyboard(long id)
         {
             string[] subdirectoryEntries = getDir(id);
             string percorso = Program.UsersConversations[id].getPercorso();
-            List<List<KeyboardButton>> k  =  Keyboards.getKeyboard(subdirectoryEntries);
-            if (k == null) { k = new List<List<KeyboardButton>>(); } 
+            List<List<InlineKeyboardButton>> k  =  Keyboards.GetKeyboard(subdirectoryEntries);
+            if (k == null) { k = new List<List<InlineKeyboardButton>>(); } 
             if (percorso == null)
             {
-                k.Insert(0, new List<KeyboardButton>() {
-                new KeyboardButton(){  Text = "🔙 back"}
+                k.Insert(0, new List<InlineKeyboardButton>() {
+                new ("🔙 back")
                 });
                 return k;
             }
-            k.Insert(0, new List<KeyboardButton>() { 
-                new KeyboardButton(){  Text = "🔙 back"},
-                new KeyboardButton(){  Text = "🆗 Cartella Corrente"},
-                new KeyboardButton(){  Text = "🆕 New Folder"}
+            k.Insert(0, new List<InlineKeyboardButton>() { 
+                new ( "🔙 back"),
+                new ("🆗 Cartella Corrente"),
+                new ("🆕 New Folder")
             });
             return k;
         }

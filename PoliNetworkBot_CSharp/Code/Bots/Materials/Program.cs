@@ -107,7 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                                 await GestisciFileAsync(e, telegramBotClient);
                                 break;
                             case stati.newCartella:
-                                await GestisciNewCartellaAsync(e);
+                                await GestisciNewCartellaAsync(e, telegramBotClient);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -431,7 +431,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
         }
 
-        private static async Task GestisciNewCartellaAsync(MessageEventArgs e)
+        private static async Task GestisciNewCartellaAsync(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
         {
             if(e.Message.Text.Contains("/") || e.Message.Text.Contains(@"\"))
             {
@@ -439,14 +439,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 return;
             }
             UsersConversations[e.Message.From.Id].scesoDiUnLivello(e.Message.Text);
-            await GenerateFolderKeyboard(e);
+            await GenerateFolderKeyboard(e, telegramBotAbstract);
             UsersConversations[e.Message.From.Id].setStato(stati.Cartella);
         }
 
-        private static async Task GenerateFolderKeyboard(MessageEventArgs e)
+        private static async Task GenerateFolderKeyboard(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
         {
-            List<List<KeyboardButton>> replyKeyboard = Keyboards.getPathsKeyboard(e.Message.From.Id);
-            await InviaCartellaAsync(e, replyKeyboard);
+            var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
+            await InviaCartellaAsync(e, replyKeyboard, telegramBotAbstract);
         }
 
         private static async Task GestisciFileAsync(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
@@ -640,8 +640,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 else
                 {
                     UsersConversations[e.Message.From.Id].scesoDiUnLivello(e.Message.Text);
-                    List<List<KeyboardButton>> replyKeyboard = Keyboards.getPathsKeyboard(e.Message.From.Id);
-                    await InviaCartellaAsync(e, replyKeyboard);
+                    var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
+                    await InviaCartellaAsync(e, replyKeyboard, sender);
                 }
             }
         }
@@ -713,12 +713,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
             try
             {
-                List<List<KeyboardButton>> replyKeyboard = Keyboards.getPathsKeyboard(e.Message.From.Id);
+                var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
                 if (replyKeyboard.Count == 0)
                 {
                     throw new Exception("No paths for folder " + UsersConversations[e.Message.From.Id].getcorso());
                 }
-                await InviaCartellaAsync(e, replyKeyboard);
+                await InviaCartellaAsync(e, replyKeyboard, sender);
             }
             catch (Exception ex)
             {
@@ -744,15 +744,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         }
 
         private static async Task InviaCartellaAsync(MessageEventArgs e,
-            List<List<KeyboardButton>> replyKeyboard)
+            List<List<InlineKeyboardButton>> replyKeyboard, TelegramBotAbstract telegramBotAbstract)
         {
             if (replyKeyboard == null)
                 return;
             
-
-            IReplyMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(replyKeyboard, true, true);
-            await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Seleziona un percorso", ParseMode.Default, false,
-                false, 0, replyKeyboardMarkup);
+            var dict = new Dictionary<string, string>
+            {
+                { "en", "Choose a path" },
+                { "it", "Seleziona un percorso"}
+            };
+            var text = new Language(dict);
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                e.Message.From.LanguageCode,
+                ParseMode.Html, new ReplyMarkupObject(new InlineKeyboardMarkup(replyKeyboard)), null);
+            
             
         }
 
@@ -761,18 +767,32 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             
             if (e.Message.Text == null || !Navigator.ScuolaHandler(UsersConversations[e.Message.From.Id], e.Message.Text))
             {
-                await _botClient.SendTextMessageAsync(e.Message.Chat.Id,
-                    "Unknown path. Going back to beginning. Use the Keyboard to navigate the folders.",
-                    ParseMode.Default, false, false, e.Message.MessageId);
-                generaStartOnBackAndNull(e);
+                var dict = new Dictionary<string, string>
+                {
+                    { "en", "Unknown path. Going back to beginning. Use the Keyboard to navigate the folders." },
+                    { "it", "Percorso sconosciuto. Ritorno al menu principale. Usa il tastierino per navigare tra le cartelle."}
+                };
+                var text = new Language(dict);
+                await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                    e.Message.From.LanguageCode,
+                    ParseMode.Html, null, null);
+                
+                await generaStartOnBackAndNull(e, telegramBotAbstract);
                 return;
             }
             
-            List<List<KeyboardButton>> replyKeyboard = Keyboards.getKeyboardCorsi(UsersConversations[e.Message.From.Id].getScuola());
-            IReplyMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(replyKeyboard, true, true);
-            await _botClient.SendTextMessageAsync(e.Message.From.Id, 
-                "Selezionata " + UsersConversations[e.Message.From.Id].getScuola(), ParseMode.Default, false, 
-                false, 0, replyKeyboardMarkup);
+            var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].getScuola());
+            
+            var dict1 = new Dictionary<string, string>
+            {
+                { "en", "Chosen " + UsersConversations[e.Message.From.Id].getScuola() },
+                { "it", "Selezionata " + UsersConversations[e.Message.From.Id].getScuola()}
+            };
+            var text1 = new Language(dict1);
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,
+                e.Message.From.LanguageCode,
+                ParseMode.Html, new ReplyMarkupObject(new InlineKeyboardMarkup(replyKeyboard)), null);
+
         }
 
         private static object ReconEnum(string text, Type type)
