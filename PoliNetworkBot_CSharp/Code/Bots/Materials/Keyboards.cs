@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -74,6 +75,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             corso = corso.ToLower();
             string root = Program.Config.RootDir + corso;
             string percorso = Program.UsersConversations[id].getPercorso();
+            Logger.WriteLine(JsonConvert.SerializeObject(Program.UsersConversations[id]));
             if (!string.IsNullOrEmpty(percorso))
             {
                 root += @"/" + percorso;
