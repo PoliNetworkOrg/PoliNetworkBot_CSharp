@@ -303,7 +303,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/allowmessage":
                     {
-                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                        if (Permissions.CheckPermissions(Permission.HEAD_ADMIN)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             await AllowMessageAsync(e, sender);
@@ -1626,4 +1626,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.LeftChatMember?.Username);
         }
     }
+
+
 }
