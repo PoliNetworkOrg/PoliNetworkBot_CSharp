@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -24,9 +26,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs)
         {
             var title = messageEventArgs.Message.Chat.Title;
-            if (messageEventArgs is { Message: { } })
+            if (messageEventArgs is {Message: { }})
             {
-                var message = "Permitted spam in group: ";
+                var message = "#Permitted spam in group: ";
                 message += "\n";
                 message += title;
                 message += "\n\n";
@@ -44,7 +46,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 const string langCode = "it";
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    { "it", message }
+                    {"it", message}
                 });
                 Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
@@ -130,8 +132,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var text = new Language(new Dictionary<string, string>
             {
-                { "it", "Eccezione! " + message3 },
-                { "en", "Exception! " + message3 }
+                {"it", "Eccezione! " + message3},
+                {"en", "Exception! " + message3}
             });
 
             var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
@@ -140,7 +142,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract,
             MessageEventArgs messageEventArgs)
         {
-            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract,
+            return NotifyOwners3(new Language(new Dictionary<string, string> {{"it", v}}), telegramBotAbstract,
                 null, 0, null, messageEventArgs);
         }
 
@@ -190,7 +192,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var dict = new Dictionary<string, string>
             {
-                { "en", message }
+                {"en", message}
             };
             var text = new Language(dict);
             await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
@@ -205,7 +207,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    { "en", v }
+                    {"en", v}
                 });
                 m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -219,7 +221,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
+                    {"en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count}
                 });
                 _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -249,7 +251,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    { "en", "---End---" }
+                    {"en", "---End---"}
                 });
 
                 long? replyto = null;
@@ -272,7 +274,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is not { Message: { } }) return;
+                    if (messageEventArgs is not {Message: { }}) return;
 
                     var message = "Restrict action: " + restrictAction;
                     message += "\n";
@@ -294,7 +296,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     const string langCode = "it";
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        { "it", message }
+                        {"it", message}
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
@@ -315,7 +317,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is not { Message: { } }) return;
+                    if (messageEventArgs is not {Message: { }}) return;
                     var message = "Restrict action: " + "Simple Ban";
                     message += "\n";
                     message += "Restricted user: " + target + "[" +
@@ -331,7 +333,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     const string langCode = "it";
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        { "it", message }
+                        {"it", message}
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
@@ -346,10 +348,51 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
         }
 
-        public static async Task NotifyOwners(Exception exception, TelegramBotAbstract telegramBotAbstract, int loopNumber = 0)
+        public static async Task NotifyOwners(Exception exception, TelegramBotAbstract telegramBotAbstract,
+            int loopNumber = 0)
         {
             await NotifyOwners(new ExceptionNumbered(exception), telegramBotAbstract, null, loopNumber);
             Logger.WriteLine(exception);
+        }
+
+        public static async Task NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+            string text, string groups, string messageType, string assoc)
+        {
+            var bytes = Encoding.Unicode.GetBytes(assoc);
+            var hash = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytes)).Substring(0, 8);
+
+            var message = "#Allowed spam in groups: " + groups;
+            message += "\n\n";
+            message += "Association: " + assoc;
+            message += " #" + hash;
+            message += "\n\n";
+            message += "Message type: " + messageType;
+            message += "\n\n";
+            message += "@@@@@@@";
+            message += "\n\n";
+            message += text;
+            message += "\n\n";
+            message += "@@@@@@@";
+            message += "\n\n";
+
+            const string langCode = "it";
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                {"it", message}
+            });
+            Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+            await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
+                ChatType.Group,
+                ParseMode.Html, group_exception, true);
+        }
+
+        private static string ByteArrayToString(byte[] arrInput)
+        {
+            int i;
+            var sOutput = new StringBuilder(arrInput.Length);
+            for (i = 0; i < arrInput.Length - 1; i++)
+                sOutput.Append(arrInput[i].ToString("X2"));
+            return sOutput.ToString();
         }
     }
 }

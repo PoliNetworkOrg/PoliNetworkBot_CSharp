@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Cache;
+using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -470,6 +472,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
 
             return count.Value >= 2;
+        }
+        
+        /// <summary>
+        /// Looks up the associations list from the polimi website
+        /// </summary>
+        /// <returns>a list with the name of the associations</returns>
+        public static async Task<List<string>> GetAssocList()
+        {
+            var url = "https://www.polimi.it/studenti-iscritti/rappresentanti-e-associazioni/";
+            var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+            if (webReply == null || !webReply.IsValid()) return null;
+
+            // parse the html document
+            var doc = new HtmlDocument();
+            doc.LoadHtml(webReply.GetData());
+
+            // select the second ce-bodytext in the page, and of that div select the first child, wich is the dotted ul
+            // list with the associations name 
+            var assocUL = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext")[1]
+                .ChildNodes[0];
+            // map each li element to its inner text, from which only the name should be taken
+            return assocUL.ChildNodes.Select(li => li.InnerText.Split('[')[0].Trim()).ToList();
         }
     }
 }
