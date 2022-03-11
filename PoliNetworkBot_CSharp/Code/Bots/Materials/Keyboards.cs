@@ -12,40 +12,8 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 {
-    static public class Keyboards
+    public static class Keyboards
     {
-        static public List<List<InlineKeyboardButton>> GetKeyboard(string[] keyboardList)
-        { 
-            int i = 0;
-
-            if (keyboardList == null)
-            {
-                return null;
-            }
-            List<string> keyboardToList = keyboardList.ToList();
-
-            List<List<string>> keyboadToArray = KeyboardMarkup.ArrayToMatrixString(keyboardToList);
-
-     
-            if (keyboadToArray == null || keyboadToArray.Count == 0)
-                return null;
-
-            List<List<InlineKeyboardButton>> replyKeyboard = new List<List<InlineKeyboardButton>>();
-
-            foreach (var l2 in keyboadToArray)
-            {
-                List<InlineKeyboardButton> x2 = new List<InlineKeyboardButton>();
-                foreach (string l3 in l2)
-                {   
-                    string[] path = l3.Split(@"/");
-                    var len = path.Length;
-                    x2.Add(new InlineKeyboardButton(path[len-1]));
-                }
-                replyKeyboard.Add(x2);
-            }
-            return replyKeyboard;
-        }
-
         internal static List<List<Language>> GetKeyboardCorsi(string scuola)
         {
             string testo = "";
