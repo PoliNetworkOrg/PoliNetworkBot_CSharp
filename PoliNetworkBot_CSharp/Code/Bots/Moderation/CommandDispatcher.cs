@@ -644,26 +644,58 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
+            string message;
+
             if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                 string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
             {
-                var text = new Language(new Dictionary<string, string>
+                // the command is being called without a reply, ask for the message:
+                var question = new Language(new Dictionary<string, string>
                 {
-                    { "en", "You have to reply to a message containing the message" },
-                    { "it", "You have to reply to a message containing the message" }
+                    {"en", "Type the message you want to allow"},
+                    {"it", "Scrivi il messaggio che vuoi approvare"}
                 });
-
-                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                    e.Message.MessageId);
+                message = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
+                    e.Message.From.Username, true);
             }
             else
             {
-                MessagesStore.AddMessage(e.Message.ReplyToMessage.Text);
-                MessagesStore.AddMessage(e.Message.ReplyToMessage.Caption);
-                Logger.WriteLine(
-                    e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ?? "Error in allowmessage, both caption and text are null");
+                // the message which got replied to is used for the text
+                message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption;
             }
+
+
+            var groupsQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "In which groups do you want to allow it?"},
+                {"it", "In quale gruppo le vuoi approvare?"}
+            });
+            var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
+                e.Message.From.Username, true);
+
+            
+            var typeQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
+                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+            });
+            var messageType = await AskUser.AskAsync(e.Message.From.Id, typeQuestion, sender,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, true);
+
+            
+            var assocList = await Assoc.GetAssocList();
+            var assocQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
+                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+            });
+            var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
+                new Language(new Dictionary<string, string> {{"uni", a}})).ToList());
+            var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
+                options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
+
+            NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
         }
 
         public static async Task<string> GetRunnigTime()
