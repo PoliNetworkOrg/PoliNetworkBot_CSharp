@@ -18,6 +18,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class Permissions
     {
+        /// <summary>
+        /// Check if user has enough permissions
+        /// </summary>
+        /// <returns> true if is allowed, false otherwise</returns>
+        /// <exception cref="NotImplementedException"></exception>
         internal static bool CheckPermissions(Permission permission, User messageFrom)
         {
             switch (permission)

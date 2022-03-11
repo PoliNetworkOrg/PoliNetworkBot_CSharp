@@ -695,8 +695,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
             var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
                 options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
+            
+            MessagesStore.AddMessage(message);
 
-            await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+            var response = await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+            
+            await SendMessage.SendMessageInPrivate(sender, 
+                e.Message.From.Id, "en", null, response, ParseMode.Html, null);
         }
 
         public static async Task<string> GetRunnigTime()

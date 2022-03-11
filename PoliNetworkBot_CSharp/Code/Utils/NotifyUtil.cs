@@ -22,6 +22,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private const long ban_notification_group = -1001710276126;
         private const string default_lang = "en";
 
+        /// <summary>
+        /// Used to notify of permitted spam in the permitted spam group.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="messageEventArgs"></param>
         internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract sender,
             MessageEventArgs messageEventArgs)
         {
@@ -48,7 +53,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"it", message}
                 });
-                Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+                Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
                     ChatType.Group,
                     ParseMode.Html, group_exception, true);
@@ -355,13 +360,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Logger.WriteLine(exception);
         }
 
-        public static async Task NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+        public static async Task<Language> NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
             var bytes = Encoding.Unicode.GetBytes(assoc);
             var hash = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytes)).Substring(0, 8);
 
             var message = "#Allowed spam in groups: " + groups;
+            message += "\n\n";
+            message += "Allowed by: " + (messageEventArgs.Message.From?.Username != null
+                           ? "@" + messageEventArgs.Message.From?.Username
+                           : "Unknown") + " [" +
+                       "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
+                       messageEventArgs.Message.From?.Id + "</a>" + "]";
             message += "\n\n";
             message += "Association: " + assoc;
             message += " #" + hash;
@@ -375,15 +386,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             message += "@@@@@@@";
             message += "\n\n";
 
-            const string langCode = "it";
+            const string langCode = "en";
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"it", message}
+                {"en", message}
             });
-            Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ERROR);
+            Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
                 ChatType.Group,
                 ParseMode.Html, group_exception, true);
+            return text2;
         }
 
         private static string ByteArrayToString(byte[] arrInput)
