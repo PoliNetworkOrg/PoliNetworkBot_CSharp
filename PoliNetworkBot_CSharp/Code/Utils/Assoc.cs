@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Cache;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -154,10 +154,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                {
-                    await Assoc_ObjectToSendNotValid(sender, e);
-                    return false;
-                }
+                    {
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false;
+                    }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -442,9 +442,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                {
-                    return false;
-                }
+                    {
+                        return false;
+                    }
             }
 
             var q = "SELECT COUNT (*) " +
@@ -473,7 +473,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             return count.Value >= 2;
         }
-        
+
         /// <summary>
         /// Looks up the associations list from the polimi website
         /// </summary>
@@ -493,7 +493,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var assocUL = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext")[1]
                 .ChildNodes[0];
             // map each li element to its inner text, from which only the name should be taken
-            return assocUL.ChildNodes.Select(li => li.InnerText.Split('[')[0].Trim()).ToList();
+            return assocUL.ChildNodes.Select(li => li.InnerText.Split('[')[0].Replace("&nbsp;", " ").Trim()).ToList();
         }
     }
 }

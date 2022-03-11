@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
@@ -11,14 +19,6 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -307,6 +307,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             await AllowMessageAsync(e, sender);
+                            return;
                         }
 
                         await DefaultCommand(sender, e);
@@ -673,7 +674,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
 
-            
+
             var typeQuestion = new Language(new Dictionary<string, string>
             {
                 {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
@@ -683,7 +684,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
 
-            
+
             var assocList = await Assoc.GetAssocList();
             var assocQuestion = new Language(new Dictionary<string, string>
             {
@@ -691,11 +692,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
             });
             var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
-                new Language(new Dictionary<string, string> {{"uni", a}})).ToList());
+                new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
             var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
                 options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
 
-            NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+            await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
         }
 
         public static async Task<string> GetRunnigTime()
