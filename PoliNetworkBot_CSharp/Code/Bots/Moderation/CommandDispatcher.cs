@@ -169,7 +169,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                     try
                     {
-                        if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                        if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower())) <- da tenere disattivato
                             _ = MassiveSendAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
                         else
                             await DefaultCommand(sender, e);
@@ -303,7 +303,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 case "/allowmessage":
                     {
-                        if (Permissions.CheckPermissions(Permission.HEAD_ADMIN)
+                        if (Permissions.CheckPermissions(Permission.HEAD_ADMIN, e.Message.From)
                             && e.Message.Chat.Type == ChatType.Private)
                         {
                             await AllowMessageAsync(e, sender);
