@@ -325,7 +325,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null
                                    ? "@" + messageEventArgs.Message.From?.Username
                                    : "Unknown") + " [" +
-                               "<a href=tg://user?id=" + messageEventArgs.Message.From?.Id + ">" +
+                               "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
                                messageEventArgs.Message.From?.Id + "</a>" + "]";
 
                     const string langCode = "it";

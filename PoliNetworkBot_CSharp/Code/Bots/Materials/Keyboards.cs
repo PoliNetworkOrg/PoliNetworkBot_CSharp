@@ -48,7 +48,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         internal static List<List<Language>> GetKeyboardCorsi(string scuola)
         {
-            var r = new List<List<InlineKeyboardButton>>();
             string testo = "";
             var options2 = new List<Language> ();
             if (Navigator.ScuoleCorso[scuola] != null)
