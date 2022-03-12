@@ -33,13 +33,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var title = messageEventArgs.Message.Chat.Title;
             if (messageEventArgs is {Message: { }})
             {
+                var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
+                if (text == null)
+                {
+                    var ex = new Exception("text null and caption null in permitted spam notification");
+                    await NotifyOwners(ex, sender, messageEventArgs);
+                    return;
+                }
+                var bytesText = Encoding.Unicode.GetBytes(text);
+                var hashText = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesText)).Substring(0, 16);
+
                 var message = "#Permitted spam in group: ";
                 message += "\n";
                 message += title;
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";
-                message += messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
+                message += text;
                 message += "\n\n";
                 message += "@@@@@@@";
                 message += "\n\n";
@@ -47,7 +57,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     ? messageEventArgs.Message.Chat.Id.ToString()
                     : "n" + -1 * messageEventArgs.Message.Chat.Id);
                 message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
-
+                message += "\n\n";
+                message += "Message tag: #" + hashText;
+                
                 const string langCode = "it";
                 var text2 = new Language(new Dictionary<string, string>
                 {
@@ -363,8 +375,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         public static async Task<Language> NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
-            var bytes = Encoding.Unicode.GetBytes(assoc);
-            var hash = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytes)).Substring(0, 8);
+            var bytesAssoc = Encoding.Unicode.GetBytes(assoc);
+            var bytesText = Encoding.Unicode.GetBytes(text);
+            var hashAssoc = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesAssoc)).Substring(0, 8);
+            var hashText = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesText)).Substring(0, 16);
 
             var message = "#Allowed spam in groups: " + groups;
             message += "\n\n";
@@ -375,7 +389,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                        messageEventArgs.Message.From?.Id + "</a>" + "]";
             message += "\n\n";
             message += "Association: " + assoc;
-            message += " #" + hash;
+            message += " #" + hashAssoc;
             message += "\n\n";
             message += "Message type: " + messageType;
             message += "\n\n";
@@ -385,6 +399,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             message += "\n\n";
             message += "@@@@@@@";
             message += "\n\n";
+            message += "Message tag: #" + hashText;
 
             const string langCode = "en";
             var text2 = new Language(new Dictionary<string, string>
