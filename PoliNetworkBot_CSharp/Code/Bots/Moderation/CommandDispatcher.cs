@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -314,6 +315,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
+                
+                case "/allowmessageowner":
+                {
+                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                        && e.Message.Chat.Type == ChatType.Private)
+                    {
+                        await AllowMessageOwnerAsync(e, sender);
+                        return;
+                    }
+
+                    await DefaultCommand(sender, e);
+
+                    return;
+                }
 
                 case "/allowedmessages":
                     {
@@ -328,7 +343,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                 e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                                 e.Message.MessageId);
-                            var messages = MessagesStore.GetAllMessages(x => x.allowedSpam);
+                            var messages = MessagesStore.GetAllMessages(x => x.AllowedSpam);
                             foreach (var message in messages)
                             {
                                 var m2 = message.Messages.First();
@@ -471,7 +486,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             {
                                 var lang = new Language(new Dictionary<string, string>
                             {
-                                { "", await GetRunnigTime() }
+                                { "", await GetRunningTime() }
                             });
                                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                                     e.Message.From.LanguageCode,
@@ -643,68 +658,37 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
+        private static async Task AllowMessageOwnerAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
-            string message;
-
+ 
             if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                 string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
             {
-                // the command is being called without a reply, ask for the message:
-                var question = new Language(new Dictionary<string, string>
+                var text = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Type the message you want to allow"},
-                    {"it", "Scrivi il messaggio che vuoi approvare"}
+                    { "en", "You have to reply to a message containing the message" },
+                    { "it", "You have to reply to a message containing the message" }
                 });
-                message = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
-                    e.Message.From.Username, true);
+
+                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                    e.Message.MessageId);
             }
             else
             {
-                // the message which got replied to is used for the text
-                message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption;
+                MessagesStore.AllowMessage(e.Message.ReplyToMessage.Text);
+                MessagesStore.AllowMessage(e.Message.ReplyToMessage.Caption);
+                Logger.WriteLine(
+                    e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ?? "Error in allowmessage, both caption and text are null");
             }
-
-
-            var groupsQuestion = new Language(new Dictionary<string, string>
-            {
-                {"en", "In which groups do you want to allow it?"},
-                {"it", "In quale gruppo le vuoi approvare?"}
-            });
-            var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
-                e.Message.From.Username, true);
-
-
-            var typeQuestion = new Language(new Dictionary<string, string>
-            {
-                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
-                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
-            });
-            var messageType = await AskUser.AskAsync(e.Message.From.Id, typeQuestion, sender,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username, true);
-
-
-            var assocList = await Assoc.GetAssocList();
-            var assocQuestion = new Language(new Dictionary<string, string>
-            {
-                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
-                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
-            });
-            var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
-                new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
-            var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
-                options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
-            
-            MessagesStore.AddMessage(message);
-
-            var response = await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
-            
-            await SendMessage.SendMessageInPrivate(sender, 
-                e.Message.From.Id, "en", null, response, ParseMode.Html, null);
         }
 
-        public static async Task<string> GetRunnigTime()
+        private static async Task AllowMessageAsync(MessageEventArgs e, TelegramBotAbstract sender)
+        {
+            await Assoc.AllowMessage(e, sender);
+        }
+
+        public static async Task<string> GetRunningTime()
         {
             try
             {
@@ -734,6 +718,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void Reboot()
         {
+            File.WriteAllText(JsonConvert.SerializeObject(Paths.Data.MessageStore), Paths.Data.MessageStore);
             using var powershell = PowerShell.Create();
             if (DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
                 .Contains("rebooter")) return;

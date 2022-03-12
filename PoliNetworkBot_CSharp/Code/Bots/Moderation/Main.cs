@@ -104,6 +104,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
             }
         }
+        
+        public static void CallbackMethod(object? sender, CallbackQueryEventArgs e)
+        {
+            var t = new Thread(() => _ = CallbackMethod2(sender, e));
+            t.Start();
+        }
+
+        private static object CallbackMethod2(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
+        {
+            TelegramBotClient telegramBotClientBot = null;
+            TelegramBotAbstract telegramBotClient = null;
+
+            try
+            {
+                if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
+
+                if (telegramBotClientBot == null)
+                    return false;
+            }
+            catch (Exception exc)
+            { //todo
+            }
+
+            return false;
+        }
 
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {
@@ -148,5 +173,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 ? "[EMPTY]"
                 : item2.Aggregate("", (current, item3) => current + item3?.User?.Username + " " + item3?.Status + "\n");
         }
+
+        
     }
 }

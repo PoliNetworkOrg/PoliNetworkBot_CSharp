@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -27,7 +28,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t2 = new Thread(CheckMessagesToDeleteAsync);
             t2.Start();
 
-            var t4 = new Thread(DoBackup);
+            var t4 = new Thread(DoBackupAndMessageStore);
             t4.Start();
 
             var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
@@ -118,7 +119,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             {
                 Language text = new(new Dictionary<string, string>
                 {
-                    { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunnigTime().Result }
+                    { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
                 });
                 _ = telegramBotAbstract.SendTextMessageAsync(Groups.BackupGroup, text, ChatType.Supergroup, "en",
                     ParseMode.Html, null, null);
@@ -134,7 +135,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             await Logger.MainMethodAsync();
         }
 
-        private static void DoBackup()
+        private static void DoBackupAndMessageStore()
         {
             try
             {
@@ -142,7 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (bots == null || bots.Count == 0)
                     return;
 
-                Thread t = new(() => DoBackup2Async(bots[0], null));
+                Thread t = new(() => DoBackupAndMessageStore2Async(bots[0], null));
                 t.Start();
             }
             catch (Exception ex)
@@ -151,7 +152,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async void DoBackup2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
+        private static async void DoBackupAndMessageStore2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
         {
             if (bot == null)
                 return;
@@ -161,6 +162,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 {
                     await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null, ChatType.Group);
                     Thread.Sleep(1000 * 3600 * 24 * 7);
+                    _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
                 }
             }
             catch (Exception e)

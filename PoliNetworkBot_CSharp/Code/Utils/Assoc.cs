@@ -340,7 +340,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return true;
         }
 
-        internal static string GetNameOfEntityFromItsID(long value)
+        internal static string GetNameOfEntityFromItsId(long value)
         {
             var q = "SELECT name FROM Entities WHERE id = " + value;
             var r = SqLite.ExecuteSelect(q);
@@ -490,10 +490,90 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             // select the second ce-bodytext in the page, and of that div select the first child, wich is the dotted ul
             // list with the associations name 
-            var assocUL = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext")[1]
+            var assocUl = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext")[1]
                 .ChildNodes[0];
             // map each li element to its inner text, from which only the name should be taken
-            return assocUL.ChildNodes.Select(li => li.InnerText.Split('[')[0].Replace("&nbsp;", " ").Trim()).ToList();
+            return assocUl.ChildNodes.Select(li => li.InnerText.Split('[')[0].Replace("&nbsp;", " ").Trim()).ToList();
+        }
+
+        /// <summary>
+        /// Schedules a message to be allowed if nobody objects in the next 4 hours
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="sender"></param>
+        public static async Task AllowMessage(MessageEventArgs e, TelegramBotAbstract sender)
+        {
+            string message;
+
+            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
+            {
+                // the command is being called without a reply, ask for the message:
+                var question = new Language(new Dictionary<string, string>
+                {
+                    {"en", "Type the message you want to allow"},
+                    {"it", "Scrivi il messaggio che vuoi approvare"}
+                });
+                message = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
+                    e.Message.From.Username, true);
+            }
+            else
+            {
+                // the message which got replied to is used for the text
+                message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption;
+            }
+
+
+            var groupsQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "In which groups do you want to allow it?"},
+                {"it", "In quale gruppo le vuoi approvare?"}
+            });
+            var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
+                e.Message.From.Username, true);
+
+
+            var typeQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
+                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+            });
+            var messageType = await AskUser.AskAsync(e.Message.From.Id, typeQuestion, sender,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, true);
+
+
+            var assocList = await Assoc.GetAssocList();
+            var assocQuestion = new Language(new Dictionary<string, string>
+            {
+                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
+                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+            });
+            
+            var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
+                new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
+            var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
+                options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
+
+            var (language, languageCode) = await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+            
+            await SendMessage.SendMessageInPrivate(sender, 
+                e.Message.From.Id, languageCode, null, language, ParseMode.Html, null);
+
+            HandleVetoAnd4Hours(message, e, sender);
+        }
+
+        private static void HandleVetoAnd4Hours(string message, MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
+        {
+            MessagesStore.AddMessage(message, true, new TimeSpan(hours: 4, 0, 0));
+            //notifica il consiglio
+            throw new NotImplementedException();
+            
+        }
+
+        public static void VetoCallbackButton(string messageHash)
+        {
+            
         }
     }
 }

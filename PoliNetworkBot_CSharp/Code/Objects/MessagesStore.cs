@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using File = System.IO.File;
 
 #endregion
 
@@ -20,9 +21,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [JsonObject(MemberSerialization.Fields)]
     public static class MessagesStore
     {
-        private static readonly Dictionary<string, StoredMessage> store = new();
+        private static readonly Dictionary<string, StoredMessage> Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
+            await File.ReadAllTextAsync(Data.Constants.Paths.Data.MessageStore));
 
-        public static bool AddMessage(string message)
+        /// <summary>
+        /// Adds a new message to the storage
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="allowedSpam">true if you want the bot to flag this message as Permitted Spam</param>
+        /// <param name="timeLater">Allow at a later time starting from now</param>
+        /// <returns></returns>
+        public static bool AddMessage(string message, bool allowedSpam = false, TimeSpan? timeLater = null)
         {
             if (message == null)
                 return false;
@@ -30,45 +39,55 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (string.IsNullOrEmpty(message))
                 return false;
 
-            if (store.ContainsKey(message))
-                store.Remove(message);
+            if (Store.ContainsKey(message))
+                Store.Remove(message);
 
-            lock (store)
+            lock (Store)
             {
-                store.Add(message,
-                    new StoredMessage { message = message, insertTime = DateTime.Now, allowedSpam = true });
+                Store.Add(message,
+                    new StoredMessage ( message: message, allowedSpam: allowedSpam , allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Adds new allowed message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static bool AllowMessage(string message)
+        {
+            return AddMessage(message, true);
+        }
+
         public static void CheckTimestamp()
         {
-            if (store.Count == 0)
+            if (Store.Count == 0)
                 return;
-            foreach (var message in store.Keys)
+            foreach (var message in Store.Keys)
             {
-                store.TryGetValue(message, out var storedMessage);
-                if (storedMessage.IsOutdated())
-                    lock (store)
+                Store.TryGetValue(message, out var storedMessage);
+                if (storedMessage == null || storedMessage.IsOutdated())
+                    lock (Store)
                     {
-                        store.Remove(message);
+                        Store.Remove(message);
                     }
             }
         }
 
         public static void RemoveMessage(string text)
         {
-            if (store.ContainsKey(text))
-                lock (store)
+            if (Store.ContainsKey(text))
+                lock (Store)
                 {
-                    store.Remove(text);
+                    Store.Remove(text);
                 }
         }
 
         public static List<StoredMessage> GetAllMessages(Func<StoredMessage, bool> filter = null)
         {
-            var r = store.Values.ToList();
+            var r = Store.Values.ToList();
             if (filter != null)
                 r = r.Where(filter).ToList();
 
@@ -95,42 +114,41 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (string.IsNullOrEmpty(text))
                 return SpamType.UNDEFINED;
 
-            if (store.ContainsKey(text))
+            if (Store.ContainsKey(text))
             {
-                store[text].lastSeenTime = DateTime.Now;
-                store[text].howManyTimesWeSawIt++;
+                Store[text].LastSeenTime = DateTime.Now;
+                Store[text].HowManyTimesWeSawIt++;
             }
             else
             {
-                lock (store)
+                lock (Store)
                 {
-                    store[text] = new StoredMessage
-                    {
-                        insertTime = DateTime.Now,
-                        lastSeenTime = DateTime.Now,
-                        howManyTimesWeSawIt = 1,
-                        message = e.Message.Text,
-                        allowedSpam = false
-                    };
+                    Store[text] = new StoredMessage
+                    (
+                        lastSeenTime: DateTime.Now,
+                        howManyTimesWeSawIt: 1,
+                        message: e.Message.Text,
+                        allowedSpam: false
+                    );
                 }
             }
 
             try
             {
-                lock (store[text])
+                lock (Store[text])
                 {
-                    if (!store[text].FromUserId.Contains(e.Message.From.Id))
-                        store[text].FromUserId.Add(e.Message.From.Id);
+                    if (!Store[text].FromUserId.Contains(e.Message.From.Id))
+                        Store[text].FromUserId.Add(e.Message.From.Id);
 
-                    if (!store[text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
-                        store[text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
+                    if (!Store[text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
+                        Store[text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
 
-                    store[text].Messages.Add(e.Message);
+                    Store[text].Messages.Add(e.Message);
 
-                    if (store.Count == 0)
+                    if (Store.Count == 0)
                         return SpamType.UNDEFINED;
 
-                    return store[text].IsSpam();
+                    return Store[text].IsSpam();
                 }
             }
             catch
@@ -141,11 +159,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return SpamType.UNDEFINED;
         }
 
+        internal static StoredMessage GetStoredMessageByHash(string hash)
+        {
+            foreach (var storedMessage in Store.Values)
+            {
+                if (storedMessage.GetHash() == hash)
+                {
+                    return storedMessage;
+                }
+            }
+
+            return null;
+        }
+
         internal static List<Message> GetMessages(string text)
         {
             try
             {
-                return store[text].Messages;
+                return Store[text].Messages;
             }
             catch
             {
@@ -161,7 +192,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
                 return;
 
-            if (!store.ContainsKey(e.Message.ReplyToMessage.Text))
+            if (!Store.ContainsKey(e.Message.ReplyToMessage.Text))
             {
                 Language language1 = new(new Dictionary<string, string>
                 {
@@ -177,7 +208,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 return;
             }
 
-            var storedMessage = store[e.Message.ReplyToMessage.Text];
+            var storedMessage = Store[e.Message.ReplyToMessage.Text];
             var json = storedMessage.ToJson();
             Language language2 = new(new Dictionary<string, string>
             {

@@ -359,7 +359,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
             if (from_id_entity != null)
             {
-                var entity_name = Assoc.GetNameOfEntityFromItsID(from_id_entity.Value);
+                var entity_name = Assoc.GetNameOfEntityFromItsId(from_id_entity.Value);
                 text1 += "👥 " + entity_name + "\n";
             }
 

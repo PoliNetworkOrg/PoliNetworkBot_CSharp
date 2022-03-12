@@ -40,8 +40,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     await NotifyOwners(ex, sender, messageEventArgs);
                     return;
                 }
-                var bytesText = Encoding.Unicode.GetBytes(text);
-                var hashText = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesText)).Substring(0, 16);
+                var hashText = HashUtils.GetHashOf(text).Substring(0, 16);
 
                 var message = "#Permitted spam in group: ";
                 message += "\n";
@@ -372,13 +371,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             Logger.WriteLine(exception);
         }
 
-        public static async Task<Language> NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+        /// <summary>
+        /// Notifies Council and Permitted spam group of the addiction of a new Allowed Message 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="messageEventArgs"></param>
+        /// <param name="text"></param>
+        /// <param name="groups"></param>
+        /// <param name="messageType"></param>
+        /// <param name="assoc"></param>
+        /// <returns>Language with his language code</returns>
+        public static async Task<Tuple<Language, string>> NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
-            var bytesAssoc = Encoding.Unicode.GetBytes(assoc);
-            var bytesText = Encoding.Unicode.GetBytes(text);
-            var hashAssoc = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesAssoc)).Substring(0, 8);
-            var hashText = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytesText)).Substring(0, 16);
+            var hashAssoc = HashUtils.GetHashOf(assoc).Substring(0, 8);
+            var hashText = HashUtils.GetHashOf(text).Substring(0, 20);
 
             var message = "#Allowed spam in groups: " + groups;
             message += "\n\n";
@@ -406,20 +413,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 {"en", message}
             });
+            
             Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
                 ChatType.Group,
                 ParseMode.Html, group_exception, true);
-            return text2;
-        }
-
-        private static string ByteArrayToString(byte[] arrInput)
-        {
-            int i;
-            var sOutput = new StringBuilder(arrInput.Length);
-            for (i = 0; i < arrInput.Length - 1; i++)
-                sOutput.Append(arrInput[i].ToString("X2"));
-            return sOutput.ToString();
+            
+            var toReturn = Tuple.Create(text2, "en");
+            return toReturn;
         }
     }
 }

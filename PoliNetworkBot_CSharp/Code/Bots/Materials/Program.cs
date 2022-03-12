@@ -58,7 +58,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 await File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig));
             
             DictPaths ??= Deserialize<Dictionary<string, string>>(File.Open(Data.Constants.Paths.Data.PoliMaterialsDictPaths,
-                    FileMode.Open));
+                    FileMode.OpenOrCreate));
 
             TelegramBotClient telegramBotClientBot = null;
             TelegramBotAbstract telegramBotClient = null;

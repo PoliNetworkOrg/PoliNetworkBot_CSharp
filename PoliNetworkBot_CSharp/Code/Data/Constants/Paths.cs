@@ -10,6 +10,7 @@
             public const string PoliNetworkWebsiteData = "../data/polinetworkWebsiteData";
             public const string Db = "../data/db.db";
             public const string PoliMaterialsDictPaths = "../data/dictPath.bin";
+            public const string MessageStore = "../data/MessageStore.bin";
         }
         
         public static class Config
