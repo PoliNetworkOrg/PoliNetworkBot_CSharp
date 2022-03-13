@@ -60,11 +60,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         private SpamType IsSpam2()
         {
-            if (AllowedTime == null || LastSeenTime == null)
+            if (LastSeenTime == null)
                 return SpamType.UNDEFINED;
 
-            var diff = LastSeenTime.Value - AllowedTime;
-            var average = diff.Value.TotalSeconds / HowManyTimesWeSawIt;
+            var diff = LastSeenTime.Value - InsertedTime;
+            var average = diff.TotalSeconds / HowManyTimesWeSawIt;
 
             return average < AverageLimit ? SpamType.SPAM_LINK : SpamType.UNDEFINED;
         }
