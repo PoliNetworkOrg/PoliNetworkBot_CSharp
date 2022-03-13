@@ -1,14 +1,14 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     public static class MessagesStore
     {
         private static readonly Dictionary<string, StoredMessage> Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-            await File.ReadAllTextAsync(Data.Constants.Paths.Data.MessageStore));
+             File.ReadAllText(Data.Constants.Paths.Data.MessageStore));
 
         /// <summary>
         /// Adds a new message to the storage
@@ -45,7 +45,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             lock (Store)
             {
                 Store.Add(message,
-                    new StoredMessage ( message: message, allowedSpam: allowedSpam , allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
+                    new StoredMessage(message: message, allowedSpam: allowedSpam, allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
             }
 
             return true;

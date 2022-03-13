@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
@@ -20,6 +12,14 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -315,20 +315,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                         return;
                     }
-                
+
                 case "/allowmessageowner":
-                {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
-                        && e.Message.Chat.Type == ChatType.Private)
                     {
-                        await AllowMessageOwnerAsync(e, sender);
+                        if (Owners.CheckIfOwner(e.Message.From.Id)
+                            && e.Message.Chat.Type == ChatType.Private)
+                        {
+                            await AllowMessageOwnerAsync(e, sender);
+                            return;
+                        }
+
+                        await DefaultCommand(sender, e);
+
                         return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
 
                 case "/allowedmessages":
                     {
@@ -660,7 +660,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task AllowMessageOwnerAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
- 
             if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                 string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
             {
@@ -1649,6 +1648,4 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 e.Message.LeftChatMember?.Username);
         }
     }
-
-
 }

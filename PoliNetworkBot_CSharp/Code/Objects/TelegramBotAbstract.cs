@@ -1516,15 +1516,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
 
                 case BotTypeApi.USER_BOT:
-                {
-                }
+                    {
+                    }
                     break;
 
                 case BotTypeApi.DISGUISED_BOT:
                     break;
             }
         }
-        
+
         public async Task EditMessageTextAsync(long chatId, int messageMessageId, string bMergedBBy, ParseMode parseMode)
         {
             switch (_isbot)
@@ -1536,8 +1536,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     break;
 
                 case BotTypeApi.USER_BOT:
-                {
-                }
+                    {
+                    }
                     break;
 
                 case BotTypeApi.DISGUISED_BOT:
