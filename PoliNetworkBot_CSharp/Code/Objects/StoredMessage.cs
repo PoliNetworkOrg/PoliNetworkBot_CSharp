@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal DateTime? LastSeenTime;
         internal string message;
         public List<Message> Messages = new();
-        private string hash;
+        private readonly string hash;
 
         public StoredMessage(string message, int howManyTimesWeSawIt = 0, bool allowedSpam = false, DateTime? allowedTime = null, DateTime? lastSeenTime = null)
         {
