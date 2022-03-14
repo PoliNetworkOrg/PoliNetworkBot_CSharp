@@ -151,7 +151,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
                 {
                     var r = await _userbotClient.UpgradeGroupIntoSupergroup(chatID);
-                    if (r is TLUpdates { Chats: { Count: 2 } } r2)
+                    if (r is TLUpdates { Chats.Count: 2 } r2)
                     {
                         var c1 = r2.Chats[1];
                         if (c1 is TLChannel c2) return new TLChannelClass(c2);
@@ -1419,7 +1419,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     try
                     {
                         var r = await _userbotClient.Messages_CreateChat(name, users);
-                        if (r is TLUpdates { Chats: { Count: 1 } } r2)
+                        if (r is TLUpdates { Chats.Count: 1 } r2)
                         {
                             var c1 = r2.Chats[0];
                             if (c1 is TLChat c2)

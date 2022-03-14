@@ -159,16 +159,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return d2;
             }
 
-            if (reply.Contains("/"))
+            if (reply.Contains('/'))
             {
-                if (reply.Contains(":"))
+                if (reply.Contains(':'))
                 {
-                    if (reply.Contains(" "))
+                    if (reply.Contains(' '))
                     {
                         var s = reply.Split(' ');
-                        if (s[0].Contains("/"))
+                        if (s[0].Contains('/'))
                         {
-                            if (s[1].Contains(":"))
+                            if (s[1].Contains(':'))
                             {
                                 var s2 = s[0].Split('/');
                                 var s3 = s[1].Split(':');
@@ -214,9 +214,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     ;
                 }
             }
-            else if (reply.Contains("-"))
+            else if (reply.Contains('-'))
             {
-                if (reply.Contains(" "))
+                if (reply.Contains(' '))
                     try
                     {
                         var x1 = reply.Split(" ");
@@ -249,7 +249,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     );
                 }
             }
-            else if (reply.Contains(":")) // 10:34
+            else if (reply.Contains(':')) // 10:34
             {
                 var s2 = reply.Split(":");
                 var dt = new DateTime(2000, 1, 1, Convert.ToInt32(s2[0]), Convert.ToInt32(s2[1]), 0);
@@ -342,7 +342,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 reply = reply[3..].Trim();
             else if (reply.StartsWith("un ")) reply = reply[3..].Trim();
 
-            if (reply.Contains("-")) return GetDateTimeFromString(reply);
+            if (reply.Contains('-')) return GetDateTimeFromString(reply);
 
             var i = GetHowManySeconds(reply);
             return i == null ? null : new Tuple<DateTime?, Exception>(DateTime.Now.AddSeconds(i.Value), null);
