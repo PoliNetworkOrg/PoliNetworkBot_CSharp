@@ -1,8 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using System.Linq;
-using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -19,25 +17,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             switch (list.Count)
             {
                 case 1:
-                    {
-                        var r2 = new List<string>
+                {
+                    var r2 = new List<string>
                     {
                         list[0]
                     };
-                        r.Add(r2);
-                        return r;
-                    }
+                    r.Add(r2);
+                    return r;
+                }
 
                 case 2:
-                    {
-                        var r2 = new List<string>
+                {
+                    var r2 = new List<string>
                     {
                         list[0],
                         list[1]
                     };
-                        r.Add(r2);
-                        return r;
-                    }
+                    r.Add(r2);
+                    return r;
+                }
 /*
                 case 3:
                     {
@@ -109,7 +107,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     }
 */
             }
-            
+
             var lines = list.Count / 2;
             if (list.Count % 2 != 0) lines++;
 

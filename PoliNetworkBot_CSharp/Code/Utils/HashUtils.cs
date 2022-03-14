@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using System.Text;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -11,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var hash = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytes));
             return hash;
         }
-        
+
         private static string ByteArrayToString(byte[] arrInput)
         {
             int i;

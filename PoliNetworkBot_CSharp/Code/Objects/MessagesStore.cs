@@ -1,14 +1,15 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -21,11 +22,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [JsonObject(MemberSerialization.Fields)]
     public static class MessagesStore
     {
-        private static readonly Dictionary<string, StoredMessage> Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-             File.ReadAllText(Data.Constants.Paths.Data.MessageStore));
+        private static readonly Dictionary<string, StoredMessage> Store =
+            JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
+                File.ReadAllText(Paths.Data.MessageStore));
 
         /// <summary>
-        /// Adds a new message to the storage
+        ///     Adds a new message to the storage
         /// </summary>
         /// <param name="message"></param>
         /// <param name="allowedSpam">true if you want the bot to flag this message as Permitted Spam</param>
@@ -45,14 +47,15 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             lock (Store)
             {
                 Store.Add(message,
-                    new StoredMessage(message: message, allowedSpam: allowedSpam, allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
+                    new StoredMessage(message, allowedSpam: allowedSpam,
+                        allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
             }
 
             return true;
         }
 
         /// <summary>
-        /// Adds new allowed message
+        ///     Adds new allowed message
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -162,12 +165,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal static StoredMessage GetStoredMessageByHash(string hash)
         {
             foreach (var storedMessage in Store.Values)
-            {
                 if (storedMessage.GetHash() == hash)
-                {
                     return storedMessage;
-                }
-            }
 
             return null;
         }

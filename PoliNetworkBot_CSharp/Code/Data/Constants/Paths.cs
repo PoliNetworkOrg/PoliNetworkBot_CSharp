@@ -12,7 +12,7 @@
             public const string PoliMaterialsDictPaths = "../data/dictPath.bin";
             public const string MessageStore = "../data/MessageStore.bin";
         }
-        
+
         public static class Config
         {
             public const string PoliMaterialsConfig = "../config/materialbotconfig.json";

@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace Bot.Enums
 {
-    [System.Serializable]
-    public enum stati 
+    [Serializable]
+    public enum stati
     {
         start,
-        Scuola, 
+        Scuola,
         Corso,
         Cartella,
         newCartella,
-        AttesaFile,
+        AttesaFile
     }
 }

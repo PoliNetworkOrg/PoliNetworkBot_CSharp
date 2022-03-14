@@ -2422,7 +2422,7 @@ namespace InstagramApiSharp.Helpers
 
         public static Uri GetTokenUri()
         {
-            return new("https://www.instagram.com/.well-known/assetlinks.json");
+            return new Uri("https://www.instagram.com/.well-known/assetlinks.json");
         }
 
         public static Uri GetSignupConsentConfigUri(string guid, bool isMainAccount, long? loggedInUserId = null)

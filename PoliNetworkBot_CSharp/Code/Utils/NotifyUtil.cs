@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -23,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private const string default_lang = "en";
 
         /// <summary>
-        /// Used to notify of permitted spam in the permitted spam group.
+        ///     Used to notify of permitted spam in the permitted spam group.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="messageEventArgs"></param>
@@ -31,7 +29,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs)
         {
             var title = messageEventArgs.Message.Chat.Title;
-            if (messageEventArgs is {Message: { }})
+            if (messageEventArgs is { Message: { } })
             {
                 var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
                 if (text == null)
@@ -40,6 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     await NotifyOwners(ex, sender, messageEventArgs);
                     return;
                 }
+
                 var hashText = HashUtils.GetHashOf(text).Substring(0, 16);
 
                 var message = "#Permitted spam in group: ";
@@ -58,11 +57,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
                 message += "\n\n";
                 message += "Message tag: #" + hashText;
-                
+
                 const string langCode = "it";
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", message}
+                    { "it", message }
                 });
                 Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
@@ -127,7 +126,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 }
 
                 if (messageEventArgs != null)
-                {
                     try
                     {
                         message3 += "MessageArgs:\n";
@@ -137,7 +135,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         message3 += "\n\n";
                     }
-                }
 
                 if (!string.IsNullOrEmpty(extrainfo)) message3 += "\n\n" + extrainfo;
             }
@@ -148,8 +145,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var text = new Language(new Dictionary<string, string>
             {
-                {"it", "Eccezione! " + message3},
-                {"en", "Exception! " + message3}
+                { "it", "Eccezione! " + message3 },
+                { "en", "Exception! " + message3 }
             });
 
             var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
@@ -158,7 +155,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract,
             MessageEventArgs messageEventArgs)
         {
-            return NotifyOwners3(new Language(new Dictionary<string, string> {{"it", v}}), telegramBotAbstract,
+            return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract,
                 null, 0, null, messageEventArgs);
         }
 
@@ -208,7 +205,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             var dict = new Dictionary<string, string>
             {
-                {"en", message}
+                { "en", message }
             };
             var text = new Language(dict);
             await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
@@ -223,7 +220,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    {"en", v}
+                    { "en", v }
                 });
                 m = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -237,7 +234,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count}
+                    { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
                 });
                 _ = await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
             }
@@ -267,7 +264,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var text2 = new Language(new Dictionary<string, string>
                 {
-                    {"en", "---End---"}
+                    { "en", "---End---" }
                 });
 
                 long? replyto = null;
@@ -290,7 +287,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is not {Message: { }}) return;
+                    if (messageEventArgs is not { Message: { } }) return;
 
                     var message = "Restrict action: " + restrictAction;
                     message += "\n";
@@ -312,7 +309,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     const string langCode = "it";
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"it", message}
+                        { "it", message }
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
@@ -333,7 +330,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 {
-                    if (messageEventArgs is not {Message: { }}) return;
+                    if (messageEventArgs is not { Message: { } }) return;
                     var message = "Restrict action: " + "Simple Ban";
                     message += "\n";
                     message += "Restricted user: " + target + "[" +
@@ -349,7 +346,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     const string langCode = "it";
                     var text2 = new Language(new Dictionary<string, string>
                     {
-                        {"it", message}
+                        { "it", message }
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
@@ -372,7 +369,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         /// <summary>
-        /// Notifies Council and Permitted spam group of the addiction of a new Allowed Message 
+        ///     Notifies Council and Permitted spam group of the addiction of a new Allowed Message
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="messageEventArgs"></param>
@@ -381,7 +378,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         /// <param name="messageType"></param>
         /// <param name="assoc"></param>
         /// <returns>Language with his language code</returns>
-        public static async Task<Tuple<Language, string>> NotifyAllowedMessage(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
+        public static async Task<Tuple<Language, string>> NotifyAllowedMessage(TelegramBotAbstract sender,
+            MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
             var hashAssoc = HashUtils.GetHashOf(assoc).Substring(0, 8);
@@ -411,14 +409,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const string langCode = "en";
             var text2 = new Language(new Dictionary<string, string>
             {
-                {"en", message}
+                { "en", message }
             });
-            
+
             Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
                 ChatType.Group,
                 ParseMode.Html, group_exception, true);
-            
+
             var toReturn = Tuple.Create(text2, "en");
             return toReturn;
         }

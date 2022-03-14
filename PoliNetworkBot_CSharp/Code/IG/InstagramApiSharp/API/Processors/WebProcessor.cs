@@ -303,9 +303,7 @@ namespace InstagramApiSharp.API.Processors
                         default(InstaWebSettingsPageResponse));
 
                 if (instaUri.ToString().ToLower().Contains("a=1&cursor="))
-                {
                     return Result.Success(JsonConvert.DeserializeObject<InstaWebSettingsPageResponse>(html));
-                }
 
                 var json = html.GetJson();
                 if (json.IsEmpty())

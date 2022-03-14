@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstagramApiSharp.API.Processors;
 using InstagramApiSharp.API.Services;
 using InstagramApiSharp.API.Versions;
@@ -15,14 +23,6 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -51,6 +51,12 @@ namespace InstagramApiSharp.API
         }
 
         #endregion Constructor
+
+        #region SessionHandler
+
+        public ISessionHandler SessionHandler { get; set; }
+
+        #endregion
 
         #region Variables and properties
 
@@ -120,12 +126,6 @@ namespace InstagramApiSharp.API
         public InstaTwoFactorLoginInfo TwoFactorLoginInfo { get; set; }
 
         #endregion Variables and properties
-
-        #region SessionHandler
-
-        public ISessionHandler SessionHandler { get; set; }
-
-        #endregion
 
         #region Processors
 
@@ -700,7 +700,6 @@ namespace InstagramApiSharp.API
         /// <param name="firstName">First name (optional)</param>
         /// <param name="delay">Delay between requests. null = 2.5 seconds</param>
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
-
         private async Task<IResult<InstaAccountCreation>> CreateNewAccountAsync(string username, string password,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
             string email, string firstName = "", TimeSpan? delay = null)
@@ -986,7 +985,7 @@ namespace InstagramApiSharp.API
                 }
 
                 var needsRelogin = false;
-            ReloginLabel:
+                ReloginLabel:
                 //if (isNewLogin)
                 //    await GetToken();
                 var cookies =
@@ -1042,7 +1041,7 @@ namespace InstagramApiSharp.API
                     }
 
                     if (loginFailReason.ErrorType == "checkpoint_challenge_required"
-                       /* || !string.IsNullOrEmpty(loginFailReason.Message) && loginFailReason.Message == "challenge_required"*/
+                        /* || !string.IsNullOrEmpty(loginFailReason.Message) && loginFailReason.Message == "challenge_required"*/
                        )
                     {
                         ChallengeLoginInfo = loginFailReason.Challenge;

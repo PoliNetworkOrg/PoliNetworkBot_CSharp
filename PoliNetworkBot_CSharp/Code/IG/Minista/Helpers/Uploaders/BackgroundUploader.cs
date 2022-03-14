@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.Storage;
+using InstagramApiSharp.API;
 
 #endregion
 
@@ -17,7 +17,7 @@ namespace Minista.Helpers
             list.Add(new Tuple<string, string>(v1, v2));
         }
 
-        internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstagramApiSharp.API.InstaApi instaApi)
+        internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstaApi instaApi)
         {
             return new UploadOperation(instaUri, file, this, instaApi);
         }

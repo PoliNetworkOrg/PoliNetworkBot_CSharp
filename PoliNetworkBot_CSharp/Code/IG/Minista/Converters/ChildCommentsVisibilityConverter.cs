@@ -1,7 +1,3 @@
-﻿#region
-
-#endregion
-
-namespace Minista.Converters
+﻿namespace Minista.Converters
 {
 }

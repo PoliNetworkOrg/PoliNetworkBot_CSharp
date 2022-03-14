@@ -152,7 +152,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        private static async void DoBackupAndMessageStore2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
+        private static async void DoBackupAndMessageStore2Async(TelegramBotAbstract bot,
+            MessageEventArgs messageEventArgs)
         {
             if (bot == null)
                 return;

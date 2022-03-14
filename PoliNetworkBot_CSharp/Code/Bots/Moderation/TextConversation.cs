@@ -244,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
                 if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, botId, e.Message.Text?? e.Message.Caption);
+                    AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, botId, e.Message.Text ?? e.Message.Caption);
                     return;
                 }
 

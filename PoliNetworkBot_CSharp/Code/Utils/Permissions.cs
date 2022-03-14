@@ -1,15 +1,12 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 
 #endregion
@@ -19,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     internal class Permissions
     {
         /// <summary>
-        /// Check if user has enough permissions
+        ///     Check if user has enough permissions
         /// </summary>
         /// <returns> true if is allowed, false otherwise</returns>
         /// <exception cref="NotImplementedException"></exception>
@@ -39,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async Task<bool> HeadAdminCheck(User messageFrom)
         {
-            using WebClient client = new WebClient ();
+            using var client = new WebClient();
             const string url = "https://polinetwork.org/en/learnmore/about_us/";
             var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
             if (webReply == null || !webReply.IsValid()) return false;
@@ -63,7 +60,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     .Split(@"https://t.me/")[1]
                     .Split(@""">")[0])
                 .ToList());
-            return messageFrom.Username != null && authorizedUsernames.Any(username => string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
+            return messageFrom.Username != null && authorizedUsernames.Any(username =>
+                string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
         }
         /*
                <li>

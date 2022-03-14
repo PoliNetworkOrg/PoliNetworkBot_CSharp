@@ -16,25 +16,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     public class StoredMessage
     {
         private const double AverageLimit = 60;
+        private readonly string hash;
         internal bool AllowedSpam;
+        internal DateTime? AllowedTime;
 
         public List<long> FromUserId = new();
         public List<long> GroupsIdItHasBeenSentInto = new();
         internal int HowManyTimesWeSawIt;
-        internal DateTime? AllowedTime;
         internal DateTime InsertedTime;
         internal DateTime? LastSeenTime;
         internal string message;
         public List<Message> Messages = new();
-        private readonly string hash;
 
-        public StoredMessage(string message, int howManyTimesWeSawIt = 0, bool allowedSpam = false, DateTime? allowedTime = null, DateTime? lastSeenTime = null)
+        public StoredMessage(string message, int howManyTimesWeSawIt = 0, bool allowedSpam = false,
+            DateTime? allowedTime = null, DateTime? lastSeenTime = null)
         {
             HowManyTimesWeSawIt = howManyTimesWeSawIt;
             this.message = message;
             AllowedSpam = allowedSpam;
             InsertedTime = DateTime.Now;
-            AllowedTime = allowedSpam ? ( allowedTime ?? DateTime.Now ) : null;
+            AllowedTime = allowedSpam ? allowedTime ?? DateTime.Now : null;
             LastSeenTime = lastSeenTime;
             hash = HashUtils.GetHashOf(message);
         }

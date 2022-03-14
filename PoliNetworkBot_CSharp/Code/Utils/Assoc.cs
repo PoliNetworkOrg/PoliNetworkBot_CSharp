@@ -154,10 +154,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                    {
-                        await Assoc_ObjectToSendNotValid(sender, e);
-                        return false;
-                    }
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return false;
+                }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -442,9 +442,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                    {
-                        return false;
-                    }
+                {
+                    return false;
+                }
             }
 
             var q = "SELECT COUNT (*) " +
@@ -475,7 +475,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         /// <summary>
-        /// Looks up the associations list from the polimi website
+        ///     Looks up the associations list from the polimi website
         /// </summary>
         /// <returns>a list with the name of the associations</returns>
         public static async Task<List<string>> GetAssocList()
@@ -497,7 +497,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         /// <summary>
-        /// Schedules a message to be allowed if nobody objects in the next 4 hours
+        ///     Schedules a message to be allowed if nobody objects in the next 4 hours
         /// </summary>
         /// <param name="e"></param>
         /// <param name="sender"></param>
@@ -511,8 +511,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 // the command is being called without a reply, ask for the message:
                 var question = new Language(new Dictionary<string, string>
                 {
-                    {"en", "Type the message you want to allow"},
-                    {"it", "Scrivi il messaggio che vuoi approvare"}
+                    { "en", "Type the message you want to allow" },
+                    { "it", "Scrivi il messaggio che vuoi approvare" }
                 });
                 message = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
                     e.Message.From.Username, true);
@@ -526,8 +526,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var groupsQuestion = new Language(new Dictionary<string, string>
             {
-                {"en", "In which groups do you want to allow it?"},
-                {"it", "In quale gruppo le vuoi approvare?"}
+                { "en", "In which groups do you want to allow it?" },
+                { "it", "In quale gruppo le vuoi approvare?" }
             });
             var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
@@ -535,45 +535,46 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var typeQuestion = new Language(new Dictionary<string, string>
             {
-                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
-                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+                { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
+                { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
             });
             var messageType = await AskUser.AskAsync(e.Message.From.Id, typeQuestion, sender,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
 
 
-            var assocList = await Assoc.GetAssocList();
+            var assocList = await GetAssocList();
             var assocQuestion = new Language(new Dictionary<string, string>
             {
-                {"en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)"},
-                {"it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)"}
+                { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
+                { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
             });
-            
+
             var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
                 new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
             var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
-                options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true, sender: sender);
+                options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
+                sender: sender);
 
-            var (language, languageCode) = await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
-            
-            await SendMessage.SendMessageInPrivate(sender, 
+            var (language, languageCode) =
+                await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+
+            await SendMessage.SendMessageInPrivate(sender,
                 e.Message.From.Id, languageCode, null, language, ParseMode.Html, null);
 
             HandleVetoAnd4Hours(message, e, sender);
         }
 
-        private static void HandleVetoAnd4Hours(string message, MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
+        private static void HandleVetoAnd4Hours(string message, MessageEventArgs messageEventArgs,
+            TelegramBotAbstract sender)
         {
-            MessagesStore.AddMessage(message, true, new TimeSpan(hours: 4, 0, 0));
+            MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
             //notifica il consiglio
             throw new NotImplementedException();
-            
         }
 
         public static void VetoCallbackButton(string messageHash)
         {
-            
         }
     }
 }

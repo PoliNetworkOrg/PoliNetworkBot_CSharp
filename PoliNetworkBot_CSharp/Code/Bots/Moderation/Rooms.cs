@@ -186,8 +186,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             var result = new List<string>();
 
-            int shiftStart = GetShiftSlotFromTime(start);
-            int shiftEnd = GetShiftSlotFromTime(stop);
+            var shiftStart = GetShiftSlotFromTime(start);
+            var shiftEnd = GetShiftSlotFromTime(stop);
 
             foreach (var child in table.ChildNodes)
             {
@@ -202,18 +202,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Retrieves the number of quarters elapsed from 8:00, for easier counting as this is how
-        /// the columns on the Polimi page are spread
+        ///     Retrieves the number of quarters elapsed from 8:00, for easier counting as this is how
+        ///     the columns on the Polimi page are spread
         /// </summary>
         private static int GetShiftSlotFromTime(DateTime time)
         {
-            int shiftSlot = (time.Hour - 8) * 4;
+            var shiftSlot = (time.Hour - 8) * 4;
             shiftSlot += time.Minute / 15;
             return shiftSlot;
         }
 
         /// <summary>
-        /// Recunstruct a readable time string from the number of slots in the Polimi webpage table
+        ///     Recunstruct a readable time string from the number of slots in the Polimi webpage table
         /// </summary>
         private static string TimeStringFromSlot(int slot)
         {
@@ -223,7 +223,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Checks if a room is empty given it's html node, and the start and end of the time period
+        ///     Checks if a room is empty given it's html node, and the start and end of the time period
         /// </summary>
         /// <returns>a string with the room name if the room is empty, null otherwise</returns>
         private static string CheckIfFree(HtmlNode node, int shiftStart, int shiftEnd)
@@ -232,18 +232,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (node.ChildNodes == null) return null;
 
             if (!node.ChildNodes.Any(x =>
-                x.HasClass("dove")
-                && x.ChildNodes != null
-                && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
-            ))
-            { return null; }
+                    x.HasClass("dove")
+                    && x.ChildNodes != null
+                    && x.ChildNodes.Any(x2 => x2.Name == "a" && !x2.InnerText.ToUpper().Contains("PROVA"))
+                ))
+                return null;
 
             var roomFree = IsRoomFree(node, shiftStart, shiftEnd);
             return roomFree ? GetNomeAula(node) : null;
         }
 
         /// <summary>
-        /// retrieves the room name from the node
+        ///     retrieves the room name from the node
         /// </summary>
         private static string GetNomeAula(HtmlNode node)
         {
@@ -253,7 +253,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// calculates if a room is free in the given time window
+        ///     calculates if a room is free in the given time window
         /// </summary>
         private static bool IsRoomFree(HtmlNode node, int shiftStart, int shiftEnd)
         {
@@ -274,7 +274,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 // the time start in shifts for each column, is the previous total
                 var vStart = colsizetotal;
                 colsizetotal += colsize;
-                var vEnd = colsizetotal;    // the end is the new total (prev + colsize)
+                var vEnd = colsizetotal; // the end is the new total (prev + colsize)
 
                 // this is the trickery, if any column ends before the shift start or starts before
                 // the shift end, then we skip
@@ -420,14 +420,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// This method represents the Occupancies of The Day button within the /rooms command,
-        /// searches on the website a specific room and retrieves when said room is free to use or
-        /// is occupied
+        ///     This method represents the Occupancies of The Day button within the /rooms command,
+        ///     searches on the website a specific room and retrieves when said room is free to use or
+        ///     is occupied
         /// </summary>
         private static async Task OccupanciesOfTheDayAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
             // Ask the user fot the date (which we'll need later)
-            var (dateTimeSchedule, exception, item3) = await Utils.AskUser.AskDateAsync(e.Message.From.Id,
+            var (dateTimeSchedule, exception, item3) = await AskUser.AskDateAsync(e.Message.From.Id,
                 "Scegli un giorno", "it", sender,
                 e.Message.From.Username);
 
@@ -446,7 +446,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     text2,
                     ParseMode.Html, null);
                 return;
-            };
+            }
+
+            ;
 
             // retrieves the table for the day
             var t3 = await GetDailySituationOnDate(sender, e, d2.Value);
@@ -537,16 +539,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             textEng += "\nBelow you'll find the complete table with all occupations of this room for this day";
 
             var message = new Language(new Dictionary<string, string>
-                {
-                    { "it", text },
-                    { "en", textEng }
-                });
+            {
+                { "it", text },
+                { "en", textEng }
+            });
 
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                            e.Message.From.LanguageCode,
-                            e.Message.From.Username,
-                            message,
-                            ParseMode.Html, null);
+                e.Message.From.LanguageCode,
+                e.Message.From.Username,
+                message,
+                ParseMode.Html, null);
 
             // send the table as an html document for further info
             var htmlresult = t4.Aggregate(
@@ -554,7 +556,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 (current, t5) => current + t5.OuterHtml);
             htmlresult += "</table></body></html>";
 
-            var peer = new Objects.PeerAbstract(e.Message.From.Id, ChatType.Private);
+            var peer = new PeerAbstract(e.Message.From.Id, ChatType.Private);
             message = new Language(new Dictionary<string, string>
             {
                 { "en", roomName }
@@ -569,22 +571,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Returns the time string of the first transition (from free to occupied or vice versa) of
-        /// the occupancy state for a given room, if no transition can be found it returns null
+        ///     Returns the time string of the first transition (from free to occupied or vice versa) of
+        ///     the occupancy state for a given room, if no transition can be found it returns null
         /// </summary>
         /// <param name="node">The HTML row for the room</param>
         /// <param name="startSlot">the start time as a time slot</param>
         /// <returns>a string with the time if a transition is found, null otherwise</returns>
         private static string GetFirstSlotTransition(HtmlNode node, int startSlot)
         {
-            int colsizetotal = 1;
-            bool isCurrentlyFree = false;
-            bool afterStartSlot = false;
+            var colsizetotal = 1;
+            var isCurrentlyFree = false;
+            var afterStartSlot = false;
 
             // start from 8:15, the third child
             for (var i = 3; i < node.ChildNodes.Count; i++)
             {
-                int colsize = 1;
+                var colsize = 1;
                 if (node.ChildNodes[i].Attributes.Contains("colspan"))
                     colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
 
@@ -596,7 +598,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     if (afterStartSlot)
                         return TimeStringFromSlot(colsizetotal);
                 }
-                colsizetotal += colsize;    // keep track of the columns
+
+                colsizetotal += colsize; // keep track of the columns
 
                 // quit searching after 19, dont want to consider a transition this late
                 if (colsizetotal >= 44) break;
@@ -608,8 +611,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Get a list of tuples with the start and end time of each free slot given the HTML row of
-        /// a room
+        ///     Get a list of tuples with the start and end time of each free slot given the HTML row of
+        ///     a room
         /// </summary>
         /// <param name="node">The HTML row for the room</param>
         /// <returns>a list of tuples with starting and ending time strings for each slot</returns>
@@ -617,14 +620,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var list = new List<(string, string)>();
 
-            int colsizetotal = 1;
-            bool isCurrentlyFree = false;
-            int currentSlotStart = 1;
+            var colsizetotal = 1;
+            var isCurrentlyFree = false;
+            var currentSlotStart = 1;
 
             // start from 8:15, the third child
             for (var i = 3; i < node.ChildNodes.Count; i++)
             {
-                int colsize = 1;
+                var colsize = 1;
                 if (node.ChildNodes[i].Attributes.Contains("colspan"))
                     colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
 
@@ -644,7 +647,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     list.Add((TimeStringFromSlot(currentSlotStart), TimeStringFromSlot(colsizetotal)));
                 }
 
-                colsizetotal += colsize;    // keep track of the columns
+                colsizetotal += colsize; // keep track of the columns
             }
 
             if (isCurrentlyFree && currentSlotStart < 44)
@@ -655,8 +658,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Asks the user for date and site, returns the list of html nodes from the 
-        /// "OccupazioniGiornoEsatto" page
+        ///     Asks the user for date and site, returns the list of html nodes from the
+        ///     "OccupazioniGiornoEsatto" page
         /// </summary>
         private static async Task<List<HtmlNode>> GetDailySituationAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
@@ -673,10 +676,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         }
 
         /// <summary>
-        /// Given a date, asks the user for the site and returns the html table from the 
-        /// "OccupazioniGiornoEsatto" page
+        ///     Given a date, asks the user for the site and returns the html table from the
+        ///     "OccupazioniGiornoEsatto" page
         /// </summary>
-        private static async Task<List<HtmlNode>> GetDailySituationOnDate(TelegramBotAbstract sender, MessageEventArgs e, DateTime date)
+        private static async Task<List<HtmlNode>> GetDailySituationOnDate(TelegramBotAbstract sender,
+            MessageEventArgs e, DateTime date)
         {
             var day = date.Day;
             var month = date.Month;

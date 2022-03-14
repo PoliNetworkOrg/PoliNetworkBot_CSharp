@@ -1,23 +1,21 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿#region
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Enums
 {
-    class ChannelsForApproval
+    internal class ChannelsForApproval
     {
-        static long matNanoChannel = -1001227167038;
-        static long aesChannel = -1001413802045;
-        static long infoChannel = -1001422638605;
-        static long mobilityMDChannel = -1001401676534;
-        static long electronicsChannel = -1001165704108;
-        static long automationChannel = -1001541302296;
-        static long chimicaChannel = -1001510001243;
-        static long debug = -1001403617749;
+        private static readonly long matNanoChannel = -1001227167038;
+        private static readonly long aesChannel = -1001413802045;
+        private static readonly long infoChannel = -1001422638605;
+        private static readonly long mobilityMDChannel = -1001401676534;
+        private static readonly long electronicsChannel = -1001165704108;
+        private static readonly long automationChannel = -1001541302296;
+        private static readonly long chimicaChannel = -1001510001243;
+        private static long debug = -1001403617749;
 
         internal static long GetChannel(string v)
         {

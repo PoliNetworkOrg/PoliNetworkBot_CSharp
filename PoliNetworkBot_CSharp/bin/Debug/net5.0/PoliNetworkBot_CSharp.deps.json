@@ -9,13 +9,12 @@
       "PoliNetworkBot_CSharp/1.0.0": {
         "dependencies": {
           "HtmlAgilityPack": "1.11.42",
-          "Microsoft.Data.Sqlite.Core": "6.0.2",
+          "Microsoft.Data.Sqlite.Core": "6.0.3",
           "Microsoft.PowerShell.SDK": "7.1.5",
           "Portable.BouncyCastle": "1.8.6.7",
           "System.Data.SQLite.Core": "1.0.115.5",
           "System.Management.Automation": "7.1.5",
           "Telegram.Bot": "17.0.0",
-          "Uno.UI": "4.0.13",
           "JsonPolimi_Core_nf": "1.0.0.0",
           "TeleSharp.TL": "1.0.0.0",
           "TLSharp.Core": "1.0.0.0"
@@ -183,14 +182,14 @@
           "System.Threading": "4.3.0"
         }
       },
-      "Microsoft.Data.Sqlite.Core/6.0.2": {
+      "Microsoft.Data.Sqlite.Core/6.0.3": {
         "dependencies": {
           "SQLitePCLRaw.core": "2.0.6"
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Data.Sqlite.dll": {
-            "assemblyVersion": "6.0.2.0",
-            "fileVersion": "6.0.222.6404"
+            "assemblyVersion": "6.0.3.0",
+            "fileVersion": "6.0.322.12306"
           }
         }
       },
@@ -1514,7 +1513,6 @@
           }
         }
       },
-      "System.Numerics.Vectors/4.5.0": {},
       "System.ObjectModel/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
@@ -1637,17 +1635,6 @@
           "System.Reflection.Primitives": "4.3.0",
           "System.Runtime": "4.3.0",
           "System.Runtime.Handles": "4.3.0"
-        }
-      },
-      "System.Runtime.InteropServices.WindowsRuntime/4.3.0": {
-        "dependencies": {
-          "System.Runtime": "4.3.0"
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Runtime.InteropServices.WindowsRuntime.dll": {
-            "assemblyVersion": "4.0.2.0",
-            "fileVersion": "4.6.24705.1"
-          }
         }
       },
       "System.Security.AccessControl/5.0.0": {
@@ -1896,76 +1883,6 @@
           }
         }
       },
-      "Uno.Diagnostics.Eventing/2.0.1": {
-        "runtime": {
-          "lib/net5.0/Uno.Diagnostics.Eventing.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          }
-        }
-      },
-      "Uno.Foundation.Logging/4.0.13": {
-        "runtime": {
-          "lib/netstandard2.0/Uno.Foundation.Logging.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          }
-        }
-      },
-      "Uno.SourceGenerationTasks/4.0.0": {},
-      "Uno.UI/4.0.13": {
-        "dependencies": {
-          "System.Collections.Immutable": "1.5.0",
-          "System.Memory": "4.5.4",
-          "System.Numerics.Vectors": "4.5.0",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.3.0",
-          "Uno.Diagnostics.Eventing": "2.0.1",
-          "Uno.Foundation.Logging": "4.0.13",
-          "Uno.SourceGenerationTasks": "4.0.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Uno.Foundation.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.Composition.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.Dispatching.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.FluentTheme.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.FluentTheme.v1.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.FluentTheme.v2.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.Toolkit.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.UI.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.Xaml.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          },
-          "lib/netstandard2.0/Uno.dll": {
-            "assemblyVersion": "255.255.255.255",
-            "fileVersion": "255.255.255.255"
-          }
-        }
-      },
       "JsonPolimi_Core_nf/1.0.0.0": {
         "runtime": {
           "JsonPolimi_Core_nf.dll": {
@@ -2047,12 +1964,12 @@
       "path": "microsoft.csharp/4.3.0",
       "hashPath": "microsoft.csharp.4.3.0.nupkg.sha512"
     },
-    "Microsoft.Data.Sqlite.Core/6.0.2": {
+    "Microsoft.Data.Sqlite.Core/6.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-4q17iqpGkYdj5lyeCKpln6oT5/qBbZ3J0Tyzi8tIk1vkM8XtuG3Zx+YT5eYuXa/TrieM731nxl/lrDvtdSK6Ww==",
-      "path": "microsoft.data.sqlite.core/6.0.2",
-      "hashPath": "microsoft.data.sqlite.core.6.0.2.nupkg.sha512"
+      "sha512": "sha512-3EIhLzG+WeJ2AtmGph8aSA5pH9weDOZ9Fox6oaDSiPvj6TIehzYkdW0ySMAfckTbv8V1vCMeEmtqhwEmyK9fYA==",
+      "path": "microsoft.data.sqlite.core/6.0.3",
+      "hashPath": "microsoft.data.sqlite.core.6.0.3.nupkg.sha512"
     },
     "Microsoft.Management.Infrastructure/2.0.0": {
       "type": "package",
@@ -2544,13 +2461,6 @@
       "path": "system.net.http.winhttphandler/5.0.0",
       "hashPath": "system.net.http.winhttphandler.5.0.0.nupkg.sha512"
     },
-    "System.Numerics.Vectors/4.5.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
-      "path": "system.numerics.vectors/4.5.0",
-      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
-    },
     "System.ObjectModel/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -2683,13 +2593,6 @@
       "sha512": "sha512-uv1ynXqiMK8mp1GM3jDqPCFN66eJ5w5XNomaK2XD+TuCroNTLFGeZ+WCmBMcBDyTFKou3P6cR6J/QsaqDp7fGQ==",
       "path": "system.runtime.interopservices/4.3.0",
       "hashPath": "system.runtime.interopservices.4.3.0.nupkg.sha512"
-    },
-    "System.Runtime.InteropServices.WindowsRuntime/4.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-J4GUi3xZQLUBasNwZnjrffN8i5wpHrBtZoLG+OhRyGo/+YunMRWWtwoMDlUAIdmX0uRfpHIBDSV6zyr3yf00TA==",
-      "path": "system.runtime.interopservices.windowsruntime/4.3.0",
-      "hashPath": "system.runtime.interopservices.windowsruntime.4.3.0.nupkg.sha512"
     },
     "System.Security.AccessControl/5.0.0": {
       "type": "package",
@@ -2851,34 +2754,6 @@
       "sha512": "sha512-YvQ9lqEt1bTafu6BJPTbYWDHxyHP+TK8PtjTjNV/6VQw3XxVcZnGwYkJ1CdYW3lJHmHjYxzhBlhhOGNtqJ3U7g==",
       "path": "telegram.bot/17.0.0",
       "hashPath": "telegram.bot.17.0.0.nupkg.sha512"
-    },
-    "Uno.Diagnostics.Eventing/2.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Hd03em+Bga+w+ljCtiyc+713PQDtCB0Qkw3sBggvXXdDB2URwEc3N4TnM3vFeXpmHHZGM7dN7D8qxfiGoEEHzw==",
-      "path": "uno.diagnostics.eventing/2.0.1",
-      "hashPath": "uno.diagnostics.eventing.2.0.1.nupkg.sha512"
-    },
-    "Uno.Foundation.Logging/4.0.13": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-+DEGU7sIEZRm1V4Pb6CF7Yrk3e+O3Ei6OB/JWtiiBOG36cXhd6YfZEGoz6EnrOQjsG6MNbpP/9thZGjTsBKrlg==",
-      "path": "uno.foundation.logging/4.0.13",
-      "hashPath": "uno.foundation.logging.4.0.13.nupkg.sha512"
-    },
-    "Uno.SourceGenerationTasks/4.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-aO9MpbGMFeUDy1LQgBKe8IPLnW7BSMUSGw87OaMGcydGicd4WLa6PY1LyHgnDhSCGr4D15fLBdG5cWDOS4bBag==",
-      "path": "uno.sourcegenerationtasks/4.0.0",
-      "hashPath": "uno.sourcegenerationtasks.4.0.0.nupkg.sha512"
-    },
-    "Uno.UI/4.0.13": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-aGECbrxRtkp3yS98Zly+EpIJ6nTfPf+Co54M+aGQouV1K2aiF4cdGK9ELxMMI8/rfo5BVW0ZWkOBqkEXQOpWJw==",
-      "path": "uno.ui/4.0.13",
-      "hashPath": "uno.ui.4.0.13.nupkg.sha512"
     },
     "JsonPolimi_Core_nf/1.0.0.0": {
       "type": "reference",

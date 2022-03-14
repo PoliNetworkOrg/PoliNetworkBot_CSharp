@@ -1,5 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
@@ -12,13 +19,6 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 
 #endregion
 
@@ -217,7 +217,7 @@ namespace InstagramApiSharp
                     "continue_watching" => InstaTVChannelType.ContinueWatching,
                     "for_you" => InstaTVChannelType.ForYou,
                     "popular" => InstaTVChannelType.Popular,
-                    _ => InstaTVChannelType.User,
+                    _ => InstaTVChannelType.User
                 };
         }
 
@@ -229,7 +229,7 @@ namespace InstagramApiSharp
                 InstaTVChannelType.ContinueWatching => "continue_watching",
                 InstaTVChannelType.Popular => "popular",
                 InstaTVChannelType.User => "user",
-                _ => "for_you",
+                _ => "for_you"
             };
         }
 
@@ -439,13 +439,10 @@ namespace InstagramApiSharp
 
         public static void NextBytes(byte[] randKey, int p1, int randKeyLength)
         {
-            int size = randKeyLength - p1;
-            byte[] r = new byte[size];
+            var size = randKeyLength - p1;
+            var r = new byte[size];
             random.NextBytes(r);
-            for (int i = p1; i < randKeyLength; i++)
-            {
-                randKey[i] = r[i - p1];
-            }
+            for (var i = p1; i < randKeyLength; i++) randKey[i] = r[i - p1];
         }
     }
 }

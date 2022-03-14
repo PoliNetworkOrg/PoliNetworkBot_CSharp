@@ -390,10 +390,7 @@ namespace InstagramApiSharp.Helpers
 
             //------ Decrypt the encrypted 3des-encrypted RSA private key ------
             var rsakey = DecryptKey(binkey, deskey, salt); //OpenSSL uses salt value in PEM header also as 3DES IV
-            if (rsakey != null)
-            {
-                return rsakey; //we have a decrypted RSA private key
-            }
+            if (rsakey != null) return rsakey; //we have a decrypted RSA private key
 
             Console.WriteLine("Failed to decrypt RSA private key; probably wrong password.");
             return null;

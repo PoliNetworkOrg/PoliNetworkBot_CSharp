@@ -12,7 +12,7 @@ namespace InstagramApiSharp.API.Versions
     {
         public static InstaApiVersionList GetApiVersionList()
         {
-            return new();
+            return new InstaApiVersionList();
         }
 
         public Dictionary<InstaApiVersionType, InstaApiVersion> ApiVersions()

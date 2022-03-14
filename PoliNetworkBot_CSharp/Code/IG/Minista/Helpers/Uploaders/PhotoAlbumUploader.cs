@@ -1,9 +1,5 @@
 ﻿#region
 
-using InstagramApiSharp.API;
-using InstagramApiSharp.Classes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +8,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Windows.Storage;
+using InstagramApiSharp.API;
+using InstagramApiSharp.Classes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 //using static Helper;
 
@@ -302,9 +302,9 @@ namespace Minista.Helpers
     {
         public static Random Rnd = new();
         private readonly PhotoAlbumUploader Album;
+        private readonly InstaApi InstaApi;
 
         private StorageFile File;
-        private readonly InstaApi InstaApi;
 
         public SinglePhotoUploader(PhotoAlbumUploader album, InstaApi instaApi)
         {
@@ -388,7 +388,7 @@ namespace Minista.Helpers
             BGU.SetRequestHeader("Offset", "0");
             BGU.SetRequestHeader("X-Instagram-Rupload-Params", photoUploadParams);
             BGU.SetRequestHeader("X-Entity-Name", photoEntityName);
-            BGU.SetRequestHeader("X-Entity-Length", openedFile.AsStream().Length.ToString());
+            BGU.SetRequestHeader("X-Entity-Length", openedFile.Length.ToString());
             BGU.SetRequestHeader("X_FB_PHOTO_WATERFALL_ID", Guid.NewGuid().ToString());
             BGU.SetRequestHeader("Content-Transfer-Encoding", "binary");
             BGU.SetRequestHeader("Content-Type", "application/octet-stream");

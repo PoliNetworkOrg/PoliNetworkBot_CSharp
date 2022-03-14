@@ -3,6 +3,7 @@
 using System;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -36,7 +37,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
             {
                 "a" => MainAnon.CallbackMethod,
                 "m" => Main.CallbackMethod,
-                "mat" => Bots.Materials.Program.BotOnCallbackQueryReceived,
+                "mat" => Program.BotOnCallbackQueryReceived,
                 _ => null
             };
         }

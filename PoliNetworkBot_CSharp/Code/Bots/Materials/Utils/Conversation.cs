@@ -1,29 +1,32 @@
-﻿using Bot.Enums;
+﻿#region
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Bot.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
 {
-    [System.Serializable]
+    [Serializable]
     public class Conversation
     {
+        private string corsienum;
+        private string percorso;
+        private string scuolaenum;
 
-        stati? stato;
-        string corsienum;
-        string scuolaenum;
-        string percorso;
+        private stati? stato;
 
         public Conversation()
         {
             stato = stati.start;
         }
-        
+
         public void setStato(stati? var)
         {
             stato = var;
         }
+
         public stati? getStato()
         {
             return stato;
@@ -41,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
 
         internal string getScuola()
         {
-            return this.scuolaenum;
+            return scuolaenum;
         }
 
         internal string getcorso()
@@ -59,13 +62,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
 
             percorso += "/" + text;
         }
+
         internal void resetPercorso()
         {
             percorso = null;
         }
+
         internal string getPercorso()
         {
-            return this.percorso;
+            return percorso;
         }
 
         internal string getGit()

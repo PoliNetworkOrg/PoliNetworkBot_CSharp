@@ -104,7 +104,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
             }
         }
-        
+
         public static void CallbackMethod(object? sender, CallbackQueryEventArgs e)
         {
             var t = new Thread(() => _ = CallbackMethod2(sender, e));
@@ -124,7 +124,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                     return false;
             }
             catch (Exception exc)
-            { //todo
+            {
+                //todo
             }
 
             return false;
@@ -173,7 +174,5 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 ? "[EMPTY]"
                 : item2.Aggregate("", (current, item3) => current + item3?.User?.Username + " " + item3?.Status + "\n");
         }
-
-        
     }
 }

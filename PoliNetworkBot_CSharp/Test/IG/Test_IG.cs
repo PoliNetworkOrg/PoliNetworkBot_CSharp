@@ -1,5 +1,8 @@
 ﻿#region
 
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
@@ -7,10 +10,6 @@ using InstagramApiSharp.Logger;
 using Minista.Helpers;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Windows.Storage;
 
 #endregion
 
@@ -117,8 +116,8 @@ namespace PoliNetworkBot_CSharp.Test.IG
         private static async Task DoThingsAsync(InstaApi x)
         {
             var album = new PhotoAlbumUploader();
-            StorageFile file = await StorageFile.GetFileFromPathAsync("test.jpg");
-            StorageFile[] files = new StorageFile[] { file };
+            var file = await StorageFile.GetFileFromPathAsync("test.jpg");
+            StorageFile[] files = { file };
             string caption = null;
             await album.SetFiles(files, caption, x);
             ;

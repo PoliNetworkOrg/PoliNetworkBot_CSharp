@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
 

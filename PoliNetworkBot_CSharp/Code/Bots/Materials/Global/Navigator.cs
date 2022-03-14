@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using Bot;
+﻿#region
+
+using System.Collections.Generic;
 using Bot.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 
+#endregion
+
 namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
 {
-    static public class Navigator
+    public static class Navigator
     {
-        public static Dictionary<string, string[]> ScuoleCorso = new Dictionary<string, string[]>()
+        public static Dictionary<string, string[]> ScuoleCorso = new()
         {
             ["3I"] = new[]
             {
@@ -24,21 +27,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
             ["ICAT"] = null,
             ["Design"] = null
         };
-        
+
         public static bool CorsoHandler(Conversation conversation, string messageText)
         {
             foreach (var scuola in ScuoleCorso.Values)
             {
-                if(scuola == null) continue;
+                if (scuola == null) continue;
                 foreach (var corso in scuola)
-                {
                     if (messageText == corso)
                     {
                         conversation.setCorso(corso);
                         conversation.setStato(stati.Cartella);
                         return true;
                     }
-                }
             }
 
             return false;
