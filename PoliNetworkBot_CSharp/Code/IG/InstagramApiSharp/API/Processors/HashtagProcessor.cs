@@ -384,7 +384,7 @@ namespace InstagramApiSharp.API.Processors
         {
             UserAuthValidator.Validate(_userAuthValidate);
             var RequestHeaderFieldsTooLarge = (HttpStatusCode)431;
-            var count = 50;
+            const int count = 50;
             var tags = new InstaHashtagSearch();
 
             try

@@ -71,21 +71,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             foreach (var message in Store.Keys)
             {
                 Store.TryGetValue(message, out var storedMessage);
-                if (storedMessage == null || storedMessage.IsOutdated())
-                    lock (Store)
-                    {
-                        Store.Remove(message);
-                    }
+                if (storedMessage != null && !storedMessage.IsOutdated()) continue;
+                lock (Store)
+                {
+                    Store.Remove(message);
+                }
             }
         }
 
         public static void RemoveMessage(string text)
         {
-            if (Store.ContainsKey(text))
-                lock (Store)
-                {
-                    Store.Remove(text);
-                }
+            if (!Store.ContainsKey(text)) return;
+            lock (Store)
+            {
+                Store.Remove(text);
+            }
         }
 
         public static List<StoredMessage> GetAllMessages(Func<StoredMessage, bool> filter = null)

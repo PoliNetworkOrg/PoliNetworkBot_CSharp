@@ -23,10 +23,10 @@ namespace InstagramApiSharp.Converters
                 MaxId = SourceObject.MaxId
             };
 
-            if (SourceObject.Items?.Count > 0)
-                foreach (var countdown in SourceObject.Items)
-                    storyCountdownList.Items.Add(ConvertersFabric.Instance
-                        .GetStoryCountdownStickerItemConverter(countdown).Convert());
+            if (!(SourceObject.Items?.Count > 0)) return storyCountdownList;
+            foreach (var countdown in SourceObject.Items)
+                storyCountdownList.Items.Add(ConvertersFabric.Instance
+                    .GetStoryCountdownStickerItemConverter(countdown).Convert());
 
             return storyCountdownList;
         }

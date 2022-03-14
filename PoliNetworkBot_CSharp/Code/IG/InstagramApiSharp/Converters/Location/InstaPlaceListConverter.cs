@@ -23,19 +23,17 @@ namespace InstagramApiSharp.Converters
                 RankToken = SourceObject.RankToken,
                 Status = SourceObject.Status
             };
-            if (SourceObject.Items != null && SourceObject.Items.Any())
-            {
-                foreach (var place in SourceObject.Items)
-                    try
-                    {
-                        list.Items.Add(ConvertersFabric.Instance.GetPlaceConverter(place).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Items == null || !SourceObject.Items.Any()) return list;
+            foreach (var place in SourceObject.Items)
+                try
+                {
+                    list.Items.Add(ConvertersFabric.Instance.GetPlaceConverter(place).Convert());
+                }
+                catch
+                {
+                }
 
-                list.ExcludeList = SourceObject.ExcludeList;
-            }
+            list.ExcludeList = SourceObject.ExcludeList;
 
             return list;
         }

@@ -230,7 +230,8 @@ namespace InstagramApiSharp.Converters.Business
                 {
                 }
 
-            if (businessManager.AccountInsightsUnit != null)
+            if (businessManager.AccountInsightsUnit == null) return statisfics;
+            {
                 try
                 {
                     statisfics.BusinessManager.AccountInsightsUnit = new InstaStatisticsAccountInsightsUnit
@@ -309,6 +310,7 @@ namespace InstagramApiSharp.Converters.Business
                 catch
                 {
                 }
+            }
 
             return statisfics;
         }

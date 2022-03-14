@@ -28,12 +28,10 @@ namespace InstagramApiSharp.Converters
             if (double.TryParse(SourceObject.MulualFollowersCount, out var mutualFollowers))
                 user.MutualFollowers = System.Convert.ToInt16(mutualFollowers);
 
-            if (SourceObject.FriendshipStatus != null)
-            {
-                var freindShipStatusConverter =
-                    ConvertersFabric.Instance.GetSingleFriendshipShortStatusConverter(SourceObject.FriendshipStatus);
-                user.FriendshipStatus = freindShipStatusConverter.Convert();
-            }
+            if (SourceObject.FriendshipStatus == null) return user;
+            var freindShipStatusConverter =
+                ConvertersFabric.Instance.GetSingleFriendshipShortStatusConverter(SourceObject.FriendshipStatus);
+            user.FriendshipStatus = freindShipStatusConverter.Convert();
 
             return user;
         }

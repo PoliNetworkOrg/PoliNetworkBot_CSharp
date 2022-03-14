@@ -39,18 +39,15 @@ namespace InstagramApiSharp.API.Builder
         /// <exception cref="ArgumentNullException">User auth data must be specified</exception>
         public InstaApi Build()
         {
-            if (_user == null)
-                _user = UserSessionData.Empty;
+            _user ??= UserSessionData.Empty;
 
-            if (_httpHandler == null) _httpHandler = new HttpClientHandler();
+            _httpHandler ??= new HttpClientHandler();
 
-            if (_httpClient == null)
-                _httpClient = new HttpClient(_httpHandler) { BaseAddress = new Uri(InstaApiConstants.INSTAGRAM_URL) };
+            _httpClient ??= new HttpClient(_httpHandler) { BaseAddress = new Uri(InstaApiConstants.INSTAGRAM_URL) };
 
             if (_requestMessage == null)
             {
-                if (_device == null)
-                    _device = AndroidDeviceGenerator.GetRandomAndroidDevice();
+                _device ??= AndroidDeviceGenerator.GetRandomAndroidDevice();
                 _requestMessage = new ApiRequestMessage
                 {
                     PhoneId = _device.PhoneGuid.ToString(),
@@ -164,8 +161,7 @@ namespace InstagramApiSharp.API.Builder
         /// </returns>
         public InstaApiBuilder SetRequestDelay(IRequestDelay delay)
         {
-            if (delay == null)
-                delay = RequestDelay.Empty();
+            delay ??= RequestDelay.Empty();
             _delay = delay;
             return this;
         }

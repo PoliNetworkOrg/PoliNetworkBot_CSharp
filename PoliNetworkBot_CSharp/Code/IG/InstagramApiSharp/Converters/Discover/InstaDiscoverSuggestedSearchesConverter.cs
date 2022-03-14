@@ -21,16 +21,16 @@ namespace InstagramApiSharp.Converters
             {
                 RankToken = SourceObject.RankToken
             };
-            if (SourceObject.Suggested != null && SourceObject.Suggested.Any())
-                foreach (var search in SourceObject.Suggested)
-                    try
-                    {
-                        suggested.Suggested.Add(
-                            ConvertersFabric.Instance.GetDiscoverSearchesConverter(search).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Suggested == null || !SourceObject.Suggested.Any()) return suggested;
+            foreach (var search in SourceObject.Suggested)
+                try
+                {
+                    suggested.Suggested.Add(
+                        ConvertersFabric.Instance.GetDiscoverSearchesConverter(search).Convert());
+                }
+                catch
+                {
+                }
 
             return suggested;
         }

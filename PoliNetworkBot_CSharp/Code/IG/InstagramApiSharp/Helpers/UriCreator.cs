@@ -634,7 +634,7 @@ namespace InstagramApiSharp.Helpers
             return instaUri;
         }
 
-        public static Uri GetDiscoverSuggestionDetailsUri(long userId, List<long> chainedIds)
+        public static Uri GetDiscoverSuggestionDetailsUri(long userId, IEnumerable<long> chainedIds)
         {
             if (
                 !Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.DISCOVER_FETCH_SUGGESTION_DETAILS,
@@ -2352,11 +2352,9 @@ namespace InstagramApiSharp.Helpers
 
             if (clusterId.ToLower() == "explore_all:0" || clusterId.ToLower() == "explore_all%3A0")
             {
-                if (!string.IsNullOrEmpty(maxId))
-                {
-                    instaUri = instaUri.AddQueryParameter("max_id", maxId);
-                    instaUri = instaUri.AddQueryParameter("cluster_id", "explore_all%3A0");
-                }
+                if (string.IsNullOrEmpty(maxId)) return instaUri;
+                instaUri = instaUri.AddQueryParameter("max_id", maxId);
+                instaUri = instaUri.AddQueryParameter("cluster_id", "explore_all%3A0");
             }
             else
             {

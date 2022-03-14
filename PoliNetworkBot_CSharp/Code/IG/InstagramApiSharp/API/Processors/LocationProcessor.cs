@@ -362,9 +362,9 @@ namespace InstagramApiSharp.API.Processors
 
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaPlaceListResponse>(response, json);
-                if (obj.Items?.Count > 0)
-                    foreach (var item in obj.Items)
-                        obj.ExcludeList.Add(item.Location.Pk);
+                if (!(obj.Items?.Count > 0)) return Result.Success(obj);
+                foreach (var item in obj.Items)
+                    obj.ExcludeList.Add(item.Location.Pk);
 
                 return Result.Success(obj);
             }

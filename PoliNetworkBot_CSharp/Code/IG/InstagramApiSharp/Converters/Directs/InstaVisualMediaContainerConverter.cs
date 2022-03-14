@@ -38,9 +38,9 @@ namespace InstagramApiSharp.Converters
             if (!string.IsNullOrEmpty(SourceObject.ViewMode))
                 visualMedia.ViewMode = (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.ViewMode, true);
 
-            if (SourceObject.SeenUserIds?.Count > 0)
-                foreach (var user in SourceObject.SeenUserIds)
-                    visualMedia.SeenUserIds.Add(user);
+            if (!(SourceObject.SeenUserIds?.Count > 0)) return visualMedia;
+            foreach (var user in SourceObject.SeenUserIds)
+                visualMedia.SeenUserIds.Add(user);
 
             return visualMedia;
         }

@@ -1019,11 +1019,9 @@ namespace InstagramApiSharp.API.Processors
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
-                                if (!tried)
-                                {
-                                    tried = true;
-                                    goto TryLabel;
-                                }
+                                if (tried) continue;
+                                tried = true;
+                                goto TryLabel;
                             }
                             else
                             {
@@ -2127,11 +2125,9 @@ namespace InstagramApiSharp.API.Processors
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
-                                if (!tried)
-                                {
-                                    tried = true;
-                                    goto TryLabel;
-                                }
+                                if (tried) continue;
+                                tried = true;
+                                goto TryLabel;
                             }
                             else
                             {

@@ -92,7 +92,7 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.UserStory != null)
+            if (SourceObject.UserStory == null) return fullUserInfo;
             {
                 fullUserInfo.UserStory = new InstaFullUserInfoUserStory();
                 if (SourceObject.UserStory.Broadcast != null)
@@ -105,37 +105,35 @@ namespace InstagramApiSharp.Converters
                     {
                     }
 
-                if (SourceObject.UserStory.Reel != null)
+                if (SourceObject.UserStory.Reel == null) return fullUserInfo;
+                fullUserInfo.UserStory.Reel = new InstaFullUserInfoUserStoryReel
                 {
-                    fullUserInfo.UserStory.Reel = new InstaFullUserInfoUserStoryReel
-                    {
-                        CanReply = SourceObject.UserStory.Reel.CanReply,
-                        CanReshare = SourceObject.UserStory.Reel.CanReshare,
-                        ExpiringAt = SourceObject.UserStory.Reel.ExpiringAt.FromUnixTimeSeconds(),
-                        HasBestiesMedia = SourceObject.UserStory.Reel.HasBestiesMedia,
-                        Id = SourceObject.UserStory.Reel.Id,
-                        LatestReelMedia = SourceObject.UserStory.Reel.LatestReelMedia,
-                        PrefetchCount = SourceObject.UserStory.Reel.PrefetchCount,
-                        ReelType = SourceObject.UserStory.Reel.ReelType,
-                        Seen = SourceObject.UserStory.Reel.Seen ?? 0
-                    };
-                    if (SourceObject.UserStory.Reel.User != null)
-                        fullUserInfo.UserStory.Reel.User = ConvertersFabric.Instance
-                            .GetUserShortConverter(SourceObject.UserStory.Reel.User).Convert();
+                    CanReply = SourceObject.UserStory.Reel.CanReply,
+                    CanReshare = SourceObject.UserStory.Reel.CanReshare,
+                    ExpiringAt = SourceObject.UserStory.Reel.ExpiringAt.FromUnixTimeSeconds(),
+                    HasBestiesMedia = SourceObject.UserStory.Reel.HasBestiesMedia,
+                    Id = SourceObject.UserStory.Reel.Id,
+                    LatestReelMedia = SourceObject.UserStory.Reel.LatestReelMedia,
+                    PrefetchCount = SourceObject.UserStory.Reel.PrefetchCount,
+                    ReelType = SourceObject.UserStory.Reel.ReelType,
+                    Seen = SourceObject.UserStory.Reel.Seen ?? 0
+                };
+                if (SourceObject.UserStory.Reel.User != null)
+                    fullUserInfo.UserStory.Reel.User = ConvertersFabric.Instance
+                        .GetUserShortConverter(SourceObject.UserStory.Reel.User).Convert();
 
-                    if (SourceObject.UserStory.Reel.Items == null || !SourceObject.UserStory.Reel.Items.Any())
-                        return fullUserInfo;
-                    fullUserInfo.UserStory.Reel.Items ??= new List<InstaStoryItem>();
-                    foreach (var story in SourceObject.UserStory.Reel.Items)
-                        try
-                        {
-                            fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.Instance
-                                .GetStoryItemConverter(story).Convert());
-                        }
-                        catch
-                        {
-                        }
-                }
+                if (SourceObject.UserStory.Reel.Items == null || !SourceObject.UserStory.Reel.Items.Any())
+                    return fullUserInfo;
+                fullUserInfo.UserStory.Reel.Items ??= new List<InstaStoryItem>();
+                foreach (var story in SourceObject.UserStory.Reel.Items)
+                    try
+                    {
+                        fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.Instance
+                            .GetStoryItemConverter(story).Convert());
+                    }
+                    catch
+                    {
+                    }
             }
 
             return fullUserInfo;

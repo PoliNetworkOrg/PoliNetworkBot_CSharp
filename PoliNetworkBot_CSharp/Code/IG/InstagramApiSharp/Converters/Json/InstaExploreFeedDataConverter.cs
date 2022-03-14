@@ -43,11 +43,9 @@ namespace InstagramApiSharp.Converters.Json
                     continue;
                 }
 
-                if (mediaToken != null)
-                {
-                    var media = mediaToken.ToObject<InstaMediaItemResponse>();
-                    feed.Items.Medias.Add(media);
-                }
+                if (mediaToken == null) continue;
+                var media = mediaToken.ToObject<InstaMediaItemResponse>();
+                feed.Items.Medias.Add(media);
             }
 
             return feed;

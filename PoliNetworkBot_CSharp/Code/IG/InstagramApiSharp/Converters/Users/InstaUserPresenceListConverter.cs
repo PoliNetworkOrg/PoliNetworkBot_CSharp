@@ -18,15 +18,15 @@ namespace InstagramApiSharp.Converters
         {
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var list = new InstaUserPresenceList();
-            if (SourceObject.Items != null && SourceObject.Items.Any())
-                foreach (var item in SourceObject.Items)
-                    try
-                    {
-                        list.Add(ConvertersFabric.Instance.GetSingleUserPresenceConverter(item).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Items == null || !SourceObject.Items.Any()) return list;
+            foreach (var item in SourceObject.Items)
+                try
+                {
+                    list.Add(ConvertersFabric.Instance.GetSingleUserPresenceConverter(item).Convert());
+                }
+                catch
+                {
+                }
 
             return list;
         }

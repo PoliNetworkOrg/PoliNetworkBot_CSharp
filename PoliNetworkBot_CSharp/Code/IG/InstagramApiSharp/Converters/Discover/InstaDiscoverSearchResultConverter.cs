@@ -24,15 +24,15 @@ namespace InstagramApiSharp.Converters
                 RankToken = SourceObject.RankToken,
                 NumResults = SourceObject.NumResults ?? 0
             };
-            if (SourceObject.Users != null && SourceObject.Users.Any())
-                foreach (var user in SourceObject.Users)
-                    try
-                    {
-                        result.Users.Add(ConvertersFabric.Instance.GetUserConverter(user).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Users == null || !SourceObject.Users.Any()) return result;
+            foreach (var user in SourceObject.Users)
+                try
+                {
+                    result.Users.Add(ConvertersFabric.Instance.GetUserConverter(user).Convert());
+                }
+                catch
+                {
+                }
 
             return result;
         }

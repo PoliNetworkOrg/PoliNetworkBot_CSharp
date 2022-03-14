@@ -153,11 +153,9 @@ namespace InstagramApiSharp.API.Processors
                             var u = await _instaApi.UserProcessor.GetUserAsync(tag.Username);
                             if (!u.Succeeded)
                             {
-                                if (!tried)
-                                {
-                                    tried = true;
-                                    goto TryLabel;
-                                }
+                                if (tried) continue;
+                                tried = true;
+                                goto TryLabel;
                             }
                             else
                             {
@@ -686,11 +684,9 @@ namespace InstagramApiSharp.API.Processors
                                     var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                     if (!u.Succeeded)
                                     {
-                                        if (!tried)
-                                        {
-                                            tried = true;
-                                            goto TryLabel;
-                                        }
+                                        if (tried) continue;
+                                        tried = true;
+                                        goto TryLabel;
                                     }
                                     else
                                     {
@@ -850,11 +846,9 @@ namespace InstagramApiSharp.API.Processors
                                 var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                 if (!u.Succeeded)
                                 {
-                                    if (!tried)
-                                    {
-                                        tried = true;
-                                        goto TryLabel;
-                                    }
+                                    if (tried) continue;
+                                    tried = true;
+                                    goto TryLabel;
                                 }
                                 else
                                 {
@@ -1192,14 +1186,11 @@ namespace InstagramApiSharp.API.Processors
             response = await _httpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                return Result.UnExpectedResponse<string>(response, json);
-            }
+            if (response.StatusCode == HttpStatusCode.OK) return Result.Success(uploadId);
+            upProgress.UploadState = InstaUploadState.Error;
+            progress?.Invoke(upProgress);
+            return Result.UnExpectedResponse<string>(response, json);
 
-            return Result.Success(uploadId);
         }
 
         private async Task<IResult<InstaMedia>> ConfigureAlbumAsync(Action<InstaUploaderProgress> progress,
@@ -1482,13 +1473,11 @@ namespace InstagramApiSharp.API.Processors
                     new InstaMediaDataConverter());
                 var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
                 var obj = converter.Convert();
-                if (obj.Caption == null && !string.IsNullOrEmpty(caption))
-                {
-                    var editedMedia =
-                        await _instaApi.MediaProcessor.EditMediaAsync(obj.InstaIdentifier, caption, location);
-                    if (editedMedia.Succeeded)
-                        return Result.Success(editedMedia.Value);
-                }
+                if (obj.Caption != null || string.IsNullOrEmpty(caption)) return Result.Success(obj);
+                var editedMedia =
+                    await _instaApi.MediaProcessor.EditMediaAsync(obj.InstaIdentifier, caption, location);
+                if (editedMedia.Succeeded)
+                    return Result.Success(editedMedia.Value);
 
                 return Result.Success(obj);
             }

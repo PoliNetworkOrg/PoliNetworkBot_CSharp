@@ -71,13 +71,13 @@ namespace InstagramApiSharp.Helpers
                 var end = "</script>";
                 if (html.Contains(start))
                 {
-                    var str = html[(html.IndexOf(start) + start.Length)..];
-                    str = str[..str.IndexOf(end)];
+                    var str = html[(html.IndexOf(start, StringComparison.Ordinal) + start.Length)..];
+                    str = str[..str.IndexOf(end, StringComparison.Ordinal)];
                     //&access_token=EAABwzLixnjYBALFoqFT7uqZCVCCcPM3HZAEXwSUZB3qBi1OxHP6OYP5hEYpzkNEej465HwMiMbvvvz9GyzWhby14KtdwdoiW83xZAzIaThIBTwZDZD&
                     start = "&access_token=";
                     end = "&";
-                    var token = str[(str.IndexOf(start) + start.Length)..];
-                    token = token[..token.IndexOf(end)];
+                    var token = str[(str.IndexOf(start, StringComparison.Ordinal) + start.Length)..];
+                    token = token[..token.IndexOf(end, StringComparison.Ordinal)];
                     return token;
                 }
             }

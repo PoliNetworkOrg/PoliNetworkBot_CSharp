@@ -699,25 +699,24 @@ namespace InstagramApiSharp.API.Services
                 {
                     var loginFailReason = JsonConvert.DeserializeObject<InstaLoginBaseResponse>(json);
 
-                    if (loginFailReason.ErrorType == "checkpoint_challenge_required"
-                        || loginFailReason.Message == "challenge_required")
-                    {
-                        _instaApi.ChallengeLoginInfo = loginFailReason.Challenge;
+                    if (loginFailReason.ErrorType != "checkpoint_challenge_required" &&
+                        loginFailReason.Message != "challenge_required")
+                        return Result.UnExpectedResponse<InstaAccountCreation>(response, json);
+                    _instaApi.ChallengeLoginInfo = loginFailReason.Challenge;
 
-                        return Result.Fail("Challenge is required", ResponseType.ChallengeRequired,
-                            default(InstaAccountCreation));
-                    }
+                    return Result.Fail("Challenge is required", ResponseType.ChallengeRequired,
+                        default(InstaAccountCreation));
 
-                    return Result.UnExpectedResponse<InstaAccountCreation>(response, json);
                 }
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountCreation>(json);
 
-                if (obj.AccountCreated && obj.CreatedUser != null)
-                {
-                    _instaApi.ValidateUserAsync(obj.CreatedUser, _user.CsrfToken, true, password);
-                    ValidateUser(obj.CreatedUser);
-                }
+                if (!obj.AccountCreated || obj.CreatedUser == null)
+                    return obj.IsSucceed
+                        ? Result.Success(obj)
+                        : Result.UnExpectedResponse<InstaAccountCreation>(response, json);
+                _instaApi.ValidateUserAsync(obj.CreatedUser, _user.CsrfToken, true, password);
+                ValidateUser(obj.CreatedUser);
 
                 return obj.IsSucceed
                     ? Result.Success(obj)
@@ -1030,11 +1029,9 @@ namespace InstagramApiSharp.API.Services
                 }
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountCreation>(json);
-                if (obj.AccountCreated && obj.CreatedUser != null)
-                {
-                    _instaApi.ValidateUserAsync(obj.CreatedUser, _user.CsrfToken, true, password);
-                    ValidateUser(obj.CreatedUser);
-                }
+                if (!obj.AccountCreated || obj.CreatedUser == null) return Result.Success(obj);
+                _instaApi.ValidateUserAsync(obj.CreatedUser, _user.CsrfToken, true, password);
+                ValidateUser(obj.CreatedUser);
 
                 return Result.Success(obj);
             }

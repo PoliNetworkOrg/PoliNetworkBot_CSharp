@@ -23,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             { SpecialGroup.DSU, -1001241129618 }
         };
 
-        public static Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch =
+        public static readonly Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch =
             new()
             {
                 { SpecialGroup.ASK_POLIMI, new List<SpecialGroup> { SpecialGroup.ASK_POLIMI } },

@@ -79,20 +79,20 @@ namespace InstagramApiSharp.Converters.Business
                 {
                 }
 
-            if (SourceObject.User.FbPageCallToActionIxLabelBundle != null)
-                try
+            if (SourceObject.User.FbPageCallToActionIxLabelBundle == null) return userInfo;
+            try
+            {
+                userInfo.FbPageCallToActionIxLabelBundle = new InstaBusinessUserFbBundle
                 {
-                    userInfo.FbPageCallToActionIxLabelBundle = new InstaBusinessUserFbBundle
-                    {
-                        ContactBar = SourceObject.User.FbPageCallToActionIxLabelBundle.ContactBar,
-                        SettingToggle = SourceObject.User.FbPageCallToActionIxLabelBundle.SettingToggle,
-                        SettingToggleDescription =
-                            SourceObject.User.FbPageCallToActionIxLabelBundle.SettingToggleDescription
-                    };
-                }
-                catch
-                {
-                }
+                    ContactBar = SourceObject.User.FbPageCallToActionIxLabelBundle.ContactBar,
+                    SettingToggle = SourceObject.User.FbPageCallToActionIxLabelBundle.SettingToggle,
+                    SettingToggleDescription =
+                        SourceObject.User.FbPageCallToActionIxLabelBundle.SettingToggleDescription
+                };
+            }
+            catch
+            {
+            }
 
             return userInfo;
         }

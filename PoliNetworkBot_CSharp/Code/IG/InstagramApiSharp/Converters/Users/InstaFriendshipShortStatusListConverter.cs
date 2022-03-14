@@ -18,17 +18,17 @@ namespace InstagramApiSharp.Converters.Users
         {
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var friendships = new InstaFriendshipShortStatusList();
-            if (SourceObject != null && SourceObject.Any())
-                foreach (var item in SourceObject)
-                    try
-                    {
-                        var friend = ConvertersFabric.Instance.GetSingleFriendshipShortStatusConverter(item).Convert();
-                        friend.Pk = item.Pk;
-                        friendships.Add(friend);
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject == null || !SourceObject.Any()) return friendships;
+            foreach (var item in SourceObject)
+                try
+                {
+                    var friend = ConvertersFabric.Instance.GetSingleFriendshipShortStatusConverter(item).Convert();
+                    friend.Pk = item.Pk;
+                    friendships.Add(friend);
+                }
+                catch
+                {
+                }
 
             return friendships;
         }

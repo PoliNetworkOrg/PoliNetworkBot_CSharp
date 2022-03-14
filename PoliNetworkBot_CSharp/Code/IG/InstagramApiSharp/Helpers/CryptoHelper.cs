@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,7 +13,7 @@ namespace InstagramApiSharp.Helpers
 {
     internal class CryptoHelper
     {
-        public static string ByteToString(byte[] buff)
+        public static string ByteToString(IEnumerable<byte> buff)
         {
             return buff.Aggregate("", (current, item) => current + item.ToString("X2"));
         }

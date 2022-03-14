@@ -21,7 +21,7 @@ namespace Minista.Helpers
 
         private static string GetUserAgent()
         {
-            var capacity = 255;
+            const int capacity = 255;
             var buf = new StringBuilder(capacity);
             var length = 0;
 

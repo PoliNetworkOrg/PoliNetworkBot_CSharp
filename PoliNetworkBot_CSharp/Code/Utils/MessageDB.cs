@@ -116,7 +116,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                     if (telegramBotAbstract != null &&
                         r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
-                        switch (r1.scheduleMessageSentResult)
+                        switch (r1.ScheduleMessageSentResult)
                         {
                             case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
                             case ScheduleMessageSentResult.FAILED_SEND:
@@ -150,7 +150,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (r1 == null)
                 return BotUtil.GetFirstModerationRealBot();
 
-            var r2 = r1.scheduleMessageSentResult;
+            var r2 = r1.ScheduleMessageSentResult;
 
             switch (r2)
             {
@@ -180,14 +180,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
         {
             var s3 = r1.ToString();
-            var s4 = r1?.r1?.Item2.ToString();
+            var s4 = r1?.R1?.Item2.ToString();
             if (string.IsNullOrEmpty(s4))
                 s4 = "[NULL(1)]";
             s3 += "\n[Id1]: " + s4 + "\n";
-            var s5 = r1?.r1?.Item3;
+            var s5 = r1?.R1?.Item3;
             if (string.IsNullOrEmpty(s5)) s5 = "[NULL(2)]";
             s3 += "[Id2]: " + s5 + "\n";
-            s3 += "[Id3]: " + r1?.scheduleMessageSentResult + "\n";
+            s3 += "[Id3]: " + r1?.ScheduleMessageSentResult + "\n";
             s3 += "CheckMessagesToSend\n\n";
             var e3 = new Exception(s3);
             await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);

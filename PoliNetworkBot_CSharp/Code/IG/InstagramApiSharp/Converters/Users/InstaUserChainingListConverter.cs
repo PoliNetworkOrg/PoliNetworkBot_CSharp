@@ -22,15 +22,15 @@ namespace InstagramApiSharp.Converters.Users
                 Status = SourceObject.Status,
                 IsBackup = SourceObject.IsBackup
             };
-            if (SourceObject.Users != null && SourceObject.Users.Any())
-                foreach (var u in SourceObject.Users)
-                    try
-                    {
-                        users.Add(ConvertersFabric.Instance.GetSingleUserChainingConverter(u).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Users == null || !SourceObject.Users.Any()) return users;
+            foreach (var u in SourceObject.Users)
+                try
+                {
+                    users.Add(ConvertersFabric.Instance.GetSingleUserChainingConverter(u).Convert());
+                }
+                catch
+                {
+                }
 
             return users;
         }

@@ -32,15 +32,15 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.Channels != null && SourceObject.Channels.Any())
-                foreach (var channel in SourceObject.Channels)
-                    try
-                    {
-                        tv.Channels.Add(ConvertersFabric.Instance.GetTVChannelConverter(channel).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Channels == null || !SourceObject.Channels.Any()) return tv;
+            foreach (var channel in SourceObject.Channels)
+                try
+                {
+                    tv.Channels.Add(ConvertersFabric.Instance.GetTVChannelConverter(channel).Convert());
+                }
+                catch
+                {
+                }
 
             return tv;
         }

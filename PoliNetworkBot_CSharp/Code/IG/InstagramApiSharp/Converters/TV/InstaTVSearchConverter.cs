@@ -25,15 +25,15 @@ namespace InstagramApiSharp.Converters
                 RankToken = SourceObject.RankToken
             };
 
-            if (SourceObject.Results != null && SourceObject.Results.Any())
-                foreach (var result in SourceObject.Results)
-                    try
-                    {
-                        search.Results.Add(ConvertersFabric.Instance.GetTVSearchResultConverter(result).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Results == null || !SourceObject.Results.Any()) return search;
+            foreach (var result in SourceObject.Results)
+                try
+                {
+                    search.Results.Add(ConvertersFabric.Instance.GetTVSearchResultConverter(result).Convert());
+                }
+                catch
+                {
+                }
 
             return search;
         }

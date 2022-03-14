@@ -31,15 +31,15 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.User != null)
-                try
-                {
-                    search.User = ConvertersFabric.Instance.GetUserShortFriendshipConverter(SourceObject.User)
-                        .Convert();
-                }
-                catch
-                {
-                }
+            if (SourceObject.User == null) return search;
+            try
+            {
+                search.User = ConvertersFabric.Instance.GetUserShortFriendshipConverter(SourceObject.User)
+                    .Convert();
+            }
+            catch
+            {
+            }
 
             return search;
         }

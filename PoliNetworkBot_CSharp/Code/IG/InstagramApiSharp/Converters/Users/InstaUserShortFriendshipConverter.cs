@@ -27,20 +27,18 @@ namespace InstagramApiSharp.Converters
                 IsVerified = SourceObject.IsVerified,
                 ProfilePicUrl = SourceObject.ProfilePicture
             };
-            if (SourceObject.FriendshipStatus != null)
+            if (SourceObject.FriendshipStatus == null) return user;
+            var item = SourceObject.FriendshipStatus;
+            var friend = new InstaFriendshipShortStatus
             {
-                var item = SourceObject.FriendshipStatus;
-                var friend = new InstaFriendshipShortStatus
-                {
-                    Following = item.Following,
-                    IncomingRequest = item.IncomingRequest,
-                    IsBestie = item.IsBestie,
-                    IsPrivate = item.IsPrivate,
-                    OutgoingRequest = item.OutgoingRequest,
-                    Pk = 0
-                };
-                user.FriendshipStatus = friend;
-            }
+                Following = item.Following,
+                IncomingRequest = item.IncomingRequest,
+                IsBestie = item.IsBestie,
+                IsPrivate = item.IsPrivate,
+                OutgoingRequest = item.OutgoingRequest,
+                Pk = 0
+            };
+            user.FriendshipStatus = friend;
 
             return user;
         }

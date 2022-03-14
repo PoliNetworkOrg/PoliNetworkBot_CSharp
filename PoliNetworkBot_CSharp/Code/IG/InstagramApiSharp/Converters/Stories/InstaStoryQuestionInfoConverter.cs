@@ -32,10 +32,10 @@ namespace InstagramApiSharp.Converters
                 TextColor = SourceObject.TextColor
             };
 
-            if (SourceObject.Responders?.Count > 0)
-                foreach (var responder in SourceObject.Responders)
-                    questionInfo.Responders.Add(ConvertersFabric.Instance
-                        .GetStoryQuestionResponderConverter(responder).Convert());
+            if (!(SourceObject.Responders?.Count > 0)) return questionInfo;
+            foreach (var responder in SourceObject.Responders)
+                questionInfo.Responders.Add(ConvertersFabric.Instance
+                    .GetStoryQuestionResponderConverter(responder).Convert());
 
             return questionInfo;
         }

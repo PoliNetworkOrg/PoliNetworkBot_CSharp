@@ -36,15 +36,15 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.ChildComments != null && SourceObject.ChildComments.Any())
-                foreach (var cmt in SourceObject.ChildComments)
-                    try
-                    {
-                        inline.ChildComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.ChildComments == null || !SourceObject.ChildComments.Any()) return inline;
+            foreach (var cmt in SourceObject.ChildComments)
+                try
+                {
+                    inline.ChildComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
+                }
+                catch
+                {
+                }
 
             //if (!string.IsNullOrEmpty(SourceObject.NextMinId))
             //{

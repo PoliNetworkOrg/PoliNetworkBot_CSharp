@@ -155,15 +155,15 @@ namespace InstagramApiSharp.Converters
                     {
                     }
 
-            if (SourceObject.User.FriendshipStatus != null)
-                try
-                {
-                    userInfo.FriendshipStatus = ConvertersFabric.Instance
-                        .GetStoryFriendshipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
-                }
-                catch
-                {
-                }
+            if (SourceObject.User.FriendshipStatus == null) return userInfo;
+            try
+            {
+                userInfo.FriendshipStatus = ConvertersFabric.Instance
+                    .GetStoryFriendshipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
+            }
+            catch
+            {
+            }
 
             return userInfo;
         }

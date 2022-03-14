@@ -168,17 +168,15 @@ namespace InstagramApiSharp.API.Processors
                     InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var userInfoUpdated =
-                        JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
-                    if (userInfoUpdated.Pk < 1)
-                        return Result.Fail<InstaUserShort>("Pk is incorrect");
-                    var converter = ConvertersFabric.Instance.GetUserShortConverter(userInfoUpdated);
-                    return Result.Success(converter.Convert());
-                }
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return Result.UnExpectedResponse<InstaUserShort>(response, json);
+                var userInfoUpdated =
+                    JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
+                if (userInfoUpdated.Pk < 1)
+                    return Result.Fail<InstaUserShort>("Pk is incorrect");
+                var converter = ConvertersFabric.Instance.GetUserShortConverter(userInfoUpdated);
+                return Result.Success(converter.Convert());
 
-                return Result.UnExpectedResponse<InstaUserShort>(response, json);
             }
             catch (HttpRequestException httpException)
             {
@@ -276,23 +274,17 @@ namespace InstagramApiSharp.API.Processors
                 if (string.IsNullOrEmpty(newUsername))
                     newUsername = user;
 
-                if (name == null)
-                    name = editRequest.Value.FullName;
+                name ??= editRequest.Value.FullName;
 
-                if (biography == null)
-                    biography = editRequest.Value.Biography;
+                biography ??= editRequest.Value.Biography;
 
-                if (url == null)
-                    url = editRequest.Value.ExternalUrl;
+                url ??= editRequest.Value.ExternalUrl;
 
-                if (email == null)
-                    email = editRequest.Value.Email;
+                email ??= editRequest.Value.Email;
 
-                if (phone == null)
-                    phone = editRequest.Value.PhoneNumber;
+                phone ??= editRequest.Value.PhoneNumber;
 
-                if (gender == null)
-                    gender = editRequest.Value.Gender;
+                gender ??= editRequest.Value.Gender;
 
                 var instaUri = UriCreator.GetEditProfileUri();
 

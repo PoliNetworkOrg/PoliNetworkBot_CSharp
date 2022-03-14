@@ -32,18 +32,16 @@ namespace InstagramApiSharp
         public static void SetCsrfTokenIfAvailable(this UserSessionData data, HttpResponseMessage response,
             IHttpRequestProcessor _httpRequestProcessor, bool dontCheck = false)
         {
-            if (response.IsSuccessStatusCode)
-            {
-                var cookies =
-                    _httpRequestProcessor.HttpHandler.CookieContainer.GetCookies(_httpRequestProcessor.Client
-                        .BaseAddress);
+            if (!response.IsSuccessStatusCode) return;
+            var cookies =
+                _httpRequestProcessor.HttpHandler.CookieContainer.GetCookies(_httpRequestProcessor.Client
+                    .BaseAddress);
 
-                var csrfToken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
-                if (dontCheck && !string.IsNullOrEmpty(csrfToken))
-                    data.CsrfToken = csrfToken;
-                else if (!string.IsNullOrEmpty(csrfToken) && string.IsNullOrEmpty(data.CsrfToken))
-                    data.CsrfToken = csrfToken;
-            }
+            var csrfToken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
+            if (dontCheck && !string.IsNullOrEmpty(csrfToken))
+                data.CsrfToken = csrfToken;
+            else if (!string.IsNullOrEmpty(csrfToken) && string.IsNullOrEmpty(data.CsrfToken))
+                data.CsrfToken = csrfToken;
         }
 
         public static string GenerateUserAgent(this AndroidDevice deviceInfo, InstaApiVersion apiVersion)
@@ -79,17 +77,17 @@ namespace InstagramApiSharp
             return !string.IsNullOrEmpty(content);
         }
 
-        public static string EncodeList(this long[] listOfValues, bool appendQuotation = true)
+        public static string EncodeList(this IEnumerable<long> listOfValues, bool appendQuotation = true)
         {
             return EncodeList(listOfValues.ToList(), appendQuotation);
         }
 
-        public static string EncodeList(this string[] listOfValues, bool appendQuotation = true)
+        public static string EncodeList(this IEnumerable<string> listOfValues, bool appendQuotation = true)
         {
             return EncodeList(listOfValues.ToList(), appendQuotation);
         }
 
-        public static string EncodeList(this List<long> listOfValues, bool appendQuotation = true)
+        public static string EncodeList(this IEnumerable<long> listOfValues, bool appendQuotation = true)
         {
             if (!appendQuotation)
                 return string.Join(",", listOfValues);
@@ -254,7 +252,7 @@ namespace InstagramApiSharp
         }
 
         public static InstaImageUpload ConvertToImageUpload(this InstaImage instaImage,
-            InstaUserTagUpload[] userTags = null)
+            IEnumerable<InstaUserTagUpload> userTags = null)
         {
             return new InstaImageUpload
             {

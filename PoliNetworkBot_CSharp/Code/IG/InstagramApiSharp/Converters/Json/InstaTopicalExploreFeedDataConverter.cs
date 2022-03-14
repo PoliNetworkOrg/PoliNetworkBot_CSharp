@@ -38,22 +38,18 @@ namespace InstagramApiSharp.Converters.Json
                         foreach (var med in medias)
                         {
                             var single = med["media"];
-                            if (single != null)
-                            {
-                                var singleMedia = GetMedia(single);
-                                feed.Medias.Add(singleMedia);
-                            }
+                            if (single == null) continue;
+                            var singleMedia = GetMedia(single);
+                            feed.Medias.Add(singleMedia);
                         }
 
                     if (fillItems != null)
                         foreach (var med in fillItems)
                         {
                             var single = med["media"];
-                            if (single != null)
-                            {
-                                var singleMedia = GetMedia(single);
-                                feed.Medias.Add(singleMedia);
-                            }
+                            if (single == null) continue;
+                            var singleMedia = GetMedia(single);
+                            feed.Medias.Add(singleMedia);
                         }
 
                     if (twoByTwoItem != null)

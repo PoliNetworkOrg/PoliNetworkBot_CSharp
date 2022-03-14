@@ -401,33 +401,31 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
-                    if (userId != null)
+                    if (userId == null) continue;
+                    TelegramBotAbstract x2 = null;
+
+                    try
                     {
-                        TelegramBotAbstract x2 = null;
-
-                        try
-                        {
-                            x2 = client;
-                        }
-                        catch
-                        {
-                            ;
-                        }
-
-                        GlobalVariables.Bots[userId.Value] = x2;
-
-                        var method = userbot.method;
-                        if (method != null)
-                            switch (method)
-                            {
-                                case "a":
-                                case "A": //Administration
-                                {
-                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                    break;
-                                }
-                            }
+                        x2 = client;
                     }
+                    catch
+                    {
+                        ;
+                    }
+
+                    GlobalVariables.Bots[userId.Value] = x2;
+
+                    var method = userbot.method;
+                    if (method != null)
+                        switch (method)
+                        {
+                            case "a":
+                            case "A": //Administration
+                            {
+                                _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                break;
+                            }
+                        }
                 }
 
             if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
@@ -436,12 +434,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
-                    if (userId != null)
-                    {
-                        GlobalVariables.Bots[userId.Value] = client;
+                    if (userId == null) continue;
+                    GlobalVariables.Bots[userId.Value] = client;
 
-                        _ = TestThingsDisguisedAsync(userId.Value);
-                    }
+                    _ = TestThingsDisguisedAsync(userId.Value);
                 }
 
             if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
@@ -483,7 +479,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     List<Update> updates = null;
                     try
                     {
-                        updates = botClientWhole.botClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
                     }
                     catch (Exception ex)
                     {
@@ -555,13 +551,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                 case UpdateType.Message:
                 {
-                    if (botClientWhole.updatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        if (botClientWhole.updatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                    if (botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                        if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
                             return;
 
-                    botClientWhole.updatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    botClientWhole.onmessageMethod2.Item1(botClientWhole.botClient,
+                    botClientWhole.OnmessageMethod2.Item1(botClientWhole.BotClient,
                         new MessageEventArgs(update.Message));
                     break;
                 }
@@ -573,8 +569,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
                 case UpdateType.CallbackQuery:
                 {
-                    var callback = botClientWhole.botInfoAbstract.GetCallbackEvent();
-                    callback(botClientWhole.botClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                    var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
+                    callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                     break;
                 }
                 case UpdateType.EditedMessage:

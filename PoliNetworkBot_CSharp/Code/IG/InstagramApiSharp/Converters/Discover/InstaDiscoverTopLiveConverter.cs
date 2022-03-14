@@ -26,10 +26,10 @@ namespace InstagramApiSharp.Converters
                 discoverTopLive.Broadcasts = ConvertersFabric.Instance
                     .GetBroadcastListConverter(SourceObject.Broadcasts).Convert();
 
-            if (SourceObject.PostLiveBroadcasts?.Count > 0)
-                foreach (var postLive in SourceObject.PostLiveBroadcasts)
-                    discoverTopLive.PostLiveBroadcasts.Add(ConvertersFabric.Instance
-                        .GetBroadcastPostLiveConverter(postLive).Convert());
+            if (!(SourceObject.PostLiveBroadcasts?.Count > 0)) return discoverTopLive;
+            foreach (var postLive in SourceObject.PostLiveBroadcasts)
+                discoverTopLive.PostLiveBroadcasts.Add(ConvertersFabric.Instance
+                    .GetBroadcastPostLiveConverter(postLive).Convert());
 
             return discoverTopLive;
         }

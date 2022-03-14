@@ -55,9 +55,11 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.User != null)
                 story.User = ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
 
-            if (SourceObject.Items != null)
+            if (SourceObject.Items == null) return story;
+            {
                 foreach (var item in SourceObject.Items)
                     story.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(item).Convert());
+            }
             return story;
         }
     }

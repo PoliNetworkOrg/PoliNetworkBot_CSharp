@@ -28,16 +28,16 @@ namespace InstagramApiSharp.Converters
                 ViewerVote = SourceObject.ViewerVote ?? 0
             };
 
-            if (SourceObject.Tallies?.Count > 0)
-                foreach (var tallies in SourceObject.Tallies)
-                    try
-                    {
-                        pollSticker.Tallies.Add(ConvertersFabric.Instance.GetStoryTalliesItemConverter(tallies)
-                            .Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (!(SourceObject.Tallies?.Count > 0)) return pollSticker;
+            foreach (var tallies in SourceObject.Tallies)
+                try
+                {
+                    pollSticker.Tallies.Add(ConvertersFabric.Instance.GetStoryTalliesItemConverter(tallies)
+                        .Convert());
+                }
+                catch
+                {
+                }
 
             return pollSticker;
         }

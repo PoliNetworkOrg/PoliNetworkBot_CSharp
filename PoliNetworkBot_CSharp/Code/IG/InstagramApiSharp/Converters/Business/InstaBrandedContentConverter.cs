@@ -22,16 +22,16 @@ namespace InstagramApiSharp.Converters
             {
                 RequireApproval = SourceObject.RequireApproval
             };
-            if (SourceObject.WhitelistedUsers != null && SourceObject.WhitelistedUsers.Any())
-                foreach (var item in SourceObject.WhitelistedUsers)
-                    try
-                    {
-                        brandedContent.WhitelistedUsers.Add(ConvertersFabric.Instance.GetUserShortConverter(item)
-                            .Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.WhitelistedUsers == null || !SourceObject.WhitelistedUsers.Any()) return brandedContent;
+            foreach (var item in SourceObject.WhitelistedUsers)
+                try
+                {
+                    brandedContent.WhitelistedUsers.Add(ConvertersFabric.Instance.GetUserShortConverter(item)
+                        .Convert());
+                }
+                catch
+                {
+                }
 
             return brandedContent;
         }

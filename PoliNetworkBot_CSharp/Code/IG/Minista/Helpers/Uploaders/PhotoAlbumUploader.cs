@@ -75,11 +75,9 @@ namespace Minista.Helpers
             if (!Uploaded.Contains(e))
                 Uploaded.Add(e);
 
-            if (Uploaded.Count == Uploads.Count)
-            {
-                await Task.Delay(10000);
-                await ConfigurePhotoAsync();
-            }
+            if (Uploaded.Count != Uploads.Count) return;
+            await Task.Delay(10000);
+            await ConfigurePhotoAsync();
         }
 
         private async Task<IResult<bool>> ConfigurePhotoAsync()

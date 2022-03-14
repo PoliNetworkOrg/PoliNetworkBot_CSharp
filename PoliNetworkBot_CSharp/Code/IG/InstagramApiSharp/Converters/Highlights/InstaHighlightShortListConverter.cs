@@ -24,15 +24,15 @@ namespace InstagramApiSharp.Converters
                 MoreAvailable = SourceObject.MoreAvailable,
                 ResultsCount = SourceObject.ResultsCount
             };
-            if (SourceObject.Items != null && SourceObject.Items.Any())
-                foreach (var item in SourceObject.Items)
-                    try
-                    {
-                        highlight.Items.Add(ConvertersFabric.Instance.GetSingleHighlightShortConverter(item).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Items == null || !SourceObject.Items.Any()) return highlight;
+            foreach (var item in SourceObject.Items)
+                try
+                {
+                    highlight.Items.Add(ConvertersFabric.Instance.GetSingleHighlightShortConverter(item).Convert());
+                }
+                catch
+                {
+                }
 
             return highlight;
         }

@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
 {
     public static class Navigator
     {
-        public static Dictionary<string, string[]> ScuoleCorso = new()
+        public static readonly Dictionary<string, string[]> ScuoleCorso = new()
         {
             ["3I"] = new[]
             {

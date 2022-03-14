@@ -22,9 +22,9 @@ namespace InstagramApiSharp.Converters
                 MaxId = SourceObject.MaxId
             };
 
-            if (SourceObject.BlockedList != null && SourceObject.BlockedList.Any())
-                foreach (var user in SourceObject.BlockedList)
-                    blockedUsers.BlockedList.Add(ConvertersFabric.GetBlockedUserInfoConverter(user).Convert());
+            if (SourceObject.BlockedList == null || !SourceObject.BlockedList.Any()) return blockedUsers;
+            foreach (var user in SourceObject.BlockedList)
+                blockedUsers.BlockedList.Add(ConvertersFabric.GetBlockedUserInfoConverter(user).Convert());
 
             return blockedUsers;
         }

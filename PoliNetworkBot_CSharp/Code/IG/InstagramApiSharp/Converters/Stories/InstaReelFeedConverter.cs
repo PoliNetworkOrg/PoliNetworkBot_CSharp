@@ -37,15 +37,15 @@ namespace InstagramApiSharp.Converters
             {
             }
 
-            if (SourceObject.Items != null && SourceObject.Items.Any())
-                foreach (var item in SourceObject.Items)
-                    try
-                    {
-                        reelFeed.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(item).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.Items == null || !SourceObject.Items.Any()) return reelFeed;
+            foreach (var item in SourceObject.Items)
+                try
+                {
+                    reelFeed.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(item).Convert());
+                }
+                catch
+                {
+                }
 
             return reelFeed;
         }

@@ -37,15 +37,15 @@ namespace InstagramApiSharp.Converters
                     {
                     }
 
-            if (SourceObject.UserDetail != null)
-                try
-                {
-                    channel.UserDetail =
-                        ConvertersFabric.Instance.GetTVUserConverter(SourceObject.UserDetail).Convert();
-                }
-                catch
-                {
-                }
+            if (SourceObject.UserDetail == null) return channel;
+            try
+            {
+                channel.UserDetail =
+                    ConvertersFabric.Instance.GetTVUserConverter(SourceObject.UserDetail).Convert();
+            }
+            catch
+            {
+            }
 
             return channel;
         }

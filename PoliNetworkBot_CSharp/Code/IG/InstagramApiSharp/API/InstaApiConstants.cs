@@ -745,21 +745,21 @@ namespace InstagramApiSharp.API
 
         #region Web endpoints constants
 
-        private static readonly string WEB_ADDRESS = "https://www.instagram.com";
-        private static readonly string WEB_ACCOUNTS = "/accounts";
-        public static string WebAccountData = WEB_ACCOUNTS + "/access_tool";
-        public static string WebCurrentFollowRequests = WebAccountData + "/current_follow_requests";
-        public static string WEB_FORMER_EMAILS = WebAccountData + "/former_emails";
-        public static string WEB_FORMER_PHONES = WebAccountData + "/former_phones";
-        public static string WEB_FORMER_USERNAMES = WebAccountData + "/former_usernames";
-        public static string WEB_FORMER_FULL_NAMES = WebAccountData + "/former_full_names";
-        public static string WEB_FORMER_BIO_TEXTS = WebAccountData + "/former_bio_texts";
-        public static string WEB_FORMER_BIO_LINKS = WebAccountData + "/former_links_in_bio";
+        private const string WebAddress = "https://www.instagram.com";
+        private const string WebAccounts = "/accounts";
+        public static readonly string WebAccountData = WebAccounts + "/access_tool";
+        public static readonly string WebCurrentFollowRequests = WebAccountData + "/current_follow_requests";
+        public static readonly string WebFormerEmails = WebAccountData + "/former_emails";
+        public static readonly string WebFormerPhones = WebAccountData + "/former_phones";
+        public static readonly string WebFormerUsernames = WebAccountData + "/former_usernames";
+        public static readonly string WebFormerFullNames = WebAccountData + "/former_full_names";
+        public static readonly string WebFormerBioTexts = WebAccountData + "/former_bio_texts";
+        public static readonly string WebFormerBioLinks = WebAccountData + "/former_links_in_bio";
 
 
-        public static string WEB_CURSOR = "__a=1&cursor={0}";
+        public static readonly string WebCursor = "__a=1&cursor={0}";
 
-        public static readonly Uri InstagramWebUri = new(WEB_ADDRESS);
+        public static readonly Uri InstagramWebUri = new(WebAddress);
 
         #endregion
     }

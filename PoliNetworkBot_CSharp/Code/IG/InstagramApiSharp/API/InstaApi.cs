@@ -1049,11 +1049,11 @@ namespace InstagramApiSharp.API
                                 InstaLoginResult.InactiveUser);
                         case "checkpoint_logged_out":
                         {
-                            if (!needsRelogin)
-                            {
-                                needsRelogin = true;
-                                goto ReloginLabel;
-                            }
+                            if (needsRelogin)
+                                return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
+                                    InstaLoginResult.CheckpointLoggedOut);
+                            needsRelogin = true;
+                            goto ReloginLabel;
 
                             return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
                                 InstaLoginResult.CheckpointLoggedOut);
@@ -1250,15 +1250,14 @@ namespace InstagramApiSharp.API
                 if (loginFailReason.ErrorType == "sms_code_validation_code_invalid")
                     return Result.Fail("Please check the security code.", InstaLoginTwoFactorResult.InvalidCode);
 
-                if (loginFailReason.Message.ToLower().Contains("challenge"))
-                {
-                    ChallengeLoginInfo = loginFailReason.Challenge;
+                if (!loginFailReason.Message.ToLower().Contains("challenge"))
+                    return Result.Fail(
+                        "This code is no longer valid, please, call LoginAsync again to request a new one",
+                        InstaLoginTwoFactorResult.CodeExpired);
+                ChallengeLoginInfo = loginFailReason.Challenge;
 
-                    return Result.Fail("Challenge is required", InstaLoginTwoFactorResult.ChallengeRequired);
-                }
+                return Result.Fail("Challenge is required", InstaLoginTwoFactorResult.ChallengeRequired);
 
-                return Result.Fail("This code is no longer valid, please, call LoginAsync again to request a new one",
-                    InstaLoginTwoFactorResult.CodeExpired);
             }
             catch (HttpRequestException httpException)
             {
@@ -1738,13 +1737,11 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
 
                 var result = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    var error = JsonConvert.DeserializeObject<MessageErrorsResponseRecoveryEmail>(result);
-                    return Result.Fail<InstaRecovery>(error.Message);
-                }
+                if (response.StatusCode == HttpStatusCode.OK)
+                    return Result.Success(JsonConvert.DeserializeObject<InstaRecovery>(result));
+                var error = JsonConvert.DeserializeObject<MessageErrorsResponseRecoveryEmail>(result);
+                return Result.Fail<InstaRecovery>(error.Message);
 
-                return Result.Success(JsonConvert.DeserializeObject<InstaRecovery>(result));
             }
             catch (HttpRequestException httpException)
             {
@@ -1800,7 +1797,8 @@ namespace InstagramApiSharp.API
                     return Result.Fail<InstaRecovery>(errors);
                 }
 
-                if (result.Contains("errors"))
+                if (!result.Contains("errors"))
+                    return Result.Success(JsonConvert.DeserializeObject<InstaRecovery>(result));
                 {
                     var error = JsonConvert.DeserializeObject<BadStatusErrorsResponseRecovery>(result);
                     var errors = "";
@@ -1809,7 +1807,6 @@ namespace InstagramApiSharp.API
                     return Result.Fail<InstaRecovery>(errors);
                 }
 
-                return Result.Success(JsonConvert.DeserializeObject<InstaRecovery>(result));
             }
             catch (HttpRequestException httpException)
             {
@@ -2217,28 +2214,23 @@ namespace InstagramApiSharp.API
                 }
 
                 var obj = JsonConvert.DeserializeObject<InstaChallengeRequireVerifyCode>(json);
-                if (obj != null)
+                if (obj == null) return Result.Fail(obj?.Message, InstaLoginResult.Exception);
+                if (obj.LoggedInUser != null)
                 {
-                    if (obj.LoggedInUser != null)
-                    {
-                        ValidateUserAsync(obj.LoggedInUser, csrftoken);
-                        await Task.Delay(3000);
-                        await AfterLoginAsync(response).ConfigureAwait(false);
-                        await MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
-                        await FeedProcessor.GetRecentActivityFeedAsync(PaginationParameters.MaxPagesToLoad(1));
+                    ValidateUserAsync(obj.LoggedInUser, csrftoken);
+                    await Task.Delay(3000);
+                    await AfterLoginAsync(response).ConfigureAwait(false);
+                    await MessagingProcessor.GetDirectInboxAsync(PaginationParameters.MaxPagesToLoad(1));
+                    await FeedProcessor.GetRecentActivityFeedAsync(PaginationParameters.MaxPagesToLoad(1));
 
-                        return Result.Success(InstaLoginResult.Success);
-                    }
-
-                    if (!string.IsNullOrEmpty(obj.Action))
-                    {
-                        // we should wait at least 15 seconds and then trying to login again
-                        await Task.Delay(15000);
-                        return await LoginAsync(false);
-                    }
+                    return Result.Success(InstaLoginResult.Success);
                 }
 
-                return Result.Fail(obj?.Message, InstaLoginResult.Exception);
+                if (string.IsNullOrEmpty(obj.Action)) return Result.Fail(obj?.Message, InstaLoginResult.Exception);
+                // we should wait at least 15 seconds and then trying to login again
+                await Task.Delay(15000);
+                return await LoginAsync(false);
+
             }
             catch (HttpRequestException httpException)
             {
@@ -3231,21 +3223,19 @@ namespace InstagramApiSharp.API
                 if (password != null)
                     User.Password = password;
                 User.UserName = User.UserName;
-                if (validateExtra)
+                if (!validateExtra) return;
+                User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
+                User.CsrfToken = csrfToken;
+                if (string.IsNullOrEmpty(User.CsrfToken))
                 {
-                    User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
-                    User.CsrfToken = csrfToken;
-                    if (string.IsNullOrEmpty(User.CsrfToken))
-                    {
-                        var cookies =
-                            HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
-                                .BaseAddress);
-                        User.CsrfToken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
-                    }
-
-                    IsUserAuthenticated = true;
-                    InvalidateProcessors();
+                    var cookies =
+                        HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
+                            .BaseAddress);
+                    User.CsrfToken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
                 }
+
+                IsUserAuthenticated = true;
+                InvalidateProcessors();
             }
             catch
             {

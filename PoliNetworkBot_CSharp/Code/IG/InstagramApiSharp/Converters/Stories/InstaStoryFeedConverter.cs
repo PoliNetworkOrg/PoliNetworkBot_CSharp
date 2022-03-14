@@ -40,9 +40,9 @@ namespace InstagramApiSharp.Converters
                 foreach (var item in SourceObject.Broadcasts)
                     feed.Broadcasts.Add(ConvertersFabric.Instance.GetBroadcastConverter(item).Convert());
 
-            if (SourceObject.PostLives?.PostLiveItems?.Count > 0)
-                foreach (var postlive in SourceObject.PostLives.PostLiveItems)
-                    feed.PostLives.Add(ConvertersFabric.Instance.GetAddToPostLiveConverter(postlive).Convert());
+            if (!(SourceObject.PostLives?.PostLiveItems?.Count > 0)) return feed;
+            foreach (var postlive in SourceObject.PostLives.PostLiveItems)
+                feed.PostLives.Add(ConvertersFabric.Instance.GetAddToPostLiveConverter(postlive).Convert());
 
             return feed;
         }

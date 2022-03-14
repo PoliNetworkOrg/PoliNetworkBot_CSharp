@@ -25,9 +25,9 @@ namespace InstagramApiSharp.Converters
                 ResultsCount = SourceObject.ResultsCount,
                 TotalCount = SourceObject.TotalCount
             };
-            if (SourceObject.Medias != null && SourceObject.Medias.Any())
-                foreach (var media in SourceObject.Medias)
-                    productMedia.Medias.Add(ConvertersFabric.Instance.GetSingleMediaConverter(media).Convert());
+            if (SourceObject.Medias == null || !SourceObject.Medias.Any()) return productMedia;
+            foreach (var media in SourceObject.Medias)
+                productMedia.Medias.Add(ConvertersFabric.Instance.GetSingleMediaConverter(media).Convert());
 
             return productMedia;
         }

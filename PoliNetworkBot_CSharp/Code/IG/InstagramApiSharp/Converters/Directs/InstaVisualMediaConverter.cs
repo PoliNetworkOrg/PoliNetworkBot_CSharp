@@ -34,10 +34,10 @@ namespace InstagramApiSharp.Converters
                 foreach (var image in SourceObject.Images.Candidates)
                     visualMedia.Images.Add(new InstaImage(image.Url, int.Parse(image.Width), int.Parse(image.Height)));
 
-            if (SourceObject.Videos?.Count > 0)
-                foreach (var video in SourceObject.Videos)
-                    visualMedia.Videos.Add(new InstaVideo(video.Url, int.Parse(video.Width), int.Parse(video.Height),
-                        video.Type));
+            if (!(SourceObject.Videos?.Count > 0)) return visualMedia;
+            foreach (var video in SourceObject.Videos)
+                visualMedia.Videos.Add(new InstaVideo(video.Url, int.Parse(video.Width), int.Parse(video.Height),
+                    video.Type));
 
             return visualMedia;
         }

@@ -781,11 +781,9 @@ namespace InstagramApiSharp.API.Processors
                 var instaUri = UriCreator.GetUpdateBusinessInfoUri();
 
 
-                if (phoneNumberWithCountryCode == null)
-                    phoneNumberWithCountryCode = $"{user.PublicPhoneCountryCode}{user.PublicPhoneNumber}";
+                phoneNumberWithCountryCode ??= $"{user.PublicPhoneCountryCode}{user.PublicPhoneNumber}";
 
-                if (businessContactType == null)
-                    businessContactType = user.BusinessContactMethod;
+                businessContactType ??= user.BusinessContactMethod;
 
                 var publicPhoneContact = new JObject
                 {

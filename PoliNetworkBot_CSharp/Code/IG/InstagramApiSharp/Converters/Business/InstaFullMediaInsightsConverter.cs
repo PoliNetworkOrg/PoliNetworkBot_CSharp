@@ -41,83 +41,81 @@ namespace InstagramApiSharp.Converters.Business
 
             var inlineInsights = SourceObject.InlineInsightsNode;
 
-            if (SourceObject.InlineInsightsNode != null)
+            if (SourceObject.InlineInsightsNode == null) return fullMediaInsights;
+            var node = new InstaFullMediaInsightsMetrics
             {
-                var node = new InstaFullMediaInsightsMetrics
-                {
-                    State = inlineInsights.State
-                };
-                if (inlineInsights.Metrics != null)
-                {
-                    node.ImpressionCount = inlineInsights.Metrics.ImpressionCount ?? 0;
-                    node.OwnerAccountFollowsCount = inlineInsights.Metrics.OwnerAccountFollowsCount ?? 0;
-                    node.OwnerProfileViewsCount = inlineInsights.Metrics.OwnerProfileViewsCount ?? 0;
-                    node.ReachCount = inlineInsights.Metrics.ReachCount ?? 0;
+                State = inlineInsights.State
+            };
+            if (inlineInsights.Metrics != null)
+            {
+                node.ImpressionCount = inlineInsights.Metrics.ImpressionCount ?? 0;
+                node.OwnerAccountFollowsCount = inlineInsights.Metrics.OwnerAccountFollowsCount ?? 0;
+                node.OwnerProfileViewsCount = inlineInsights.Metrics.OwnerProfileViewsCount ?? 0;
+                node.ReachCount = inlineInsights.Metrics.ReachCount ?? 0;
 
 
-                    if (inlineInsights.Metrics.Reach != null)
-                        try
+                if (inlineInsights.Metrics.Reach != null)
+                    try
+                    {
+                        var reach = new InstaFullMediaInsightsNodeItem
                         {
-                            var reach = new InstaFullMediaInsightsNodeItem
-                            {
-                                Value = inlineInsights.Metrics.Reach.Value ?? 0
-                            };
-                            foreach (var item in inlineInsights.Metrics.Reach.FollowStatus.Nodes)
-                            {
-                                var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
-                                    .Convert();
-                                reach.Items.Add(convertedItem);
-                            }
-
-                            node.Reach = reach;
-                        }
-                        catch
+                            Value = inlineInsights.Metrics.Reach.Value ?? 0
+                        };
+                        foreach (var item in inlineInsights.Metrics.Reach.FollowStatus.Nodes)
                         {
+                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                                .Convert();
+                            reach.Items.Add(convertedItem);
                         }
 
-                    if (inlineInsights.Metrics.Impressions != null)
-                        try
-                        {
-                            var impressions = new InstaFullMediaInsightsNodeItem
-                            {
-                                Value = inlineInsights.Metrics.Impressions.Value ?? 0
-                            };
-                            foreach (var item in inlineInsights.Metrics.Impressions.Surfaces.Nodes)
-                            {
-                                var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
-                                    .Convert();
-                                impressions.Items.Add(convertedItem);
-                            }
+                        node.Reach = reach;
+                    }
+                    catch
+                    {
+                    }
 
-                            node.Impressions = impressions;
-                        }
-                        catch
+                if (inlineInsights.Metrics.Impressions != null)
+                    try
+                    {
+                        var impressions = new InstaFullMediaInsightsNodeItem
                         {
+                            Value = inlineInsights.Metrics.Impressions.Value ?? 0
+                        };
+                        foreach (var item in inlineInsights.Metrics.Impressions.Surfaces.Nodes)
+                        {
+                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                                .Convert();
+                            impressions.Items.Add(convertedItem);
                         }
 
-                    if (inlineInsights.Metrics.ProfileActions != null)
-                        try
-                        {
-                            var profileActions = new InstaFullMediaInsightsNodeItem
-                            {
-                                Value = inlineInsights.Metrics.ProfileActions.Actions.Value ?? 0
-                            };
-                            foreach (var item in inlineInsights.Metrics.ProfileActions.Actions.Nodes)
-                            {
-                                var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
-                                    .Convert();
-                                profileActions.Items.Add(convertedItem);
-                            }
+                        node.Impressions = impressions;
+                    }
+                    catch
+                    {
+                    }
 
-                            node.ProfileActions = profileActions;
-                        }
-                        catch
+                if (inlineInsights.Metrics.ProfileActions != null)
+                    try
+                    {
+                        var profileActions = new InstaFullMediaInsightsNodeItem
                         {
+                            Value = inlineInsights.Metrics.ProfileActions.Actions.Value ?? 0
+                        };
+                        foreach (var item in inlineInsights.Metrics.ProfileActions.Actions.Nodes)
+                        {
+                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                                .Convert();
+                            profileActions.Items.Add(convertedItem);
                         }
-                }
 
-                fullMediaInsights.InlineInsightsNode = node;
+                        node.ProfileActions = profileActions;
+                    }
+                    catch
+                    {
+                    }
             }
+
+            fullMediaInsights.InlineInsightsNode = node;
 
             return fullMediaInsights;
         }

@@ -36,15 +36,15 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.PrimaryCountryInfo != null)
-                try
-                {
-                    details.PrimaryCountryInfo = ConvertersFabric.Instance
-                        .GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
-                }
-                catch
-                {
-                }
+            if (SourceObject.PrimaryCountryInfo == null) return details;
+            try
+            {
+                details.PrimaryCountryInfo = ConvertersFabric.Instance
+                    .GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
+            }
+            catch
+            {
+            }
 
             return details;
         }

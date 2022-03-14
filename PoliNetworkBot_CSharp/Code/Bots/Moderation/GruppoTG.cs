@@ -14,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         private readonly string LastUpdateInviteLinkTimeString;
         public string idLink;
         public string newLink;
-        public string nome;
+        public readonly string nome;
         public List<string> oldLinks;
         public long? permanentId;
 

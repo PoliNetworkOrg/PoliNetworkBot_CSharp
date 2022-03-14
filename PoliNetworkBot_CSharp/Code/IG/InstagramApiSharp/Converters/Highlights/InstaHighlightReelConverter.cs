@@ -48,9 +48,9 @@ namespace InstagramApiSharp.Converters
             hLight.User = userConverter.Convert();
 
             hLight.Items = new List<InstaStoryItem>();
-            if (SourceObject.Reel.Items != null)
-                foreach (var media in SourceObject.Reel.Items)
-                    hLight.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(media).Convert());
+            if (SourceObject.Reel.Items == null) return hLight;
+            foreach (var media in SourceObject.Reel.Items)
+                hLight.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(media).Convert());
             return hLight;
         }
     }
