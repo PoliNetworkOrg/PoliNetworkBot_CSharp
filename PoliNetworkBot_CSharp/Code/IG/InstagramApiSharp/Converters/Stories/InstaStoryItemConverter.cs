@@ -92,10 +92,8 @@ namespace InstagramApiSharp.Converters
                         .Convert());
 
             if (SourceObject.StoryCTA != null && SourceObject.StoryCTA.Any())
-                foreach (var cta in SourceObject.StoryCTA)
-                    if (cta.Links != null && cta.Links.Any())
-                        foreach (var link in cta.Links)
-                            instaStory.StoryCTA.Add(ConvertersFabric.Instance.GetStoryCtaConverter(link).Convert());
+                foreach (var link in SourceObject.StoryCTA.Where(cta => cta.Links != null && cta.Links.Any()).SelectMany(cta => cta.Links))
+                    instaStory.StoryCTA.Add(ConvertersFabric.Instance.GetStoryCtaConverter(link).Convert());
 
             if (SourceObject.StoryPolls?.Count > 0)
                 foreach (var poll in SourceObject.StoryPolls)

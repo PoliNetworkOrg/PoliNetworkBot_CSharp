@@ -221,7 +221,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!mediaResponse.Succeeded)
                 {
                     Result.Fail(mediaResponse.Info,
-                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default(InstaSectionMedia));
+                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
                 }
 
                 paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
@@ -329,7 +329,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!mediaResponse.Succeeded)
                 {
                     Result.Fail(mediaResponse.Info,
-                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default(InstaSectionMedia));
+                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
                 }
 
                 paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
@@ -473,7 +473,7 @@ namespace InstagramApiSharp.API.Processors
             string rankToken = null,
             string maxId = null,
             int? page = null,
-            List<long> nextMediaIds = null)
+            IEnumerable<long> nextMediaIds = null)
         {
             try
             {

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -23,13 +24,10 @@ namespace InstagramApiSharp.Converters
                 var medias = new InstaMediaList();
                 if (mediasResponse == null)
                     return medias;
-                foreach (var instaUserFeedItemResponse in mediasResponse)
-                {
-                    if (instaUserFeedItemResponse?.Type != 0) continue;
-                    var feedItem = ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
-                        .Convert();
-                    medias.Add(feedItem);
-                }
+                medias.AddRange(from instaUserFeedItemResponse in mediasResponse
+                    where instaUserFeedItemResponse?.Type == 0
+                    select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
+                        .Convert());
 
                 return medias;
             }

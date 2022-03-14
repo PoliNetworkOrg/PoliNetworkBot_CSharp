@@ -30,19 +30,19 @@ namespace InstagramApiSharp.Converters.Business
                 {
                 }
 
-            if (SourceObject.Image != null && SourceObject.Image.Uri != null)
+            if (SourceObject.Image is { Uri: { } })
                 media.Image = SourceObject.Image.Uri;
 
-            if (SourceObject.InlineInsightsNode != null)
-                try
-                {
-                    media.InsightsState = SourceObject.InlineInsightsNode.State;
-                    media.MetricsImpressionsOrganicValue =
-                        SourceObject.InlineInsightsNode.Metrics.Impressions.Organic.Value ?? 0;
-                }
-                catch
-                {
-                }
+            if (SourceObject.InlineInsightsNode == null) return media;
+            try
+            {
+                media.InsightsState = SourceObject.InlineInsightsNode.State;
+                media.MetricsImpressionsOrganicValue =
+                    SourceObject.InlineInsightsNode.Metrics.Impressions.Organic.Value ?? 0;
+            }
+            catch
+            {
+            }
 
             return media;
         }

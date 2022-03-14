@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using Bot.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 
@@ -30,16 +31,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
 
         public static bool CorsoHandler(Conversation conversation, string messageText)
         {
-            foreach (var scuola in ScuoleCorso.Values)
+            foreach (var corso in from scuola in ScuoleCorso.Values where scuola != null from corso in scuola where messageText == corso select corso)
             {
-                if (scuola == null) continue;
-                foreach (var corso in scuola)
-                    if (messageText == corso)
-                    {
-                        conversation.setCorso(corso);
-                        conversation.setStato(stati.Cartella);
-                        return true;
-                    }
+                conversation.setCorso(corso);
+                conversation.setStato(stati.Cartella);
+                return true;
             }
 
             return false;
@@ -47,9 +43,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
 
         public static bool ScuolaHandler(Conversation conversation, string messageText)
         {
-            foreach (var scuola in ScuoleCorso.Keys)
+            foreach (var scuola in ScuoleCorso.Keys.Where(scuola => messageText == scuola))
             {
-                if (messageText != scuola) continue;
                 conversation.setScuola(scuola);
                 conversation.setStato(stati.Corso);
                 return true;

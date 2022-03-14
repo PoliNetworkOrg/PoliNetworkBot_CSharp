@@ -46,7 +46,7 @@ namespace InstagramApiSharp.Converters
                 }
             }
 
-            if (SourceObject.UserDetail != null && SourceObject.UserDetail.User != null)
+            if (SourceObject.UserDetail is { User: { } })
                 try
                 {
                     fullUserInfo.UserDetail = ConvertersFabric.Instance.GetUserInfoConverter(SourceObject.UserDetail)

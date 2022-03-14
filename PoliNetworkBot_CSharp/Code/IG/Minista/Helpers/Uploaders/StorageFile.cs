@@ -17,9 +17,9 @@ namespace Minista.Helpers
 
         public string Path { get; set; }
 
-        public static async Task<StorageFile> GetFileFromPathAsync(string testJpg)
+        public static Task<StorageFile> GetFileFromPathAsync(string testJpg)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new StorageFile(testJpg));
         }
 
 

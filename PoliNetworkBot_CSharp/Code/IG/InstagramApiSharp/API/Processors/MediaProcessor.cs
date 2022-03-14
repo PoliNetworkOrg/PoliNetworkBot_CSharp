@@ -839,70 +839,62 @@ namespace InstagramApiSharp.API.Processors
                     if (al.IsImage)
                     {
                         var image = al.ImageToUpload;
-                        if (image.UserTags?.Count > 0)
-                        {
-                            var currentDelay = _instaApi.GetRequestDelay();
-                            _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                            foreach (var t in image.UserTags)
-                                if (t.Pk <= 0)
-                                    try
+                        if (!(image.UserTags?.Count > 0)) continue;
+                        var currentDelay = _instaApi.GetRequestDelay();
+                        _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
+                        foreach (var t in image.UserTags.Where(t => t.Pk <= 0))
+                            try
+                            {
+                                var tried = false;
+                                TryLabel:
+                                var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
+                                if (!u.Succeeded)
+                                {
+                                    if (!tried)
                                     {
-                                        var tried = false;
-                                        TryLabel:
-                                        var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                                        if (!u.Succeeded)
-                                        {
-                                            if (!tried)
-                                            {
-                                                tried = true;
-                                                goto TryLabel;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            t.Pk = u.Value.Pk;
-                                        }
+                                        tried = true;
+                                        goto TryLabel;
                                     }
-                                    catch
-                                    {
-                                    }
+                                }
+                                else
+                                {
+                                    t.Pk = u.Value.Pk;
+                                }
+                            }
+                            catch
+                            {
+                            }
 
-                            _instaApi.SetRequestDelay(currentDelay);
-                        }
+                        _instaApi.SetRequestDelay(currentDelay);
                     }
                     else if (al.IsVideo)
                     {
                         var video = al.VideoToUpload;
-                        if (video.UserTags?.Count > 0)
-                        {
-                            var currentDelay = _instaApi.GetRequestDelay();
-                            _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                            foreach (var t in video.UserTags)
-                                if (t.Pk <= 0)
-                                    try
-                                    {
-                                        var tried = false;
-                                        TryLabel:
-                                        var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                                        if (!u.Succeeded)
-                                        {
-                                            if (!tried)
-                                            {
-                                                tried = true;
-                                                goto TryLabel;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            t.Pk = u.Value.Pk;
-                                        }
-                                    }
-                                    catch
-                                    {
-                                    }
+                        if (!(video.UserTags?.Count > 0)) continue;
+                        var currentDelay = _instaApi.GetRequestDelay();
+                        _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
+                        foreach (var t in video.UserTags.Where(t => t.Pk <= 0))
+                            try
+                            {
+                                var tried = false;
+                                TryLabel:
+                                var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
+                                if (!u.Succeeded)
+                                {
+                                    if (tried) continue;
+                                    tried = true;
+                                    goto TryLabel;
+                                }
+                                else
+                                {
+                                    t.Pk = u.Value.Pk;
+                                }
+                            }
+                            catch
+                            {
+                            }
 
-                            _instaApi.SetRequestDelay(currentDelay);
-                        }
+                        _instaApi.SetRequestDelay(currentDelay);
                     }
 
                 foreach (var al in album)
@@ -1019,29 +1011,26 @@ namespace InstagramApiSharp.API.Processors
                 {
                     var currentDelay = _instaApi.GetRequestDelay();
                     _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                    foreach (var t in video.UserTags)
-                        if (t.Pk <= 0)
-                            try
+                    foreach (var t in video.UserTags.Where(t => t.Pk <= 0))
+                        try
+                        {
+                            var tried = false;
+                            TryLabel:
+                            var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
+                            if (!u.Succeeded)
                             {
-                                var tried = false;
-                                TryLabel:
-                                var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                                if (!u.Succeeded)
-                                {
-                                    if (!tried)
-                                    {
-                                        tried = true;
-                                        goto TryLabel;
-                                    }
-                                }
-                                else
-                                {
-                                    t.Pk = u.Value.Pk;
-                                }
+                                if (tried) continue;
+                                tried = true;
+                                goto TryLabel;
                             }
-                            catch
+                            else
                             {
+                                t.Pk = u.Value.Pk;
                             }
+                        }
+                        catch
+                        {
+                        }
 
                     _instaApi.SetRequestDelay(currentDelay);
                 }
@@ -1727,27 +1716,21 @@ namespace InstagramApiSharp.API.Processors
                 { "filter_type", "0" },
                 { "video_result", "" }
             };
-            if (video.UserTags?.Count > 0)
-            {
-                var tagArr = new JArray();
-                foreach (var tag in video.UserTags)
-                    if (tag.Pk != -1)
-                    {
-                        var position = new JArray(0.0, 0.0);
-                        var singleTag = new JObject
-                        {
-                            { "user_id", tag.Pk },
-                            { "position", position }
-                        };
-                        tagArr.Add(singleTag);
-                    }
+            
+            if (!(video.UserTags?.Count > 0)) return vidData;
+            var tagArr = new JArray();
+            foreach (var singleTag in from tag in video.UserTags where tag.Pk != -1 let position = new JArray(0.0, 0.0) select new JObject
+                     {
+                         { "user_id", tag.Pk },
+                         { "position", position }
+                     })
+                tagArr.Add(singleTag);
 
-                var root = new JObject
-                {
-                    { "in", tagArr }
-                };
-                vidData.Add("usertags", root.ToString(Formatting.None));
-            }
+            var root = new JObject
+            {
+                { "in", tagArr }
+            };
+            vidData.Add("usertags", root.ToString(Formatting.None));
 
             return vidData;
         }

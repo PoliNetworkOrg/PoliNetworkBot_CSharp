@@ -93,9 +93,7 @@ namespace InstagramApiSharp
         {
             if (!appendQuotation)
                 return string.Join(",", listOfValues);
-            var list = new List<string>();
-            foreach (var item in listOfValues)
-                list.Add(item.Encode());
+            var list = listOfValues.Select(item => item.Encode()).ToList();
             return string.Join(",", list);
         }
 
@@ -103,9 +101,7 @@ namespace InstagramApiSharp
         {
             if (!appendQuotation)
                 return string.Join(",", listOfValues);
-            var list = new List<string>();
-            foreach (var item in listOfValues)
-                list.Add(item.Encode());
+            var list = listOfValues.Select(item => item.Encode()).ToList();
             return string.Join(",", list);
         }
 
@@ -126,9 +122,7 @@ namespace InstagramApiSharp
 
         public static string EncodeRecipients(this List<long> recipients)
         {
-            var list = new List<string>();
-            foreach (var item in recipients)
-                list.Add($"[{item}]");
+            var list = recipients.Select(item => $"[{item}]").ToList();
             return string.Join(",", list);
         }
 
@@ -432,7 +426,7 @@ namespace InstagramApiSharp
 
     internal class SecureRandom
     {
-        public static Random random = new();
+        private static readonly Random random = new();
 
         public static void NextBytes(byte[] randKey, int p1, int randKeyLength)
         {

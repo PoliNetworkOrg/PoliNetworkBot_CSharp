@@ -344,18 +344,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                             e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                             e.Message.MessageId);
                         var messages = MessagesStore.GetAllMessages(x => x.AllowedSpam);
-                        foreach (var message in messages)
+                        foreach (var m2 in messages.Select(message => message.Messages.First()).Where(m2 => m2 != null))
                         {
-                            var m2 = message.Messages.First();
-                            if (m2 != null)
+                            text = new Language(new Dictionary<string, string>
                             {
-                                text = new Language(new Dictionary<string, string>
-                                {
-                                    { "uni", m2.Text ?? m2.Caption }
-                                });
-                                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                                    "uni", ParseMode.Html, null, e.Message.From.Username);
-                            }
+                                { "uni", m2.Text ?? m2.Caption }
+                            });
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+                                "uni", ParseMode.Html, null, e.Message.From.Username);
                         }
 
                         return;

@@ -33,21 +33,20 @@ namespace InstagramApiSharp.Converters
                 NextMinId = SourceObject.NextMinId
             };
             if (SourceObject.Comments == null || !(SourceObject?.Comments?.Count > 0)) return commentList;
-            foreach (var commentResponse in SourceObject.Comments)
+            foreach (var converter in SourceObject.Comments.Select(commentResponse => ConvertersFabric.Instance.GetCommentConverter(commentResponse)))
             {
-                var converter = ConvertersFabric.Instance.GetCommentConverter(commentResponse);
                 commentList.Comments.Add(converter.Convert());
             }
 
-            if (SourceObject.PreviewComments != null && SourceObject.PreviewComments.Any())
-                foreach (var cmt in SourceObject.PreviewComments)
-                    try
-                    {
-                        commentList.PreviewComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject.PreviewComments == null || !SourceObject.PreviewComments.Any()) return commentList;
+            foreach (var cmt in SourceObject.PreviewComments)
+                try
+                {
+                    commentList.PreviewComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
+                }
+                catch
+                {
+                }
 
             return commentList;
         }

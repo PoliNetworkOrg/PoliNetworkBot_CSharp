@@ -19,10 +19,9 @@ namespace InstagramApiSharp.Converters
 
             var data = new InstaWebDataItem
             {
-                Text = SourceObject.Text
+                Text = SourceObject.Text,
+                Time = SourceObject.Timestamp?.FromUnixTimeSeconds() ?? DateTime.MinValue
             };
-
-            data.Time = SourceObject.Timestamp != null ? SourceObject.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue;
 
             return data;
         }

@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -16,11 +17,7 @@ namespace InstagramApiSharp.Converters
         {
             var carousel = new InstaCarousel();
             if (SourceObject == null) throw new ArgumentNullException("Source object");
-            foreach (var item in SourceObject)
-            {
-                var carouselItem = ConvertersFabric.Instance.GetCarouselItemConverter(item);
-                carousel.Add(carouselItem.Convert());
-            }
+            carousel.AddRange(SourceObject.Select(item => ConvertersFabric.Instance.GetCarouselItemConverter(item)).Select(carouselItem => carouselItem.Convert()));
 
             return carousel;
         }

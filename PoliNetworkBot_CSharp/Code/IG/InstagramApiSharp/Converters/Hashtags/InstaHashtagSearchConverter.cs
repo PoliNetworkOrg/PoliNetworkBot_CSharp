@@ -18,10 +18,12 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null)
                 throw new ArgumentNullException("Source object");
 
-            var tags = new InstaHashtagSearch();
+            var tags = new InstaHashtagSearch
+            {
+                MoreAvailable = SourceObject.MoreAvailable.GetValueOrDefault(false),
+                RankToken = SourceObject.RankToken
+            };
 
-            tags.MoreAvailable = SourceObject.MoreAvailable.GetValueOrDefault(false);
-            tags.RankToken = SourceObject.RankToken;
             tags.AddRange(SourceObject.Tags.Select(tag =>
                 ConvertersFabric.Instance.GetHashTagConverter(tag).Convert()));
 

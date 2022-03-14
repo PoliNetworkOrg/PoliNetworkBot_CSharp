@@ -22,14 +22,14 @@ namespace InstagramApiSharp.Helpers
         internal static readonly CultureInfo EnglishCulture = new("en-us");
         private readonly Random Rnd = new();
         public /*readonly*/ InstaApiVersion _apiVersion;
-        public IHttpRequestProcessor _httpRequestProcessor;
-        public InstaApi _instaApi;
+        public IHttpRequestProcessor HttpRequestProcessor;
+        public readonly InstaApi _instaApi;
 
         internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor httpRequestProcessor,
             InstaApi instaApi)
         {
             _apiVersion = apiVersionType;
-            _httpRequestProcessor = httpRequestProcessor;
+            HttpRequestProcessor = httpRequestProcessor;
             _instaApi = instaApi;
         }
 
@@ -45,7 +45,7 @@ namespace InstagramApiSharp.Helpers
 
             var request = new HttpRequestMessage(method, uri);
             var currentUser = _instaApi.GetLoggedUser();
-            var cookies = _httpRequestProcessor.HttpHandler.CookieContainer.GetCookies(_httpRequestProcessor.Client
+            var cookies = HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
                 .BaseAddress);
             var mid = currentUser.XMidHeader;
             var rur = currentUser.RurHeader;

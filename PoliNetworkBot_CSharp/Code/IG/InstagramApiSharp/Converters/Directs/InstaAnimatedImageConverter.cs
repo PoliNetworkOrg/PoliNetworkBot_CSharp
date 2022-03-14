@@ -23,7 +23,7 @@ namespace InstagramApiSharp.Converters
                 IsSticker = SourceObject.IsSticker ?? false
             };
 
-            if (SourceObject.Images != null && SourceObject.Images?.Media != null)
+            if (SourceObject.Images is { Media: { } })
                 animatedImage.Media = ConvertersFabric.Instance
                     .GetAnimatedImageMediaConverter(SourceObject.Images.Media).Convert();
 

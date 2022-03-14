@@ -48,7 +48,7 @@ namespace Minista.Helpers
             return new Uri("https://i.instagram.com/api/v1/media/configure_sidecar/", UriKind.RelativeOrAbsolute);
         }
 
-        public async Task SetFiles(StorageFile[] files, string caption, InstaApi instaApi)
+        public async Task SetFiles(IEnumerable<StorageFile> files, string caption, InstaApi instaApi)
         {
             Caption = caption;
             this.instaApi = instaApi;
@@ -300,7 +300,7 @@ namespace Minista.Helpers
 
     internal class SinglePhotoUploader
     {
-        public static Random Rnd = new();
+        public static readonly Random Rnd = new();
         private readonly PhotoAlbumUploader Album;
         private readonly InstaApi InstaApi;
 

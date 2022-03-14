@@ -49,10 +49,12 @@ namespace PoliNetworkBot_CSharp.Code.Config
 
         private static void Reset(string configBotsInfo, BotTypeApi b)
         {
-            BotConfig t = new();
-            t.bots = new List<BotInfoAbstract>
+            BotConfig t = new()
             {
-                new()
+                bots = new List<BotInfoAbstract>
+                {
+                    new()
+                }
             };
             t.bots[0].botTypeApi = b;
             var j = JsonConvert.SerializeObject(t);

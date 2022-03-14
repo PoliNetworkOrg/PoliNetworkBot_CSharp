@@ -1030,34 +1030,33 @@ namespace InstagramApiSharp.API
                         return Result.Fail("Two Factor Authentication is required", InstaLoginResult.TwoFactorRequired);
                     }
 
-                    if (loginFailReason.ErrorType == "checkpoint_challenge_required"
+                    switch (loginFailReason.ErrorType)
+                    {
                         /* || !string.IsNullOrEmpty(loginFailReason.Message) && loginFailReason.Message == "challenge_required"*/
-                       )
-                    {
-                        ChallengeLoginInfo = loginFailReason.Challenge;
+                        case "checkpoint_challenge_required":
+                            ChallengeLoginInfo = loginFailReason.Challenge;
 
-                        return Result.Fail("Challenge is required", InstaLoginResult.ChallengeRequired);
-                    }
-
-                    if (loginFailReason.ErrorType == "rate_limit_error")
-                        return Result.Fail("Please wait a few minutes before you try again.",
-                            InstaLoginResult.LimitError);
-                    if (loginFailReason.ErrorType is "inactive user" or "inactive_user")
-                        return Result.Fail($"{loginFailReason.Message}\r\nHelp url: {loginFailReason.HelpUrl}",
-                            InstaLoginResult.InactiveUser);
-                    if (loginFailReason.ErrorType == "checkpoint_logged_out")
-                    {
-                        if (!needsRelogin)
+                            return Result.Fail("Challenge is required", InstaLoginResult.ChallengeRequired);
+                        case "rate_limit_error":
+                            return Result.Fail("Please wait a few minutes before you try again.",
+                                InstaLoginResult.LimitError);
+                        case "inactive user" or "inactive_user":
+                            return Result.Fail($"{loginFailReason.Message}\r\nHelp url: {loginFailReason.HelpUrl}",
+                                InstaLoginResult.InactiveUser);
+                        case "checkpoint_logged_out":
                         {
-                            needsRelogin = true;
-                            goto ReloginLabel;
+                            if (!needsRelogin)
+                            {
+                                needsRelogin = true;
+                                goto ReloginLabel;
+                            }
+
+                            return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
+                                InstaLoginResult.CheckpointLoggedOut);
                         }
-
-                        return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
-                            InstaLoginResult.CheckpointLoggedOut);
+                        default:
+                            return Result.UnExpectedResponse<InstaLoginResult>(response, json);
                     }
-
-                    return Result.UnExpectedResponse<InstaLoginResult>(response, json);
                 }
 
                 var loginInfo = JsonConvert.DeserializeObject<InstaLoginResponse>(json);
@@ -1673,10 +1672,7 @@ namespace InstagramApiSharp.API
 
                 var json = await response.Content.ReadAsStringAsync();
                 var obj = JsonConvert.DeserializeObject<InstaUserLookupResponse>(json);
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.Fail<InstaUserLookup>(obj.Message);
-
-                return Result.Success(ConvertersFabric.Instance.GetUserLookupConverter(obj).Convert());
+                return response.StatusCode != HttpStatusCode.OK ? Result.Fail<InstaUserLookup>(obj.Message) : Result.Success(ConvertersFabric.Instance.GetUserLookupConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -2580,10 +2576,7 @@ namespace InstagramApiSharp.API
                 response = await HttpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<bool>(response, json);
-
-                return Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -2833,10 +2826,7 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<string>(response, json);
-
-                return Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {
@@ -2897,10 +2887,7 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<string>(response, json);
-
-                return Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {
@@ -2933,10 +2920,7 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<string>(response, json);
-
-                return Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {

@@ -25,10 +25,10 @@ namespace InstagramApiSharp.Converters
                 Width = SourceObject.Width,
                 X = SourceObject.X,
                 Y = SourceObject.Y,
-                Z = SourceObject.Z
+                Z = SourceObject.Z,
+                QuestionSticker = ConvertersFabric.Instance
+                    .GetStoryQuestionStickerItemConverter(SourceObject.QuestionSticker).Convert()
             };
-            QuestionItem.QuestionSticker = ConvertersFabric.Instance
-                .GetStoryQuestionStickerItemConverter(SourceObject.QuestionSticker).Convert();
             return QuestionItem;
         }
     }

@@ -106,8 +106,7 @@ namespace InstagramApiSharp.Converters
                 PageId = SourceObject.User.PageId ?? 0,
                 PageName = SourceObject.User.PageName
             };
-            if (SourceObject.User.BiographyWithEntities != null &&
-                SourceObject.User.BiographyWithEntities.Entities != null)
+            if (SourceObject.User.BiographyWithEntities is { Entities: { } })
                 userInfo.BiographyWithEntities = SourceObject.User.BiographyWithEntities;
             if (!string.IsNullOrEmpty(SourceObject.User.BusinessContactMethod))
                 try

@@ -67,21 +67,19 @@ namespace InstagramApiSharp.Converters
                 thread.LastPermanentItem = converter.Convert();
             }
 
-            if (SourceObject.Users != null && SourceObject.Users.Count > 0)
-                foreach (var user in SourceObject.Users)
+            if (SourceObject.Users is { Count: > 0 })
+                foreach (var converter in SourceObject.Users.Select(user => ConvertersFabric.Instance.GetUserShortFriendshipConverter(user)))
                 {
-                    var converter = ConvertersFabric.Instance.GetUserShortFriendshipConverter(user);
                     thread.Users.Add(converter.Convert());
                 }
 
-            if (SourceObject.LeftUsers != null && SourceObject.LeftUsers.Count > 0)
-                foreach (var user in SourceObject.LeftUsers)
+            if (SourceObject.LeftUsers is { Count: > 0 })
+                foreach (var converter in SourceObject.LeftUsers.Select(user => ConvertersFabric.Instance.GetUserShortFriendshipConverter(user)))
                 {
-                    var converter = ConvertersFabric.Instance.GetUserShortFriendshipConverter(user);
                     thread.LeftUsers.Add(converter.Convert());
                 }
 
-            if (SourceObject.LastSeenAt != null && SourceObject.LastSeenAt != null)
+            if (SourceObject.LastSeenAt is { })
                 try
                 {
                     var lastSeenJson = System.Convert.ToString(SourceObject.LastSeenAt);

@@ -12,11 +12,7 @@ namespace InstagramApiSharp.Classes.Models
         {
         }
 
-        public InstaVideo(string url, int width, int height) : this(url, width, height, 3)
-        {
-        }
-
-        public InstaVideo(string url, int width, int height, int type)
+        public InstaVideo(string url, int width, int height, int type = 3)
         {
             Uri = url;
             Width = width;

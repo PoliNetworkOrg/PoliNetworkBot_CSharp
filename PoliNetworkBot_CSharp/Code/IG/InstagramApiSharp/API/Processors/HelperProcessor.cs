@@ -1205,10 +1205,7 @@ namespace InstagramApiSharp.API.Processors
                 progress?.Invoke(upProgress);
                 var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4")
                     .Replace(".", "").ToLower();
-                if (vidExt == "mov")
-                    request.Headers.Add("X-Entity-Type", "video/quicktime");
-                else
-                    request.Headers.Add("X-Entity-Type", "video/mp4");
+                request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "video/quicktime" : "video/mp4");
 
                 request.Headers.Add("Offset", "0");
                 request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);

@@ -157,9 +157,7 @@ namespace InstagramApiSharp.API.Processors
                 var mediaResult = await GetShoppableMedia(userId, paginationParameters);
                 if (!mediaResult.Succeeded)
                 {
-                    if (mediaResult.Value != null)
-                        return Result.Fail(mediaResult.Info, Convert(mediaResult.Value));
-                    return Result.Fail(mediaResult.Info, mediaList);
+                    return Result.Fail(mediaResult.Info, mediaResult.Value != null ? Convert(mediaResult.Value) : mediaList);
                 }
 
                 var mediaResponse = mediaResult.Value;

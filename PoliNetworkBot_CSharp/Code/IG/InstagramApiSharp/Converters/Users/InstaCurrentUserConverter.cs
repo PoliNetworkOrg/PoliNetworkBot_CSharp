@@ -31,14 +31,14 @@ namespace InstagramApiSharp.Converters
                 PhoneNumber = SourceObject.PhoneNumber
             };
 
-            if (SourceObject.HDProfilePicVersions != null && SourceObject.HDProfilePicVersions?.Length > 0)
+            if (SourceObject.HDProfilePicVersions is { Length: > 0 })
                 foreach (var imageResponse in SourceObject.HDProfilePicVersions)
                 {
                     var converter = ConvertersFabric.Instance.GetImageConverter(imageResponse);
                     user.HdProfileImages.Add(converter.Convert());
                 }
 
-            if (SourceObject.HDProfilePicture != null)
+            if (SourceObject.HDProfilePicture == null) return user;
             {
                 var converter = ConvertersFabric.Instance.GetImageConverter(SourceObject.HDProfilePicture);
                 user.HdProfilePicture = converter.Convert();

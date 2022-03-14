@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -42,24 +43,24 @@ namespace InstagramApiSharp.Converters.Hashtags
                     {
                     }
 
-            if (SourceObject.PersistentSections?.Count > 0)
+            if (!(SourceObject.PersistentSections?.Count > 0)) return media;
+            {
                 try
                 {
-                    foreach (var section in SourceObject.PersistentSections)
-                        if (section.LayoutContent?.Related?.Count > 0)
-                            foreach (var related in section.LayoutContent.Related)
-                                try
-                                {
-                                    media.RelatedHashtags.Add(ConvertersFabric.Instance
-                                        .GetRelatedHashtagConverter(related).Convert());
-                                }
-                                catch
-                                {
-                                }
+                    foreach (var related in SourceObject.PersistentSections.Where(section => section.LayoutContent?.Related?.Count > 0).SelectMany(section => section.LayoutContent.Related))
+                        try
+                        {
+                            media.RelatedHashtags.Add(ConvertersFabric.Instance
+                                .GetRelatedHashtagConverter(related).Convert());
+                        }
+                        catch
+                        {
+                        }
                 }
                 catch
                 {
                 }
+            }
 
             return media;
         }

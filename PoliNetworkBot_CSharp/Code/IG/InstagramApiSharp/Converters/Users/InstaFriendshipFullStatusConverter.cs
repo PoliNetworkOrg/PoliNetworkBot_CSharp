@@ -22,10 +22,10 @@ namespace InstagramApiSharp.Converters
                 FollowedBy = SourceObject.FollowedBy ?? false,
                 OutgoingRequest = SourceObject.OutgoingRequest ?? false,
                 IsBestie = SourceObject.IsBestie ?? false,
-                Muting = SourceObject.Muting ?? false
+                Muting = SourceObject.Muting ?? false,
+                IncomingRequest = SourceObject.IncomingRequest ?? false,
+                IsPrivate = SourceObject.IsPrivate ?? false
             };
-            friendShip.IncomingRequest = SourceObject.IncomingRequest ?? false;
-            friendShip.IsPrivate = SourceObject.IsPrivate ?? false;
             return friendShip;
         }
     }

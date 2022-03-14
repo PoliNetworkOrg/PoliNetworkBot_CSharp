@@ -143,10 +143,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                     Store[text].Messages.Add(e.Message);
 
-                    if (Store.Count == 0)
-                        return SpamType.UNDEFINED;
-
-                    return Store[text].IsSpam();
+                    return Store.Count == 0 ? SpamType.UNDEFINED : Store[text].IsSpam();
                 }
             }
             catch
@@ -159,11 +156,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal static StoredMessage GetStoredMessageByHash(string hash)
         {
-            foreach (var storedMessage in Store.Values)
-                if (storedMessage.GetHash() == hash)
-                    return storedMessage;
-
-            return null;
+            return Store.Values.FirstOrDefault(storedMessage => storedMessage.GetHash() == hash);
         }
 
         internal static List<Message> GetMessages(string text)

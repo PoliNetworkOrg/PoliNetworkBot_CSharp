@@ -72,12 +72,12 @@ namespace InstagramApiSharp.Helpers
                 if (html.Contains(start))
                 {
                     var str = html[(html.IndexOf(start) + start.Length)..];
-                    str = str.Substring(0, str.IndexOf(end));
+                    str = str[..str.IndexOf(end)];
                     //&access_token=EAABwzLixnjYBALFoqFT7uqZCVCCcPM3HZAEXwSUZB3qBi1OxHP6OYP5hEYpzkNEej465HwMiMbvvvz9GyzWhby14KtdwdoiW83xZAzIaThIBTwZDZD&
                     start = "&access_token=";
                     end = "&";
                     var token = str[(str.IndexOf(start) + start.Length)..];
-                    token = token.Substring(0, token.IndexOf(end));
+                    token = token[..token.IndexOf(end)];
                     return token;
                 }
             }

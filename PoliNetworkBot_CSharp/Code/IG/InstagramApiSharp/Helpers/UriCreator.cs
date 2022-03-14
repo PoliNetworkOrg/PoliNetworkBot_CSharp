@@ -798,15 +798,13 @@ namespace InstagramApiSharp.Helpers
             if (!string.IsNullOrEmpty(nextId))
                 instaUri = instaUri
                     .AddQueryParameter("max_id", nextId);
-            if (page != null && page > 0)
+            if (page is > 0)
                 instaUri = instaUri
                     .AddQueryParameter("page", page.ToString());
-            if (nextMediaIds != null && nextMediaIds.Any())
-            {
-                var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
-                instaUri = instaUri
-                    .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
-            }
+            if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
+            var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
+            instaUri = instaUri
+                .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
 
             return instaUri;
         }
@@ -821,7 +819,7 @@ namespace InstagramApiSharp.Helpers
             if (!string.IsNullOrEmpty(nextId))
                 instaUri = instaUri
                     .AddQueryParameter("max_id", nextId.EncodeUri());
-            if (page != null && page > 0)
+            if (page is > 0)
                 instaUri = instaUri
                     .AddQueryParameter("page", page.ToString());
             if (!string.IsNullOrEmpty(rankToken))
@@ -829,12 +827,10 @@ namespace InstagramApiSharp.Helpers
                 instaUri = instaUri.AddQueryParameter("rank_token", rankToken.Contains("_") ? rankToken.Split('_')[1] : rankToken);
             }
 
-            if (nextMediaIds != null && nextMediaIds.Any())
-            {
-                var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
-                instaUri = instaUri
-                    .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
-            }
+            if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
+            var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
+            instaUri = instaUri
+                .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
 
             return instaUri;
         }
@@ -2054,7 +2050,7 @@ namespace InstagramApiSharp.Helpers
         {
             var u = uri.ToString();
             if (u.Contains("?"))
-                u = u.Substring(0, u.IndexOf("?"));
+                u = u[..u.IndexOf("?")];
             u = u[u.IndexOf("/accounts/")..];
 
             if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.API_SUFFIX + u, out var instaUri))

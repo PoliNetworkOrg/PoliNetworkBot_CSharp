@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -1513,12 +1514,15 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (sliderVote > 1)
-                    return Result.Fail<InstaStoryItem>(
-                        "sliderVote cannot be more than 1.\r\nIt must be between 0 and 1");
-                if (sliderVote < 0)
-                    return Result.Fail<InstaStoryItem>(
-                        "sliderVote cannot be less than 0.\r\nIt must be between 0 and 1");
+                switch (sliderVote)
+                {
+                    case > 1:
+                        return Result.Fail<InstaStoryItem>(
+                            "sliderVote cannot be more than 1.\r\nIt must be between 0 and 1");
+                    case < 0:
+                        return Result.Fail<InstaStoryItem>(
+                            "sliderVote cannot be less than 0.\r\nIt must be between 0 and 1");
+                }
 
                 var instaUri = UriCreator.GetVoteStorySliderUri(storyMediaId, pollId);
                 var data = new JObject
@@ -1526,7 +1530,7 @@ namespace InstagramApiSharp.API.Processors
                     { "_csrftoken", _user.CsrfToken },
                     { "_uid", _user.LoggedInUser.Pk.ToString() },
                     { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                    { "vote", sliderVote.ToString() }
+                    { "vote", sliderVote.ToString(CultureInfo.InvariantCulture) }
                 };
 
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -20,9 +21,8 @@ namespace InstagramApiSharp.Converters
             try
             {
                 if (SourceObject.BroadcastStatusItems?.Count > 0)
-                    foreach (var statusItem in SourceObject.BroadcastStatusItems)
-                        broadcastStatusItems.Add(ConvertersFabric.Instance.GetBroadcastStatusItemConverter(statusItem)
-                            .Convert());
+                    broadcastStatusItems.AddRange(SourceObject.BroadcastStatusItems.Select(statusItem => ConvertersFabric.Instance.GetBroadcastStatusItemConverter(statusItem)
+                        .Convert()));
             }
             catch
             {

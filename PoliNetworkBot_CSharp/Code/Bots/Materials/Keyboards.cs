@@ -78,7 +78,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }
 
-        private static string[] RemoveGit(string[] subdirectoryEntries)
+        private static string[] RemoveGit(IEnumerable<string> subdirectoryEntries)
         {
             var listadir = subdirectoryEntries.ToList();
             for (var i = 0; i < listadir.Count; i++)
@@ -91,15 +91,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             return listadir.ToArray();
         }
 
-        internal static List<List<Language>> GetKeyboardSchools()
+        internal static IEnumerable<List<Language>> GetKeyboardSchools()
         {
-            var options2 = new List<Language>();
-            foreach (var v in Navigator.ScuoleCorso.Keys)
-                options2.Add(new Language(new Dictionary<string, string>
-                {
-                    { "it", v },
-                    { "en", v }
-                }));
+            var options2 = Navigator.ScuoleCorso.Keys.Select(v => new Language(new Dictionary<string, string> { { "it", v }, { "en", v } })).ToList();
             //r.Add(new List<InlineKeyboardButton> { new(text: v ) });
             return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }

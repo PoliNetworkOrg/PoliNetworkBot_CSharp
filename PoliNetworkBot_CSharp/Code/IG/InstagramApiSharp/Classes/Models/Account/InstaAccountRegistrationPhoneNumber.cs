@@ -20,7 +20,7 @@ namespace InstagramApiSharp.Classes
 
         [JsonProperty("gdpr_required")] public bool GdprRequired { get; set; }
 
-        [JsonIgnore] public bool Succeed => Status.ToLower() == "ok" ? true : false;
+        [JsonIgnore] public bool Succeed => Status.ToLower() == "ok";
     }
 
     internal class InstaAccountRegistrationPhoneNumberMessage

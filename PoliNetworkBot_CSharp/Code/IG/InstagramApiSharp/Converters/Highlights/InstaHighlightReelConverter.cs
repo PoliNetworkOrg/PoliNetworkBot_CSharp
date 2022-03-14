@@ -28,13 +28,12 @@ namespace InstagramApiSharp.Converters
                 ReelType = SourceObject.Reel.ReelType,
                 Seen = SourceObject.Reel.Seen,
                 SeenRankedPosition = SourceObject.Reel.SeenRankedPosition,
-                Title = SourceObject.Reel.Title
-            };
-
-            hLight.CoverMedia = new InstaHighlightCoverMedia
-            {
-                CropRect = SourceObject.Reel.CoverMedia.CropRect,
-                MediaId = SourceObject.Reel.CoverMedia.MediaId
+                Title = SourceObject.Reel.Title,
+                CoverMedia = new InstaHighlightCoverMedia
+                {
+                    CropRect = SourceObject.Reel.CoverMedia.CropRect,
+                    MediaId = SourceObject.Reel.CoverMedia.MediaId
+                }
             };
 
             if (SourceObject.Reel.CoverMedia.CroppedImageVersion != null)

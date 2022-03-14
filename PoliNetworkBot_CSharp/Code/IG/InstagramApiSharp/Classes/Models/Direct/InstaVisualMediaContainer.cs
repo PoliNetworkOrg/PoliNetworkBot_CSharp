@@ -22,6 +22,6 @@ namespace InstagramApiSharp.Classes.Models
 
         public List<long> SeenUserIds { get; set; } = new();
 
-        public bool IsExpired => Media != null && Media.IsExpired;
+        public bool IsExpired => Media is { IsExpired: true };
     }
 }

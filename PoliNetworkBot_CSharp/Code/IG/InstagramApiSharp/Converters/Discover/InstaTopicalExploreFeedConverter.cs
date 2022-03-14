@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -18,18 +19,15 @@ namespace InstagramApiSharp.Converters
         {
             if (SourceObject == null) throw new ArgumentNullException("SourceObject");
 
-            List<InstaMedia> ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
+            IEnumerable<InstaMedia> ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
             {
                 var medias = new List<InstaMedia>();
                 if (mediasResponse == null)
                     return medias;
-                foreach (var instaUserFeedItemResponse in mediasResponse)
-                {
-                    if (instaUserFeedItemResponse?.Type != 0) continue;
-                    var feedItem = ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
-                        .Convert();
-                    medias.Add(feedItem);
-                }
+                medias.AddRange(from instaUserFeedItemResponse in mediasResponse
+                    where instaUserFeedItemResponse?.Type == 0
+                    select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
+                        .Convert());
 
                 return medias;
             }

@@ -16,7 +16,7 @@ namespace Minista.Helpers
         private readonly StorageFile file;
         private readonly Uri instaUri;
         internal string Guid;
-        public InstaApi instaApi;
+        public readonly InstaApi instaApi;
 
         public UploadOperation(Uri instaUri, StorageFile file, BackgroundUploader backgroundUploader, InstaApi instaApi)
         {

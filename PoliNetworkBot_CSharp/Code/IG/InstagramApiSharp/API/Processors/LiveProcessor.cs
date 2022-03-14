@@ -370,8 +370,7 @@ namespace InstagramApiSharp.API.Processors
             var topLive = new InstaDiscoverTopLive();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaDiscoverTopLive Convert(InstaDiscoverTopLiveResponse instaDiscoverTop)
                 {
@@ -822,9 +821,7 @@ namespace InstagramApiSharp.API.Processors
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastStartResponse>(json);
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaBroadcastStart>(response, json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastStartConverter(obj).Convert());
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<InstaBroadcastStart>(response, json) : Result.Success(ConvertersFabric.Instance.GetBroadcastStartConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -1066,9 +1063,7 @@ namespace InstagramApiSharp.API.Processors
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<object>(response, json);
-                return Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<object>(response, json) : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {

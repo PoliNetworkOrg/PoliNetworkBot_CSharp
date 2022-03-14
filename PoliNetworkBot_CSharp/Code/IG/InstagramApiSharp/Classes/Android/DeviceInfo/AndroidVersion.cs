@@ -27,16 +27,10 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         public static AndroidVersion FromString(string versionString)
         {
             var version = new Version(versionString);
-            foreach (var androidVersion in AndroidVersionList.GetVersionList().AndroidVersions())
-                if (version.CompareTo(new Version(androidVersion.VersionNumber)) == 0 ||
-                    version.CompareTo(new Version(androidVersion.VersionNumber)) > 0 &&
-                    androidVersion != AndroidVersionList.GetVersionList().AndroidVersions().Last() &&
-                    version.CompareTo(new Version(
-                        AndroidVersionList.GetVersionList().AndroidVersions()[
-                                AndroidVersionList.GetVersionList().AndroidVersions().IndexOf(androidVersion) + 1]
-                            .VersionNumber)) < 0)
-                    return androidVersion;
-            return null;
+            return AndroidVersionList.GetVersionList()
+                .AndroidVersions()
+                .FirstOrDefault(androidVersion => version.CompareTo(new Version(androidVersion.VersionNumber)) == 0 || version.CompareTo(new Version(androidVersion.VersionNumber)) > 0 && androidVersion != AndroidVersionList.GetVersionList().AndroidVersions().Last() && version.CompareTo(new Version(AndroidVersionList.GetVersionList().AndroidVersions()[AndroidVersionList.GetVersionList().AndroidVersions().IndexOf(androidVersion) + 1]
+                    .VersionNumber)) < 0);
         }
 
         public static AndroidVersion GetRandomAndriodVersion()

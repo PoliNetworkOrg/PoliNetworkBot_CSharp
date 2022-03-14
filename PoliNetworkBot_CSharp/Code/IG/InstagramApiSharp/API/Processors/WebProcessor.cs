@@ -107,9 +107,7 @@ namespace InstagramApiSharp.API.Processors
                 var request = await GetRequest(CreateUri(paginationParameters?.NextMaxId));
                 if (!request.Succeeded)
                 {
-                    if (request.Value != null)
-                        return Result.Fail(request.Info, Convert(request.Value));
-                    return Result.Fail(request.Info, textDataList);
+                    return Result.Fail(request.Info, request.Value != null ? Convert(request.Value) : textDataList);
                 }
 
                 var response = request.Value;

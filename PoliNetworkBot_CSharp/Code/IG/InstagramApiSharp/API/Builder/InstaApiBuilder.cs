@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Globalization;
 using System.Net.Http;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
@@ -66,7 +67,7 @@ namespace InstagramApiSharp.API.Builder
 
             try
             {
-                InstaApiConstants.TIMEZONE_OFFSET = int.Parse(DateTimeOffset.Now.Offset.TotalSeconds.ToString());
+                InstaApiConstants.TIMEZONE_OFFSET = int.Parse(DateTimeOffset.Now.Offset.TotalSeconds.ToString(CultureInfo.InvariantCulture));
             }
             catch
             {

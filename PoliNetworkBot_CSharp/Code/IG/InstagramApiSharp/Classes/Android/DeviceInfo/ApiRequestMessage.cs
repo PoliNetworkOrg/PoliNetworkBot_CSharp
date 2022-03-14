@@ -169,7 +169,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         public static string GenerateDeviceIdFromGuid(Guid guid)
         {
             var hashedGuid = CryptoHelper.CalculateMd5(guid.ToString());
-            return $"android-{hashedGuid.Substring(0, 16)}";
+            return $"android-{hashedGuid[..16]}";
         }
     }
 }

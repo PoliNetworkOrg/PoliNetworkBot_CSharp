@@ -66,8 +66,7 @@ namespace InstagramApiSharp.Converters.Business
                 ProfileVisitsNumDays = SourceObject.User.ProfileVisitsNumDays ?? 0,
                 ProfilPicUrl = SourceObject.User.ProfilPicUrl
             };
-            if (SourceObject.User.BiographyWithEntities != null &&
-                SourceObject.User.BiographyWithEntities.Entities != null)
+            if (SourceObject.User.BiographyWithEntities is { Entities: { } })
                 userInfo.BiographyWithEntities = SourceObject.User.BiographyWithEntities;
             if (!string.IsNullOrEmpty(SourceObject.User.BusinessContactMethod))
                 try

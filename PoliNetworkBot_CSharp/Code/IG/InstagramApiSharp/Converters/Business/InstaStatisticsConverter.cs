@@ -24,16 +24,16 @@ namespace InstagramApiSharp.Converters.Business
                 UserId = user.InstagramUserId,
                 Username = user.Username
             };
-            if (user.BusinessProfile != null && user.BusinessProfile.Id != null)
+            if (user.BusinessProfile is { Id: { } })
                 statisfics.BusinessProfileId = user.BusinessProfile.Id;
 
-            if (user.ProfilePicture != null && user.ProfilePicture.Uri != null)
+            if (user.ProfilePicture is { Uri: { } })
                 statisfics.ProfilePicture = user.ProfilePicture.Uri;
             statisfics.BusinessManager = new InstaStatisticsBusinessManager();
 
             var businessManager = user.BusinessManager;
 
-            if (businessManager.PromotionsUnit != null && businessManager.PromotionsUnit.SummaryPromotions != null)
+            if (businessManager.PromotionsUnit is { SummaryPromotions: { } })
                 try
                 {
                     statisfics.BusinessManager.PromotionsUnit = new InstaStatisticsSummaryPromotions
@@ -45,7 +45,7 @@ namespace InstagramApiSharp.Converters.Business
                 {
                 }
 
-            if (businessManager.AccountSummaryUnit != null && businessManager.AccountSummaryUnit != null)
+            if (businessManager.AccountSummaryUnit is { })
                 try
                 {
                     statisfics.BusinessManager.AccountSummaryUnit = new InstaStatisticsAccountSummaryUnit
@@ -271,10 +271,10 @@ namespace InstagramApiSharp.Converters.Business
                         {
                         }
 
-                    if (businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph != null &&
-                        businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph.TotalCountGraph != null &&
-                        businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph.TotalCountGraph
-                            .DataPoints != null)
+                    if (businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph is { TotalCountGraph:
+                        {
+                            DataPoints: { }
+                        } })
                         foreach (var dataPoint in businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph
                                      .TotalCountGraph.DataPoints)
                             try

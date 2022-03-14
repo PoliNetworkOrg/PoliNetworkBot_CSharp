@@ -22,11 +22,10 @@ namespace InstagramApiSharp.Converters
             var threadItem = new InstaDirectInboxItem
             {
                 ClientContext = SourceObject.ClientContext,
-                ItemId = SourceObject.ItemId
+                ItemId = SourceObject.ItemId,
+                TimeStamp = DateTimeHelper.UnixTimestampMilisecondsToDateTime(SourceObject.TimeStamp),
+                UserId = SourceObject.UserId
             };
-
-            threadItem.TimeStamp = DateTimeHelper.UnixTimestampMilisecondsToDateTime(SourceObject.TimeStamp);
-            threadItem.UserId = SourceObject.UserId;
 
             var truncatedItemType = SourceObject.ItemType.Trim().Replace("_", "");
             if (Enum.TryParse(truncatedItemType, true, out InstaDirectThreadItemType type))
@@ -148,9 +147,7 @@ namespace InstagramApiSharp.Converters
                     if (SourceObject.ProfileMediasPreview != null && SourceObject.ProfileMediasPreview.Any())
                         try
                         {
-                            var previewMedias = new List<InstaMedia>();
-                            foreach (var item in SourceObject.ProfileMediasPreview)
-                                previewMedias.Add(ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert());
+                            var previewMedias = SourceObject.ProfileMediasPreview.Select(item => ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert()).ToList();
 
                             threadItem.ProfileMediasPreview = previewMedias;
                         }

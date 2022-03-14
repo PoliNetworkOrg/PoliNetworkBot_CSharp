@@ -40,12 +40,11 @@ namespace InstagramApiSharp.Converters
                     BlendedInboxEnabled = SourceObject.Inbox.BlendedInboxEnabled
                 };
 
-                if (SourceObject.Inbox.Threads != null && SourceObject.Inbox.Threads.Count > 0)
+                if (SourceObject.Inbox.Threads is { Count: > 0 })
                 {
                     inbox.Inbox.Threads = new List<InstaDirectInboxThread>();
-                    foreach (var inboxThread in SourceObject.Inbox.Threads)
+                    foreach (var converter in SourceObject.Inbox.Threads.Select(inboxThread => ConvertersFabric.Instance.GetDirectThreadConverter(inboxThread)))
                     {
-                        var converter = ConvertersFabric.Instance.GetDirectThreadConverter(inboxThread);
                         inbox.Inbox.Threads.Add(converter.Convert());
                     }
                 }

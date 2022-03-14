@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers.Web;
 
@@ -17,13 +18,10 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("Source object");
 
             var list = new InstaWebTextData();
-            if (SourceObject.Data.Data?.Count > 0)
-            {
-                foreach (var item in SourceObject.Data.Data)
-                    if (item.Text.IsNotEmpty())
-                        list.Items.Add(item.Text);
-                list.MaxId = SourceObject.Data.Cursor;
-            }
+            if (!(SourceObject.Data.Data?.Count > 0)) return list;
+            foreach (var item in SourceObject.Data.Data.Where(item => item.Text.IsNotEmpty()))
+                list.Items.Add(item.Text);
+            list.MaxId = SourceObject.Data.Cursor;
 
             return list;
         }

@@ -427,9 +427,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaDefaultResponse>(json);
-                if (obj.Status.ToLower() == "ok")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.Status.ToLower() == "ok");
             }
             catch (HttpRequestException httpException)
             {
@@ -670,9 +668,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-                if (obj.Status.ToLower() == "ok")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.Status.ToLower() == "ok");
             }
             catch (HttpRequestException httpException)
             {
@@ -708,9 +704,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-                if (obj.Status.ToLower() == "ok")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.Status.ToLower() == "ok");
             }
             catch (HttpRequestException httpException)
             {
@@ -748,9 +742,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<bool>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-                if (obj.ReelAutoArchive.ToLower() == "on")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.ReelAutoArchive.ToLower() == "on");
             }
             catch (HttpRequestException httpException)
             {
@@ -787,9 +779,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-                if (obj.ReelAutoArchive.ToLower() == "off")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.ReelAutoArchive.ToLower() == "off");
             }
             catch (HttpRequestException httpException)
             {
@@ -826,9 +816,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-                if (obj.Status.ToLower() == "off")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.Status.ToLower() == "off");
             }
             catch (HttpRequestException httpException)
             {
@@ -983,9 +971,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<bool>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-                if (obj.Status.ToLower() == "ok")
-                    return Result.Success(true);
-                return Result.Success(false);
+                return Result.Success(obj.Status.ToLower() == "ok");
             }
             catch (HttpRequestException httpException)
             {

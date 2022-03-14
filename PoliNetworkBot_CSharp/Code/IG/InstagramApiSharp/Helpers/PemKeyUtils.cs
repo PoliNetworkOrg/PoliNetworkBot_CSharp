@@ -293,20 +293,22 @@ namespace InstagramApiSharp.Helpers
                 return 0;
             bt = binr.ReadByte();
 
-            if (bt == 0x81)
+            switch (bt)
             {
-                count = binr.ReadByte(); // data size in next byte
-            }
-            else if (bt == 0x82)
-            {
-                highbyte = binr.ReadByte(); // data size in next 2 bytes
-                lowbyte = binr.ReadByte();
-                byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-                count = BitConverter.ToInt32(modint, 0);
-            }
-            else
-            {
-                count = bt; // we already have the data size
+                case 0x81:
+                    count = binr.ReadByte(); // data size in next byte
+                    break;
+                case 0x82:
+                {
+                    highbyte = binr.ReadByte(); // data size in next 2 bytes
+                    lowbyte = binr.ReadByte();
+                    byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
+                    count = BitConverter.ToInt32(modint, 0);
+                    break;
+                }
+                default:
+                    count = bt; // we already have the data size
+                    break;
             }
 
 
@@ -489,43 +491,46 @@ namespace InstagramApiSharp.Helpers
             while (true)
             {
                 var cki = Console.ReadKey(true);
-                if (cki.Key == ConsoleKey.Enter)
+                switch (cki.Key)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine();
-                    return password;
-                }
-
-                if (cki.Key == ConsoleKey.Backspace)
-                {
+                    case ConsoleKey.Enter:
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.WriteLine();
+                        return password;
                     // remove the last asterisk from the screen...
-                    if (password.Length <= 0) continue;
-                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                    Console.Write(" ");
-                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                    password.RemoveAt(password.Length - 1);
-                }
-                else if (cki.Key == ConsoleKey.Escape)
-                {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine();
-                    return password;
-                }
-                else if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
-                {
-                    if (password.Length < 20)
+                    case ConsoleKey.Backspace when password.Length <= 0:
+                        continue;
+                    case ConsoleKey.Backspace:
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                        Console.Write(" ");
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                        password.RemoveAt(password.Length - 1);
+                        break;
+                    case ConsoleKey.Escape:
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.WriteLine();
+                        return password;
+                    default:
                     {
-                        password.AppendChar(cki.KeyChar);
-                        Console.Write("*");
+                        if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
+                        {
+                            if (password.Length < 20)
+                            {
+                                password.AppendChar(cki.KeyChar);
+                                Console.Write("*");
+                            }
+                            else
+                            {
+                                Console.Beep();
+                            }
+                        }
+                        else
+                        {
+                            Console.Beep();
+                        }
+
+                        break;
                     }
-                    else
-                    {
-                        Console.Beep();
-                    }
-                }
-                else
-                {
-                    Console.Beep();
                 }
             }
         }
@@ -627,25 +632,29 @@ namespace InstagramApiSharp.Helpers
         // https://stackoverflow.com/a/23739932/2860309
         private static void EncodeLength(BinaryWriter stream, int length)
         {
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative");
-            if (length < 0x80)
+            switch (length)
             {
-                // Short form
-                stream.Write((byte)length);
-            }
-            else
-            {
-                // Long form
-                var temp = length;
-                var bytesRequired = 0;
-                while (temp > 0)
+                case < 0:
+                    throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative");
+                case < 0x80:
+                    // Short form
+                    stream.Write((byte)length);
+                    break;
+                default:
                 {
-                    temp >>= 8;
-                    bytesRequired++;
-                }
+                    // Long form
+                    var temp = length;
+                    var bytesRequired = 0;
+                    while (temp > 0)
+                    {
+                        temp >>= 8;
+                        bytesRequired++;
+                    }
 
-                stream.Write((byte)(bytesRequired | 0x80));
-                for (var i = bytesRequired - 1; i >= 0; i--) stream.Write((byte)((length >> (8 * i)) & 0xff));
+                    stream.Write((byte)(bytesRequired | 0x80));
+                    for (var i = bytesRequired - 1; i >= 0; i--) stream.Write((byte)((length >> (8 * i)) & 0xff));
+                    break;
+                }
             }
         }
 

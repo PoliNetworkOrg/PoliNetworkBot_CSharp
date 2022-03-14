@@ -171,8 +171,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 var callbackQuery = e.CallbackQuery;
                 var callbackdata = callbackQuery.Data.Split("|");
                 var fromId = long.Parse(callbackdata[1]);
-                string directory;
-                if (!DictPaths.TryGetValue(callbackdata[2], out directory))
+                if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
                     throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
                 var a = directory.Split("/");
                 directory = "";
@@ -182,7 +181,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 directory = b.Aggregate("", (current, t) => current + t + "\'\'");
 
                 var logMessage = "Log for message ID: " + e.CallbackQuery.From.Id;
-                directory = directory.Substring(0, directory.Length - 2);
+                directory = directory[..^2];
                 try
                 {
                     logMessage += "\n\n";
@@ -825,8 +824,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
             try
             {
-                object r;
-                Enum.TryParse(type, text, out r);
+                Enum.TryParse(type, text, out var r);
                 return r;
             }
             catch

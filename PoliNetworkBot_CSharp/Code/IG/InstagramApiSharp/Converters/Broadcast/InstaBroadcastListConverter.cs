@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -16,9 +17,7 @@ namespace InstagramApiSharp.Converters
         {
             //if (SourceObject == null) throw new ArgumentNullException($"Source object");
             var broadcastList = new InstaBroadcastList();
-            if (SourceObject?.Count > 0)
-                foreach (var broadcast in SourceObject)
-                    broadcastList.Add(ConvertersFabric.Instance.GetBroadcastConverter(broadcast).Convert());
+            if (SourceObject?.Count > 0) broadcastList.AddRange(SourceObject.Select(broadcast => ConvertersFabric.Instance.GetBroadcastConverter(broadcast).Convert()));
 
             return broadcastList;
         }

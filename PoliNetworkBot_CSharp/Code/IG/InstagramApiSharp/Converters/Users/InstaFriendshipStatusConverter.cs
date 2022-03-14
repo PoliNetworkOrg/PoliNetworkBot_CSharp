@@ -20,10 +20,10 @@ namespace InstagramApiSharp.Converters
                 Blocking = SourceObject.Blocking,
                 FollowedBy = SourceObject.FollowedBy,
                 OutgoingRequest = SourceObject.OutgoingRequest,
-                IsBlockingReel = SourceObject.IsBlockingReel ?? false
+                IsBlockingReel = SourceObject.IsBlockingReel ?? false,
+                IncomingRequest = SourceObject.IncomingRequest,
+                IsPrivate = SourceObject.IsPrivate
             };
-            friendShip.IncomingRequest = SourceObject.IncomingRequest;
-            friendShip.IsPrivate = SourceObject.IsPrivate;
             return friendShip;
         }
     }

@@ -32,7 +32,7 @@ namespace InstagramApiSharp.Converters
                 {
                 }
 
-            if (SourceObject.SeenUserIds != null && SourceObject.SeenUserIds?.Length > 0)
+            if (SourceObject.SeenUserIds is { Length: > 0 })
                 foreach (var pk in SourceObject.SeenUserIds)
                     voiceMedia.SeenUserIds.Add(pk);
 

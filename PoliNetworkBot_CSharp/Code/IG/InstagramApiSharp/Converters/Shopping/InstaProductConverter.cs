@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -53,18 +54,18 @@ namespace InstagramApiSharp.Converters
                     {
                     }
 
-            if (SourceObject.ProductImages?.Count > 0)
-                foreach (var productImage in SourceObject.ProductImages)
-                    if (productImage?.Images?.Candidates?.Count > 0)
-                        foreach (var image in productImage.Images.Candidates)
-                            try
-                            {
-                                product.ThumbnailImage.Add(new InstaImage(image.Url, int.Parse(image.Width),
-                                    int.Parse(image.Height)));
-                            }
-                            catch
-                            {
-                            }
+            if (!(SourceObject.ProductImages?.Count > 0)) return product;
+            {
+                foreach (var image in SourceObject.ProductImages.Where(productImage => productImage?.Images?.Candidates?.Count > 0).SelectMany(productImage => productImage.Images.Candidates))
+                    try
+                    {
+                        product.ThumbnailImage.Add(new InstaImage(image.Url, int.Parse(image.Width),
+                            int.Parse(image.Height)));
+                    }
+                    catch
+                    {
+                    }
+            }
 
             return product;
         }

@@ -39,7 +39,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
                 }
 
-                var hashText = HashUtils.GetHashOf(text).Substring(0, 16);
+                var hashText = HashUtils.GetHashOf(text)[..16];
 
                 var message = "#Permitted spam in group: ";
                 message += "\n";
@@ -382,8 +382,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
-            var hashAssoc = HashUtils.GetHashOf(assoc).Substring(0, 8);
-            var hashText = HashUtils.GetHashOf(text).Substring(0, 20);
+            var hashAssoc = HashUtils.GetHashOf(assoc)[..8];
+            var hashText = HashUtils.GetHashOf(text)[..20];
 
             var message = "#Allowed spam in groups: " + groups;
             message += "\n\n";

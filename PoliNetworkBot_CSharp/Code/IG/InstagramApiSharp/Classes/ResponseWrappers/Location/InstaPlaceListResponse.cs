@@ -9,7 +9,7 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
 {
     public class InstaPlaceListResponse
     {
-        [JsonIgnore] public List<long> ExcludeList = new();
+        [JsonIgnore] public readonly List<long> ExcludeList = new();
         [JsonProperty("items")] public List<InstaPlaceResponse> Items { get; set; }
 
         [JsonProperty("has_more")] public bool? HasMore { get; set; }

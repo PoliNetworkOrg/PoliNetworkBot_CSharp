@@ -203,9 +203,7 @@ namespace InstagramApiSharp.API.Processors
                 var blockedUsersResponse = await GetBlockedUsers(paginationParameters?.NextMaxId);
                 if (!blockedUsersResponse.Succeeded)
                 {
-                    if (blockedUsersResponse.Value != null)
-                        return Result.Fail(blockedUsersResponse.Info, Convert(blockedUsersResponse.Value));
-                    return Result.Fail(blockedUsersResponse.Info, default(InstaBlockedUsers));
+                    return Result.Fail(blockedUsersResponse.Info, blockedUsersResponse.Value != null ? Convert(blockedUsersResponse.Value) : default(InstaBlockedUsers));
                 }
 
                 paginationParameters.NextMaxId = blockedUsersResponse.Value.MaxId;
@@ -514,9 +512,7 @@ namespace InstagramApiSharp.API.Processors
                 var suggestionsResponse = await GetSuggestionUsers(paginationParameters);
                 if (!suggestionsResponse.Succeeded)
                 {
-                    if (suggestionsResponse.Value != null)
-                        return Result.Fail(suggestionsResponse.Info, Convert(suggestionsResponse.Value));
-                    return Result.Fail(suggestionsResponse.Info, default(InstaSuggestions));
+                    return Result.Fail(suggestionsResponse.Info, suggestionsResponse.Value != null ? Convert(suggestionsResponse.Value) : default(InstaSuggestions));
                 }
 
                 paginationParameters.NextMaxId = suggestionsResponse.Value.MaxId;
@@ -962,9 +958,7 @@ namespace InstagramApiSharp.API.Processors
                 var mediaResult = await GetUserMedia(userId, paginationParameters);
                 if (!mediaResult.Succeeded)
                 {
-                    if (mediaResult.Value != null)
-                        return Result.Fail(mediaResult.Info, Convert(mediaResult.Value));
-                    return Result.Fail(mediaResult.Info, default(InstaMediaList));
+                    return Result.Fail(mediaResult.Info, mediaResult.Value != null ? Convert(mediaResult.Value) : default(InstaMediaList));
                 }
 
                 var mediaResponse = mediaResult.Value;
@@ -1778,9 +1772,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
                 var instaUserListResponse = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
-                if (instaUserListResponse.IsOk())
-                    return Result.Success(instaUserListResponse);
-                return Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
+                return instaUserListResponse.IsOk() ? Result.Success(instaUserListResponse) : Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
             }
             catch (HttpRequestException httpException)
             {

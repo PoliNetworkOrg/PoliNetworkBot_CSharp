@@ -163,10 +163,7 @@ namespace InstagramApiSharp.API.Processors
                     _httpHelper.GetSignedRequest(HttpMethod.Get, createCollectionUri, _deviceInfo, data);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode == HttpStatusCode.OK)
-                    return Result.Success(true);
-
-                return Result.UnExpectedResponse<bool>(response, json);
+                return response.StatusCode == HttpStatusCode.OK ? Result.Success(true) : Result.UnExpectedResponse<bool>(response, json);
             }
             catch (HttpRequestException httpException)
             {
