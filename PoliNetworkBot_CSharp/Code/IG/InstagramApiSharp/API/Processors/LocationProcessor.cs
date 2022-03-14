@@ -296,8 +296,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaPlaceList Convert(InstaPlaceListResponse placelistResponse)
                 {
@@ -351,8 +350,7 @@ namespace InstagramApiSharp.API.Processors
         {
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 var instaUri = UriCreator.GetSearchPlacesUri(InstaApiConstants.TIMEZONE_OFFSET,
                     latitude, longitude, query, paginationParameters.NextMaxId, paginationParameters.ExcludeList);
@@ -388,8 +386,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaSectionMedia Convert(InstaSectionMediaListResponse sectionMediaListResponse)
                 {

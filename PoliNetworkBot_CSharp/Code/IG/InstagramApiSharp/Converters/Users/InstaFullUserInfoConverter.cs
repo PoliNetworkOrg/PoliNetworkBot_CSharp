@@ -32,8 +32,7 @@ namespace InstagramApiSharp.Converters
                 };
                 if (SourceObject.Feed.Items != null && SourceObject.Feed.Items.Any())
                 {
-                    if (fullUserInfo.Feed.Items == null)
-                        fullUserInfo.Feed.Items = new List<InstaMedia>();
+                    fullUserInfo.Feed.Items ??= new List<InstaMedia>();
                     foreach (var media in SourceObject.Feed.Items)
                         try
                         {
@@ -77,8 +76,7 @@ namespace InstagramApiSharp.Converters
 
                     if (SourceObject.ReelFeed.Items != null && SourceObject.ReelFeed.Items.Any())
                     {
-                        if (fullUserInfo.ReelFeed.Items == null)
-                            fullUserInfo.ReelFeed.Items = new List<InstaStoryItem>();
+                        fullUserInfo.ReelFeed.Items ??= new List<InstaStoryItem>();
                         foreach (var story in SourceObject.ReelFeed.Items)
                             try
                             {
@@ -125,20 +123,18 @@ namespace InstagramApiSharp.Converters
                         fullUserInfo.UserStory.Reel.User = ConvertersFabric.Instance
                             .GetUserShortConverter(SourceObject.UserStory.Reel.User).Convert();
 
-                    if (SourceObject.UserStory.Reel.Items != null && SourceObject.UserStory.Reel.Items.Any())
-                    {
-                        if (fullUserInfo.UserStory.Reel.Items == null)
-                            fullUserInfo.UserStory.Reel.Items = new List<InstaStoryItem>();
-                        foreach (var story in SourceObject.UserStory.Reel.Items)
-                            try
-                            {
-                                fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.Instance
-                                    .GetStoryItemConverter(story).Convert());
-                            }
-                            catch
-                            {
-                            }
-                    }
+                    if (SourceObject.UserStory.Reel.Items == null || !SourceObject.UserStory.Reel.Items.Any())
+                        return fullUserInfo;
+                    fullUserInfo.UserStory.Reel.Items ??= new List<InstaStoryItem>();
+                    foreach (var story in SourceObject.UserStory.Reel.Items)
+                        try
+                        {
+                            fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.Instance
+                                .GetStoryItemConverter(story).Convert());
+                        }
+                        catch
+                        {
+                        }
                 }
             }
 

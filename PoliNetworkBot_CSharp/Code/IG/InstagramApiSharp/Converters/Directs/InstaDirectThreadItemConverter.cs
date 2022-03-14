@@ -199,8 +199,7 @@ namespace InstagramApiSharp.Converters
                     }
 
                     break;
-                case InstaDirectThreadItemType.FelixShare when SourceObject.FelixShareMedia != null &&
-                                                               SourceObject.FelixShareMedia.Video != null:
+                case InstaDirectThreadItemType.FelixShare when SourceObject.FelixShareMedia is { Video: { } }:
                     try
                     {
                         threadItem.FelixShareMedia = ConvertersFabric.Instance

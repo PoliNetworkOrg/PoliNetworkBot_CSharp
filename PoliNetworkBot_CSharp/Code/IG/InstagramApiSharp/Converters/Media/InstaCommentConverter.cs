@@ -39,20 +39,16 @@ namespace InstagramApiSharp.Converters
             };
             if (SourceObject.OtherPreviewUsers != null && SourceObject.OtherPreviewUsers.Any())
             {
-                if (comment.OtherPreviewUsers == null)
-                    comment.OtherPreviewUsers = new List<InstaUserShort>();
+                comment.OtherPreviewUsers ??= new List<InstaUserShort>();
                 foreach (var user in SourceObject.OtherPreviewUsers)
                     comment.OtherPreviewUsers.Add(ConvertersFabric.Instance.GetUserShortConverter(user).Convert());
             }
 
-            if (SourceObject.PreviewChildComments != null && SourceObject.PreviewChildComments.Any())
-            {
-                if (comment.PreviewChildComments == null)
-                    comment.PreviewChildComments = new List<InstaCommentShort>();
+            if (SourceObject.PreviewChildComments == null || !SourceObject.PreviewChildComments.Any()) return comment;
+            comment.PreviewChildComments ??= new List<InstaCommentShort>();
 
-                foreach (var cm in SourceObject.PreviewChildComments)
-                    comment.PreviewChildComments.Add(ConvertersFabric.Instance.GetCommentShortConverter(cm).Convert());
-            }
+            foreach (var cm in SourceObject.PreviewChildComments)
+                comment.PreviewChildComments.Add(ConvertersFabric.Instance.GetCommentShortConverter(cm).Convert());
 
             return comment;
         }

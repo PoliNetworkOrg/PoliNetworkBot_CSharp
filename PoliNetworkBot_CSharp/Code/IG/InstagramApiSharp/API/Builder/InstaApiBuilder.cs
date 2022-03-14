@@ -74,19 +74,15 @@ namespace InstagramApiSharp.API.Builder
             {
             }
 
-            if (_httpRequestProcessor == null)
-                _httpRequestProcessor =
-                    new HttpRequestProcessor(_delay, _httpClient, _httpHandler, _requestMessage, _logger);
+            _httpRequestProcessor ??=
+                new HttpRequestProcessor(_delay, _httpClient, _httpHandler, _requestMessage, _logger);
 
-            if (_apiVersionType == null)
-                _apiVersionType = InstaApiVersionType.Version180;
+            _apiVersionType ??= InstaApiVersionType.Version180;
 
             var instaApi = new InstaApi(_user, _logger, _device, _httpRequestProcessor, _apiVersionType.Value);
-            if (_sessionHandler != null)
-            {
-                _sessionHandler.InstaApi = instaApi;
-                instaApi.SessionHandler = _sessionHandler;
-            }
+            if (_sessionHandler == null) return instaApi;
+            _sessionHandler.InstaApi = instaApi;
+            instaApi.SessionHandler = _sessionHandler;
 
             return instaApi;
         }

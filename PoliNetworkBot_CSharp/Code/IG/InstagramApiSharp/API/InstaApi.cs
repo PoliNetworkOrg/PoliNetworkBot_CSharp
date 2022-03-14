@@ -707,8 +707,7 @@ namespace InstagramApiSharp.API
             var createResponse = new InstaAccountCreation();
             try
             {
-                if (delay == null)
-                    delay = TimeSpan.FromSeconds(2.5);
+                delay ??= TimeSpan.FromSeconds(2.5);
 
                 var firstResponse = await HttpRequestProcessor.GetAsync(HttpRequestProcessor.Client.BaseAddress);
                 await firstResponse.Content.ReadAsStringAsync();
@@ -908,8 +907,7 @@ namespace InstagramApiSharp.API
                     if (phone != null && !phone.StartsWith("+"))
                         phone = $"+{phone}";
 
-                    if (phone == null)
-                        phone = string.Empty;
+                    phone ??= string.Empty;
                     data.Add("phone", phone);
                 }
 
@@ -2560,8 +2558,7 @@ namespace InstagramApiSharp.API
                     if (phone != null && !phone.StartsWith("+"))
                         phone = $"+{phone}";
 
-                    if (phone == null)
-                        phone = string.Empty;
+                    phone ??= string.Empty;
                     data.Add("phone", phone);
                 }
 
@@ -2630,8 +2627,7 @@ namespace InstagramApiSharp.API
         /// <param name="timeout">Timeout (set more than 100 seconds!)</param>
         public void SetTimeout(TimeSpan? timeout)
         {
-            if (timeout == null)
-                timeout = TimeSpan.FromSeconds(350);
+            timeout ??= TimeSpan.FromSeconds(350);
 
             HttpClient.Timeout = timeout.Value;
         }
@@ -2735,8 +2731,7 @@ namespace InstagramApiSharp.API
         /// <param name="delay">Timespan delay</param>
         public void SetRequestDelay(IRequestDelay delay)
         {
-            if (delay == null)
-                delay = RequestDelay.Empty();
+            delay ??= RequestDelay.Empty();
             _delay = delay;
             HttpRequestProcessor.Delay = _delay;
         }
@@ -3095,8 +3090,7 @@ namespace InstagramApiSharp.API
             foreach (var cookie in stateData.RawCookies)
                 HttpRequestProcessor.HttpHandler.CookieContainer.Add(new Uri(InstaApiConstants.INSTAGRAM_URL), cookie);
 
-            if (stateData.InstaApiVersion == null)
-                stateData.InstaApiVersion = InstaApiVersionType.Version180;
+            stateData.InstaApiVersion ??= InstaApiVersionType.Version180;
             InstaApiVersionType = stateData.InstaApiVersion.Value;
             _apiVersion = InstaApiVersionList.GetApiVersionList().GetApiVersion(InstaApiVersionType);
             HttpHelper = new HttpHelper(_apiVersion, HttpRequestProcessor, this);

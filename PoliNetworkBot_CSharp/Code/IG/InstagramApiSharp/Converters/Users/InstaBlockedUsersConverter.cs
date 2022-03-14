@@ -24,7 +24,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.BlockedList != null && SourceObject.BlockedList.Any())
                 foreach (var user in SourceObject.BlockedList)
-                    blockedUsers.BlockedList.Add(ConvertersFabric.Instance.GetBlockedUserInfoConverter(user).Convert());
+                    blockedUsers.BlockedList.Add(ConvertersFabric.GetBlockedUserInfoConverter(user).Convert());
 
             return blockedUsers;
         }

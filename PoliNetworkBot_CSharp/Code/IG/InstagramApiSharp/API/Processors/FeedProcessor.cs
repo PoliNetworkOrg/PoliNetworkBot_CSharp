@@ -160,8 +160,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
@@ -238,8 +237,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
@@ -302,8 +300,7 @@ namespace InstagramApiSharp.API.Processors
             var tagFeed = new InstaTagFeed();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaTagFeed Convert(InstaTagFeedResponse instaTagFeedResponse)
                 {
@@ -366,8 +363,7 @@ namespace InstagramApiSharp.API.Processors
             var feed = new InstaFeed();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaFeed Convert(InstaFeedResponse instaFeedResponse)
                 {
@@ -429,8 +425,7 @@ namespace InstagramApiSharp.API.Processors
             var topicalExploreFeed = new InstaTopicalExploreFeed();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaTopicalExploreFeed Convert(InstaTopicalExploreFeedResponse topicalExploreFeedResponse)
                 {

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 
@@ -19,9 +20,7 @@ namespace InstagramApiSharp.Converters
 
             var users = new InstaUserShortList();
 
-            if (SourceObject.BlockedCommenters?.Count > 0)
-                foreach (var user in SourceObject.BlockedCommenters)
-                    users.Add(ConvertersFabric.Instance.GetUserShortConverter(user).Convert());
+            if (SourceObject.BlockedCommenters?.Count > 0) users.AddRange(SourceObject.BlockedCommenters.Select(user => ConvertersFabric.Instance.GetUserShortConverter(user).Convert()));
 
             return users;
         }

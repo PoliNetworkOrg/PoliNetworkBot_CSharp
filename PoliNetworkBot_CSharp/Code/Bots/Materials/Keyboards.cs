@@ -14,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 {
     public static class Keyboards
     {
-        internal static List<List<Language>> GetKeyboardCorsi(string scuola)
+        internal static IEnumerable<List<Language>> GetKeyboardCorsi(string scuola)
         {
             var testo = "";
             var options2 = new List<Language>();

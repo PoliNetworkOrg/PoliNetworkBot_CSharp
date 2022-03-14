@@ -273,8 +273,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var callbackQuery = callbackQueryEventArgs.CallbackQuery;
             var callbackdata = callbackQuery.Data.Split("|");
             var FromId = long.Parse(callbackdata[1]);
-            string fileNameWithPath;
-            if (!DictPaths.TryGetValue(callbackdata[2], out fileNameWithPath))
+            if (!DictPaths.TryGetValue(callbackdata[2], out var fileNameWithPath))
                 throw new Exception("Errore nel dizionario dei Path!");
             if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
             {

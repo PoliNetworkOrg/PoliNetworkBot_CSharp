@@ -262,8 +262,7 @@ namespace InstagramApiSharp.API.Services
         {
             try
             {
-                if (RegistrationWaterfallId == null)
-                    RegistrationWaterfallId = Guid.NewGuid().ToString();
+                RegistrationWaterfallId ??= Guid.NewGuid().ToString();
 
                 var data = new Dictionary<string, string>
                 {

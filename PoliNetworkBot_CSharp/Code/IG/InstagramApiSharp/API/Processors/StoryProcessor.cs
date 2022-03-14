@@ -506,8 +506,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaReelStoryMediaViewers Convert(InstaReelStoryMediaViewersResponse reelResponse)
                 {
@@ -560,8 +559,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaStoryPollVotersList Convert(InstaStoryPollVotersListResponse storyVotersResponse)
                 {

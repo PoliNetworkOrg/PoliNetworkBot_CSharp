@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
             return new InstaUserShortConverter { SourceObject = instaresponse };
         }
 
-        public IObjectConverter<InstaBlockedUserInfo, InstaBlockedUserInfoResponse> GetBlockedUserInfoConverter(
+        public static IObjectConverter<InstaBlockedUserInfo, InstaBlockedUserInfoResponse> GetBlockedUserInfoConverter(
             InstaBlockedUserInfoResponse instaresponse)
         {
             return new InstaBlockedUserInfoConverter { SourceObject = instaresponse };

@@ -192,8 +192,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaBlockedUsers Convert(InstaBlockedUsersResponse instaBlockedUsers)
                 {
@@ -500,8 +499,7 @@ namespace InstagramApiSharp.API.Processors
             UserAuthValidator.Validate(_userAuthValidate);
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaSuggestions Convert(InstaSuggestionUserContainerResponse suggestResponse)
                 {
@@ -717,8 +715,7 @@ namespace InstagramApiSharp.API.Processors
             var followers = new InstaUserShortList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 var userFollowersUri =
                     UriCreator.GetUserFollowersUri(userId, _user.RankToken, searchQuery, mutualsfirst,
@@ -819,8 +816,7 @@ namespace InstagramApiSharp.API.Processors
             var following = new InstaUserShortList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 var uri = UriCreator.GetUserFollowingUri(userId, _user.RankToken, searchQuery,
                     paginationParameters.NextMaxId);
@@ -945,8 +941,7 @@ namespace InstagramApiSharp.API.Processors
             var mediaList = new InstaMediaList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
@@ -1044,8 +1039,7 @@ namespace InstagramApiSharp.API.Processors
             var userTags = new InstaMediaList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 IEnumerable<InstaMedia> Convert(InstaMediaListResponse mediaListResponse)
                 {
@@ -1056,13 +1050,10 @@ namespace InstagramApiSharp.API.Processors
                 var mediaTags = await GetUserTags(userId, paginationParameters);
                 if (!mediaTags.Succeeded)
                 {
-                    if (mediaTags.Value != null)
-                    {
-                        userTags.AddRange(Convert(mediaTags.Value));
-                        return Result.Fail(mediaTags.Info, userTags);
-                    }
+                    if (mediaTags.Value == null) return Result.Fail(mediaTags.Info, default(InstaMediaList));
+                    userTags.AddRange(Convert(mediaTags.Value));
+                    return Result.Fail(mediaTags.Info, userTags);
 
-                    return Result.Fail(mediaTags.Info, default(InstaMediaList));
                 }
 
                 var mediaResponse = mediaTags.Value;
@@ -1711,8 +1702,7 @@ namespace InstagramApiSharp.API.Processors
             var besties = new InstaUserShortList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 var bestiesUri = UriCreator.GetBestFriendsUri(paginationParameters.NextMaxId);
                 if (suggested)

@@ -291,8 +291,7 @@ namespace InstagramApiSharp.Converters.Business
                             {
                             }
 
-                    if (businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph != null &&
-                        businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph.Nodes != null)
+                    if (businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph is { Nodes: { } })
                         foreach (var node in businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph
                                      .Nodes)
                         foreach (var dataPoint in node.DataPoints)

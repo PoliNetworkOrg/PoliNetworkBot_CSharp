@@ -32,13 +32,10 @@ namespace InstagramApiSharp.Helpers
 
         public static DateTime UnixTimestampToDateTime(string unixTime)
         {
-            if (unixTime.Length <= 10) //1521208323 ( valid until 20-11-2286 @ 5:46pm (UTC))
-            {
-                var time = (long)Convert.ToDouble(unixTime);
-                return time.FromUnixTimeSeconds();
-            }
+            if (unixTime.Length > 10) return UnixTimestampMilisecondsToDateTime(unixTime);
+            var time = (long)Convert.ToDouble(unixTime);
+            return time.FromUnixTimeSeconds();
 
-            return UnixTimestampMilisecondsToDateTime(unixTime);
         }
 
         public static DateTime UnixTimestampMilisecondsToDateTime(string unixTime)

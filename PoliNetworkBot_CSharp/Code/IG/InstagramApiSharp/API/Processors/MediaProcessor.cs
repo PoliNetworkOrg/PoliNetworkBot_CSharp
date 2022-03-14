@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -226,8 +227,7 @@ namespace InstagramApiSharp.API.Processors
             var mediaList = new InstaMediaList();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaMediaList Convert(InstaMediaListResponse instaMediaListResponse)
                 {
@@ -1443,17 +1443,12 @@ namespace InstagramApiSharp.API.Processors
                 if (video.UserTags?.Count > 0)
                 {
                     var tagArr = new JArray();
-                    foreach (var tag in video.UserTags)
-                        if (tag.Pk != -1)
-                        {
-                            var position = new JArray(0.0, 0.0);
-                            var singleTag = new JObject
-                            {
-                                { "user_id", tag.Pk },
-                                { "position", position }
-                            };
-                            tagArr.Add(singleTag);
-                        }
+                    foreach (var singleTag in from tag in video.UserTags where tag.Pk != -1 let position = new JArray(0.0, 0.0) select new JObject
+                             {
+                                 { "user_id", tag.Pk },
+                                 { "position", position }
+                             })
+                        tagArr.Add(singleTag);
 
                     var root = new JObject
                     {
@@ -1646,27 +1641,20 @@ namespace InstagramApiSharp.API.Processors
                     })
                 }
             };
-            if (image.UserTags?.Count > 0)
-            {
-                var tagArr = new JArray();
-                foreach (var tag in image.UserTags)
-                    if (tag.Pk != -1)
-                    {
-                        var position = new JArray(tag.X, tag.Y);
-                        var singleTag = new JObject
-                        {
-                            { "user_id", tag.Pk },
-                            { "position", position }
-                        };
-                        tagArr.Add(singleTag);
-                    }
+            if (!(image.UserTags?.Count > 0)) return imgData;
+            var tagArr = new JArray();
+            foreach (var singleTag in from tag in image.UserTags where tag.Pk != -1 let position = new JArray(tag.X, tag.Y) select new JObject
+                     {
+                         { "user_id", tag.Pk },
+                         { "position", position }
+                     })
+                tagArr.Add(singleTag);
 
-                var root = new JObject
-                {
-                    { "in", tagArr }
-                };
-                imgData.Add("usertags", root.ToString(Formatting.None));
-            }
+            var root = new JObject
+            {
+                { "in", tagArr }
+            };
+            imgData.Add("usertags", root.ToString(Formatting.None));
 
             return imgData;
         }
@@ -1706,7 +1694,7 @@ namespace InstagramApiSharp.API.Processors
                         { "android_version", _deviceInfo.AndroidVer.APILevel }
                     })
                 },
-                { "length", video.Video.Length.ToString() },
+                { "length", video.Video.Length.ToString(CultureInfo.InvariantCulture) },
                 { "poster_frame_index", "0" },
                 { "audio_muted", "false" },
                 { "filter_type", "0" },

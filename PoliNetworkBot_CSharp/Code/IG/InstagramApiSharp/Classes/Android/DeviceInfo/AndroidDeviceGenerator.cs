@@ -35,7 +35,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
             AndroidDevices.HTC_ONE_PLUS
         };
 
-        public static Dictionary<string, AndroidDevice> AndroidAndroidDeviceSets = new()
+        public static readonly Dictionary<string, AndroidDevice> AndroidAndroidDeviceSets = new()
         {
             {
                 "lg-optimus-g",

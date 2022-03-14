@@ -203,12 +203,18 @@ namespace InstagramApiSharp.Helpers
             try
             {
                 twobytes = binr.ReadUInt16();
-                if (twobytes == 0x8130) //data read as little endian order (actual data order for Sequence is 30 81)
-                    binr.ReadByte(); //advance 1 byte
-                else if (twobytes == 0x8230)
-                    binr.ReadInt16(); //advance 2 bytes
-                else
-                    return null;
+                switch (twobytes)
+                {
+                    //data read as little endian order (actual data order for Sequence is 30 81)
+                    case 0x8130:
+                        binr.ReadByte(); //advance 1 byte
+                        break;
+                    case 0x8230:
+                        binr.ReadInt16(); //advance 2 bytes
+                        break;
+                    default:
+                        return null;
+                }
 
                 twobytes = binr.ReadUInt16();
                 if (twobytes != 0x0102) //version number
@@ -355,7 +361,7 @@ namespace InstagramApiSharp.Helpers
             var saltline = str.ReadLine();
             if (!saltline.StartsWith("DEK-Info: DES-EDE3-CBC,"))
                 return null;
-            var saltstr = saltline[(saltline.IndexOf(",") + 1)..].Trim();
+            var saltstr = saltline[(saltline.IndexOf(",", StringComparison.Ordinal) + 1)..].Trim();
             var salt = new byte[saltstr.Length / 2];
             for (var i = 0; i < salt.Length; i++)
                 salt[i] = Convert.ToByte(saltstr.Substring(i * 2, 2), 16);

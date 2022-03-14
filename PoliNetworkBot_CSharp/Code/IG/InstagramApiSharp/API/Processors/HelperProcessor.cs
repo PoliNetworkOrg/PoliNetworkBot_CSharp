@@ -936,17 +936,15 @@ namespace InstagramApiSharp.API.Processors
                 if (userTags != null && userTags.Any())
                 {
                     var tagArr = new JArray();
-                    foreach (var tag in userTags)
-                        if (tag.Pk != -1)
-                        {
-                            var position = new JArray(tag.X, tag.Y);
-                            var singleTag = new JObject
-                            {
-                                { "user_id", tag.Pk },
-                                { "position", position }
-                            };
-                            tagArr.Add(singleTag);
-                        }
+                    foreach (var singleTag in from tag in userTags
+                             where tag.Pk != -1
+                             let position = new JArray(tag.X, tag.Y)
+                             select new JObject
+                             {
+                                 { "user_id", tag.Pk },
+                                 { "position", position }
+                             })
+                        tagArr.Add(singleTag);
 
                     var root = new JObject
                     {

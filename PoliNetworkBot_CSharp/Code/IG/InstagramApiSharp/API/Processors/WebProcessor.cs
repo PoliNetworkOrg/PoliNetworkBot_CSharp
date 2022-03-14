@@ -93,8 +93,7 @@ namespace InstagramApiSharp.API.Processors
             var textDataList = new InstaWebTextData();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaWebTextData Convert(InstaWebSettingsPageResponse settingsPageResponse)
                 {
@@ -208,8 +207,7 @@ namespace InstagramApiSharp.API.Processors
             var webData = new InstaWebData();
             try
             {
-                if (paginationParameters == null)
-                    paginationParameters = PaginationParameters.MaxPagesToLoad(1);
+                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
                 InstaWebData Convert(InstaWebSettingsPageResponse settingsPageResponse)
                 {

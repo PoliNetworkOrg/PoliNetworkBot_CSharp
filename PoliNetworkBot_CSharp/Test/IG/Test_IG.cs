@@ -34,9 +34,7 @@ namespace PoliNetworkBot_CSharp.Test.IG
                 c = new[] { "user", "password" };
             }
 
-            ;
-
-            if (c == null || c.Length < 2 || c[0] == "user")
+            if (c.Length < 2 || c[0] == "user")
                 return false;
 
             // create user session data and provide login details

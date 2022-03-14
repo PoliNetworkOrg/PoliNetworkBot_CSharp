@@ -745,16 +745,16 @@ namespace InstagramApiSharp.API
 
         #region Web endpoints constants
 
-        public static string WEB_ADDRESS = "https://www.instagram.com";
-        public static string WEB_ACCOUNTS = "/accounts";
-        public static string WEB_ACCOUNT_DATA = WEB_ACCOUNTS + "/access_tool";
-        public static string WEB_CURRENT_FOLLOW_REQUESTS = WEB_ACCOUNT_DATA + "/current_follow_requests";
-        public static string WEB_FORMER_EMAILS = WEB_ACCOUNT_DATA + "/former_emails";
-        public static string WEB_FORMER_PHONES = WEB_ACCOUNT_DATA + "/former_phones";
-        public static string WEB_FORMER_USERNAMES = WEB_ACCOUNT_DATA + "/former_usernames";
-        public static string WEB_FORMER_FULL_NAMES = WEB_ACCOUNT_DATA + "/former_full_names";
-        public static string WEB_FORMER_BIO_TEXTS = WEB_ACCOUNT_DATA + "/former_bio_texts";
-        public static string WEB_FORMER_BIO_LINKS = WEB_ACCOUNT_DATA + "/former_links_in_bio";
+        private static string WEB_ADDRESS = "https://www.instagram.com";
+        private static string WEB_ACCOUNTS = "/accounts";
+        public static string WebAccountData = WEB_ACCOUNTS + "/access_tool";
+        public static string WebCurrentFollowRequests = WebAccountData + "/current_follow_requests";
+        public static string WEB_FORMER_EMAILS = WebAccountData + "/former_emails";
+        public static string WEB_FORMER_PHONES = WebAccountData + "/former_phones";
+        public static string WEB_FORMER_USERNAMES = WebAccountData + "/former_usernames";
+        public static string WEB_FORMER_FULL_NAMES = WebAccountData + "/former_full_names";
+        public static string WEB_FORMER_BIO_TEXTS = WebAccountData + "/former_bio_texts";
+        public static string WEB_FORMER_BIO_LINKS = WebAccountData + "/former_links_in_bio";
 
 
         public static string WEB_CURSOR = "__a=1&cursor={0}";

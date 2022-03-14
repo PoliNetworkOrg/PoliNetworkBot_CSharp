@@ -23,7 +23,7 @@ namespace InstagramApiSharp.Helpers
         public readonly InstaApi _instaApi;
         private readonly Random Rnd = new();
         public /*readonly*/ InstaApiVersion _apiVersion;
-        public IHttpRequestProcessor HttpRequestProcessor;
+        public readonly IHttpRequestProcessor HttpRequestProcessor;
 
         internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor httpRequestProcessor,
             InstaApi instaApi)

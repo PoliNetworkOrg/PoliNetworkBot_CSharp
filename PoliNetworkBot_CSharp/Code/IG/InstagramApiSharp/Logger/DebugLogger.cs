@@ -74,7 +74,7 @@ namespace InstagramApiSharp.Logger
                 Write($"{key}:{JsonConvert.SerializeObject(value)}");
         }
 
-        private void WriteProperties(IDictionary<string, object> properties)
+        private static void WriteProperties(IDictionary<string, object> properties)
         {
             if (properties == null) return;
             if (properties.Count == 0) return;

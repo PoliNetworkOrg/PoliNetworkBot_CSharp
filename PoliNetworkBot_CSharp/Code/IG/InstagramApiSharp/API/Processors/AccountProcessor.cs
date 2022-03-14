@@ -807,9 +807,9 @@ namespace InstagramApiSharp.API.Processors
                 {
                     { "_csrftoken", _user.CsrfToken },
                     { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                    { "_uid", _user.LoggedInUser.Pk.ToString() }
+                    { "_uid", _user.LoggedInUser.Pk.ToString() },
+                    { "allow_story_reshare", allow ? "1" : "0" }
                 };
-                data.Add("allow_story_reshare", allow ? "1" : "0");
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();

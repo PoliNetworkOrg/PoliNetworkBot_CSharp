@@ -19,15 +19,12 @@ namespace InstagramApiSharp.Classes.Models
         {
             get
             {
-                switch (MessagePrefs)
+                return MessagePrefs switch
                 {
-                    default:
-                        return InstaMessageRepliesType.Everyone;
-                    case "following":
-                        return InstaMessageRepliesType.Following;
-                    case "off":
-                        return InstaMessageRepliesType.Off;
-                }
+                    "following" => InstaMessageRepliesType.Following,
+                    "off" => InstaMessageRepliesType.Off,
+                    _ => InstaMessageRepliesType.Everyone
+                };
             }
         }
 

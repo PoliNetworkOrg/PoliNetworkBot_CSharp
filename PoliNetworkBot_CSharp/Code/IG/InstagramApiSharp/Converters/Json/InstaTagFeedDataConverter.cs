@@ -33,7 +33,7 @@ namespace InstagramApiSharp.Converters.Json
             var items = root.SelectToken("items");
             var storiesTray = root.SelectToken("story.items");
 
-            List<InstaMediaItemResponse> GetMedias(JToken token)
+            IEnumerable<InstaMediaItemResponse> GetMedias(JToken token)
             {
                 return token.Select(item => item?.ToObject<InstaMediaItemResponse>())
                     .Where(media => !string.IsNullOrEmpty(media?.Pk)).ToList();
