@@ -7,10 +7,12 @@ using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -570,11 +572,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
             //notifica il consiglio
+            //aggiungi bottone veto
+            
             throw new NotImplementedException();
         }
 
-        public static void VetoCallbackButton(string messageHash)
+        public static void VetoCallbackButton(CallbackQuery callbackQuery)
         {
+            
         }
     }
 }
