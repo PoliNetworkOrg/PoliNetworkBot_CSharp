@@ -66,9 +66,9 @@ namespace InstagramApiSharp.API.Processors
 
                 var feeds = await GetExploreFeed(paginationParameters);
                 if (!feeds.Succeeded)
-                {
-                    return feeds.Value != null ? Result.Fail(feeds.Info, Convert(feeds.Value)) : Result.Fail(feeds.Info, (InstaExploreFeed)null);
-                }
+                    return feeds.Value != null
+                        ? Result.Fail(feeds.Info, Convert(feeds.Value))
+                        : Result.Fail(feeds.Info, (InstaExploreFeed)null);
 
                 var feedResponse = feeds.Value;
                 paginationParameters.NextMaxId = feedResponse.MaxId;
@@ -170,9 +170,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResult = await GetAnyFeeds(UriCreator.GetUserLikeFeedUri(paginationParameters.NextMaxId));
                 if (!mediaResult.Succeeded)
-                {
-                    return Result.Fail(mediaResult.Info, mediaResult.Value != null ? Convert(mediaResult.Value) : default(InstaMediaList));
-                }
+                    return Result.Fail(mediaResult.Info,
+                        mediaResult.Value != null ? Convert(mediaResult.Value) : default);
 
                 var mediaResponse = mediaResult.Value;
                 var mediaList = Convert(mediaResponse);
@@ -249,9 +248,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaFeedsResult = await GetAnyFeeds(UriCreator.GetSavedFeedUri(paginationParameters?.NextMaxId));
                 if (!mediaFeedsResult.Succeeded)
-                {
-                    return Result.Fail(mediaFeedsResult.Info, mediaFeedsResult.Value != null ? Convert(mediaFeedsResult.Value) : default(InstaMediaList));
-                }
+                    return Result.Fail(mediaFeedsResult.Info,
+                        mediaFeedsResult.Value != null ? Convert(mediaFeedsResult.Value) : default);
 
                 var mediaResponse = mediaFeedsResult.Value;
                 paginationParameters.NextMaxId = mediaResponse.NextMaxId;
@@ -313,10 +311,7 @@ namespace InstagramApiSharp.API.Processors
                 }
 
                 var tags = await GetTagFeed(tag, paginationParameters);
-                if (!tags.Succeeded)
-                {
-                    return Result.Fail(tags.Info, tags.Value != null ? Convert(tags.Value) : default(InstaTagFeed));
-                }
+                if (!tags.Succeeded) return Result.Fail(tags.Info, tags.Value != null ? Convert(tags.Value) : default);
 
                 var feedResponse = tags.Value;
 
@@ -445,9 +440,9 @@ namespace InstagramApiSharp.API.Processors
 
                 var feeds = await GetTopicalExploreFeed(paginationParameters, clusterId);
                 if (!feeds.Succeeded)
-                {
-                    return feeds.Value != null ? Result.Fail(feeds.Info, Convert(feeds.Value)) : Result.Fail(feeds.Info, (InstaTopicalExploreFeed)null);
-                }
+                    return feeds.Value != null
+                        ? Result.Fail(feeds.Info, Convert(feeds.Value))
+                        : Result.Fail(feeds.Info, (InstaTopicalExploreFeed)null);
 
                 var feedResponse = feeds.Value;
                 paginationParameters.NextMaxId = feedResponse.MaxId;

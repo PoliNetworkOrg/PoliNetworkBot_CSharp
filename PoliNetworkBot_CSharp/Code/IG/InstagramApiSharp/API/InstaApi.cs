@@ -320,7 +320,9 @@ namespace InstagramApiSharp.API
                 var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<bool>(response, json)
+                    : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -934,7 +936,9 @@ namespace InstagramApiSharp.API
                 response = await HttpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<bool>(response, json)
+                    : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -1000,7 +1004,9 @@ namespace InstagramApiSharp.API
                     HttpRequestProcessor.RequestMessage.EncPassword = encruptedPassword;
                 }
 
-                signature = isNewLogin ? $"{HttpRequestProcessor.RequestMessage.GenerateSignature(_apiVersion, _apiVersion.SignatureKey, out devid)}.{HttpRequestProcessor.RequestMessage.GetMessageString()}" : $"{HttpRequestProcessor.RequestMessage.GenerateChallengeSignature(_apiVersion, _apiVersion.SignatureKey, csrftoken, out devid)}.{HttpRequestProcessor.RequestMessage.GetChallengeMessageString(csrftoken)}";
+                signature = isNewLogin
+                    ? $"{HttpRequestProcessor.RequestMessage.GenerateSignature(_apiVersion, _apiVersion.SignatureKey, out devid)}.{HttpRequestProcessor.RequestMessage.GetMessageString()}"
+                    : $"{HttpRequestProcessor.RequestMessage.GenerateChallengeSignature(_apiVersion, _apiVersion.SignatureKey, csrftoken, out devid)}.{HttpRequestProcessor.RequestMessage.GetChallengeMessageString(csrftoken)}";
                 _deviceInfo.DeviceId = devid;
                 var fields = new Dictionary<string, string>
                 {
@@ -1672,7 +1678,9 @@ namespace InstagramApiSharp.API
 
                 var json = await response.Content.ReadAsStringAsync();
                 var obj = JsonConvert.DeserializeObject<InstaUserLookupResponse>(json);
-                return response.StatusCode != HttpStatusCode.OK ? Result.Fail<InstaUserLookup>(obj.Message) : Result.Success(ConvertersFabric.Instance.GetUserLookupConverter(obj).Convert());
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.Fail<InstaUserLookup>(obj.Message)
+                    : Result.Success(ConvertersFabric.Instance.GetUserLookupConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -2057,7 +2065,9 @@ namespace InstagramApiSharp.API
             {
                 Uri instaUri;
 
-                instaUri = replayChallenge ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath) : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
+                instaUri = replayChallenge
+                    ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath)
+                    : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
                 var data = new JObject
                 {
@@ -2117,7 +2127,9 @@ namespace InstagramApiSharp.API
             {
                 Uri instaUri;
 
-                instaUri = replayChallenge ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath) : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
+                instaUri = replayChallenge
+                    ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath)
+                    : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
                 var data = new JObject
                 {
@@ -2576,7 +2588,9 @@ namespace InstagramApiSharp.API
                 response = await HttpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<bool>(response, json)
+                    : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -2826,7 +2840,9 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<string>(response, json)
+                    : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {
@@ -2887,7 +2903,9 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<string>(response, json)
+                    : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {
@@ -2920,7 +2938,9 @@ namespace InstagramApiSharp.API
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
 
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<string>(response, json) : Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<string>(response, json)
+                    : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {

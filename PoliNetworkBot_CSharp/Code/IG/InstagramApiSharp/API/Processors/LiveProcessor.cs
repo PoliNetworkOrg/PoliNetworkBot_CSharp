@@ -821,7 +821,9 @@ namespace InstagramApiSharp.API.Processors
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastStartResponse>(json);
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<InstaBroadcastStart>(response, json) : Result.Success(ConvertersFabric.Instance.GetBroadcastStartConverter(obj).Convert());
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<InstaBroadcastStart>(response, json)
+                    : Result.Success(ConvertersFabric.Instance.GetBroadcastStartConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -1063,7 +1065,9 @@ namespace InstagramApiSharp.API.Processors
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<object>(response, json) : Result.Success(json);
+                return response.StatusCode != HttpStatusCode.OK
+                    ? Result.UnExpectedResponse<object>(response, json)
+                    : Result.Success(json);
             }
             catch (HttpRequestException httpException)
             {

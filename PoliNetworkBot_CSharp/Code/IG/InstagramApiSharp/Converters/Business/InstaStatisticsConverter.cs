@@ -271,10 +271,13 @@ namespace InstagramApiSharp.Converters.Business
                         {
                         }
 
-                    if (businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph is { TotalCountGraph:
+                    if (businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph is
                         {
-                            DataPoints: { }
-                        } })
+                            TotalCountGraph:
+                            {
+                                DataPoints: { }
+                            }
+                        })
                         foreach (var dataPoint in businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph
                                      .TotalCountGraph.DataPoints)
                             try

@@ -67,7 +67,9 @@ namespace InstagramApiSharp.API.Processors
                 var obj = JsonConvert.DeserializeObject<InstaWebContainerResponse>(json);
 
                 var first = obj.Entry?.SettingsPages?.FirstOrDefault();
-                return first != null ? Result.Success(ConvertersFabric.Instance.GetWebAccountInfoConverter(first).Convert()) : Result.Fail("Date joined isn't available.", default(InstaWebAccountInfo));
+                return first != null
+                    ? Result.Success(ConvertersFabric.Instance.GetWebAccountInfoConverter(first).Convert())
+                    : Result.Fail("Date joined isn't available.", default(InstaWebAccountInfo));
             }
             catch (HttpRequestException httpException)
             {
@@ -106,9 +108,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var request = await GetRequest(CreateUri(paginationParameters?.NextMaxId));
                 if (!request.Succeeded)
-                {
                     return Result.Fail(request.Info, request.Value != null ? Convert(request.Value) : textDataList);
-                }
 
                 var response = request.Value;
 
@@ -232,9 +232,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var request = await GetRequest(CreateUri(paginationParameters?.NextMaxId));
                 if (!request.Succeeded)
-                {
                     return Result.Fail(request.Info, request.Value != null ? Convert(request.Value) : webData);
-                }
 
                 var response = request.Value;
 
@@ -295,7 +293,9 @@ namespace InstagramApiSharp.API.Processors
                 var obj = JsonConvert.DeserializeObject<InstaWebContainerResponse>(json);
 
                 var first = obj.Entry?.SettingsPages?.FirstOrDefault();
-                return first != null ? Result.Success(first) : Result.Fail("Data isn't available.", default(InstaWebSettingsPageResponse));
+                return first != null
+                    ? Result.Success(first)
+                    : Result.Fail("Data isn't available.", default(InstaWebSettingsPageResponse));
             }
             catch (HttpRequestException httpException)
             {

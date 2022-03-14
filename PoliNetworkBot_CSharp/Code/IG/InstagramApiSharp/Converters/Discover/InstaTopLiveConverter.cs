@@ -17,10 +17,9 @@ namespace InstagramApiSharp.Converters
         {
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var storyTray = new InstaTopLive { RankedPosition = SourceObject.RankedPosition };
-            foreach (var userOwner in SourceObject.BroadcastOwners.Select(owner => ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(owner).Convert()))
-            {
+            foreach (var userOwner in SourceObject.BroadcastOwners.Select(owner =>
+                         ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(owner).Convert()))
                 storyTray.BroadcastOwners.Add(userOwner);
-            }
 
             return storyTray;
         }

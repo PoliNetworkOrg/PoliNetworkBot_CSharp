@@ -31,7 +31,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
 
         public static bool CorsoHandler(Conversation conversation, string messageText)
         {
-            foreach (var corso in from scuola in ScuoleCorso.Values where scuola != null from corso in scuola where messageText == corso select corso)
+            foreach (var corso in from scuola in ScuoleCorso.Values
+                     where scuola != null
+                     from corso in scuola
+                     where messageText == corso
+                     select corso)
             {
                 conversation.setCorso(corso);
                 conversation.setStato(stati.Cartella);

@@ -18,10 +18,10 @@ namespace InstagramApiSharp.Converters
             if (SourceObject?.Items == null)
                 throw new ArgumentNullException("InstaFeedResponse or its Items");
             var feed = new InstaFeed();
-            foreach (var feedItem in from instaUserFeedItemResponse in SourceObject.Items where instaUserFeedItemResponse?.Type == 0 select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse).Convert())
-            {
+            foreach (var feedItem in from instaUserFeedItemResponse in SourceObject.Items
+                     where instaUserFeedItemResponse?.Type == 0
+                     select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse).Convert())
                 feed.Medias.Add(feedItem);
-            }
 
             foreach (var suggestedItemResponse in SourceObject.SuggestedUsers)
                 try

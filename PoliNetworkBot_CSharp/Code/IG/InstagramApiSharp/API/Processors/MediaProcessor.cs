@@ -885,10 +885,8 @@ namespace InstagramApiSharp.API.Processors
                                     tried = true;
                                     goto TryLabel;
                                 }
-                                else
-                                {
-                                    t.Pk = u.Value.Pk;
-                                }
+
+                                t.Pk = u.Value.Pk;
                             }
                             catch
                             {
@@ -1023,10 +1021,8 @@ namespace InstagramApiSharp.API.Processors
                                 tried = true;
                                 goto TryLabel;
                             }
-                            else
-                            {
-                                t.Pk = u.Value.Pk;
-                            }
+
+                            t.Pk = u.Value.Pk;
                         }
                         catch
                         {
@@ -1716,10 +1712,13 @@ namespace InstagramApiSharp.API.Processors
                 { "filter_type", "0" },
                 { "video_result", "" }
             };
-            
+
             if (!(video.UserTags?.Count > 0)) return vidData;
             var tagArr = new JArray();
-            foreach (var singleTag in from tag in video.UserTags where tag.Pk != -1 let position = new JArray(0.0, 0.0) select new JObject
+            foreach (var singleTag in from tag in video.UserTags
+                     where tag.Pk != -1
+                     let position = new JArray(0.0, 0.0)
+                     select new JObject
                      {
                          { "user_id", tag.Pk },
                          { "position", position }

@@ -302,7 +302,8 @@ namespace InstagramApiSharp.API.Services
                         case "email_is_taken":
                             return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
                         case "invalid_email":
-                            return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
+                            return Result.Fail("Please enter a valid email address.",
+                                (InstaCheckEmailRegistration)null);
                         default:
                             InstaCheckEmailRegistration = obj;
                             return Result.Success(obj);

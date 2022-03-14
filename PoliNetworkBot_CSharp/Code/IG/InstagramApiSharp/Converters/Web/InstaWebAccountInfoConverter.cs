@@ -19,8 +19,12 @@ namespace InstagramApiSharp.Converters
 
             var info = new InstaWebAccountInfo
             {
-                JoinedDate = SourceObject.DateJoined?.Data?.Timestamp != null ? SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue,
-                SwitchedToBusinessDate = SourceObject.SwitchedToBusiness?.Data?.Timestamp != null ? SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue
+                JoinedDate = SourceObject.DateJoined?.Data?.Timestamp != null
+                    ? SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds()
+                    : DateTime.MinValue,
+                SwitchedToBusinessDate = SourceObject.SwitchedToBusiness?.Data?.Timestamp != null
+                    ? SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds()
+                    : DateTime.MinValue
             };
 
             return info;

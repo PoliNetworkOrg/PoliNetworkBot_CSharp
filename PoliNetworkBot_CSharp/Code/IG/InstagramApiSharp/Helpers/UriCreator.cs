@@ -823,9 +823,8 @@ namespace InstagramApiSharp.Helpers
                 instaUri = instaUri
                     .AddQueryParameter("page", page.ToString());
             if (!string.IsNullOrEmpty(rankToken))
-            {
-                instaUri = instaUri.AddQueryParameter("rank_token", rankToken.Contains("_") ? rankToken.Split('_')[1] : rankToken);
-            }
+                instaUri = instaUri.AddQueryParameter("rank_token",
+                    rankToken.Contains("_") ? rankToken.Split('_')[1] : rankToken);
 
             if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
             var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
@@ -2050,8 +2049,8 @@ namespace InstagramApiSharp.Helpers
         {
             var u = uri.ToString();
             if (u.Contains("?"))
-                u = u[..u.IndexOf("?")];
-            u = u[u.IndexOf("/accounts/")..];
+                u = u[..u.IndexOf("?", StringComparison.Ordinal)];
+            u = u[u.IndexOf("/accounts/", StringComparison.Ordinal)..];
 
             if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.API_SUFFIX + u, out var instaUri))
                 throw new Exception("Cant create URI for verify email");

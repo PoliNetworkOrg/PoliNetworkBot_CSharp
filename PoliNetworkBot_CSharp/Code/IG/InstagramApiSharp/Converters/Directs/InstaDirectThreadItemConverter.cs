@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
@@ -46,10 +45,12 @@ namespace InstagramApiSharp.Converters
                             threadItem.LinkMedia.LinkContext = new InstaWebLinkContext();
 
                             if (!string.IsNullOrEmpty(SourceObject.Link.LinkContext.LinkImageUrl))
-                                threadItem.LinkMedia.LinkContext.LinkImageUrl = SourceObject.Link.LinkContext.LinkImageUrl;
+                                threadItem.LinkMedia.LinkContext.LinkImageUrl =
+                                    SourceObject.Link.LinkContext.LinkImageUrl;
 
                             if (!string.IsNullOrEmpty(SourceObject.Link.LinkContext.LinkSummary))
-                                threadItem.LinkMedia.LinkContext.LinkSummary = SourceObject.Link.LinkContext.LinkSummary;
+                                threadItem.LinkMedia.LinkContext.LinkSummary =
+                                    SourceObject.Link.LinkContext.LinkSummary;
 
                             if (!string.IsNullOrEmpty(SourceObject.Link.LinkContext.LinkTitle))
                                 threadItem.LinkMedia.LinkContext.LinkTitle = SourceObject.Link.LinkContext.LinkTitle;
@@ -91,7 +92,8 @@ namespace InstagramApiSharp.Converters
                     };
                     if (SourceObject.StoryShare.Media != null)
                     {
-                        var converter = ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.StoryShare.Media);
+                        var converter =
+                            ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.StoryShare.Media);
                         threadItem.StoryShare.Media = converter.Convert();
                     }
 
@@ -147,7 +149,8 @@ namespace InstagramApiSharp.Converters
                     if (SourceObject.ProfileMediasPreview != null && SourceObject.ProfileMediasPreview.Any())
                         try
                         {
-                            var previewMedias = SourceObject.ProfileMediasPreview.Select(item => ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert()).ToList();
+                            var previewMedias = SourceObject.ProfileMediasPreview.Select(item =>
+                                ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert()).ToList();
 
                             threadItem.ProfileMediasPreview = previewMedias;
                         }
@@ -196,7 +199,8 @@ namespace InstagramApiSharp.Converters
                     }
 
                     break;
-                case InstaDirectThreadItemType.FelixShare when SourceObject.FelixShareMedia != null && SourceObject.FelixShareMedia.Video != null:
+                case InstaDirectThreadItemType.FelixShare when SourceObject.FelixShareMedia != null &&
+                                                               SourceObject.FelixShareMedia.Video != null:
                     try
                     {
                         threadItem.FelixShareMedia = ConvertersFabric.Instance
@@ -221,7 +225,8 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.VoiceMedia when SourceObject.VoiceMedia != null:
                     try
                     {
-                        threadItem.VoiceMedia = ConvertersFabric.Instance.GetVoiceMediaConverter(SourceObject.VoiceMedia)
+                        threadItem.VoiceMedia = ConvertersFabric.Instance
+                            .GetVoiceMediaConverter(SourceObject.VoiceMedia)
                             .Convert();
                     }
                     catch

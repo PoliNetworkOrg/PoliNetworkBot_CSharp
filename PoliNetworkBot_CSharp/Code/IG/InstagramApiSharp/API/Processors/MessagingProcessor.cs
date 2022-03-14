@@ -471,7 +471,9 @@ namespace InstagramApiSharp.API.Processors
             try
             {
                 Uri instaUri;
-                instaUri = string.IsNullOrEmpty(username) ? UriCreator.GetRankedRecipientsUri() : UriCreator.GetRankRecipientsByUserUri(username);
+                instaUri = string.IsNullOrEmpty(username)
+                    ? UriCreator.GetRankedRecipientsUri()
+                    : UriCreator.GetRankRecipientsByUserUri(username);
 
                 var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
                 var response = await _httpRequestProcessor.SendAsync(request);

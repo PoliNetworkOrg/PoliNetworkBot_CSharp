@@ -187,7 +187,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var shiftStart = GetShiftSlotFromTime(start);
             var shiftEnd = GetShiftSlotFromTime(stop);
 
-            return (from child in table.ChildNodes where child != null select CheckIfFree(child, shiftStart, shiftEnd) into toAdd where !string.IsNullOrEmpty(toAdd) select toAdd).ToList();
+            return (from child in table.ChildNodes
+                where child != null
+                select CheckIfFree(child, shiftStart, shiftEnd)
+                into toAdd
+                where !string.IsNullOrEmpty(toAdd)
+                select toAdd).ToList();
         }
 
         /// <summary>

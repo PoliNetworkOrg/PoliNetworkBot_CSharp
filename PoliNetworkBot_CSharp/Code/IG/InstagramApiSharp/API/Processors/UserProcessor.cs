@@ -202,9 +202,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var blockedUsersResponse = await GetBlockedUsers(paginationParameters?.NextMaxId);
                 if (!blockedUsersResponse.Succeeded)
-                {
-                    return Result.Fail(blockedUsersResponse.Info, blockedUsersResponse.Value != null ? Convert(blockedUsersResponse.Value) : default(InstaBlockedUsers));
-                }
+                    return Result.Fail(blockedUsersResponse.Info,
+                        blockedUsersResponse.Value != null ? Convert(blockedUsersResponse.Value) : default);
 
                 paginationParameters.NextMaxId = blockedUsersResponse.Value.MaxId;
 
@@ -511,9 +510,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var suggestionsResponse = await GetSuggestionUsers(paginationParameters);
                 if (!suggestionsResponse.Succeeded)
-                {
-                    return Result.Fail(suggestionsResponse.Info, suggestionsResponse.Value != null ? Convert(suggestionsResponse.Value) : default(InstaSuggestions));
-                }
+                    return Result.Fail(suggestionsResponse.Info,
+                        suggestionsResponse.Value != null ? Convert(suggestionsResponse.Value) : default);
 
                 paginationParameters.NextMaxId = suggestionsResponse.Value.MaxId;
 
@@ -957,9 +955,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResult = await GetUserMedia(userId, paginationParameters);
                 if (!mediaResult.Succeeded)
-                {
-                    return Result.Fail(mediaResult.Info, mediaResult.Value != null ? Convert(mediaResult.Value) : default(InstaMediaList));
-                }
+                    return Result.Fail(mediaResult.Info,
+                        mediaResult.Value != null ? Convert(mediaResult.Value) : default);
 
                 var mediaResponse = mediaResult.Value;
 
@@ -1772,7 +1769,9 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
                 var instaUserListResponse = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
-                return instaUserListResponse.IsOk() ? Result.Success(instaUserListResponse) : Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
+                return instaUserListResponse.IsOk()
+                    ? Result.Success(instaUserListResponse)
+                    : Result.UnExpectedResponse<InstaUserListShortResponse>(response, json);
             }
             catch (HttpRequestException httpException)
             {

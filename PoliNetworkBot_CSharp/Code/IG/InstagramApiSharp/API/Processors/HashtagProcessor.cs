@@ -219,10 +219,8 @@ namespace InstagramApiSharp.API.Processors
                     Guid.NewGuid().ToString(),
                     paginationParameters.NextMaxId, true);
                 if (!mediaResponse.Succeeded)
-                {
                     Result.Fail(mediaResponse.Info,
                         mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
-                }
 
                 paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
                 paginationParameters.NextPage = mediaResponse.Value.NextPage;
@@ -327,10 +325,8 @@ namespace InstagramApiSharp.API.Processors
                     paginationParameters.NextMaxId);
 
                 if (!mediaResponse.Succeeded)
-                {
                     Result.Fail(mediaResponse.Info,
                         mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
-                }
 
                 paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
                 paginationParameters.NextPage = mediaResponse.Value.NextPage;

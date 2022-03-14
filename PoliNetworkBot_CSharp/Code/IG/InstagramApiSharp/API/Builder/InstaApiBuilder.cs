@@ -67,7 +67,8 @@ namespace InstagramApiSharp.API.Builder
 
             try
             {
-                InstaApiConstants.TIMEZONE_OFFSET = int.Parse(DateTimeOffset.Now.Offset.TotalSeconds.ToString(CultureInfo.InvariantCulture));
+                InstaApiConstants.TIMEZONE_OFFSET =
+                    int.Parse(DateTimeOffset.Now.Offset.TotalSeconds.ToString(CultureInfo.InvariantCulture));
             }
             catch
             {

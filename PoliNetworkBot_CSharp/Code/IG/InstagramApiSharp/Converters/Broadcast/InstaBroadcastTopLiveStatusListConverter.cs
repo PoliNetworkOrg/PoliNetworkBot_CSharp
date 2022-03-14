@@ -21,8 +21,9 @@ namespace InstagramApiSharp.Converters
             try
             {
                 if (SourceObject.BroadcastStatusItems?.Count > 0)
-                    broadcastStatusItems.AddRange(SourceObject.BroadcastStatusItems.Select(statusItem => ConvertersFabric.Instance.GetBroadcastStatusItemConverter(statusItem)
-                        .Convert()));
+                    broadcastStatusItems.AddRange(SourceObject.BroadcastStatusItems.Select(statusItem =>
+                        ConvertersFabric.Instance.GetBroadcastStatusItemConverter(statusItem)
+                            .Convert()));
             }
             catch
             {

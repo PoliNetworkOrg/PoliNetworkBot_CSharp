@@ -47,7 +47,9 @@ namespace InstagramApiSharp.Converters.Hashtags
             {
                 try
                 {
-                    foreach (var related in SourceObject.PersistentSections.Where(section => section.LayoutContent?.Related?.Count > 0).SelectMany(section => section.LayoutContent.Related))
+                    foreach (var related in SourceObject.PersistentSections
+                                 .Where(section => section.LayoutContent?.Related?.Count > 0)
+                                 .SelectMany(section => section.LayoutContent.Related))
                         try
                         {
                             media.RelatedHashtags.Add(ConvertersFabric.Instance

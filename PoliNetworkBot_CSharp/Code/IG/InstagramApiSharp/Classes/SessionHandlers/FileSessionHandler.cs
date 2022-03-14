@@ -56,7 +56,7 @@ namespace InstagramApiSharp.Classes.SessionHandlers
             catch { }
 #else
             if (!File.Exists(FilePath)) return;
-            
+
             using var fs = File.OpenRead(FilePath);
             InstaApi.LoadStateDataFromStream(fs);
 #endif

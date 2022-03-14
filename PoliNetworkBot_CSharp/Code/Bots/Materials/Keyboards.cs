@@ -18,7 +18,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         {
             var testo = "";
             var options2 = new List<Language>();
-            if (Navigator.ScuoleCorso[scuola] != null) options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso => new Language(new Dictionary<string, string> { { "it", corso }, { "en", corso } })));
+            if (Navigator.ScuoleCorso[scuola] != null)
+                options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso =>
+                    new Language(new Dictionary<string, string> { { "it", corso }, { "en", corso } })));
             options2.Add(new Language(new Dictionary<string, string>
             {
                 { "it", "🔙 Indietro" },
@@ -49,7 +51,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             var percorso = Program.UsersConversations[id].getPercorso();
             Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " +
                              subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
-            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string> { { "it", v.Split("/").Last() }, { "en", v.Split("/").Last() } })).ToList();
+            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
+                { { "it", v.Split("/").Last() }, { "en", v.Split("/").Last() } })).ToList();
             if (percorso == null)
             {
                 options2.Add(new Language(new Dictionary<string, string>
@@ -93,7 +96,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         internal static IEnumerable<List<Language>> GetKeyboardSchools()
         {
-            var options2 = Navigator.ScuoleCorso.Keys.Select(v => new Language(new Dictionary<string, string> { { "it", v }, { "en", v } })).ToList();
+            var options2 = Navigator.ScuoleCorso.Keys
+                .Select(v => new Language(new Dictionary<string, string> { { "it", v }, { "en", v } })).ToList();
             //r.Add(new List<InlineKeyboardButton> { new(text: v ) });
             return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }

@@ -19,7 +19,9 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("SourceObject");
 
             var list = new InstaTranslateList();
-            if (SourceObject.Translations != null && SourceObject.Translations.Any()) list.AddRange(SourceObject.Translations.Select(item => ConvertersFabric.Instance.GetSingleTranslateConverter(item).Convert()));
+            if (SourceObject.Translations != null && SourceObject.Translations.Any())
+                list.AddRange(SourceObject.Translations.Select(item =>
+                    ConvertersFabric.Instance.GetSingleTranslateConverter(item).Convert()));
 
             return list;
         }
