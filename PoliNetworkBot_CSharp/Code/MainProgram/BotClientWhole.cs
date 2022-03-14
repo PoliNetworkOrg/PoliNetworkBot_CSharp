@@ -21,9 +21,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
         public BotClientWhole(TelegramBotClient botClient, BotInfoAbstract bot1,
             Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2)
         {
-            this.BotClient = botClient;
+            BotClient = botClient;
             BotInfoAbstract = bot1;
-            this.OnmessageMethod2 = onmessageMethod2;
+            OnmessageMethod2 = onmessageMethod2;
             UpdatesMessageLastId = new Dictionary<long, long>();
         }
     }

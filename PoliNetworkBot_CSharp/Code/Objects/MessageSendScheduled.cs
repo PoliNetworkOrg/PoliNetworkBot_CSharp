@@ -17,8 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             object message, ChatType? chatType, Tuple<bool?, int, string> r1)
             : base(scheduleMessageSentResult == ScheduleMessageSentResult.SUCCESS, message, chatType)
         {
-            this.ScheduleMessageSentResult = scheduleMessageSentResult;
-            this.R1 = r1;
+            ScheduleMessageSentResult = scheduleMessageSentResult;
+            R1 = r1;
         }
     }
 }

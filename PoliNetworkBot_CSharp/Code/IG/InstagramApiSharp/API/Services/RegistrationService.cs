@@ -706,7 +706,6 @@ namespace InstagramApiSharp.API.Services
 
                     return Result.Fail("Challenge is required", ResponseType.ChallengeRequired,
                         default(InstaAccountCreation));
-
                 }
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountCreation>(json);

@@ -79,15 +79,15 @@ namespace InstagramApiSharp
 
         public static string EncodeList(this IEnumerable<long> listOfValues, bool appendQuotation = true)
         {
-            return EncodeList(listOfValues.ToList(), appendQuotation);
+            return EncodeListString(listOfValues.ToList().Select(x => x.ToString()).ToList(), appendQuotation);
         }
 
-        public static string EncodeList(this IEnumerable<string> listOfValues, bool appendQuotation = true)
+        private static string EncodeListString(this IEnumerable<string> listOfValues, bool appendQuotation = true)
         {
             return EncodeList(listOfValues.ToList(), appendQuotation);
         }
 
-        public static string EncodeList(this IEnumerable<long> listOfValues, bool appendQuotation = true)
+        public static string EncodeList(this string[] listOfValues, bool appendQuotation = true)
         {
             if (!appendQuotation)
                 return string.Join(",", listOfValues);

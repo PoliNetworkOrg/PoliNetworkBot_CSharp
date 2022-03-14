@@ -432,7 +432,6 @@ namespace InstagramApiSharp.API.Processors
                     return Result.Fail<InstaPendingRequest>(response.StatusCode.ToString());
                 var JRes = JsonConvert.DeserializeObject<InstaPendingRequest>(json);
                 return Result.Success(JRes);
-
             }
             catch (HttpRequestException httpException)
             {
@@ -680,7 +679,6 @@ namespace InstagramApiSharp.API.Processors
 
                 return await GetUserFollowersByIdAsync(user.Value.Pk, paginationParameters, searchQuery,
                     mutualsfirst);
-
             }
             catch (HttpRequestException httpException)
             {
@@ -778,7 +776,6 @@ namespace InstagramApiSharp.API.Processors
                         default(InstaUserShortList));
 
                 return await GetUserFollowingByIdAsync(user.Value.Pk, paginationParameters, searchQuery);
-
             }
             catch (HttpRequestException httpException)
             {

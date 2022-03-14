@@ -1257,7 +1257,6 @@ namespace InstagramApiSharp.API
                 ChallengeLoginInfo = loginFailReason.Challenge;
 
                 return Result.Fail("Challenge is required", InstaLoginTwoFactorResult.ChallengeRequired);
-
             }
             catch (HttpRequestException httpException)
             {
@@ -1741,7 +1740,6 @@ namespace InstagramApiSharp.API
                     return Result.Success(JsonConvert.DeserializeObject<InstaRecovery>(result));
                 var error = JsonConvert.DeserializeObject<MessageErrorsResponseRecoveryEmail>(result);
                 return Result.Fail<InstaRecovery>(error.Message);
-
             }
             catch (HttpRequestException httpException)
             {
@@ -1806,7 +1804,6 @@ namespace InstagramApiSharp.API
 
                     return Result.Fail<InstaRecovery>(errors);
                 }
-
             }
             catch (HttpRequestException httpException)
             {
@@ -2230,7 +2227,6 @@ namespace InstagramApiSharp.API
                 // we should wait at least 15 seconds and then trying to login again
                 await Task.Delay(15000);
                 return await LoginAsync(false);
-
             }
             catch (HttpRequestException httpException)
             {

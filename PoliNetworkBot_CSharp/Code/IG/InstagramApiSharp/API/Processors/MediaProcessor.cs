@@ -157,16 +157,14 @@ namespace InstagramApiSharp.API.Processors
                                 tried = true;
                                 goto TryLabel;
                             }
-                            else
+
+                            var position = new JArray(tag.X, tag.Y);
+                            var singleTag = new JObject
                             {
-                                var position = new JArray(tag.X, tag.Y);
-                                var singleTag = new JObject
-                                {
-                                    { "user_id", u.Value.Pk },
-                                    { "position", position }
-                                };
-                                tagArr.Add(singleTag);
-                            }
+                                { "user_id", u.Value.Pk },
+                                { "position", position }
+                            };
+                            tagArr.Add(singleTag);
                         }
                         catch
                         {
@@ -688,10 +686,8 @@ namespace InstagramApiSharp.API.Processors
                                         tried = true;
                                         goto TryLabel;
                                     }
-                                    else
-                                    {
-                                        t.Pk = u.Value.Pk;
-                                    }
+
+                                    t.Pk = u.Value.Pk;
                                 }
                                 catch
                                 {
@@ -850,10 +846,8 @@ namespace InstagramApiSharp.API.Processors
                                     tried = true;
                                     goto TryLabel;
                                 }
-                                else
-                                {
-                                    t.Pk = u.Value.Pk;
-                                }
+
+                                t.Pk = u.Value.Pk;
                             }
                             catch
                             {
@@ -1190,7 +1184,6 @@ namespace InstagramApiSharp.API.Processors
             upProgress.UploadState = InstaUploadState.Error;
             progress?.Invoke(upProgress);
             return Result.UnExpectedResponse<string>(response, json);
-
         }
 
         private async Task<IResult<InstaMedia>> ConfigureAlbumAsync(Action<InstaUploaderProgress> progress,

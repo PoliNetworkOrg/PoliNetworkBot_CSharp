@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
     {
         private readonly DateTime? LastUpdateInviteLinkTimeDateTime;
         private readonly string LastUpdateInviteLinkTimeString;
+        public readonly string nome;
         public string idLink;
         public string newLink;
-        public readonly string nome;
         public List<string> oldLinks;
         public long? permanentId;
 

@@ -176,7 +176,6 @@ namespace InstagramApiSharp.API.Processors
                     return Result.Fail<InstaUserShort>("Pk is incorrect");
                 var converter = ConvertersFabric.Instance.GetUserShortConverter(userInfoUpdated);
                 return Result.Success(converter.Convert());
-
             }
             catch (HttpRequestException httpException)
             {

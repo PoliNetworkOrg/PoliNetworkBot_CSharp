@@ -793,10 +793,8 @@ namespace InstagramApiSharp.API.Processors
                                 tried = true;
                                 goto TryLabel;
                             }
-                            else
-                            {
-                                t.Pk = u.Value.Pk;
-                            }
+
+                            t.Pk = u.Value.Pk;
                         }
                         catch
                         {
@@ -1340,7 +1338,6 @@ namespace InstagramApiSharp.API.Processors
                 upProgress.UploadState = InstaUploadState.Completed;
                 progress?.Invoke(upProgress);
                 return obj;
-
             }
             catch (HttpRequestException httpException)
             {
