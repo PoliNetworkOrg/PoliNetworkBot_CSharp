@@ -1053,7 +1053,6 @@ namespace InstagramApiSharp.API.Processors
                     if (mediaTags.Value == null) return Result.Fail(mediaTags.Info, default(InstaMediaList));
                     userTags.AddRange(Convert(mediaTags.Value));
                     return Result.Fail(mediaTags.Info, userTags);
-
                 }
 
                 var mediaResponse = mediaTags.Value;

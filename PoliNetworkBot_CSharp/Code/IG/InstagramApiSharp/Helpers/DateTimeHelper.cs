@@ -35,7 +35,6 @@ namespace InstagramApiSharp.Helpers
             if (unixTime.Length > 10) return UnixTimestampMilisecondsToDateTime(unixTime);
             var time = (long)Convert.ToDouble(unixTime);
             return time.FromUnixTimeSeconds();
-
         }
 
         public static DateTime UnixTimestampMilisecondsToDateTime(string unixTime)

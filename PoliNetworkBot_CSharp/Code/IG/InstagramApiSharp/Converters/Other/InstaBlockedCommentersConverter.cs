@@ -20,7 +20,9 @@ namespace InstagramApiSharp.Converters
 
             var users = new InstaUserShortList();
 
-            if (SourceObject.BlockedCommenters?.Count > 0) users.AddRange(SourceObject.BlockedCommenters.Select(user => ConvertersFabric.Instance.GetUserShortConverter(user).Convert()));
+            if (SourceObject.BlockedCommenters?.Count > 0)
+                users.AddRange(SourceObject.BlockedCommenters.Select(user =>
+                    ConvertersFabric.Instance.GetUserShortConverter(user).Convert()));
 
             return users;
         }
