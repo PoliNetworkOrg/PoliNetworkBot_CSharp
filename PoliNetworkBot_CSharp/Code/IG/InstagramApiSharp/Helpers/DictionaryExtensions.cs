@@ -19,10 +19,10 @@ namespace InstagramApiSharp.Helpers
             var builder = new StringBuilder("?");
 
             var separator = "";
-            foreach (var kvp in parameters.Where(kvp => kvp.Value != null))
+            foreach (var (key, value) in parameters.Where(kvp => kvp.Value != null))
             {
-                builder.AppendFormat("{0}{1}={2}", separator, WebUtility.UrlEncode(kvp.Key),
-                    WebUtility.UrlEncode(kvp.Value));
+                builder.AppendFormat("{0}{1}={2}", separator, WebUtility.UrlEncode(key),
+                    WebUtility.UrlEncode(value));
                 separator = "&";
             }
 

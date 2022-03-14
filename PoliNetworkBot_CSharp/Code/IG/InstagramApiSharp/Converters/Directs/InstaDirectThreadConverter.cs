@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
@@ -51,12 +52,11 @@ namespace InstagramApiSharp.Converters
                 thread.Inviter = userConverter.Convert();
             }
 
-            if (SourceObject.Items != null && SourceObject.Items.Count > 0)
+            if (SourceObject.Items is { Count: > 0 })
             {
                 thread.Items = new List<InstaDirectInboxItem>();
-                foreach (var item in SourceObject.Items)
+                foreach (var converter in SourceObject.Items.Select(item => ConvertersFabric.Instance.GetDirectThreadItemConverter(item)))
                 {
-                    var converter = ConvertersFabric.Instance.GetDirectThreadItemConverter(item);
                     thread.Items.Add(converter.Convert());
                 }
             }
@@ -87,14 +87,14 @@ namespace InstagramApiSharp.Converters
                     var lastSeenJson = System.Convert.ToString(SourceObject.LastSeenAt);
                     var obj = JsonConvert.DeserializeObject<InstaLastSeenAtResponse>(lastSeenJson);
                     thread.LastSeenAt = new List<InstaLastSeen>();
-                    foreach (var extraItem in obj.Extras)
+                    foreach (var (key, value) in obj.Extras)
                     {
                         var convertedLastSeen =
                             JsonConvert.DeserializeObject<InstaLastSeenItemResponse>(
-                                extraItem.Value.ToString(Formatting.None));
+                                value.ToString(Formatting.None));
                         var lastSeen = new InstaLastSeen
                         {
-                            PK = long.Parse(extraItem.Key),
+                            PK = long.Parse(key),
                             ItemId = convertedLastSeen.ItemId
                         };
                         if (convertedLastSeen.TimestampPrivate != null)

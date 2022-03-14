@@ -473,10 +473,7 @@ namespace InstagramApiSharp.API.Processors
             try
             {
                 Uri instaUri;
-                if (string.IsNullOrEmpty(username))
-                    instaUri = UriCreator.GetRankedRecipientsUri();
-                else
-                    instaUri = UriCreator.GetRankRecipientsByUserUri(username);
+                instaUri = string.IsNullOrEmpty(username) ? UriCreator.GetRankedRecipientsUri() : UriCreator.GetRankRecipientsByUserUri(username);
 
                 var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
                 var response = await _httpRequestProcessor.SendAsync(request);
@@ -1620,10 +1617,7 @@ namespace InstagramApiSharp.API.Processors
                 else
                     requestContent.Add(new StringContent($"[{threadId}]"), "thread_ids");
                 byte[] fileBytes;
-                if (image.ImageBytes == null)
-                    fileBytes = File.ReadAllBytes(image.Uri);
-                else
-                    fileBytes = image.ImageBytes;
+                fileBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
                 var imageContent = new ByteArrayContent(fileBytes);
                 imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
                 imageContent.Headers.Add("Content-Type", "application/octet-stream");

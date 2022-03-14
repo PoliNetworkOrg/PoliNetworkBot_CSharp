@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
@@ -50,11 +51,10 @@ namespace InstagramApiSharp.Converters
                 }
             }
 
-            if (SourceObject.PendingUsers == null || SourceObject.PendingUsers.Count <= 0) return inbox;
+            if (SourceObject.PendingUsers is not { Count: > 0 }) return inbox;
             {
-                foreach (var user in SourceObject.PendingUsers)
+                foreach (var converter in SourceObject.PendingUsers.Select(user => ConvertersFabric.Instance.GetUserShortConverter(user)))
                 {
-                    var converter = ConvertersFabric.Instance.GetUserShortConverter(user);
                     inbox.PendingUsers.Add(converter.Convert());
                 }
             }

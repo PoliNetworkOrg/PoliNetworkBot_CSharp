@@ -99,14 +99,14 @@ namespace Minista.Helpers
         internal static TTarget Copy(TSource source)
         {
             if (initializationException != null) throw initializationException;
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return creator(source);
         }
 
         internal static void Copy(TSource source, TTarget target)
         {
             if (initializationException != null) throw initializationException;
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             for (var i = 0; i < sourceProperties.Count; i++)
                 targetProperties[i].SetValue(target, sourceProperties[i].GetValue(source, null), null);
         }

@@ -87,10 +87,8 @@ namespace InstagramApiSharp.Helpers
 
             var wwwClaim = _instaApi.GetLoggedUser()?.WwwClaim;
 
-            if (!string.IsNullOrEmpty(wwwClaim))
-                request.Headers.Add(InstaApiConstants.HEADER_X_WWW_CLAIM, wwwClaim);
-            else
-                request.Headers.Add(InstaApiConstants.HEADER_X_WWW_CLAIM, InstaApiConstants.HEADER_X_WWW_CLAIM_DEFAULT);
+            request.Headers.Add(InstaApiConstants.HEADER_X_WWW_CLAIM,
+                !string.IsNullOrEmpty(wwwClaim) ? wwwClaim : InstaApiConstants.HEADER_X_WWW_CLAIM_DEFAULT);
 
             var authorization = _instaApi.GetLoggedUser()?.Authorization;
 
@@ -166,9 +164,9 @@ namespace InstagramApiSharp.Helpers
         {
             var request = GetDefaultRequest(HttpMethod.Post, uri, deviceInfo);
 
-            foreach (var item in data.ToDictionary(entry => entry.Key, entry => entry.Value))
-                if (item.Value.IsEmpty())
-                    data.Remove(item.Key);
+            foreach (var (key, value) in data.ToDictionary(entry => entry.Key, entry => entry.Value))
+                if (value.IsEmpty())
+                    data.Remove(key);
 
             request.Content = new FormUrlEncodedContent(data);
             return request;

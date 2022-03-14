@@ -41,9 +41,7 @@ namespace InstagramApiSharp.Classes.Models
                     return InstaSearchType.User;
                 if (Hashtag != null)
                     return InstaSearchType.Hashtag;
-                if (Place != null)
-                    return InstaSearchType.Place;
-                return InstaSearchType.Unknown;
+                return Place != null ? InstaSearchType.Place : InstaSearchType.Unknown;
             }
         }
     }

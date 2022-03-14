@@ -28,11 +28,11 @@ namespace InstagramApiSharp.Converters.Json
             var extras = userPresenceRoot.ToObject<InstaExtraResponse>();
             try
             {
-                foreach (var item in extras.Extras)
+                foreach (var (key, value) in extras.Extras)
                     try
                     {
-                        var p = item.Value.ToObject<InstaUserPresenceResponse>();
-                        p.Pk = long.Parse(item.Key);
+                        var p = value.ToObject<InstaUserPresenceResponse>();
+                        p.Pk = long.Parse(key);
                         presence.Items.Add(p);
                     }
                     catch

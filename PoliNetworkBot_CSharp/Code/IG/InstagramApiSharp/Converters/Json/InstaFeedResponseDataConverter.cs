@@ -37,16 +37,13 @@ namespace InstagramApiSharp.Converters.Json
                         feed.Items.Add(media);
                     }
 
-                    if (item["suggested_users"] != null)
+                    var users = item["suggested_users"]?["suggestions"];
+                    if (users == null) continue;
+                    foreach (var user in users)
                     {
-                        var users = item["suggested_users"]?["suggestions"];
-                        if (users != null)
-                            foreach (var user in users)
-                            {
-                                if (user == null) continue;
-                                var usr = user.ToObject<InstaSuggestionItemResponse>();
-                                feed.SuggestedUsers.Add(usr);
-                            }
+                        if (user == null) continue;
+                        var usr = user.ToObject<InstaSuggestionItemResponse>();
+                        feed.SuggestedUsers.Add(usr);
                     }
                 }
             }

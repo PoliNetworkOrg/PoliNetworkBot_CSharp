@@ -283,26 +283,30 @@ namespace InstagramApiSharp.API.Services
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     var obj = JsonConvert.DeserializeObject<InstaCheckEmailRegistration>(json);
-                    if (obj.ErrorType == "fail")
-                        return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
-                    if (obj.ErrorType == "email_is_taken")
-                        return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
-                    if (obj.ErrorType == "invalid_email")
-                        return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
-
-                    return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
+                    return obj.ErrorType switch
+                    {
+                        "fail" => Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json),
+                        "email_is_taken" => Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null),
+                        "invalid_email" => Result.Fail("Please enter a valid email address.",
+                            (InstaCheckEmailRegistration)null),
+                        _ => Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json)
+                    };
                 }
                 else
                 {
                     var obj = JsonConvert.DeserializeObject<InstaCheckEmailRegistration>(json);
-                    if (obj.ErrorType == "fail")
-                        return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
-                    if (obj.ErrorType == "email_is_taken")
-                        return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
-                    if (obj.ErrorType == "invalid_email")
-                        return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
-                    InstaCheckEmailRegistration = obj;
-                    return Result.Success(obj);
+                    switch (obj.ErrorType)
+                    {
+                        case "fail":
+                            return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
+                        case "email_is_taken":
+                            return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
+                        case "invalid_email":
+                            return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
+                        default:
+                            InstaCheckEmailRegistration = obj;
+                            return Result.Success(obj);
+                    }
                 }
             }
             catch (HttpRequestException httpException)

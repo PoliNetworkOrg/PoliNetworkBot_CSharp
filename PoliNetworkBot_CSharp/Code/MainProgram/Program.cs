@@ -40,9 +40,9 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             while (true)
             {
-                var readChoice = MainGetMenuChoice2(args);
+                var (item1, item2) = MainGetMenuChoice2(args);
 
-                switch (readChoice.Item1)
+                switch (item1)
                 {
                     case '1': //reset everything
                     {
@@ -56,7 +56,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     case '8':
                     case '9':
                     {
-                        MainBot(readChoice.Item1, readChoice.Item2);
+                        MainBot(item1, item2);
                         return;
                     }
 
@@ -362,7 +362,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                             BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
 
                     var acceptMessages = bot.AcceptsMessages();
-                    if (acceptMessages == null || acceptMessages.Value == false)
+                    if (acceptMessages is null or false)
                         continue;
 
                     var onmessageMethod2 = bot.GetOnMessage();

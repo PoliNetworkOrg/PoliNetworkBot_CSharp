@@ -11,11 +11,10 @@ namespace InstagramApiSharp.Helpers
         public static Uri AddQueryParameter(this Uri uri, string name, string value, bool dontCheck = false)
         {
             if (!dontCheck)
-                if (value == null || value == "" || value == "[]")
+                if (value is null or "" or "[]")
                     return uri;
 
-            if (value == null)
-                value = "";
+            value ??= "";
 
             var httpValueCollection = HttpUtility.ParseQueryString(uri);
 
@@ -24,25 +23,25 @@ namespace InstagramApiSharp.Helpers
 
             var ub = new UriBuilder(uri);
             var q = "";
-            foreach (var item in httpValueCollection)
-                if (q == "") q += $"{item.Key}={item.Value}";
-                else q += $"&{item.Key}={item.Value}";
+            foreach (var (key, s) in httpValueCollection)
+                if (q == "") q += $"{key}={s}";
+                else q += $"&{key}={s}";
             ub.Query = q;
             return ub.Uri;
         }
 
         public static Uri AddQueryParameterIfNotEmpty(this Uri uri, string name, string value)
         {
-            if (value == null || value == "" || value == "[]") return uri;
+            if (string.IsNullOrEmpty(value) || value == "[]") return uri;
 
             var httpValueCollection = HttpUtility.ParseQueryString(uri);
             httpValueCollection.Remove(name);
             httpValueCollection.Add(name, value);
             var ub = new UriBuilder(uri);
             var q = "";
-            foreach (var item in httpValueCollection)
-                if (q == "") q += $"{item.Key}={item.Value}";
-                else q += $"&{item.Key}={item.Value}";
+            foreach (var (key, s) in httpValueCollection)
+                if (q == "") q += $"{key}={s}";
+                else q += $"&{key}={s}";
             ub.Query = q;
             return ub.Uri;
         }

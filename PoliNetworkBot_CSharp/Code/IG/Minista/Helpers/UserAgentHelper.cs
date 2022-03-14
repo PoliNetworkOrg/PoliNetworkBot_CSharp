@@ -11,15 +11,15 @@ namespace Minista.Helpers
     {
         private const int URLMON_OPTION_USERAGENT = 0x10000001;
 
-        [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
+        [DllImport("urlmon.dll", CharSet = CharSet.Unicode)]
         private static extern int UrlMkSetSessionOption(int dwOption, string pBuffer, int dwBufferLength,
             int dwReserved);
 
-        [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
+        [DllImport("urlmon.dll", CharSet = CharSet.Unicode)]
         private static extern int UrlMkGetSessionOption(int dwOption, StringBuilder pBuffer, int dwBufferLength,
             ref int pdwBufferLength, int dwReserved);
 
-        public static string GetUserAgent()
+        private static string GetUserAgent()
         {
             var capacity = 255;
             var buf = new StringBuilder(capacity);

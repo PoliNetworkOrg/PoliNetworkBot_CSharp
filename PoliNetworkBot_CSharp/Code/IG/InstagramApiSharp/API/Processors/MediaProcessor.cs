@@ -1197,10 +1197,7 @@ namespace InstagramApiSharp.API.Processors
             progress?.Invoke(upProgress);
             var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4").Replace(".", "")
                 .ToLower();
-            if (vidExt == "mov")
-                request.Headers.Add("X-Entity-Type", "video/quicktime");
-            else
-                request.Headers.Add("X-Entity-Type", "video/mp4");
+            request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "video/quicktime" : "video/mp4");
 
             request.Headers.Add("Offset", "0");
             request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
@@ -1233,11 +1230,11 @@ namespace InstagramApiSharp.API.Processors
                 var clientSidecarId = ApiRequestMessage.GenerateUploadId();
                 var childrenArray = new JArray();
 
-                foreach (var al in album)
-                    if (al.Value.IsImage)
-                        childrenArray.Add(GetImageConfigure(al.Key, al.Value.ImageToUpload));
-                    else if (al.Value.IsVideo)
-                        childrenArray.Add(GetVideoConfigure(al.Key, al.Value.VideoToUpload));
+                foreach (var (key, value) in album)
+                    if (value.IsImage)
+                        childrenArray.Add(GetImageConfigure(key, value.ImageToUpload));
+                    else if (value.IsVideo)
+                        childrenArray.Add(GetVideoConfigure(key, value.VideoToUpload));
 
                 var data = new JObject
                 {
@@ -1329,11 +1326,11 @@ namespace InstagramApiSharp.API.Processors
                 var clientSidecarId = ApiRequestMessage.GenerateUploadId();
                 var childrenArray = new JArray();
                 if (imagesUploadIds != null && imagesUploadIds.Any())
-                    foreach (var img in imagesUploadIds)
-                        childrenArray.Add(GetImageConfigure(img.Key, img.Value));
+                    foreach (var (key, value) in imagesUploadIds)
+                        childrenArray.Add(GetImageConfigure(key, value));
                 if (videos != null && videos.Any())
-                    foreach (var id in videos)
-                        childrenArray.Add(GetVideoConfigure(id.Key, id.Value));
+                    foreach (var (key, value) in videos)
+                        childrenArray.Add(GetVideoConfigure(key, value));
                 var data = new JObject
                 {
                     { "_uuid", _deviceInfo.DeviceGuid.ToString() },
@@ -1577,10 +1574,7 @@ namespace InstagramApiSharp.API.Processors
                     }
                 };
                 byte[] fileBytes;
-                if (image.ImageBytes == null)
-                    fileBytes = File.ReadAllBytes(image.Uri);
-                else
-                    fileBytes = image.ImageBytes;
+                fileBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
 
                 var imageContent = new ByteArrayContent(fileBytes);
                 imageContent.Headers.Add("Content-Transfer-Encoding", "binary");

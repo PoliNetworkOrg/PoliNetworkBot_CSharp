@@ -129,8 +129,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         {
             if (string.IsNullOrEmpty(PhoneId)) return true;
             if (string.IsNullOrEmpty(DeviceId)) return true;
-            if (Guid.Empty == Guid) return true;
-            return false;
+            return Guid.Empty == Guid;
         }
 
         internal static string GenerateDeviceId()

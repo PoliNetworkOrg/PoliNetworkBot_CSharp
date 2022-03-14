@@ -66,14 +66,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaWebContainerResponse>(json);
 
-                if (obj.Entry?.SettingsPages != null)
-                {
-                    var first = obj.Entry.SettingsPages.FirstOrDefault();
-                    if (first != null)
-                        return Result.Success(ConvertersFabric.Instance.GetWebAccountInfoConverter(first).Convert());
-                }
-
-                return Result.Fail("Date joined isn't available.", default(InstaWebAccountInfo));
+                var first = obj.Entry?.SettingsPages?.FirstOrDefault();
+                return first != null ? Result.Success(ConvertersFabric.Instance.GetWebAccountInfoConverter(first).Convert()) : Result.Fail("Date joined isn't available.", default(InstaWebAccountInfo));
             }
             catch (HttpRequestException httpException)
             {
@@ -226,31 +220,22 @@ namespace InstagramApiSharp.API.Processors
 
                 Uri CreateUri(string cursor = null)
                 {
-                    switch (type)
+                    return type switch
                     {
-                        case InstaWebType.FormerBioTexts:
-                            return WebUriCreator.GetFormerBiographyTextsUri(cursor);
-                        case InstaWebType.FormerLinksInBio:
-                            return WebUriCreator.GetFormerBiographyLinksUri(cursor);
-                        case InstaWebType.FormerUsernames:
-                            return WebUriCreator.GetFormerUsernamesUri(cursor);
-                        case InstaWebType.FormerFullNames:
-                            return WebUriCreator.GetFormerFullNamesUri(cursor);
-                        case InstaWebType.FormerPhones:
-                            return WebUriCreator.GetFormerPhoneNumbersUri(cursor);
-                        case InstaWebType.FormerEmails:
-                            return WebUriCreator.GetFormerEmailsUri(cursor);
-                        default:
-                            return WebUriCreator.GetFormerBiographyLinksUri(cursor);
-                    }
+                        InstaWebType.FormerBioTexts => WebUriCreator.GetFormerBiographyTextsUri(cursor),
+                        InstaWebType.FormerLinksInBio => WebUriCreator.GetFormerBiographyLinksUri(cursor),
+                        InstaWebType.FormerUsernames => WebUriCreator.GetFormerUsernamesUri(cursor),
+                        InstaWebType.FormerFullNames => WebUriCreator.GetFormerFullNamesUri(cursor),
+                        InstaWebType.FormerPhones => WebUriCreator.GetFormerPhoneNumbersUri(cursor),
+                        InstaWebType.FormerEmails => WebUriCreator.GetFormerEmailsUri(cursor),
+                        _ => WebUriCreator.GetFormerBiographyLinksUri(cursor)
+                    };
                 }
 
                 var request = await GetRequest(CreateUri(paginationParameters?.NextMaxId));
                 if (!request.Succeeded)
                 {
-                    if (request.Value != null)
-                        return Result.Fail(request.Info, Convert(request.Value));
-                    return Result.Fail(request.Info, webData);
+                    return Result.Fail(request.Info, request.Value != null ? Convert(request.Value) : webData);
                 }
 
                 var response = request.Value;
@@ -311,14 +296,8 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaWebContainerResponse>(json);
 
-                if (obj.Entry?.SettingsPages != null)
-                {
-                    var first = obj.Entry.SettingsPages.FirstOrDefault();
-                    if (first != null)
-                        return Result.Success(first);
-                }
-
-                return Result.Fail("Data isn't available.", default(InstaWebSettingsPageResponse));
+                var first = obj.Entry?.SettingsPages?.FirstOrDefault();
+                return first != null ? Result.Success(first) : Result.Fail("Data isn't available.", default(InstaWebSettingsPageResponse));
             }
             catch (HttpRequestException httpException)
             {

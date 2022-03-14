@@ -22,9 +22,9 @@ namespace InstagramApiSharp.Helpers
             {
                 if (html.CanReadJson())
                 {
-                    var json = html.Substring(html.IndexOf(StartTag) + StartTag.Length);
-                    json = json.Substring(0, json.IndexOf(EndTag));
-                    json = json.Substring(json.IndexOf("=") + 2);
+                    var json = html[(html.IndexOf(StartTag, StringComparison.Ordinal) + StartTag.Length)..];
+                    json = json[..json.IndexOf(EndTag, StringComparison.Ordinal)];
+                    json = json[(json.IndexOf("=", StringComparison.Ordinal) + 2)..];
                     return json;
                 }
             }

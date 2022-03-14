@@ -127,10 +127,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     return;
 
                 var d = e.Message.ReplyToMessage.Document;
-                var f = await sender.DownloadFileAsync(d);
-                Logger.WriteLine(f.Item2.Length);
-                f.Item2.Seek(0, SeekOrigin.Begin);
-                var reader = new StreamReader(f.Item2);
+                var (_, item2) = await sender.DownloadFileAsync(d);
+                Logger.WriteLine(item2.Length);
+                item2.Seek(0, SeekOrigin.Begin);
+                var reader = new StreamReader(item2);
                 var text = await reader.ReadToEndAsync();
 
                 var obj = JsonConvert.DeserializeObject(text);

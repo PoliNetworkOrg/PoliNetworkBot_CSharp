@@ -179,8 +179,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 for (var i = 0; i < a.Length - 1; i++) directory = directory + a[i] + "/";
 
                 var b = directory.Split("'");
-                directory = "";
-                for (var i = 0; i < b.Length; i++) directory = directory + b[i] + "\'\'";
+                directory = b.Aggregate("", (current, t) => current + t + "\'\'");
 
                 var logMessage = "Log for message ID: " + e.CallbackQuery.From.Id;
                 directory = directory.Substring(0, directory.Length - 2);
@@ -191,40 +190,38 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     logMessage += "\n";
                     logMessage += "Git Directory: " + GetGit(directory);
                     logMessage += "\n";
-                    using (var powershell = PowerShell.Create())
+                    using var powershell = PowerShell.Create();
+                    var dirCd = "/" + GetRoot(directory) + "/" + GetCorso(directory) + "/" + GetGit(directory) +
+                                "/";
+                    logMessage += DoScript(powershell, "cd " + dirCd, true) + "\n";
+                    logMessage += DoScript(powershell, "git pull", true) + "\n";
+                    logMessage += DoScript(powershell, "git add . --ignore-errors", true) + "\n\n";
+
+                    var diff = DoScript(powershell, "git ls-files --others --exclude-standard", true, ", ");
+                    if (diff.EndsWith(", ")) diff = diff[..^2];
+                    logMessage += "Git diff: " + diff + "\n";
+
+                    var commit = @"git commit -m 'git commit by bot updated file: " + diff +
+                                 @"' --author=""PoliBot <polinetwork2@gmail.com>""";
+
+                    logMessage += "Commit results: " + DoScript(powershell, commit, true);
+
+                    var push = @"git push https://polibot:" + Config.Password +
+                               "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
+
+                    logMessage += "Push Result: " + DoScript(powershell, push, true);
+
+                    var dict = new Dictionary<string, string>
                     {
-                        var dirCd = "/" + GetRoot(directory) + "/" + GetCorso(directory) + "/" + GetGit(directory) +
-                                    "/";
-                        logMessage += DoScript(powershell, "cd " + dirCd, true) + "\n";
-                        logMessage += DoScript(powershell, "git pull", true) + "\n";
-                        logMessage += DoScript(powershell, "git add . --ignore-errors", true) + "\n\n";
+                        { "en", "File sent for approval" },
+                        { "it", "File inviato per approvazione" }
+                    };
+                    var text = new Language(dict);
 
-                        var diff = DoScript(powershell, "git ls-files --others --exclude-standard", true, ", ");
-                        if (diff.EndsWith(", ")) diff = diff[..^2];
-                        logMessage += "Git diff: " + diff + "\n";
+                    sender.SendTextMessageAsync(_logGroup,
+                        text, ChatType.Group, "uni", ParseMode.Html, null, null);
 
-                        var commit = @"git commit -m 'git commit by bot updated file: " + diff +
-                                     @"' --author=""PoliBot <polinetwork2@gmail.com>""";
-
-                        logMessage += "Commit results: " + DoScript(powershell, commit, true);
-
-                        var push = @"git push https://polibot:" + Config.Password +
-                                   "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
-
-                        logMessage += "Push Result: " + DoScript(powershell, push, true);
-
-                        var dict = new Dictionary<string, string>
-                        {
-                            { "en", "File sent for approval" },
-                            { "it", "File inviato per approvazione" }
-                        };
-                        var text = new Language(dict);
-
-                        sender.SendTextMessageAsync(_logGroup,
-                            text, ChatType.Group, "uni", ParseMode.Html, null, null);
-
-                        powershell.Stop();
-                    }
+                    powershell.Stop();
                 }
                 catch (Exception ex)
                 {
@@ -322,14 +319,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                             callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
                     }
 
-                    var fileName = fileNameWithPath;
-                    var fileOnlyName = fileName.Substring(Config.RootDir.Length);
+                    var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
                     try
                     {
-                        var endOfPath = fileName.Split(@"/").Last().Split(@"/").Last().Length;
+                        var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
                         //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
-                        Directory.CreateDirectory(fileName.Substring(0, fileName.Length - endOfPath));
-                        await using var fileStream = File.OpenWrite(fileName);
+                        Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
+                        await using var fileStream = File.OpenWrite(fileNameWithPath);
                         var tupleFileStream =
                             await sender.DownloadFileAsync(callbackQuery.Message.ReplyToMessage.Document);
                         await tupleFileStream.Item2.CopyToAsync(fileStream);
@@ -663,11 +659,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         private static bool VerificaSottoCartelle(MessageEventArgs e)
         {
             var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
-            foreach (var a in sottoCartelle)
-                if (a.Split(@"/").Last().Equals(e.Message.Text.Split(@"/").Last()))
-                    return true;
-
-            return false;
+            return sottoCartelle.Any(a => a.Split(@"/").Last().Equals(e.Message.Text.Split(@"/").Last()));
         }
 
         private static async Task GeneraCartellaAsync(MessageEventArgs e, TelegramBotAbstract sender)

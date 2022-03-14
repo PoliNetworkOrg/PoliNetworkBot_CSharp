@@ -22,12 +22,10 @@ namespace InstagramApiSharp.Converters.Users
             };
             try
             {
-                if (SourceObject.SuggestedUsers != null && SourceObject.SuggestedUsers?.Suggestions != null &&
-                    SourceObject.SuggestedUsers?.Suggestions?.Count > 0)
+                if (SourceObject.SuggestedUsers is { Suggestions: { Count: > 0 } })
                     suggest.SuggestedUsers = ConvertersFabric.Instance
                         .GetSuggestionItemListConverter(SourceObject.SuggestedUsers.Suggestions).Convert();
-                if (SourceObject.NewSuggestedUsers != null && SourceObject.NewSuggestedUsers?.Suggestions != null &&
-                    SourceObject.NewSuggestedUsers?.Suggestions?.Count > 0)
+                if (SourceObject.NewSuggestedUsers is { Suggestions: { Count: > 0 } })
                     suggest.NewSuggestedUsers = ConvertersFabric.Instance
                         .GetSuggestionItemListConverter(SourceObject.NewSuggestedUsers.Suggestions).Convert();
             }

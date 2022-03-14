@@ -160,10 +160,7 @@ namespace InstagramApiSharp.API.Processors
 
                 // video part
                 byte[] videoBytes;
-                if (video.Video.VideoBytes == null)
-                    videoBytes = File.ReadAllBytes(video.Video.Uri);
-                else
-                    videoBytes = video.Video.VideoBytes;
+                videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
 
                 var videoContent = new ByteArrayContent(videoBytes);
                 //var progressContent = new ProgressableStreamContent(videoContent, 4096, progress)
@@ -176,10 +173,7 @@ namespace InstagramApiSharp.API.Processors
                 progress?.Invoke(upProgress);
                 var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4")
                     .Replace(".", "").ToLower();
-                if (vidExt == "mov")
-                    request.Headers.Add("X-Entity-Type", "video/quicktime");
-                else
-                    request.Headers.Add("X-Entity-Type", "video/mp4");
+                request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "video/quicktime" : "video/mp4");
 
                 request.Headers.Add("Offset", "0");
                 request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
@@ -218,10 +212,7 @@ namespace InstagramApiSharp.API.Processors
 
                     var photoUploadParams = JsonConvert.SerializeObject(photoUploadParamsObj);
                     byte[] imageBytes;
-                    if (video.VideoThumbnail.ImageBytes == null)
-                        imageBytes = File.ReadAllBytes(video.VideoThumbnail.Uri);
-                    else
-                        imageBytes = video.VideoThumbnail.ImageBytes;
+                    imageBytes = video.VideoThumbnail.ImageBytes ?? File.ReadAllBytes(video.VideoThumbnail.Uri);
                     var imageContent = new ByteArrayContent(imageBytes);
                     imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
                     imageContent.Headers.Add("Content-Type", "application/octet-stream");
@@ -584,8 +575,7 @@ namespace InstagramApiSharp.API.Processors
                 upProgress.UploadState = InstaUploadState.Uploading;
                 progress?.Invoke(upProgress);
                 var photoUploadParams = JsonConvert.SerializeObject(photoUploadParamsObj);
-                byte[] imageBytes;
-                imageBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
+                var imageBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
                 var imageContent = new ByteArrayContent(imageBytes);
                 imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
                 imageContent.Headers.Add("Content-Type", "application/octet-stream");

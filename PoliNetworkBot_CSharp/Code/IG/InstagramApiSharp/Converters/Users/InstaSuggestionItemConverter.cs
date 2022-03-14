@@ -26,16 +26,16 @@ namespace InstagramApiSharp.Converters
             };
             try
             {
-                if (SourceObject.LargeUrls != null && SourceObject.LargeUrls?.Length > 0)
+                if (SourceObject.LargeUrls is { Length: > 0 })
                     foreach (var url in SourceObject.LargeUrls)
                         suggestion.LargeUrls.Add(url);
-                if (SourceObject.MediaIds != null && SourceObject.MediaIds?.Length > 0)
+                if (SourceObject.MediaIds is { Length: > 0 })
                     foreach (var url in SourceObject.MediaIds)
                         suggestion.MediaIds.Add(url);
-                if (SourceObject.ThumbnailUrls != null && SourceObject.ThumbnailUrls?.Length > 0)
+                if (SourceObject.ThumbnailUrls is { Length: > 0 })
                     foreach (var url in SourceObject.ThumbnailUrls)
                         suggestion.ThumbnailUrls.Add(url);
-                if (SourceObject.MediaInfos != null && SourceObject.MediaInfos?.Count > 0)
+                if (SourceObject.MediaInfos is { Count: > 0 })
                     foreach (var item in SourceObject.MediaInfos)
                         try
                         {

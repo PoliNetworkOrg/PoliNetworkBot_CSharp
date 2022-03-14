@@ -66,15 +66,12 @@ namespace InstagramApiSharp.Converters.Json
                         if (igtv != null)
                         {
                             var tvGuide = igtv["tv_guide"];
-                            if (tvGuide != null)
+                            var channelsToken = tvGuide?["channels"];
+                            if (channelsToken != null)
                             {
-                                var channelsToken = tvGuide["channels"];
-                                if (channelsToken != null)
-                                {
-                                    var channels = GetTVs(channelsToken);
-                                    if (channels?.Count > 0)
-                                        feed.TVChannels.AddRange(channels);
-                                }
+                                var channels = GetTVs(channelsToken);
+                                if (channels?.Count > 0)
+                                    feed.TVChannels.AddRange(channels);
                             }
                         }
                     }

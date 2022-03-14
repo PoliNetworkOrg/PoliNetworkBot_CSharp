@@ -162,7 +162,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBroadcastCreate>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastCreateResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastCreateConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastCreateConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

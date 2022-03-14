@@ -65,13 +65,13 @@ namespace InstagramApiSharp.Logger
             Write($"Info:{Environment.NewLine}{info}");
         }
 
-        private void WriteHeaders(HttpHeaders headers)
+        private static void WriteHeaders(HttpHeaders headers)
         {
             if (headers == null) return;
             if (!headers.Any()) return;
             Write("Headers:");
-            foreach (var item in headers)
-                Write($"{item.Key}:{JsonConvert.SerializeObject(item.Value)}");
+            foreach (var (key, value) in headers)
+                Write($"{key}:{JsonConvert.SerializeObject(value)}");
         }
 
         private void WriteProperties(IDictionary<string, object> properties)
@@ -88,33 +88,33 @@ namespace InstagramApiSharp.Logger
             if (formatting == Formatting.Indented) raw = FormatJson(raw);
             raw = raw.Contains("<!DOCTYPE html>") ? "got html content!" : raw;
             if ((raw.Length > maxLength) & (maxLength != 0))
-                raw = raw.Substring(0, maxLength);
+                raw = raw[..maxLength];
             Write(raw);
         }
 
-        private async void WriteRequestContent(HttpContent content, int maxLength = 0)
+        private static async void WriteRequestContent(HttpContent content, int maxLength = 0)
         {
             Write("Content:");
             var raw = await content.ReadAsStringAsync();
             if ((raw.Length > maxLength) & (maxLength != 0))
-                raw = raw.Substring(0, maxLength);
+                raw = raw[..maxLength];
             Write(WebUtility.UrlDecode(raw));
         }
 
         private void WriteSeprator()
         {
             var sep = new StringBuilder();
-            for (var i = 0; i < 100; i++) sep.Append("-");
+            for (var i = 0; i < 100; i++) sep.Append('-');
             Write(sep.ToString());
         }
 
-        private string FormatJson(string json)
+        private static string FormatJson(string json)
         {
             dynamic parsedJson = JsonConvert.DeserializeObject(json);
             return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
         }
 
-        private void Write(string message)
+        private static void Write(string message)
         {
 #if !WINDOWS_UWP
             Console.WriteLine($"{DateTime.Now}:\t{message}");

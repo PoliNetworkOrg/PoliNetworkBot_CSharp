@@ -130,14 +130,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             reply = reply.ToLower();
 
-            if (reply is "now" or "ora" or "oggi" or "today")
-                return new Tuple<DateTime?, Exception>(DateTime.Now, null);
-
-            if (reply is "domani" or "tomorrow")
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
-
-            if (reply is "dopodomani" or "in two days" or "in 2 days")
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(2), null);
+            switch (reply)
+            {
+                case "now" or "ora" or "oggi" or "today":
+                    return new Tuple<DateTime?, Exception>(DateTime.Now, null);
+                case "domani" or "tomorrow":
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
+                case "dopodomani" or "in two days" or "in 2 days":
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(2), null);
+            }
 
             if (reply.StartsWith("in a"))
             {

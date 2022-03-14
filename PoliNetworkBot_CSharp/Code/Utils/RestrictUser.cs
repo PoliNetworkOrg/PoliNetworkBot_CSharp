@@ -329,11 +329,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (item2 == null)
                 return 0;
 
-            var isPresent = FindIfPresentSimilarException(exceptions, item2);
-            if (isPresent.Item1 == false)
+            var (item1, i) = FindIfPresentSimilarException(exceptions, item2);
+            if (item1 == false)
                 exceptions.Add(new ExceptionNumbered(item2));
             else
-                exceptions[isPresent.Item2].Increment();
+                exceptions[i].Increment();
 
             return 1;
         }

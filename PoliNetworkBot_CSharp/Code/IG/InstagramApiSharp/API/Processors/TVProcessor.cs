@@ -206,10 +206,7 @@ namespace InstagramApiSharp.API.Processors
                     { "_uid", _user.LoggedInUser.Pk.ToString() },
                     { "_csrftoken", _user.CsrfToken }
                 };
-                if (channelType != null)
-                    data.Add("id", channelType.Value.GetRealChannelType());
-                else
-                    data.Add("id", $"user_{userId}");
+                data.Add("id", channelType != null ? channelType.Value.GetRealChannelType() : $"user_{userId}");
                 if (paginationParameters != null && !string.IsNullOrEmpty(paginationParameters.NextMaxId))
                     data.Add("max_id", paginationParameters.NextMaxId);
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);

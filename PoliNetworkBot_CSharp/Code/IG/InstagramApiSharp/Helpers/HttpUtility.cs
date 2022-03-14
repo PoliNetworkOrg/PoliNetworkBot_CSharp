@@ -13,7 +13,7 @@ namespace InstagramApiSharp.Helpers
         public static Dictionary<string, string> ParseQueryString(Uri uri)
         {
             if (uri == null)
-                throw new ArgumentNullException("uri");
+                throw new ArgumentNullException(nameof(uri));
 
             if (uri.Query.Length == 0)
                 return new Dictionary<string, string>();

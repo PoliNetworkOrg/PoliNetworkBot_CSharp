@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
 
 #endregion
@@ -51,23 +50,5 @@ namespace Minista.Helpers
         //{
 
         //}
-
-        private int GetDifference(int a)
-        {
-            return Math.Abs(a);
-        }
-
-        private void ABC()
-        {
-            //        var sorted =
-            //Sizes
-            //.OrderBy((s) => GetDifference(s.Height, someSize.Height) + GetDifference(s.Width, someSize.Width))
-            //        //.ThenBy((s) => Math.Abs(GetDifference(s.Height, s.Width) - GetDifference(someSize.Height, someSize.Width)));
-
-            //        var sorted =
-            //Sizes
-            //.OrderBy((s) => GetDifference(s) + GetDifference(s))
-            //.ThenBy((s) => Math.Abs(GetDifference(s) - GetDifference(someSize.Height, someSize.Width)));
-        }
     }
 }

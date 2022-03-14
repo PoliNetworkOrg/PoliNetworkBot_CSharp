@@ -258,26 +258,26 @@ namespace InstagramApiSharp.API
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     var obj = JsonConvert.DeserializeObject<InstaCheckEmailRegistration>(json);
-                    if (obj.ErrorType == "fail")
-                        return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
-                    if (obj.ErrorType == "email_is_taken")
-                        return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
-                    if (obj.ErrorType == "invalid_email")
-                        return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
-
-                    return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
+                    return obj.ErrorType switch
+                    {
+                        "fail" => Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json),
+                        "email_is_taken" => Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null),
+                        _ => obj.ErrorType == "invalid_email"
+                            ? Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null)
+                            : Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json)
+                    };
                 }
                 else
                 {
                     var obj = JsonConvert.DeserializeObject<InstaCheckEmailRegistration>(json);
-                    if (obj.ErrorType == "fail")
-                        return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
-                    if (obj.ErrorType == "email_is_taken")
-                        return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
-                    if (obj.ErrorType == "invalid_email")
-                        return Result.Fail("Please enter a valid email address.", (InstaCheckEmailRegistration)null);
-
-                    return Result.Success(obj);
+                    return obj.ErrorType switch
+                    {
+                        "fail" => Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json),
+                        "email_is_taken" => Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null),
+                        "invalid_email" => Result.Fail("Please enter a valid email address.",
+                            (InstaCheckEmailRegistration)null),
+                        _ => Result.Success(obj)
+                    };
                 }
             }
             catch (HttpRequestException httpException)
@@ -320,9 +320,7 @@ namespace InstagramApiSharp.API
                 var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
                 var response = await HttpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK) return Result.UnExpectedResponse<bool>(response, json);
-
-                return Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -936,10 +934,7 @@ namespace InstagramApiSharp.API
                 response = await HttpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<bool>(response, json);
-
-                return Result.Success(true);
+                return response.StatusCode != HttpStatusCode.OK ? Result.UnExpectedResponse<bool>(response, json) : Result.Success(true);
             }
             catch (HttpRequestException httpException)
             {
@@ -1005,12 +1000,7 @@ namespace InstagramApiSharp.API
                     HttpRequestProcessor.RequestMessage.EncPassword = encruptedPassword;
                 }
 
-                if (isNewLogin)
-                    signature =
-                        $"{HttpRequestProcessor.RequestMessage.GenerateSignature(_apiVersion, _apiVersion.SignatureKey, out devid)}.{HttpRequestProcessor.RequestMessage.GetMessageString()}";
-                else
-                    signature =
-                        $"{HttpRequestProcessor.RequestMessage.GenerateChallengeSignature(_apiVersion, _apiVersion.SignatureKey, csrftoken, out devid)}.{HttpRequestProcessor.RequestMessage.GetChallengeMessageString(csrftoken)}";
+                signature = isNewLogin ? $"{HttpRequestProcessor.RequestMessage.GenerateSignature(_apiVersion, _apiVersion.SignatureKey, out devid)}.{HttpRequestProcessor.RequestMessage.GetMessageString()}" : $"{HttpRequestProcessor.RequestMessage.GenerateChallengeSignature(_apiVersion, _apiVersion.SignatureKey, csrftoken, out devid)}.{HttpRequestProcessor.RequestMessage.GetChallengeMessageString(csrftoken)}";
                 _deviceInfo.DeviceId = devid;
                 var fields = new Dictionary<string, string>
                 {
@@ -1052,7 +1042,7 @@ namespace InstagramApiSharp.API
                     if (loginFailReason.ErrorType == "rate_limit_error")
                         return Result.Fail("Please wait a few minutes before you try again.",
                             InstaLoginResult.LimitError);
-                    if (loginFailReason.ErrorType == "inactive user" || loginFailReason.ErrorType == "inactive_user")
+                    if (loginFailReason.ErrorType is "inactive user" or "inactive_user")
                         return Result.Fail($"{loginFailReason.Message}\r\nHelp url: {loginFailReason.HelpUrl}",
                             InstaLoginResult.InactiveUser);
                     if (loginFailReason.ErrorType == "checkpoint_logged_out")
@@ -2071,10 +2061,7 @@ namespace InstagramApiSharp.API
             {
                 Uri instaUri;
 
-                if (replayChallenge)
-                    instaUri = UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath);
-                else
-                    instaUri = UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
+                instaUri = replayChallenge ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath) : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
                 var data = new JObject
                 {
@@ -2134,10 +2121,7 @@ namespace InstagramApiSharp.API
             {
                 Uri instaUri;
 
-                if (replayChallenge)
-                    instaUri = UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath);
-                else
-                    instaUri = UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
+                instaUri = replayChallenge ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath) : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
                 var data = new JObject
                 {
@@ -2361,24 +2345,24 @@ namespace InstagramApiSharp.API
                         return Result.Fail("Two Factor Authentication is required", InstaLoginResult.TwoFactorRequired);
                     }
 
-                    if (loginFailReason.ErrorType == "checkpoint_challenge_required")
+                    switch (loginFailReason.ErrorType)
                     {
-                        ChallengeLoginInfo = loginFailReason.Challenge;
+                        case "checkpoint_challenge_required":
+                            ChallengeLoginInfo = loginFailReason.Challenge;
 
-                        return Result.Fail("Challenge is required", InstaLoginResult.ChallengeRequired);
+                            return Result.Fail("Challenge is required", InstaLoginResult.ChallengeRequired);
+                        case "rate_limit_error":
+                            return Result.Fail("Please wait a few minutes before you try again.",
+                                InstaLoginResult.LimitError);
+                        case "inactive user" or "inactive_user":
+                            return Result.Fail($"{loginFailReason.Message}\r\nHelp url: {loginFailReason.HelpUrl}",
+                                InstaLoginResult.InactiveUser);
+                        case "checkpoint_logged_out":
+                            return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
+                                InstaLoginResult.CheckpointLoggedOut);
+                        default:
+                            return Result.UnExpectedResponse<InstaLoginResult>(response, json);
                     }
-
-                    if (loginFailReason.ErrorType == "rate_limit_error")
-                        return Result.Fail("Please wait a few minutes before you try again.",
-                            InstaLoginResult.LimitError);
-                    if (loginFailReason.ErrorType == "inactive user" || loginFailReason.ErrorType == "inactive_user")
-                        return Result.Fail($"{loginFailReason.Message}\r\nHelp url: {loginFailReason.HelpUrl}",
-                            InstaLoginResult.InactiveUser);
-                    if (loginFailReason.ErrorType == "checkpoint_logged_out")
-                        return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
-                            InstaLoginResult.CheckpointLoggedOut);
-
-                    return Result.UnExpectedResponse<InstaLoginResult>(response, json);
                 }
 
                 var fbUserId = string.Empty;

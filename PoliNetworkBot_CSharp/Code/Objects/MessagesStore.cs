@@ -99,17 +99,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal static SpamType StoreAndCheck(MessageEventArgs e)
         {
-            if (e == null)
-                return SpamType.UNDEFINED;
-            if (e.Message == null)
+            if (e?.Message == null)
                 return SpamType.UNDEFINED;
 
             if (!string.IsNullOrEmpty(e.Message.Text))
                 return StoreAndCheck2(e, e.Message.Text);
-            if (!string.IsNullOrEmpty(e.Message.Caption))
-                return StoreAndCheck2(e, e.Message.Caption);
-
-            return SpamType.UNDEFINED;
+            return !string.IsNullOrEmpty(e.Message.Caption) ? StoreAndCheck2(e, e.Message.Caption) : SpamType.UNDEFINED;
         }
 
         private static SpamType StoreAndCheck2(MessageEventArgs e, string text)
@@ -187,8 +182,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal static async Task SendMessageDetailsAsync(TelegramBotAbstract sender, MessageEventArgs e)
         {
-            if (e == null || e.Message == null || e.Message.ReplyToMessage == null ||
-                string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+            if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
                 return;
 
             if (!Store.ContainsKey(e.Message.ReplyToMessage.Text))

@@ -123,9 +123,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 return;
             }
 
-            var tupleTime = await GetStartAndStopHoursAsync(sender, e);
+            var (item1, item2) = await GetStartAndStopHoursAsync(sender, e);
 
-            var t4 = GetFreeRooms(t3[0], tupleTime.Item1, tupleTime.Item2);
+            var t4 = GetFreeRooms(t3[0], item1, item2);
             if (t4 == null || t4.Count == 0)
             {
                 var text3 = new Language(new Dictionary<string, string>
@@ -184,21 +184,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             if (table?.ChildNodes == null)
                 return null;
 
-            var result = new List<string>();
-
             var shiftStart = GetShiftSlotFromTime(start);
             var shiftEnd = GetShiftSlotFromTime(stop);
 
-            foreach (var child in table.ChildNodes)
-            {
-                if (child == null)
-                    continue;
-
-                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
-                if (!string.IsNullOrEmpty(toAdd)) result.Add(toAdd);
-            }
-
-            return result;
+            return (from child in table.ChildNodes where child != null select CheckIfFree(child, shiftStart, shiftEnd) into toAdd where !string.IsNullOrEmpty(toAdd) select toAdd).ToList();
         }
 
         /// <summary>
@@ -499,7 +488,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
             var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
 
-            if (d2.Value.Hour >= 8 || d2.Value.Hour < 20)
+            if (d2.Value.Hour is >= 8 or < 20)
             {
                 // if we are in a period between open hours, say more specific things
                 // add time (time is not important if we just consider the whole day)
@@ -529,10 +518,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             text += " è libera nelle seguenti fasce orarie:\n";
             textEng += " is free in the following time slots:\n";
 
-            foreach (var freeSlot in freeSlots)
+            foreach (var (item1, item2) in freeSlots)
             {
-                text += $"• Dalle <b>{freeSlot.Item1}</b> alle <b>{freeSlot.Item2}</b>\n";
-                textEng += $"• From <b>{freeSlot.Item1}</b> to <b>{freeSlot.Item2}</b>\n";
+                text += $"• Dalle <b>{item1}</b> alle <b>{item2}</b>\n";
+                textEng += $"• From <b>{item1}</b> to <b>{item2}</b>\n";
             }
 
             text += "\nQua sotto trovi la tabella completa delle occupazioni dell'aula per questa giornata";

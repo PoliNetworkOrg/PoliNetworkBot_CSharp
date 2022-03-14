@@ -350,7 +350,7 @@ namespace InstagramApiSharp.Converters
             return new InstaSuggestionItemListConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaSuggestions, InstaSuggestionUserContainerResponse> GetSuggestionsConverter(
+        public static IObjectConverter<InstaSuggestions, InstaSuggestionUserContainerResponse> GetSuggestionsConverter(
             InstaSuggestionUserContainerResponse response)
         {
             return new InstaSuggestionsConverter { SourceObject = response };
@@ -803,7 +803,7 @@ namespace InstagramApiSharp.Converters
             return new InstaBroadcastCommentEnableDisableConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaBroadcastCreate, InstaBroadcastCreateResponse> GetBroadcastCreateConverter(
+        public static IObjectConverter<InstaBroadcastCreate, InstaBroadcastCreateResponse> GetBroadcastCreateConverter(
             InstaBroadcastCreateResponse response)
         {
             return new InstaBroadcastCreateConverter { SourceObject = response };

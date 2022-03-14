@@ -27,17 +27,21 @@ namespace InstagramApiSharp.Converters.Json
             var list = new InstaFriendshipShortStatusListResponse();
             var extras = statusSubContainer.ToObject<InstaExtraResponse>();
 
-            if (extras != null && extras.Extras != null && extras.Extras.Any())
-                foreach (var item in extras.Extras)
-                    try
-                    {
-                        var f = item.Value.ToObject<InstaFriendshipShortStatusResponse>();
-                        f.Pk = long.Parse(item.Key);
-                        list.Add(f);
-                    }
-                    catch
-                    {
-                    }
+            if (extras is not { Extras: { } } || !extras.Extras.Any()) 
+                return list;
+            
+            foreach (var (key, value) in extras.Extras)
+                try
+                {
+                    var f = value.ToObject<InstaFriendshipShortStatusResponse>();
+                    if (f == null) continue;
+                    
+                    f.Pk = long.Parse(key);
+                    list.Add(f);
+                }
+                catch
+                {
+                }
 
             return list;
         }

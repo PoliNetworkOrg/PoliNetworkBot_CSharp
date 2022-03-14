@@ -50,8 +50,7 @@ namespace InstagramApiSharp
         {
             if (deviceInfo == null)
                 return InstaApiConstants.USER_AGENT_DEFAULT;
-            if (deviceInfo.AndroidVer == null)
-                deviceInfo.AndroidVer = AndroidVersion.GetRandomAndriodVersion();
+            deviceInfo.AndroidVer ??= AndroidVersion.GetRandomAndriodVersion();
 
             return string.Format(InstaApiConstants.USER_AGENT, deviceInfo.Dpi, deviceInfo.Resolution,
                 deviceInfo.HardwareManufacturer,
@@ -140,10 +139,8 @@ namespace InstagramApiSharp
 
         public static string GenerateJazoest(string guid)
         {
-            var ix = 0;
             var chars = guid.ToCharArray();
-            foreach (var ch in chars)
-                ix += ch;
+            var ix = chars.Aggregate(0, (current, ch) => current + ch);
             return "2" + ix;
         }
 

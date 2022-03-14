@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -28,23 +29,15 @@ namespace InstagramApiSharp.Helpers
 
         public static RSACryptoServiceProvider GetRSAProviderFromPemString(string pemstr)
         {
-            var isPrivateKeyFile = true;
-
-            if (pemstr.StartsWith(pempubheader) && pemstr.EndsWith(pempubfooter))
-                isPrivateKeyFile = false;
+            var isPrivateKeyFile = !(pemstr.StartsWith(pempubheader) && pemstr.EndsWith(pempubfooter));
 
             byte[] pemkey;
-            if (isPrivateKeyFile)
-                pemkey = DecodeOpenSSLPrivateKey(pemstr);
-            else
-                pemkey = DecodeOpenSSLPublicKey(pemstr);
+            pemkey = isPrivateKeyFile ? DecodeOpenSSLPrivateKey(pemstr) : DecodeOpenSSLPublicKey(pemstr);
 
             if (pemkey == null)
                 return null;
 
-            if (isPrivateKeyFile)
-                return DecodeRSAPrivateKey(pemkey);
-            return DecodeX509PublicKey(pemkey);
+            return isPrivateKeyFile ? DecodeRSAPrivateKey(pemkey) : DecodeX509PublicKey(pemkey);
         }
 
         //--------   Get the binary RSA PUBLIC key   --------
@@ -81,113 +74,118 @@ namespace InstagramApiSharp.Helpers
             byte[] seqOid =
                 { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
             // ---------  Set up stream to read the asn.1 encoded SubjectPublicKeyInfo blob  ------
-            using (var mem = new MemoryStream(x509Key))
+            using var mem = new MemoryStream(x509Key);
+            using var binr = new BinaryReader(mem);
+            try
             {
-                using (var binr = new BinaryReader(mem)) //wrap Memory Stream with BinaryReader for easy reading
+                var twobytes = binr.ReadUInt16();
+                switch (twobytes)
                 {
-                    try
-                    {
-                        var twobytes = binr.ReadUInt16();
-                        switch (twobytes)
-                        {
-                            case 0x8130:
-                                binr.ReadByte(); //advance 1 byte
-                                break;
-                            case 0x8230:
-                                binr.ReadInt16(); //advance 2 bytes
-                                break;
-                            default:
-                                return null;
-                        }
-
-                        var seq = binr.ReadBytes(15);
-                        if (!CompareBytearrays(seq, seqOid)) //make sure Sequence for OID is correct
-                            return null;
-
-                        twobytes = binr.ReadUInt16();
-                        if (twobytes ==
-                            0x8103) //data read as little endian order (actual data order for Bit String is 03 81)
-                            binr.ReadByte(); //advance 1 byte
-                        else if (twobytes == 0x8203)
-                            binr.ReadInt16(); //advance 2 bytes
-                        else
-                            return null;
-
-                        var bt = binr.ReadByte();
-                        if (bt != 0x00) //expect null byte next
-                            return null;
-
-                        twobytes = binr.ReadUInt16();
-                        if (twobytes ==
-                            0x8130) //data read as little endian order (actual data order for Sequence is 30 81)
-                            binr.ReadByte(); //advance 1 byte
-                        else if (twobytes == 0x8230)
-                            binr.ReadInt16(); //advance 2 bytes
-                        else
-                            return null;
-
-                        twobytes = binr.ReadUInt16();
-                        byte lowbyte = 0x00;
-                        byte highbyte = 0x00;
-
-                        if (twobytes ==
-                            0x8102) //data read as little endian order (actual data order for Integer is 02 81)
-                        {
-                            lowbyte = binr.ReadByte(); // read next bytes which is bytes in modulus
-                        }
-                        else if (twobytes == 0x8202)
-                        {
-                            highbyte = binr.ReadByte(); //advance 2 bytes
-                            lowbyte = binr.ReadByte();
-                        }
-                        else
-                        {
-                            return null;
-                        }
-
-                        byte[] modint =
-                        {
-                            lowbyte, highbyte, 0x00, 0x00
-                        }; //reverse byte order since asn.1 key uses big endian order
-                        var modsize = BitConverter.ToInt32(modint, 0);
-
-                        var firstbyte = binr.ReadByte();
-                        binr.BaseStream.Seek(-1, SeekOrigin.Current);
-
-                        if (firstbyte == 0x00)
-                        {
-                            //if first byte (highest order) of modulus is zero, don't include it
-                            binr.ReadByte(); //skip this null byte
-                            modsize -= 1; //reduce modulus buffer size by 1
-                        }
-
-                        var modulus = binr.ReadBytes(modsize); //read the modulus bytes
-
-                        if (binr.ReadByte() != 0x02) //expect an Integer for the exponent data
-                            return null;
-                        int expbytes =
-                            binr.ReadByte(); // should only need one byte for actual exponent data (for all useful values)
-                        var exponent = binr.ReadBytes(expbytes);
-
-                        // We don't really need to print anything but if we insist to...
-                        //showBytes("\nExponent", exponent);
-                        //showBytes("\nModulus", modulus);
-
-                        // ------- create RSACryptoServiceProvider instance and initialize with public key -----
-                        var rsa = new RSACryptoServiceProvider();
-                        var rsaKeyInfo = new RSAParameters
-                        {
-                            Modulus = modulus,
-                            Exponent = exponent
-                        };
-                        rsa.ImportParameters(rsaKeyInfo);
-                        return rsa;
-                    }
-                    catch (Exception)
-                    {
+                    case 0x8130:
+                        binr.ReadByte(); //advance 1 byte
+                        break;
+                    case 0x8230:
+                        binr.ReadInt16(); //advance 2 bytes
+                        break;
+                    default:
                         return null;
-                    }
                 }
+
+                var seq = binr.ReadBytes(15);
+                if (!CompareBytearrays(seq, seqOid)) //make sure Sequence for OID is correct
+                    return null;
+
+                twobytes = binr.ReadUInt16();
+                switch (twobytes)
+                {
+                    //data read as little endian order (actual data order for Bit String is 03 81)
+                    case 0x8103:
+                        binr.ReadByte(); //advance 1 byte
+                        break;
+                    case 0x8203:
+                        binr.ReadInt16(); //advance 2 bytes
+                        break;
+                    default:
+                        return null;
+                }
+
+                var bt = binr.ReadByte();
+                if (bt != 0x00) //expect null byte next
+                    return null;
+
+                twobytes = binr.ReadUInt16();
+                switch (twobytes)
+                {
+                    //data read as little endian order (actual data order for Sequence is 30 81)
+                    case 0x8130:
+                        binr.ReadByte(); //advance 1 byte
+                        break;
+                    case 0x8230:
+                        binr.ReadInt16(); //advance 2 bytes
+                        break;
+                    default:
+                        return null;
+                }
+
+                twobytes = binr.ReadUInt16();
+                byte lowbyte = 0x00;
+                byte highbyte = 0x00;
+
+                switch (twobytes)
+                {
+                    //data read as little endian order (actual data order for Integer is 02 81)
+                    case 0x8102:
+                        lowbyte = binr.ReadByte(); // read next bytes which is bytes in modulus
+                        break;
+                    case 0x8202:
+                        highbyte = binr.ReadByte(); //advance 2 bytes
+                        lowbyte = binr.ReadByte();
+                        break;
+                    default:
+                        return null;
+                }
+
+                byte[] modint =
+                {
+                    lowbyte, highbyte, 0x00, 0x00
+                }; //reverse byte order since asn.1 key uses big endian order
+                var modsize = BitConverter.ToInt32(modint, 0);
+
+                var firstbyte = binr.ReadByte();
+                binr.BaseStream.Seek(-1, SeekOrigin.Current);
+
+                if (firstbyte == 0x00)
+                {
+                    //if first byte (highest order) of modulus is zero, don't include it
+                    binr.ReadByte(); //skip this null byte
+                    modsize -= 1; //reduce modulus buffer size by 1
+                }
+
+                var modulus = binr.ReadBytes(modsize); //read the modulus bytes
+
+                if (binr.ReadByte() != 0x02) //expect an Integer for the exponent data
+                    return null;
+                int expbytes =
+                    binr.ReadByte(); // should only need one byte for actual exponent data (for all useful values)
+                var exponent = binr.ReadBytes(expbytes);
+
+                // We don't really need to print anything but if we insist to...
+                //showBytes("\nExponent", exponent);
+                //showBytes("\nModulus", modulus);
+
+                // ------- create RSACryptoServiceProvider instance and initialize with public key -----
+                var rsa = new RSACryptoServiceProvider();
+                var rsaKeyInfo = new RSAParameters
+                {
+                    Modulus = modulus,
+                    Exponent = exponent
+                };
+                rsa.ImportParameters(rsaKeyInfo);
+                return rsa;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
@@ -355,11 +353,11 @@ namespace InstagramApiSharp.Helpers
             var saltline = str.ReadLine();
             if (!saltline.StartsWith("DEK-Info: DES-EDE3-CBC,"))
                 return null;
-            var saltstr = saltline.Substring(saltline.IndexOf(",") + 1).Trim();
+            var saltstr = saltline[(saltline.IndexOf(",") + 1)..].Trim();
             var salt = new byte[saltstr.Length / 2];
             for (var i = 0; i < salt.Length; i++)
                 salt[i] = Convert.ToByte(saltstr.Substring(i * 2, 2), 16);
-            if (!(str.ReadLine() == ""))
+            if (str.ReadLine() != "")
                 return null;
 
             //------ remaining b64 data is encrypted RSA key ----
@@ -501,13 +499,11 @@ namespace InstagramApiSharp.Helpers
                 if (cki.Key == ConsoleKey.Backspace)
                 {
                     // remove the last asterisk from the screen...
-                    if (password.Length > 0)
-                    {
-                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                        Console.Write(" ");
-                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                        password.RemoveAt(password.Length - 1);
-                    }
+                    if (password.Length <= 0) continue;
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    Console.Write(" ");
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    password.RemoveAt(password.Length - 1);
                 }
                 else if (cki.Key == ConsoleKey.Escape)
                 {
@@ -631,7 +627,7 @@ namespace InstagramApiSharp.Helpers
         // https://stackoverflow.com/a/23739932/2860309
         private static void EncodeLength(BinaryWriter stream, int length)
         {
-            if (length < 0) throw new ArgumentOutOfRangeException("length", "Length must be non-negative");
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative");
             if (length < 0x80)
             {
                 // Short form
@@ -657,12 +653,7 @@ namespace InstagramApiSharp.Helpers
         private static void EncodeIntegerBigEndian(BinaryWriter stream, byte[] value, bool forceUnsigned = true)
         {
             stream.Write((byte)0x02); // INTEGER
-            var prefixZeros = 0;
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (value[i] != 0) break;
-                prefixZeros++;
-            }
+            var prefixZeros = value.TakeWhile(t => t == 0).Count();
 
             if (value.Length - prefixZeros == 0)
             {

@@ -18,16 +18,16 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var suggest = new InstaSuggestionItemList();
 
-            if (SourceObject != null && SourceObject?.Count > 0)
-                foreach (var item in SourceObject)
-                    try
-                    {
-                        var convertedItem = ConvertersFabric.Instance.GetSuggestionItemConverter(item).Convert();
-                        suggest.Add(convertedItem);
-                    }
-                    catch
-                    {
-                    }
+            if (SourceObject is not { Count: > 0 }) return suggest;
+            foreach (var item in SourceObject)
+                try
+                {
+                    var convertedItem = ConvertersFabric.Instance.GetSuggestionItemConverter(item).Convert();
+                    suggest.Add(convertedItem);
+                }
+                catch
+                {
+                }
 
             return suggest;
         }

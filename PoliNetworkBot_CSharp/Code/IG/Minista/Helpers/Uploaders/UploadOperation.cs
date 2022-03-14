@@ -60,7 +60,7 @@ namespace Minista.Helpers
         private static Dictionary<string, string> ToDictionary(List<Tuple<string, string>> list)
         {
             Dictionary<string, string> r = new();
-            foreach (var l in list) r[l.Item1] = l.Item2;
+            foreach (var (item1, item2) in list) r[item1] = item2;
 
             return r;
         }

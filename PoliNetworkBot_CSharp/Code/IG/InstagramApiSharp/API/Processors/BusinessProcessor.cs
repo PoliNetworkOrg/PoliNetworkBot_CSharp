@@ -225,9 +225,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessPartnerContainer>(json);
                 var partners = new InstaBusinessPartnersList();
-
-                foreach (var p in obj.Partners)
-                    partners.Add(p);
+                partners.AddRange(obj.Partners);
 
                 return Result.Success(partners);
             }

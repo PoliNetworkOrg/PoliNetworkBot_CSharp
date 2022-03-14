@@ -22,8 +22,8 @@ namespace InstagramApiSharp.Converters
                 Emoji = SourceObject.Emoji,
                 Question = SourceObject.Question,
                 SliderId = SourceObject.SliderId,
-                SliderVoteAverage = SourceObject.SliderVoteAverage == null ? 0 : SourceObject.SliderVoteAverage.Value,
-                SliderVoteCount = SourceObject.SliderVoteCount == null ? 0 : SourceObject.SliderVoteCount.Value,
+                SliderVoteAverage = SourceObject.SliderVoteAverage ?? 0,
+                SliderVoteCount = SourceObject.SliderVoteCount ?? 0,
                 TextColor = SourceObject.TextColor,
                 ViewerCanVote = SourceObject.ViewerCanVote
             };

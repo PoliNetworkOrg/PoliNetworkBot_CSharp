@@ -17,17 +17,11 @@ namespace InstagramApiSharp.Converters
         {
             if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-            var info = new InstaWebAccountInfo();
-            if (SourceObject.DateJoined?.Data?.Timestamp != null)
-                info.JoinedDate = SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds();
-            else
-                info.JoinedDate = DateTime.MinValue;
-
-            if (SourceObject.SwitchedToBusiness?.Data?.Timestamp != null)
-                info.SwitchedToBusinessDate =
-                    SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds();
-            else
-                info.SwitchedToBusinessDate = DateTime.MinValue;
+            var info = new InstaWebAccountInfo
+            {
+                JoinedDate = SourceObject.DateJoined?.Data?.Timestamp != null ? SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue,
+                SwitchedToBusinessDate = SourceObject.SwitchedToBusiness?.Data?.Timestamp != null ? SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue
+            };
 
             return info;
         }

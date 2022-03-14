@@ -300,7 +300,7 @@ namespace InstagramApiSharp.Helpers
         public static Uri GetChallengeRequireFirstUri(string apiPath, string guid, string deviceId)
         {
             if (!apiPath.EndsWith("/"))
-                apiPath = apiPath + "/";
+                apiPath += "/";
             if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.API_SUFFIX + apiPath +
                                                  $"?guid={guid}&device_id={deviceId}", out var instaUri))
                 throw new Exception("Cant create URI for challenge require url");
@@ -826,10 +826,7 @@ namespace InstagramApiSharp.Helpers
                     .AddQueryParameter("page", page.ToString());
             if (!string.IsNullOrEmpty(rankToken))
             {
-                if (rankToken.Contains("_"))
-                    instaUri = instaUri.AddQueryParameter("rank_token", rankToken.Split('_')[1]);
-                else
-                    instaUri = instaUri.AddQueryParameter("rank_token", rankToken);
+                instaUri = instaUri.AddQueryParameter("rank_token", rankToken.Contains("_") ? rankToken.Split('_')[1] : rankToken);
             }
 
             if (nextMediaIds != null && nextMediaIds.Any())
@@ -1320,7 +1317,7 @@ namespace InstagramApiSharp.Helpers
 
         public static Uri GetSearchTagUri(string tag, int count, IEnumerable<long> excludeList, string rankToken)
         {
-            excludeList = excludeList ?? new List<long>();
+            excludeList ??= new List<long>();
             var excludeListStr = $"[{string.Join(",", excludeList)}]";
             if (!Uri.TryCreate(BaseInstagramUri,
                     string.Format(InstaApiConstants.SEARCH_TAGS, tag, count),
@@ -2058,7 +2055,7 @@ namespace InstagramApiSharp.Helpers
             var u = uri.ToString();
             if (u.Contains("?"))
                 u = u.Substring(0, u.IndexOf("?"));
-            u = u.Substring(u.IndexOf("/accounts/"));
+            u = u[u.IndexOf("/accounts/")..];
 
             if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.API_SUFFIX + u, out var instaUri))
                 throw new Exception("Cant create URI for verify email");

@@ -22,10 +22,7 @@ namespace InstagramApiSharp.Converters
                 Text = SourceObject.Text
             };
 
-            if (SourceObject.Timestamp != null)
-                data.Time = SourceObject.Timestamp.Value.FromUnixTimeSeconds();
-            else
-                data.Time = DateTime.MinValue;
+            data.Time = SourceObject.Timestamp != null ? SourceObject.Timestamp.Value.FromUnixTimeSeconds() : DateTime.MinValue;
 
             return data;
         }

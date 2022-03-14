@@ -508,7 +508,7 @@ namespace InstagramApiSharp.API.Processors
 
                 InstaSuggestions Convert(InstaSuggestionUserContainerResponse suggestResponse)
                 {
-                    return ConvertersFabric.Instance.GetSuggestionsConverter(suggestResponse).Convert();
+                    return ConvertersFabric.GetSuggestionsConverter(suggestResponse).Convert();
                 }
 
                 var suggestionsResponse = await GetSuggestionUsers(paginationParameters);
@@ -634,10 +634,7 @@ namespace InstagramApiSharp.API.Processors
                     { new StringContent(signedBody), "signed_body" }
                 };
                 byte[] fileBytes;
-                if (nametagImage.ImageBytes == null)
-                    fileBytes = File.ReadAllBytes(nametagImage.Uri);
-                else
-                    fileBytes = nametagImage.ImageBytes;
+                fileBytes = nametagImage.ImageBytes ?? File.ReadAllBytes(nametagImage.Uri);
 
                 var imageContent = new ByteArrayContent(fileBytes);
                 imageContent.Headers.Add("Content-Transfer-Encoding", "binary");

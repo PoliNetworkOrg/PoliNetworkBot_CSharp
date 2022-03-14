@@ -55,11 +55,10 @@ namespace InstagramApiSharp.Classes.SessionHandlers
             }
             catch { }
 #else
-            if (File.Exists(FilePath))
-                using (var fs = File.OpenRead(FilePath))
-                {
-                    InstaApi.LoadStateDataFromStream(fs);
-                }
+            if (!File.Exists(FilePath)) return;
+            
+            using var fs = File.OpenRead(FilePath);
+            InstaApi.LoadStateDataFromStream(fs);
 #endif
         }
 
@@ -80,14 +79,11 @@ namespace InstagramApiSharp.Classes.SessionHandlers
             var json = InstaApi.GetStateDataAsString();
             await FileIO.WriteTextAsync(File, json, Windows.Storage.Streams.UnicodeEncoding.Utf8);
 #else
-            using (var state = InstaApi.GetStateDataAsStream())
-            {
-                using (var fileStream = File.Create(FilePath))
-                {
-                    state.Seek(0, SeekOrigin.Begin);
-                    state.CopyTo(fileStream);
-                }
-            }
+            using var state = InstaApi.GetStateDataAsStream();
+            using var fileStream = File.Create(FilePath);
+            state.Seek(0, SeekOrigin.Begin);
+            state.CopyTo(fileStream);
+
 #endif
         }
     }

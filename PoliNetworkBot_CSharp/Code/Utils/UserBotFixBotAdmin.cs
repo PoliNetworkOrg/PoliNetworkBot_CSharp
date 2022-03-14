@@ -201,10 +201,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 return null;
 
             var x7 = new TLInputChannel { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
-            var isOurBotPresent = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
-            if (isOurBotPresent.Item2 != null) return new Tuple<bool?, DateTime?>(null, isOurBotPresent.Item2);
+            var (item1, item2) = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
+            if (item2 != null) return new Tuple<bool?, DateTime?>(null, item2);
 
-            if (isOurBotPresent.Item1 != null && isOurBotPresent.Item1.Value)
+            if (item1 != null && item1.Value)
                 return new Tuple<bool?, DateTime?>(true, null);
 
             var r3 = await InsertOurBotAsyncChannel(x5, u, telegramBotAbstract);

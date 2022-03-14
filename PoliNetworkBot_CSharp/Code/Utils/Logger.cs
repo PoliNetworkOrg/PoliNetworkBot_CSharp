@@ -199,8 +199,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         internal static void Log(EventoConLog eventoLog)
         {
-            var log = eventoLog.GetLog();
-            for (var i = 0; i < log.Item2; i++) WriteLine(log.Item1[i]);
+            var (item1, item2) = eventoLog.GetLog();
+            for (var i = 0; i < item2; i++) WriteLine(item1[i]);
         }
 
         public static bool ContainsCriticalErrors(out string s)

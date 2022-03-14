@@ -18,13 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         {
             var testo = "";
             var options2 = new List<Language>();
-            if (Navigator.ScuoleCorso[scuola] != null)
-                foreach (var corso in Navigator.ScuoleCorso[scuola])
-                    options2.Add(new Language(new Dictionary<string, string>
-                    {
-                        { "it", corso },
-                        { "en", corso }
-                    }));
+            if (Navigator.ScuoleCorso[scuola] != null) options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso => new Language(new Dictionary<string, string> { { "it", corso }, { "en", corso } })));
             options2.Add(new Language(new Dictionary<string, string>
             {
                 { "it", "🔙 Indietro" },
@@ -51,17 +45,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         internal static List<List<Language>> GetPathsKeyboard(long id)
         {
-            var options2 = new List<Language>();
             var subdirectoryEntries = GetDir(id);
             var percorso = Program.UsersConversations[id].getPercorso();
             Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " +
                              subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
-            foreach (var v in subdirectoryEntries)
-                options2.Add(new Language(new Dictionary<string, string>
-                {
-                    { "it", v.Split("/").Last() },
-                    { "en", v.Split("/").Last() }
-                }));
+            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string> { { "it", v.Split("/").Last() }, { "en", v.Split("/").Last() } })).ToList();
             if (percorso == null)
             {
                 options2.Add(new Language(new Dictionary<string, string>
@@ -93,7 +81,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         private static string[] RemoveGit(string[] subdirectoryEntries)
         {
             var listadir = subdirectoryEntries.ToList();
-            for (var i = 0; i < listadir.Count(); i++)
+            for (var i = 0; i < listadir.Count; i++)
                 if (listadir[i].Contains(".git"))
                 {
                     listadir.Remove(listadir[i]);

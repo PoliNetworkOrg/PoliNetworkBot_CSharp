@@ -819,10 +819,7 @@ namespace InstagramApiSharp.API.Processors
                     { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                     { "_uid", _user.LoggedInUser.Pk.ToString() }
                 };
-                if (allow)
-                    data.Add("allow_story_reshare", "1");
-                else
-                    data.Add("allow_story_reshare", "0");
+                data.Add("allow_story_reshare", allow ? "1" : "0");
                 var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
                 var response = await _httpRequestProcessor.SendAsync(request);
                 var json = await response.Content.ReadAsStringAsync();
@@ -870,13 +867,13 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<bool>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-                if (obj.MessagePrefs.ToLower() == "anyone" && repliesType == InstaMessageRepliesType.Everyone)
-                    return Result.Success(true);
-                if (obj.MessagePrefs.ToLower() == "following" && repliesType == InstaMessageRepliesType.Following)
-                    return Result.Success(true);
-                if (obj.MessagePrefs.ToLower() == "off" && repliesType == InstaMessageRepliesType.Off)
-                    return Result.Success(true);
-                return Result.Success(false);
+                return obj.MessagePrefs.ToLower() switch
+                {
+                    "anyone" when repliesType == InstaMessageRepliesType.Everyone => Result.Success(true),
+                    "following" when repliesType == InstaMessageRepliesType.Following => Result.Success(true),
+                    "off" when repliesType == InstaMessageRepliesType.Off => Result.Success(true),
+                    _ => Result.Success(false)
+                };
             }
             catch (HttpRequestException httpException)
             {

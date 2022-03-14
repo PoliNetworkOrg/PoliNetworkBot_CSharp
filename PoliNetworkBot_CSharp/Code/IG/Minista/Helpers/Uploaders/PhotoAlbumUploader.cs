@@ -324,7 +324,7 @@ namespace Minista.Helpers
 
         private static Uri GetUploadPhotoUri(string uploadId, int fileHashCode)
         {
-            return new Uri(string.Format("https://i.instagram.com/rupload_igphoto/{0}_0_{1}", uploadId, fileHashCode),
+            return new Uri($"https://i.instagram.com/rupload_igphoto/{uploadId}_0_{fileHashCode}",
                 UriKind.RelativeOrAbsolute);
         }
 
@@ -372,7 +372,7 @@ namespace Minista.Helpers
             // header haye asli in ha hastan faghat
             BGU.SetRequestHeader("Cookie", strCookies);
             var r = InstaApi.HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, device);
-            foreach (var item in r.Headers) BGU.SetRequestHeader(item.Key, string.Join(' ', item.Value));
+            foreach (var (key, value) in r.Headers) BGU.SetRequestHeader(key, string.Join(' ', value));
 
             var photoUploadParamsObj = new JObject
             {

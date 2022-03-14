@@ -33,12 +33,10 @@ namespace InstagramApiSharp.Helpers
         {
             var encoding = Encoding.UTF8;
 
-            using (var md5 = MD5.Create())
-            {
-                var hashed = md5.ComputeHash(encoding.GetBytes(message));
-                var hash = BitConverter.ToString(hashed).Replace("-", "").ToLower();
-                return hash;
-            }
+            using var md5 = MD5.Create();
+            var hashed = md5.ComputeHash(encoding.GetBytes(message));
+            var hash = BitConverter.ToString(hashed).Replace("-", "").ToLower();
+            return hash;
         }
 
         public static string CalculateHash(string key, string message)
@@ -84,10 +82,8 @@ namespace InstagramApiSharp.Helpers
 
         public static byte[] GetHash(byte[] bytes)
         {
-            using (var hash = SHA256.Create())
-            {
-                return hash.ComputeHash(bytes);
-            }
+            using var hash = SHA256.Create();
+            return hash.ComputeHash(bytes);
         }
 
         public static byte[] ByteConcat(byte[] left, byte[] right)

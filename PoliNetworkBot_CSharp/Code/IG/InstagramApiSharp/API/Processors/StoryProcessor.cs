@@ -1335,10 +1335,7 @@ namespace InstagramApiSharp.API.Processors
                 progress?.Invoke(upProgress);
                 var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4")
                     .Replace(".", "").ToLower();
-                if (vidExt == "mov")
-                    request.Headers.Add("X-Entity-Type", "image/quicktime");
-                else
-                    request.Headers.Add("X-Entity-Type", "image/mp4");
+                request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "image/quicktime" : "image/mp4");
                 request.Headers.Add("Offset", "0");
                 request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
                 request.Headers.Add("X-Entity-Name", videoEntityName);
@@ -2161,10 +2158,7 @@ namespace InstagramApiSharp.API.Processors
                     }
                 };
                 byte[] imageBytes;
-                if (image.ImageBytes == null)
-                    imageBytes = File.ReadAllBytes(image.Uri);
-                else
-                    imageBytes = image.ImageBytes;
+                imageBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
                 var imageContent = new ByteArrayContent(imageBytes);
                 imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
                 imageContent.Headers.Add("Content-Type", "application/octet-stream");
