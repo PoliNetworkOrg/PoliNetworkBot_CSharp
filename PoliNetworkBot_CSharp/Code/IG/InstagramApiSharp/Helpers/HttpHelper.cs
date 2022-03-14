@@ -21,9 +21,9 @@ namespace InstagramApiSharp.Helpers
     {
         internal static readonly CultureInfo EnglishCulture = new("en-us");
         public readonly InstaApi _instaApi;
+        public readonly IHttpRequestProcessor HttpRequestProcessor;
         private readonly Random Rnd = new();
         public /*readonly*/ InstaApiVersion _apiVersion;
-        public readonly IHttpRequestProcessor HttpRequestProcessor;
 
         internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor httpRequestProcessor,
             InstaApi instaApi)

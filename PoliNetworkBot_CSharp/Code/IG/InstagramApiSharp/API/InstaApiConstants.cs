@@ -745,8 +745,8 @@ namespace InstagramApiSharp.API
 
         #region Web endpoints constants
 
-        private static string WEB_ADDRESS = "https://www.instagram.com";
-        private static string WEB_ACCOUNTS = "/accounts";
+        private static readonly string WEB_ADDRESS = "https://www.instagram.com";
+        private static readonly string WEB_ACCOUNTS = "/accounts";
         public static string WebAccountData = WEB_ACCOUNTS + "/access_tool";
         public static string WebCurrentFollowRequests = WebAccountData + "/current_follow_requests";
         public static string WEB_FORMER_EMAILS = WebAccountData + "/former_emails";

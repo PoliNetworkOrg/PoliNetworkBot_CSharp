@@ -1443,7 +1443,10 @@ namespace InstagramApiSharp.API.Processors
                 if (video.UserTags?.Count > 0)
                 {
                     var tagArr = new JArray();
-                    foreach (var singleTag in from tag in video.UserTags where tag.Pk != -1 let position = new JArray(0.0, 0.0) select new JObject
+                    foreach (var singleTag in from tag in video.UserTags
+                             where tag.Pk != -1
+                             let position = new JArray(0.0, 0.0)
+                             select new JObject
                              {
                                  { "user_id", tag.Pk },
                                  { "position", position }
@@ -1643,7 +1646,10 @@ namespace InstagramApiSharp.API.Processors
             };
             if (!(image.UserTags?.Count > 0)) return imgData;
             var tagArr = new JArray();
-            foreach (var singleTag in from tag in image.UserTags where tag.Pk != -1 let position = new JArray(tag.X, tag.Y) select new JObject
+            foreach (var singleTag in from tag in image.UserTags
+                     where tag.Pk != -1
+                     let position = new JArray(tag.X, tag.Y)
+                     select new JObject
                      {
                          { "user_id", tag.Pk },
                          { "position", position }
