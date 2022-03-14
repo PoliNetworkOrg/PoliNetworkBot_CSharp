@@ -27,6 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal DateTime? LastSeenTime;
         internal string message;
         public List<Message> Messages = new();
+        public bool hasBeenVetoed;
 
         public StoredMessage(string message, int howManyTimesWeSawIt = 0, bool allowedSpam = false,
             DateTime? allowedTime = null, DateTime? lastSeenTime = null)
@@ -42,8 +43,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal SpamType IsSpam()
         {
-            return AllowedSpam
-                ? AllowedTime == null || AllowedTime > DateTime.Now
+            return hasBeenVetoed ? SpamType.SPAM_LINK 
+                :  AllowedSpam ? AllowedTime == null || AllowedTime > DateTime.Now
                     ? SpamType.UNDEFINED
                     : AllowedTime.Value.AddHours(24) > DateTime.Now
                         ? SpamType.SPAM_PERMITTED
@@ -51,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 : GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
                   (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
                     ? IsSpam2()
-                    : SpamType.UNDEFINED;
+                    : SpamType.UNDEFINED ;
         }
 
         public string GetHash()

@@ -12,18 +12,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
     {
         public string id;
         public List<CallbackOption> options = new();
-        public Message message = null;
         internal TelegramBotAbstract Bot;
-        internal MessageSentResult messageSent;
-        internal DateTime? insertedTime;
+        internal MessageSentResult MessageSent;
+        internal DateTime? InsertedTime;
         public Action<CallbackGenericData> RunAfterSelection;
-        internal int selectedAnswer;
-        internal CallbackQuery callBackQueryFromTelegram;
+        internal int SelectedAnswer;
+        internal CallbackQuery CallBackQueryFromTelegram;
 
-        public CallbackGenericData(List<CallbackOption> options, Action<CallbackGenericData> RunAfterSelection)
+        public CallbackGenericData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection)
         {
             this.options = options;
-            this.RunAfterSelection = RunAfterSelection;
+            this.RunAfterSelection = runAfterSelection;
         }
 
   

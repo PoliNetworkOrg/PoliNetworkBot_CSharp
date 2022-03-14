@@ -3,5 +3,8 @@
     public class Groups
     {
         public const long BackupGroup = -653874197;
+        public const long GroupException = -1001456960264;
+        public const long PermittedSpamGroup = -1001685451643;
+        public const long BanNotificationGroup = -1001710276126;
     }
 }

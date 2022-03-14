@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net.Cache;
+using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
@@ -549,44 +550,121 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var assocList = await GetAssocList();
             var assocQuestion = new Language(new Dictionary<string, string>
             {
-                { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
-                { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
+                { "en", "For what association? Select Departmental Club if it's an approved departmental club" },
+                { "it", "Per che associazione? Seleziona Club Dipartimentale se si tratta di un club dipartimentale approvato" }
+            });
+            
+            var depClub = new Language(new Dictionary<string, string>
+            {
+                { "en", "Departmental Club" },
+                { "it", "Club Dipartimentale" },
             });
 
-            var options = KeyboardMarkup.ArrayToMatrixString(assocList.Select(a =>
-                new Language(new Dictionary<string, string> { { "uni", a } })).ToList());
-            var assoc = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: "uni",
+            var assocAndClub = assocList.Select(a =>
+                new Language(
+                    new Dictionary<string, string>
+                    {
+                        {"uni", a},
+                    })
+            ).ToList();
+            
+            assocAndClub.Add(depClub);
+            
+            var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
+            
+            var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: e.Message.From.LanguageCode,
                 options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
                 sender: sender);
 
-            var (language, languageCode) =
-                await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assoc);
+            if (assocOrClub is "Departmental Club" or "Club Dipartimentale")
+            {
+                depClub = new Language(new Dictionary<string, string>
+                {
+                    { "en", "What is the name of the departimental club?" },
+                    { "it", "Qual è il nome del club dipartimentale?" }
+                });
+                assocOrClub = await AskUser.AskAsync(e.Message.From.Id, depClub, sender,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, true);
+            }
 
+            var permittedSpamMessage =
+                await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
+            
             await SendMessage.SendMessageInPrivate(sender,
-                e.Message.From.Id, languageCode, null, language, ParseMode.Html, null);
-
-            HandleVetoAnd4HoursAsync(message, e, sender);
+                e.Message.From.Id, permittedSpamMessage.Item2, null, permittedSpamMessage.Item1, ParseMode.Html, null);
+            
+            var splitMessage = false;
+            
+            if (message.Length > 4000)
+            {
+                var newMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
+                permittedSpamMessage = new Tuple<Language, string>(
+                    new Language(new Dictionary<string, string>
+                    {
+                        {"en", newMessage}
+                    }), permittedSpamMessage.Item2);
+                splitMessage = true;
+            }
+            
+            await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
         }
 
         private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
-            TelegramBotAbstract sender)
+            TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
         {
-            MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
-            //notifica il consiglio
-            //aggiungi bottone veto
 
+            MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
+
+            if (splitMessage)
+            {
+                await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
+                    new Dictionary<string, string>
+                    {
+                        {"en", message}
+                    }), ChatType.Group, "en", ParseMode.Html, null, null);
+            }
+            
             List<CallbackOption> options = new() { 
                 new CallbackOption("❌ Veto")
             };
-            CallbackUtils.CallbackGenericData callbackGenericData = new CallbackGenericData(options,  (callbackData) => { VetoCallbackButton(callbackData); });
-            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, chatToSendTo, text, sender, chatType, lang, username);
             
-            throw new NotImplementedException();
+            CallbackGenericData callbackGenericData = new CallbackAssocVetoData(options,  VetoCallbackButton, message);
+
+            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, Data.Constants.Groups.PermittedSpamGroup, 
+            permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true);
         }
 
-        public static void VetoCallbackButton(CallbackGenericData callbackGenericData)
+        private static async void VetoCallbackButton(CallbackGenericData callbackGenericData)
         {
+            if (!Permissions.CheckPermissions(Permission.HEAD_ADMIN, callbackGenericData.CallBackQueryFromTelegram.From))
+            {
+                await callbackGenericData.Bot.AnswerCallbackQueryAsync(callbackGenericData.CallBackQueryFromTelegram.Id,
+                    "Veto Denied! You need to be Head Admin!");
+                return;
+            }
             
+            if (callbackGenericData is not CallbackAssocVetoData assocVetoData) 
+                throw new Exception("callbackGenericData needs to be an instance of CallbackAssocVetoData");
+            
+            if (assocVetoData.CallBackQueryFromTelegram.Message == null) throw new Exception("callBackQueryFromTelegram is null on callbackButton");
+
+            try
+            {
+                await callbackGenericData.Bot.EditMessageTextAsync(
+                    assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
+                    assocVetoData.CallBackQueryFromTelegram.Message.MessageId,
+                    assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" + "<b>VETO</b> by @"
+                    + callbackGenericData.CallBackQueryFromTelegram.From.Username,
+                    ParseMode.Html);
+            }
+            catch (Exception exc)
+            {
+                await NotifyUtil.NotifyOwners( exc, assocVetoData.Bot);
+                await NotifyUtil.NotifyOwners( new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"), assocVetoData.Bot);
+            }
+
+            MessagesStore.VetoMessage(assocVetoData.message);
         }
     }
 }

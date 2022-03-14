@@ -568,6 +568,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return _id;
         }
 
+        /// <summary>
+        /// Send text message 
+        /// </summary>
+        /// <param name="chatid"></param>
+        /// <param name="text"></param>
+        /// <param name="chatType"></param>
+        /// <param name="lang"></param>
+        /// <param name="parseMode"></param>
+        /// <param name="replyMarkupObject"></param>
+        /// <param name="username"></param>
+        /// <param name="replyToMessageId"></param>
+        /// <param name="disablePreviewLink"></param>
+        /// <param name="splitMessage"></param>
+        /// <returns>MessageSentResult of the last message sent</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         internal async Task<MessageSentResult> SendTextMessageAsync(long? chatid, Language text,
             ChatType? chatType, string lang, ParseMode parseMode,
             ReplyMarkupObject replyMarkupObject, string username, long? replyToMessageId = null,
@@ -1512,7 +1527,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 case BotTypeApi.REAL_BOT:
                     await _botClient.AnswerCallbackQueryAsync(callbackQueryId,
-                        "Modification Denied! You need to be admin of this channel");
+                        text);
                     break;
 
                 case BotTypeApi.USER_BOT:
@@ -1525,14 +1540,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             }
         }
 
-        public async Task EditMessageTextAsync(long chatId, int messageMessageId, string bMergedBBy,
+        public async Task EditMessageTextAsync(long chatId, int messageMessageId, string text,
             ParseMode parseMode)
         {
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
                     await _botClient.EditMessageTextAsync(chatId,
-                        messageMessageId, "<b>MERGED</b> by " + bMergedBBy,
+                        messageMessageId,  text,
                         parseMode);
                     break;
 

@@ -14,25 +14,25 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 public class CallbackUtils
 {
     public static BigInteger last = 0;
-    public static Dictionary<string, CallbackGenericData> callbackDatas;
+    public static Dictionary<string, CallbackGenericData> callbackDatas = new();
     public static object callbackLock = new();
 
     public const string SEPARATOR = "-";
 
     public static async Task SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData, long chatToSendTo, 
-        Language text, TelegramBotAbstract telegramBotAbstract, ChatType  chatType, string lang, string username)
+        Language text, TelegramBotAbstract telegramBotAbstract, ChatType  chatType, string lang, string username, bool splitMessage)
     {
         callbackGenericData.Bot = telegramBotAbstract;
-        callbackGenericData.insertedTime = DateTime.Now;
+        callbackGenericData.InsertedTime = DateTime.Now;
 
         BigInteger newLast = CallbackUtils.GetLast();
         string key = GetKeyFromNumber(newLast);
         callbackGenericData.id = key;
-        callbackDatas[key] = callbackGenericData;
+        callbackDatas.Add(key, callbackGenericData);
 
         ReplyMarkupObject replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
-        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username);
-        callbackGenericData.messageSent = messageSent;
+        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: true);
+        callbackGenericData.MessageSent = messageSent;
     }
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
@@ -74,15 +74,22 @@ public class CallbackUtils
         return r;
     }
 
-    internal static void CallbackMethod(TelegramBotClient telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
+    internal static async Task CallbackMethod(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
     {
-        string data = callbackQueryEventArgs.CallbackQuery.Data;
-        var datas = data.Split(SEPARATOR);
-        var key = datas[0];
-        var answer = Convert.ToInt32(datas[1]);
-        callbackDatas[key].callBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
-        callbackDatas[key].selectedAnswer = answer;
-        callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+        try
+        {
+            string data = callbackQueryEventArgs.CallbackQuery.Data;
+            var datas = data.Split(SEPARATOR);
+            var key = datas[0];
+            var answer = Convert.ToInt32(datas[1]);
+            callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
+            callbackDatas[key].SelectedAnswer = answer;
+            callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+        }
+        catch (Exception exception)
+        {
+            await NotifyUtil.NotifyOwners(exception, telegramBotClientBot);
+        }
     }
 }
 

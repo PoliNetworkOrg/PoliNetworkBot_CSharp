@@ -111,7 +111,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             t.Start();
         }
 
-        private static object CallbackMethod2(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
+        private static async Task<bool> CallbackMethod2(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
         {
             TelegramBotClient telegramBotClientBot = null;
             TelegramBotAbstract telegramBotClient = null;
@@ -123,11 +123,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 if (telegramBotClientBot == null)
                     return false;
 
-                Utils.CallbackUtils.CallbackUtils.CallbackMethod(telegramBotClientBot, callbackQueryEventArgs);
+                await Utils.CallbackUtils.CallbackUtils.CallbackMethod(telegramBotClient, callbackQueryEventArgs);
             }
             catch (Exception exc)
             {
-                //todo
+                await NotifyUtil.NotifyOwners(exc, telegramBotClient);
             }
 
             return false;

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -15,9 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NotifyUtil
     {
-        private const long group_exception = -1001456960264;
-        private const long permitted_spam_group = -1001685451643;
-        private const long ban_notification_group = -1001710276126;
+
         private const string default_lang = "en";
 
         /// <summary>
@@ -64,9 +63,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     { "it", message }
                 });
                 Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
+                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, Data.Constants.Groups.PermittedSpamGroup,
                     ChatType.Group,
-                    ParseMode.Html, group_exception, true);
+                    ParseMode.Html, null, true);
             }
         }
 
@@ -163,7 +162,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
         {
             Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
-            return await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, group_exception,
+            return await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, Data.Constants.Groups.GroupException,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
 
@@ -313,9 +312,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                        ban_notification_group,
+                        Data.Constants.Groups.BanNotificationGroup,
                         ChatType.Group,
-                        ParseMode.Html, group_exception, true);
+                        ParseMode.Html, null, true);
                 }
             }
             catch (Exception e)
@@ -350,9 +349,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     });
                     Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                     await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                        ban_notification_group,
+                        Data.Constants.Groups.BanNotificationGroup,
                         ChatType.Group,
-                        ParseMode.Html, group_exception, true);
+                        ParseMode.Html, null, true);
                 }
             }
             catch (Exception e)
@@ -382,6 +381,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             MessageEventArgs messageEventArgs,
             string text, string groups, string messageType, string assoc)
         {
+            var message = CreatePermittedSpamMessage(messageEventArgs, text, groups, messageType, assoc);
+
+            const string langCode = "en";
+            var text2 = new Language(new Dictionary<string, string>
+            {
+                { "en", message }
+            });
+
+            Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
+            await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, Data.Constants.Groups.PermittedSpamGroup,
+                ChatType.Group,
+                ParseMode.Html, null, true);
+
+            var toReturn = Tuple.Create(text2, "en");
+            return toReturn;
+        }
+
+        public static string CreatePermittedSpamMessage(MessageEventArgs messageEventArgs,
+            string text, string groups, string messageType, string assoc)
+        {
             var hashAssoc = HashUtils.GetHashOf(assoc)[..8];
             var hashText = HashUtils.GetHashOf(text)[..20];
 
@@ -405,20 +424,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             message += "@@@@@@@";
             message += "\n\n";
             message += "Message tag: #" + hashText;
-
-            const string langCode = "en";
-            var text2 = new Language(new Dictionary<string, string>
-            {
-                { "en", message }
-            });
-
-            Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
-            await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, permitted_spam_group,
-                ChatType.Group,
-                ParseMode.Html, group_exception, true);
-
-            var toReturn = Tuple.Create(text2, "en");
-            return toReturn;
+            return message;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private static readonly Dictionary<string, StoredMessage> Store =
             JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-                File.ReadAllText(Paths.Data.MessageStore));
+                File.ReadAllText(Paths.Data.MessageStore)) ?? new();
 
         /// <summary>
         ///     Adds a new message to the storage
@@ -211,6 +211,27 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
             await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From.Username,
                 e.Message.From.LanguageCode, null, true);
+        }
+
+        public static void VetoMessage(string message)
+        {
+            DisallowMessage(message);
+            Store[message].hasBeenVetoed = true;
+        }
+
+        private static void DisallowMessage(string message)
+        {
+            Store[message].AllowedSpam = false;
+            Store[message].AllowedTime = null;
+        }
+
+        public static void AllowMessageOwner(string text)
+        {
+            AllowMessage(text);
+            if (text != null)
+            {
+                Store[text].hasBeenVetoed = false;
+            }
         }
     }
 }

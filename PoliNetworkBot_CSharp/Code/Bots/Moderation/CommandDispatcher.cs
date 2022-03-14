@@ -671,8 +671,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
             else
             {
-                MessagesStore.AllowMessage(e.Message.ReplyToMessage.Text);
-                MessagesStore.AllowMessage(e.Message.ReplyToMessage.Caption);
+                MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Text);
+                MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Caption);
                 Logger.WriteLine(
                     e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ??
                     "Error in allowmessage, both caption and text are null");
