@@ -122,6 +122,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
                 if (telegramBotClientBot == null)
                     return false;
+
+                Utils.CallbackUtils.CallbackUtils.CallbackMethod(telegramBotClientBot, callbackQueryEventArgs);
             }
             catch (Exception exc)
             {
@@ -130,6 +132,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             return false;
         }
+
 
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {

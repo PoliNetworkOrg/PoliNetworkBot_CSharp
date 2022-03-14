@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -564,20 +565,26 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await SendMessage.SendMessageInPrivate(sender,
                 e.Message.From.Id, languageCode, null, language, ParseMode.Html, null);
 
-            HandleVetoAnd4Hours(message, e, sender);
+            HandleVetoAnd4HoursAsync(message, e, sender);
         }
 
-        private static void HandleVetoAnd4Hours(string message, MessageEventArgs messageEventArgs,
+        private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
             TelegramBotAbstract sender)
         {
             MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
             //notifica il consiglio
             //aggiungi bottone veto
+
+            List<CallbackOption> options = new() { 
+                new CallbackOption("❌ Veto")
+            };
+            CallbackUtils.CallbackGenericData callbackGenericData = new CallbackGenericData(options,  (callbackData) => { VetoCallbackButton(callbackData); });
+            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, chatToSendTo, text, sender, chatType, lang, username);
             
             throw new NotImplementedException();
         }
 
-        public static void VetoCallbackButton(CallbackQuery callbackQuery)
+        public static void VetoCallbackButton(CallbackGenericData callbackGenericData)
         {
             
         }

@@ -210,7 +210,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         {
             if (string.IsNullOrEmpty(r)) return null;
 
-            if (!r.Contains("/"))
+            if (!r.Contains('/'))
                 return null;
 
             r = r.Trim();
