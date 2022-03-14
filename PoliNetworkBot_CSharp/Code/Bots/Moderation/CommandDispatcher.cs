@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             var cmdLines = e.Message.Text.Split(' ');
             var cmd = cmdLines[0].Trim();
-            if (cmd.Contains("@"))
+            if (cmd.Contains('@'))
             {
                 var cmd2 = cmd.Split("@");
                 var botUsername = await sender.GetBotUsernameAsync();

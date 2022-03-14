@@ -162,9 +162,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var indexId = groups.Columns.IndexOf("id");
                 var indexIdInTable = (long)groups.Rows[0][indexId];
 
-                var l = new ListaGruppo();
-
-                var g = l.CreaGruppo(groups.Rows[0]);
+                var g = ListaGruppo.CreaGruppo(groups.Rows[0]);
 
                 var linkFunzionante = g.CheckSeIlLinkVa(false, null);
 

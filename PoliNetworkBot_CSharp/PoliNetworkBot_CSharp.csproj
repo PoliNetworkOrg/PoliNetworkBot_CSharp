@@ -2,27 +2,27 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.42"/>
-        <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.3"/>
-        <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.5"/>
-        <PackageReference Include="Portable.BouncyCastle" Version="1.8.6.7"/>
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5"/>
-        <PackageReference Include="System.Management.Automation" Version="7.1.5"/>
-        <PackageReference Include="Telegram.Bot" Version="17.0.0"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+        <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.3" />
+        <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.1" />
+        <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+        <PackageReference Include="System.Management.Automation" Version="7.2.1" />
+        <PackageReference Include="Telegram.Bot" Version="17.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Code\Bots\Materials"/>
-        <Folder Include="Resources\DB\"/>
+        <Folder Include="Code\Bots\Materials" />
+        <Folder Include="Resources\DB\" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\.editorconfig" Link=".editorconfig"/>
-        <None Include="Code\IG\InstagramApiSharp\InstagramApiSharp.csproj"/>
+        <None Include="..\.editorconfig" Link=".editorconfig" />
+        <None Include="Code\IG\InstagramApiSharp\InstagramApiSharp.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -98,64 +98,64 @@
     </ItemGroup>
 
     <ItemGroup>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\LiveBroadcastViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\MinistaBroadcasdViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\RelayCommand.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\VlcBroadcastViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\DirectRequestsThreadViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\DirectRequestsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\InboxViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\ThreadViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\ArchiveViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\BlockedViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\CloseFriendsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\FollowRequestsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\FollowViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\HashtagViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\LikedPostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\ProfileDetailsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\RecentFollowersViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\SavedPostsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\TaggedYouViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\UserDetailsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\ActivitiesViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\ExploreViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\LikersViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\MainViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\NonFollowersViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\CommentsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\MultiplePostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableExplorePostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableHashtagPostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableUserPostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\UserDetails\ScrollableUserShopPostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\UserDetails\ScrollableUserTaggedPostViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Searches\SearchViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Sign\SignInVM.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\FooterViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVMediaCommentsViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVSearchViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVViewModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\FollowRequestsTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MainStoryTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaCarouselTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaMainTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaUserInfoTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\RecentActivityTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\ThreadItemTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\TopSearchTemplateSelector.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BaseCommand.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BaseModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BusinessProfile.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\FileModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\InstaCommentTV.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\InstaUserShortTV.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\DirectReplyModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\MediaFeeds.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\StoryModel.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\Models\RecentActivityFeed.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\Minista\CustomMTC\TVCustomMTC.cs"/>
-        <SourceGeneratorInput Remove="Code\IG\InstagramApiSharp\Properties\AssemblyInfo.cs"/>
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\LiveBroadcastViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\MinistaBroadcasdViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\RelayCommand.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Broadcast\VlcBroadcastViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\DirectRequestsThreadViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\DirectRequestsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\InboxViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Direct\ThreadViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\ArchiveViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\BlockedViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\CloseFriendsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\FollowRequestsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\FollowViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\HashtagViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\LikedPostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\ProfileDetailsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\RecentFollowersViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\SavedPostsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\TaggedYouViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Infos\UserDetailsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\ActivitiesViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\ExploreViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\LikersViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\MainViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Main\NonFollowersViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\CommentsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\MultiplePostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableExplorePostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableHashtagPostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\ScrollableUserPostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\UserDetails\ScrollableUserShopPostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Posts\UserDetails\ScrollableUserTaggedPostViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Searches\SearchViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\Sign\SignInVM.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\FooterViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVMediaCommentsViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVSearchViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\ViewModels\TV\TVViewModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\FollowRequestsTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MainStoryTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaCarouselTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaMainTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\MediaUserInfoTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\RecentActivityTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\ThreadItemTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Selectors\TopSearchTemplateSelector.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BaseCommand.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BaseModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\BusinessProfile.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\FileModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\InstaCommentTV.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\InstaUserShortTV.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\DirectReplyModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\MediaFeeds.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\Main\StoryModel.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\Models\RecentActivityFeed.cs" />
+        <SourceGeneratorInput Remove="Code\IG\Minista\CustomMTC\TVCustomMTC.cs" />
+        <SourceGeneratorInput Remove="Code\IG\InstagramApiSharp\Properties\AssemblyInfo.cs" />
     </ItemGroup>
 
 </Project>

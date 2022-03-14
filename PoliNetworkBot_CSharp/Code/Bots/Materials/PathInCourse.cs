@@ -2,13 +2,11 @@
 {
     public class PathInCourse
     {
-        private string[][] folders;
-
-        public void setPath(string[][] path)
+        public static void SetPath(string[][] path)
         {
         }
 
-        public bool isIn(string[] folder)
+        public static bool IsIn(string[] folder)
         {
             return true;
         }

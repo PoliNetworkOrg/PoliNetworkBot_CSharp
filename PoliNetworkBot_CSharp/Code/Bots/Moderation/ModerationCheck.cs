@@ -165,7 +165,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 };
                 SqLite.Execute(q, d);
                 var name = "";
-                if (messageEventArgs is { Message: { Chat: { Title: { } } } })
+                if (messageEventArgs is { Message.Chat.Title: { } })
                     name = messageEventArgs.Message.Chat.Title;
 
                 Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + ", name:" + name +
@@ -288,7 +288,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             switch (e.Message)
             {
-                case { Chat: { Type: ChatType.Private } }:
+                case { Chat.Type: ChatType.Private }:
                 case { From: { }, Chat: { } }
                     when e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id:
                     return SpamType.ALL_GOOD;
