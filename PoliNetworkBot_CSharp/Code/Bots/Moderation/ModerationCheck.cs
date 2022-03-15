@@ -299,7 +299,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             if (e.Message is { From: { }, Chat: { } })
             {
-                var storedMessageResult = MessagesStore.StoreAndCheck(e);
+                var storedMessageResult = MessagesStore.StoreAndCheck(e, e.Message);
                 switch (storedMessageResult)
                 {
                     case SpamType.SPAM_LINK:

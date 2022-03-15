@@ -954,12 +954,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
         {
-            var r = Blacklist.IsSpam(message.Text, message.Chat.Id);
-            var r2 = r.ToString();
+
+            var r2 = MessagesStore.StoreAndCheck(e, e.Message.ReplyToMessage);
+            
+            if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
+            {
+                r2 = Blacklist.IsSpam(message.Text, message.Chat.Id);
+            }
+
 
             var dict = new Dictionary<string, string>
             {
-                { "en", r2 }
+                { "en", r2.ToString() }
             };
             var text = new Language(dict);
             try

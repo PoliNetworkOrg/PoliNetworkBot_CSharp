@@ -598,7 +598,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             
             if (message.Length > 4000)
             {
-                var newMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
+                var newMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
                 permittedSpamMessage = new Tuple<Language, string>(
                     new Language(new Dictionary<string, string>
                     {
@@ -616,13 +616,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
 
+            long? replyTo = null;
+            
             if (splitMessage)
             {
-                await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
+                var m = await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
                     new Dictionary<string, string>
                     {
                         {"en", message}
                     }), ChatType.Group, "en", ParseMode.Html, null, null);
+                replyTo = m.GetMessageID();
             }
             
             List<CallbackOption> options = new() { 
@@ -632,7 +635,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             CallbackGenericData callbackGenericData = new CallbackAssocVetoData(options,  VetoCallbackButton, message);
 
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, Data.Constants.Groups.PermittedSpamGroup, 
-            permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true);
+            permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
         }
 
         private static async void VetoCallbackButton(CallbackGenericData callbackGenericData)

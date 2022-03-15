@@ -19,8 +19,10 @@ public class CallbackUtils
 
     public const string SEPARATOR = "-";
 
-    public static async Task SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData, long chatToSendTo, 
-        Language text, TelegramBotAbstract telegramBotAbstract, ChatType  chatType, string lang, string username, bool splitMessage)
+    public static async Task SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData,
+        long chatToSendTo,
+        Language text, TelegramBotAbstract telegramBotAbstract, ChatType chatType, string lang, string username,
+        bool splitMessage, long? replyToMessageId = null)
     {
         callbackGenericData.Bot = telegramBotAbstract;
         callbackGenericData.InsertedTime = DateTime.Now;
@@ -31,7 +33,7 @@ public class CallbackUtils
         callbackDatas.Add(key, callbackGenericData);
 
         ReplyMarkupObject replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
-        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: true);
+        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage, replyToMessageId: replyToMessageId);
         callbackGenericData.MessageSent = messageSent;
     }
 

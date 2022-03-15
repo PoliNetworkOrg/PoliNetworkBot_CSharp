@@ -97,19 +97,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return r;
         }
 
-        internal static SpamType StoreAndCheck(MessageEventArgs e)
+        internal static SpamType StoreAndCheck(MessageEventArgs e, Message message)
         {
-            if (e?.Message == null)
+            if (message == null)
                 return SpamType.UNDEFINED;
 
-            if (!string.IsNullOrEmpty(e.Message.Text))
-                return StoreAndCheck2(e, e.Message.Text);
-            return !string.IsNullOrEmpty(e.Message.Caption) ? StoreAndCheck2(e, e.Message.Caption) : SpamType.UNDEFINED;
+            if (!string.IsNullOrEmpty(message.Text))
+                return StoreAndCheck2(message, message.Text);
+            return !string.IsNullOrEmpty(message.Caption) ? StoreAndCheck2(message, message.Caption) : SpamType.UNDEFINED;
         }
 
-        private static SpamType StoreAndCheck2(MessageEventArgs e, string text)
+        private static SpamType StoreAndCheck2(Message message, string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text) || message.From == null)
                 return SpamType.UNDEFINED;
 
             if (Store.ContainsKey(text))
@@ -125,7 +125,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     (
                         lastSeenTime: DateTime.Now,
                         howManyTimesWeSawIt: 1,
-                        message: e.Message.Text,
+                        message: message.Text,
                         allowedSpam: false
                     );
                 }
@@ -135,13 +135,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 lock (Store[text])
                 {
-                    if (!Store[text].FromUserId.Contains(e.Message.From.Id))
-                        Store[text].FromUserId.Add(e.Message.From.Id);
+                    if (!Store[text].FromUserId.Contains(message.From.Id))
+                        Store[text].FromUserId.Add(message.From.Id);
 
-                    if (!Store[text].GroupsIdItHasBeenSentInto.Contains(e.Message.Chat.Id))
-                        Store[text].GroupsIdItHasBeenSentInto.Add(e.Message.Chat.Id);
+                    if (!Store[text].GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
+                        Store[text].GroupsIdItHasBeenSentInto.Add(message.Chat.Id);
 
-                    Store[text].Messages.Add(e.Message);
+                    Store[text].Messages.Add(message);
 
                     return Store.Count == 0 ? SpamType.UNDEFINED : Store[text].IsSpam();
                 }
