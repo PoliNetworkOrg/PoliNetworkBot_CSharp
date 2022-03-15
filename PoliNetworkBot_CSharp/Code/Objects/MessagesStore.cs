@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <param name="allowedSpam">true if you want the bot to flag this message as Permitted Spam</param>
         /// <param name="timeLater">Allow at a later time starting from now</param>
         /// <returns></returns>
-        public static bool AddMessage(string message, bool allowedSpam = false, TimeSpan? timeLater = null)
+        public static bool AddMessage(string message, MessageAllowedStatus allowedSpam =  MessageAllowedStatus.UNKNOWN, TimeSpan? timeLater = null)
         {
             if (message == null)
                 return false;
@@ -61,7 +61,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <returns></returns>
         public static bool AllowMessage(string message)
         {
-            return AddMessage(message, true);
+            return AddMessage(message,  MessageAllowedStatus.ALLOWED);
         }
 
         public static void CheckTimestamp()
@@ -126,7 +126,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         lastSeenTime: DateTime.Now,
                         howManyTimesWeSawIt: 1,
                         message: e.Message.Text,
-                        allowedSpam: false
+                        allowedSpam:  MessageAllowedStatus.UNKNOWN
                     );
                 }
             }
@@ -216,21 +216,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public static void VetoMessage(string message)
         {
             DisallowMessage(message);
-            Store[message].hasBeenVetoed = true;
         }
 
         private static void DisallowMessage(string message)
         {
-            Store[message].AllowedSpam = false;
+            Store[message].allowedStatus = MessageAllowedStatus.NOT_ALLOWED;
             Store[message].AllowedTime = null;
         }
 
         public static void AllowMessageOwner(string text)
         {
-            AllowMessage(text);
-            if (text != null)
+            if (string.IsNullOrEmpty(text) == false)
             {
-                Store[text].hasBeenVetoed = false;
+                AllowMessage(text);
+                Store[text].allowedStatus = MessageAllowedStatus.ALLOWED;
+                
             }
         }
     }
