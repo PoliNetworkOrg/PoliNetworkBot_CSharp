@@ -22,10 +22,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     [JsonObject(MemberSerialization.Fields)]
     public static class MessagesStore
     {
-        private static readonly Dictionary<string, StoredMessage> Store =
-            JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-                File.ReadAllText(Paths.Data.MessageStore)) ?? new();
+        private static Dictionary<string, StoredMessage> Store;
 
+        public static void InitializeMessageStore()
+        {
+            try
+            {
+                Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
+                    File.ReadAllText(Paths.Data.MessageStore)) ?? new();
+            }
+            catch (Exception ex)
+            {
+                Store = new();
+            }
+        }
+        
         /// <summary>
         ///     Adds a new message to the storage
         /// </summary>

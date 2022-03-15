@@ -152,6 +152,8 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             if (!Directory.Exists("../config"))
                 Directory.CreateDirectory("../config");
+            
+            MessagesStore.InitializeMessageStore();
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -462,6 +464,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 toSend += "Critical errors found in log while starting up! \n" + critics;
                 NotifyUtil.NotifyOwners(toSend, telegramBotAbstract, messageEventArgs);
             }
+            
 
             using var powershell = PowerShell.Create();
             foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
