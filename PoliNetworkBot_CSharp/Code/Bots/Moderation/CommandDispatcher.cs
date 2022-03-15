@@ -343,7 +343,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                         await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                             e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                             e.Message.MessageId);
-                        var messages = MessagesStore.GetAllMessages(x => x.allowedStatus == MessageAllowedStatus.ALLOWED);
+                        var messages = MessagesStore.GetAllMessages(x => x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
                         foreach (var m2 in messages.Select(message => message.Messages.First()).Where(m2 => m2 != null))
                         {
                             text = new Language(new Dictionary<string, string>

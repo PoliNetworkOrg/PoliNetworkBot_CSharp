@@ -17,8 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private const double AverageLimit = 60;
         private readonly string hash;
-        internal Enums.MessageAllowedStatus allowedStatus;
-        internal DateTime? AllowedTime;
+        internal MessageAllowedStatus AllowedStatus;
 
         public List<long> FromUserId = new();
         public List<long> GroupsIdItHasBeenSentInto = new();
@@ -28,13 +27,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal string message;
         public List<Message> Messages = new();
 
-        public StoredMessage(string message, int howManyTimesWeSawIt = 0, Enums.MessageAllowedStatus allowedSpam =  MessageAllowedStatus.UNKNOWN,
+        public StoredMessage(string message, int howManyTimesWeSawIt = 0, MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED,
             DateTime? allowedTime = null, DateTime? lastSeenTime = null)
         {
             HowManyTimesWeSawIt = howManyTimesWeSawIt;
+            AllowedStatus = new MessageAllowedStatus(allowedSpam, allowedTime);
             this.message = message;
             InsertedTime = DateTime.Now;
-            AllowedTime = allowedStatus == MessageAllowedStatus.PENDING || allowedStatus == MessageAllowedStatus.ALLOWED ? allowedTime ?? DateTime.Now : null;
             LastSeenTime = lastSeenTime;
             hash = HashUtils.GetHashOf(message);
         }
@@ -42,20 +41,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal SpamType IsSpam()
         {
 
-            switch (allowedStatus)
+            switch (AllowedStatus.GetStatus())
             {
-                case MessageAllowedStatus.PENDING:
-                case MessageAllowedStatus.ALLOWED:
-                    return AllowedTime == null || AllowedTime > DateTime.Now
-                    ? SpamType.UNDEFINED
-                    : AllowedTime.Value.AddHours(24) > DateTime.Now
-                        ? SpamType.SPAM_PERMITTED
-                        : SpamType.UNDEFINED;
+                case MessageAllowedStatusEnum.ALLOWED:
+                    return SpamType.ALL_GOOD;
 
-                case MessageAllowedStatus.NOT_ALLOWED:
+                case MessageAllowedStatusEnum.NOT_ALLOWED:
                     return SpamType.SPAM_LINK;
-
-                case MessageAllowedStatus.UNKNOWN:
+                
+                case MessageAllowedStatusEnum.PENDING:
+                case MessageAllowedStatusEnum.NOT_DEFINED:
                     break;
             }
 
@@ -83,15 +78,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal bool IsOutdated()
         {
-            if (AllowedTime == null)
-                return false;
-
-            return AllowedTime.Value.AddHours(24) < DateTime.Now;
+            return AllowedStatus.RemovalTime() < DateTime.Now;
         }
 
         internal string ToJson()
         {
             return JsonConvert.SerializeObject(this);
+        }
+
+        public void ForceAllowMessage()
+        {
+            AllowedStatus.ForceAllowMessage();
+        }
+
+        public void RemoveMessage(bool andFlagAsSpam)
+        {
+            AllowedStatus.RemoveMessage(andFlagAsSpam);
         }
     }
 }

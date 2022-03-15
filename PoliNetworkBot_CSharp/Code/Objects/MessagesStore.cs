@@ -30,10 +30,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         ///     Adds a new message to the storage
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="allowedSpam">true if you want the bot to flag this message as Permitted Spam</param>
+        /// <param name="MessageAllowedStatusEnum"></param>
         /// <param name="timeLater">Allow at a later time starting from now</param>
         /// <returns></returns>
-        public static bool AddMessage(string message, MessageAllowedStatus allowedSpam =  MessageAllowedStatus.UNKNOWN, TimeSpan? timeLater = null)
+        public static bool AddMessage(string message, MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED, TimeSpan? timeLater = null)
         {
             if (message == null)
                 return false;
@@ -44,11 +44,32 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (Store.ContainsKey(message))
                 Store.Remove(message);
 
+            if ( ( timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING ) 
+                 || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING ))
+                throw new Exception("TimeLater and status mismatch");
+
+            DateTime? allowedTime = null; 
+            
+            switch (messageAllowedStatus)
+            {
+                case MessageAllowedStatusEnum.PENDING:
+                    allowedTime = DateTime.Now + (timeLater ?? TimeSpan.Zero);
+                    break;
+                case MessageAllowedStatusEnum.ALLOWED:
+                    allowedTime = DateTime.Now;
+                    break;
+                case MessageAllowedStatusEnum.NOT_ALLOWED:
+                case MessageAllowedStatusEnum.NOT_DEFINED:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(messageAllowedStatus), messageAllowedStatus, null);
+            }
+            
             lock (Store)
             {
                 Store.Add(message,
-                    new StoredMessage(message, allowedSpam: allowedSpam,
-                        allowedTime: DateTime.Now + (timeLater ?? TimeSpan.Zero)));
+                    new StoredMessage(message, allowedSpam: messageAllowedStatus,
+                        allowedTime: allowedTime));
             }
 
             return true;
@@ -61,7 +82,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <returns></returns>
         public static bool AllowMessage(string message)
         {
-            return AddMessage(message,  MessageAllowedStatus.ALLOWED);
+            return AddMessage(message,  MessageAllowedStatusEnum.ALLOWED);
         }
 
         public static void CheckTimestamp()
@@ -126,7 +147,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         lastSeenTime: DateTime.Now,
                         howManyTimesWeSawIt: 1,
                         message: message.Text,
-                        allowedSpam:  MessageAllowedStatus.UNKNOWN
+                        allowedSpam:  MessageAllowedStatusEnum.NOT_DEFINED
                     );
                 }
             }
@@ -215,13 +236,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public static void VetoMessage(string message)
         {
-            DisallowMessage(message);
+            Store[message].RemoveMessage(true);
         }
 
         private static void DisallowMessage(string message)
         {
-            Store[message].allowedStatus = MessageAllowedStatus.NOT_ALLOWED;
-            Store[message].AllowedTime = null;
+            Store[message].RemoveMessage(false);
         }
 
         public static void AllowMessageOwner(string text)
@@ -229,7 +249,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (string.IsNullOrEmpty(text) == false)
             {
                 AllowMessage(text);
-                Store[text].allowedStatus = MessageAllowedStatus.ALLOWED;
+                Store[text].ForceAllowMessage();
                 
             }
         }
