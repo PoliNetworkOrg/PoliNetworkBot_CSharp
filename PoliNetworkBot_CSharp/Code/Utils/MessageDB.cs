@@ -258,8 +258,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 var s1 = b1 ? "S" : "N";
                 s1 += "\n";
                 s1 += "GetHasBeenSentAsync";
-                var e1 = new Exception(s1);
-                await NotifyUtil.NotifyOwners(e1, sender, messageEventArgs);
+                //var e1 = new Exception(s1);
+                //await NotifyUtil.NotifyOwners(e1, sender, messageEventArgs);
                 return new Tuple<bool?, int, string>(b1, 1, s1); //todo: change to "return b1"
             }
             catch
