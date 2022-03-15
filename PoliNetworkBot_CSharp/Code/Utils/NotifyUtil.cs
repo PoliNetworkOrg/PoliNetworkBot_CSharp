@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -162,7 +163,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
         {
             Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
-            return await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, Data.Constants.Groups.GroupException,
+            
+            var text = new Language(new Dictionary<string, string>
+            {
+                { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) },
+            });
+            
+            return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs, Data.Constants.Groups.GroupException,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }
 
