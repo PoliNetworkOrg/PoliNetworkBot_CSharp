@@ -614,7 +614,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
         {
 
-            MessagesStore.AddMessage(message, true, new TimeSpan(4, 0, 0));
+            MessagesStore.AddMessage(message,  MessageAllowedStatus.PENDING, new TimeSpan(4, 0, 0));
 
             long? replyTo = null;
             

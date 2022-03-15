@@ -17,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     {
         private const double AverageLimit = 60;
         private readonly string hash;
-        internal bool AllowedSpam;
+        internal Enums.MessageAllowedStatus allowedStatus;
         internal DateTime? AllowedTime;
 
         public List<long> FromUserId = new();
@@ -27,29 +27,39 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal DateTime? LastSeenTime;
         internal string message;
         public List<Message> Messages = new();
-        public bool hasBeenVetoed;
 
-        public StoredMessage(string message, int howManyTimesWeSawIt = 0, bool allowedSpam = false,
+        public StoredMessage(string message, int howManyTimesWeSawIt = 0, Enums.MessageAllowedStatus allowedSpam =  MessageAllowedStatus.UNKNOWN,
             DateTime? allowedTime = null, DateTime? lastSeenTime = null)
         {
             HowManyTimesWeSawIt = howManyTimesWeSawIt;
             this.message = message;
-            AllowedSpam = allowedSpam;
             InsertedTime = DateTime.Now;
-            AllowedTime = allowedSpam ? allowedTime ?? DateTime.Now : null;
+            AllowedTime = allowedStatus == MessageAllowedStatus.PENDING || allowedStatus == MessageAllowedStatus.ALLOWED ? allowedTime ?? DateTime.Now : null;
             LastSeenTime = lastSeenTime;
             hash = HashUtils.GetHashOf(message);
         }
 
         internal SpamType IsSpam()
         {
-            return hasBeenVetoed ? SpamType.SPAM_LINK 
-                :  AllowedSpam ? AllowedTime == null || AllowedTime > DateTime.Now
+
+            switch (allowedStatus)
+            {
+                case MessageAllowedStatus.PENDING:
+                case MessageAllowedStatus.ALLOWED:
+                    return AllowedTime == null || AllowedTime > DateTime.Now
                     ? SpamType.UNDEFINED
                     : AllowedTime.Value.AddHours(24) > DateTime.Now
                         ? SpamType.SPAM_PERMITTED
-                        : SpamType.UNDEFINED
-                : GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
+                        : SpamType.UNDEFINED;
+
+                case MessageAllowedStatus.NOT_ALLOWED:
+                    return SpamType.SPAM_LINK;
+
+                case MessageAllowedStatus.UNKNOWN:
+                    break;
+            }
+
+            return GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
                   (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
                     ? IsSpam2()
                     : SpamType.UNDEFINED ;
