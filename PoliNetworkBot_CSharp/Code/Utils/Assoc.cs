@@ -634,7 +634,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             
             CallbackGenericData callbackGenericData = new CallbackAssocVetoData(options,  VetoCallbackButton, message);
 
-            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, Data.Constants.Groups.PermittedSpamGroup, 
+            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, Data.Constants.Groups.ConsiglioDegliAdminRiservato, 
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
         }
 
@@ -649,7 +649,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             
             if (callbackGenericData is not CallbackAssocVetoData assocVetoData) 
                 throw new Exception("callbackGenericData needs to be an instance of CallbackAssocVetoData");
-            
+
+            if (!MessagesStore.CanBeVetoed(assocVetoData.message))
+            {
+                await callbackGenericData.Bot.AnswerCallbackQueryAsync(callbackGenericData.CallBackQueryFromTelegram.Id,
+                    "Veto Denied! The 48h time frame has expired.");
+                return;
+            }
+
             if (assocVetoData.CallBackQueryFromTelegram.Message == null) throw new Exception("callBackQueryFromTelegram is null on callbackButton");
 
             try
@@ -668,6 +675,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             MessagesStore.VetoMessage(assocVetoData.message);
+            
         }
     }
 }

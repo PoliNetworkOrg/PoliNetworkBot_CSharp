@@ -16,7 +16,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
     public class StoredMessage
     {
         private const double AverageLimit = 60;
-        private readonly string hash;
         internal MessageAllowedStatus AllowedStatus;
 
         public List<long> FromUserId = new();
@@ -35,7 +34,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             this.message = message;
             InsertedTime = DateTime.Now;
             LastSeenTime = lastSeenTime;
-            hash = HashUtils.GetHashOf(message);
         }
 
         internal SpamType IsSpam()
@@ -44,12 +42,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             switch (AllowedStatus.GetStatus())
             {
                 case MessageAllowedStatusEnum.ALLOWED:
-                    return SpamType.ALL_GOOD;
+                    return SpamType.SPAM_PERMITTED;
 
                 case MessageAllowedStatusEnum.NOT_ALLOWED:
                     return SpamType.SPAM_LINK;
                 
                 case MessageAllowedStatusEnum.PENDING:
+                    throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
                 case MessageAllowedStatusEnum.NOT_DEFINED:
                     break;
             }
@@ -58,11 +57,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                   (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
                     ? IsSpam2()
                     : SpamType.UNDEFINED ;
-        }
-
-        public string GetHash()
-        {
-            return hash;
         }
 
         private SpamType IsSpam2()

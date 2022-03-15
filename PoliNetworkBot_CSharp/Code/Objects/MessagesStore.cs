@@ -185,12 +185,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return SpamType.UNDEFINED;
         }
-
-        internal static StoredMessage GetStoredMessageByHash(string hash)
-        {
-            return Store.Values.FirstOrDefault(storedMessage => storedMessage.GetHash() == hash);
-        }
-
+        
         internal static List<Message> GetMessages(string text)
         {
             try
@@ -245,9 +240,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 e.Message.From.LanguageCode, null, true);
         }
 
-        public static void VetoMessage(string message)
+        /// <summary>
+        /// Veto message button callback
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>true if the veto was on time, false otherwise</returns>
+        public static bool VetoMessage(string message)
         {
+            if (Store[message].AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED)
+            {
+                return false;
+            }
             Store[message].RemoveMessage(true);
+            return true;
         }
 
         private static void DisallowMessage(string message)
@@ -263,6 +268,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 Store[text].ForceAllowMessage();
                 
             }
+        }
+
+        public static bool CanBeVetoed(string message)
+        {
+            return Store[message].InsertedTime.AddHours(48) >= DateTime.Now;
         }
     }
 }
