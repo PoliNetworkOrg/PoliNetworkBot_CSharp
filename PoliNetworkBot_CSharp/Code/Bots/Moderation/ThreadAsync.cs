@@ -248,7 +248,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             while (true)
             {
-                await MessageDb.CheckMessagesToSend(false, null, null);
+                try
+                {
+                    await MessageDb.CheckMessagesToSend(false, null, null);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(ex);
+                }
+
                 Thread.Sleep(20 * 1000); //20 sec
             }
 
