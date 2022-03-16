@@ -632,7 +632,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 new CallbackOption("❌ Veto")
             };
             
-            var assocVetoData = new CallbackAssocVetoData(options,  VetoCallbackButton, message, messageEventArgs);
+            var assocVetoData = new CallbackAssocVetoData(options,  VetoCallbackButton, message, messageEventArgs, permittedSpamMessage.Item1.Select(permittedSpamMessage.Item2));
 
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup, 
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
@@ -642,7 +642,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             if (assocVetoData.MessageSent.GetMessage() is Message m1 && assocVetoData.MessageSent.GetMessageID() != null)
             {
                 await sender.EditMessageTextAsync(m1.Chat.Id,
-                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"), assocVetoData.message,
+                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"), assocVetoData.messageWithMetadata,
                     ParseMode.Html);
             }
         }
@@ -651,64 +651,72 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                if (!Permissions.CheckPermissions(Permission.HEAD_ADMIN,
-                        callbackGenericData.CallBackQueryFromTelegram.From))
-                {
-                    await callbackGenericData.Bot.AnswerCallbackQueryAsync(
-                        callbackGenericData.CallBackQueryFromTelegram.Id,
-                        "Veto Denied! You need to be Head Admin!");
-                    return;
-                }
-
-                if (callbackGenericData is not CallbackAssocVetoData assocVetoData)
-                    throw new Exception("callbackGenericData needs to be an instance of CallbackAssocVetoData");
-
-                if (!MessagesStore.CanBeVetoed(assocVetoData.message))
-                {
-                    await callbackGenericData.Bot.AnswerCallbackQueryAsync(
-                        callbackGenericData.CallBackQueryFromTelegram.Id,
-                        "Veto Denied! The 48h time frame has expired.");
-                    return;
-                }
-
-                if (assocVetoData.CallBackQueryFromTelegram.Message == null)
-                    throw new Exception("callBackQueryFromTelegram is null on callbackButton");
-
                 try
                 {
-                    var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" + "<b>VETO</b> by @"
-                                     + callbackGenericData.CallBackQueryFromTelegram.From.Username;
-
-                    await callbackGenericData.Bot.EditMessageTextAsync(
-                        assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
-                        assocVetoData.CallBackQueryFromTelegram.Message.MessageId, newMessage, ParseMode.Html);
-
-                    assocVetoData.OnCallback(newMessage);
-
-                    var privateText = new Language(new Dictionary<string, string>
+                    if (!Permissions.CheckPermissions(Permission.HEAD_ADMIN,
+                            callbackGenericData.CallBackQueryFromTelegram.From))
                     {
-                        {"en", "The message has received a veto"},
-                        {"it", "Il messaggio ha ricevuto un veto"}
-                    });
+                        await callbackGenericData.Bot.AnswerCallbackQueryAsync(
+                            callbackGenericData.CallBackQueryFromTelegram.Id,
+                            "Veto Denied! You need to be Head Admin!");
+                        return;
+                    }
 
-                    await callbackGenericData.Bot.SendTextMessageAsync(
-                        assocVetoData.MessageEventArgs?.Message?.From?.Id,
-                        privateText, ChatType.Private,
-                        assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
-                        assocVetoData.MessageEventArgs?.Message?.MessageId);
+                    if (callbackGenericData is not CallbackAssocVetoData assocVetoData)
+                        throw new Exception("callbackGenericData needs to be an instance of CallbackAssocVetoData");
+
+                    if (!MessagesStore.CanBeVetoed(assocVetoData.message))
+                    {
+                        await callbackGenericData.Bot.AnswerCallbackQueryAsync(
+                            callbackGenericData.CallBackQueryFromTelegram.Id,
+                            "Veto Denied! The 48h time frame has expired.");
+                        return;
+                    }
+
+                    if (assocVetoData.CallBackQueryFromTelegram.Message == null)
+                        throw new Exception("callBackQueryFromTelegram is null on callbackButton");
+
+                    try
+                    {
+                        var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" +
+                                         "<b>VETO</b> by @"
+                                         + callbackGenericData.CallBackQueryFromTelegram.From.Username;
+
+                        await callbackGenericData.Bot.EditMessageTextAsync(
+                            assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
+                            assocVetoData.CallBackQueryFromTelegram.Message.MessageId, newMessage, ParseMode.Html);
+
+                        assocVetoData.OnCallback(newMessage);
+
+                        var privateText = new Language(new Dictionary<string, string>
+                        {
+                            {"en", "The message has received a veto"},
+                            {"it", "Il messaggio ha ricevuto un veto"}
+                        });
+
+                        await callbackGenericData.Bot.SendTextMessageAsync(
+                            assocVetoData.MessageEventArgs?.Message?.From?.Id,
+                            privateText, ChatType.Private,
+                            assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
+                            assocVetoData.MessageEventArgs?.Message?.MessageId);
+                    }
+
+                    catch (Exception exc)
+                    {
+                        await NotifyUtil.NotifyOwners(exc, assocVetoData.Bot);
+                        await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
+                            assocVetoData.Bot);
+                    }
+
+                    MessagesStore.VetoMessage(assocVetoData.message);
+
                 }
-
-                catch (Exception exc)
+                catch (Exception e)
                 {
-                    await NotifyUtil.NotifyOwners(exc, assocVetoData.Bot);
-                    await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
-                        assocVetoData.Bot);
+                    await NotifyUtil.NotifyOwners(e, callbackGenericData.Bot);
                 }
-
-                MessagesStore.VetoMessage(assocVetoData.message);
-
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ;
             }

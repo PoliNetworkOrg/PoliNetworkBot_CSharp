@@ -11,15 +11,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
     public class CallbackAssocVetoData : CallbackGenericData
     {
-        public string message;
-        public bool Modified;
+        public readonly string message;
         public MessageEventArgs MessageEventArgs;
+        public string messageWithMetadata;
         
         public CallbackAssocVetoData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection,
-            string message, MessageEventArgs messageEventArgs) : base(options, runAfterSelection)
+            string message, MessageEventArgs messageEventArgs, string messageWithMetadata) : base(options, runAfterSelection)
         {
-            this.MessageEventArgs = messageEventArgs;
-            Modified = false;
+            this.messageWithMetadata = messageWithMetadata;
+            MessageEventArgs = messageEventArgs;
             this.message = message;
             this.options = options;
             RunAfterSelection = runAfterSelection;
@@ -27,9 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 
         public void OnCallback(string newMessage)
         {
-            if (Modified) return;
-            message = newMessage;
-            Modified = true;
+            messageWithMetadata = newMessage;
         }
     }
 }
