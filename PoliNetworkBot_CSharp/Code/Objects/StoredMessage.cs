@@ -27,10 +27,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         public List<Message> Messages = new();
 
         public StoredMessage(string message, int howManyTimesWeSawIt = 0, MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED,
-            DateTime? allowedTime = null, DateTime? lastSeenTime = null)
+            TimeSpan? timeLater = null, DateTime? lastSeenTime = null)
         {
             HowManyTimesWeSawIt = howManyTimesWeSawIt;
-            AllowedStatus = new MessageAllowedStatus(allowedSpam, allowedTime);
+            AllowedStatus = new MessageAllowedStatus(allowedSpam, timeLater);
             this.message = message;
             InsertedTime = DateTime.Now;
             LastSeenTime = lastSeenTime;

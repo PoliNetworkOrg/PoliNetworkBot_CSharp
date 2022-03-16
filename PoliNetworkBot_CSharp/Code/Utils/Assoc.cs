@@ -632,10 +632,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 new CallbackOption("❌ Veto")
             };
             
-            CallbackGenericData callbackGenericData = new CallbackAssocVetoData(options,  VetoCallbackButton, message);
+            var assocVetoData = new CallbackAssocVetoData(options,  VetoCallbackButton, message, messageEventArgs);
 
-            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callbackGenericData, Data.Constants.Groups.ConsiglioDegliAdminRiservato, 
+            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup, 
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
+            
+            Thread.Sleep(new TimeSpan(hours: 48, 0, 0));
+
+            if (assocVetoData.MessageSent.GetMessage() is Message m1 && assocVetoData.MessageSent.GetMessageID() != null)
+            {
+                await sender.EditMessageTextAsync(m1.Chat.Id,
+                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"), assocVetoData.message,
+                    ParseMode.Html);
+            }
         }
 
         private static async void VetoCallbackButton(CallbackGenericData callbackGenericData)
@@ -658,16 +667,28 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             }
 
             if (assocVetoData.CallBackQueryFromTelegram.Message == null) throw new Exception("callBackQueryFromTelegram is null on callbackButton");
-
+            
             try
             {
-                await callbackGenericData.Bot.EditMessageTextAsync(
-                    assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
-                    assocVetoData.CallBackQueryFromTelegram.Message.MessageId,
-                    assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" + "<b>VETO</b> by @"
-                    + callbackGenericData.CallBackQueryFromTelegram.From.Username,
-                    ParseMode.Html);
+                var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" + "<b>VETO</b> by @"
+                                 + callbackGenericData.CallBackQueryFromTelegram.From.Username;
+                
+                await callbackGenericData.Bot.EditMessageTextAsync(assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
+                    assocVetoData.CallBackQueryFromTelegram.Message.MessageId, newMessage, ParseMode.Html);
+
+                assocVetoData.OnCallback(newMessage);
+
+                var privateText = new Language(new Dictionary<string, string>
+                {
+                    {"en", "The message has received a veto"},
+                    {"it", "Il messaggio ha ricevuto un veto"}
+                });
+
+                await callbackGenericData.Bot.SendTextMessageAsync(assocVetoData.MessageEventArgs?.Message?.From?.Id,
+                    privateText, ChatType.Private,
+                    assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null);
             }
+            
             catch (Exception exc)
             {
                 await NotifyUtil.NotifyOwners( exc, assocVetoData.Bot);

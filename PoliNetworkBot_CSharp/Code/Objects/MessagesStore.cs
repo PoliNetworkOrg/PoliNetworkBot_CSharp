@@ -42,7 +42,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// </summary>
         /// <param name="message"></param>
         /// <param name="MessageAllowedStatusEnum"></param>
-        /// <param name="timeLater">Allow at a later time starting from now</param>
+        /// <param name="timeLater">Allow at a later time starting from now.</param>
         /// <returns></returns>
         public static bool AddMessage(string message, MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED, TimeSpan? timeLater = null)
         {
@@ -59,28 +59,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                  || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING ))
                 throw new Exception("TimeLater and status mismatch");
 
-            DateTime? allowedTime = null; 
-            
-            switch (messageAllowedStatus)
-            {
-                case MessageAllowedStatusEnum.PENDING:
-                    allowedTime = DateTime.Now + (timeLater ?? TimeSpan.Zero);
-                    break;
-                case MessageAllowedStatusEnum.ALLOWED:
-                    allowedTime = DateTime.Now;
-                    break;
-                case MessageAllowedStatusEnum.NOT_ALLOWED:
-                case MessageAllowedStatusEnum.NOT_DEFINED:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(messageAllowedStatus), messageAllowedStatus, null);
-            }
-            
             lock (Store)
             {
                 Store.Add(message,
-                    new StoredMessage(message, allowedSpam: messageAllowedStatus,
-                        allowedTime: allowedTime));
+                    new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
             }
 
             return true;

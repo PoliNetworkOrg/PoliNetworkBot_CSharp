@@ -10,11 +10,38 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         private MessageAllowedStatusEnum _messageAllowedStatus;
         private DateTime? allowedTime;
         private readonly DateTime insertedTime = DateTime.Now;
+        private const int VetoLowerBound = 9;
+        private const int VetoHigherBound = 22;
 
-        public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, DateTime? allowedTime)
+        public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, TimeSpan? timeSpan)
         {
             _messageAllowedStatus = allowedSpam;
-            this.allowedTime = allowedTime;
+            allowedTime = DateTime.Now;
+            var now = DateTime.Now;
+            var dayInCount = 0;
+            while (!(timeSpan == null || timeSpan == TimeSpan.Zero))
+            {
+                if (now.Hour < VetoLowerBound) //only necessary in first iteration
+                {
+                    var diff = now - DateTime.Today.AddHours(VetoLowerBound);
+                    allowedTime = allowedTime.Value.Add(diff);
+                }
+
+                var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime).Value.TotalMinutes > 0 
+                    ? DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime : TimeSpan.Zero;
+
+                if (remainingTime >= timeSpan)
+                {
+                    allowedTime = allowedTime.Value.Add(timeSpan.Value);
+                    timeSpan = TimeSpan.Zero;
+                }
+                else
+                {
+                    allowedTime = allowedTime.Value.Add(remainingTime.Value).Add(new TimeSpan((24 - VetoHigherBound) + VetoLowerBound, 0, 0));
+                    timeSpan -= remainingTime;
+                    dayInCount++;
+                }
+            }
         }
         
         /// <summary>
