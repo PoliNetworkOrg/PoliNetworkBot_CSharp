@@ -686,7 +686,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                 await callbackGenericData.Bot.SendTextMessageAsync(assocVetoData.MessageEventArgs?.Message?.From?.Id,
                     privateText, ChatType.Private,
-                    assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null);
+                    assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null, assocVetoData.MessageEventArgs?.Message?.MessageId);
             }
             
             catch (Exception exc)
