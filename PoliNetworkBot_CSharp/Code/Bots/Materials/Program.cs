@@ -35,9 +35,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         public static Dictionary<string, string>
             DictPaths = new(); //inizializzazione del dizionario <ID univoco file, stringa documento>
 
-        private static object _lock1 = new();
+        private static readonly object _lock1 = new();
         public static Utils.Config Config;
-        private static long _logGroup = -1001399914655;
+        private static readonly long _logGroup = -1001399914655;
 
         public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
         {
@@ -75,10 +75,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 {
                     try
                     {
-                        if (e.Message.Text == "/start") await GeneraStartAsync(e);
+                        if (e.Message.Text == "/start") GeneraStart(e);
 
                         Console.WriteLine(e.Message.Text);
-                        if (!UsersConversations.ContainsKey(e.Message.From.Id)) await GeneraStartAsync(e);
+                        if (!UsersConversations.ContainsKey(e.Message.From.Id)) GeneraStart(e);
 
                         var state = UsersConversations[e.Message.From.Id].getStato();
 
@@ -222,7 +222,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     };
                     var text = new Language(dict);
 
-                    sender.SendTextMessageAsync(_logGroup,
+                    _ = sender.SendTextMessageAsync(_logGroup,
                         text, ChatType.Group, "uni", ParseMode.Html, null, null);
 
                     powershell.Stop();
@@ -230,7 +230,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 catch (Exception ex)
                 {
                     BotUtils.Logger.WriteLine(ex);
-                    BotUtils.NotifyUtil.NotifyOwners(ex, sender);
+                    _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
                 }
             }
         }
@@ -417,16 +417,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
             catch (Exception ex)
             {
-                BotUtils.NotifyUtil.NotifyOwners(ex, bot);
+                _ = BotUtils.NotifyUtil.NotifyOwners(ex, bot);
                 return false;
             }
         }
 
         private static async Task GestisciNewCartellaAsync(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
         {
-            if (e.Message.Text.Contains("/") || e.Message.Text.Contains(@"\"))
+            if (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\'))
             {
-                await GeneraStartAsync(e);
+                GeneraStart(e);
                 return;
             }
 
@@ -469,7 +469,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                     e.Message.From.LanguageCode,
                     ParseMode.Html, null, null);
-                await generaStartOnBackAndNull(e, telegramBotAbstract);
+                await GeneraStartOnBackAndNull(e, telegramBotAbstract);
                 return;
             }
 
@@ -548,7 +548,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             Thread.Sleep(200);
         }
 
-        private static async Task GeneraStartAsync(MessageEventArgs e)
+        private static void GeneraStart(MessageEventArgs e)
         {
             if (!UsersConversations.ContainsKey(e.Message.From.Id))
             {
@@ -562,7 +562,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
         }
 
-        private static void generaStartOnCallback(CallbackQueryEventArgs e)
+        private static void GeneraStartOnCallback(CallbackQueryEventArgs e)
         {
             if (!UsersConversations.ContainsKey(e.CallbackQuery.Message.From.Id))
             {
@@ -580,7 +580,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
         {
             if (e.Message.Text == null)
             {
-                await generaStartOnBackAndNull(e, sender);
+                await GeneraStartOnBackAndNull(e, sender);
                 return;
             }
 
@@ -755,9 +755,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
         }
 
-        private static async Task generaStartOnBackAndNull(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
+        private static async Task GeneraStartOnBackAndNull(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
         {
-            await GeneraStartAsync(e);
+            GeneraStart(e);
             await BotClient_OnMessageAsync2Async(telegramBotAbstract, e);
         }
 
@@ -801,7 +801,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     e.Message.From.LanguageCode,
                     ParseMode.Html, null, null);
 
-                await generaStartOnBackAndNull(e, telegramBotAbstract);
+                await GeneraStartOnBackAndNull(e, telegramBotAbstract);
                 return;
             }
 
