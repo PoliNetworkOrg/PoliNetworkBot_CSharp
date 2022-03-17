@@ -440,14 +440,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity)
         {
-            switch (messageFromIdEntity)
-            {
-                case 13: //terna che ci sta aiutando col test (sarà tolto)
-                case 2: //polinetwork
-                    {
-                        return false;
-                    }
-            }
+            if (messageFromIdEntity == 2) return false;
 
             var q = "SELECT COUNT (*) " +
                     "FROM Messages " +
