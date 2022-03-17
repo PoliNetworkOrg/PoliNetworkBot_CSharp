@@ -46,9 +46,9 @@ namespace Minista.Helpers
             400,
             320
         };
+
         //int CalculateHeight(double height)
         //{
-
         //}
     }
 }

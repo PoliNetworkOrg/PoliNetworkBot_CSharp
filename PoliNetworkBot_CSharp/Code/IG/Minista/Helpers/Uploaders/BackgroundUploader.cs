@@ -1,8 +1,8 @@
 ﻿#region
 
+using InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
-using InstagramApiSharp.API;
 
 #endregion
 

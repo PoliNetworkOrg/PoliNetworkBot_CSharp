@@ -4,6 +4,7 @@
     {
         //'blended', 'users', 'hashtags', 'places'
         Blended,
+
         Users,
         Hashtags,
         Places

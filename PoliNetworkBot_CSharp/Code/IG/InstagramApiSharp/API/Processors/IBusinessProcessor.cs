@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Enums;
+using System;
+using System.Threading.Tasks;
 
 #endregion
 

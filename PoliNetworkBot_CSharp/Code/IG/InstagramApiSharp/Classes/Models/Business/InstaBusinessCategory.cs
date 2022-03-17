@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 #endregion
 
@@ -19,7 +19,6 @@ namespace InstagramApiSharp.Classes.Models.Business
     {
     }
 
-
     public class InstaBusinessSuggestedCategory : InstaBusinessCategory
     {
         [JsonProperty("super_cat_name")] public string SuperCatName { get; set; }
@@ -30,7 +29,6 @@ namespace InstagramApiSharp.Classes.Models.Business
     public class InstaBusinessSuggestedCategoryList : List<InstaBusinessSuggestedCategory>
     {
     }
-
 
     internal class InstaBusinessCategoryContainer
     {

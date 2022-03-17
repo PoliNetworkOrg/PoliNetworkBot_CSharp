@@ -1,8 +1,8 @@
 ﻿#region
 
+using Bot.Enums;
 using System;
 using System.Linq;
-using Bot.Enums;
 
 #endregion
 

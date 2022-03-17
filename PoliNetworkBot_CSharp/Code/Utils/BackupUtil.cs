@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Objects;
-using System;
-using System.IO;
+﻿using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils
 {
@@ -12,8 +8,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             MessagesStore.BackupToFile();
             CallbackUtils.CallbackUtils.callBackDataFull.BackupToFile();
-
-
         }
     }
 }

@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
@@ -19,6 +12,13 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 
 #endregion
 

@@ -39,7 +39,6 @@ namespace InstagramApiSharp.Classes.Models
 
         public string SocialContext { get; set; }
 
-
         public string ClientCacheKey { get; set; }
 
         public double? CaptionPosition { get; set; }

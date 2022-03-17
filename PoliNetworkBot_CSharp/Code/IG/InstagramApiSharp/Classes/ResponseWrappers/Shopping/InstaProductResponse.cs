@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -60,7 +60,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
     {
         [JsonProperty("image_versions2")] public InstaImageCandidatesResponse Images { get; set; }
     }
-
 
     public class InstaMerchantResponse
     {

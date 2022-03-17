@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
 using InstagramApiSharp.Helpers;
+using System;
 
 #endregion
 
@@ -52,7 +52,6 @@ namespace InstagramApiSharp.Converters.Business
                 node.OwnerAccountFollowsCount = inlineInsights.Metrics.OwnerAccountFollowsCount ?? 0;
                 node.OwnerProfileViewsCount = inlineInsights.Metrics.OwnerProfileViewsCount ?? 0;
                 node.ReachCount = inlineInsights.Metrics.ReachCount ?? 0;
-
 
                 if (inlineInsights.Metrics.Reach != null)
                     try

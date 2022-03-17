@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -17,6 +10,13 @@ using InstagramApiSharp.Enums;
 using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -84,7 +84,6 @@ namespace InstagramApiSharp.API.Processors
                 //Reverse for Chat Order
                 threadResponse.Items.Reverse();
                 var converter = ConvertersFabric.Instance.GetDirectThreadConverter(threadResponse);
-
 
                 return Result.Success(converter.Convert());
             }
@@ -368,7 +367,6 @@ namespace InstagramApiSharp.API.Processors
                 //Reverse for Chat Order
                 threadResponse.Items.Reverse();
                 var converter = ConvertersFabric.Instance.GetDirectThreadConverter(threadResponse);
-
 
                 return Result.Success(converter.Convert());
             }
@@ -886,7 +884,6 @@ namespace InstagramApiSharp.API.Processors
         {
             return await SendDirectLinkAsync(text, link, null, recipients);
         }
-
 
         /// <summary>
         ///     Send link address to direct thread

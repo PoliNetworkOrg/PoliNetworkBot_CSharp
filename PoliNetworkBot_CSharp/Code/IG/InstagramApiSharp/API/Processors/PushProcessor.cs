@@ -53,7 +53,6 @@
     //            threadResponse.Items.Reverse();
     //            var converter = ConvertersFabric.Instance.GetDirectThreadConverter(threadResponse);
 
-
     //            return Result.Success(converter.Convert());
     //        }
     //        catch (Exception exception)

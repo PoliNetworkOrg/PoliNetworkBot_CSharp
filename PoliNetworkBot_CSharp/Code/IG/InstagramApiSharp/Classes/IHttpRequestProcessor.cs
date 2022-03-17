@@ -1,9 +1,9 @@
 ﻿#region
 
+using InstagramApiSharp.Classes.Android.DeviceInfo;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using InstagramApiSharp.Classes.Android.DeviceInfo;
 
 #endregion
 
@@ -15,11 +15,17 @@ namespace InstagramApiSharp.Classes
         ApiRequestMessage RequestMessage { get; }
         HttpClient Client { get; }
         IRequestDelay Delay { get; set; }
+
         void SetHttpClientHandler(HttpClientHandler handler);
+
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage);
+
         Task<HttpResponseMessage> GetAsync(Uri requestUri);
+
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
+
         Task<string> SendAndGetJsonAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
+
         Task<string> GeJsonAsync(Uri requestUri);
     }
 }

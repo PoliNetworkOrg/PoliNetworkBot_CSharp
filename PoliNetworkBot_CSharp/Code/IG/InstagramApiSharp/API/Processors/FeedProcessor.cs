@@ -1,11 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -15,6 +9,12 @@ using InstagramApiSharp.Converters.Json;
 using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstaRecentActivityConverter = InstagramApiSharp.Converters.Json.InstaRecentActivityConverter;
 
 #endregion
@@ -223,7 +223,6 @@ namespace InstagramApiSharp.API.Processors
             var uri = UriCreator.GetRecentActivityUri();
             return await GetRecentActivityInternalAsync(uri, paginationParameters);
         }
-
 
         /// <summary>
         ///     Get saved media feeds asynchronously
@@ -483,7 +482,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-
         private async Task<IResult<InstaRecentActivityResponse>> GetFollowingActivityWithMaxIdAsync(string maxId)
         {
             try
@@ -621,7 +619,7 @@ namespace InstagramApiSharp.API.Processors
                     data.Add("is_pull_to_refresh", "1");
                 }
                 else
-                    //data.Add("reason", "warm_start_fetch");
+                //data.Add("reason", "warm_start_fetch");
                 {
                     if (string.IsNullOrEmpty(paginationParameters.NextMaxId))
                     {

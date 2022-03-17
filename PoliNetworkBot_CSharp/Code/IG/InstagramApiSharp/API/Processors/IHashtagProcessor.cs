@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Hashtags;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 #endregion
 

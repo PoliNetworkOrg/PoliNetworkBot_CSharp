@@ -24,7 +24,6 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         public string device_id { get; set; }
         public string two_factor_identifier { get; set; }
 
-
         internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey)
         {
             if (string.IsNullOrEmpty(signatureKey))

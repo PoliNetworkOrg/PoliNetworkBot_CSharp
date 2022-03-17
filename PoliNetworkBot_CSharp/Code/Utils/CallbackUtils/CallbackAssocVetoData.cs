@@ -1,12 +1,7 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using Telegram.Bot.Types;
-using Newtonsoft.Json;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
@@ -18,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
         public readonly MessageEventArgs MessageEventArgs;
         public readonly string MessageWithMetadata;
         public bool Modified;
-        
+
         public CallbackAssocVetoData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection,
             string message, MessageEventArgs messageEventArgs, string messageWithMetadata) : base(options, runAfterSelection)
         {

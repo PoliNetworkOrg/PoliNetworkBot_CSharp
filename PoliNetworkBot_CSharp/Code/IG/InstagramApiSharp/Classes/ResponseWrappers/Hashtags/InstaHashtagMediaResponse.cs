@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -55,7 +55,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
     {
         [JsonProperty("medias")] public List<InstaMediaAlbumResponse> Medias { get; set; }
     }
-
 
     public class InstaPersistentSectionResponse
     {

@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -19,6 +11,14 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -149,7 +149,7 @@ namespace InstagramApiSharp.API.Processors
                         try
                         {
                             var tried = false;
-                            TryLabel:
+                        TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(tag.Username);
                             if (!u.Succeeded)
                             {
@@ -678,7 +678,7 @@ namespace InstagramApiSharp.API.Processors
                                 try
                                 {
                                     var tried = false;
-                                    TryLabel:
+                                TryLabel:
                                     var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                     if (!u.Succeeded)
                                     {
@@ -724,35 +724,35 @@ namespace InstagramApiSharp.API.Processors
                 if (videos?.Length > 0)
                 {
                     foreach (var video in videos)
-                    foreach (var t in video.UserTags)
-                    {
-                        var currentDelay = _instaApi.GetRequestDelay();
-                        _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                        if (t.Pk <= 0)
-                            try
-                            {
-                                var tried = false;
-                                TryLabel:
-                                var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                                if (!u.Succeeded)
+                        foreach (var t in video.UserTags)
+                        {
+                            var currentDelay = _instaApi.GetRequestDelay();
+                            _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
+                            if (t.Pk <= 0)
+                                try
                                 {
-                                    if (!tried)
+                                    var tried = false;
+                                TryLabel:
+                                    var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
+                                    if (!u.Succeeded)
                                     {
-                                        tried = true;
-                                        goto TryLabel;
+                                        if (!tried)
+                                        {
+                                            tried = true;
+                                            goto TryLabel;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        t.Pk = u.Value.Pk;
                                     }
                                 }
-                                else
+                                catch
                                 {
-                                    t.Pk = u.Value.Pk;
                                 }
-                            }
-                            catch
-                            {
-                            }
 
-                        _instaApi.SetRequestDelay(currentDelay);
-                    }
+                            _instaApi.SetRequestDelay(currentDelay);
+                        }
 
                     foreach (var video in videos)
                     {
@@ -838,7 +838,7 @@ namespace InstagramApiSharp.API.Processors
                             try
                             {
                                 var tried = false;
-                                TryLabel:
+                            TryLabel:
                                 var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                 if (!u.Succeeded)
                                 {
@@ -865,7 +865,7 @@ namespace InstagramApiSharp.API.Processors
                             try
                             {
                                 var tried = false;
-                                TryLabel:
+                            TryLabel:
                                 var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                 if (!u.Succeeded)
                                 {
@@ -927,7 +927,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<InstaMedia>(exception);
             }
         }
-
 
         /// <summary>
         ///     Upload photo [Supports user tags]
@@ -1001,7 +1000,7 @@ namespace InstagramApiSharp.API.Processors
                         try
                         {
                             var tried = false;
-                            TryLabel:
+                        TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
@@ -1148,7 +1147,6 @@ namespace InstagramApiSharp.API.Processors
             request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
             response = await _httpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
-
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -1428,9 +1426,9 @@ namespace InstagramApiSharp.API.Processors
                 {
                     var tagArr = new JArray();
                     foreach (var singleTag in from tag in video.UserTags
-                             where tag.Pk != -1
-                             let position = new JArray(0.0, 0.0)
-                             select new JObject
+                                              where tag.Pk != -1
+                                              let position = new JArray(0.0, 0.0)
+                                              select new JObject
                              {
                                  { "user_id", tag.Pk },
                                  { "position", position }
@@ -1629,9 +1627,9 @@ namespace InstagramApiSharp.API.Processors
             if (!(image.UserTags?.Count > 0)) return imgData;
             var tagArr = new JArray();
             foreach (var singleTag in from tag in image.UserTags
-                     where tag.Pk != -1
-                     let position = new JArray(tag.X, tag.Y)
-                     select new JObject
+                                      where tag.Pk != -1
+                                      let position = new JArray(tag.X, tag.Y)
+                                      select new JObject
                      {
                          { "user_id", tag.Pk },
                          { "position", position }
@@ -1692,9 +1690,9 @@ namespace InstagramApiSharp.API.Processors
             if (!(video.UserTags?.Count > 0)) return vidData;
             var tagArr = new JArray();
             foreach (var singleTag in from tag in video.UserTags
-                     where tag.Pk != -1
-                     let position = new JArray(0.0, 0.0)
-                     select new JObject
+                                      where tag.Pk != -1
+                                      let position = new JArray(0.0, 0.0)
+                                      select new JObject
                      {
                          { "user_id", tag.Pk },
                          { "position", position }

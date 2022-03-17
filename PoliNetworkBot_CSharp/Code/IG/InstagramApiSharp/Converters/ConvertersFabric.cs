@@ -1,7 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
@@ -12,6 +10,8 @@ using InstagramApiSharp.Classes.ResponseWrappers.Web;
 using InstagramApiSharp.Converters.Business;
 using InstagramApiSharp.Converters.Hashtags;
 using InstagramApiSharp.Converters.Users;
+using System;
+using System.Collections.Generic;
 
 #endregion
 

@@ -1,12 +1,12 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Bot.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 #endregion
 

@@ -19,6 +19,7 @@
         ///     Instagram TV video share type
         /// </summary>
         FelixShare = 12,
+
         VoiceMedia = 13,
         AnimatedMedia = 14,
         Hashtag = 15,

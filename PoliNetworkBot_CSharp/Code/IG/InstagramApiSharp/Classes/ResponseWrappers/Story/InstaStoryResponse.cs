@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -40,7 +40,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
 
         [JsonProperty("social_context")] public string SocialContext { get; set; }
 
-
         [JsonProperty("client_cache_key")] public string ClientCacheKey { get; set; }
         [JsonProperty("caption_position")] public double? CaptionPosition { get; set; }
         [JsonProperty("is_reel_media")] public bool IsReelMedia { get; set; }
@@ -57,7 +56,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
         [JsonProperty("has_shared_to_fb")] public bool HasSharedToFb { get; set; }
         [JsonProperty("story_hashtags")] public List<InstaReelMentionResponse> StoryHashtags { get; set; }
         [JsonProperty("story_locations")] public List<InstaStoryLocation> StoryLocation { get; set; }
-
 
         [JsonProperty("show_one_tap_fb_share_tooltip")]
         public bool ShowOneTapFbShareTooltip { get; set; }

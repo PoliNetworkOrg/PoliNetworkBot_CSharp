@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -18,6 +11,13 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -111,7 +111,6 @@ namespace InstagramApiSharp.API.Processors
                     response = await _httpRequestProcessor.SendAsync(request);
                     json = await response.Content.ReadAsStringAsync();
 
-
                     videoUploadParamsObj = new JObject
                     {
                         { "upload_media_height", "0" },
@@ -133,9 +132,11 @@ namespace InstagramApiSharp.API.Processors
                             default:
                                 videoUploadParamsObj.Add("for_album", "1");
                                 break;
+
                             case InstaStoryType.Direct:
                                 videoUploadParamsObj.Add("for_direct_story", "1");
                                 break;
+
                             case InstaStoryType.Both:
                                 videoUploadParamsObj.Add("for_album", "1");
                                 videoUploadParamsObj.Add("for_direct_story", "1");
@@ -148,7 +149,6 @@ namespace InstagramApiSharp.API.Processors
                     request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
                     response = await _httpRequestProcessor.SendAsync(request);
                     json = await response.Content.ReadAsStringAsync();
-
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -360,12 +360,14 @@ namespace InstagramApiSharp.API.Processors
                             default:
                                 data.Add("configure_mode", "1");
                                 break;
+
                             case InstaStoryType.Direct:
                                 data.Add("configure_mode", "2");
                                 data.Add("view_mode", "replayable");
                                 data.Add("recipient_users", "[]");
                                 data.Add("thread_ids", $"[{threadId}]");
                                 break;
+
                             case InstaStoryType.Both:
                                 data.Add("configure_mode", "3");
                                 data.Add("view_mode", "replayable");
@@ -504,7 +506,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-
         public async Task<IResult<bool>> SendPhotoAsync(Action<InstaUploaderProgress> progress, bool isDirectPhoto,
             bool isDisappearingPhoto, string caption, InstaViewMode viewMode, InstaStoryType storyType,
             string recipients, string threadId, InstaImage image)
@@ -557,14 +558,12 @@ namespace InstagramApiSharp.API.Processors
                 response = await _httpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-
                 var uploadParams = JsonConvert.SerializeObject(photoUploadParamsObj);
                 request = _httpHelper.GetDefaultRequest(HttpMethod.Get, photoUri, _deviceInfo);
                 request.Headers.Add("X_FB_PHOTO_WATERFALL_ID", waterfallId);
                 request.Headers.Add("X-Instagram-Rupload-Params", uploadParams);
                 response = await _httpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
-
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -629,7 +628,6 @@ namespace InstagramApiSharp.API.Processors
 
                 //if (isDirectVideo)
                 //{
-
                 //}
                 //else
                 {
@@ -714,12 +712,14 @@ namespace InstagramApiSharp.API.Processors
                             default:
                                 data.Add("configure_mode", "1");
                                 break;
+
                             case InstaStoryType.Direct:
                                 data.Add("configure_mode", "2");
                                 data.Add("view_mode", "replayable");
                                 data.Add("recipient_users", "[]");
                                 data.Add("thread_ids", $"[{threadId}]");
                                 break;
+
                             case InstaStoryType.Both:
                                 data.Add("configure_mode", "3");
                                 data.Add("view_mode", "replayable");
@@ -766,7 +766,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-
         public async Task<IResult<InstaMedia>> SendMediaPhotoAsync(Action<InstaUploaderProgress> progress,
             InstaImageUpload image, string caption, InstaLocationShort location, bool configureAsNameTag = false)
         {
@@ -785,7 +784,7 @@ namespace InstagramApiSharp.API.Processors
                         try
                         {
                             var tried = false;
-                            TryLabel:
+                        TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
@@ -828,7 +827,6 @@ namespace InstagramApiSharp.API.Processors
                 request.Headers.Add("X-Instagram-Rupload-Params", uploadParams);
                 response = await _httpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
-
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -934,9 +932,9 @@ namespace InstagramApiSharp.API.Processors
                 {
                     var tagArr = new JArray();
                     foreach (var singleTag in from tag in userTags
-                             where tag.Pk != -1
-                             let position = new JArray(tag.X, tag.Y)
-                             select new JObject
+                                              where tag.Pk != -1
+                                              let position = new JArray(tag.X, tag.Y)
+                                              select new JObject
                              {
                                  { "user_id", tag.Pk },
                                  { "position", position }
@@ -1037,7 +1035,7 @@ namespace InstagramApiSharp.API.Processors
                 //	"gradient": "0",
                 //	"_uuid": "6324ecb2-e663-4dc8-a3a1-289c699cc876",
                 //	"emoji": "😀"
-                //} 
+                //}
                 upProgress.UploadState = InstaUploadState.Configured;
                 progress?.Invoke(upProgress);
 
@@ -1058,7 +1056,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<InstaMedia>(exception);
             }
         }
-
 
         public async Task<IResult<string>> UploadSinglePhoto(Action<InstaUploaderProgress> progress,
             InstaImageUpload image, InstaUploaderProgress upProgress, string uploadId = null)
@@ -1104,7 +1101,6 @@ namespace InstagramApiSharp.API.Processors
             progress?.Invoke(upProgress);
             return Result.Fail<string>("NO UPLOAD ID");
         }
-
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1158,7 +1154,6 @@ namespace InstagramApiSharp.API.Processors
                 response = await _httpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-
                 videoUploadParamsObj = new JObject
                 {
                     { "upload_media_height", "0" },
@@ -1177,14 +1172,12 @@ namespace InstagramApiSharp.API.Processors
                 response = await _httpRequestProcessor.SendAsync(request);
                 json = await response.Content.ReadAsStringAsync();
 
-
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     upProgress.UploadState = InstaUploadState.Error;
                     progress?.Invoke(upProgress);
                     return Result.UnExpectedResponse<InstaMedia>(response, json);
                 }
-
 
                 // video part
                 var videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
@@ -1352,7 +1345,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<InstaMedia>(exception);
             }
         }
-
 
         internal static string GetRetryContext()
         {

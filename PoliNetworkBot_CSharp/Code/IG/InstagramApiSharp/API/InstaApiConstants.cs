@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Newtonsoft.Json.Linq;
+using System;
 
 #endregion
 
@@ -440,7 +440,6 @@ namespace InstagramApiSharp.API
         public const string FRIENDSHIPS_FOLLOW_USER = API_SUFFIX + "/friendships/create/{0}/";
         public const string FRIENDSHIPS_IGNORE = API_SUFFIX + "/friendships/ignore/{0}/";
 
-
         public const string FRIENDSHIPS_PENDING_REQUESTS =
             API_SUFFIX + "/friendships/pending/?rank_mutual=0&rank_token={0}";
 
@@ -453,9 +452,7 @@ namespace InstagramApiSharp.API
 
         public const string FRIENDSHIPS_SHOW_MANY = API_SUFFIX + "/friendships/show_many/";
 
-
         public const string FRIENDSHIPS_UNBLOCK_USER = API_SUFFIX + "/friendships/unblock/{0}/";
-
 
         public const string FRIENDSHIPS_FAVORITE = API_SUFFIX + "/friendships/favorite/{0}/";
         public const string FRIENDSHIPS_UNFAVORITE = API_SUFFIX + "/friendships/unfavorite/{0}/";
@@ -755,7 +752,6 @@ namespace InstagramApiSharp.API
         public static readonly string WebFormerFullNames = WebAccountData + "/former_full_names";
         public static readonly string WebFormerBioTexts = WebAccountData + "/former_bio_texts";
         public static readonly string WebFormerBioLinks = WebAccountData + "/former_links_in_bio";
-
 
         public static readonly string WebCursor = "__a=1&cursor={0}";
 

@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
+using System.Threading.Tasks;
 
 #endregion
 

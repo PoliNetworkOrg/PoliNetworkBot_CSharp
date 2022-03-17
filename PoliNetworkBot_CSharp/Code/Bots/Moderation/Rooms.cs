@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -188,11 +188,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var shiftEnd = GetShiftSlotFromTime(stop);
 
             return (from child in table.ChildNodes
-                where child != null
-                select CheckIfFree(child, shiftStart, shiftEnd)
+                    where child != null
+                    select CheckIfFree(child, shiftStart, shiftEnd)
                 into toAdd
-                where !string.IsNullOrEmpty(toAdd)
-                select toAdd).ToList();
+                    where !string.IsNullOrEmpty(toAdd)
+                    select toAdd).ToList();
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 text += $" è <b>{(isFree ? "libera" : "occupata")}</b>";
                 textEng += $" is <b>{(isFree ? "free" : "occupied")}</b>";
 
-                // and add until when if the information is available 
+                // and add until when if the information is available
                 var nextTransition = GetFirstSlotTransition(occupationRow, slot);
 
                 if (!string.IsNullOrEmpty(nextTransition))

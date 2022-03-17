@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using System.Threading.Tasks;
 using Bot.Enums;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -17,6 +9,14 @@ using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -34,7 +34,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         public static Dictionary<string, string>
             DictPaths = new(); //inizializzazione del dizionario <ID univoco file, stringa documento>
-
 
         private static object _lock1 = new();
         public static Utils.Config Config;
@@ -88,21 +87,27 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                             case stati.start:
                                 await GestisciStartAsync(e, telegramBotClient);
                                 break;
+
                             case stati.Scuola:
                                 await GestisciScuolaAsync(e, telegramBotClient);
                                 break;
+
                             case stati.Corso:
                                 await GestisciCorsoAsync(e, telegramBotClient);
                                 break;
+
                             case stati.Cartella:
                                 await GestisciCartellaAsync(e, telegramBotClient);
                                 break;
+
                             case stati.AttesaFile:
                                 await GestisciFileAsync(e, telegramBotClient);
                                 break;
+
                             case stati.newCartella:
                                 await GestisciNewCartellaAsync(e, telegramBotClient);
                                 break;
+
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -285,20 +290,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             switch (callbackdata[0]) // FORMATO: Y o N | ID PERSONA | ID MESSAGGIO (DEL DOC) | fileUniqueID
             {
                 case "y":
-                {
-                    var nameApprover = callbackQuery.From.FirstName;
-                    if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
-
-                    await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
-                        "Modification Accepted"); //Mostra un messaggio all'utente
-
-                    var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                        callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
-                        ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
-
-                    if (callbackQuery.Message.ReplyToMessage.Document.FileSize > 20000000)
                     {
-                        var dict = new Dictionary<string, string>
+                        var nameApprover = callbackQuery.From.FirstName;
+                        if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
+
+                        await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
+                            "Modification Accepted"); //Mostra un messaggio all'utente
+
+                        var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                            callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
+                            ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
+
+                        if (callbackQuery.Message.ReplyToMessage.Document.FileSize > 20000000)
+                        {
+                            var dict = new Dictionary<string, string>
                         {
                             {
                                 "en", "Can't upload " + callbackQuery.Message.ReplyToMessage.Document.FileName +
@@ -310,39 +315,39 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                             }
                         };
 
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(
-                            ChannelsForApproval.GetChannel(UsersConversations[FromId].getcorso()), text,
-                            ChatType.Private,
-                            callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
-                    }
+                            var text = new Language(dict);
+                            await sender.SendTextMessageAsync(
+                                ChannelsForApproval.GetChannel(UsersConversations[FromId].getcorso()), text,
+                                ChatType.Private,
+                                callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
+                        }
 
-                    var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
-                    try
-                    {
-                        var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
-                        //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
-                        Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
-                        await using var fileStream = File.OpenWrite(fileNameWithPath);
-                        var tupleFileStream =
-                            await sender.DownloadFileAsync(callbackQuery.Message.ReplyToMessage.Document);
-                        await tupleFileStream.Item2.CopyToAsync(fileStream);
-                        fileStream.Close();
-                        var dict = new Dictionary<string, string>
+                        var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
+                        try
+                        {
+                            var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
+                            //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
+                            Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
+                            await using var fileStream = File.OpenWrite(fileNameWithPath);
+                            var tupleFileStream =
+                                await sender.DownloadFileAsync(callbackQuery.Message.ReplyToMessage.Document);
+                            await tupleFileStream.Item2.CopyToAsync(fileStream);
+                            fileStream.Close();
+                            var dict = new Dictionary<string, string>
                         {
                             { "en", "File Saved in " + fileOnlyName + "\n" },
                             { "it", "File salvato in " + fileOnlyName + "\n" }
                         };
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                            callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
-                    }
-                    catch (Exception exception)
-                    {
-                        var dict = new Dictionary<string, string>
+                            var text = new Language(dict);
+                            await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
+                        }
+                        catch (Exception exception)
+                        {
+                            var dict = new Dictionary<string, string>
                         {
                             {
-                                "en", @"Couldn't save the file. Bot only support files up to 20 MB, 
+                                "en", @"Couldn't save the file. Bot only support files up to 20 MB,
                                     although you can open a Pull Request on GitLab to upload it or ask an Admin to do it. "
                             },
                             {
@@ -351,15 +356,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                                 "pull request su GitLab per caricarlo o chiedere a un amministratore di farlo per te."
                             }
                         };
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                            callbackQuery.From.LanguageCode,
-                            ParseMode.Html, null, null);
-                    }
+                            var text = new Language(dict);
+                            await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                callbackQuery.From.LanguageCode,
+                                ParseMode.Html, null, null);
+                        }
 
-                    GitHandler(callbackQueryEventArgs, sender);
-                }
+                        GitHandler(callbackQueryEventArgs, sender);
+                    }
                     break;
+
                 case "n":
                     try
                     {
@@ -541,7 +547,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
             Thread.Sleep(200);
         }
-
 
         private static async Task GeneraStartAsync(MessageEventArgs e)
         {

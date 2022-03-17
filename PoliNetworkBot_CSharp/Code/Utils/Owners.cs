@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
+using System.Linq;
 
 #endregion
 

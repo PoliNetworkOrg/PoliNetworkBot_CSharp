@@ -36,14 +36,12 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("save_count")] public int? SaveCount { get; set; }
     }
 
-
     public class InstaFullMediaInsightsInlineNodeResponse
     {
         [JsonProperty("state")] public string State { get; set; }
 
         [JsonProperty("metrics")] public InstaFullMediaInsightsMetricsResponse Metrics { get; set; }
     }
-
 
     public class InstaFullMediaInsightsMetricsResponse
     {
@@ -65,7 +63,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("reach")] public InstaFullMediaInsightsReachResponse Reach { get; set; }
     }
 
-
     public class InstaFullMediaInsightsReachResponse
     {
         [JsonProperty("value")] public int? Value { get; set; }
@@ -78,14 +75,12 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("nodes")] public InstaInsightsDataNodeResponse[] Nodes { get; set; }
     }
 
-
     public class InstaInsightsDataNodeResponse
     {
         [JsonProperty("name")] public string Name { get; set; }
 
         [JsonProperty("value")] public int? Value { get; set; }
     }
-
 
     public class InstaFullMediaInsightsImpressionsResponse
     {
@@ -94,12 +89,10 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("surfaces")] public InstaFullMediaInsightsNodeResponse Surfaces { get; set; }
     }
 
-
     public class InstaFullMediaInsightsProfileActionsResponse
     {
         [JsonProperty("actions")] public InstaFullMediaInsightsActionsResponse Actions { get; set; }
     }
-
 
     public class InstaFullMediaInsightsActionsResponse : InstaFullMediaInsightsNodeResponse
     {

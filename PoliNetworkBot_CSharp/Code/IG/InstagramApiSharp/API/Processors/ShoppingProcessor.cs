@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -15,6 +10,11 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -93,7 +93,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-
         public async Task<IResult<InstaProductInfo>> GetCatalogsAsync()
         {
             try
@@ -138,7 +137,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<InstaProductInfo>(exception);
             }
         }
-
 
         private async Task<IResult<InstaMediaList>> GetUserShoppableMedia(long userId,
             PaginationParameters paginationParameters)

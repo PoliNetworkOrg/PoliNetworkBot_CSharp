@@ -43,7 +43,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("uri")] public string Uri { get; set; }
     }
 
-
     public class InstaStatisticsBusinessManagerResponse
     {
         [JsonProperty("account_insights_unit")]
@@ -72,7 +71,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("edges")] public object[] Edges { get; set; }
     }
 
-
     public class InstaStatisticsAccountSummaryUnitResponse
     {
         [JsonProperty("posts_count")] public long? PostsCount { get; set; } = 0;
@@ -85,7 +83,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("posts_delta_from_last_week")]
         public long? PostsDeltaFromLastWeek { get; set; } = 0;
     }
-
 
     public class InstaStatisticsStoriesUnitResponse
     {
@@ -104,7 +101,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
     {
         [JsonProperty("count")] public long? Count { get; set; } = 0;
     }
-
 
     public class InstaStatisticsTopPostsUnitResponse
     {
@@ -165,7 +161,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
         [JsonProperty("value")] public long? Value { get; set; } = 0;
     }
 
-
     public class InstaStatisticsDataPointsResponse
     {
         [JsonProperty("data_points")] public InstaStatisticsDataPointItemResponse[] DataPoints { get; set; }
@@ -177,7 +172,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
 
         [JsonProperty("value")] public int? Value { get; set; } = 0;
     }
-
 
     public class InstaStatisticsFollowersUnitResponse
     {
@@ -216,7 +210,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
     {
         [JsonProperty("name")] public string Name { get; set; }
     }
-
 
     public class InstaStatisticsAccountInsightsUnitResponse
     {
@@ -268,6 +261,7 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
 
         [JsonProperty("aymt_instagram_account_insights_channel")]
         public InstaStatisticsInsightsChannelResponse InstagramAccountInsightsChannel { get; set; }
+
         //[JsonProperty("last_week_impressions_day_graph")]
         //public object LastWeekImpressionsDayGraph { get; set; }
         //[JsonProperty("last_week_reach_day_graph")]
@@ -290,7 +284,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
     {
         [JsonProperty("graph_name")] public string GraphName { get; set; }
     }
-
 
     public class InstaStatisticsInsightsChannelResponse
     {

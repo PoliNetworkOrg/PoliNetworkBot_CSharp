@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -18,6 +11,13 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstaRecentActivityConverter = InstagramApiSharp.Converters.Json.InstaRecentActivityConverter;
 
 #endregion
@@ -1846,9 +1846,11 @@ namespace InstagramApiSharp.API.Processors
                         data.Add("target_reel_author_id", userId.ToString());
                         data.Add("target_posts_author_id", userId.ToString());
                         break;
+
                     case InstaMuteOption.Post:
                         data.Add("target_posts_author_id", userId.ToString());
                         break;
+
                     case InstaMuteOption.Story:
                         data.Add("target_reel_author_id", userId.ToString());
                         break;

@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 #endregion
 
@@ -29,7 +29,6 @@ namespace InstagramApiSharp.Helpers
 
                     badStatus = new BadStatusResponse { Message = message, ErrorType = type };
                 }
-
                 else
                 {
                     badStatus = JsonConvert.DeserializeObject<BadStatusResponse>(json);

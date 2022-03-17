@@ -1,10 +1,8 @@
 ﻿#region
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
+using System.Threading.Tasks;
 
 #endregion
 

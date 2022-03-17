@@ -7,6 +7,7 @@ using InstagramApiSharp.API;
 #if WINDOWS_UWP
 using Windows.Storage;
 #endif
+
 namespace InstagramApiSharp.Classes.SessionHandlers
 {
     public interface ISessionHandler
@@ -19,10 +20,12 @@ namespace InstagramApiSharp.Classes.SessionHandlers
         /// </summary>
         StorageFile File { get; set; }
 #else
+
         /// <summary>
         ///     Path to file
         /// </summary>
         string FilePath { get; set; }
+
 #endif
 
         /// <summary>

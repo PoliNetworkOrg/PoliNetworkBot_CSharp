@@ -13,7 +13,6 @@
         public double LockControlY { get; set; } = 120;
         public bool HandleTelegramLinks { get; set; } = false;
 
-
         public AppTheme AppTheme { get; set; } = AppTheme.Dark;
 
         public DownloadQuality DownloadQuality { get; set; } = DownloadQuality.HighestQuality;

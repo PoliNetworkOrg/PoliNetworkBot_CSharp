@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -130,7 +130,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
         public bool HasUnseenBestiesMedia { get; set; }
 
         [JsonProperty("auto_expand_chaining")] public bool AutoExpandChaining { get; set; }
-
 
         [JsonProperty("biography_with_entities")]
         public InstaBiographyEntities BiographyWithEntities { get; set; }

@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -19,7 +19,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
 
         [JsonProperty("user_story")] public InstaFullUserInfoUserStoryResponse UserStory { get; set; }
     }
-
 
     public class InstaFullUserInfoUserStoryResponse
     {

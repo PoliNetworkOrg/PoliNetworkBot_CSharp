@@ -1,8 +1,8 @@
 #region
 
+using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Text.RegularExpressions;
-using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
@@ -62,6 +62,7 @@ namespace InstagramApiSharp.Classes
                     }
 
                     break;
+
                 default:
                     ActionBlockEnd = null;
                     break;

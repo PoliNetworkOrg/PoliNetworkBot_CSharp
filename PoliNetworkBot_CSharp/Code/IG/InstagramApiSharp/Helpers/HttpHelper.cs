@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
@@ -12,6 +7,11 @@ using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
 
 #endregion
 
@@ -23,7 +23,7 @@ namespace InstagramApiSharp.Helpers
         public readonly InstaApi _instaApi;
         public readonly IHttpRequestProcessor HttpRequestProcessor;
         private readonly Random Rnd = new();
-        public /*readonly*/ InstaApiVersion _apiVersion;
+        public InstaApiVersion _apiVersion;
 
         internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor httpRequestProcessor,
             InstaApi instaApi)
@@ -115,7 +115,6 @@ namespace InstagramApiSharp.Helpers
 
             request.Headers.Add(InstaApiConstants.HEADER_ACCEPT_LANGUAGE, InstaApiConstants.ACCEPT_LANGUAGE);
 
-
             if (!string.IsNullOrEmpty(mid))
                 request.Headers.Add(InstaApiConstants.HEADER_X_MID, mid);
 
@@ -134,7 +133,6 @@ namespace InstagramApiSharp.Helpers
 
             if (!string.IsNullOrEmpty(dsUserId) && !string.IsNullOrEmpty(authorization) && !string.IsNullOrEmpty(rur))
                 request.Headers.Add(InstaApiConstants.HEADER_IG_U_RUR, rur);
-
 
             request.Headers.TryAddWithoutValidation(InstaApiConstants.HEADER_ACCEPT_ENCODING,
                 InstaApiConstants.ACCEPT_ENCODING2);

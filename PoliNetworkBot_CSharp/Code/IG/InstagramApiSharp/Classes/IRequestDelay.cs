@@ -10,7 +10,9 @@ namespace InstagramApiSharp.Classes
     {
         TimeSpan Value { get; }
         bool Exist { get; }
+
         void Enable();
+
         void Disable();
     }
 }

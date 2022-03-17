@@ -12,7 +12,7 @@ namespace InstagramApiSharp.Classes
         [JsonIgnore] public bool IsLoggedIn => LoggedInUser != null || Status.ToLower() == "ok";
 
         [JsonProperty("logged_in_user")]
-        public /*InstaUserInfoResponse*/ InstaUserShortResponse LoggedInUser { get; set; }
+        public InstaUserShortResponse LoggedInUser { get; set; }
 
         [JsonProperty("message")] public string Message { get; set; }
 

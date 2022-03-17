@@ -27,7 +27,7 @@ namespace PoliNetworkBot_CSharp.Code.Enums
                     allowedTime = allowedTime.Value.Add(diff);
                 }
 
-                var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime).Value.TotalMinutes > 0 
+                var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime).Value.TotalMinutes > 0
                     ? DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime : TimeSpan.Zero;
 
                 if (remainingTime >= timeSpan)
@@ -43,25 +43,26 @@ namespace PoliNetworkBot_CSharp.Code.Enums
                 }
             }
         }
-        
+
         /// <summary>
         /// Status of the Message
         /// </summary>
         /// <returns>ALLOWED, NOT_ALLOWED, NOT_DEFINED</returns>
         public MessageAllowedStatusEnum GetStatus()
         {
-            switch(_messageAllowedStatus)
+            switch (_messageAllowedStatus)
             {
                 case MessageAllowedStatusEnum.ALLOWED:
                 case MessageAllowedStatusEnum.PENDING:
-                {
-                    if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
-                        return MessageAllowedStatusEnum.NOT_DEFINED;
-                    return MessageAllowedStatusEnum.ALLOWED;
-                }
+                    {
+                        if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
+                            return MessageAllowedStatusEnum.NOT_DEFINED;
+                        return MessageAllowedStatusEnum.ALLOWED;
+                    }
                 case MessageAllowedStatusEnum.NOT_ALLOWED:
                 case MessageAllowedStatusEnum.NOT_DEFINED:
                     return _messageAllowedStatus;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

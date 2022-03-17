@@ -1,8 +1,8 @@
 ﻿#region
 
+using InstagramApiSharp.Enums;
 using System;
 using System.Collections.Generic;
-using InstagramApiSharp.Enums;
 
 #endregion
 
@@ -34,7 +34,6 @@ namespace InstagramApiSharp.Classes.Models.Business
         public int Value { get; set; }
     }
 
-
     public class InstaFullMediaInsightsMetrics
     {
         public string State { get; set; }
@@ -53,7 +52,6 @@ namespace InstagramApiSharp.Classes.Models.Business
 
         public InstaFullMediaInsightsNodeItem Reach { get; set; }
     }
-
 
     public class InstaFullMediaInsightsNodeItem
     {

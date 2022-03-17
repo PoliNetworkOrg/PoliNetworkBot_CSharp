@@ -1,13 +1,14 @@
 ﻿#region
 
-using System.IO;
 using InstagramApiSharp.API;
+using System.IO;
 
 #endregion
 
 #if WINDOWS_UWP
 using Windows.Storage;
 #endif
+
 namespace InstagramApiSharp.Classes.SessionHandlers
 {
     public class FileSessionHandler : ISessionHandler
@@ -22,10 +23,12 @@ namespace InstagramApiSharp.Classes.SessionHandlers
 
         private readonly StorageFolder LocalFolder = ApplicationData.Current.LocalFolder;
 #else
+
         /// <summary>
         ///     Path to file
         /// </summary>
         public string FilePath { get; set; }
+
 #endif
 
         /// <summary>

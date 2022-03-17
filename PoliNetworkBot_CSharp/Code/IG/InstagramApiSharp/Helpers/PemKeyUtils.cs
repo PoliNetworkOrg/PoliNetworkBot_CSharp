@@ -84,9 +84,11 @@ namespace InstagramApiSharp.Helpers
                     case 0x8130:
                         binr.ReadByte(); //advance 1 byte
                         break;
+
                     case 0x8230:
                         binr.ReadInt16(); //advance 2 bytes
                         break;
+
                     default:
                         return null;
                 }
@@ -102,9 +104,11 @@ namespace InstagramApiSharp.Helpers
                     case 0x8103:
                         binr.ReadByte(); //advance 1 byte
                         break;
+
                     case 0x8203:
                         binr.ReadInt16(); //advance 2 bytes
                         break;
+
                     default:
                         return null;
                 }
@@ -120,9 +124,11 @@ namespace InstagramApiSharp.Helpers
                     case 0x8130:
                         binr.ReadByte(); //advance 1 byte
                         break;
+
                     case 0x8230:
                         binr.ReadInt16(); //advance 2 bytes
                         break;
+
                     default:
                         return null;
                 }
@@ -137,10 +143,12 @@ namespace InstagramApiSharp.Helpers
                     case 0x8102:
                         lowbyte = binr.ReadByte(); // read next bytes which is bytes in modulus
                         break;
+
                     case 0x8202:
                         highbyte = binr.ReadByte(); //advance 2 bytes
                         lowbyte = binr.ReadByte();
                         break;
+
                     default:
                         return null;
                 }
@@ -209,9 +217,11 @@ namespace InstagramApiSharp.Helpers
                     case 0x8130:
                         binr.ReadByte(); //advance 1 byte
                         break;
+
                     case 0x8230:
                         binr.ReadInt16(); //advance 2 bytes
                         break;
+
                     default:
                         return null;
                 }
@@ -222,7 +232,6 @@ namespace InstagramApiSharp.Helpers
                 bt = binr.ReadByte();
                 if (bt != 0x00)
                     return null;
-
 
                 //------  all private key components are Integer sequences ----
                 elems = GetIntegerSize(binr);
@@ -304,19 +313,19 @@ namespace InstagramApiSharp.Helpers
                 case 0x81:
                     count = binr.ReadByte(); // data size in next byte
                     break;
+
                 case 0x82:
-                {
-                    highbyte = binr.ReadByte(); // data size in next 2 bytes
-                    lowbyte = binr.ReadByte();
-                    byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-                    count = BitConverter.ToInt32(modint, 0);
-                    break;
-                }
+                    {
+                        highbyte = binr.ReadByte(); // data size in next 2 bytes
+                        lowbyte = binr.ReadByte();
+                        byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
+                        count = BitConverter.ToInt32(modint, 0);
+                        break;
+                    }
                 default:
                     count = bt; // we already have the data size
                     break;
             }
-
 
             while (binr.ReadByte() == 0x00)
                 //remove high order zeros in data
@@ -350,7 +359,7 @@ namespace InstagramApiSharp.Helpers
             catch (FormatException)
             {
                 //if can't b64 decode, it must be an encrypted private key
-                //Console.WriteLine("Not an unencrypted OpenSSL PEM private key");  
+                //Console.WriteLine("Not an unencrypted OpenSSL PEM private key");
             }
 
             var str = new StringReader(pvkstr);
@@ -402,7 +411,6 @@ namespace InstagramApiSharp.Helpers
             return null;
         }
 
-
         // ----- Decrypt the 3DES encrypted RSA private key ----------
         private static byte[] DecryptKey(byte[] cipherData, byte[] desKey, byte[] IV)
         {
@@ -433,7 +441,6 @@ namespace InstagramApiSharp.Helpers
             var HASHLENGTH = 16; //MD5 bytes
             var keymaterial = new byte[HASHLENGTH * miter]; //to store contatenated Mi hashed results
 
-
             var psbytes = new byte[secpswd.Length];
             unmanagedPswd = Marshal.SecureStringToGlobalAllocAnsi(secpswd);
             Marshal.Copy(unmanagedPswd, psbytes, 0, psbytes.Length);
@@ -457,7 +464,7 @@ namespace InstagramApiSharp.Helpers
                 // ----  Now hash consecutively for count times ------
                 if (j == 0)
                 {
-                    result = data00; //initialize 
+                    result = data00; //initialize
                 }
                 else
                 {
@@ -512,31 +519,33 @@ namespace InstagramApiSharp.Helpers
                         Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                         password.RemoveAt(password.Length - 1);
                         break;
+
                     case ConsoleKey.Escape:
                         Console.ForegroundColor = ConsoleColor.Gray;
                         Console.WriteLine();
                         return password;
+
                     default:
-                    {
-                        if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
                         {
-                            if (password.Length < 20)
+                            if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
                             {
-                                password.AppendChar(cki.KeyChar);
-                                Console.Write("*");
+                                if (password.Length < 20)
+                                {
+                                    password.AppendChar(cki.KeyChar);
+                                    Console.Write("*");
+                                }
+                                else
+                                {
+                                    Console.Beep();
+                                }
                             }
                             else
                             {
                                 Console.Beep();
                             }
-                        }
-                        else
-                        {
-                            Console.Beep();
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
         }
@@ -646,21 +655,22 @@ namespace InstagramApiSharp.Helpers
                     // Short form
                     stream.Write((byte)length);
                     break;
-                default:
-                {
-                    // Long form
-                    var temp = length;
-                    var bytesRequired = 0;
-                    while (temp > 0)
-                    {
-                        temp >>= 8;
-                        bytesRequired++;
-                    }
 
-                    stream.Write((byte)(bytesRequired | 0x80));
-                    for (var i = bytesRequired - 1; i >= 0; i--) stream.Write((byte)((length >> (8 * i)) & 0xff));
-                    break;
-                }
+                default:
+                    {
+                        // Long form
+                        var temp = length;
+                        var bytesRequired = 0;
+                        while (temp > 0)
+                        {
+                            temp >>= 8;
+                            bytesRequired++;
+                        }
+
+                        stream.Write((byte)(bytesRequired | 0x80));
+                        for (var i = bytesRequired - 1; i >= 0; i--) stream.Write((byte)((length >> (8 * i)) & 0xff));
+                        break;
+                    }
             }
         }
 

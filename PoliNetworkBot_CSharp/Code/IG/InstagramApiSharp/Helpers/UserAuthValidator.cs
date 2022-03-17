@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using InstagramApiSharp.Classes;
+using System;
 
 #endregion
 

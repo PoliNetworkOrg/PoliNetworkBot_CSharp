@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using System.Linq;
 
 #endregion
 

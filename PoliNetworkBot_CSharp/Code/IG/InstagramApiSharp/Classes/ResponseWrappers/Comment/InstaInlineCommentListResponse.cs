@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -30,7 +30,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
 
         [JsonProperty("child_comments")] public List<InstaCommentResponse> ChildComments { get; set; }
     }
-
 
     internal class InstaInlineCommentListResponseABC
     {

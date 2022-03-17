@@ -1,13 +1,13 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using InstagramApiSharp.API;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 #endregion
 
@@ -535,7 +535,7 @@ namespace InstagramApiSharp.Helpers
                 throw new Exception("Cant create URI for get inbox");
             return !string.IsNullOrEmpty(NextId)
                 ? new UriBuilder(instaUri)
-                    { Query = $"persistentBadging=true&use_unified_inbox=true&cursor={NextId}&direction=older" }.Uri
+                { Query = $"persistentBadging=true&use_unified_inbox=true&cursor={NextId}&direction=older" }.Uri
                 : new UriBuilder(instaUri) { Query = "persistentBadging=true&use_unified_inbox=true" }.Uri;
             //: instaUri;
             //        return instaUri
@@ -2043,7 +2043,6 @@ namespace InstagramApiSharp.Helpers
                 throw new Exception("Cant create URI for blocked stories");
             return instaUri;
         }
-
 
         public static Uri GetVerifyEmailUri(Uri uri)
         {

@@ -23,7 +23,6 @@ namespace InstagramApiSharp.Classes.Models.Business
         public string Id { get; set; }
     }
 
-
     public class InstaStatisticsBusinessManager
     {
         public InstaStatisticsAccountInsightsUnit AccountInsightsUnit { get; set; }
@@ -44,7 +43,6 @@ namespace InstagramApiSharp.Classes.Models.Business
         public object[] Edges { get; set; }
     }
 
-
     public class InstaStatisticsAccountSummaryUnit
     {
         public long PostsCount { get; set; } = 0;
@@ -55,7 +53,6 @@ namespace InstagramApiSharp.Classes.Models.Business
 
         public long PostsDeltaFromLastWeek { get; set; } = 0;
     }
-
 
     public class InstaStatisticsStoriesUnit
     {
@@ -72,7 +69,6 @@ namespace InstagramApiSharp.Classes.Models.Business
     {
         public long Count { get; set; } = 0;
     }
-
 
     public class InstaStatisticsTopPostsUnit
     {
@@ -99,7 +95,6 @@ namespace InstagramApiSharp.Classes.Models.Business
 
         public InstaMediaType MediaType { get; set; }
     }
-
 
     public class InstaStatisticsDataPointItem
     {
@@ -132,7 +127,6 @@ namespace InstagramApiSharp.Classes.Models.Business
 
         public List<InstaStatisticsDataPointItem> TodayHourlyGraph { get; set; } = new();
     }
-
 
     public class InstaStatisticsAccountInsightsUnit
     {
@@ -174,7 +168,6 @@ namespace InstagramApiSharp.Classes.Models.Business
 
         public InstaStatisticsInsightsChannel InstagramAccountInsightsChannel { get; set; }
     }
-
 
     public class InstaStatisticsInsightsChannel
     {

@@ -1,11 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -19,6 +13,12 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -780,7 +780,6 @@ namespace InstagramApiSharp.API.Processors
 
                 var instaUri = UriCreator.GetUpdateBusinessInfoUri();
 
-
                 phoneNumberWithCountryCode ??= $"{user.PublicPhoneCountryCode}{user.PublicPhoneNumber}";
 
                 businessContactType ??= user.BusinessContactMethod;
@@ -790,7 +789,6 @@ namespace InstagramApiSharp.API.Processors
                     { "public_phone_number", phoneNumberWithCountryCode },
                     { "business_contact_method", businessContactType.ToString().ToUpper() }
                 };
-
 
                 var cityId = "0";
                 if (cityLocation != null)
@@ -802,7 +800,6 @@ namespace InstagramApiSharp.API.Processors
                     { "city_id", cityId },
                     { "zip", zipCode ?? string.Empty }
                 };
-
 
                 var data = new JObject
                 {
@@ -887,7 +884,6 @@ namespace InstagramApiSharp.API.Processors
                 return Result.Fail<bool>(exception);
             }
         }
-
 
         private async Task<IResult<InstaBrandedContent>> UpdateBrandedContent(int? approval = null,
             long[] usersToAdd = null,

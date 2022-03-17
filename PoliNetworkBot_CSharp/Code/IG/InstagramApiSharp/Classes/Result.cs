@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Net.Http;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
+using System;
+using System.Net.Http;
 
 #endregion
 
@@ -134,19 +134,24 @@ namespace InstagramApiSharp.Classes
                     case "checkpoint_logged_out":
                         responseType = ResponseType.CheckPointRequired;
                         break;
+
                     case "login_required":
                         responseType = ResponseType.LoginRequired;
                         break;
+
                     case "Sorry, too many requests.Please try again later":
                         responseType = ResponseType.RequestsLimit;
                         break;
+
                     case "sentry_block":
                         responseType = ResponseType.SentryBlock;
                         break;
+
                     case "inactive user":
                     case "inactive_user":
                         responseType = ResponseType.InactiveUser;
                         break;
+
                     case "checkpoint_challenge_required":
                         responseType = ResponseType.ChallengeRequired;
                         break;

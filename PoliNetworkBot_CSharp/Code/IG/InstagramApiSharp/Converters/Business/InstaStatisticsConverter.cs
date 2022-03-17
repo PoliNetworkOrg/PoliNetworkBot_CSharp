@@ -138,16 +138,16 @@ namespace InstagramApiSharp.Converters.Business
                         }
 
                     foreach (var graph in businessManager.FollowersUnit.DaysHourlyFollowersGraphs)
-                    foreach (var dataPoint in graph.DataPoints)
-                        try
-                        {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
-                            statisfics.BusinessManager.FollowersUnit.DaysHourlyFollowersGraphs.Add(convertedDataPoint);
-                        }
-                        catch
-                        {
-                        }
+                        foreach (var dataPoint in graph.DataPoints)
+                            try
+                            {
+                                var convertedDataPoint = ConvertersFabric.Instance
+                                    .GetStatisticsDataPointConverter(dataPoint).Convert();
+                                statisfics.BusinessManager.FollowersUnit.DaysHourlyFollowersGraphs.Add(convertedDataPoint);
+                            }
+                            catch
+                            {
+                            }
 
                     foreach (var dataPoint in businessManager.FollowersUnit.FollowersTopCitiesGraph.DataPoints)
                         try
@@ -295,17 +295,17 @@ namespace InstagramApiSharp.Converters.Business
                     if (businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph is { Nodes: { } })
                         foreach (var node in businessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph
                                      .Nodes)
-                        foreach (var dataPoint in node.DataPoints)
-                            try
-                            {
-                                var convertedDataPoint = ConvertersFabric.Instance
-                                    .GetStatisticsDataPointConverter(dataPoint).Convert();
-                                statisfics.BusinessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph.Add(
-                                    convertedDataPoint);
-                            }
-                            catch
-                            {
-                            }
+                            foreach (var dataPoint in node.DataPoints)
+                                try
+                                {
+                                    var convertedDataPoint = ConvertersFabric.Instance
+                                        .GetStatisticsDataPointConverter(dataPoint).Convert();
+                                    statisfics.BusinessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph.Add(
+                                        convertedDataPoint);
+                                }
+                                catch
+                                {
+                                }
                 }
                 catch
                 {

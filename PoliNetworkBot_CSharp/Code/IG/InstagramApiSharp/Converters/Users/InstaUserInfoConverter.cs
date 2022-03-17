@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Enums;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -62,7 +62,6 @@ namespace InstagramApiSharp.Converters
                 IsEligibleToShowFBCrossSharingNux = SourceObject.User.IsEligibleToShowFBCrossSharingNux,
                 PageIdForNewSumaBizAccount = SourceObject.User.PageIdForNewSumaBizAccount,
                 AccountType = SourceObject.User.AccountType,
-
 
                 ReelAutoArchive = SourceObject.User.ReelAutoArchive,
                 UsertagsCount = SourceObject.User.UsertagsCount,

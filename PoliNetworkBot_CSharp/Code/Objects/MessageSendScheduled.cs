@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Enums;
+using System;
 using Telegram.Bot.Types.Enums;
 
 #endregion

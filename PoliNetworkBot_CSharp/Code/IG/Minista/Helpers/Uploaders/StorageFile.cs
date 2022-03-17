@@ -22,7 +22,6 @@ namespace Minista.Helpers
             return Task.FromResult(new StorageFile(testJpg));
         }
 
-
         public Task<Stream> OpenAsync(FileAccessMode read)
         {
             switch (read)
@@ -31,6 +30,7 @@ namespace Minista.Helpers
                     var x = File.OpenRead(Path);
                     return Task.FromResult<Stream>(x);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(read), read, null);
             }

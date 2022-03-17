@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -19,6 +11,14 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -602,7 +602,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-
         /// <summary>
         ///     Get the story by userId
         /// </summary>
@@ -1015,7 +1014,7 @@ namespace InstagramApiSharp.API.Processors
                         try
                         {
                             var tried = false;
-                            TryLabel:
+                        TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
@@ -1038,7 +1037,7 @@ namespace InstagramApiSharp.API.Processors
                     {
                         var tried = false;
                         var profilePicture = string.Empty;
-                        TryToGetMyUser:
+                    TryToGetMyUser:
                         // get latest profile picture
                         var myUser = await _instaApi.UserProcessor.GetUserAsync(_user.UserName.ToLower());
                         if (!myUser.Succeeded)
@@ -1055,7 +1054,6 @@ namespace InstagramApiSharp.API.Processors
                         {
                             profilePicture = myUser.Value.ProfilePicture;
                         }
-
 
                         foreach (var question in uploadOptions.Questions)
                             question.ProfilePicture = profilePicture;
@@ -1315,7 +1313,6 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaStoryMedia>(response, json);
                 }
 
-
                 var videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
                 var videoContent = new ByteArrayContent(videoBytes);
                 videoContent.Headers.Add("Content-Transfer-Encoding", "binary");
@@ -1513,6 +1510,7 @@ namespace InstagramApiSharp.API.Processors
                     case > 1:
                         return Result.Fail<InstaStoryItem>(
                             "sliderVote cannot be more than 1.\r\nIt must be between 0 and 1");
+
                     case < 0:
                         return Result.Fail<InstaStoryItem>(
                             "sliderVote cannot be less than 0.\r\nIt must be between 0 and 1");
@@ -2119,7 +2117,7 @@ namespace InstagramApiSharp.API.Processors
                         try
                         {
                             var tried = false;
-                            TryLabel:
+                        TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {

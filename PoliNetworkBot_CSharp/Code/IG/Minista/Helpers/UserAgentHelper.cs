@@ -42,7 +42,6 @@ namespace Minista.Helpers
             SetUserAgent(GetUserAgent() + suffix);
         }
 
-
         /*[DllImport("urlmon.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
         private static extern int UrlMkSetSessionOption(int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
 

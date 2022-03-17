@@ -1,12 +1,12 @@
 ﻿#region
 
+using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types;
 
 #endregion
@@ -26,6 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case Permission.HEAD_ADMIN:
                     return HeadAdminCheck(messageFrom).Result;
+
                 case Permission.USER:
                 case Permission.OWNER:
                 case Permission.CREATOR:
@@ -63,6 +64,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return messageFrom.Username != null && authorizedUsernames.Any(username =>
                 string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
         }
+
         /*
                <li>
                   <a href="https://t.me/eliamaggioni">

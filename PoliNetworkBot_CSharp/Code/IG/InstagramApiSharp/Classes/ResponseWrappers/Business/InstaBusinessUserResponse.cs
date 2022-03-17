@@ -60,7 +60,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers.Business
 
         [JsonProperty("full_name")] public string FullName { get; set; }
 
-
         [JsonProperty("is_business")] public bool? IsBusiness { get; set; }
 
         [JsonProperty("profile_visits_count")] public int? ProfileVisitsCount { get; set; }

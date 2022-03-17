@@ -1,11 +1,11 @@
 ﻿#region
 
+using InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using InstagramApiSharp.API;
 
 #endregion
 
@@ -52,7 +52,6 @@ namespace InstagramApiSharp.Helpers
             var opadKeySet = new byte[HashBlockSize];
             var ipadKeySet = new byte[HashBlockSize];
 
-
             if (keyBytes.Length > HashBlockSize) keyBytes = GetHash(keyBytes);
 
             // This condition is independent of previous
@@ -66,7 +65,6 @@ namespace InstagramApiSharp.Helpers
                 keyBytes = newKeyBytes;
             }
 
-
             for (var i = 0; i < keyBytes.Length; i++)
             {
                 opadKeySet[i] = (byte)(keyBytes[i] ^ 0x5C);
@@ -76,7 +74,7 @@ namespace InstagramApiSharp.Helpers
             var hash = GetHash(ByteConcat(opadKeySet,
                 GetHash(ByteConcat(ipadKeySet, encoding.GetBytes(message)))));
 
-            // Convert to standard hex string 
+            // Convert to standard hex string
             return hash.Select(a => a.ToString("x2"))
                 .Aggregate((a, b) => $"{a}{b}");
         }

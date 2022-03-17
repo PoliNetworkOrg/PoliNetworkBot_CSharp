@@ -33,9 +33,6 @@ namespace InstagramApiSharp.Classes.Models
         public double Length { get; set; } = 0;
 
         [JsonIgnore]
-        /// <summary>
-        /// This is only for .NET core apps like UWP(Windows 10) apps
-        /// </summary>
         public byte[] VideoBytes { get; set; }
     }
 }

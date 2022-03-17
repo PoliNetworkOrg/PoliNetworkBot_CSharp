@@ -107,7 +107,6 @@ namespace InstagramApiSharp.Classes.Models
             }
         }
 
-
         public bool CommentLikesEnabled { get; set; }
 
         public bool CommentThreadingEnabled { get; set; }

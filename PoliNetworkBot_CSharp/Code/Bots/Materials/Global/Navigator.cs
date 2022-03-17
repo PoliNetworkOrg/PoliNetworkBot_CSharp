@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using Bot.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -32,10 +32,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Global
         public static bool CorsoHandler(Conversation conversation, string messageText)
         {
             foreach (var corso in from scuola in ScuoleCorso.Values
-                     where scuola != null
-                     from corso in scuola
-                     where messageText == corso
-                     select corso)
+                                  where scuola != null
+                                  from corso in scuola
+                                  where messageText == corso
+                                  select corso)
             {
                 conversation.setCorso(corso);
                 conversation.setStato(stati.Cartella);

@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -71,7 +71,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
         [JsonProperty("left_users")] public List<InstaUserShortFriendshipResponse> LeftUsers { get; set; }
 
         [JsonProperty("newest_cursor")] public string NewestCursor { get; set; }
-
 
         [JsonProperty("last_seen_at")] public object LastSeenAt { get; set; }
     }

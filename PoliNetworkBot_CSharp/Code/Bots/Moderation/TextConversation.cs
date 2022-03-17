@@ -1,13 +1,13 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -39,19 +39,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             switch (e.Message.Chat.Type)
             {
                 case ChatType.Private:
-                {
-                    await PrivateMessage(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await PrivateMessage(telegramBotClient, e);
+                        break;
+                    }
                 case ChatType.Channel:
                     break;
 
                 case ChatType.Group:
                 case ChatType.Supergroup:
-                {
-                    await MessageInGroup(telegramBotClient, e);
-                    break;
-                }
+                    {
+                        await MessageInGroup(telegramBotClient, e);
+                        break;
+                    }
                 case ChatType.Sender:
                     break;
 

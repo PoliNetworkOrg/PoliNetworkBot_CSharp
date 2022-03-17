@@ -28,7 +28,6 @@ namespace InstagramApiSharp.Classes
         [JsonProperty("errors")] public string[] Errors { get; set; }
     }
 
-
     internal class InstaAccountRegistrationPhoneNumberVerifySms
     {
         [JsonProperty("nonce_valid")] public bool NonceValid { get; set; }

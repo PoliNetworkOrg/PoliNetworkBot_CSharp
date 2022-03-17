@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -77,7 +77,6 @@ namespace InstagramApiSharp.Classes.ResponseWrappers
         [JsonProperty("location")] public InstaLocationResponse Location { get; set; }
 
         [JsonProperty("preview_comments")] public List<InstaCommentResponse> PreviewComments { get; set; }
-
 
         [JsonProperty("comment_likes_enabled")]
         public bool CommentLikesEnabled { get; set; }

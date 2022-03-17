@@ -1,14 +1,13 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Web;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -17,7 +16,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 {
     internal class NotifyUtil
     {
-
         private const string default_lang = "en";
 
         /// <summary>
@@ -163,12 +161,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
         {
             Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
-            
+
             var text = new Language(new Dictionary<string, string>
             {
                 { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) },
             });
-            
+
             return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs, Data.Constants.Groups.GroupException,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
         }

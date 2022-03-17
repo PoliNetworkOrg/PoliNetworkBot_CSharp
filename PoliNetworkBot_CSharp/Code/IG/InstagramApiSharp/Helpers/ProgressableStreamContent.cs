@@ -40,7 +40,6 @@
                 TryComputeLength(out var size);
                 var uploadedBytes = 0;
 
-
                 using (var inputStream = await content.ReadAsStreamAsync())
                 {
                     while (true)

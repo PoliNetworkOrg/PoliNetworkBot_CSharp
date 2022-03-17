@@ -3,8 +3,11 @@
 using System.IO;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+
 #if !WINDOWS_UWP
+
 using System.Runtime.Serialization.Formatters.Binary;
+
 #endif
 
 #endregion

@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -15,6 +10,11 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -298,11 +298,14 @@ namespace InstagramApiSharp.API.Services
                     {
                         case "fail":
                             return Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json);
+
                         case "email_is_taken":
                             return Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null);
+
                         case "invalid_email":
                             return Result.Fail("Please enter a valid email address.",
                                 (InstaCheckEmailRegistration)null);
+
                         default:
                             InstaCheckEmailRegistration = obj;
                             return Result.Success(obj);
@@ -320,7 +323,6 @@ namespace InstagramApiSharp.API.Services
                 return Result.Fail<InstaCheckEmailRegistration>(exception);
             }
         }
-
 
         /// <summary>
         ///     Get signup consent config
@@ -835,7 +837,6 @@ namespace InstagramApiSharp.API.Services
             return await GetResultAsync(UriCreator.GetContactPointPrefillUri(true), data, false).ConfigureAwait(false);
         }
 
-
         #region Phone registration
 
         /// <summary>
@@ -945,7 +946,6 @@ namespace InstagramApiSharp.API.Services
                 return Result.Fail<InstaPhoneNumberRegistration>(exception);
             }
         }
-
 
         /// <summary>
         ///     Create new account via phone number

@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System.Threading.Tasks;
 
 #endregion
 
