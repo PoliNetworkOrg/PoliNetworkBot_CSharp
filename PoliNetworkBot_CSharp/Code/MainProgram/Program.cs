@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
@@ -18,6 +10,14 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Test.IG;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -45,60 +45,59 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 switch (item1)
                 {
                     case '1': //reset everything
-                    {
-                        ResetEverything(true);
+                        {
+                            ResetEverything(true);
 
-                        return;
-                    }
+                            return;
+                        }
 
                     case '2': //normal mode
                     case '3': //disguised bot test
                     case '8':
                     case '9':
-                    {
-                        MainBot(item1, item2);
-                        return;
-                    }
-
-                    case '4':
-                    {
-                        ResetEverything(false);
-                        return;
-                    }
-
-                    case '5':
-                    {
-                        _ = await Test_IG.MainIGAsync();
-                        return;
-                    }
-
-
-                    case '6':
-                    {
-                        NewConfig.NewConfigMethod(true, false, false, false, false);
-                        return;
-                    }
-                    case '7':
-                    {
-                        NewConfig.NewConfigMethod(false, false, true, false, false);
-                        return;
-                    }
-                    case 't':
-                    {
-                        try
                         {
-                            //SpamTest.Main2();
-                            //Test_CheckLink.Test_CheckLink2();
-                            await Test_IG.MainIGAsync();
+                            MainBot(item1, item2);
                             return;
                         }
-                        catch
+
+                    case '4':
                         {
-                            ;
+                            ResetEverything(false);
+                            return;
                         }
 
-                        break;
-                    }
+                    case '5':
+                        {
+                            _ = await Test_IG.MainIGAsync();
+                            return;
+                        }
+
+                    case '6':
+                        {
+                            NewConfig.NewConfigMethod(true, false, false, false, false);
+                            return;
+                        }
+                    case '7':
+                        {
+                            NewConfig.NewConfigMethod(false, false, true, false, false);
+                            return;
+                        }
+                    case 't':
+                        {
+                            try
+                            {
+                                //SpamTest.Main2();
+                                //Test_CheckLink.Test_CheckLink2();
+                                await Test_IG.MainIGAsync();
+                                return;
+                            }
+                            catch
+                            {
+                                ;
+                            }
+
+                            break;
+                        }
                 }
             }
         }
@@ -152,7 +151,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
 
             if (!Directory.Exists("../config"))
                 Directory.CreateDirectory("../config");
-            
+
             MessagesStore.InitializeMessageStore();
         }
 
@@ -423,10 +422,10 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                         {
                             case "a":
                             case "A": //Administration
-                            {
-                                _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                break;
-                            }
+                                {
+                                    _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                                    break;
+                                }
                         }
                 }
 
@@ -464,7 +463,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 toSend += "Critical errors found in log while starting up! \n" + critics;
                 NotifyUtil.NotifyOwners(toSend, telegramBotAbstract, messageEventArgs);
             }
-            
 
             using var powershell = PowerShell.Create();
             foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
@@ -553,17 +551,17 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.Message:
-                {
-                    if (botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                            return;
+                    {
+                        if (botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                            if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                                return;
 
-                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                        botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    botClientWhole.OnmessageMethod2.Item1(botClientWhole.BotClient,
-                        new MessageEventArgs(update.Message));
-                    break;
-                }
+                        botClientWhole.OnmessageMethod2.Item1(botClientWhole.BotClient,
+                            new MessageEventArgs(update.Message));
+                        break;
+                    }
                 case UpdateType.InlineQuery:
                     break;
 
@@ -571,11 +569,11 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                     break;
 
                 case UpdateType.CallbackQuery:
-                {
-                    var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
-                    callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                    break;
-                }
+                    {
+                        var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
+                        callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                        break;
+                    }
                 case UpdateType.EditedMessage:
                     break;
 

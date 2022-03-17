@@ -1,10 +1,9 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
 using Telegram.Bot.Types;
 
 #endregion
@@ -38,7 +37,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         internal SpamType IsSpam()
         {
-
             switch (AllowedStatus.GetStatus())
             {
                 case MessageAllowedStatusEnum.ALLOWED:
@@ -46,7 +44,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case MessageAllowedStatusEnum.NOT_ALLOWED:
                     return SpamType.SPAM_LINK;
-                
+
                 case MessageAllowedStatusEnum.PENDING:
                     throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
                 case MessageAllowedStatusEnum.NOT_DEFINED:
@@ -56,7 +54,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
                   (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
                     ? IsSpam2()
-                    : SpamType.UNDEFINED ;
+                    : SpamType.UNDEFINED;
         }
 
         private SpamType IsSpam2()
