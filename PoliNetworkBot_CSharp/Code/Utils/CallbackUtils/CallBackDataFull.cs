@@ -1,8 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Linq;
+using System.Numerics;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {

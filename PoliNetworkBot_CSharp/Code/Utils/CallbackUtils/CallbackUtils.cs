@@ -54,7 +54,6 @@ public class CallbackUtils
         }
     }
 
-
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
     {
         var x2 = new List<List<InlineKeyboardButton>>();

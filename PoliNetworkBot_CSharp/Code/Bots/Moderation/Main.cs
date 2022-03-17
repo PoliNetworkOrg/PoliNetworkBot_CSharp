@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -132,7 +132,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
             return false;
         }
-
 
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {
