@@ -25,6 +25,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
             this.RunAfterSelection = runAfterSelection;
         }
 
-  
+        internal bool IsExpired()
+        {
+            if (InsertedTime == null)
+                return false;
+
+            return this.InsertedTime.Value.AddDays(7) <= DateTime.Now;
+        }
     }
 }

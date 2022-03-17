@@ -153,6 +153,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram
                 Directory.CreateDirectory("../config");
 
             MessagesStore.InitializeMessageStore();
+            Utils.CallbackUtils.CallbackUtils.InitializeCallbackDatas();
         }
 
         private static void ResetEverything(bool alsoFillTablesFromJson)

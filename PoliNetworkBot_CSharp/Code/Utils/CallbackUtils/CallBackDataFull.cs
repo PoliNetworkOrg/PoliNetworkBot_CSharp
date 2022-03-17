@@ -1,6 +1,8 @@
 ﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Linq;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
@@ -31,6 +33,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
             callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
             callbackDatas[key].SelectedAnswer = answer;
             callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+        }
+
+        internal void ChechCallbackDataExpired()
+        {
+            List<string> toRemove = new();
+            toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));
+            lock (this)
+            {
+                foreach (var v in toRemove)
+                {
+                    this.callbackDatas.Remove(v);
+                }
+            }
         }
     }
 }

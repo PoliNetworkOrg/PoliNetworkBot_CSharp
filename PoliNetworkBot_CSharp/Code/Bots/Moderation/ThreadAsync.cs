@@ -43,8 +43,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t8 = new Thread(UpdateGroups);
             t8.Start();
 
+            var t9 = new Thread(DoCheckCallbackDataExpired);
+            t9.Start();
+
             //var t3 = new Thread(FixThings);
             //t3.Start();
+        }
+
+        private static void DoCheckCallbackDataExpired(object obj)
+        {
+            Utils.CallbackUtils.CallbackUtils.DoCheckCallbackDataExpired();
         }
 
         private static void UpdateGroups()

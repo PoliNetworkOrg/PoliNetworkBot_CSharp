@@ -1,8 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+﻿using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -32,6 +36,24 @@ public class CallbackUtils
         var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage, replyToMessageId: replyToMessageId);
         callbackGenericData.MessageSent = messageSent;
     }
+
+    internal static void DoCheckCallbackDataExpired()
+    {
+        while (true)
+        {
+            try
+            {
+                callBackDataFull.ChechCallbackDataExpired();
+            }
+            catch
+            {
+                ;
+            }
+
+            Thread.Sleep(1000 * 60 * 60 * 24); //every day
+        }
+    }
+
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
     {
@@ -76,6 +98,19 @@ public class CallbackUtils
         catch (Exception exception)
         {
             await NotifyUtil.NotifyOwners(exception, telegramBotClientBot);
+        }
+    }
+
+    internal static void InitializeCallbackDatas()
+    {
+        try
+        {
+            callBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
+                File.ReadAllText(Paths.Data.CallbackData)) ?? new();
+        }
+        catch (Exception ex)
+        {
+            callBackDataFull = new();
         }
     }
 }
