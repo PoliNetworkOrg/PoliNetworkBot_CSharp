@@ -643,7 +643,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
         {
 
-            var fourHours = new TimeSpan(0, 1, 0);
+            var fourHours = new TimeSpan(4, 0, 0);
 
             MessagesStore.AddMessage(message,  MessageAllowedStatusEnum.PENDING, fourHours);
 
@@ -670,7 +670,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup, 
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
             
-            _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(0, 5,0), () => RemoveVetoButton(assocVetoData, sender));
+            _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0,0), () => RemoveVetoButton(assocVetoData, sender));
             
         }
 
