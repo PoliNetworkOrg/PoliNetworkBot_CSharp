@@ -1,19 +1,17 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -158,10 +156,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                {
-                    await Assoc_ObjectToSendNotValid(sender, e);
-                    return false;
-                }
+                    {
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false;
+                    }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -446,9 +444,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 case 13: //terna che ci sta aiutando col test (sarà tolto)
                 case 2: //polinetwork
-                {
-                    return false;
-                }
+                    {
+                        return false;
+                    }
             }
 
             var q = "SELECT COUNT (*) " +
@@ -493,7 +491,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             doc.LoadHtml(webReply.GetData());
 
             // select the second ce-bodytext in the page, and of that div select the first child, wich is the dotted ul
-            // list with the associations name 
+            // list with the associations name
             var assocUl = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext")[1]
                 .ChildNodes[0];
             // map each li element to its inner text, from which only the name should be taken
@@ -527,7 +525,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption;
             }
 
-
             var groupsQuestion = new Language(new Dictionary<string, string>
             {
                 { "en", "In which groups do you want to allow it?" },
@@ -535,7 +532,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             });
             var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
-
 
             var typeQuestion = new Language(new Dictionary<string, string>
             {
@@ -546,14 +542,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, true);
 
-
             var assocList = await GetAssocList();
             var assocQuestion = new Language(new Dictionary<string, string>
             {
                 { "en", "For what association? Select Departmental Club if it's an approved departmental club" },
                 { "it", "Per che associazione? Seleziona Club Dipartimentale se si tratta di un club dipartimentale approvato" }
             });
-            
+
             var depClub = new Language(new Dictionary<string, string>
             {
                 { "en", "Departmental Club" },
@@ -567,11 +562,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         {"uni", a},
                     })
             ).ToList();
-            
+
             assocAndClub.Add(depClub);
-            
+
             var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
-            
+
             var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion, lang: e.Message.From.LanguageCode,
                 options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
                 sender: sender);
@@ -590,12 +585,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var permittedSpamMessage =
                 await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
-            
+
             await SendMessage.SendMessageInPrivate(sender,
                 e.Message.From.Id, permittedSpamMessage.Item2, null, permittedSpamMessage.Item1, ParseMode.Html, null);
-            
+
             var splitMessage = false;
-            
+
             if (message.Length > 4000)
             {
                 var newMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
@@ -606,7 +601,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }), permittedSpamMessage.Item2);
                 splitMessage = true;
             }
-            
+
             await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
         }
 
@@ -642,15 +637,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
             TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
         {
-
             var fourHours = new TimeSpan(4, 0, 0);
 
-            MessagesStore.AddMessage(message,  MessageAllowedStatusEnum.PENDING, fourHours);
+            MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
 
             _ = TimeUtils.ExecuteAtLaterTime(fourHours.Add(new TimeSpan(0, 1, 0)), () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
-            
+
             long? replyTo = null;
-            
+
             if (splitMessage)
             {
                 var m = await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
@@ -660,18 +654,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     }), ChatType.Group, "en", ParseMode.Html, null, null);
                 replyTo = m.GetMessageID();
             }
-            
-            List<CallbackOption> options = new() { 
+
+            List<CallbackOption> options = new()
+            {
                 new CallbackOption("❌ Veto")
             };
-            
-            var assocVetoData = new CallbackAssocVetoData(options,  VetoCallbackButton, message, messageEventArgs, permittedSpamMessage.Item1.Select(permittedSpamMessage.Item2));
-            
-            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup, 
+
+            var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs, permittedSpamMessage.Item1.Select(permittedSpamMessage.Item2));
+
+            await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup,
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
-            
-            _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0,0), () => RemoveVetoButton(assocVetoData, sender));
-            
+
+            _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
         }
 
         private static async void VetoCallbackButton(CallbackGenericData callbackGenericData)
@@ -702,14 +696,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     if (assocVetoData.CallBackQueryFromTelegram.Message == null)
                         throw new Exception("callBackQueryFromTelegram is null on callbackButton");
-                
+
                     var vetoInTime = MessagesStore.VetoMessage(assocVetoData.message);
 
                     try
                     {
                         var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" +
                                          "<b>VETO</b> by @"
-                                         + callbackGenericData.CallBackQueryFromTelegram.From.Username + (vetoInTime ? "\nVeto in 1st window": "\nVeto in 2nd window");
+                                         + callbackGenericData.CallBackQueryFromTelegram.From.Username + (vetoInTime ? "\nVeto in 1st window" : "\nVeto in 2nd window");
 
                         await callbackGenericData.Bot.EditMessageTextAsync(
                             assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
@@ -729,14 +723,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                             assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
                             assocVetoData.MessageEventArgs?.Message?.MessageId);
                     }
-
                     catch (Exception exc)
                     {
                         await NotifyUtil.NotifyOwners(exc, assocVetoData.Bot);
                         await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
                             assocVetoData.Bot);
                     }
-                    
                 }
                 catch (Exception e)
                 {

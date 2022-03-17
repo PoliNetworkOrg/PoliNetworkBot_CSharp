@@ -1,5 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
+﻿using Newtonsoft.Json;
+
+namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
+    [System.Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class CallbackOption
     {
         public string displayed;

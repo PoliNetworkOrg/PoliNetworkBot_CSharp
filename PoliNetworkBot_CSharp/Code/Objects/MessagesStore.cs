@@ -1,15 +1,15 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -36,7 +36,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 Store = new();
             }
         }
-        
+
         /// <summary>
         ///     Adds a new message to the storage
         /// </summary>
@@ -55,8 +55,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (Store.ContainsKey(message))
                 Store.Remove(message);
 
-            if ( ( timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING ) 
-                 || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING ))
+            if ((timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING)
+                 || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING))
                 throw new Exception("TimeLater and status mismatch");
 
             lock (Store)
@@ -75,7 +75,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <returns></returns>
         public static bool AllowMessage(string message)
         {
-            return AddMessage(message,  MessageAllowedStatusEnum.ALLOWED);
+            return AddMessage(message, MessageAllowedStatusEnum.ALLOWED);
         }
 
         public static void CheckTimestamp()
@@ -140,7 +140,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         lastSeenTime: DateTime.Now,
                         howManyTimesWeSawIt: 1,
                         message: message.Text,
-                        allowedSpam:  MessageAllowedStatusEnum.NOT_DEFINED
+                        allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED
                     );
                 }
             }
@@ -167,7 +167,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
             return SpamType.UNDEFINED;
         }
-        
+
         internal static List<Message> GetMessages(string text)
         {
             try
@@ -238,7 +238,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="message"></param>
         /// <returns>True if message is Allowed to be sent</returns>
@@ -258,13 +258,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 AllowMessage(text);
                 Store[text].ForceAllowMessage();
-                
             }
         }
 
         public static bool CanBeVetoed(string message)
         {
             return Store[message].InsertedTime.AddHours(48) >= DateTime.Now;
+        }
+
+        internal static void BackupToFile()
+        {
+            try
+            {
+                File.WriteAllText(Paths.Data.MessageStore, JsonConvert.SerializeObject(Store));
+            }
+            catch
+            {
+                ;
+            }
         }
     }
 }

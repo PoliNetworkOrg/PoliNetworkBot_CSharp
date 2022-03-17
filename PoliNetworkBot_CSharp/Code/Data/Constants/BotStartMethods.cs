@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using System;
 
 #endregion
 

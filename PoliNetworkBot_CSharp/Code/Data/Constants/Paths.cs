@@ -11,6 +11,7 @@
             public const string Db = "../data/db.db";
             public const string PoliMaterialsDictPaths = "../data/dictPath.bin";
             public const string MessageStore = "../data/MessageStore.bin";
+            public const string CallbackData = "../data/Callback.bin";
         }
 
         public static class Config

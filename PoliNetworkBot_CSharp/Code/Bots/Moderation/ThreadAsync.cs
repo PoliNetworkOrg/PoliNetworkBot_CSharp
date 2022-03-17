@@ -1,16 +1,16 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using Telegram.Bot.Types.Enums;
 using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
@@ -43,8 +43,16 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var t8 = new Thread(UpdateGroups);
             t8.Start();
 
+            var t9 = new Thread(DoCheckCallbackDataExpired);
+            t9.Start();
+
             //var t3 = new Thread(FixThings);
             //t3.Start();
+        }
+
+        private static void DoCheckCallbackDataExpired(object obj)
+        {
+            Utils.CallbackUtils.CallbackUtils.DoCheckCallbackDataExpired();
         }
 
         private static void UpdateGroups()
