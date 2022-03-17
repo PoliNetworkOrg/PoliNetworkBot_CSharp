@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
+    [System.Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class CallbackGenericData
     {
         public string id;

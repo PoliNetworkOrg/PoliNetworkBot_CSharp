@@ -714,7 +714,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static void Reboot()
         {
-            File.WriteAllText(Paths.Data.MessageStore, JsonConvert.SerializeObject(Paths.Data.MessageStore));
+            try
+            {
+                Utils.BackupUtil.BackupBeforeReboot();
+            }
+            catch
+            {
+                ;
+            }
+
             using var powershell = PowerShell.Create();
             if (DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
                 .Contains("rebooter")) return;

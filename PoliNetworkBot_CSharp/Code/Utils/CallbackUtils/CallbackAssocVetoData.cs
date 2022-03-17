@@ -6,9 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using Telegram.Bot.Types;
+using Newtonsoft.Json;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
+    [System.Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class CallbackAssocVetoData : CallbackGenericData
     {
         public readonly string message;

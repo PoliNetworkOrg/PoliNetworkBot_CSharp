@@ -1,10 +1,15 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Anon;
+﻿using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
+    [System.Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class CallBackDataFull
     {
         public BigInteger last = 0;
@@ -13,6 +18,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
         internal void Add(string key, CallbackGenericData callbackGenericData)
         {
             this.callbackDatas.Add(key, callbackGenericData);
+        }
+
+        internal void BackupToFile()
+        {
+            try
+            {
+                File.WriteAllText(Paths.Data.CallbackData, JsonConvert.SerializeObject(this));
+            }
+            catch
+            {
+                ;
+            }
         }
 
         internal BigInteger GetLast()

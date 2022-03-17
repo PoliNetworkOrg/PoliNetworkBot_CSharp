@@ -265,5 +265,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         {
             return Store[message].InsertedTime.AddHours(48) >= DateTime.Now;
         }
+
+        internal static void BackupToFile()
+        {
+            try
+            {
+                File.WriteAllText(Paths.Data.MessageStore, JsonConvert.SerializeObject(Store));
+            }
+            catch
+            {
+                ;
+            }
+        }
     }
 }

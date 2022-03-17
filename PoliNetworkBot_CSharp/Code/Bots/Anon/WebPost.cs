@@ -1,5 +1,6 @@
 ﻿#region
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     internal class WebPost
     {
         public char approved;
