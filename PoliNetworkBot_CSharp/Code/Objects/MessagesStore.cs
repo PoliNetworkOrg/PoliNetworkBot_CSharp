@@ -229,12 +229,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <returns>true if the veto was on time, false otherwise</returns>
         public static bool VetoMessage(string message)
         {
-            if (Store[message].AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED)
+            if (MessageIsAllowed(message))
             {
                 return false;
             }
             Store[message].RemoveMessage(true);
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>True if message is Allowed to be sent</returns>
+        public static bool MessageIsAllowed(string message)
+        {
+            return Store[message].AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
         }
 
         private static void DisallowMessage(string message)

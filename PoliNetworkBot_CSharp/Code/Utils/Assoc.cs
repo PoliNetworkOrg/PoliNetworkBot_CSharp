@@ -610,12 +610,45 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
         }
 
+        private static async void NotifyMessageIsAllowed(MessageEventArgs eventArgs, TelegramBotAbstract sender, string message)
+        {
+            if (MessagesStore.MessageIsAllowed(message))
+            {
+                var privateText = new Language(new Dictionary<string, string>
+                {
+                    {"en", "The message is allowed to be sent"},
+                    {"it", "Il messaggio è approvato per l'invio"}
+                });
+
+                await sender.SendTextMessageAsync(
+                    eventArgs?.Message?.From?.Id,
+                    privateText, ChatType.Private,
+                    eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
+                    eventArgs.Message.MessageId);
+            }
+        }
+
+        private static async void RemoveVetoButton(CallbackAssocVetoData assocVetoData, TelegramBotAbstract sender)
+        {
+            if (assocVetoData.MessageSent.GetMessage() is Message m1 &&
+                assocVetoData.MessageSent.GetMessageID() != null && !assocVetoData.Modified)
+            {
+                await sender.EditMessageTextAsync(m1.Chat.Id,
+                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
+                    assocVetoData.MessageWithMetadata, ParseMode.Html);
+            }
+        }
+
         private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
             TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
         {
 
-            MessagesStore.AddMessage(message,  MessageAllowedStatusEnum.PENDING, new TimeSpan(4, 0, 0));
+            var fourHours = new TimeSpan(0, 1, 0);
 
+            MessagesStore.AddMessage(message,  MessageAllowedStatusEnum.PENDING, fourHours);
+
+            _ = TimeUtils.ExecuteAtLaterTime(fourHours.Add(new TimeSpan(0, 1, 0)), () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
+            
             long? replyTo = null;
             
             if (splitMessage)
@@ -633,18 +666,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             };
             
             var assocVetoData = new CallbackAssocVetoData(options,  VetoCallbackButton, message, messageEventArgs, permittedSpamMessage.Item1.Select(permittedSpamMessage.Item2));
-
+            
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.PermittedSpamGroup, 
             permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
             
-            Thread.Sleep(new TimeSpan(hours: 48, 0, 0));
-
-            if (assocVetoData.MessageSent.GetMessage() is Message m1 && assocVetoData.MessageSent.GetMessageID() != null)
-            {
-                await sender.EditMessageTextAsync(m1.Chat.Id,
-                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"), assocVetoData.messageWithMetadata,
-                    ParseMode.Html);
-            }
+            _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(0, 5,0), () => RemoveVetoButton(assocVetoData, sender));
+            
         }
 
         private static async void VetoCallbackButton(CallbackGenericData callbackGenericData)
@@ -675,18 +702,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     if (assocVetoData.CallBackQueryFromTelegram.Message == null)
                         throw new Exception("callBackQueryFromTelegram is null on callbackButton");
+                
+                    var vetoInTime = MessagesStore.VetoMessage(assocVetoData.message);
 
                     try
                     {
                         var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" +
                                          "<b>VETO</b> by @"
-                                         + callbackGenericData.CallBackQueryFromTelegram.From.Username;
+                                         + callbackGenericData.CallBackQueryFromTelegram.From.Username + (vetoInTime ? "\nVeto in 1st window": "\nVeto in 2nd window");
 
                         await callbackGenericData.Bot.EditMessageTextAsync(
                             assocVetoData.CallBackQueryFromTelegram.Message.Chat.Id,
                             assocVetoData.CallBackQueryFromTelegram.Message.MessageId, newMessage, ParseMode.Html);
 
-                        assocVetoData.OnCallback(newMessage);
+                        assocVetoData.OnCallback();
 
                         var privateText = new Language(new Dictionary<string, string>
                         {
@@ -707,9 +736,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                         await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
                             assocVetoData.Bot);
                     }
-
-                    MessagesStore.VetoMessage(assocVetoData.message);
-
+                    
                 }
                 catch (Exception e)
                 {
