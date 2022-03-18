@@ -10,14 +10,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 {
     internal class CallBackDataAnon : CallbackGenericData
     {
-
-
-
-
-
-
-
-        //checked
         public long? authorId;
         public long? identity;
         public string langUser;
@@ -28,9 +20,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         public CallBackDataAnon(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection) : base(options, runAfterSelection)
         {
-
         }
-
 
         public static string ResultToString(ResultQueueEnum? item2)
         {
@@ -45,7 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
         internal ResultQueueEnum GetResultEnum()
         {
-            return (ResultQueueEnum) this.options[this.SelectedAnswer].value;
+            return (ResultQueueEnum)this.options[this.SelectedAnswer].value;
         }
     }
 }

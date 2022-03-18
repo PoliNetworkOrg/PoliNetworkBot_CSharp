@@ -562,8 +562,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
         }
 
-
-
         private static async Task GestisciCartellaAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
             if (e.Message.Text == null)
@@ -809,8 +807,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 e.Message.From.LanguageCode,
                 ParseMode.Html, replyMarkupObject, null);
         }
-
-
 
         private static string DoScript(PowerShell powershell, string script, bool debug, string separator = "\n")
         {

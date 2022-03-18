@@ -753,9 +753,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message,
             int? messageIdToReplyToLong)
         {
-           
-
-
             switch (message.Type)
             {
                 case MessageType.Unknown:

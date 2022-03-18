@@ -30,12 +30,9 @@ namespace Minista.Helpers
                     var x = File.OpenRead(Path);
                     return Task.FromResult<Stream>(x);
 
-
                 default:
                     throw new ArgumentOutOfRangeException(nameof(read), read, null);
             }
-
-
         }
     }
 }

@@ -105,8 +105,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-
-
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {
             try

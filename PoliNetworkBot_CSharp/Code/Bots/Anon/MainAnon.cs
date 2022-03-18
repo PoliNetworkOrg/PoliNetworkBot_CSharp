@@ -292,7 +292,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             await AskForMessageToReplyTo(telegramBotAbstract, e, chosen.Value);
         }
 
-
         private static async Task CallbackMethod2Async(CallbackGenericData cb)
         {
             if (cb is not CallBackDataAnon dataAnon)
@@ -301,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             }
 
             var x = dataAnon;
-            var e = new CallbackQueryEventArgs( dataAnon.CallBackQueryFromTelegram);
+            var e = new CallbackQueryEventArgs(dataAnon.CallBackQueryFromTelegram);
             var telegramBotAbstract = dataAnon.Bot;
 
             try
@@ -426,7 +425,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract,
             CallbackQueryEventArgs e, CallBackDataAnon x)
         {
-
             Telegram.Bot.Types.Message r2 = e.CallbackQuery.Message.ReplyToMessage; //todo: fill this with the message to send
 
             ;
@@ -504,16 +502,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 { "it", "Approvare? Identità [" + identity + "]" }
             });
 
-
-
-
-
-
-
-
-
-            List<CallbackOption> options = new() {
-            
+            List<CallbackOption> options = new()
+            {
                 new CallbackOption("Sì, principale", ResultQueueEnum.APPROVED_MAIN),
                 new CallbackOption("Sì, uncensored", ResultQueueEnum.GO_TO_UNCENSORED),
                 new CallbackOption("No, elimina", ResultQueueEnum.DELETE)
@@ -527,14 +517,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
             callBackDataAnon.messageIdUser = e.GetMessage().MessageId;
             callBackDataAnon.messageIdReplyTo = messageIdReplyTo;
 
-
             var m4 = await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
                 language, telegramBotAbstract, ChatType.Group, "it", null, false, x.GetMessageID());
 
             return m4 != null;
         }
-
-
 
         private static long? GetIdentityFromReply(string r)
         {
