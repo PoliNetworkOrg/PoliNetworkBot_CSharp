@@ -490,15 +490,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             var slot = GetShiftSlotFromTime(d2.Value);
 
             // Compose the message to send, start with room name and date:
-            var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
-            var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value.ToString("dd/MM/yyyy")}</b>";
+            var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value:dd/MM/yyyy}</b>";
+            var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value:dd/MM/yyyy}</b>";
 
             if (d2.Value.Hour is >= 8 or < 20)
             {
                 // if we are in a period between open hours, say more specific things
                 // add time (time is not important if we just consider the whole day)
-                text += $" alle <b>{d2.Value.ToString("HH:mm")}</b> ";
-                textEng += $" at <b>{d2.Value.ToString("HH:mm")}</b> ";
+                text += $" alle <b>{d2.Value:HH:mm}</b> ";
+                textEng += $" at <b>{d2.Value:HH:mm}</b> ";
 
                 // say if it's free or not
                 var isFree = IsRoomFree(occupationRow, slot, slot + 1);

@@ -1118,7 +1118,7 @@ namespace InstagramApiSharp.API
                     cookies = cookies[8..];
 
                 var parts = cookies.Split(';')
-                    .Where(xx => xx.Contains("="))
+                    .Where(xx => xx.Contains('='))
                     .Select(xx => xx.Trim().Split('='))
                     .Select(xx => new { Name = xx.First(), Value = xx.Last() });
 
