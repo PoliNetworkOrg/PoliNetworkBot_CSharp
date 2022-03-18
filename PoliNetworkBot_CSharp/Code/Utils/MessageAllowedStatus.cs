@@ -17,6 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         {
             _messageAllowedStatus = allowedSpam;
             allowedTime = DateTime.Now;
+            if (allowedSpam != MessageAllowedStatusEnum.PENDING)
+                return;
             var now = DateTime.Now;
             var dayInCount = 0;
             while (!(timeSpan == null || timeSpan == TimeSpan.Zero))
