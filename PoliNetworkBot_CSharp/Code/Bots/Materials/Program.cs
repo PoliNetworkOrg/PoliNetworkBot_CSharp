@@ -562,19 +562,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
         }
 
-        private static void GeneraStartOnCallback(CallbackQueryEventArgs e)
-        {
-            if (!UsersConversations.ContainsKey(e.CallbackQuery.Message.From.Id))
-            {
-                var conv = new Conversation();
-                UsersConversations.TryAdd(e.CallbackQuery.Message.From.Id,
-                    conv); //aggiunge una conversazione al dizionario, questa parte è WIP
-            }
-            else
-            {
-                UsersConversations[e.CallbackQuery.Message.From.Id].setStato(stati.start);
-            }
-        }
+
 
         private static async Task GestisciCartellaAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
@@ -822,22 +810,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 ParseMode.Html, replyMarkupObject, null);
         }
 
-        private static object ReconEnum(string text, Type type)
-        {
-            if (string.IsNullOrEmpty(text)) return null;
 
-            try
-            {
-                Enum.TryParse(type, text, out var r);
-                return r;
-            }
-            catch
-            {
-                ;
-            }
-
-            return null;
-        }
 
         private static string DoScript(PowerShell powershell, string script, bool debug, string separator = "\n")
         {

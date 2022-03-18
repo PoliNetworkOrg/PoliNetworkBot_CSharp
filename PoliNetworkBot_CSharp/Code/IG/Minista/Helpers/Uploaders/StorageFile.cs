@@ -29,13 +29,13 @@ namespace Minista.Helpers
                 case FileAccessMode.Read:
                     var x = File.OpenRead(Path);
                     return Task.FromResult<Stream>(x);
-                    break;
+
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(read), read, null);
             }
 
-            return Task.FromResult<Stream>(null);
+
         }
     }
 }

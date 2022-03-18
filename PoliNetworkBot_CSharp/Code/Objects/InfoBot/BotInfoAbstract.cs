@@ -35,8 +35,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot
         {
             return onMessages switch
             {
-                "a" => MainAnon.CallbackMethod,
-                "m" => Main.CallbackMethod,
+                "a" => Utils.CallbackUtils.CallbackUtils.CallbackMethodStart,
+                "m" => Utils.CallbackUtils.CallbackUtils.CallbackMethodStart,
                 "mat" => Program.BotOnCallbackQueryReceived,
                 _ => null
             };

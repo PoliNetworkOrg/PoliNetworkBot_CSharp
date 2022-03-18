@@ -147,18 +147,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
         internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
         {
             var approved = Approved(x);
-            if (x.userId == null) return false;
-            var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.userId.Value + "&password=" +
+            if (x.authorId == null) return false;
+            var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
                       ConfigAnon.password + "&approved=" + approved;
             var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
-            ThreadAsync.dictionary_webpost[x.userId.Value].approved = approved;
+            ThreadAsync.dictionary_webpost[x.authorId.Value].approved = approved;
             ThreadAsync.WriteDict();
             return true;
         }
 
         private static char Approved(CallBackDataAnon x)
         {
-            var s = CallBackDataAnon.ResultToString(x.resultQueueEnum);
+            var s = CallBackDataAnon.ResultToString(x.GetResultEnum());
             return s[0];
         }
     }

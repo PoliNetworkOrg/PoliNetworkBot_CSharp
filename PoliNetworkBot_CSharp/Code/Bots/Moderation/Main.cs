@@ -105,33 +105,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
             }
         }
 
-        public static void CallbackMethod(object? sender, CallbackQueryEventArgs e)
-        {
-            var t = new Thread(() => _ = CallbackMethod2(sender, e));
-            t.Start();
-        }
 
-        private static async Task<bool> CallbackMethod2(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
-        {
-            TelegramBotClient telegramBotClientBot = null;
-            TelegramBotAbstract telegramBotClient = null;
-
-            try
-            {
-                if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
-
-                if (telegramBotClientBot == null)
-                    return false;
-
-                await Utils.CallbackUtils.CallbackUtils.CallbackMethod(telegramBotClient, callbackQueryEventArgs);
-            }
-            catch (Exception exc)
-            {
-                await NotifyUtil.NotifyOwners(exc, telegramBotClient);
-            }
-
-            return false;
-        }
 
         private static bool BanMessageDetected(MessageEventArgs messageEventArgs, TelegramBotAbstract sender)
         {

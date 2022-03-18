@@ -751,13 +751,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         }
 
         internal async Task<MessageSentResult> ForwardMessageAnonAsync(long chatIdToSend, Message message,
-            Tuple<long?, ResultQueueEnum?> messageIdToReplyToLong)
+            int? messageIdToReplyToLong)
         {
-            var messageIdToReplyToInt = 0;
-            if (messageIdToReplyToLong is { Item1: { } })
-                messageIdToReplyToInt = (int)messageIdToReplyToLong.Item1.Value;
+           
 
-            ;
 
             switch (message.Type)
             {
@@ -771,7 +768,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             case BotTypeApi.REAL_BOT:
                                 {
                                     var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                 }
                             case BotTypeApi.USER_BOT:
@@ -791,7 +788,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 {
                                     var m1 = await _botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message),
                                         message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                 }
                             case BotTypeApi.USER_BOT:
@@ -815,7 +812,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                     var m1 = await _botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message),
                                         message.Video.Duration, message.Video.Width, message.Video.Height, null,
                                         message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                 }
                             case BotTypeApi.USER_BOT:
@@ -838,7 +835,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                                 {
                                     var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), null,
                                         message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToInt);
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                 }
                             case BotTypeApi.USER_BOT:
@@ -857,7 +854,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             case BotTypeApi.REAL_BOT:
                                 {
                                     var m1 = await _botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message),
-                                        replyToMessageId: messageIdToReplyToInt);
+                                        replyToMessageId: messageIdToReplyToLong);
                                     return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
                                 }
                             case BotTypeApi.USER_BOT:

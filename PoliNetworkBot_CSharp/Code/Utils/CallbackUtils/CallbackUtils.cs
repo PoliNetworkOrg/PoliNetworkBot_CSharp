@@ -8,6 +8,7 @@ using System.IO;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -19,7 +20,7 @@ public class CallbackUtils
 
     public const string SEPARATOR = "-";
 
-    public static async Task SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData,
+    public static async Task<MessageSentResult> SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData,
         long chatToSendTo,
         Language text, TelegramBotAbstract telegramBotAbstract, ChatType chatType, string lang, string username,
         bool splitMessage, long? replyToMessageId = null)
@@ -35,6 +36,8 @@ public class CallbackUtils
         ReplyMarkupObject replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
         var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage, replyToMessageId: replyToMessageId);
         callbackGenericData.MessageSent = messageSent;
+
+        return messageSent;
     }
 
     internal static void DoCheckCallbackDataExpired()
@@ -84,7 +87,35 @@ public class CallbackUtils
         return callBackDataFull.GetLast();
     }
 
-    internal static async Task CallbackMethod(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
+    public static void CallbackMethodStart(object? sender, CallbackQueryEventArgs e)
+    {
+        var t = new Thread(() => _ = CallbackMethodHandle(sender, e));
+        t.Start();
+    }
+
+    public static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
+    {
+        TelegramBotClient telegramBotClientBot = null;
+        TelegramBotAbstract telegramBotClient = null;
+
+        try
+        {
+            if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
+
+            if (telegramBotClientBot == null)
+                return false;
+
+            await Utils.CallbackUtils.CallbackUtils.CallbackMethodRun(telegramBotClient, callbackQueryEventArgs);
+        }
+        catch (Exception exc)
+        {
+            await NotifyUtil.NotifyOwners(exc, telegramBotClient);
+        }
+
+        return false;
+    }
+
+    internal static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
     {
         try
         {
