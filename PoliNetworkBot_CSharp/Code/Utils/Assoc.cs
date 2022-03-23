@@ -579,19 +579,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var permittedSpamMessage =
                 await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
 
+            var privateConfirmationMessage = new Language(new Dictionary<string, string>
+            {
+                { "uni", permittedSpamMessage },
+            });
+            
             await SendMessage.SendMessageInPrivate(sender,
-                e.Message.From.Id, permittedSpamMessage.Item2, null, permittedSpamMessage.Item1, ParseMode.Html, null);
+                e.Message.From.Id, "uni", null, privateConfirmationMessage, ParseMode.Html, null);
 
             var splitMessage = false;
 
             if (message.Length > 4000)
             {
-                var newMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
-                permittedSpamMessage = new Tuple<Language, string>(
-                    new Language(new Dictionary<string, string>
-                    {
-                        {"en", newMessage}
-                    }), permittedSpamMessage.Item2);
+                permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(e, "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
                 splitMessage = true;
             }
 
@@ -642,7 +642,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         }
 
         private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
-            TelegramBotAbstract sender, Tuple<Language, string> permittedSpamMessage, bool splitMessage)
+            TelegramBotAbstract sender, string permittedSpamMessage, bool splitMessage)
         {
             var fourHours = new TimeSpan(4, 0, 0);
 
@@ -653,6 +653,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now;
                 _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater, () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
+                permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value;
             }
 
             long? replyTo = null;
@@ -667,15 +668,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 replyTo = m.GetMessageID();
             }
 
+            var councilMessage = new Language(
+                new Dictionary<string, string>
+                {
+                    {"uni", permittedSpamMessage}
+                });
+            
             List<CallbackOption> options = new()
             {
                 new CallbackOption("❌ Veto")
             };
 
-            var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs, permittedSpamMessage.Item1.Select(permittedSpamMessage.Item2));
+            var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs, permittedSpamMessage);
 
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.ConsiglioDegliAdminRiservato,
-            permittedSpamMessage.Item1, sender, ChatType.Group, permittedSpamMessage.Item2, null, true, replyTo);
+            councilMessage, sender, ChatType.Group, "uni" , null, true, replyTo);
 
             _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
         }
