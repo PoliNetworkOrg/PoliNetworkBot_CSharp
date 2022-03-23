@@ -1,4 +1,5 @@
 ﻿using System;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Enums
 {
@@ -16,34 +17,59 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, TimeSpan? timeSpan)
         {
             _messageAllowedStatus = allowedSpam;
-            allowedTime = DateTime.Now;
-            if (allowedSpam != MessageAllowedStatusEnum.PENDING)
-                return;
+            switch(allowedSpam)
+            {
+                case MessageAllowedStatusEnum.ALLOWED:
+                    allowedTime = DateTime.Now;
+                    return;
+                case MessageAllowedStatusEnum.NOT_ALLOWED:
+                    allowedTime = null;
+                    return;
+                case MessageAllowedStatusEnum.PENDING:
+                    allowedTime = CalculateTimeSpan(timeSpan);
+                    break;
+                case MessageAllowedStatusEnum.NOT_DEFINED:
+                    allowedTime = null;
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(allowedSpam), allowedSpam, null);
+            }
+        }
+
+        private static DateTime? CalculateTimeSpan(TimeSpan? timeSpan)
+        {
+            if (timeSpan == null)
+                return null;
+            if(timeSpan == TimeSpan.Zero)
+                return DateTime.Now;
             var now = DateTime.Now;
             var dayInCount = 0;
+            var allowedTimeTemp = DateTime.Now;
             while (!(timeSpan == null || timeSpan == TimeSpan.Zero))
             {
                 if (now.Hour < VetoLowerBound) //only necessary in first iteration
                 {
                     var diff = now - DateTime.Today.AddHours(VetoLowerBound);
-                    allowedTime = allowedTime.Value.Add(diff);
+                    allowedTimeTemp = allowedTimeTemp.Add(diff);
                 }
 
-                var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime).Value.TotalMinutes > 0
-                    ? DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTime : TimeSpan.Zero;
+                var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTimeTemp).TotalMinutes > 0
+                    ? DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTimeTemp : TimeSpan.Zero;
 
                 if (remainingTime >= timeSpan)
                 {
-                    allowedTime = allowedTime.Value.Add(timeSpan.Value);
+                    allowedTimeTemp = allowedTimeTemp.Add(timeSpan.Value);
                     timeSpan = TimeSpan.Zero;
                 }
                 else
                 {
-                    allowedTime = allowedTime.Value.Add(remainingTime.Value).Add(new TimeSpan((24 - VetoHigherBound) + VetoLowerBound, 0, 0));
+                    allowedTimeTemp = allowedTimeTemp.Add(remainingTime).Add(new TimeSpan((24 - VetoHigherBound) + VetoLowerBound, 0, 0));
                     timeSpan -= remainingTime;
                     dayInCount++;
                 }
             }
+            Logger.WriteLine("Scheduled message for " + allowedTimeTemp);
+            return allowedTimeTemp;
         }
 
         /// <summary>
@@ -54,17 +80,15 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         {
             switch (_messageAllowedStatus)
             {
-                case MessageAllowedStatusEnum.ALLOWED:
-                case MessageAllowedStatusEnum.PENDING:
-                    {
-                        if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
-                            return MessageAllowedStatusEnum.NOT_DEFINED;
-                        return MessageAllowedStatusEnum.ALLOWED;
-                    }
-                case MessageAllowedStatusEnum.NOT_ALLOWED:
-                case MessageAllowedStatusEnum.NOT_DEFINED:
+                case MessageAllowedStatusEnum.NOT_ALLOWED or MessageAllowedStatusEnum.NOT_DEFINED:
                     return _messageAllowedStatus;
 
+                case MessageAllowedStatusEnum.PENDING or MessageAllowedStatusEnum.ALLOWED:
+                {
+                    if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
+                        return MessageAllowedStatusEnum.NOT_DEFINED;
+                    return MessageAllowedStatusEnum.ALLOWED;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -83,7 +107,12 @@ namespace PoliNetworkBot_CSharp.Code.Enums
 
         public DateTime RemovalTime()
         {
-            return allowedTime?.AddHours(24) ?? insertedTime.AddHours(24);
+            return allowedTime?.AddHours(48) ?? insertedTime.AddHours(24);
+        }
+
+        public DateTime? GetAllowedTime()
+        {
+            return allowedTime;
         }
     }
 }

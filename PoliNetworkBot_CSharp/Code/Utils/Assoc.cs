@@ -600,30 +600,44 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static async void NotifyMessageIsAllowed(MessageEventArgs eventArgs, TelegramBotAbstract sender, string message)
         {
-            if (MessagesStore.MessageIsAllowed(message))
+            try
             {
-                var privateText = new Language(new Dictionary<string, string>
+                if (MessagesStore.MessageIsAllowed(message))
                 {
-                    {"en", "The message is allowed to be sent"},
-                    {"it", "Il messaggio è approvato per l'invio"}
-                });
+                    var privateText = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "The message is allowed to be sent"},
+                        {"it", "Il messaggio è approvato per l'invio"}
+                    });
 
-                await sender.SendTextMessageAsync(
-                    eventArgs?.Message?.From?.Id,
-                    privateText, ChatType.Private,
-                    eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
-                    eventArgs.Message.MessageId);
+                    await sender.SendTextMessageAsync(
+                        eventArgs?.Message?.From?.Id,
+                        privateText, ChatType.Private,
+                        eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
+                        eventArgs.Message.MessageId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex, LogSeverityLevel.ERROR);
             }
         }
 
         private static async void RemoveVetoButton(CallbackAssocVetoData assocVetoData, TelegramBotAbstract sender)
         {
-            if (assocVetoData.MessageSent.GetMessage() is Message m1 &&
-                assocVetoData.MessageSent.GetMessageID() != null && !assocVetoData.Modified)
+            try
             {
-                await sender.EditMessageTextAsync(m1.Chat.Id,
-                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
-                    assocVetoData.MessageWithMetadata, ParseMode.Html);
+                if (assocVetoData.MessageSent.GetMessage() is Message m1 &&
+                    assocVetoData.MessageSent.GetMessageID() != null && !assocVetoData.Modified)
+                {
+                    await sender.EditMessageTextAsync(m1.Chat.Id,
+                        int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
+                        assocVetoData.MessageWithMetadata, ParseMode.Html);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex, LogSeverityLevel.ERROR);
             }
         }
 
@@ -634,7 +648,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
 
-            _ = TimeUtils.ExecuteAtLaterTime(fourHours.Add(new TimeSpan(0, 1, 0)), () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
+            var allowedTime = MessagesStore.GetAllowedTime(message);
+            if (allowedTime.HasValue)
+            {
+                var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now;
+                _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater, () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
+            }
 
             long? replyTo = null;
 

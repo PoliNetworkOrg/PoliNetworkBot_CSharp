@@ -229,7 +229,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         /// <returns>true if the veto was on time, false otherwise</returns>
         public static bool VetoMessage(string message)
         {
-            if (MessageIsAllowed(message))
+            var allowedTime = Store[message].AllowedStatus.GetAllowedTime();
+            if (allowedTime != null && allowedTime.Value < DateTime.Now)
             {
                 return false;
             }
@@ -276,6 +277,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 ;
             }
+        }
+
+        public static DateTime? GetAllowedTime(string message)
+        {
+            return Store[message].AllowedStatus.GetAllowedTime();
         }
     }
 }

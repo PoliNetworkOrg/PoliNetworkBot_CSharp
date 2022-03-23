@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils
     {
         public static async Task ExecuteAtLaterTime(TimeSpan time, Action task)
         {
-            await Task.Delay(time);
             try
             {
+                await Task.Delay(time);
                 task.Invoke();
             }
             catch (Exception ex)
