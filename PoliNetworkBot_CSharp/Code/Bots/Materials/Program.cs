@@ -201,6 +201,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     logMessage += DoScript(powershell, "git pull", true) + "\n";
                     logMessage += DoScript(powershell, "git add . --ignore-errors", true) + "\n\n";
 
+                    BotUtils.Logger.WriteLine(powershell.AddCommand("git ls-files --others --exclude-standard"));
+                    BotUtils.Logger.WriteLine(powershell.Invoke());
                     var diffList = CommandDispatcher.DoScript(powershell, "git ls-files --others --exclude-standard", true);
                     diffList.RemoveAt(0);
                     var diff = diffList.Aggregate("", (current, s) => current + s + ", ");
@@ -224,8 +226,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     
                     var dict = new Dictionary<string, string>
                     {
-                        { "en", "File sent for approval.\nLog:\n\n" + logMessage},
-                        { "it", "File inviato per approvazione.\nLog:\n\n" + logMessage}
+                        { "uni", "Log:\n\n" + logMessage},
                     };
                     var text = new Language(dict);
 
