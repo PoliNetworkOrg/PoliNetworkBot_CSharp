@@ -653,7 +653,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now;
                 _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater, () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
-                permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value;
+                permittedSpamMessage += "\nAllowed at time: " + TimeZoneInfo.ConvertTime(allowedTime.Value, TimeZoneInfo.Local).ToString("dd'-'MM'-'yyyy' 'HH':'mm':'ss");
             }
 
             long? replyTo = null;
