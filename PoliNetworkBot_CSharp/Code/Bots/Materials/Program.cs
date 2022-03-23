@@ -487,11 +487,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 else
                     throw new Exception("Fatal error while handling path dictionary");
             }
-
-            ;
+            
             try
             {
-                Serialize(DictPaths, File.Open("/home/ubuntu/bot/dictPath.bin", FileMode.Create));
+                Serialize(DictPaths, File.Open(Data.Constants.Paths.Data.FilePaths, FileMode.Create));
             }
             catch (Exception exception)
             {
