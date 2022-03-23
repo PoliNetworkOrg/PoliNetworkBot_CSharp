@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -273,9 +274,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             {
                 File.WriteAllText(Paths.Data.MessageStore, JsonConvert.SerializeObject(Store));
             }
-            catch
+            catch (Exception ex)
             {
-                ;
+                Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
             }
         }
 

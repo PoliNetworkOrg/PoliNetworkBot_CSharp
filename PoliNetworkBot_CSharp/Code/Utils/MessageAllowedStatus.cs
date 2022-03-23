@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Enums
@@ -6,6 +7,8 @@ namespace PoliNetworkBot_CSharp.Code.Enums
     /// <summary>
     /// Hides PENDING messages responding only ALLOWED, NOT_ALLOWED, NOT_DEFINED
     /// </summary>
+    [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     public class MessageAllowedStatus
     {
         private MessageAllowedStatusEnum _messageAllowedStatus;
