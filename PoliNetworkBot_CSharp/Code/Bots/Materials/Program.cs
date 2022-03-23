@@ -201,7 +201,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     logMessage += DoScript(powershell, "git pull", true) + "\n";
                     logMessage += DoScript(powershell, "git add . --ignore-errors", true) + "\n\n";
 
-                    var diff = DoScript(powershell, "git ls-files --others --exclude-standard", true, ", ");
+                    var diffList = CommandDispatcher.DoScript(powershell, "git ls-files --others --exclude-standard", true);
+                    diffList.RemoveAt(0);
+                    var diff = diffList.Aggregate("", (current, s) => current + s + ", ");
+
                     if (diff.EndsWith(", ")) diff = diff[..^2];
                     logMessage += "Git diff: " + diff + "\n";
 
@@ -233,7 +236,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 }
                 catch (Exception ex)
                 {
-                    BotUtils.Logger.WriteLine(ex);
                     _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
                 }
             }
@@ -526,7 +528,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     e.Message.Chat.Id,
                     ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].getcorso()));
 
-                var dict1 = new Dictionary<string, string>
+                var approveMessage = new Dictionary<string, string>
                 {
                     {
                         "uni", "Approvi l'inserimento del documento in " +
@@ -534,11 +536,11 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                                UsersConversations[e.Message.From.Id].getPercorso() + " ?"
                     }
                 };
-                var text1 = new Language(dict);
+                var approveText = new Language(approveMessage);
 
                 var queryAw = await telegramBotAbstract.SendTextMessageAsync(
                     ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].getcorso()),
-                    text1, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
+                    approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                     new ReplyMarkupObject(inlineKeyboardMarkup), null,
                     messageFw.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
             }
