@@ -918,9 +918,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public static List<string> DoScript(PowerShell powershell, string script, bool debug)
         {
             powershell.AddScript(script);
-            Logger.WriteLine("Executing command: " + script);
-            var results = powershell.Invoke().ToList();
             List<string> listString = new();
+            if (debug)
+            {
+                var x = "Executing command: " + script;
+                Logger.WriteLine(x);
+                listString.Add(x);
+            }
+            var results = powershell.Invoke().ToList();
             if (debug)
                 foreach (var t in results)
                 {

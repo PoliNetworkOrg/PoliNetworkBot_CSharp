@@ -208,17 +208,21 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     var commit = @"git commit -m 'git commit by bot updated file: " + diff +
                                  @"' --author=""PoliBot <polinetwork2@gmail.com>""";
 
-                    logMessage += "Commit results: " + DoScript(powershell, commit, true);
+                    logMessage += "Commit results: " + DoScript(powershell, commit, true) + "\n";
 
                     var push = @"git push https://polibot:" + Config.Password +
                                "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
+                    
+                    BotUtils.Logger.WriteLine(DoScript(powershell, push, true));
+                    
+                    logMessage += "Push Executed";
 
-                    logMessage += "Push Result: " + DoScript(powershell, push, true);
-
+                    BotUtils.Logger.WriteLine(logMessage);
+                    
                     var dict = new Dictionary<string, string>
                     {
-                        { "en", "File sent for approval" },
-                        { "it", "File inviato per approvazione" }
+                        { "en", "File sent for approval.\nLog:\n\n" + logMessage},
+                        { "it", "File inviato per approvazione.\nLog:\n\n" + logMessage}
                     };
                     var text = new Language(dict);
 
