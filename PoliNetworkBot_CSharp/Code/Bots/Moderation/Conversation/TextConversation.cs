@@ -16,14 +16,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class TextConversation
 {
-    public static readonly Dictionary<SpecialGroup, long> excludedGroups = new()
+    private static readonly Dictionary<SpecialGroup, long> ExcludedGroups = new()
     {
         { SpecialGroup.PIANO_DI_STUDI, -1001208900229 },
         { SpecialGroup.ASK_POLIMI, -1001251460298 },
         { SpecialGroup.DSU, -1001241129618 }
     };
 
-    public static readonly Dictionary<SpecialGroup, List<SpecialGroup>> excludedGroupsMatch =
+    private static readonly Dictionary<SpecialGroup, List<SpecialGroup>> ExcludedGroupsMatch =
         new()
         {
             { SpecialGroup.ASK_POLIMI, new List<SpecialGroup> { SpecialGroup.ASK_POLIMI } },
@@ -72,7 +72,8 @@ internal static class TextConversation
             return;
 
         var text = e.Message.Text.ToLower();
-        if (e.Message.Chat.Title.ToLower().Contains("polimi"))
+        var title = e.Message?.Chat?.Title?.ToLower();
+        if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
             await MessageInGroup2Async(telegramBotClient, e, text);
     }
 
@@ -99,7 +100,7 @@ internal static class TextConversation
                     }
                 });
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
-                    e.Message.From.LanguageCode,
+                    e.Message.From?.LanguageCode,
                     text2,
                     e,
                     e.Message.Chat.Id,
@@ -129,7 +130,7 @@ internal static class TextConversation
                     }
                 });
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
-                    e.Message.From.LanguageCode,
+                    e.Message.From?.LanguageCode,
                     text2,
                     e,
                     e.Message.Chat.Id,
@@ -159,7 +160,7 @@ internal static class TextConversation
                     }
                 });
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
-                    e.Message.From.LanguageCode,
+                    e.Message.From?.LanguageCode,
                     text2,
                     e,
                     e.Message.Chat.Id,
@@ -189,7 +190,7 @@ internal static class TextConversation
                 }
             );
             await SendMessage.SendMessageInAGroup(telegramBotClient,
-                e.Message.From.LanguageCode,
+                e.Message.From?.LanguageCode,
                 text2,
                 e,
                 e.Message.Chat.Id,
@@ -220,7 +221,7 @@ internal static class TextConversation
                     }
                 );
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
-                    e.Message.From.LanguageCode,
+                    e.Message.From?.LanguageCode,
                     text2,
                     e,
                     e.Message.Chat.Id,
@@ -233,18 +234,18 @@ internal static class TextConversation
 
     private static bool CheckIfToSend(SpecialGroup s, long id)
     {
-        var x = excludedGroupsMatch[s];
-        return x.Select(i => excludedGroups[i]).All(j => id != j);
+        var x = ExcludedGroupsMatch[s];
+        return x.Select(i => ExcludedGroups[i]).All(j => id != j);
     }
 
     private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
     {
         var botId = telegramBotClient.GetId();
 
-        if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
-            if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+        if (AskUser.UserAnswers.ContainsUser(e.Message.From?.Id, botId))
+            if (AskUser.UserAnswers.GetState(e.Message.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
             {
-                AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, botId, e.Message.Text ?? e.Message.Caption);
+                AskUser.UserAnswers.RecordAnswer(e.Message.From?.Id, botId, e.Message.Text ?? e.Message.Caption);
                 return;
             }
 
@@ -263,9 +264,9 @@ internal static class TextConversation
                 "Ti consigliamo di premere /help per vedere le funzioni disponibili"
             }
         });
-        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-            e.Message.From.LanguageCode,
-            e.Message.From.Username, text2,
+        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From?.Id,
+            e.Message.From?.LanguageCode,
+            e.Message.From?.Username, text2,
             ParseMode.Html, null);
     }
 }
