@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
-    [System.Serializable]
+    [Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class CallbackAssocVetoData : CallbackGenericData
     {

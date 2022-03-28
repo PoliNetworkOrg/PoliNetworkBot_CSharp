@@ -43,7 +43,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         ///     Adds a new message to the storage
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="MessageAllowedStatusEnum"></param>
+        /// <param name="messageAllowedStatus"></param>
         /// <param name="timeLater">Allow at a later time starting from now.</param>
         /// <returns></returns>
         public static bool AddMessage(string message, MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED, TimeSpan? timeLater = null)
@@ -57,7 +57,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             if (Store.ContainsKey(message))
                 Store.Remove(message);
 
-            if ((timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING)
+            if (timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING
                  || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING))
                 throw new Exception("TimeLater and status mismatch");
 

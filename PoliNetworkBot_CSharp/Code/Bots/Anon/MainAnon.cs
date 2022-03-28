@@ -520,7 +520,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 messageIdReplyTo = messageIdReplyTo
             };
 
-            var m4 = await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
+            var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
                 language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
 
             return m4 != null;

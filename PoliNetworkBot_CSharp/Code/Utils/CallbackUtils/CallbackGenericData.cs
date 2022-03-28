@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
 {
-    [System.Serializable]
+    [Serializable]
     [JsonObject(MemberSerialization.Fields)]
     public class CallbackGenericData
     {

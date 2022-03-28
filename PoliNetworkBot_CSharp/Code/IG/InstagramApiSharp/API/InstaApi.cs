@@ -1058,9 +1058,6 @@ namespace InstagramApiSharp.API
                                         InstaLoginResult.CheckpointLoggedOut);
                                 needsRelogin = true;
                                 goto ReloginLabel;
-
-                                return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
-                                    InstaLoginResult.CheckpointLoggedOut);
                             }
                         default:
                             return Result.UnExpectedResponse<InstaLoginResult>(response, json);

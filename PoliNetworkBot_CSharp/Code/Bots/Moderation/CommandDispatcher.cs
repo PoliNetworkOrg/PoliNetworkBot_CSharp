@@ -715,7 +715,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         {
             try
             {
-                Utils.BackupUtil.BackupBeforeReboot();
+                BackupUtil.BackupBeforeReboot();
             }
             catch
             {
