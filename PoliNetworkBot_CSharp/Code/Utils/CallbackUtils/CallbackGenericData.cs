@@ -25,7 +25,7 @@ public class CallbackGenericData
 
     public CallbackGenericData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection)
     {
-        this.Options = options;
+        Options = options;
         RunAfterSelection = runAfterSelection;
     }
 

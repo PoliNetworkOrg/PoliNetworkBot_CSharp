@@ -22,7 +22,7 @@ public class DictionaryUserAnswer
     {
         if (idUser == null)
             return;
-        
+
         if (!d.ContainsKey(idUser.Value))
             d[idUser.Value] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
 
@@ -54,7 +54,7 @@ public class DictionaryUserAnswer
         TelegramBotAbstract telegramBotAbstract, string lang, string username)
     {
         if (botId == null) return;
-        
+
         d[idUser][botId.Value].Item1.WorkCompleted += async result =>
         {
             var crashed = true;

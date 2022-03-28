@@ -145,7 +145,7 @@ internal static class MainAnon
         };
 
         var r = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, telegramBotAbstract,
-            e.Message.From?.LanguageCode, options, 
+            e.Message.From?.LanguageCode, options,
             e.Message.From?.Username, true, e.Message.MessageId);
 
         if (l1.Matches(r))

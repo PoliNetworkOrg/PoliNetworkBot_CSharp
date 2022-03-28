@@ -24,8 +24,8 @@ public class CallbackAssocVetoData : CallbackGenericData
     {
         MessageWithMetadata = messageWithMetadata;
         MessageEventArgs = messageEventArgs;
-        this.Message = message;
-        this.Options = options;
+        Message = message;
+        Options = options;
         RunAfterSelection = runAfterSelection;
     }
 

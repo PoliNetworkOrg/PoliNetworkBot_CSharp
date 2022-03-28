@@ -36,7 +36,7 @@ internal static class AskUser
     {
         if (idUser == null)
             return null;
-        
+
         try
         {
             var botId = telegramBotAbstract.GetId();

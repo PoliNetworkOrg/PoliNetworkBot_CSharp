@@ -19,15 +19,15 @@ internal class PeerAbstract
 
     public PeerAbstract(long? id, ChatType type)
     {
-        this.Id = id;
-        this.Type = type;
-        
-        
+        Id = id;
+        Type = type;
+
+
         switch (type)
         {
             case ChatType.Private:
             {
-                Peer = new TLInputPeerUser { UserId = id ==null?default: (int)id };
+                Peer = new TLInputPeerUser { UserId = id == null ? default : (int)id };
                 break;
             }
 
