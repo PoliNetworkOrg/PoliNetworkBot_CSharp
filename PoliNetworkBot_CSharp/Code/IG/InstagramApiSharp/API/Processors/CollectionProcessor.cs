@@ -294,34 +294,6 @@ public class CollectionProcessor
         }
     }
 
-
-    private async Task<IResult<InstaCollectionsResponse>> GetCollections(PaginationParameters paginationParameters)
-    {
-        try
-        {
-            var collectionUri = UriCreator.GetCollectionsUri(paginationParameters?.NextMaxId);
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, collectionUri, _deviceInfo);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaCollectionsResponse>(response, json);
-
-            var collectionsResponse = JsonConvert.DeserializeObject<InstaCollectionsResponse>(json);
-            return Result.Success(collectionsResponse);
-        }
-        catch (HttpRequestException httpException)
-        {
-            _logger?.LogException(httpException);
-            return Result.Fail(httpException, default(InstaCollectionsResponse), ResponseType.NetworkProblem);
-        }
-        catch (Exception exception)
-        {
-            _logger?.LogException(exception);
-            return Result.Fail<InstaCollectionsResponse>(exception);
-        }
-    }
-
     private async Task<IResult<InstaCollectionItemResponse>> GetSingleCollection(long collectionId,
         PaginationParameters paginationParameters)
     {

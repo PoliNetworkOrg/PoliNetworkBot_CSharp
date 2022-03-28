@@ -15,7 +15,9 @@ internal class ChannelsForApproval
     private static readonly long electronicsChannel = -1001165704108;
     private static readonly long automationChannel = -1001541302296;
     private static readonly long chimicaChannel = -1001510001243;
-    private static long debug = -1001403617749;
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+    private static readonly long debug = -1001403617749;
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
 
     internal static long GetChannel(string v)
     {

@@ -24,10 +24,6 @@ namespace Minista.Helpers;
 /// </summary>
 internal class SizeHelper
 {
-    private const int MIN_WIDTH = 320;
-    private const int MAX_WIDTH = 1080;
-    private const int THUMBNAIL_SIZE = 292;
-
     public readonly List<int> Sizes = new()
     {
         1080,
