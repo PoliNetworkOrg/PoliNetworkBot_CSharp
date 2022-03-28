@@ -4,24 +4,23 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastSendComment
 {
-    public class InstaBroadcastSendComment
-    {
-        public string ContentType { get; set; }
+    public string ContentType { get; set; }
 
-        public InstaUserShortFriendshipFull User { get; set; }
+    public InstaUserShortFriendshipFull User { get; set; }
 
-        public long Pk { get; set; }
+    public long Pk { get; set; }
 
-        public string Text { get; set; }
+    public string Text { get; set; }
 
-        public int Type { get; set; }
+    public int Type { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-        public DateTime CreatedAtUtc { get; set; }
+    public DateTime CreatedAtUtc { get; set; }
 
-        public long MediaId { get; set; }
-    }
+    public long MediaId { get; set; }
 }

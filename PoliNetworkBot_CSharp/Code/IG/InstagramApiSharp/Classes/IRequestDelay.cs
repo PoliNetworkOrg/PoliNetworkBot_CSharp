@@ -4,15 +4,14 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public interface IRequestDelay
 {
-    public interface IRequestDelay
-    {
-        TimeSpan Value { get; }
-        bool Exist { get; }
+    TimeSpan Value { get; }
+    bool Exist { get; }
 
-        void Enable();
+    void Enable();
 
-        void Disable();
-    }
+    void Disable();
 }

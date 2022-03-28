@@ -1,26 +1,25 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils;
+
+internal static class TimeUtils
 {
-    internal static class TimeUtils
+    public static async Task ExecuteAtLaterTime(TimeSpan time, Action task)
     {
-        public static async Task ExecuteAtLaterTime(TimeSpan time, Action task)
+        try
         {
-            try
-            {
-                await Task.Delay(time);
-                task.Invoke();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(ex, LogSeverityLevel.ERROR);
-            }
+            await Task.Delay(time);
+            task.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 }

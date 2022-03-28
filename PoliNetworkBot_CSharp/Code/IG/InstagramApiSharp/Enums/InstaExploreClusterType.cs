@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaExploreClusterType
 {
-    public enum InstaExploreClusterType
-    {
-        ExploreAll,
-        HashtagInspired,
-        Shopping
-    }
+    ExploreAll,
+    HashtagInspired,
+    Shopping
 }

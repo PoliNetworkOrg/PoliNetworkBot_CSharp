@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaSharingType
 {
-    public enum InstaSharingType
-    {
-        Video,
-        Photo
-    }
+    Video,
+    Photo
 }

@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaActionLog
 {
-    public class InstaActionLog
-    {
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
 }

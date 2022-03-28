@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public enum CheckPointType
 {
-    public enum CheckPointType
-    {
-        CheckpointLoggedOut = 0
-    }
+    CheckpointLoggedOut = 0
 }

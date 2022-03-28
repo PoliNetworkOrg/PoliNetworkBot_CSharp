@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaBrandedContent
-    {
-        public bool RequireApproval { get; set; }
+namespace InstagramApiSharp.Classes.Models;
 
-        public List<InstaUserShort> WhitelistedUsers { get; set; } = new();
-    }
+public class InstaBrandedContent
+{
+    public bool RequireApproval { get; set; }
+
+    public List<InstaUserShort> WhitelistedUsers { get; set; } = new();
 }

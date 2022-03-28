@@ -4,34 +4,33 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastCommentList
 {
-    public class InstaBroadcastCommentList
-    {
-        public bool CommentLikesEnabled { get; set; }
+    public bool CommentLikesEnabled { get; set; }
 
-        public List<InstaBroadcastComment> Comments { get; set; } = new();
+    public List<InstaBroadcastComment> Comments { get; set; } = new();
 
-        public int CommentCount { get; set; }
+    public int CommentCount { get; set; }
 
-        public InstaCaption Caption { get; set; }
+    public InstaCaption Caption { get; set; }
 
-        public bool CaptionIsEdited { get; set; }
+    public bool CaptionIsEdited { get; set; }
 
-        public bool HasMoreComments { get; set; }
+    public bool HasMoreComments { get; set; }
 
-        public bool HasMoreHeadloadComments { get; set; }
+    public bool HasMoreHeadloadComments { get; set; }
 
-        public string MediaHeaderDisplay { get; set; }
+    public string MediaHeaderDisplay { get; set; }
 
-        public int LiveSecondsPerComment { get; set; }
+    public int LiveSecondsPerComment { get; set; }
 
-        public string IsFirstFetch { get; set; }
+    public string IsFirstFetch { get; set; }
 
-        public InstaBroadcastComment PinnedComment { get; set; }
+    public InstaBroadcastComment PinnedComment { get; set; }
 
-        public object SystemComments { get; set; }
+    public object SystemComments { get; set; }
 
-        public int CommentMuted { get; set; }
-    }
+    public int CommentMuted { get; set; }
 }

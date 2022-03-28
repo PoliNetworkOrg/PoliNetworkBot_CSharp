@@ -1,37 +1,38 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Users
+namespace InstagramApiSharp.Converters.Users;
+
+internal class InstaSuggestionsConverter : IObjectConverter<InstaSuggestions, InstaSuggestionUserContainerResponse>
 {
-    internal class InstaSuggestionsConverter : IObjectConverter<InstaSuggestions, InstaSuggestionUserContainerResponse>
+    public InstaSuggestionUserContainerResponse SourceObject { get; set; }
+
+    public InstaSuggestions Convert()
     {
-        public InstaSuggestionUserContainerResponse SourceObject { get; set; }
-
-        public InstaSuggestions Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var suggest = new InstaSuggestions
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var suggest = new InstaSuggestions
-            {
-                MoreAvailable = SourceObject.MoreAvailable,
-                NextMaxId = SourceObject.MaxId ?? string.Empty
-            };
-            try
-            {
-                if (SourceObject.SuggestedUsers is { Suggestions.Count: > 0 })
-                    suggest.SuggestedUsers = ConvertersFabric.GetSuggestionItemListConverter(SourceObject.SuggestedUsers.Suggestions).Convert();
-                if (SourceObject.NewSuggestedUsers is { Suggestions.Count: > 0 })
-                    suggest.NewSuggestedUsers = ConvertersFabric.GetSuggestionItemListConverter(SourceObject.NewSuggestedUsers.Suggestions).Convert();
-            }
-            catch
-            {
-            }
-
-            return suggest;
+            MoreAvailable = SourceObject.MoreAvailable,
+            NextMaxId = SourceObject.MaxId ?? string.Empty
+        };
+        try
+        {
+            if (SourceObject.SuggestedUsers is { Suggestions.Count: > 0 })
+                suggest.SuggestedUsers = ConvertersFabric
+                    .GetSuggestionItemListConverter(SourceObject.SuggestedUsers.Suggestions).Convert();
+            if (SourceObject.NewSuggestedUsers is { Suggestions.Count: > 0 })
+                suggest.NewSuggestedUsers = ConvertersFabric
+                    .GetSuggestionItemListConverter(SourceObject.NewSuggestedUsers.Suggestions).Convert();
         }
+        catch
+        {
+        }
+
+        return suggest;
     }
 }

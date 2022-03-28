@@ -1,41 +1,40 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaTVSearchConverter : IObjectConverter<InstaTVSearch, InstaTVSearchResponse>
 {
-    internal class InstaTVSearchConverter : IObjectConverter<InstaTVSearch, InstaTVSearchResponse>
+    public InstaTVSearchResponse SourceObject { get; set; }
+
+    public InstaTVSearch Convert()
     {
-        public InstaTVSearchResponse SourceObject { get; set; }
+        if (SourceObject == null)
+            throw new ArgumentNullException("SourceObject");
 
-        public InstaTVSearch Convert()
+        var search = new InstaTVSearch
         {
-            if (SourceObject == null)
-                throw new ArgumentNullException("SourceObject");
+            NumResults = SourceObject.NumResults ?? 0,
+            Status = SourceObject.Status,
+            RankToken = SourceObject.RankToken
+        };
 
-            var search = new InstaTVSearch
+        if (SourceObject.Results == null || !SourceObject.Results.Any()) return search;
+        foreach (var result in SourceObject.Results)
+            try
             {
-                NumResults = SourceObject.NumResults ?? 0,
-                Status = SourceObject.Status,
-                RankToken = SourceObject.RankToken
-            };
+                search.Results.Add(ConvertersFabric.GetTvSearchResultConverter(result).Convert());
+            }
+            catch
+            {
+            }
 
-            if (SourceObject.Results == null || !SourceObject.Results.Any()) return search;
-            foreach (var result in SourceObject.Results)
-                try
-                {
-                    search.Results.Add(ConvertersFabric.GetTvSearchResultConverter(result).Convert());
-                }
-                catch
-                {
-                }
-
-            return search;
-        }
+        return search;
     }
 }

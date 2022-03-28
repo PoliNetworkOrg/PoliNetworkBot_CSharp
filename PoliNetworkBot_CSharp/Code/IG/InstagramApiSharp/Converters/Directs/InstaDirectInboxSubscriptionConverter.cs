@@ -5,23 +5,22 @@ using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
-{
-    internal class InstaDirectInboxSubscriptionConverter :
-        IObjectConverter<InstaDirectInboxSubscription, InstaDirectInboxSubscriptionResponse>
-    {
-        public InstaDirectInboxSubscriptionResponse SourceObject { get; set; }
+namespace InstagramApiSharp.Converters;
 
-        public InstaDirectInboxSubscription Convert()
+internal class InstaDirectInboxSubscriptionConverter :
+    IObjectConverter<InstaDirectInboxSubscription, InstaDirectInboxSubscriptionResponse>
+{
+    public InstaDirectInboxSubscriptionResponse SourceObject { get; set; }
+
+    public InstaDirectInboxSubscription Convert()
+    {
+        var subscription = new InstaDirectInboxSubscription
         {
-            var subscription = new InstaDirectInboxSubscription
-            {
-                Auth = SourceObject.Auth,
-                Sequence = SourceObject.Sequence,
-                Topic = SourceObject.Topic,
-                Url = SourceObject.Url
-            };
-            return subscription;
-        }
+            Auth = SourceObject.Auth,
+            Sequence = SourceObject.Sequence,
+            Topic = SourceObject.Topic,
+            Url = SourceObject.Url
+        };
+        return subscription;
     }
 }

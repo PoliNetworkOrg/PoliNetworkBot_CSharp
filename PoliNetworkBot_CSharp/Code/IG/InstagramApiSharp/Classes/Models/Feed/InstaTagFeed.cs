@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaTagFeed : InstaFeed
 {
-    public class InstaTagFeed : InstaFeed
-    {
-        public List<InstaMedia> RankedMedias { get; set; } = new();
-    }
+    public List<InstaMedia> RankedMedias { get; set; } = new();
 }

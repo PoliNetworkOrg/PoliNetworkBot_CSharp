@@ -1,14 +1,13 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaUserTagListResponse
 {
-    public class InstaUserTagListResponse
-    {
-        [JsonProperty("in")] public List<InstaUserTagResponse> In { get; set; } = new();
-    }
+    [JsonProperty("in")] public List<InstaUserTagResponse> In { get; set; } = new();
 }

@@ -4,31 +4,30 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaStoryCTAContainerResponse
 {
-    public class InstaStoryCTAContainerResponse
-    {
-        [JsonProperty("links")] public InstaStoryCTAResponse[] Links { get; set; }
-    }
+    [JsonProperty("links")] public InstaStoryCTAResponse[] Links { get; set; }
+}
 
-    public class InstaStoryCTAResponse
-    {
-        [JsonProperty("linkType")] public int LinkType { get; set; }
+public class InstaStoryCTAResponse
+{
+    [JsonProperty("linkType")] public int LinkType { get; set; }
 
-        [JsonProperty("webUri")] public string WebUri { get; set; }
+    [JsonProperty("webUri")] public string WebUri { get; set; }
 
-        [JsonProperty("androidClass")] public string AndroidClass { get; set; }
+    [JsonProperty("androidClass")] public string AndroidClass { get; set; }
 
-        [JsonProperty("package")] public string Package { get; set; }
+    [JsonProperty("package")] public string Package { get; set; }
 
-        [JsonProperty("deeplinkUri")] public string DeeplinkUri { get; set; }
+    [JsonProperty("deeplinkUri")] public string DeeplinkUri { get; set; }
 
-        [JsonProperty("callToActionTitle")] public string CallToActionTitle { get; set; }
+    [JsonProperty("callToActionTitle")] public string CallToActionTitle { get; set; }
 
-        [JsonProperty("redirectUri")] public object RedirectUri { get; set; }
+    [JsonProperty("redirectUri")] public object RedirectUri { get; set; }
 
-        [JsonProperty("leadGenFormId")] public string LeadGenFormId { get; set; }
+    [JsonProperty("leadGenFormId")] public string LeadGenFormId { get; set; }
 
-        [JsonProperty("igUserId")] public string IgUserId { get; set; }
-    }
+    [JsonProperty("igUserId")] public string IgUserId { get; set; }
 }

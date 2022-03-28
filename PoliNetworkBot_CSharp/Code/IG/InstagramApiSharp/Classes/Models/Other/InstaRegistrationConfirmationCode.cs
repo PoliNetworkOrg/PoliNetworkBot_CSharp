@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public class InstaRegistrationConfirmationCode : InstaDefaultResponse
 {
-    public class InstaRegistrationConfirmationCode : InstaDefaultResponse
-    {
-        [JsonProperty("signup_code")] public string SignupCode { get; set; }
-    }
+    [JsonProperty("signup_code")] public string SignupCode { get; set; }
 }

@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class FollowedByResponse
 {
-    public class FollowedByResponse
-    {
-        [JsonProperty("count")] public int Count { get; set; }
-    }
+    [JsonProperty("count")] public int Count { get; set; }
 }

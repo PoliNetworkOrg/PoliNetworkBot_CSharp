@@ -1,17 +1,16 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils;
+
+internal class Owners
 {
-    internal class Owners
+    internal static bool CheckIfOwner(long id)
     {
-        internal static bool CheckIfOwner(long id)
-        {
-            return GlobalVariables.Owners.Any(x => x.Item1 == id);
-        }
+        return GlobalVariables.Owners.Any(x => x.Item1 == id);
     }
 }

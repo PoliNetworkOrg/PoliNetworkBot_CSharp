@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaRequestDownloadData
 {
-    public class InstaRequestDownloadData
-    {
-        [JsonProperty("success")] public bool Success { get; set; }
+    [JsonProperty("success")] public bool Success { get; set; }
 
-        [JsonProperty("status")] internal string Status { get; set; }
+    [JsonProperty("status")] internal string Status { get; set; }
 
-        [JsonProperty("message")] public string Message { get; set; }
-    }
+    [JsonProperty("message")] public string Message { get; set; }
 }

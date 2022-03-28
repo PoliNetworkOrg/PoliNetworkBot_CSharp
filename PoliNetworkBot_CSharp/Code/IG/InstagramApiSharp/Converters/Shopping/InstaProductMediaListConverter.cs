@@ -1,35 +1,34 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaProductMediaListConverter : IObjectConverter<InstaProductMediaList, InstaProductMediaListResponse>
 {
-    internal class
-        InstaProductMediaListConverter : IObjectConverter<InstaProductMediaList, InstaProductMediaListResponse>
+    public InstaProductMediaListResponse SourceObject { get; set; }
+
+    public InstaProductMediaList Convert()
     {
-        public InstaProductMediaListResponse SourceObject { get; set; }
-
-        public InstaProductMediaList Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var productMedia = new InstaProductMediaList
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var productMedia = new InstaProductMediaList
-            {
-                AutoLoadMoreEnabled = SourceObject.AutoLoadMoreEnabled,
-                MoreAvailable = SourceObject.MoreAvailable,
-                NextMaxId = SourceObject.NextMaxId,
-                ResultsCount = SourceObject.ResultsCount,
-                TotalCount = SourceObject.TotalCount
-            };
-            if (SourceObject.Medias == null || !SourceObject.Medias.Any()) return productMedia;
-            foreach (var media in SourceObject.Medias)
-                productMedia.Medias.Add(ConvertersFabric.GetSingleMediaConverter(media).Convert());
+            AutoLoadMoreEnabled = SourceObject.AutoLoadMoreEnabled,
+            MoreAvailable = SourceObject.MoreAvailable,
+            NextMaxId = SourceObject.NextMaxId,
+            ResultsCount = SourceObject.ResultsCount,
+            TotalCount = SourceObject.TotalCount
+        };
+        if (SourceObject.Medias == null || !SourceObject.Medias.Any()) return productMedia;
+        foreach (var media in SourceObject.Medias)
+            productMedia.Medias.Add(ConvertersFabric.GetSingleMediaConverter(media).Convert());
 
-            return productMedia;
-        }
+        return productMedia;
     }
 }

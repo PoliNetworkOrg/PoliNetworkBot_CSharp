@@ -4,12 +4,11 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class InstaBroadcastCommentEnableDisableResponse
-    {
-        [JsonProperty("comment_muted")] public int CommentMuted { get; set; }
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("status")] public string Status { get; set; }
-    }
+public class InstaBroadcastCommentEnableDisableResponse
+{
+    [JsonProperty("comment_muted")] public int CommentMuted { get; set; }
+
+    [JsonProperty("status")] public string Status { get; set; }
 }

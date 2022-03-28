@@ -5,19 +5,18 @@ using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
-{
-    internal class InstaAdsInfoConverter : IObjectConverter<InstaAdsInfo, InstaAdsInfoResponse>
-    {
-        public InstaAdsInfoResponse SourceObject { get; set; }
+namespace InstagramApiSharp.Converters;
 
-        public InstaAdsInfo Convert()
+internal class InstaAdsInfoConverter : IObjectConverter<InstaAdsInfo, InstaAdsInfoResponse>
+{
+    public InstaAdsInfoResponse SourceObject { get; set; }
+
+    public InstaAdsInfo Convert()
+    {
+        return new InstaAdsInfo
         {
-            return new InstaAdsInfo
-            {
-                AdsUrl = SourceObject.AdsUrl,
-                HasAds = SourceObject.HasAds ?? false
-            };
-        }
+            AdsUrl = SourceObject.AdsUrl,
+            HasAds = SourceObject.HasAds ?? false
+        };
     }
 }

@@ -1,11 +1,10 @@
-﻿namespace InstagramApiSharp.Classes
+﻿namespace InstagramApiSharp.Classes;
+
+public enum InstaLoginTwoFactorResult
 {
-    public enum InstaLoginTwoFactorResult
-    {
-        Success, //Ok
-        InvalidCode, //sms_code_validation_code_invalid
-        CodeExpired, //invalid_nonce
-        Exception,
-        ChallengeRequired
-    }
+    Success, //Ok
+    InvalidCode, //sms_code_validation_code_invalid
+    CodeExpired, //invalid_nonce
+    Exception,
+    ChallengeRequired
 }

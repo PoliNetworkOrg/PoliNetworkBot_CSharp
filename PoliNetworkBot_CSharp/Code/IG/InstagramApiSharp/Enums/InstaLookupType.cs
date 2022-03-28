@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaLookupType
 {
-    public enum InstaLookupType
-    {
-        Email,
-        Username,
-        Phone
-    }
+    Email,
+    Username,
+    Phone
 }

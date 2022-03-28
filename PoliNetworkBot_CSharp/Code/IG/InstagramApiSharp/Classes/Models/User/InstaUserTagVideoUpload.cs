@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaUserTagVideoUpload
-    {
-        public string Username { get; set; }
+﻿namespace InstagramApiSharp.Classes.Models;
 
-        public long Pk { get; set; } = -1;
-    }
+public class InstaUserTagVideoUpload
+{
+    public string Username { get; set; }
+
+    public long Pk { get; set; } = -1;
 }

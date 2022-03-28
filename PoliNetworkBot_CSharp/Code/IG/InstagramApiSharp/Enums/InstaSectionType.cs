@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+internal enum InstaSectionType
 {
-    internal enum InstaSectionType
-    {
-        Recent,
-        Ranked
-    }
+    Recent,
+    Ranked
 }

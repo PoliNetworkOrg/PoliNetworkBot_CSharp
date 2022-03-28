@@ -5,18 +5,17 @@ using System.Net.Http;
 
 #endregion
 
-namespace InstagramApiSharp.Logger
+namespace InstagramApiSharp.Logger;
+
+public interface IInstaLogger
 {
-    public interface IInstaLogger
-    {
-        void LogRequest(HttpRequestMessage request);
+    void LogRequest(HttpRequestMessage request);
 
-        void LogRequest(Uri uri);
+    void LogRequest(Uri uri);
 
-        void LogResponse(HttpResponseMessage response);
+    void LogResponse(HttpResponseMessage response);
 
-        void LogException(Exception exception);
+    void LogException(Exception exception);
 
-        void LogInfo(string info);
-    }
+    void LogInfo(string info);
 }

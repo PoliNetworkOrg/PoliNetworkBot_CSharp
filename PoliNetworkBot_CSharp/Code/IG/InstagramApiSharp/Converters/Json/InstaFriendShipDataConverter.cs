@@ -1,36 +1,35 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Json
+namespace InstagramApiSharp.Converters.Json;
+
+internal class InstaFriendShipDataConverter : JsonConverter
 {
-    internal class InstaFriendShipDataConverter : JsonConverter
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(InstaFriendshipStatusResponse);
-        }
+        return objectType == typeof(InstaFriendshipStatusResponse);
+    }
 
-        public override object ReadJson(JsonReader reader,
-            Type objectType,
-            object existingValue,
-            JsonSerializer serializer)
-        {
-            var root = JToken.Load(reader);
-            var statusSubContainer = root["friendship_status"];
-            return statusSubContainer == null
-                ? root.ToObject<InstaFriendshipStatusResponse>()
-                : statusSubContainer.ToObject<InstaFriendshipStatusResponse>();
-        }
+    public override object ReadJson(JsonReader reader,
+        Type objectType,
+        object existingValue,
+        JsonSerializer serializer)
+    {
+        var root = JToken.Load(reader);
+        var statusSubContainer = root["friendship_status"];
+        return statusSubContainer == null
+            ? root.ToObject<InstaFriendshipStatusResponse>()
+            : statusSubContainer.ToObject<InstaFriendshipStatusResponse>();
+    }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize(writer, value);
-        }
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        serializer.Serialize(writer, value);
     }
 }

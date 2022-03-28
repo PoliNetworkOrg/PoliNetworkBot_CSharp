@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaDirectHashtagResponse
 {
-    public class InstaDirectHashtagResponse
-    {
-        [JsonProperty("name")] public string Name { get; set; }
+    [JsonProperty("name")] public string Name { get; set; }
 
-        [JsonProperty("media_count")] public long MediaCount { get; set; }
+    [JsonProperty("media_count")] public long MediaCount { get; set; }
 
-        [JsonProperty("media")] public InstaMediaItemResponse Media { get; set; }
-    }
+    [JsonProperty("media")] public InstaMediaItemResponse Media { get; set; }
 }

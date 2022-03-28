@@ -4,12 +4,11 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class RankedRecipientResponse
-    {
-        [JsonProperty("thread")] public RankedRecipientThreadResponse Thread { get; set; }
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("user")] public InstaUserShortResponse User { get; set; }
-    }
+public class RankedRecipientResponse
+{
+    [JsonProperty("thread")] public RankedRecipientThreadResponse Thread { get; set; }
+
+    [JsonProperty("user")] public InstaUserShortResponse User { get; set; }
 }

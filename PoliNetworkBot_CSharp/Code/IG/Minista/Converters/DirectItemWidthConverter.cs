@@ -1,6 +1,5 @@
-﻿namespace Minista.Converters
+﻿namespace Minista.Converters;
+
+internal class DirectItemWidthConverter
 {
-    internal class DirectItemWidthConverter
-    {
-    }
 }

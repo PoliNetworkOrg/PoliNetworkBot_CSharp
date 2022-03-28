@@ -1,91 +1,91 @@
 ﻿#region
 
-using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects;
+
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
+public class StoredMessage
 {
-    [Serializable]
-    [JsonObject(MemberSerialization.Fields)]
-    public class StoredMessage
+    private const double AverageLimit = 60;
+    internal MessageAllowedStatus AllowedStatus;
+
+    public List<long> FromUserId = new();
+    public List<long> GroupsIdItHasBeenSentInto = new();
+    internal int HowManyTimesWeSawIt;
+    internal DateTime InsertedTime;
+    internal DateTime? LastSeenTime;
+    internal string message;
+    public List<Message> Messages = new();
+
+    public StoredMessage(string message, int howManyTimesWeSawIt = 0,
+        MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED,
+        TimeSpan? timeLater = null, DateTime? lastSeenTime = null)
     {
-        private const double AverageLimit = 60;
-        internal MessageAllowedStatus AllowedStatus;
+        HowManyTimesWeSawIt = howManyTimesWeSawIt;
+        AllowedStatus = new MessageAllowedStatus(allowedSpam, timeLater);
+        this.message = message;
+        InsertedTime = DateTime.Now;
+        LastSeenTime = lastSeenTime;
+    }
 
-        public List<long> FromUserId = new();
-        public List<long> GroupsIdItHasBeenSentInto = new();
-        internal int HowManyTimesWeSawIt;
-        internal DateTime InsertedTime;
-        internal DateTime? LastSeenTime;
-        internal string message;
-        public List<Message> Messages = new();
-
-        public StoredMessage(string message, int howManyTimesWeSawIt = 0, MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED,
-            TimeSpan? timeLater = null, DateTime? lastSeenTime = null)
+    internal SpamType IsSpam()
+    {
+        switch (AllowedStatus.GetStatus())
         {
-            HowManyTimesWeSawIt = howManyTimesWeSawIt;
-            AllowedStatus = new MessageAllowedStatus(allowedSpam, timeLater);
-            this.message = message;
-            InsertedTime = DateTime.Now;
-            LastSeenTime = lastSeenTime;
+            case MessageAllowedStatusEnum.ALLOWED:
+                return SpamType.SPAM_PERMITTED;
+
+            case MessageAllowedStatusEnum.NOT_ALLOWED:
+                return SpamType.SPAM_LINK;
+
+            case MessageAllowedStatusEnum.PENDING:
+                throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
+            case MessageAllowedStatusEnum.NOT_DEFINED:
+                break;
         }
 
-        internal SpamType IsSpam()
-        {
-            switch (AllowedStatus.GetStatus())
-            {
-                case MessageAllowedStatusEnum.ALLOWED:
-                    return SpamType.SPAM_PERMITTED;
+        return GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
+               (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
+            ? IsSpam2()
+            : SpamType.UNDEFINED;
+    }
 
-                case MessageAllowedStatusEnum.NOT_ALLOWED:
-                    return SpamType.SPAM_LINK;
+    private SpamType IsSpam2()
+    {
+        if (LastSeenTime == null)
+            return SpamType.UNDEFINED;
 
-                case MessageAllowedStatusEnum.PENDING:
-                    throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
-                case MessageAllowedStatusEnum.NOT_DEFINED:
-                    break;
-            }
+        var diff = LastSeenTime.Value - InsertedTime;
+        var average = diff.TotalSeconds / HowManyTimesWeSawIt;
 
-            return GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
-                  (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
-                    ? IsSpam2()
-                    : SpamType.UNDEFINED;
-        }
+        return average < AverageLimit ? SpamType.SPAM_LINK : SpamType.UNDEFINED;
+    }
 
-        private SpamType IsSpam2()
-        {
-            if (LastSeenTime == null)
-                return SpamType.UNDEFINED;
+    internal bool IsOutdated()
+    {
+        return AllowedStatus.RemovalTime() < DateTime.Now;
+    }
 
-            var diff = LastSeenTime.Value - InsertedTime;
-            var average = diff.TotalSeconds / HowManyTimesWeSawIt;
+    internal string ToJson()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 
-            return average < AverageLimit ? SpamType.SPAM_LINK : SpamType.UNDEFINED;
-        }
+    public void ForceAllowMessage()
+    {
+        AllowedStatus.ForceAllowMessage();
+    }
 
-        internal bool IsOutdated()
-        {
-            return AllowedStatus.RemovalTime() < DateTime.Now;
-        }
-
-        internal string ToJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public void ForceAllowMessage()
-        {
-            AllowedStatus.ForceAllowMessage();
-        }
-
-        public void RemoveMessage(bool andFlagAsSpam)
-        {
-            AllowedStatus.RemoveMessage(andFlagAsSpam);
-        }
+    public void RemoveMessage(bool andFlagAsSpam)
+    {
+        AllowedStatus.RemoveMessage(andFlagAsSpam);
     }
 }

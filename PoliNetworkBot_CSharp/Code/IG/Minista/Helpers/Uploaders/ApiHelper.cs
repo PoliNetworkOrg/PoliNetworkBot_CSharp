@@ -1,3 +1,1 @@
-﻿namespace Minista.Helpers
-{
-}
+﻿namespace Minista.Helpers;

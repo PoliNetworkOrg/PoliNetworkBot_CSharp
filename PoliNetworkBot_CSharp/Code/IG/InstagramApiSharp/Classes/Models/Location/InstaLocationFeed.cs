@@ -1,11 +1,10 @@
-﻿namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaLocationFeed : InstaBaseFeed
-    {
-        public InstaMediaList RankedMedias { get; set; } = new();
-        public InstaStory Story { get; set; }
-        public InstaLocation Location { get; set; }
+﻿namespace InstagramApiSharp.Classes.Models;
 
-        public long MediaCount { get; set; }
-    }
+public class InstaLocationFeed : InstaBaseFeed
+{
+    public InstaMediaList RankedMedias { get; set; } = new();
+    public InstaStory Story { get; set; }
+    public InstaLocation Location { get; set; }
+
+    public long MediaCount { get; set; }
 }

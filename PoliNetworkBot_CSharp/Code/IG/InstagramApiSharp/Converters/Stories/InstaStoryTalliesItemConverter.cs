@@ -1,29 +1,28 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaStoryTalliesItemConverter : IObjectConverter<InstaStoryTalliesItem, InstaStoryTalliesItemResponse>
 {
-    internal class
-        InstaStoryTalliesItemConverter : IObjectConverter<InstaStoryTalliesItem, InstaStoryTalliesItemResponse>
+    public InstaStoryTalliesItemResponse SourceObject { get; set; }
+
+    public InstaStoryTalliesItem Convert()
     {
-        public InstaStoryTalliesItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryTalliesItem Convert()
+        var tallies = new InstaStoryTalliesItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-
-            var tallies = new InstaStoryTalliesItem
-            {
-                Count = SourceObject.Count,
-                FontSize = SourceObject.FontSize,
-                Text = SourceObject.Text
-            };
-            return tallies;
-        }
+            Count = SourceObject.Count,
+            FontSize = SourceObject.FontSize,
+            Text = SourceObject.Text
+        };
+        return tallies;
     }
 }

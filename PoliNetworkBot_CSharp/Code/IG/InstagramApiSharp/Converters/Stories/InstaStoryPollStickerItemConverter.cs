@@ -1,45 +1,44 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaStoryPollStickerItemConverter : IObjectConverter<InstaStoryPollStickerItem,
+        InstaStoryPollStickerItemResponse>
 {
-    internal class
-        InstaStoryPollStickerItemConverter : IObjectConverter<InstaStoryPollStickerItem,
-            InstaStoryPollStickerItemResponse>
+    public InstaStoryPollStickerItemResponse SourceObject { get; set; }
+
+    public InstaStoryPollStickerItem Convert()
     {
-        public InstaStoryPollStickerItemResponse SourceObject { get; set; }
-
-        public InstaStoryPollStickerItem Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var pollSticker = new InstaStoryPollStickerItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var pollSticker = new InstaStoryPollStickerItem
+            Finished = SourceObject.Finished,
+            Id = SourceObject.Id,
+            IsSharedResult = SourceObject.IsSharedResult,
+            PollId = SourceObject.PollId,
+            Question = SourceObject.Question,
+            ViewerCanVote = SourceObject.ViewerCanVote,
+            ViewerVote = SourceObject.ViewerVote ?? 0
+        };
+
+        if (!(SourceObject.Tallies?.Count > 0)) return pollSticker;
+        foreach (var tallies in SourceObject.Tallies)
+            try
             {
-                Finished = SourceObject.Finished,
-                Id = SourceObject.Id,
-                IsSharedResult = SourceObject.IsSharedResult,
-                PollId = SourceObject.PollId,
-                Question = SourceObject.Question,
-                ViewerCanVote = SourceObject.ViewerCanVote,
-                ViewerVote = SourceObject.ViewerVote ?? 0
-            };
+                pollSticker.Tallies.Add(ConvertersFabric.GetStoryTalliesItemConverter(tallies)
+                    .Convert());
+            }
+            catch
+            {
+            }
 
-            if (!(SourceObject.Tallies?.Count > 0)) return pollSticker;
-            foreach (var tallies in SourceObject.Tallies)
-                try
-                {
-                    pollSticker.Tallies.Add(ConvertersFabric.GetStoryTalliesItemConverter(tallies)
-                        .Convert());
-                }
-                catch
-                {
-                }
-
-            return pollSticker;
-        }
+        return pollSticker;
     }
 }

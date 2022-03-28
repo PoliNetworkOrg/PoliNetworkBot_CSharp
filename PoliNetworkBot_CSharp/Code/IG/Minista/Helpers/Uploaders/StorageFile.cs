@@ -6,33 +6,32 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace Minista.Helpers
+namespace Minista.Helpers;
+
+internal class StorageFile
 {
-    internal class StorageFile
+    public StorageFile(string path)
     {
-        public StorageFile(string path)
+        Path = path;
+    }
+
+    public string Path { get; set; }
+
+    public static Task<StorageFile> GetFileFromPathAsync(string testJpg)
+    {
+        return Task.FromResult(new StorageFile(testJpg));
+    }
+
+    public Task<Stream> OpenAsync(FileAccessMode read)
+    {
+        switch (read)
         {
-            Path = path;
-        }
+            case FileAccessMode.Read:
+                var x = File.OpenRead(Path);
+                return Task.FromResult<Stream>(x);
 
-        public string Path { get; set; }
-
-        public static Task<StorageFile> GetFileFromPathAsync(string testJpg)
-        {
-            return Task.FromResult(new StorageFile(testJpg));
-        }
-
-        public Task<Stream> OpenAsync(FileAccessMode read)
-        {
-            switch (read)
-            {
-                case FileAccessMode.Read:
-                    var x = File.OpenRead(Path);
-                    return Task.FromResult<Stream>(x);
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(read), read, null);
-            }
+            default:
+                throw new ArgumentOutOfRangeException(nameof(read), read, null);
         }
     }
 }

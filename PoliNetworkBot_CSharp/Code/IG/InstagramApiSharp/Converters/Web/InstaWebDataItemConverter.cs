@@ -1,29 +1,28 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers.Web;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaWebDataItemConverter : IObjectConverter<InstaWebDataItem, InstaWebDataItemResponse>
 {
-    internal class InstaWebDataItemConverter : IObjectConverter<InstaWebDataItem, InstaWebDataItemResponse>
+    public InstaWebDataItemResponse SourceObject { get; set; }
+
+    public InstaWebDataItem Convert()
     {
-        public InstaWebDataItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaWebDataItem Convert()
+        var data = new InstaWebDataItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Text = SourceObject.Text,
+            Time = SourceObject.Timestamp?.FromUnixTimeSeconds() ?? DateTime.MinValue
+        };
 
-            var data = new InstaWebDataItem
-            {
-                Text = SourceObject.Text,
-                Time = SourceObject.Timestamp?.FromUnixTimeSeconds() ?? DateTime.MinValue
-            };
-
-            return data;
-        }
+        return data;
     }
 }

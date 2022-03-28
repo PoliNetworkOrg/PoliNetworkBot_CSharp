@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public enum InstaContentType
 {
-    public enum InstaContentType
-    {
-        Photo = 0,
-        Video = 1,
-        Comment = 2
-    }
+    Photo = 0,
+    Video = 1,
+    Comment = 2
 }

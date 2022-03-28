@@ -1,31 +1,30 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Android.DeviceInfo;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using InstagramApiSharp.Classes.Android.DeviceInfo;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public interface IHttpRequestProcessor
 {
-    public interface IHttpRequestProcessor
-    {
-        HttpClientHandler HttpHandler { get; set; }
-        ApiRequestMessage RequestMessage { get; }
-        HttpClient Client { get; }
-        IRequestDelay Delay { get; set; }
+    HttpClientHandler HttpHandler { get; set; }
+    ApiRequestMessage RequestMessage { get; }
+    HttpClient Client { get; }
+    IRequestDelay Delay { get; set; }
 
-        void SetHttpClientHandler(HttpClientHandler handler);
+    void SetHttpClientHandler(HttpClientHandler handler);
 
-        Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage);
+    Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage);
 
-        Task<HttpResponseMessage> GetAsync(Uri requestUri);
+    Task<HttpResponseMessage> GetAsync(Uri requestUri);
 
-        Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
+    Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
 
-        Task<string> SendAndGetJsonAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
+    Task<string> SendAndGetJsonAsync(HttpRequestMessage requestMessage, HttpCompletionOption completionOption);
 
-        Task<string> GeJsonAsync(Uri requestUri);
-    }
+    Task<string> GeJsonAsync(Uri requestUri);
 }

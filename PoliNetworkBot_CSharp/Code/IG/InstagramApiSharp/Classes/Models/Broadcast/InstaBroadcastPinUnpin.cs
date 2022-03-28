@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastPinUnpin
 {
-    public class InstaBroadcastPinUnpin
-    {
-        public long CommentId { get; set; }
-    }
+    public long CommentId { get; set; }
 }

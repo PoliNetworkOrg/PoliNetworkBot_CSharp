@@ -1,30 +1,29 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaStoryPollVoterItemConverter : IObjectConverter<InstaStoryVoterItem, InstaStoryVoterItemResponse>
 {
-    internal class InstaStoryPollVoterItemConverter : IObjectConverter<InstaStoryVoterItem, InstaStoryVoterItemResponse>
+    public InstaStoryVoterItemResponse SourceObject { get; set; }
+
+    public InstaStoryVoterItem Convert()
     {
-        public InstaStoryVoterItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryVoterItem Convert()
+        var voterItem = new InstaStoryVoterItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Vote = SourceObject.Vote ?? 0,
+            Time = SourceObject.Ts.FromUnixTimeSeconds(),
+            User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User).Convert()
+        };
 
-            var voterItem = new InstaStoryVoterItem
-            {
-                Vote = SourceObject.Vote ?? 0,
-                Time = SourceObject.Ts.FromUnixTimeSeconds(),
-                User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User).Convert()
-            };
-
-            return voterItem;
-        }
+        return voterItem;
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+internal enum InstaInsightSurfaceType
 {
-    internal enum InstaInsightSurfaceType
-    {
-        Account,
-        Post
-    }
+    Account,
+    Post
 }

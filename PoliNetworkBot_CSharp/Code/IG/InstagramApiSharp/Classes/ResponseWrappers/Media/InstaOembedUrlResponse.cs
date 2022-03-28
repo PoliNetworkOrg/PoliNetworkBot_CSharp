@@ -4,11 +4,10 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaOembedUrlResponse
 {
-    public class InstaOembedUrlResponse
-    {
-        [JsonProperty("media_id")] //media_id is enough.
-        public string MediaId { get; set; }
-    }
+    [JsonProperty("media_id")] //media_id is enough.
+    public string MediaId { get; set; }
 }

@@ -5,26 +5,25 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaRecentActivityFeed
 {
-    public class InstaRecentActivityFeed
-    {
-        public long ProfileId { get; set; }
+    public long ProfileId { get; set; }
 
-        public string ProfileImage { get; set; }
+    public string ProfileImage { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+    public DateTime TimeStamp { get; set; }
 
-        public string Text { get; set; }
+    public string Text { get; set; }
 
-        public string RichText { get; set; }
+    public string RichText { get; set; }
 
-        public List<InstaLink> Links { get; set; } = new();
-        public InstaInlineFollow InlineFollow { get; set; }
-        public int Type { get; set; }
+    public List<InstaLink> Links { get; set; } = new();
+    public InstaInlineFollow InlineFollow { get; set; }
+    public int Type { get; set; }
 
-        public string Pk { get; set; }
+    public string Pk { get; set; }
 
-        public List<InstaActivityMedia> Medias { get; set; } = new();
-    }
+    public List<InstaActivityMedia> Medias { get; set; } = new();
 }

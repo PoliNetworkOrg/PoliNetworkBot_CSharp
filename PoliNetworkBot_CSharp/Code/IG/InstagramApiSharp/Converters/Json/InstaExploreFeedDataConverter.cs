@@ -1,59 +1,58 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Json
+namespace InstagramApiSharp.Converters.Json;
+
+internal class InstaExploreFeedDataConverter : JsonConverter
 {
-    internal class InstaExploreFeedDataConverter : JsonConverter
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(InstaExploreFeedResponse);
-        }
+        return objectType == typeof(InstaExploreFeedResponse);
+    }
 
-        public override object ReadJson(JsonReader reader,
-            Type objectType,
-            object existingValue,
-            JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader,
+        Type objectType,
+        object existingValue,
+        JsonSerializer serializer)
+    {
+        var root = JToken.Load(reader);
+        var items = root["items"];
+        var feed = root.ToObject<InstaExploreFeedResponse>();
+        foreach (var item in items)
         {
-            var root = JToken.Load(reader);
-            var items = root["items"];
-            var feed = root.ToObject<InstaExploreFeedResponse>();
-            foreach (var item in items)
+            var storiesToken = item["stories"];
+            var channelToken = item["channel"];
+            var mediaToken = item["media"];
+            if (storiesToken != null)
             {
-                var storiesToken = item["stories"];
-                var channelToken = item["channel"];
-                var mediaToken = item["media"];
-                if (storiesToken != null)
-                {
-                    var storyTray = storiesToken.ToObject<InstaStoryTrayResponse>();
-                    feed.Items.StoryTray = storyTray;
-                    continue;
-                }
-
-                if (channelToken != null)
-                {
-                    var channel = channelToken.ToObject<InstaChannelResponse>();
-                    feed.Items.Channel = channel;
-                    continue;
-                }
-
-                if (mediaToken == null) continue;
-                var media = mediaToken.ToObject<InstaMediaItemResponse>();
-                feed.Items.Medias.Add(media);
+                var storyTray = storiesToken.ToObject<InstaStoryTrayResponse>();
+                feed.Items.StoryTray = storyTray;
+                continue;
             }
 
-            return feed;
+            if (channelToken != null)
+            {
+                var channel = channelToken.ToObject<InstaChannelResponse>();
+                feed.Items.Channel = channel;
+                continue;
+            }
+
+            if (mediaToken == null) continue;
+            var media = mediaToken.ToObject<InstaMediaItemResponse>();
+            feed.Items.Medias.Add(media);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize(writer, value);
-        }
+        return feed;
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        serializer.Serialize(writer, value);
     }
 }

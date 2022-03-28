@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastTopLiveStatusList : List<InstaBroadcastStatusItem>
 {
-    public class InstaBroadcastTopLiveStatusList : List<InstaBroadcastStatusItem>
-    {
-    }
 }

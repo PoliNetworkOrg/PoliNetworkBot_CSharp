@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaWebTextData
-    {
-        public string MaxId { get; set; }
+namespace InstagramApiSharp.Classes.Models;
 
-        public List<string> Items { get; set; } = new();
-    }
+public class InstaWebTextData
+{
+    public string MaxId { get; set; }
+
+    public List<string> Items { get; set; } = new();
 }

@@ -1,15 +1,14 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaInsightsNameType
 {
-    public enum InstaInsightsNameType
-    {
-        BioLinkClicked,
-        Call,
-        Direction,
-        Email,
-        Text,
-        Feed,
-        Profile,
-        Location,
-        NonFollower
-    }
+    BioLinkClicked,
+    Call,
+    Direction,
+    Email,
+    Text,
+    Feed,
+    Profile,
+    Location,
+    NonFollower
 }

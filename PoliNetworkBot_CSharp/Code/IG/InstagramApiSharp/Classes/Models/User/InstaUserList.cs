@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaUserList : List<InstaUser>
 {
-    public class InstaUserList : List<InstaUser>
-    {
-    }
 }

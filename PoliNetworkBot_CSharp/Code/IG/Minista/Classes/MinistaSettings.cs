@@ -1,53 +1,52 @@
-﻿namespace Minista.Classes
+﻿namespace Minista.Classes;
+
+public class MinistaSettings
 {
-    public class MinistaSettings
-    {
-        public LivePlaybackType LivePlaybackType { get; set; } = LivePlaybackType.LibVLC;
-        public HeaderPosition HeaderPosition { get; set; } = HeaderPosition.Top;
-        public bool GhostMode { get; set; } = false;
-        public bool AskedAboutPosition { get; set; } = false;
-        public bool ElementSound { get; set; } = false;
-        public bool RemoveAds { get; set; } = true;
-        public bool DownloadLocationChanged { get; set; } = false;
-        public double LockControlX { get; set; } = 0;
-        public double LockControlY { get; set; } = 120;
-        public bool HandleTelegramLinks { get; set; } = false;
+    public LivePlaybackType LivePlaybackType { get; set; } = LivePlaybackType.LibVLC;
+    public HeaderPosition HeaderPosition { get; set; } = HeaderPosition.Top;
+    public bool GhostMode { get; set; } = false;
+    public bool AskedAboutPosition { get; set; } = false;
+    public bool ElementSound { get; set; } = false;
+    public bool RemoveAds { get; set; } = true;
+    public bool DownloadLocationChanged { get; set; } = false;
+    public double LockControlX { get; set; } = 0;
+    public double LockControlY { get; set; } = 120;
+    public bool HandleTelegramLinks { get; set; } = false;
 
-        public AppTheme AppTheme { get; set; } = AppTheme.Dark;
+    public AppTheme AppTheme { get; set; } = AppTheme.Dark;
 
-        public DownloadQuality DownloadQuality { get; set; } = DownloadQuality.HighestQuality;
+    public DownloadQuality DownloadQuality { get; set; } = DownloadQuality.HighestQuality;
 
-        public StoryViewType StoryViewType { get; set; } = StoryViewType.NewOne;
-    }
+    public StoryViewType StoryViewType { get; set; } = StoryViewType.NewOne;
+}
 
-    public enum HeaderPosition
-    {
-        Top,
-        Bottom
-    }
+public enum HeaderPosition
+{
+    Top,
+    Bottom
+}
 
-    public enum LivePlaybackType
-    {
-        Minista,
-        LibVLC
-    }
+public enum LivePlaybackType
+{
+    Minista,
+    LibVLC
+}
 
-    public enum AppTheme
-    {
-        Dark,
-        Light,
-        Custom
-    }
+public enum AppTheme
+{
+    Dark,
+    Light,
+    Custom
+}
 
-    public enum DownloadQuality
-    {
-        HighestQuality,
-        LowestQuality
-    }
+public enum DownloadQuality
+{
+    HighestQuality,
+    LowestQuality
+}
 
-    public enum StoryViewType
-    {
-        NewOne,
-        OldOne
-    }
+public enum StoryViewType
+{
+    NewOne,
+    OldOne
 }

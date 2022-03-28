@@ -4,20 +4,19 @@ using System.IO;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+namespace PoliNetworkBot_CSharp.Code.Utils;
+
+internal static class DirectoryUtils
 {
-    internal static class DirectoryUtils
+    internal static void CreateDirectory(string v)
     {
-        internal static void CreateDirectory(string v)
+        try
         {
-            try
-            {
-                Directory.CreateDirectory(v);
-            }
-            catch
-            {
-                // ignored
-            }
+            Directory.CreateDirectory(v);
+        }
+        catch
+        {
+            // ignored
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum LogSeverityLevel
 {
-    public enum LogSeverityLevel
-    {
-        EMERGENCY,
-        ALERT,
-        CRITICAL,
-        ERROR,
-        WARNING,
-        NOTICE,
-        INFO,
-        DEBUG
-    }
+    EMERGENCY,
+    ALERT,
+    CRITICAL,
+    ERROR,
+    WARNING,
+    NOTICE,
+    INFO,
+    DEBUG
 }

@@ -1,7 +1,6 @@
-﻿namespace Minista.Helpers
+﻿namespace Minista.Helpers;
+
+internal enum FileAccessMode
 {
-    internal enum FileAccessMode
-    {
-        Read
-    }
+    Read
 }

@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaRegistrationMethod
 {
-    public enum InstaRegistrationMethod
-    {
-        Email,
-        Phone
-    }
+    Email,
+    Phone
 }

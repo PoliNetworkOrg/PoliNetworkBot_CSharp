@@ -1,33 +1,32 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers.Web;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaWebAccountInfoConverter : IObjectConverter<InstaWebAccountInfo, InstaWebSettingsPageResponse>
 {
-    internal class InstaWebAccountInfoConverter : IObjectConverter<InstaWebAccountInfo, InstaWebSettingsPageResponse>
+    public InstaWebSettingsPageResponse SourceObject { get; set; }
+
+    public InstaWebAccountInfo Convert()
     {
-        public InstaWebSettingsPageResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaWebAccountInfo Convert()
+        var info = new InstaWebAccountInfo
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            JoinedDate = SourceObject.DateJoined?.Data?.Timestamp != null
+                ? SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds()
+                : DateTime.MinValue,
+            SwitchedToBusinessDate = SourceObject.SwitchedToBusiness?.Data?.Timestamp != null
+                ? SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds()
+                : DateTime.MinValue
+        };
 
-            var info = new InstaWebAccountInfo
-            {
-                JoinedDate = SourceObject.DateJoined?.Data?.Timestamp != null
-                    ? SourceObject.DateJoined?.Data?.Timestamp.Value.FromUnixTimeSeconds()
-                    : DateTime.MinValue,
-                SwitchedToBusinessDate = SourceObject.SwitchedToBusiness?.Data?.Timestamp != null
-                    ? SourceObject.SwitchedToBusiness?.Data?.Timestamp.Value.FromUnixTimeSeconds()
-                    : DateTime.MinValue
-            };
-
-            return info;
-        }
+        return info;
     }
 }

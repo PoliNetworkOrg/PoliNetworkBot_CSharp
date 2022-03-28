@@ -1,35 +1,34 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaAnimatedImageMediaConverter : IObjectConverter<InstaAnimatedImageMedia, InstaAnimatedImageMediaResponse>
 {
-    internal class
-        InstaAnimatedImageMediaConverter : IObjectConverter<InstaAnimatedImageMedia, InstaAnimatedImageMediaResponse>
+    public InstaAnimatedImageMediaResponse SourceObject { get; set; }
+
+    public InstaAnimatedImageMedia Convert()
     {
-        public InstaAnimatedImageMediaResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaAnimatedImageMedia Convert()
+        var animatedMedia = new InstaAnimatedImageMedia
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Height = double.Parse(SourceObject.Height ?? "0"),
+            Mp4Url = SourceObject.Mp4,
+            Mp4Size = double.Parse(SourceObject.Mp4Size ?? "0"),
+            Size = double.Parse(SourceObject.Size ?? "0"),
+            Url = SourceObject.Url,
+            WebpUrl = SourceObject.Webp,
+            WebpSize = double.Parse(SourceObject.WebpSize ?? "0"),
+            Width = double.Parse(SourceObject.Width ?? "0")
+        };
 
-            var animatedMedia = new InstaAnimatedImageMedia
-            {
-                Height = double.Parse(SourceObject.Height ?? "0"),
-                Mp4Url = SourceObject.Mp4,
-                Mp4Size = double.Parse(SourceObject.Mp4Size ?? "0"),
-                Size = double.Parse(SourceObject.Size ?? "0"),
-                Url = SourceObject.Url,
-                WebpUrl = SourceObject.Webp,
-                WebpSize = double.Parse(SourceObject.WebpSize ?? "0"),
-                Width = double.Parse(SourceObject.Width ?? "0")
-            };
-
-            return animatedMedia;
-        }
+        return animatedMedia;
     }
 }

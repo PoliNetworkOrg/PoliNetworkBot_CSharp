@@ -5,29 +5,28 @@ using System.Net;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers
+namespace InstagramApiSharp.Helpers;
+
+public class InstaProxy : IWebProxy
 {
-    public class InstaProxy : IWebProxy
+    private readonly string ipaddress;
+    private readonly string port;
+
+    public InstaProxy(string ipaddress, string port)
     {
-        private readonly string ipaddress;
-        private readonly string port;
-
-        public InstaProxy(string ipaddress, string port)
-        {
-            this.ipaddress = ipaddress;
-            this.port = port;
-        }
-
-        public Uri GetProxy(Uri destination)
-        {
-            return new Uri($"http://{ipaddress}:{port}");
-        }
-
-        public bool IsBypassed(Uri host)
-        {
-            return false;
-        }
-
-        public ICredentials Credentials { get; set; }
+        this.ipaddress = ipaddress;
+        this.port = port;
     }
+
+    public Uri GetProxy(Uri destination)
+    {
+        return new Uri($"http://{ipaddress}:{port}");
+    }
+
+    public bool IsBypassed(Uri host)
+    {
+        return false;
+    }
+
+    public ICredentials Credentials { get; set; }
 }

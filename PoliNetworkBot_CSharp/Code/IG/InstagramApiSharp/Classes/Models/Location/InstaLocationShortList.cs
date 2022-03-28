@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaLocationShortList : List<InstaLocationShort>
 {
-    public class InstaLocationShortList : List<InstaLocationShort>
-    {
-    }
 }

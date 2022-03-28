@@ -1,33 +1,32 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaStoryCountdownListConverter : IObjectConverter<InstaStoryCountdownList, InstaStoryCountdownListResponse>
 {
-    internal class
-        InstaStoryCountdownListConverter : IObjectConverter<InstaStoryCountdownList, InstaStoryCountdownListResponse>
+    public InstaStoryCountdownListResponse SourceObject { get; set; }
+
+    public InstaStoryCountdownList Convert()
     {
-        public InstaStoryCountdownListResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryCountdownList Convert()
+        var storyCountdownList = new InstaStoryCountdownList
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            MoreAvailable = SourceObject.MoreAvailable ?? false,
+            MaxId = SourceObject.MaxId
+        };
 
-            var storyCountdownList = new InstaStoryCountdownList
-            {
-                MoreAvailable = SourceObject.MoreAvailable ?? false,
-                MaxId = SourceObject.MaxId
-            };
+        if (!(SourceObject.Items?.Count > 0)) return storyCountdownList;
+        foreach (var countdown in SourceObject.Items)
+            storyCountdownList.Items.Add(ConvertersFabric.GetStoryCountdownStickerItemConverter(countdown).Convert());
 
-            if (!(SourceObject.Items?.Count > 0)) return storyCountdownList;
-            foreach (var countdown in SourceObject.Items)
-                storyCountdownList.Items.Add(ConvertersFabric.GetStoryCountdownStickerItemConverter(countdown).Convert());
-
-            return storyCountdownList;
-        }
+        return storyCountdownList;
     }
 }

@@ -1,38 +1,38 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaStoryCountdownItemConverter : IObjectConverter<InstaStoryCountdownItem, InstaStoryCountdownItemResponse>
 {
-    internal class
-        InstaStoryCountdownItemConverter : IObjectConverter<InstaStoryCountdownItem, InstaStoryCountdownItemResponse>
+    public InstaStoryCountdownItemResponse SourceObject { get; set; }
+
+    public InstaStoryCountdownItem Convert()
     {
-        public InstaStoryCountdownItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryCountdownItem Convert()
+        var storyCountdownItem = new InstaStoryCountdownItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Height = SourceObject.Height,
+            IsHidden = SourceObject.IsHidden,
+            IsPinned = SourceObject.IsPinned,
+            Rotation = SourceObject.Rotation,
+            Width = SourceObject.Width,
+            X = SourceObject.X,
+            Y = SourceObject.Y,
+            Z = SourceObject.Z
+        };
 
-            var storyCountdownItem = new InstaStoryCountdownItem
-            {
-                Height = SourceObject.Height,
-                IsHidden = SourceObject.IsHidden,
-                IsPinned = SourceObject.IsPinned,
-                Rotation = SourceObject.Rotation,
-                Width = SourceObject.Width,
-                X = SourceObject.X,
-                Y = SourceObject.Y,
-                Z = SourceObject.Z
-            };
+        if (SourceObject.CountdownSticker != null)
+            storyCountdownItem.CountdownSticker = ConvertersFabric
+                .GetStoryCountdownStickerItemConverter(SourceObject.CountdownSticker).Convert();
 
-            if (SourceObject.CountdownSticker != null)
-                storyCountdownItem.CountdownSticker = ConvertersFabric.GetStoryCountdownStickerItemConverter(SourceObject.CountdownSticker).Convert();
-
-            return storyCountdownItem;
-        }
+        return storyCountdownItem;
     }
 }

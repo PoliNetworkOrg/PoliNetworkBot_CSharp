@@ -1,15 +1,14 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastAddToPostLive
 {
-    public class InstaBroadcastAddToPostLive
-    {
-        public string Pk { get; set; }
+    public string Pk { get; set; }
 
-        public InstaUserShortFriendshipFull User { get; set; }
+    public InstaUserShortFriendshipFull User { get; set; }
 
-        public InstaBroadcastList Broadcasts { get; set; } = new();
+    public InstaBroadcastList Broadcasts { get; set; } = new();
 
-        public double LastSeenBroadcastTs { get; set; }
+    public double LastSeenBroadcastTs { get; set; }
 
-        public bool CanReply { get; set; }
-    }
+    public bool CanReply { get; set; }
 }

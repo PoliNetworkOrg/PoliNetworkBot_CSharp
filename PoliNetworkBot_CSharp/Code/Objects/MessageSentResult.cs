@@ -6,67 +6,66 @@ using TeleSharp.TL;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects;
+
+public class MessageSentResult
 {
-    public class MessageSentResult
+    private readonly ChatType? chatType;
+    private readonly object message;
+    private readonly bool success;
+    private long? messageId;
+
+    public MessageSentResult(bool success, object message, ChatType? chatType)
     {
-        private readonly ChatType? chatType;
-        private readonly object message;
-        private readonly bool success;
-        private long? messageId;
+        this.success = success;
+        this.message = message;
+        this.chatType = chatType;
 
-        public MessageSentResult(bool success, object message, ChatType? chatType)
+        SetMessageId();
+    }
+
+    private void SetMessageId()
+    {
+        switch (message)
         {
-            this.success = success;
-            this.message = message;
-            this.chatType = chatType;
+            case null:
+                return;
 
-            SetMessageId();
+            case TLMessage m1:
+                messageId = m1.Id;
+                break;
+
+            case Message m2:
+                messageId = m2.MessageId;
+                break;
         }
+    }
 
-        private void SetMessageId()
-        {
-            switch (message)
-            {
-                case null:
-                    return;
+    internal object GetMessage()
+    {
+        return message;
+    }
 
-                case TLMessage m1:
-                    messageId = m1.Id;
-                    break;
+    internal ChatType? GetChatType()
+    {
+        return chatType;
+    }
 
-                case Message m2:
-                    messageId = m2.MessageId;
-                    break;
-            }
-        }
+    internal bool IsSuccess()
+    {
+        return success;
+    }
 
-        internal object GetMessage()
-        {
-            return message;
-        }
+    internal long? GetMessageID()
+    {
+        return messageId;
+    }
 
-        internal ChatType? GetChatType()
-        {
-            return chatType;
-        }
+    internal string GetLink(string chatId, bool IsPrivate)
+    {
+        if (IsPrivate)
+            return "https://t.me/c/" + chatId + "/" + GetMessageID();
 
-        internal bool IsSuccess()
-        {
-            return success;
-        }
-
-        internal long? GetMessageID()
-        {
-            return messageId;
-        }
-
-        internal string GetLink(string chatId, bool IsPrivate)
-        {
-            if (IsPrivate)
-                return "https://t.me/c/" + chatId + "/" + GetMessageID();
-
-            return "https://t.me/" + chatId + "/" + GetMessageID();
-        }
+        return "https://t.me/" + chatId + "/" + GetMessageID();
     }
 }

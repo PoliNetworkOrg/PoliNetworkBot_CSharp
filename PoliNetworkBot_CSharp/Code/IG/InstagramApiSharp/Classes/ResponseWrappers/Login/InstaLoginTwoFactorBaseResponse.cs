@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+internal class InstaLoginTwoFactorBaseResponse
 {
-    internal class InstaLoginTwoFactorBaseResponse
-    {
-        [JsonProperty("message")] public string Message { get; set; }
+    [JsonProperty("message")] public string Message { get; set; }
 
-        [JsonProperty("error_type")] public string ErrorType { get; set; }
+    [JsonProperty("error_type")] public string ErrorType { get; set; }
 
-        [JsonProperty("challenge")] public InstaChallengeLoginInfo Challenge { get; set; }
-    }
+    [JsonProperty("challenge")] public InstaChallengeLoginInfo Challenge { get; set; }
 }

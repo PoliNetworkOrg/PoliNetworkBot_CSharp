@@ -1,30 +1,29 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaTVChannelType
 {
-    public enum InstaTVChannelType
-    {
-        /// <summary>
-        ///     Chrono following
-        /// </summary>
-        ChronoFollowing,
+    /// <summary>
+    ///     Chrono following
+    /// </summary>
+    ChronoFollowing,
 
-        /// <summary>
-        ///     Popular
-        /// </summary>
-        Popular,
+    /// <summary>
+    ///     Popular
+    /// </summary>
+    Popular,
 
-        /// <summary>
-        ///     Continue watching
-        /// </summary>
-        ContinueWatching,
+    /// <summary>
+    ///     Continue watching
+    /// </summary>
+    ContinueWatching,
 
-        /// <summary>
-        ///     User => self channel
-        /// </summary>
-        User,
+    /// <summary>
+    ///     User => self channel
+    /// </summary>
+    User,
 
-        /// <summary>
-        ///     For you => suggested
-        /// </summary>
-        ForYou
-    }
+    /// <summary>
+    ///     For you => suggested
+    /// </summary>
+    ForYou
 }

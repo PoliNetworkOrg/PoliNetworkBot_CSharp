@@ -1,51 +1,51 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaAccountDetailsConverter : IObjectConverter<InstaAccountDetails, InstaAccountDetailsResponse>
 {
-    internal class InstaAccountDetailsConverter : IObjectConverter<InstaAccountDetails, InstaAccountDetailsResponse>
+    public InstaAccountDetailsResponse SourceObject { get; set; }
+
+    public InstaAccountDetails Convert()
     {
-        public InstaAccountDetailsResponse SourceObject { get; set; }
-
-        public InstaAccountDetails Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var details = new InstaAccountDetails
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var details = new InstaAccountDetails
-            {
-                DateJoined = DateTimeHelper.FromUnixTimeSeconds(SourceObject.DateJoined ?? 0)
-            };
-            if (SourceObject.FormerUsernameInfo != null)
-                details.HasFormerUsernames = SourceObject.FormerUsernameInfo.HasFormerUsernames ?? false;
+            DateJoined = DateTimeHelper.FromUnixTimeSeconds(SourceObject.DateJoined ?? 0)
+        };
+        if (SourceObject.FormerUsernameInfo != null)
+            details.HasFormerUsernames = SourceObject.FormerUsernameInfo.HasFormerUsernames ?? false;
 
-            if (SourceObject.SharedFollowerAccountsInfo != null)
-                details.HasSharedFollowerAccounts =
-                    SourceObject.SharedFollowerAccountsInfo.HasSharedFollowerAccounts ?? false;
+        if (SourceObject.SharedFollowerAccountsInfo != null)
+            details.HasSharedFollowerAccounts =
+                SourceObject.SharedFollowerAccountsInfo.HasSharedFollowerAccounts ?? false;
 
-            if (SourceObject.AdsInfo != null)
-                try
-                {
-                    details.AdsInfo = ConvertersFabric.GetAdsInfoConverter(SourceObject.AdsInfo).Convert();
-                }
-                catch
-                {
-                }
-
-            if (SourceObject.PrimaryCountryInfo == null) return details;
+        if (SourceObject.AdsInfo != null)
             try
             {
-                details.PrimaryCountryInfo = ConvertersFabric.GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
+                details.AdsInfo = ConvertersFabric.GetAdsInfoConverter(SourceObject.AdsInfo).Convert();
             }
             catch
             {
             }
 
-            return details;
+        if (SourceObject.PrimaryCountryInfo == null) return details;
+        try
+        {
+            details.PrimaryCountryInfo =
+                ConvertersFabric.GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
         }
+        catch
+        {
+        }
+
+        return details;
     }
 }

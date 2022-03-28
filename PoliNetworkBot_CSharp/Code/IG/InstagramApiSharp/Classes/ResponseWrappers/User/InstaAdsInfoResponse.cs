@@ -4,12 +4,11 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class InstaAdsInfoResponse
-    {
-        [JsonProperty("has_ads")] public bool? HasAds { get; set; }
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("ads_url")] public string AdsUrl { get; set; }
-    }
+public class InstaAdsInfoResponse
+{
+    [JsonProperty("has_ads")] public bool? HasAds { get; set; }
+
+    [JsonProperty("ads_url")] public string AdsUrl { get; set; }
 }

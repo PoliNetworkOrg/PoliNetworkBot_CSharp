@@ -1,47 +1,46 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaTVSearchResultConverter : IObjectConverter<InstaTVSearchResult, InstaTVSearchResultResponse>
 {
-    internal class InstaTVSearchResultConverter : IObjectConverter<InstaTVSearchResult, InstaTVSearchResultResponse>
+    public InstaTVSearchResultResponse SourceObject { get; set; }
+
+    public InstaTVSearchResult Convert()
     {
-        public InstaTVSearchResultResponse SourceObject { get; set; }
+        if (SourceObject == null)
+            throw new ArgumentNullException("SourceObject");
 
-        public InstaTVSearchResult Convert()
+        var search = new InstaTVSearchResult
         {
-            if (SourceObject == null)
-                throw new ArgumentNullException("SourceObject");
+            Type = SourceObject.Type
+        };
 
-            var search = new InstaTVSearchResult
-            {
-                Type = SourceObject.Type
-            };
-
-            if (SourceObject.Channel != null)
-                try
-                {
-                    search.Channel = ConvertersFabric.GetTvChannelConverter(SourceObject.Channel).Convert();
-                }
-                catch
-                {
-                }
-
-            if (SourceObject.User == null) return search;
+        if (SourceObject.Channel != null)
             try
             {
-                search.User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User)
-                    .Convert();
+                search.Channel = ConvertersFabric.GetTvChannelConverter(SourceObject.Channel).Convert();
             }
             catch
             {
             }
 
-            return search;
+        if (SourceObject.User == null) return search;
+        try
+        {
+            search.User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User)
+                .Convert();
         }
+        catch
+        {
+        }
+
+        return search;
     }
 }

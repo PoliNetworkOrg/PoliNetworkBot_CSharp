@@ -1,10 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum ReplyMarkupEnum
 {
-    public enum ReplyMarkupEnum
-    {
-        FORCED,
-        REMOVE,
-        CHOICE,
-        INLINE
-    }
+    FORCED,
+    REMOVE,
+    CHOICE,
+    INLINE
 }

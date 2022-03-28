@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public enum InstaDirectThreadType
 {
-    public enum InstaDirectThreadType
-    {
-        Private = 0
-    }
+    Private = 0
 }

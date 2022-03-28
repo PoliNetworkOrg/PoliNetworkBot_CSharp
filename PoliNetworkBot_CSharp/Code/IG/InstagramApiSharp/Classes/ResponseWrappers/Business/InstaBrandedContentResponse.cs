@@ -1,18 +1,17 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaBrandedContentResponse
 {
-    public class InstaBrandedContentResponse
-    {
-        [JsonProperty("require_approval")] public bool RequireApproval { get; set; }
+    [JsonProperty("require_approval")] public bool RequireApproval { get; set; }
 
-        [JsonProperty("whitelisted_users")] public List<InstaUserShortResponse> WhitelistedUsers { get; set; }
+    [JsonProperty("whitelisted_users")] public List<InstaUserShortResponse> WhitelistedUsers { get; set; }
 
-        [JsonProperty("status")] public string Status { get; set; }
-    }
+    [JsonProperty("status")] public string Status { get; set; }
 }

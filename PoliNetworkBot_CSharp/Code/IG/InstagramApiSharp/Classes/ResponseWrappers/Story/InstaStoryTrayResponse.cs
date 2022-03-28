@@ -1,20 +1,19 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaStoryTrayResponse
 {
-    public class InstaStoryTrayResponse
-    {
-        [JsonProperty("id")] public long Id { get; set; }
+    [JsonProperty("id")] public long Id { get; set; }
 
-        [JsonProperty("top_live")] public InstaTopLiveResponse TopLive { get; set; } = new();
+    [JsonProperty("top_live")] public InstaTopLiveResponse TopLive { get; set; } = new();
 
-        [JsonProperty("is_portrait")] public bool IsPortrait { get; set; }
+    [JsonProperty("is_portrait")] public bool IsPortrait { get; set; }
 
-        [JsonProperty("tray")] public List<InstaStoryResponse> Tray { get; set; } = new();
-    }
+    [JsonProperty("tray")] public List<InstaStoryResponse> Tray { get; set; } = new();
 }

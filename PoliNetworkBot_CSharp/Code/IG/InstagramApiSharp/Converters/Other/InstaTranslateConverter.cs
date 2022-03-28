@@ -1,27 +1,26 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaTranslateConverter : IObjectConverter<InstaTranslate, InstaTranslateResponse>
 {
-    internal class InstaTranslateConverter : IObjectConverter<InstaTranslate, InstaTranslateResponse>
+    public InstaTranslateResponse SourceObject { get; set; }
+
+    public InstaTranslate Convert()
     {
-        public InstaTranslateResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("SourceObject");
 
-        public InstaTranslate Convert()
+        var translate = new InstaTranslate
         {
-            if (SourceObject == null) throw new ArgumentNullException("SourceObject");
-
-            var translate = new InstaTranslate
-            {
-                Id = SourceObject.Id,
-                Translation = SourceObject.Translation
-            };
-            return translate;
-        }
+            Id = SourceObject.Id,
+            Translation = SourceObject.Translation
+        };
+        return translate;
     }
 }

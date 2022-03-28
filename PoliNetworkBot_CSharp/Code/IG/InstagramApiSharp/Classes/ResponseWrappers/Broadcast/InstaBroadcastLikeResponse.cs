@@ -4,16 +4,15 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaBroadcastLikeResponse
 {
-    public class InstaBroadcastLikeResponse
-    {
-        [JsonProperty("likes")] public int Likes { get; set; }
+    [JsonProperty("likes")] public int Likes { get; set; }
 
-        [JsonProperty("burst_likes")] public int BurstLikes { get; set; }
+    [JsonProperty("burst_likes")] public int BurstLikes { get; set; }
 
-        [JsonProperty("status")] public string Status { get; set; }
+    [JsonProperty("status")] public string Status { get; set; }
 
-        [JsonProperty("like_ts")] public long? LikeTs { get; set; }
-    }
+    [JsonProperty("like_ts")] public long? LikeTs { get; set; }
 }

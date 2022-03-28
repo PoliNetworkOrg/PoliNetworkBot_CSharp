@@ -1,21 +1,20 @@
 ﻿#region
 
+using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaBlockedUsersResponse : InstaDefault
 {
-    public class InstaBlockedUsersResponse : InstaDefault
-    {
-        [JsonProperty("blocked_list")] public List<InstaBlockedUserInfoResponse> BlockedList { get; set; }
+    [JsonProperty("blocked_list")] public List<InstaBlockedUserInfoResponse> BlockedList { get; set; }
 
-        [JsonProperty("big_list")] public bool? BigList { get; set; }
+    [JsonProperty("big_list")] public bool? BigList { get; set; }
 
-        [JsonProperty("page_size")] public int? PageSize { get; set; }
+    [JsonProperty("page_size")] public int? PageSize { get; set; }
 
-        [JsonProperty("max_id")] public string MaxId { get; set; }
-    }
+    [JsonProperty("max_id")] public string MaxId { get; set; }
 }

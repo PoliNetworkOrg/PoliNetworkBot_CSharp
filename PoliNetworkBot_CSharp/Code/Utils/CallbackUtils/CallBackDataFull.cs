@@ -1,67 +1,68 @@
-﻿using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 
-namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
+#endregion
+
+namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
+public class CallBackDataFull
 {
-    [System.Serializable]
-    [JsonObject(MemberSerialization.Fields)]
-    public class CallBackDataFull
+    public Dictionary<string, CallbackGenericData> callbackDatas = new();
+    public BigInteger last = 0;
+
+    internal void Add(string key, CallbackGenericData callbackGenericData)
     {
-        public BigInteger last = 0;
-        public Dictionary<string, CallbackGenericData> callbackDatas = new();
+        callbackDatas.Add(key, callbackGenericData);
+    }
 
-        internal void Add(string key, CallbackGenericData callbackGenericData)
+    internal void BackupToFile()
+    {
+        try
         {
-            this.callbackDatas.Add(key, callbackGenericData);
+            File.WriteAllText(Paths.Data.CallbackData, JsonConvert.SerializeObject(this));
+        }
+        catch
+        {
+            ;
+        }
+    }
+
+    internal BigInteger GetLast()
+    {
+        BigInteger r = 0;
+        lock (this)
+        {
+            r = last;
+            last++;
         }
 
-        internal void BackupToFile()
-        {
-            try
-            {
-                File.WriteAllText(Paths.Data.CallbackData, JsonConvert.SerializeObject(this));
-            }
-            catch
-            {
-                ;
-            }
-        }
+        return r;
+    }
 
-        internal BigInteger GetLast()
-        {
-            BigInteger r = 0;
-            lock (this)
-            {
-                r = this.last;
-                this.last++;
-            }
+    internal void UpdateAndRun(CallbackQueryEventArgs callbackQueryEventArgs, int answer, string key)
+    {
+        callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
+        callbackDatas[key].SelectedAnswer = answer;
+        callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+    }
 
-            return r;
-        }
-
-        internal void UpdateAndRun(CallbackQueryEventArgs callbackQueryEventArgs, int answer, string key)
+    internal void ChechCallbackDataExpired()
+    {
+        List<string> toRemove = new();
+        toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));
+        lock (this)
         {
-            callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
-            callbackDatas[key].SelectedAnswer = answer;
-            callbackDatas[key].RunAfterSelection(callbackDatas[key]);
-        }
-
-        internal void ChechCallbackDataExpired()
-        {
-            List<string> toRemove = new();
-            toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));
-            lock (this)
-            {
-                foreach (var v in toRemove)
-                {
-                    this.callbackDatas.Remove(v);
-                }
-            }
+            foreach (var v in toRemove) callbackDatas.Remove(v);
         }
     }
 }

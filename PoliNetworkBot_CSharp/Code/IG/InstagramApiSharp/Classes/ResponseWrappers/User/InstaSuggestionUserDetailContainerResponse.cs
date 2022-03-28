@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaSuggestionUserDetailContainerResponse : InstaDefault
 {
-    public class InstaSuggestionUserDetailContainerResponse : InstaDefault
-    {
-        [JsonProperty("items")] public InstaSuggestionItemListResponse Items { get; set; } = new();
-    }
+    [JsonProperty("items")] public InstaSuggestionItemListResponse Items { get; set; } = new();
 }

@@ -1,9 +1,8 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+internal enum ToExit
 {
-    internal enum ToExit
-    {
-        EXIT,
-        STAY,
-        SKIP
-    }
+    EXIT,
+    STAY,
+    SKIP
 }

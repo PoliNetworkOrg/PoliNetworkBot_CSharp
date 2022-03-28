@@ -1,29 +1,28 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public class VideoUploadJobResponse
 {
-    public class VideoUploadJobResponse
-    {
-        [JsonProperty("video_upload_urls")] public List<VideoUploadUrl> VideoUploadUrls { get; set; }
+    [JsonProperty("video_upload_urls")] public List<VideoUploadUrl> VideoUploadUrls { get; set; }
 
-        [JsonProperty("upload_id")] public string UploadId { get; set; }
+    [JsonProperty("upload_id")] public string UploadId { get; set; }
 
-        [JsonProperty("xsharing_nonces")] public object XSharingNonces { get; set; }
+    [JsonProperty("xsharing_nonces")] public object XSharingNonces { get; set; }
 
-        [JsonProperty("status")] public string Status { get; set; }
-    }
+    [JsonProperty("status")] public string Status { get; set; }
+}
 
-    public class VideoUploadUrl
-    {
-        [JsonProperty("url")] public string Url { get; set; }
+public class VideoUploadUrl
+{
+    [JsonProperty("url")] public string Url { get; set; }
 
-        [JsonProperty("job")] public string Job { get; set; }
+    [JsonProperty("job")] public string Job { get; set; }
 
-        [JsonProperty("expires")] public double Expires { get; set; }
-    }
+    [JsonProperty("expires")] public double Expires { get; set; }
 }

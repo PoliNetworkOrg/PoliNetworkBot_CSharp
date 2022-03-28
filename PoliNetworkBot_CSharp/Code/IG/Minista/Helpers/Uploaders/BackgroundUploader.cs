@@ -1,25 +1,24 @@
 ﻿#region
 
-using InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
+using InstagramApiSharp.API;
 
 #endregion
 
-namespace Minista.Helpers
+namespace Minista.Helpers;
+
+internal class BackgroundUploader
 {
-    internal class BackgroundUploader
+    public readonly List<Tuple<string, string>> list = new();
+
+    internal void SetRequestHeader(string v1, string v2)
     {
-        public readonly List<Tuple<string, string>> list = new();
+        list.Add(new Tuple<string, string>(v1, v2));
+    }
 
-        internal void SetRequestHeader(string v1, string v2)
-        {
-            list.Add(new Tuple<string, string>(v1, v2));
-        }
-
-        internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstaApi instaApi)
-        {
-            return new UploadOperation(instaUri, file, this, instaApi);
-        }
+    internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstaApi instaApi)
+    {
+        return new UploadOperation(instaUri, file, this, instaApi);
     }
 }

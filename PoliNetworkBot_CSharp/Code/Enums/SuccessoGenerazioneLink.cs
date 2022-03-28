@@ -1,9 +1,8 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum SuccessoGenerazioneLink
 {
-    public enum SuccessoGenerazioneLink
-    {
-        ERRORE,
-        NUOVO_LINK,
-        RICICLATO
-    }
+    ERRORE,
+    NUOVO_LINK,
+    RICICLATO
 }

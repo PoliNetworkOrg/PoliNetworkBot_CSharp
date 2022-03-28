@@ -5,18 +5,17 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaStoryPollVotersList
 {
-    public class InstaStoryPollVotersList
-    {
-        public long PollId { get; set; }
+    public long PollId { get; set; }
 
-        public List<InstaStoryVoterItem> Voters { get; set; } = new();
+    public List<InstaStoryVoterItem> Voters { get; set; } = new();
 
-        public string MaxId { get; set; }
+    public string MaxId { get; set; }
 
-        public bool MoreAvailable { get; set; }
+    public bool MoreAvailable { get; set; }
 
-        public DateTime LatestPollVoteTime { get; set; }
-    }
+    public DateTime LatestPollVoteTime { get; set; }
 }

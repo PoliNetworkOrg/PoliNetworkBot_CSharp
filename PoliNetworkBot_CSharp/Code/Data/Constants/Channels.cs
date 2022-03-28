@@ -1,7 +1,6 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants
+﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants;
+
+public static class Channels
 {
-    public static class Channels
-    {
-        public const long PoliAssociazioni = -1001314601927;
-    }
+    public const long PoliAssociazioni = -1001314601927;
 }

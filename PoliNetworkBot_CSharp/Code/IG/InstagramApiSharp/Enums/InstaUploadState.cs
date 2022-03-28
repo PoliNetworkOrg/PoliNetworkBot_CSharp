@@ -1,15 +1,14 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaUploadState
 {
-    public enum InstaUploadState
-    {
-        Preparing,
-        Uploading,
-        Uploaded,
-        UploadingThumbnail,
-        ThumbnailUploaded,
-        Configuring,
-        Configured,
-        Completed,
-        Error
-    }
+    Preparing,
+    Uploading,
+    Uploaded,
+    UploadingThumbnail,
+    ThumbnailUploaded,
+    Configuring,
+    Configured,
+    Completed,
+    Error
 }

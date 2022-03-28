@@ -4,25 +4,24 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaTVSearch
 {
-    public class InstaTVSearch
-    {
-        public List<InstaTVSearchResult> Results { get; set; } = new();
+    public List<InstaTVSearchResult> Results { get; set; } = new();
 
-        public int NumResults { get; set; }
+    public int NumResults { get; set; }
 
-        public string RankToken { get; set; }
+    public string RankToken { get; set; }
 
-        internal string Status { get; set; }
-    }
+    internal string Status { get; set; }
+}
 
-    public class InstaTVSearchResult
-    {
-        public string Type { get; set; }
+public class InstaTVSearchResult
+{
+    public string Type { get; set; }
 
-        public InstaUserShortFriendship User { get; set; }
+    public InstaUserShortFriendship User { get; set; }
 
-        public InstaTVChannel Channel { get; set; }
-    }
+    public InstaTVChannel Channel { get; set; }
 }

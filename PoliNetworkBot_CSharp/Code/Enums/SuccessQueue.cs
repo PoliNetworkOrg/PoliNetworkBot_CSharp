@@ -1,10 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum SuccessQueue
 {
-    public enum SuccessQueue
-    {
-        INVALID_ID_TO_DB,
-        INVALID_OBJECT,
-        SUCCESS,
-        DATE_INVALID
-    }
+    INVALID_ID_TO_DB,
+    INVALID_OBJECT,
+    SUCCESS,
+    DATE_INVALID
 }

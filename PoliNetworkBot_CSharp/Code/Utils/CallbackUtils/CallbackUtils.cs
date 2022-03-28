@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,19 +7,25 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 
 public class CallbackUtils
 {
+    public const string SEPARATOR = "-";
     public static CallBackDataFull callBackDataFull = new();
 
-    public const string SEPARATOR = "-";
-
-    public static async Task<MessageSentResult> SendMessageWithCallbackQueryAsync(CallbackGenericData callbackGenericData,
+    public static async Task<MessageSentResult> SendMessageWithCallbackQueryAsync(
+        CallbackGenericData callbackGenericData,
         long chatToSendTo,
         Language text, TelegramBotAbstract telegramBotAbstract, ChatType chatType, string lang, string username,
         bool splitMessage, long? replyToMessageId = null)
@@ -29,13 +33,15 @@ public class CallbackUtils
         callbackGenericData.Bot = telegramBotAbstract;
         callbackGenericData.InsertedTime = DateTime.Now;
 
-        var newLast = CallbackUtils.GetLast();
+        var newLast = GetLast();
         var key = GetKeyFromNumber(newLast);
         callbackGenericData.id = key;
         callBackDataFull.Add(key, callbackGenericData);
 
-        ReplyMarkupObject replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
-        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang, ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage, replyToMessageId: replyToMessageId);
+        var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
+        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
+            ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
+            replyToMessageId: replyToMessageId);
         callbackGenericData.MessageSent = messageSent;
 
         return messageSent;
@@ -60,7 +66,8 @@ public class CallbackUtils
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
     {
-        var x2 = callbackGenericData.options.Select((option, i1) => new List<InlineKeyboardButton> { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
+        var x2 = callbackGenericData.options.Select((option, i1) => new List<InlineKeyboardButton>
+            { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
         return new ReplyMarkupObject(inlineKeyboardMarkup);
@@ -68,7 +75,7 @@ public class CallbackUtils
 
     private static string GetKeyFromNumber(BigInteger newLast)
     {
-        string r = newLast.ToString("X");
+        var r = newLast.ToString("X");
         return r;
     }
 
@@ -98,7 +105,6 @@ public class CallbackUtils
     private static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
 #pragma warning restore CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
     {
-
         TelegramBotAbstract telegramBotClient = null;
 
         try
@@ -118,12 +124,13 @@ public class CallbackUtils
         return false;
     }
 
-    private static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
+    private static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot,
+        CallbackQueryEventArgs callbackQueryEventArgs)
     {
         try
         {
             var data = callbackQueryEventArgs.CallbackQuery.Data;
-            if (string.IsNullOrEmpty(data)==false)
+            if (string.IsNullOrEmpty(data) == false)
             {
                 var datas = data.Split(SEPARATOR);
                 var key = datas[0];

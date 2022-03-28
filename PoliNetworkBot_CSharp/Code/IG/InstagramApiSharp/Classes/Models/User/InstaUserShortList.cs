@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaUserShortList : List<InstaUserShort>, IInstaBaseList
 {
-    public class InstaUserShortList : List<InstaUserShort>, IInstaBaseList
-    {
-        public string NextMaxId { get; set; }
-    }
+    public string NextMaxId { get; set; }
 }

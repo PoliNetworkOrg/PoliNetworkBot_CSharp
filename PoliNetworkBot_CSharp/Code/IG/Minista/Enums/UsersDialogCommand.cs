@@ -1,10 +1,9 @@
-﻿namespace Minista.Enums
+﻿namespace Minista.Enums;
+
+public enum UsersDialogCommand
 {
-    public enum UsersDialogCommand
-    {
-        Media,
-        Story,
-        Profile,
-        Broadcast
-    }
+    Media,
+    Story,
+    Profile,
+    Broadcast
 }

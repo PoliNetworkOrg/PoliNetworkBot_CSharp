@@ -1,15 +1,14 @@
-﻿namespace InstagramApiSharp.Classes.ResponseWrappers
+﻿namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public interface IInstaRecipientsResponse
 {
-    public interface IInstaRecipientsResponse
-    {
-        long Expires { get; set; }
+    long Expires { get; set; }
 
-        bool Filtered { get; set; }
+    bool Filtered { get; set; }
 
-        string RankToken { get; set; }
+    string RankToken { get; set; }
 
-        string RequestId { get; set; }
+    string RequestId { get; set; }
 
-        RankedRecipientResponse[] RankedRecipients { get; set; }
-    }
+    RankedRecipientResponse[] RankedRecipients { get; set; }
 }

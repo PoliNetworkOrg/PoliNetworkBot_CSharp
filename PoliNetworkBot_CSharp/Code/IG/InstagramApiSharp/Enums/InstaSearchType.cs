@@ -1,10 +1,9 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaSearchType
 {
-    public enum InstaSearchType
-    {
-        User,
-        Place,
-        Hashtag,
-        Unknown
-    }
+    User,
+    Place,
+    Hashtag,
+    Unknown
 }

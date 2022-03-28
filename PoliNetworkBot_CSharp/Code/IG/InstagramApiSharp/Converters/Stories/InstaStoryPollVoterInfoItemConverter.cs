@@ -1,38 +1,37 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaStoryPollVoterInfoItemConverter : IObjectConverter<InstaStoryPollVoterInfoItem,
+        InstaStoryPollVoterInfoItemResponse>
 {
-    internal class
-        InstaStoryPollVoterInfoItemConverter : IObjectConverter<InstaStoryPollVoterInfoItem,
-            InstaStoryPollVoterInfoItemResponse>
+    public InstaStoryPollVoterInfoItemResponse SourceObject { get; set; }
+
+    public InstaStoryPollVoterInfoItem Convert()
     {
-        public InstaStoryPollVoterInfoItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryPollVoterInfoItem Convert()
+        var voterInfoItem = new InstaStoryPollVoterInfoItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            LatestPollVoteTime =
+                (SourceObject.LatestPollVoteTime ?? DateTime.Now.ToUnixTime()).FromUnixTimeSeconds(),
+            MaxId = SourceObject.MaxId,
+            MoreAvailable = SourceObject.MoreAvailable,
+            PollId = SourceObject.PollId
+        };
 
-            var voterInfoItem = new InstaStoryPollVoterInfoItem
-            {
-                LatestPollVoteTime =
-                    (SourceObject.LatestPollVoteTime ?? DateTime.Now.ToUnixTime()).FromUnixTimeSeconds(),
-                MaxId = SourceObject.MaxId,
-                MoreAvailable = SourceObject.MoreAvailable,
-                PollId = SourceObject.PollId
-            };
+        if (!(SourceObject.Voters?.Count > 0)) return voterInfoItem;
+        foreach (var voter in SourceObject.Voters)
+            voterInfoItem.Voters.Add(ConvertersFabric.GetStoryPollVoterItemConverter(voter).Convert());
 
-            if (!(SourceObject.Voters?.Count > 0)) return voterInfoItem;
-            foreach (var voter in SourceObject.Voters)
-                voterInfoItem.Voters.Add(ConvertersFabric.GetStoryPollVoterItemConverter(voter).Convert());
-
-            return voterInfoItem;
-        }
+        return voterInfoItem;
     }
 }

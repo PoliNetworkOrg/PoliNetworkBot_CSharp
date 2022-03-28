@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaTopLive
-    {
-        public int RankedPosition { get; set; }
+namespace InstagramApiSharp.Classes.Models;
 
-        public List<InstaUserShortFriendshipFull> BroadcastOwners { get; set; } = new();
-    }
+public class InstaTopLive
+{
+    public int RankedPosition { get; set; }
+
+    public List<InstaUserShortFriendshipFull> BroadcastOwners { get; set; } = new();
 }

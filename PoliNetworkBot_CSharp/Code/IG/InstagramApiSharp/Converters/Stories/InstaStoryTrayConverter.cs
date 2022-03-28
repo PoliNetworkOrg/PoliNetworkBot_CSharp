@@ -1,33 +1,32 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaStoryTrayConverter : IObjectConverter<InstaStoryTray, InstaStoryTrayResponse>
 {
-    internal class InstaStoryTrayConverter : IObjectConverter<InstaStoryTray, InstaStoryTrayResponse>
+    public InstaStoryTrayResponse SourceObject { get; set; }
+
+    public InstaStoryTray Convert()
     {
-        public InstaStoryTrayResponse SourceObject { get; set; }
-
-        public InstaStoryTray Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var storyTray = new InstaStoryTray
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var storyTray = new InstaStoryTray
-            {
-                Id = SourceObject.Id,
-                IsPortrait = SourceObject.IsPortrait,
-                TopLive = ConvertersFabric.GetTopLiveConverter(SourceObject.TopLive).Convert()
-            };
+            Id = SourceObject.Id,
+            IsPortrait = SourceObject.IsPortrait,
+            TopLive = ConvertersFabric.GetTopLiveConverter(SourceObject.TopLive).Convert()
+        };
 
-            if (SourceObject.Tray == null) return storyTray;
-            foreach (var story in SourceObject.Tray.Select(item =>
-                         ConvertersFabric.GetStoryConverter(item).Convert())) storyTray.Tray.Add(story);
+        if (SourceObject.Tray == null) return storyTray;
+        foreach (var story in SourceObject.Tray.Select(item =>
+                     ConvertersFabric.GetStoryConverter(item).Convert())) storyTray.Tray.Add(story);
 
-            return storyTray;
-        }
+        return storyTray;
     }
 }

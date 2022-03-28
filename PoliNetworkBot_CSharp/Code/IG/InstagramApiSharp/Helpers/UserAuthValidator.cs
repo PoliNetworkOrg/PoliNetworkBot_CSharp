@@ -1,42 +1,41 @@
 ﻿#region
 
-using InstagramApiSharp.Classes;
 using System;
+using InstagramApiSharp.Classes;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers
+namespace InstagramApiSharp.Helpers;
+
+public class UserAuthValidate
 {
-    public class UserAuthValidate
+    public bool IsUserAuthenticated { get; internal set; }
+    public UserSessionData User { get; internal set; }
+}
+
+public static class UserAuthValidator
+{
+    public static void Validate(UserAuthValidate userAuthValidate)
     {
-        public bool IsUserAuthenticated { get; internal set; }
-        public UserSessionData User { get; internal set; }
+        ValidateUser(userAuthValidate.User);
+        ValidateLoggedIn(userAuthValidate.IsUserAuthenticated);
     }
 
-    public static class UserAuthValidator
+    public static void Validate(UserSessionData user, bool isUserAuthenticated)
     {
-        public static void Validate(UserAuthValidate userAuthValidate)
-        {
-            ValidateUser(userAuthValidate.User);
-            ValidateLoggedIn(userAuthValidate.IsUserAuthenticated);
-        }
+        ValidateUser(user);
+        ValidateLoggedIn(isUserAuthenticated);
+    }
 
-        public static void Validate(UserSessionData user, bool isUserAuthenticated)
-        {
-            ValidateUser(user);
-            ValidateLoggedIn(isUserAuthenticated);
-        }
+    private static void ValidateUser(UserSessionData user)
+    {
+        if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
+            throw new ArgumentException("user name and password must be specified");
+    }
 
-        private static void ValidateUser(UserSessionData user)
-        {
-            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
-                throw new ArgumentException("user name and password must be specified");
-        }
-
-        private static void ValidateLoggedIn(bool isUserAuthenticated)
-        {
-            if (!isUserAuthenticated)
-                throw new ArgumentException("user must be authenticated");
-        }
+    private static void ValidateLoggedIn(bool isUserAuthenticated)
+    {
+        if (!isUserAuthenticated)
+            throw new ArgumentException("user must be authenticated");
     }
 }

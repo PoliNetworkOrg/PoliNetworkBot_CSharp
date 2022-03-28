@@ -4,17 +4,16 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils
-{
-    internal class NuovoLink
-    {
-        public readonly SuccessoGenerazioneLink isNuovo; //se il link è nuovo
-        public readonly string link;
+namespace PoliNetworkBot_CSharp.Code.Utils;
 
-        public NuovoLink(SuccessoGenerazioneLink v, string link = null)
-        {
-            isNuovo = v;
-            this.link = link;
-        }
+internal class NuovoLink
+{
+    public readonly SuccessoGenerazioneLink isNuovo; //se il link è nuovo
+    public readonly string link;
+
+    public NuovoLink(SuccessoGenerazioneLink v, string link = null)
+    {
+        isNuovo = v;
+        this.link = link;
     }
 }

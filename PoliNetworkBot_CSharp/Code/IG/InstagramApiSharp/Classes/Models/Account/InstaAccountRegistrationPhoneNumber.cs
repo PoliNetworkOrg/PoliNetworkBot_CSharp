@@ -4,45 +4,44 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+internal class InstaAccountRegistrationPhoneNumber
 {
-    internal class InstaAccountRegistrationPhoneNumber
-    {
-        [JsonProperty("message")] internal InstaAccountRegistrationPhoneNumberMessage Message { get; set; }
+    [JsonProperty("message")] internal InstaAccountRegistrationPhoneNumberMessage Message { get; set; }
 
-        [JsonProperty("error_source")] internal string ErrorSource { get; set; }
+    [JsonProperty("error_source")] internal string ErrorSource { get; set; }
 
-        [JsonProperty("status")] internal string Status { get; set; }
+    [JsonProperty("status")] internal string Status { get; set; }
 
-        [JsonProperty("error_type")] internal string ErrorType { get; set; }
+    [JsonProperty("error_type")] internal string ErrorType { get; set; }
 
-        [JsonProperty("tos_version")] public string TosVersion { get; set; }
+    [JsonProperty("tos_version")] public string TosVersion { get; set; }
 
-        [JsonProperty("gdpr_required")] public bool GdprRequired { get; set; }
+    [JsonProperty("gdpr_required")] public bool GdprRequired { get; set; }
 
-        [JsonIgnore] public bool Succeed => Status.ToLower() == "ok";
-    }
+    [JsonIgnore] public bool Succeed => Status.ToLower() == "ok";
+}
 
-    internal class InstaAccountRegistrationPhoneNumberMessage
-    {
-        [JsonProperty("errors")] public string[] Errors { get; set; }
-    }
+internal class InstaAccountRegistrationPhoneNumberMessage
+{
+    [JsonProperty("errors")] public string[] Errors { get; set; }
+}
 
-    internal class InstaAccountRegistrationPhoneNumberVerifySms
-    {
-        [JsonProperty("nonce_valid")] public bool NonceValid { get; set; }
+internal class InstaAccountRegistrationPhoneNumberVerifySms
+{
+    [JsonProperty("nonce_valid")] public bool NonceValid { get; set; }
 
-        [JsonProperty("verified")] public bool Verified { get; set; }
+    [JsonProperty("verified")] public bool Verified { get; set; }
 
-        [JsonProperty("errors")] public InstaAccountRegistrationVerifyPhoneNumberErrors Errors { get; set; }
+    [JsonProperty("errors")] public InstaAccountRegistrationVerifyPhoneNumberErrors Errors { get; set; }
 
-        [JsonProperty("status")] public string Status { get; set; }
+    [JsonProperty("status")] public string Status { get; set; }
 
-        [JsonProperty("error_type")] public string ErrorType { get; set; }
-    }
+    [JsonProperty("error_type")] public string ErrorType { get; set; }
+}
 
-    internal class InstaAccountRegistrationVerifyPhoneNumberErrors
-    {
-        [JsonProperty("nonce")] public string[] Nonce { get; set; }
-    }
+internal class InstaAccountRegistrationVerifyPhoneNumberErrors
+{
+    [JsonProperty("nonce")] public string[] Nonce { get; set; }
 }

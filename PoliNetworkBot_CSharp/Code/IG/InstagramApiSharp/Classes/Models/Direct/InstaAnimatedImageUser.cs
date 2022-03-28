@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaAnimatedImageUser
-    {
-        public bool IsVerified { get; set; }
+﻿namespace InstagramApiSharp.Classes.Models;
 
-        public string Username { get; set; }
-    }
+public class InstaAnimatedImageUser
+{
+    public bool IsVerified { get; set; }
+
+    public string Username { get; set; }
 }

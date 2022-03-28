@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaRecentRecipientsResponse : InstaRecipientsResponse, IInstaRecipientsResponse
 {
-    public class InstaRecentRecipientsResponse : InstaRecipientsResponse, IInstaRecipientsResponse
-    {
-        [JsonProperty("recent_recipients")] public RankedRecipientResponse[] RankedRecipients { get; set; }
-    }
+    [JsonProperty("recent_recipients")] public RankedRecipientResponse[] RankedRecipients { get; set; }
 }

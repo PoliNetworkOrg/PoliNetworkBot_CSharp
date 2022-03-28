@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaActivityMedia
 {
-    public class InstaActivityMedia
-    {
-        public string Id { get; set; }
-        public string Image { get; set; }
-    }
+    public string Id { get; set; }
+    public string Image { get; set; }
 }

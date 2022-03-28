@@ -1,19 +1,23 @@
-﻿using Newtonsoft.Json;
+﻿#region
 
-namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils
+using System;
+using Newtonsoft.Json;
+
+#endregion
+
+namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
+public class CallbackOption
 {
-    [System.Serializable]
-    [JsonObject(MemberSerialization.Fields)]
-    public class CallbackOption
-    {
-        public string displayed;
-        public object value;
-        internal int id;
+    public string displayed;
+    internal int id;
+    public object value;
 
-        public CallbackOption(string display, object value = null)
-        {
-            this.displayed = display;
-            this.value = value;
-        }
+    public CallbackOption(string display, object value = null)
+    {
+        displayed = display;
+        this.value = value;
     }
 }

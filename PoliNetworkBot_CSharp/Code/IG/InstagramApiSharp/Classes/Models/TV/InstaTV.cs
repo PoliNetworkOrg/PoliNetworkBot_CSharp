@@ -4,14 +4,13 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaTV
 {
-    public class InstaTV
-    {
-        public List<InstaTVChannel> Channels { get; set; } = new();
+    public List<InstaTVChannel> Channels { get; set; } = new();
 
-        public InstaTVSelfChannel MyChannel { get; set; }
+    public InstaTVSelfChannel MyChannel { get; set; }
 
-        internal string Status { get; set; }
-    }
+    internal string Status { get; set; }
 }

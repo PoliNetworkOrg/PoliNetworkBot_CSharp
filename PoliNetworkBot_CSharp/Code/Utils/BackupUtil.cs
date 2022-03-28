@@ -1,13 +1,16 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿#region
 
-namespace PoliNetworkBot_CSharp.Code.Utils
+using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
+
+namespace PoliNetworkBot_CSharp.Code.Utils;
+
+internal class BackupUtil
 {
-    internal class BackupUtil
+    internal static void BackupBeforeReboot()
     {
-        internal static void BackupBeforeReboot()
-        {
-            MessagesStore.BackupToFile();
-            CallbackUtils.CallbackUtils.callBackDataFull.BackupToFile();
-        }
+        MessagesStore.BackupToFile();
+        CallbackUtils.CallbackUtils.callBackDataFull.BackupToFile();
     }
 }

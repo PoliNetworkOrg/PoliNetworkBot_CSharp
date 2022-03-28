@@ -1,5 +1,11 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -11,502 +17,495 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 #endregion
 
-namespace InstagramApiSharp.API.Processors
+namespace InstagramApiSharp.API.Processors;
+
+/// <summary>
+///     Hashtag api functions.
+/// </summary>
+internal class HashtagProcessor : IHashtagProcessor
 {
-    /// <summary>
-    ///     Hashtag api functions.
-    /// </summary>
-    internal class HashtagProcessor : IHashtagProcessor
+    private readonly AndroidDevice _deviceInfo;
+    private readonly HttpHelper _httpHelper;
+    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly InstaApi _instaApi;
+    private readonly IInstaLogger _logger;
+    private readonly UserSessionData _user;
+    private readonly UserAuthValidate _userAuthValidate;
+
+    public HashtagProcessor(AndroidDevice deviceInfo, UserSessionData user,
+        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+        UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
-        private readonly AndroidDevice _deviceInfo;
-        private readonly HttpHelper _httpHelper;
-        private readonly IHttpRequestProcessor _httpRequestProcessor;
-        private readonly InstaApi _instaApi;
-        private readonly IInstaLogger _logger;
-        private readonly UserSessionData _user;
-        private readonly UserAuthValidate _userAuthValidate;
+        _deviceInfo = deviceInfo;
+        _user = user;
+        _httpRequestProcessor = httpRequestProcessor;
+        _logger = logger;
+        _userAuthValidate = userAuthValidate;
+        _instaApi = instaApi;
+        _httpHelper = httpHelper;
+    }
 
-        public HashtagProcessor(AndroidDevice deviceInfo, UserSessionData user,
-            IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
-            UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
+    /// <summary>
+    ///     Follow a hashtag
+    /// </summary>
+    /// <param name="tagname">Tag name</param>
+    public async Task<IResult<bool>> FollowHashtagAsync(string tagname)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
         {
-            _deviceInfo = deviceInfo;
-            _user = user;
-            _httpRequestProcessor = httpRequestProcessor;
-            _logger = logger;
-            _userAuthValidate = userAuthValidate;
-            _instaApi = instaApi;
-            _httpHelper = httpHelper;
+            var instaUri = UriCreator.GetFollowHashtagUri(tagname);
+
+            var data = new JObject
+            {
+                { "_csrftoken", _user.CsrfToken },
+                { "_uid", _user.LoggedInUser.Pk.ToString() },
+                { "_uuid", _deviceInfo.DeviceGuid.ToString() }
+            };
+            var request =
+                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<bool>(response, json);
+            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
+            return obj.Status.ToLower() == "ok"
+                ? Result.Success(true)
+                : Result.UnExpectedResponse<bool>(response, json);
         }
-
-        /// <summary>
-        ///     Follow a hashtag
-        /// </summary>
-        /// <param name="tagname">Tag name</param>
-        public async Task<IResult<bool>> FollowHashtagAsync(string tagname)
+        catch (HttpRequestException httpException)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
-            {
-                var instaUri = UriCreator.GetFollowHashtagUri(tagname);
-
-                var data = new JObject
-                {
-                    { "_csrftoken", _user.CsrfToken },
-                    { "_uid", _user.LoggedInUser.Pk.ToString() },
-                    { "_uuid", _deviceInfo.DeviceGuid.ToString() }
-                };
-                var request =
-                    _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<bool>(response, json);
-                var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-                return obj.Status.ToLower() == "ok"
-                    ? Result.Success(true)
-                    : Result.UnExpectedResponse<bool>(response, json);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(bool), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<bool>(exception);
-            }
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(bool), ResponseType.NetworkProblem);
         }
-
-        /// <summary>
-        ///     Get following hashtags information
-        /// </summary>
-        /// <param name="userId">User identifier (pk)</param>
-        /// <returns>
-        ///     List of hashtags
-        /// </returns>
-        public async Task<IResult<InstaHashtagSearch>> GetFollowingHashtagsInfoAsync(long userId)
+        catch (Exception exception)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            var tags = new InstaHashtagSearch();
-            try
-            {
-                var userUri = UriCreator.GetFollowingTagsInfoUri(userId);
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
-
-                var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
-                    new InstaHashtagSuggestedDataConverter());
-
-                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
-                return Result.Success(tags);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail(exception, tags);
-            }
+            _logger?.LogException(exception);
+            return Result.Fail<bool>(exception);
         }
+    }
 
-        /// <summary>
-        ///     Gets the hashtag information by user tagname.
-        /// </summary>
-        /// <param name="tagname">Tagname</param>
-        /// <returns>Hashtag information</returns>
-        public async Task<IResult<InstaHashtag>> GetHashtagInfoAsync(string tagname)
+    /// <summary>
+    ///     Get following hashtags information
+    /// </summary>
+    /// <param name="userId">User identifier (pk)</param>
+    /// <returns>
+    ///     List of hashtags
+    /// </returns>
+    public async Task<IResult<InstaHashtagSearch>> GetFollowingHashtagsInfoAsync(long userId)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        var tags = new InstaHashtagSearch();
+        try
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
-            {
-                var userUri = UriCreator.GetTagInfoUri(tagname);
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
+            var userUri = UriCreator.GetFollowingTagsInfoUri(userId);
+            var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaHashtag>(response, json);
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
 
-                var tagInfoResponse = JsonConvert.DeserializeObject<InstaHashtagResponse>(json);
-                var tagInfo = ConvertersFabric.GetHashTagConverter(tagInfoResponse).Convert();
+            var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
+                new InstaHashtagSuggestedDataConverter());
 
-                return Result.Success(tagInfo);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaHashtag), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaHashtag>(exception);
-            }
+            tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
+            return Result.Success(tags);
         }
-
-        /// <summary>
-        ///     Get stories of an hashtag
-        /// </summary>
-        /// <param name="tagname">Tag name</param>
-        public async Task<IResult<InstaHashtagStory>> GetHashtagStoriesAsync(string tagname)
+        catch (HttpRequestException httpException)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
-            {
-                var instaUri = UriCreator.GetHashtagStoryUri(tagname);
-
-                var request =
-                    _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaHashtagStory>(response, json);
-
-                var obj = JsonConvert.DeserializeObject<InstaHashtagStoryContainerResponse>(json);
-
-                return Result.Success(ConvertersFabric.GetHashtagStoryConverter(obj.Story).Convert());
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaHashtagStory), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaHashtagStory>(exception);
-            }
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
         }
-
-        /// <summary>
-        ///     Get recent hashtag media list
-        /// </summary>
-        /// <param name="tagname">Tag name</param>
-        /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-        public async Task<IResult<InstaSectionMedia>> GetRecentHashtagMediaListAsync(string tagname,
-            PaginationParameters paginationParameters)
+        catch (Exception exception)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
+            _logger?.LogException(exception);
+            return Result.Fail(exception, tags);
+        }
+    }
+
+    /// <summary>
+    ///     Gets the hashtag information by user tagname.
+    /// </summary>
+    /// <param name="tagname">Tagname</param>
+    /// <returns>Hashtag information</returns>
+    public async Task<IResult<InstaHashtag>> GetHashtagInfoAsync(string tagname)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
+        {
+            var userUri = UriCreator.GetTagInfoUri(tagname);
+            var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaHashtag>(response, json);
+
+            var tagInfoResponse = JsonConvert.DeserializeObject<InstaHashtagResponse>(json);
+            var tagInfo = ConvertersFabric.GetHashTagConverter(tagInfoResponse).Convert();
+
+            return Result.Success(tagInfo);
+        }
+        catch (HttpRequestException httpException)
+        {
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaHashtag), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail<InstaHashtag>(exception);
+        }
+    }
+
+    /// <summary>
+    ///     Get stories of an hashtag
+    /// </summary>
+    /// <param name="tagname">Tag name</param>
+    public async Task<IResult<InstaHashtagStory>> GetHashtagStoriesAsync(string tagname)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
+        {
+            var instaUri = UriCreator.GetHashtagStoryUri(tagname);
+
+            var request =
+                _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaHashtagStory>(response, json);
+
+            var obj = JsonConvert.DeserializeObject<InstaHashtagStoryContainerResponse>(json);
+
+            return Result.Success(ConvertersFabric.GetHashtagStoryConverter(obj.Story).Convert());
+        }
+        catch (HttpRequestException httpException)
+        {
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaHashtagStory), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail<InstaHashtagStory>(exception);
+        }
+    }
+
+    /// <summary>
+    ///     Get recent hashtag media list
+    /// </summary>
+    /// <param name="tagname">Tag name</param>
+    /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
+    public async Task<IResult<InstaSectionMedia>> GetRecentHashtagMediaListAsync(string tagname,
+        PaginationParameters paginationParameters)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
+        {
+            paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
+
+            static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
             {
-                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
+                return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
+            }
 
-                static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
-                {
-                    return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
-                }
+            var mediaResponse = await GetHashtagSection(tagname,
+                Guid.NewGuid().ToString(),
+                paginationParameters.NextMaxId, true);
+            if (!mediaResponse.Succeeded)
+                Result.Fail(mediaResponse.Info,
+                    mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
 
-                var mediaResponse = await GetHashtagSection(tagname,
-                    Guid.NewGuid().ToString(),
+            paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
+            paginationParameters.NextPage = mediaResponse.Value.NextPage;
+            paginationParameters.NextMaxId = mediaResponse.Value.NextMaxId;
+            while (mediaResponse.Value.MoreAvailable
+                   && !string.IsNullOrEmpty(paginationParameters.NextMaxId)
+                   && paginationParameters.PagesLoaded < paginationParameters.MaximumPagesToLoad)
+            {
+                var moreMedias = await GetHashtagSection(tagname, Guid.NewGuid().ToString(),
                     paginationParameters.NextMaxId, true);
-                if (!mediaResponse.Succeeded)
-                    Result.Fail(mediaResponse.Info,
-                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
-
-                paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
-                paginationParameters.NextPage = mediaResponse.Value.NextPage;
-                paginationParameters.NextMaxId = mediaResponse.Value.NextMaxId;
-                while (mediaResponse.Value.MoreAvailable
-                       && !string.IsNullOrEmpty(paginationParameters.NextMaxId)
-                       && paginationParameters.PagesLoaded < paginationParameters.MaximumPagesToLoad)
+                if (!moreMedias.Succeeded)
                 {
-                    var moreMedias = await GetHashtagSection(tagname, Guid.NewGuid().ToString(),
-                        paginationParameters.NextMaxId, true);
-                    if (!moreMedias.Succeeded)
-                    {
-                        if (mediaResponse.Value.Sections != null && mediaResponse.Value.Sections.Any())
-                            return Result.Success(Convert(mediaResponse.Value));
-                        return Result.Fail(moreMedias.Info, Convert(mediaResponse.Value));
-                    }
-
-                    mediaResponse.Value.MoreAvailable = moreMedias.Value.MoreAvailable;
-                    mediaResponse.Value.NextMaxId = paginationParameters.NextMaxId = moreMedias.Value.NextMaxId;
-                    mediaResponse.Value.AutoLoadMoreEnabled = moreMedias.Value.AutoLoadMoreEnabled;
-                    mediaResponse.Value.NextMediaIds =
-                        paginationParameters.NextMediaIds = moreMedias.Value.NextMediaIds;
-                    mediaResponse.Value.NextPage = paginationParameters.NextPage = moreMedias.Value.NextPage;
-                    mediaResponse.Value.Sections.AddRange(moreMedias.Value.Sections);
-                    paginationParameters.PagesLoaded++;
+                    if (mediaResponse.Value.Sections != null && mediaResponse.Value.Sections.Any())
+                        return Result.Success(Convert(mediaResponse.Value));
+                    return Result.Fail(moreMedias.Info, Convert(mediaResponse.Value));
                 }
 
-                return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
-                    .Convert());
+                mediaResponse.Value.MoreAvailable = moreMedias.Value.MoreAvailable;
+                mediaResponse.Value.NextMaxId = paginationParameters.NextMaxId = moreMedias.Value.NextMaxId;
+                mediaResponse.Value.AutoLoadMoreEnabled = moreMedias.Value.AutoLoadMoreEnabled;
+                mediaResponse.Value.NextMediaIds =
+                    paginationParameters.NextMediaIds = moreMedias.Value.NextMediaIds;
+                mediaResponse.Value.NextPage = paginationParameters.NextPage = moreMedias.Value.NextPage;
+                mediaResponse.Value.Sections.AddRange(moreMedias.Value.Sections);
+                paginationParameters.PagesLoaded++;
             }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaSectionMedia), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaSectionMedia>(exception);
-            }
+
+            return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
+                .Convert());
         }
-
-        /// <summary>
-        ///     Get suggested hashtags
-        /// </summary>
-        /// <returns>
-        ///     List of hashtags
-        /// </returns>
-        public async Task<IResult<InstaHashtagSearch>> GetSuggestedHashtagsAsync()
+        catch (HttpRequestException httpException)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            var tags = new InstaHashtagSearch();
-            try
-            {
-                var userUri = UriCreator.GetSuggestedTagsUri();
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
-
-                var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
-                    new InstaHashtagSuggestedDataConverter());
-
-                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
-                return Result.Success(tags);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail(exception, tags);
-            }
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaSectionMedia), ResponseType.NetworkProblem);
         }
-
-        /// <summary>
-        ///     Get top (ranked) hashtag media list
-        /// </summary>
-        /// <param name="tagname">Tag name</param>
-        /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-        public async Task<IResult<InstaSectionMedia>> GetTopHashtagMediaListAsync(string tagname,
-            PaginationParameters paginationParameters)
+        catch (Exception exception)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
+            _logger?.LogException(exception);
+            return Result.Fail<InstaSectionMedia>(exception);
+        }
+    }
+
+    /// <summary>
+    ///     Get suggested hashtags
+    /// </summary>
+    /// <returns>
+    ///     List of hashtags
+    /// </returns>
+    public async Task<IResult<InstaHashtagSearch>> GetSuggestedHashtagsAsync()
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        var tags = new InstaHashtagSearch();
+        try
+        {
+            var userUri = UriCreator.GetSuggestedTagsUri();
+            var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
+
+            var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
+                new InstaHashtagSuggestedDataConverter());
+
+            tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
+            return Result.Success(tags);
+        }
+        catch (HttpRequestException httpException)
+        {
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail(exception, tags);
+        }
+    }
+
+    /// <summary>
+    ///     Get top (ranked) hashtag media list
+    /// </summary>
+    /// <param name="tagname">Tag name</param>
+    /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
+    public async Task<IResult<InstaSectionMedia>> GetTopHashtagMediaListAsync(string tagname,
+        PaginationParameters paginationParameters)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
+        {
+            paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
+
+            static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
             {
-                paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
+                return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
+            }
 
-                static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
-                {
-                    return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
-                }
+            var mediaResponse = await GetHashtagSection(tagname,
+                Guid.NewGuid().ToString(),
+                paginationParameters.NextMaxId);
 
-                var mediaResponse = await GetHashtagSection(tagname,
-                    Guid.NewGuid().ToString(),
+            if (!mediaResponse.Succeeded)
+                Result.Fail(mediaResponse.Info,
+                    mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
+
+            paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
+            paginationParameters.NextPage = mediaResponse.Value.NextPage;
+            paginationParameters.NextMaxId = mediaResponse.Value.NextMaxId;
+            while (mediaResponse.Value.MoreAvailable
+                   && !string.IsNullOrEmpty(paginationParameters.NextMaxId)
+                   && paginationParameters.PagesLoaded < paginationParameters.MaximumPagesToLoad)
+            {
+                var moreMedias = await GetHashtagSection(tagname, Guid.NewGuid().ToString(),
                     paginationParameters.NextMaxId);
-
-                if (!mediaResponse.Succeeded)
-                    Result.Fail(mediaResponse.Info,
-                        mediaResponse.Value != null ? Convert(mediaResponse.Value) : default);
-
-                paginationParameters.NextMediaIds = mediaResponse.Value.NextMediaIds;
-                paginationParameters.NextPage = mediaResponse.Value.NextPage;
-                paginationParameters.NextMaxId = mediaResponse.Value.NextMaxId;
-                while (mediaResponse.Value.MoreAvailable
-                       && !string.IsNullOrEmpty(paginationParameters.NextMaxId)
-                       && paginationParameters.PagesLoaded < paginationParameters.MaximumPagesToLoad)
+                if (!moreMedias.Succeeded)
                 {
-                    var moreMedias = await GetHashtagSection(tagname, Guid.NewGuid().ToString(),
-                        paginationParameters.NextMaxId);
-                    if (!moreMedias.Succeeded)
-                    {
-                        if (mediaResponse.Value.Sections != null && mediaResponse.Value.Sections.Any())
-                            return Result.Success(Convert(mediaResponse.Value));
-                        return Result.Fail(moreMedias.Info, Convert(mediaResponse.Value));
-                    }
-
-                    mediaResponse.Value.MoreAvailable = moreMedias.Value.MoreAvailable;
-                    mediaResponse.Value.NextMaxId = paginationParameters.NextMaxId = moreMedias.Value.NextMaxId;
-                    mediaResponse.Value.AutoLoadMoreEnabled = moreMedias.Value.AutoLoadMoreEnabled;
-                    mediaResponse.Value.NextMediaIds =
-                        paginationParameters.NextMediaIds = moreMedias.Value.NextMediaIds;
-                    mediaResponse.Value.NextPage = paginationParameters.NextPage = moreMedias.Value.NextPage;
-                    mediaResponse.Value.Sections.AddRange(moreMedias.Value.Sections);
-                    paginationParameters.PagesLoaded++;
+                    if (mediaResponse.Value.Sections != null && mediaResponse.Value.Sections.Any())
+                        return Result.Success(Convert(mediaResponse.Value));
+                    return Result.Fail(moreMedias.Info, Convert(mediaResponse.Value));
                 }
 
-                return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
-                    .Convert());
+                mediaResponse.Value.MoreAvailable = moreMedias.Value.MoreAvailable;
+                mediaResponse.Value.NextMaxId = paginationParameters.NextMaxId = moreMedias.Value.NextMaxId;
+                mediaResponse.Value.AutoLoadMoreEnabled = moreMedias.Value.AutoLoadMoreEnabled;
+                mediaResponse.Value.NextMediaIds =
+                    paginationParameters.NextMediaIds = moreMedias.Value.NextMediaIds;
+                mediaResponse.Value.NextPage = paginationParameters.NextPage = moreMedias.Value.NextPage;
+                mediaResponse.Value.Sections.AddRange(moreMedias.Value.Sections);
+                paginationParameters.PagesLoaded++;
             }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaSectionMedia), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaSectionMedia>(exception);
-            }
+
+            return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
+                .Convert());
         }
-
-        /// <summary>
-        ///     Searches for specific hashtag by search query.
-        /// </summary>
-        /// <param name="query">Search query</param>
-        /// <param name="excludeList">
-        ///     Array of numerical hashtag IDs (ie "17841562498105353") to exclude from the response,
-        ///     allowing you to skip tags from a previous call to get more results
-        /// </param>
-        /// <param name="rankToken">The rank token from the previous page's response</param>
-        /// <returns>
-        ///     List of hashtags
-        /// </returns>
-        public async Task<IResult<InstaHashtagSearch>> SearchHashtagAsync(string query, IEnumerable<long> excludeList,
-            string rankToken)
+        catch (HttpRequestException httpException)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            var RequestHeaderFieldsTooLarge = (HttpStatusCode)431;
-            const int count = 50;
-            var tags = new InstaHashtagSearch();
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaSectionMedia), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail<InstaSectionMedia>(exception);
+        }
+    }
 
-            try
-            {
-                var userUri = UriCreator.GetSearchTagUri(query, count, excludeList, rankToken);
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
+    /// <summary>
+    ///     Searches for specific hashtag by search query.
+    /// </summary>
+    /// <param name="query">Search query</param>
+    /// <param name="excludeList">
+    ///     Array of numerical hashtag IDs (ie "17841562498105353") to exclude from the response,
+    ///     allowing you to skip tags from a previous call to get more results
+    /// </param>
+    /// <param name="rankToken">The rank token from the previous page's response</param>
+    /// <returns>
+    ///     List of hashtags
+    /// </returns>
+    public async Task<IResult<InstaHashtagSearch>> SearchHashtagAsync(string query, IEnumerable<long> excludeList,
+        string rankToken)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        var RequestHeaderFieldsTooLarge = (HttpStatusCode)431;
+        const int count = 50;
+        var tags = new InstaHashtagSearch();
 
-                if (response.StatusCode == RequestHeaderFieldsTooLarge)
-                    return Result.Success(tags);
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
+        try
+        {
+            var userUri = UriCreator.GetSearchTagUri(query, count, excludeList, rankToken);
+            var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, userUri, _deviceInfo);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
 
-                var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
-                    new InstaHashtagSearchDataConverter());
-                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
-
-                if (tags.Any() && excludeList != null && excludeList.Contains(tags.First().Id))
-                    tags.RemoveAt(0);
-
-                if (!tags.Any())
-                    tags = new InstaHashtagSearch();
-
+            if (response.StatusCode == RequestHeaderFieldsTooLarge)
                 return Result.Success(tags);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail(exception, tags);
-            }
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaHashtagSearch>(response, json);
+
+            var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
+                new InstaHashtagSearchDataConverter());
+            tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
+
+            if (tags.Any() && excludeList != null && excludeList.Contains(tags.First().Id))
+                tags.RemoveAt(0);
+
+            if (!tags.Any())
+                tags = new InstaHashtagSearch();
+
+            return Result.Success(tags);
         }
-
-        /// <summary>
-        ///     Unfollow a hashtag
-        /// </summary>
-        /// <param name="tagname">Tag name</param>
-        public async Task<IResult<bool>> UnFollowHashtagAsync(string tagname)
+        catch (HttpRequestException httpException)
         {
-            UserAuthValidator.Validate(_userAuthValidate);
-            try
-            {
-                var instaUri = UriCreator.GetUnFollowHashtagUri(tagname);
-
-                var data = new JObject
-                {
-                    { "_csrftoken", _user.CsrfToken },
-                    { "_uid", _user.LoggedInUser.Pk.ToString() },
-                    { "_uuid", _deviceInfo.DeviceGuid.ToString() }
-                };
-                var request =
-                    _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<bool>(response, json);
-                var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-                return obj.Status.ToLower() == "ok"
-                    ? Result.Success(true)
-                    : Result.UnExpectedResponse<bool>(response, json);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(bool), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<bool>(exception);
-            }
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaHashtagSearch), ResponseType.NetworkProblem);
         }
-
-        private async Task<IResult<InstaSectionMediaListResponse>> GetHashtagSection(string tagname,
-            string rankToken = null,
-            string maxId = null, bool recent = false)
+        catch (Exception exception)
         {
-            try
+            _logger?.LogException(exception);
+            return Result.Fail(exception, tags);
+        }
+    }
+
+    /// <summary>
+    ///     Unfollow a hashtag
+    /// </summary>
+    /// <param name="tagname">Tag name</param>
+    public async Task<IResult<bool>> UnFollowHashtagAsync(string tagname)
+    {
+        UserAuthValidator.Validate(_userAuthValidate);
+        try
+        {
+            var instaUri = UriCreator.GetUnFollowHashtagUri(tagname);
+
+            var data = new JObject
             {
-                var instaUri = UriCreator.GetHashtagSectionUri(tagname);
+                { "_csrftoken", _user.CsrfToken },
+                { "_uid", _user.LoggedInUser.Pk.ToString() },
+                { "_uuid", _deviceInfo.DeviceGuid.ToString() }
+            };
+            var request =
+                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<bool>(response, json);
+            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
+            return obj.Status.ToLower() == "ok"
+                ? Result.Success(true)
+                : Result.UnExpectedResponse<bool>(response, json);
+        }
+        catch (HttpRequestException httpException)
+        {
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(bool), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail<bool>(exception);
+        }
+    }
 
-                var data = new Dictionary<string, string>
-                {
-                    { "_csrftoken", _user.CsrfToken },
-                    { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                    { "include_persistent", !recent ? "true" : "false" },
-                    { "rank_token", rankToken }
-                };
-                if (recent)
-                    data.Add("tab", "recent");
-                else
-                    data.Add("supported_tabs", new JArray("top", "recent", "places", "discover").ToString());
+    private async Task<IResult<InstaSectionMediaListResponse>> GetHashtagSection(string tagname,
+        string rankToken = null,
+        string maxId = null, bool recent = false)
+    {
+        try
+        {
+            var instaUri = UriCreator.GetHashtagSectionUri(tagname);
 
-                if (!string.IsNullOrEmpty(maxId))
-                    data.Add("max_id", maxId);
-                var request =
-                    _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaSectionMediaListResponse>(response, json);
-
-                var obj = JsonConvert.DeserializeObject<InstaSectionMediaListResponse>(json);
-
-                return Result.Success(obj);
-            }
-            catch (HttpRequestException httpException)
+            var data = new Dictionary<string, string>
             {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaSectionMediaListResponse), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaSectionMediaListResponse>(exception);
-            }
+                { "_csrftoken", _user.CsrfToken },
+                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                { "include_persistent", !recent ? "true" : "false" },
+                { "rank_token", rankToken }
+            };
+            if (recent)
+                data.Add("tab", "recent");
+            else
+                data.Add("supported_tabs", new JArray("top", "recent", "places", "discover").ToString());
+
+            if (!string.IsNullOrEmpty(maxId))
+                data.Add("max_id", maxId);
+            var request =
+                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var response = await _httpRequestProcessor.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return Result.UnExpectedResponse<InstaSectionMediaListResponse>(response, json);
+
+            var obj = JsonConvert.DeserializeObject<InstaSectionMediaListResponse>(json);
+
+            return Result.Success(obj);
+        }
+        catch (HttpRequestException httpException)
+        {
+            _logger?.LogException(httpException);
+            return Result.Fail(httpException, default(InstaSectionMediaListResponse), ResponseType.NetworkProblem);
+        }
+        catch (Exception exception)
+        {
+            _logger?.LogException(exception);
+            return Result.Fail<InstaSectionMediaListResponse>(exception);
         }
     }
 }

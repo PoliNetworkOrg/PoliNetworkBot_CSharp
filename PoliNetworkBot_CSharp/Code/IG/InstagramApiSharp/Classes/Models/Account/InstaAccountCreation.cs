@@ -6,24 +6,23 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public class InstaAccountCreation : InstaDefaultResponse
 {
-    public class InstaAccountCreation : InstaDefaultResponse
-    {
-        [JsonProperty("account_created")] public bool AccountCreated { get; set; }
+    [JsonProperty("account_created")] public bool AccountCreated { get; set; }
 
-        [JsonProperty("created_user")] public InstaUserShortResponse CreatedUser { get; set; }
-    }
+    [JsonProperty("created_user")] public InstaUserShortResponse CreatedUser { get; set; }
+}
 
-    internal class InstaAccountCreationResponse : InstaAccountCreation
-    {
-        [JsonProperty("error_type")] public string ErrorType { get; set; }
+internal class InstaAccountCreationResponse : InstaAccountCreation
+{
+    [JsonProperty("error_type")] public string ErrorType { get; set; }
 
-        [JsonProperty("errors")] public InstaAccountCreationErrors Errors { get; set; }
-    }
+    [JsonProperty("errors")] public InstaAccountCreationErrors Errors { get; set; }
+}
 
-    public class InstaAccountCreationErrors
-    {
-        [JsonProperty("username")] public string[] Username { get; set; }
-    }
+public class InstaAccountCreationErrors
+{
+    [JsonProperty("username")] public string[] Username { get; set; }
 }

@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaFelixShareResponse
 {
-    public class InstaFelixShareResponse
-    {
-        [JsonProperty("video")] public InstaMediaItemResponse Video { get; set; }
-    }
+    [JsonProperty("video")] public InstaMediaItemResponse Video { get; set; }
 }

@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaLikes
 {
-    public class InstaLikes
-    {
-        public int Count { get; set; }
-        public InstaUserList VisibleLikedUsers { get; set; }
-    }
+    public int Count { get; set; }
+    public InstaUserList VisibleLikedUsers { get; set; }
 }

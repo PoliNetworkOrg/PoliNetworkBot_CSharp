@@ -6,26 +6,25 @@ using System.Linq;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers
+namespace InstagramApiSharp.Helpers;
+
+public class HttpUtility
 {
-    public class HttpUtility
+    public static Dictionary<string, string> ParseQueryString(Uri uri)
     {
-        public static Dictionary<string, string> ParseQueryString(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+        if (uri == null)
+            throw new ArgumentNullException(nameof(uri));
 
-            if (uri.Query.Length == 0)
-                return new Dictionary<string, string>();
+        if (uri.Query.Length == 0)
+            return new Dictionary<string, string>();
 
-            return uri.Query.TrimStart('?')
-                .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
-                .GroupBy(parts => parts[0],
-                    parts => parts.Length > 2 ? string.Join("=", parts, 1, parts.Length - 1) :
-                        parts.Length > 1 ? parts[1] : "")
-                .ToDictionary(grouping => grouping.Key,
-                    grouping => string.Join(",", grouping));
-        }
+        return uri.Query.TrimStart('?')
+            .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
+            .GroupBy(parts => parts[0],
+                parts => parts.Length > 2 ? string.Join("=", parts, 1, parts.Length - 1) :
+                    parts.Length > 1 ? parts[1] : "")
+            .ToDictionary(grouping => grouping.Key,
+                grouping => string.Join(",", grouping));
     }
 }

@@ -1,14 +1,13 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaSendDirectMessageResponse : BaseStatusResponse
 {
-    public class InstaSendDirectMessageResponse : BaseStatusResponse
-    {
-        public List<InstaDirectInboxThreadResponse> Threads { get; set; } = new();
-    }
+    public List<InstaDirectInboxThreadResponse> Threads { get; set; } = new();
 }

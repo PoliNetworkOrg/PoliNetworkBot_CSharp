@@ -1,10 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+internal enum RestrictAction
 {
-    internal enum RestrictAction
-    {
-        BAN,
-        UNBAN,
-        MUTE,
-        UNMUTE
-    }
+    BAN,
+    UNBAN,
+    MUTE,
+    UNMUTE
 }

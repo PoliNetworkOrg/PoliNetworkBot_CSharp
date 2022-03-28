@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaUserContextResponse
 {
-    public class InstaUserContextResponse
-    {
-        [JsonProperty("start")] public int Start { get; set; }
+    [JsonProperty("start")] public int Start { get; set; }
 
-        [JsonProperty("end")] public int End { get; set; }
+    [JsonProperty("end")] public int End { get; set; }
 
-        [JsonProperty("username")] public string Username { get; set; }
-    }
+    [JsonProperty("username")] public string Username { get; set; }
 }

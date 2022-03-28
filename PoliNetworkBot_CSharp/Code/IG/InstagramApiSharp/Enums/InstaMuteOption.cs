@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaMuteOption
 {
-    public enum InstaMuteOption
-    {
-        All,
-        Story,
-        Post
-    }
+    All,
+    Story,
+    Post
 }

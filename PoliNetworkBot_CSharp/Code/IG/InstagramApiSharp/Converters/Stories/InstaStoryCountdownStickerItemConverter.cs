@@ -1,39 +1,38 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaStoryCountdownStickerItemConverter : IObjectConverter<InstaStoryCountdownStickerItem,
+    InstaStoryCountdownStickerItemResponse>
 {
-    internal class InstaStoryCountdownStickerItemConverter : IObjectConverter<InstaStoryCountdownStickerItem,
-        InstaStoryCountdownStickerItemResponse>
+    public InstaStoryCountdownStickerItemResponse SourceObject { get; set; }
+
+    public InstaStoryCountdownStickerItem Convert()
     {
-        public InstaStoryCountdownStickerItemResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaStoryCountdownStickerItem Convert()
+        var countdownStickerItem = new InstaStoryCountdownStickerItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            CountdownId = SourceObject.CountdownId,
+            DigitCardColor = SourceObject.DigitCardColor,
+            DigitColor = SourceObject.DigitColor,
+            EndBackgroundColor = SourceObject.EndBackgroundColor,
+            EndTime = (SourceObject.EndTime ?? DateTime.UtcNow.ToUnixTime()).FromUnixTimeSeconds(),
+            FollowingEnabled = SourceObject.FollowingEnabled ?? false,
+            IsOwner = SourceObject.IsOwner ?? false,
+            StartBackgroundColor = SourceObject.StartBackgroundColor,
+            Text = SourceObject.Text,
+            TextColor = SourceObject.TextColor,
+            ViewerIsFollowing = SourceObject.ViewerIsFollowing ?? false
+        };
 
-            var countdownStickerItem = new InstaStoryCountdownStickerItem
-            {
-                CountdownId = SourceObject.CountdownId,
-                DigitCardColor = SourceObject.DigitCardColor,
-                DigitColor = SourceObject.DigitColor,
-                EndBackgroundColor = SourceObject.EndBackgroundColor,
-                EndTime = (SourceObject.EndTime ?? DateTime.UtcNow.ToUnixTime()).FromUnixTimeSeconds(),
-                FollowingEnabled = SourceObject.FollowingEnabled ?? false,
-                IsOwner = SourceObject.IsOwner ?? false,
-                StartBackgroundColor = SourceObject.StartBackgroundColor,
-                Text = SourceObject.Text,
-                TextColor = SourceObject.TextColor,
-                ViewerIsFollowing = SourceObject.ViewerIsFollowing ?? false
-            };
-
-            return countdownStickerItem;
-        }
+        return countdownStickerItem;
     }
 }

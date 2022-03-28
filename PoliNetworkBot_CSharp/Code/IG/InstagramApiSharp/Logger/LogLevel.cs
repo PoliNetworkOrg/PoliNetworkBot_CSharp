@@ -1,12 +1,11 @@
-﻿namespace InstagramApiSharp.Logger
+﻿namespace InstagramApiSharp.Logger;
+
+public enum LogLevel
 {
-    public enum LogLevel
-    {
-        None = 0,
-        Exceptions = 1,
-        Info = 2,
-        Request = 3,
-        Response = 4,
-        All = 5
-    }
+    None = 0,
+    Exceptions = 1,
+    Info = 2,
+    Request = 3,
+    Response = 4,
+    All = 5
 }

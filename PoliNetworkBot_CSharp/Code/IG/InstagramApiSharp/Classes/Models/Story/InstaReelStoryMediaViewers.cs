@@ -4,20 +4,19 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaReelStoryMediaViewers
 {
-    public class InstaReelStoryMediaViewers
-    {
-        public string NextMaxId { get; set; }
+    public string NextMaxId { get; set; }
 
-        public int TotalScreenshotCount { get; set; }
+    public int TotalScreenshotCount { get; set; }
 
-        public int TotalViewerCount { get; set; }
+    public int TotalViewerCount { get; set; }
 
-        public InstaStoryItem UpdatedMedia { get; set; }
+    public InstaStoryItem UpdatedMedia { get; set; }
 
-        public int UserCount { get; set; }
+    public int UserCount { get; set; }
 
-        public List<InstaUserShort> Users { get; set; } = new();
-    }
+    public List<InstaUserShort> Users { get; set; } = new();
 }

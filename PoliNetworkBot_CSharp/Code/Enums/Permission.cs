@@ -1,10 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+internal enum Permission
 {
-    internal enum Permission
-    {
-        OWNER,
-        CREATOR,
-        HEAD_ADMIN,
-        USER
-    }
+    OWNER,
+    CREATOR,
+    HEAD_ADMIN,
+    USER
 }

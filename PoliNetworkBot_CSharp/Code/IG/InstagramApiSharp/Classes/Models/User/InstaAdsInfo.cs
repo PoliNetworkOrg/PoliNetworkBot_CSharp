@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaAdsInfo
 {
-    public class InstaAdsInfo
-    {
-        public bool HasAds { get; set; }
-        public string AdsUrl { get; set; }
-    }
+    public bool HasAds { get; set; }
+    public string AdsUrl { get; set; }
 }

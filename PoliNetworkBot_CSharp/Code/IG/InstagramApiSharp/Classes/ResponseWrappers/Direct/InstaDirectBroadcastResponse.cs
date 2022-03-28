@@ -5,18 +5,17 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaDirectBroadcastResponse
 {
-    public class InstaDirectBroadcastResponse
-    {
-        [JsonProperty("broadcast")] public InstaBroadcast Broadcast { get; set; }
+    [JsonProperty("broadcast")] public InstaBroadcast Broadcast { get; set; }
 
-        [JsonProperty("text")] public string Text { get; set; }
+    [JsonProperty("text")] public string Text { get; set; }
 
-        [JsonProperty("is_linked")] public bool? IsLinked { get; set; }
+    [JsonProperty("is_linked")] public bool? IsLinked { get; set; }
 
-        [JsonProperty("title")] public string Title { get; set; }
+    [JsonProperty("title")] public string Title { get; set; }
 
-        [JsonProperty("message")] public string Message { get; set; }
-    }
+    [JsonProperty("message")] public string Message { get; set; }
 }

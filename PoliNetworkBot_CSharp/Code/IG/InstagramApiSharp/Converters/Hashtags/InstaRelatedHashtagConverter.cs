@@ -1,27 +1,26 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Hashtags
-{
-    internal class InstaRelatedHashtagConverter : IObjectConverter<InstaRelatedHashtag, InstaRelatedHashtagResponse>
-    {
-        public InstaRelatedHashtagResponse SourceObject { get; set; }
+namespace InstagramApiSharp.Converters.Hashtags;
 
-        public InstaRelatedHashtag Convert()
+internal class InstaRelatedHashtagConverter : IObjectConverter<InstaRelatedHashtag, InstaRelatedHashtagResponse>
+{
+    public InstaRelatedHashtagResponse SourceObject { get; set; }
+
+    public InstaRelatedHashtag Convert()
+    {
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var relatedHashtag = new InstaRelatedHashtag
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var relatedHashtag = new InstaRelatedHashtag
-            {
-                Id = SourceObject.Id,
-                Name = SourceObject.Name,
-                Type = SourceObject.Type
-            };
-            return relatedHashtag;
-        }
+            Id = SourceObject.Id,
+            Name = SourceObject.Name,
+            Type = SourceObject.Type
+        };
+        return relatedHashtag;
     }
 }

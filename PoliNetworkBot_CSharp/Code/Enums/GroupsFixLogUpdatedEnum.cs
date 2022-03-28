@@ -1,10 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum GroupsFixLogUpdatedEnum
 {
-    public enum GroupsFixLogUpdatedEnum
-    {
-        DID_NOTHING,
-        NEW_NAME,
-        ALL,
-        UNKNOWN
-    }
+    DID_NOTHING,
+    NEW_NAME,
+    ALL,
+    UNKNOWN
 }

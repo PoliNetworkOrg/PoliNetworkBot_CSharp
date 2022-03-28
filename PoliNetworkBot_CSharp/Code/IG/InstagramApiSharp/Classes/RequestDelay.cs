@@ -4,50 +4,49 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes
+namespace InstagramApiSharp.Classes;
+
+public class RequestDelay : IRequestDelay
 {
-    public class RequestDelay : IRequestDelay
+    private readonly int _maxSeconds;
+    private readonly int _minSeconds;
+
+    private readonly Random _random;
+    private bool _isEnabled;
+
+    private RequestDelay(int minSeconds, int maxSeconds)
     {
-        private readonly int _maxSeconds;
-        private readonly int _minSeconds;
+        _minSeconds = minSeconds;
+        _maxSeconds = maxSeconds;
+        _random = new Random(DateTime.Now.Millisecond);
+        _isEnabled = true;
+    }
 
-        private readonly Random _random;
-        private bool _isEnabled;
+    public TimeSpan Value => Exist ? TimeSpan.FromSeconds(_random.Next(_minSeconds, _maxSeconds)) : TimeSpan.Zero;
 
-        private RequestDelay(int minSeconds, int maxSeconds)
-        {
-            _minSeconds = minSeconds;
-            _maxSeconds = maxSeconds;
-            _random = new Random(DateTime.Now.Millisecond);
-            _isEnabled = true;
-        }
+    public bool Exist => _isEnabled && _minSeconds != 0 && _maxSeconds != 0;
 
-        public TimeSpan Value => Exist ? TimeSpan.FromSeconds(_random.Next(_minSeconds, _maxSeconds)) : TimeSpan.Zero;
+    public void Enable()
+    {
+        _isEnabled = true;
+    }
 
-        public bool Exist => _isEnabled && _minSeconds != 0 && _maxSeconds != 0;
+    public void Disable()
+    {
+        _isEnabled = false;
+    }
 
-        public void Enable()
-        {
-            _isEnabled = true;
-        }
+    public static IRequestDelay FromSeconds(int min, int max)
+    {
+        if (min > max) throw new ArgumentException("Value max should be bigger that value min");
 
-        public void Disable()
-        {
-            _isEnabled = false;
-        }
+        if (max < 0) throw new ArgumentException("Both min and max values should be bigger than 0");
 
-        public static IRequestDelay FromSeconds(int min, int max)
-        {
-            if (min > max) throw new ArgumentException("Value max should be bigger that value min");
+        return new RequestDelay(min, max);
+    }
 
-            if (max < 0) throw new ArgumentException("Both min and max values should be bigger than 0");
-
-            return new RequestDelay(min, max);
-        }
-
-        public static IRequestDelay Empty()
-        {
-            return new RequestDelay(0, 0);
-        }
+    public static IRequestDelay Empty()
+    {
+        return new RequestDelay(0, 0);
     }
 }

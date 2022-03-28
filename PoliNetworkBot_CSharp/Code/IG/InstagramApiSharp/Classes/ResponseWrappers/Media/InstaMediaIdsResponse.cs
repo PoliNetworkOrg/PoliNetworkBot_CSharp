@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaMediaIdsResponse : InstaDefault
 {
-    public class InstaMediaIdsResponse : InstaDefault
-    {
-        [JsonProperty("media_ids")] public InstaMediaIdList MediaIds = new();
-    }
+    [JsonProperty("media_ids")] public InstaMediaIdList MediaIds = new();
 }

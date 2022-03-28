@@ -5,13 +5,12 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class InstaPresenceResponse : InstaDefault
-    {
-        [JsonProperty("disabled")] public bool? Disabled { get; set; }
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("thread_presence_disabled")]
-        public bool? ThreadPresenceDisabled { get; set; }
-    }
+public class InstaPresenceResponse : InstaDefault
+{
+    [JsonProperty("disabled")] public bool? Disabled { get; set; }
+
+    [JsonProperty("thread_presence_disabled")]
+    public bool? ThreadPresenceDisabled { get; set; }
 }

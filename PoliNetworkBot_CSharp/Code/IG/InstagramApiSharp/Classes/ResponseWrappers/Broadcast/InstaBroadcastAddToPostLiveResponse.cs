@@ -1,32 +1,31 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaBroadcastAddToPostLiveContainerResponse
 {
-    public class InstaBroadcastAddToPostLiveContainerResponse
-    {
-        [JsonProperty("post_live_items")] public List<InstaBroadcastAddToPostLiveResponse> PostLiveItems { get; set; }
-    }
+    [JsonProperty("post_live_items")] public List<InstaBroadcastAddToPostLiveResponse> PostLiveItems { get; set; }
+}
 
-    public class InstaBroadcastAddToPostLiveResponse
-    {
-        [JsonProperty("pk")] public string Pk { get; set; }
+public class InstaBroadcastAddToPostLiveResponse
+{
+    [JsonProperty("pk")] public string Pk { get; set; }
 
-        [JsonProperty("user")] public InstaUserShortFriendshipFullResponse User { get; set; }
+    [JsonProperty("user")] public InstaUserShortFriendshipFullResponse User { get; set; }
 
-        [JsonProperty("broadcasts")] public List<InstaBroadcastResponse> Broadcasts { get; set; } = new();
+    [JsonProperty("broadcasts")] public List<InstaBroadcastResponse> Broadcasts { get; set; } = new();
 
-        [JsonProperty("last_seen_broadcast_ts")]
-        public double? LastSeenBroadcastTs { get; set; }
+    [JsonProperty("last_seen_broadcast_ts")]
+    public double? LastSeenBroadcastTs { get; set; }
 
-        [JsonProperty("can_reply")] public bool CanReply { get; set; }
+    [JsonProperty("can_reply")] public bool CanReply { get; set; }
 
-        [JsonProperty("status")] public string Status { get; set; }
+    [JsonProperty("status")] public string Status { get; set; }
 
-        [JsonProperty("dash_manifest")] public string DashManifest { get; set; }
-    }
+    [JsonProperty("dash_manifest")] public string DashManifest { get; set; }
 }

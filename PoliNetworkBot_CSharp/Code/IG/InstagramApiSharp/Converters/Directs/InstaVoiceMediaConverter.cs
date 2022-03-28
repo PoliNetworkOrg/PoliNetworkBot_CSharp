@@ -1,45 +1,44 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Enums;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaVoiceMediaConverter : IObjectConverter<InstaVoiceMedia, InstaVoiceMediaResponse>
 {
-    internal class InstaVoiceMediaConverter : IObjectConverter<InstaVoiceMedia, InstaVoiceMediaResponse>
+    public InstaVoiceMediaResponse SourceObject { get; set; }
+
+    public InstaVoiceMedia Convert()
     {
-        public InstaVoiceMediaResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaVoiceMedia Convert()
+        var voiceMedia = new InstaVoiceMedia
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            ReplayExpiringAtUs = SourceObject.ReplayExpiringAtUs,
+            SeenCount = SourceObject.SeenCount ?? 0
+        };
 
-            var voiceMedia = new InstaVoiceMedia
+        if (!string.IsNullOrEmpty(SourceObject.ViewMode))
+            try
             {
-                ReplayExpiringAtUs = SourceObject.ReplayExpiringAtUs,
-                SeenCount = SourceObject.SeenCount ?? 0
-            };
+                voiceMedia.ViewMode = (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.ViewMode, true);
+            }
+            catch
+            {
+            }
 
-            if (!string.IsNullOrEmpty(SourceObject.ViewMode))
-                try
-                {
-                    voiceMedia.ViewMode = (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.ViewMode, true);
-                }
-                catch
-                {
-                }
+        if (SourceObject.SeenUserIds is { Length: > 0 })
+            foreach (var pk in SourceObject.SeenUserIds)
+                voiceMedia.SeenUserIds.Add(pk);
 
-            if (SourceObject.SeenUserIds is { Length: > 0 })
-                foreach (var pk in SourceObject.SeenUserIds)
-                    voiceMedia.SeenUserIds.Add(pk);
+        if (SourceObject.Media != null)
+            voiceMedia.Media = ConvertersFabric.GetVoiceConverter(SourceObject.Media).Convert();
 
-            if (SourceObject.Media != null)
-                voiceMedia.Media = ConvertersFabric.GetVoiceConverter(SourceObject.Media).Convert();
-
-            return voiceMedia;
-        }
+        return voiceMedia;
     }
 }

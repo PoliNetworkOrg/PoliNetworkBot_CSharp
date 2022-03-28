@@ -1,9 +1,8 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Bots.Anon
+﻿namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
+
+public enum ResultQueueEnum
 {
-    public enum ResultQueueEnum
-    {
-        APPROVED_MAIN,
-        GO_TO_UNCENSORED,
-        DELETE
-    }
+    APPROVED_MAIN,
+    GO_TO_UNCENSORED,
+    DELETE
 }

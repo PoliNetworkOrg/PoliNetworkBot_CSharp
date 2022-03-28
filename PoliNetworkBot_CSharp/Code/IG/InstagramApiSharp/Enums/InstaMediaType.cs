@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public enum InstaMediaType
 {
-    public enum InstaMediaType
-    {
-        Image = 1,
-        Video = 2,
-        Carousel = 8
-    }
+    Image = 1,
+    Video = 2,
+    Carousel = 8
 }

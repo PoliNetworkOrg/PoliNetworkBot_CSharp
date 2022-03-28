@@ -1,16 +1,15 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class InstaBroadcastSuggestedResponse
-    {
-        [JsonProperty("broadcasts")] public List<InstaBroadcastResponse> Broadcasts { get; set; }
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("status")] public string Status { get; set; }
-    }
+public class InstaBroadcastSuggestedResponse
+{
+    [JsonProperty("broadcasts")] public List<InstaBroadcastResponse> Broadcasts { get; set; }
+
+    [JsonProperty("status")] public string Status { get; set; }
 }

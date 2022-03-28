@@ -1,33 +1,32 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
-{
-    internal class InstaStoryFeedMediaConverter : IObjectConverter<InstaStoryFeedMedia, InstaStoryFeedMediaResponse>
-    {
-        public InstaStoryFeedMediaResponse SourceObject { get; set; }
+namespace InstagramApiSharp.Converters;
 
-        public InstaStoryFeedMedia Convert()
+internal class InstaStoryFeedMediaConverter : IObjectConverter<InstaStoryFeedMedia, InstaStoryFeedMediaResponse>
+{
+    public InstaStoryFeedMediaResponse SourceObject { get; set; }
+
+    public InstaStoryFeedMedia Convert()
+    {
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var storyFeed = new InstaStoryFeedMedia
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var storyFeed = new InstaStoryFeedMedia
-            {
-                Height = SourceObject.Height,
-                IsPinned = SourceObject.IsPinned,
-                MediaId = SourceObject.MediaId,
-                ProductType = SourceObject.ProductType,
-                Rotation = SourceObject.Rotation,
-                Width = SourceObject.Width,
-                X = SourceObject.X,
-                Y = SourceObject.Y,
-                Z = SourceObject.Z
-            };
-            return storyFeed;
-        }
+            Height = SourceObject.Height,
+            IsPinned = SourceObject.IsPinned,
+            MediaId = SourceObject.MediaId,
+            ProductType = SourceObject.ProductType,
+            Rotation = SourceObject.Rotation,
+            Width = SourceObject.Width,
+            X = SourceObject.X,
+            Y = SourceObject.Y,
+            Z = SourceObject.Z
+        };
+        return storyFeed;
     }
 }

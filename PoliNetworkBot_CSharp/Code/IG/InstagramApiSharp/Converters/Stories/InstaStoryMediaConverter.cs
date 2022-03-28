@@ -5,20 +5,19 @@ using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaStoryMediaConverter : IObjectConverter<InstaStoryMedia, InstaStoryMediaResponse>
 {
-    internal class InstaStoryMediaConverter : IObjectConverter<InstaStoryMedia, InstaStoryMediaResponse>
+    public InstaStoryMediaResponse SourceObject { get; set; }
+
+    public InstaStoryMedia Convert()
     {
-        public InstaStoryMediaResponse SourceObject { get; set; }
-
-        public InstaStoryMedia Convert()
+        var instaStoryMedia = new InstaStoryMedia
         {
-            var instaStoryMedia = new InstaStoryMedia
-            {
-                Media = ConvertersFabric.GetStoryItemConverter(SourceObject.Media).Convert()
-            };
+            Media = ConvertersFabric.GetStoryItemConverter(SourceObject.Media).Convert()
+        };
 
-            return instaStoryMedia;
-        }
+        return instaStoryMedia;
     }
 }

@@ -1,11 +1,10 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaRelatedHashtag
 {
-    public class InstaRelatedHashtag
-    {
-        public string Type { get; set; }
+    public string Type { get; set; }
 
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

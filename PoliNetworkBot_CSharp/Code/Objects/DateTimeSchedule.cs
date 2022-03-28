@@ -4,27 +4,26 @@ using System;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects
+namespace PoliNetworkBot_CSharp.Code.Objects;
+
+public class DateTimeSchedule
 {
-    public class DateTimeSchedule
+    private readonly DateTime? _dateTime;
+    private readonly bool _schedule;
+
+    public DateTimeSchedule(DateTime? dateTime, bool schedule)
     {
-        private readonly DateTime? _dateTime;
-        private readonly bool _schedule;
+        _dateTime = dateTime;
+        _schedule = schedule;
+    }
 
-        public DateTimeSchedule(DateTime? dateTime, bool schedule)
-        {
-            _dateTime = dateTime;
-            _schedule = schedule;
-        }
+    public bool IsInvalid()
+    {
+        return _schedule && _dateTime == null;
+    }
 
-        public bool IsInvalid()
-        {
-            return _schedule && _dateTime == null;
-        }
-
-        public DateTime? GetDate()
-        {
-            return _dateTime;
-        }
+    public DateTime? GetDate()
+    {
+        return _dateTime;
     }
 }

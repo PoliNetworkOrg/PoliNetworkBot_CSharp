@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaTranslateBioResponse : InstaDefault
 {
-    public class InstaTranslateBioResponse : InstaDefault
-    {
-        [JsonProperty("translation")] public string Translation { get; set; }
-    }
+    [JsonProperty("translation")] public string Translation { get; set; }
 }

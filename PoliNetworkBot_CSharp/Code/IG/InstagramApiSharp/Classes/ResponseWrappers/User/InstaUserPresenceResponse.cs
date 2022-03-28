@@ -1,25 +1,24 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaUserPresenceContainerResponse
 {
-    public class InstaUserPresenceContainerResponse
-    {
-        [JsonIgnore] public List<InstaUserPresenceResponse> Items { get; set; } = new();
+    [JsonIgnore] public List<InstaUserPresenceResponse> Items { get; set; } = new();
 
-        [JsonProperty("status")] public string Status { get; set; }
-    }
+    [JsonProperty("status")] public string Status { get; set; }
+}
 
-    public class InstaUserPresenceResponse
-    {
-        [JsonProperty("is_active")] public bool? IsActive { get; set; }
+public class InstaUserPresenceResponse
+{
+    [JsonProperty("is_active")] public bool? IsActive { get; set; }
 
-        [JsonProperty("last_activity_at_ms")] public long? LastActivityAtMs { get; set; }
+    [JsonProperty("last_activity_at_ms")] public long? LastActivityAtMs { get; set; }
 
-        [JsonIgnore] public long Pk { get; set; }
-    }
+    [JsonIgnore] public long Pk { get; set; }
 }

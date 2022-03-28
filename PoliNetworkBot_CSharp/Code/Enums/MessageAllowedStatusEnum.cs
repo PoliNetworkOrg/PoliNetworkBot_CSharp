@@ -1,7 +1,9 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Enums
+﻿namespace PoliNetworkBot_CSharp.Code.Enums;
+
+public enum MessageAllowedStatusEnum
 {
-    public enum MessageAllowedStatusEnum
-    {
-        ALLOWED, NOT_ALLOWED, PENDING, NOT_DEFINED
-    }
+    ALLOWED,
+    NOT_ALLOWED,
+    PENDING,
+    NOT_DEFINED
 }

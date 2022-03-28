@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaUserShortFriendshipResponse : InstaUserShortResponse
 {
-    public class InstaUserShortFriendshipResponse : InstaUserShortResponse
-    {
-        [JsonProperty("friendship_status")] public InstaFriendshipShortStatusResponse FriendshipStatus { get; set; }
-    }
+    [JsonProperty("friendship_status")] public InstaFriendshipShortStatusResponse FriendshipStatus { get; set; }
 }

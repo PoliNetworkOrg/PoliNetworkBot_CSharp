@@ -1,32 +1,31 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Users
+namespace InstagramApiSharp.Converters.Users;
+
+internal class InstaFriendshipShortStatusConverter :
+    IObjectConverter<InstaFriendshipShortStatus, InstaFriendshipShortStatusResponse>
 {
-    internal class InstaFriendshipShortStatusConverter :
-        IObjectConverter<InstaFriendshipShortStatus, InstaFriendshipShortStatusResponse>
+    public InstaFriendshipShortStatusResponse SourceObject { get; set; }
+
+    public InstaFriendshipShortStatus Convert()
     {
-        public InstaFriendshipShortStatusResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaFriendshipShortStatus Convert()
+        var friendships = new InstaFriendshipShortStatus
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Following = SourceObject.Following,
+            IncomingRequest = SourceObject.IncomingRequest,
+            IsBestie = SourceObject.IsBestie,
+            IsPrivate = SourceObject.IsPrivate,
+            OutgoingRequest = SourceObject.OutgoingRequest
+        };
 
-            var friendships = new InstaFriendshipShortStatus
-            {
-                Following = SourceObject.Following,
-                IncomingRequest = SourceObject.IncomingRequest,
-                IsBestie = SourceObject.IsBestie,
-                IsPrivate = SourceObject.IsPrivate,
-                OutgoingRequest = SourceObject.OutgoingRequest
-            };
-
-            return friendships;
-        }
+        return friendships;
     }
 }

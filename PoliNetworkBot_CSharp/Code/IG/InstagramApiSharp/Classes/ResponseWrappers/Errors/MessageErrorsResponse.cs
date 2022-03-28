@@ -1,14 +1,13 @@
 #region
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class MessageErrorsResponse
 {
-    public class MessageErrorsResponse
-    {
-        [JsonProperty("errors")] public List<string> Errors { get; set; }
-    }
+    [JsonProperty("errors")] public List<string> Errors { get; set; }
 }

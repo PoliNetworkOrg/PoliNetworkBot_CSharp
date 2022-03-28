@@ -4,9 +4,8 @@ using System;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Exceptions
+namespace PoliNetworkBot_CSharp.Code.Exceptions;
+
+internal class JsonDateTimeNotFound : Exception
 {
-    internal class JsonDateTimeNotFound : Exception
-    {
-    }
 }

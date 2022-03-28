@@ -1,5 +1,9 @@
 ﻿#region
 
+using System;
+using System.Linq;
+using System.Net.Cache;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -7,159 +11,154 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Anon
+namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
+
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
+internal class WebPost
 {
-    [Serializable]
-    [JsonObject(MemberSerialization.Fields)]
-    internal class WebPost
+    public char approved;
+    public string password;
+
+    public long? photoid;
+    //public JObject r4;
+
+    public long postid;
+    public char seen;
+    public string text;
+    public DateTime? whensubmitted;
+
+    public WebPost(JObject r4)
     {
-        public char approved;
-        public string password;
+        //this.r4 = r4;
+        ;
+        var x = r4["PostID"].Values()[0];
+        ;
 
-        public long? photoid;
-        //public JObject r4;
-
-        public long postid;
-        public char seen;
-        public string text;
-        public DateTime? whensubmitted;
-
-        public WebPost(JObject r4)
+        foreach (var r5 in r4.Children())
         {
-            //this.r4 = r4;
             ;
-            var x = r4["PostID"].Values()[0];
+            if (r5 is not JProperty r6) continue;
             ;
 
-            foreach (var r5 in r4.Children())
-            {
-                ;
-                if (r5 is not JProperty r6) continue;
-                ;
-
-                if (r6.Value is JValue r7)
-                    switch (r6.Name)
+            if (r6.Value is JValue r7)
+                switch (r6.Name)
+                {
+                    case "PostID":
                     {
-                        case "PostID":
-                            {
-                                postid = Convert.ToInt64(r7.Value);
-                                break;
-                            }
-
-                        case "Text":
-                            {
-                                text = r7.Value.ToString();
-                                break;
-                            }
-
-                        case "PhotoID":
-                            {
-                                long? p = null;
-                                try
-                                {
-                                    p = Convert.ToInt64(r7.Value);
-                                }
-                                catch
-                                {
-                                    ;
-                                }
-
-                                photoid = p;
-
-                                if (photoid <= 0) photoid = null;
-
-                                break;
-                            }
-
-                        case "Approved":
-                            {
-                                approved = r7.Value.ToString()[0];
-                                break;
-                            }
-
-                        case "Password":
-                            {
-                                password = r7.Value.ToString();
-                                break;
-                            }
-
-                        case "Seen":
-                            {
-                                seen = r7.Value.ToString()[0];
-                                break;
-                            }
-
-                        case "WhenSubmitted":
-                            {
-                                whensubmitted = Convert.ToDateTime(r7.Value);
-                                break;
-                            }
+                        postid = Convert.ToInt64(r7.Value);
+                        break;
                     }
-            }
+
+                    case "Text":
+                    {
+                        text = r7.Value.ToString();
+                        break;
+                    }
+
+                    case "PhotoID":
+                    {
+                        long? p = null;
+                        try
+                        {
+                            p = Convert.ToInt64(r7.Value);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+
+                        photoid = p;
+
+                        if (photoid <= 0) photoid = null;
+
+                        break;
+                    }
+
+                    case "Approved":
+                    {
+                        approved = r7.Value.ToString()[0];
+                        break;
+                    }
+
+                    case "Password":
+                    {
+                        password = r7.Value.ToString();
+                        break;
+                    }
+
+                    case "Seen":
+                    {
+                        seen = r7.Value.ToString()[0];
+                        break;
+                    }
+
+                    case "WhenSubmitted":
+                    {
+                        whensubmitted = Convert.ToDateTime(r7.Value);
+                        break;
+                    }
+                }
         }
+    }
 
-        internal async Task<bool> PlaceInQueue()
-        {
-            var telegramBotAbstract = await GetAnonBotAsync();
-            if (telegramBotAbstract == null)
-                return false;
-            var e = new MessaggeAnonToSendInQueue(this);
-            return await MainAnon.PlaceMessageInQueue(telegramBotAbstract, e, 0, null);
-        }
+    internal async Task<bool> PlaceInQueue()
+    {
+        var telegramBotAbstract = await GetAnonBotAsync();
+        if (telegramBotAbstract == null)
+            return false;
+        var e = new MessaggeAnonToSendInQueue(this);
+        return await MainAnon.PlaceMessageInQueue(telegramBotAbstract, e, 0, null);
+    }
 
-        public static async Task<TelegramBotAbstract> GetAnonBotAsync()
-        {
-            if (GlobalVariables.Bots != null)
-                return (from key in GlobalVariables.Bots.Keys
-                        let m = GlobalVariables.Bots[key].GetMode()
-                        where m == BotStartMethods.Anon
-                        select GlobalVariables.Bots[key]).FirstOrDefault();
-            try
-            {
-                await Program.StartBotsAsync(false, false, true);
-            }
-            catch
-            {
-                ;
-            }
-
+    public static async Task<TelegramBotAbstract> GetAnonBotAsync()
+    {
+        if (GlobalVariables.Bots != null)
             return (from key in GlobalVariables.Bots.Keys
-                    let m = GlobalVariables.Bots[key].GetMode()
-                    where m == BotStartMethods.Anon
-                    select GlobalVariables.Bots[key]).FirstOrDefault();
+                let m = GlobalVariables.Bots[key].GetMode()
+                where m == BotStartMethods.Anon
+                select GlobalVariables.Bots[key]).FirstOrDefault();
+        try
+        {
+            await Program.StartBotsAsync(false, false, true);
+        }
+        catch
+        {
+            ;
         }
 
-        internal async Task SetAsSeenAsync()
-        {
-            var url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + postid + "&password=" +
-                      ConfigAnon.password + "&seen=Y";
-            var x = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
-            seen = 'Y';
-        }
+        return (from key in GlobalVariables.Bots.Keys
+            let m = GlobalVariables.Bots[key].GetMode()
+            where m == BotStartMethods.Anon
+            select GlobalVariables.Bots[key]).FirstOrDefault();
+    }
 
-        internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
-        {
-            var approved = Approved(x);
-            if (x.authorId == null) return false;
-            var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
-                      ConfigAnon.password + "&approved=" + approved;
-            var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
-            ThreadAsync.dictionary_webpost[x.authorId.Value].approved = approved;
-            ThreadAsync.WriteDict();
-            return true;
-        }
+    internal async Task SetAsSeenAsync()
+    {
+        var url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + postid + "&password=" +
+                  ConfigAnon.password + "&seen=Y";
+        var x = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        seen = 'Y';
+    }
 
-        private static char Approved(CallBackDataAnon x)
-        {
-            var s = CallBackDataAnon.ResultToString(x.GetResultEnum());
-            return s[0];
-        }
+    internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
+    {
+        var approved = Approved(x);
+        if (x.authorId == null) return false;
+        var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
+                  ConfigAnon.password + "&approved=" + approved;
+        var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        ThreadAsync.dictionary_webpost[x.authorId.Value].approved = approved;
+        ThreadAsync.WriteDict();
+        return true;
+    }
+
+    private static char Approved(CallBackDataAnon x)
+    {
+        var s = CallBackDataAnon.ResultToString(x.GetResultEnum());
+        return s[0];
     }
 }

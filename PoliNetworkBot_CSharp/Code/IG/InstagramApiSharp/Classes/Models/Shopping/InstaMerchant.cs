@@ -1,11 +1,10 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaMerchant
 {
-    public class InstaMerchant
-    {
-        public long Pk { get; set; }
+    public long Pk { get; set; }
 
-        public string Username { get; set; }
+    public string Username { get; set; }
 
-        public string ProfilePicture { get; set; }
-    }
+    public string ProfilePicture { get; set; }
 }

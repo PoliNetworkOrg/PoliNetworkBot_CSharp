@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaUserShortFriendshipFull : InstaUserShort
 {
-    public class InstaUserShortFriendshipFull : InstaUserShort
-    {
-        public InstaFriendshipFullStatus FriendshipStatus { get; set; }
-    }
+    public InstaFriendshipFullStatus FriendshipStatus { get; set; }
 }

@@ -1,3 +1,1 @@
-﻿namespace Minista.Converters
-{
-}
+﻿namespace Minista.Converters;

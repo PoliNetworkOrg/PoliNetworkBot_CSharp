@@ -1,31 +1,30 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaDirectBroadcastConverter : IObjectConverter<InstaDirectBroadcast, InstaDirectBroadcastResponse>
 {
-    internal class InstaDirectBroadcastConverter : IObjectConverter<InstaDirectBroadcast, InstaDirectBroadcastResponse>
+    public InstaDirectBroadcastResponse SourceObject { get; set; }
+
+    public InstaDirectBroadcast Convert()
     {
-        public InstaDirectBroadcastResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaDirectBroadcast Convert()
+        var broadcast = new InstaDirectBroadcast
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            Broadcast = SourceObject.Broadcast,
+            Text = SourceObject.Text,
+            IsLinked = SourceObject.IsLinked ?? false,
+            Message = SourceObject.Message,
+            Title = SourceObject.Title
+        };
 
-            var broadcast = new InstaDirectBroadcast
-            {
-                Broadcast = SourceObject.Broadcast,
-                Text = SourceObject.Text,
-                IsLinked = SourceObject.IsLinked ?? false,
-                Message = SourceObject.Message,
-                Title = SourceObject.Title
-            };
-
-            return broadcast;
-        }
+        return broadcast;
     }
 }

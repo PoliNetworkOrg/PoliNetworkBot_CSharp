@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaBusinessContactType
 {
-    public enum InstaBusinessContactType
-    {
-        Call = 0,
-        Text = 1
-    }
+    Call = 0,
+    Text = 1
 }

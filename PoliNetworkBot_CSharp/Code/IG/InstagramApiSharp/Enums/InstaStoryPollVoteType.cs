@@ -1,8 +1,7 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaStoryPollVoteType
 {
-    public enum InstaStoryPollVoteType
-    {
-        Yes = 0,
-        No = 1
-    }
+    Yes = 0,
+    No = 1
 }

@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaStoryType
 {
-    public enum InstaStoryType
-    {
-        SelfStory,
-        Direct,
-        Both
-    }
+    SelfStory,
+    Direct,
+    Both
 }

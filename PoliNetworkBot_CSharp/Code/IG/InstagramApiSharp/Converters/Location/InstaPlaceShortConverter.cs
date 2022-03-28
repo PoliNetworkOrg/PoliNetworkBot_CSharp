@@ -1,34 +1,33 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaPlaceShortConverter : IObjectConverter<InstaPlaceShort, InstaPlaceShortResponse>
 {
-    internal class InstaPlaceShortConverter : IObjectConverter<InstaPlaceShort, InstaPlaceShortResponse>
+    public InstaPlaceShortResponse SourceObject { get; set; }
+
+    public InstaPlaceShort Convert()
     {
-        public InstaPlaceShortResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaPlaceShort Convert()
+        var place = new InstaPlaceShort
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-
-            var place = new InstaPlaceShort
-            {
-                Address = SourceObject.Address,
-                City = SourceObject.City,
-                ExternalSource = SourceObject.ExternalSource,
-                FacebookPlacesId = SourceObject.FacebookPlacesId,
-                Lat = SourceObject.Lat,
-                Lng = SourceObject.Lng,
-                Name = SourceObject.Name,
-                Pk = SourceObject.Pk,
-                ShortName = SourceObject.ShortName
-            };
-            return place;
-        }
+            Address = SourceObject.Address,
+            City = SourceObject.City,
+            ExternalSource = SourceObject.ExternalSource,
+            FacebookPlacesId = SourceObject.FacebookPlacesId,
+            Lat = SourceObject.Lat,
+            Lng = SourceObject.Lng,
+            Name = SourceObject.Name,
+            Pk = SourceObject.Pk,
+            ShortName = SourceObject.ShortName
+        };
+        return place;
     }
 }

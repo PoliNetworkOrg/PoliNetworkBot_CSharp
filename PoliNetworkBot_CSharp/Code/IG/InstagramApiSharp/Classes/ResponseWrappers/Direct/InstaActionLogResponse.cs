@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaActionLogResponse
 {
-    public class InstaActionLogResponse
-    {
-        [JsonProperty("description")] public string Description { get; set; }
-    }
+    [JsonProperty("description")] public string Description { get; set; }
 }

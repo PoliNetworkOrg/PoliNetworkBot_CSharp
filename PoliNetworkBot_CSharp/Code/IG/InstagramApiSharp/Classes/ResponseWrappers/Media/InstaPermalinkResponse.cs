@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaPermalinkResponse : BaseStatusResponse
 {
-    public class InstaPermalinkResponse : BaseStatusResponse
-    {
-        [JsonProperty("permalink")] public string Permalink { get; set; }
-    }
+    [JsonProperty("permalink")] public string Permalink { get; set; }
 }

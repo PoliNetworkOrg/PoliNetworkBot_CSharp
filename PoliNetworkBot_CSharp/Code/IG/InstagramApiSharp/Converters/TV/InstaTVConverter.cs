@@ -1,48 +1,47 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaTVConverter : IObjectConverter<InstaTV, InstaTVResponse>
 {
-    internal class InstaTVConverter : IObjectConverter<InstaTV, InstaTVResponse>
+    public InstaTVResponse SourceObject { get; set; }
+
+    public InstaTV Convert()
     {
-        public InstaTVResponse SourceObject { get; set; }
+        if (SourceObject == null)
+            throw new ArgumentNullException("SourceObject");
 
-        public InstaTV Convert()
+        var tv = new InstaTV
         {
-            if (SourceObject == null)
-                throw new ArgumentNullException("SourceObject");
-
-            var tv = new InstaTV
+            Status = SourceObject.Status
+        };
+        if (SourceObject.MyChannel != null)
+            try
             {
-                Status = SourceObject.Status
-            };
-            if (SourceObject.MyChannel != null)
-                try
-                {
-                    tv.MyChannel = ConvertersFabric.GetTvSelfChannelConverter(SourceObject.MyChannel)
-                        .Convert();
-                }
-                catch
-                {
-                }
+                tv.MyChannel = ConvertersFabric.GetTvSelfChannelConverter(SourceObject.MyChannel)
+                    .Convert();
+            }
+            catch
+            {
+            }
 
-            if (SourceObject.Channels == null || !SourceObject.Channels.Any()) return tv;
-            foreach (var channel in SourceObject.Channels)
-                try
-                {
-                    tv.Channels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
-                }
-                catch
-                {
-                }
+        if (SourceObject.Channels == null || !SourceObject.Channels.Any()) return tv;
+        foreach (var channel in SourceObject.Channels)
+            try
+            {
+                tv.Channels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
+            }
+            catch
+            {
+            }
 
-            return tv;
-        }
+        return tv;
     }
 }

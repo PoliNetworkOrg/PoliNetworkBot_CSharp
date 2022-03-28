@@ -1,31 +1,30 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaBroadcastStatusItemConverter : IObjectConverter<InstaBroadcastStatusItem, InstaBroadcastStatusItemResponse>
 {
-    internal class
-        InstaBroadcastStatusItemConverter : IObjectConverter<InstaBroadcastStatusItem, InstaBroadcastStatusItemResponse>
+    public InstaBroadcastStatusItemResponse SourceObject { get; set; }
+
+    public InstaBroadcastStatusItem Convert()
     {
-        public InstaBroadcastStatusItemResponse SourceObject { get; set; }
-
-        public InstaBroadcastStatusItem Convert()
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var broadcastStatusItem = new InstaBroadcastStatusItem
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var broadcastStatusItem = new InstaBroadcastStatusItem
-            {
-                BroadcastStatus = SourceObject.BroadcastStatus,
-                CoverFrameUrl = SourceObject.CoverFrameUrl,
-                HasReducedVisibility = SourceObject.HasReducedVisibility,
-                Id = SourceObject.Id,
-                ViewerCount = SourceObject.ViewerCount
-            };
+            BroadcastStatus = SourceObject.BroadcastStatus,
+            CoverFrameUrl = SourceObject.CoverFrameUrl,
+            HasReducedVisibility = SourceObject.HasReducedVisibility,
+            Id = SourceObject.Id,
+            ViewerCount = SourceObject.ViewerCount
+        };
 
-            return broadcastStatusItem;
-        }
+        return broadcastStatusItem;
     }
 }

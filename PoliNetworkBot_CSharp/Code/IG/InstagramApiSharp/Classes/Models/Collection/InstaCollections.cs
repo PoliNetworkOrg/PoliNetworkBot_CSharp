@@ -4,16 +4,15 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaCollections
 {
-    public class InstaCollections
-    {
-        public bool MoreCollectionsAvailable { get; set; }
+    public bool MoreCollectionsAvailable { get; set; }
 
-        public int Pages { get; set; } = 0;
+    public int Pages { get; set; } = 0;
 
-        public List<InstaCollectionItem> Items { get; set; }
+    public List<InstaCollectionItem> Items { get; set; }
 
-        public string NextMaxId { get; set; }
-    }
+    public string NextMaxId { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public interface IInstaBaseList
 {
-    public interface IInstaBaseList
-    {
-        string NextMaxId { get; set; }
-    }
+    string NextMaxId { get; set; }
 }

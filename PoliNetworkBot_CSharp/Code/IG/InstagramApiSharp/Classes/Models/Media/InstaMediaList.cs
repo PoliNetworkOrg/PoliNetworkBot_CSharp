@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaMediaList : List<InstaMedia>, IInstaBaseList
 {
-    public class InstaMediaList : List<InstaMedia>, IInstaBaseList
-    {
-        public int Pages { get; set; } = 0;
-        public int PageSize { get; set; } = 0;
-        public string NextMaxId { get; set; }
-    }
+    public int Pages { get; set; } = 0;
+    public int PageSize { get; set; } = 0;
+    public string NextMaxId { get; set; }
 }

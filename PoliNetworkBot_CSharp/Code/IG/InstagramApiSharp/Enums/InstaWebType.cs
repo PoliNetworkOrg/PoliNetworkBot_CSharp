@@ -1,14 +1,13 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+internal enum InstaWebType
 {
-    internal enum InstaWebType
-    {
-        Unknown = -1,
-        CurrentFollowRequests,
-        FormerUsernames,
-        FormerEmails,
-        FormerPhones,
-        FormerFullNames,
-        FormerLinksInBio,
-        FormerBioTexts
-    }
+    Unknown = -1,
+    CurrentFollowRequests,
+    FormerUsernames,
+    FormerEmails,
+    FormerPhones,
+    FormerFullNames,
+    FormerLinksInBio,
+    FormerBioTexts
 }

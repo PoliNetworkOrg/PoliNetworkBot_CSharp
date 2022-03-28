@@ -1,54 +1,53 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Json
+namespace InstagramApiSharp.Converters.Json;
+
+internal class InstaUserPresenceContainerDataConverter : JsonConverter
 {
-    internal class InstaUserPresenceContainerDataConverter : JsonConverter
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanConvert(Type objectType)
+        return objectType == typeof(InstaUserPresenceContainerResponse);
+    }
+
+    public override object ReadJson(JsonReader reader,
+        Type objectType,
+        object existingValue,
+        JsonSerializer serializer)
+    {
+        var token = JToken.Load(reader);
+        var presence = token.ToObject<InstaUserPresenceContainerResponse>();
+
+        var userPresenceRoot = token?.SelectToken("user_presence");
+        var extras = userPresenceRoot.ToObject<InstaExtraResponse>();
+        try
         {
-            return objectType == typeof(InstaUserPresenceContainerResponse);
+            foreach (var (key, value) in extras.Extras)
+                try
+                {
+                    var p = value.ToObject<InstaUserPresenceResponse>();
+                    p.Pk = long.Parse(key);
+                    presence.Items.Add(p);
+                }
+                catch
+                {
+                }
+        }
+        catch
+        {
         }
 
-        public override object ReadJson(JsonReader reader,
-            Type objectType,
-            object existingValue,
-            JsonSerializer serializer)
-        {
-            var token = JToken.Load(reader);
-            var presence = token.ToObject<InstaUserPresenceContainerResponse>();
+        return presence;
+    }
 
-            var userPresenceRoot = token?.SelectToken("user_presence");
-            var extras = userPresenceRoot.ToObject<InstaExtraResponse>();
-            try
-            {
-                foreach (var (key, value) in extras.Extras)
-                    try
-                    {
-                        var p = value.ToObject<InstaUserPresenceResponse>();
-                        p.Pk = long.Parse(key);
-                        presence.Items.Add(p);
-                    }
-                    catch
-                    {
-                    }
-            }
-            catch
-            {
-            }
-
-            return presence;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize(writer, value);
-        }
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        serializer.Serialize(writer, value);
     }
 }

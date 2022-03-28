@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaDiscoverTopSearches
-    {
-        public string RankToken { get; set; }
+namespace InstagramApiSharp.Classes.Models;
 
-        public List<InstaDiscoverSearches> TopResults { get; set; } = new();
-    }
+public class InstaDiscoverTopSearches
+{
+    public string RankToken { get; set; }
+
+    public List<InstaDiscoverSearches> TopResults { get; set; } = new();
 }

@@ -4,20 +4,19 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers.BaseResponse
+namespace InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
+
+public class BaseStatusResponse
 {
-    public class BaseStatusResponse
+    [JsonProperty("status")] public string Status { get; set; }
+
+    public bool IsOk()
     {
-        [JsonProperty("status")] public string Status { get; set; }
+        return !string.IsNullOrEmpty(Status) && Status.ToLower() == "ok";
+    }
 
-        public bool IsOk()
-        {
-            return !string.IsNullOrEmpty(Status) && Status.ToLower() == "ok";
-        }
-
-        public bool IsFail()
-        {
-            return !string.IsNullOrEmpty(Status) && Status.ToLower() == "fail";
-        }
+    public bool IsFail()
+    {
+        return !string.IsNullOrEmpty(Status) && Status.ToLower() == "fail";
     }
 }

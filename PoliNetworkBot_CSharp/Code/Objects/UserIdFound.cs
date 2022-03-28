@@ -1,28 +1,27 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Objects
+﻿namespace PoliNetworkBot_CSharp.Code.Objects;
+
+internal class UserIdFound
 {
-    internal class UserIdFound
+    private readonly long? i;
+    private readonly string v;
+
+    public UserIdFound(long? i)
     {
-        private readonly long? i;
-        private readonly string v;
+        this.i = i;
+    }
 
-        public UserIdFound(long? i)
-        {
-            this.i = i;
-        }
+    public UserIdFound(long? i, string v) : this(i)
+    {
+        this.v = v;
+    }
 
-        public UserIdFound(long? i, string v) : this(i)
-        {
-            this.v = v;
-        }
+    internal long? GetID()
+    {
+        return i;
+    }
 
-        internal long? GetID()
-        {
-            return i;
-        }
-
-        internal string GetError()
-        {
-            return v;
-        }
+    internal string GetError()
+    {
+        return v;
     }
 }

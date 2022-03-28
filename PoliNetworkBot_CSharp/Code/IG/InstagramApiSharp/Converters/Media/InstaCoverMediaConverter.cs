@@ -1,34 +1,33 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System.Collections.Generic;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaCoverMediaConverter : IObjectConverter<InstaCoverMedia, InstaCoverMediaResponse>
 {
-    internal class InstaCoverMediaConverter : IObjectConverter<InstaCoverMedia, InstaCoverMediaResponse>
+    public InstaCoverMediaResponse SourceObject { get; set; }
+
+    public InstaCoverMedia Convert()
     {
-        public InstaCoverMediaResponse SourceObject { get; set; }
+        var instaImageList = new List<InstaImage>();
 
-        public InstaCoverMedia Convert()
+        if (SourceObject.ImageVersions != null)
+            instaImageList.AddRange(SourceObject.ImageVersions.Candidates
+                .Select(ConvertersFabric.GetImageConverter).Select(converter => converter.Convert()));
+
+        return new InstaCoverMedia
         {
-            var instaImageList = new List<InstaImage>();
-
-            if (SourceObject.ImageVersions != null)
-                instaImageList.AddRange(SourceObject.ImageVersions.Candidates
-                    .Select(ConvertersFabric.GetImageConverter).Select(converter => converter.Convert()));
-
-            return new InstaCoverMedia
-            {
-                Id = SourceObject.Id,
-                ImageVersions = instaImageList,
-                MediaType = SourceObject.MediaType,
-                OriginalHeight = SourceObject.OriginalHeight,
-                OriginalWidth = SourceObject.OriginalWidth
-            };
-        }
+            Id = SourceObject.Id,
+            ImageVersions = instaImageList,
+            MediaType = SourceObject.MediaType,
+            OriginalHeight = SourceObject.OriginalHeight,
+            OriginalWidth = SourceObject.OriginalWidth
+        };
     }
 }

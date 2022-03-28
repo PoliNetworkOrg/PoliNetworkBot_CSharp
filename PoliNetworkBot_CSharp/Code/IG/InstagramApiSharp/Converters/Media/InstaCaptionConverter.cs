@@ -6,25 +6,24 @@ using InstagramApiSharp.Helpers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
-{
-    internal class InstaCaptionConverter : IObjectConverter<InstaCaption, InstaCaptionResponse>
-    {
-        public InstaCaptionResponse SourceObject { get; set; }
+namespace InstagramApiSharp.Converters;
 
-        public InstaCaption Convert()
+internal class InstaCaptionConverter : IObjectConverter<InstaCaption, InstaCaptionResponse>
+{
+    public InstaCaptionResponse SourceObject { get; set; }
+
+    public InstaCaption Convert()
+    {
+        var caption = new InstaCaption
         {
-            var caption = new InstaCaption
-            {
-                Pk = SourceObject.Pk,
-                CreatedAt = DateTimeHelper.UnixTimestampToDateTime(SourceObject.CreatedAtUnixLike),
-                CreatedAtUtc = DateTimeHelper.UnixTimestampToDateTime(SourceObject.CreatedAtUtcUnixLike),
-                MediaId = SourceObject.MediaId,
-                Text = SourceObject.Text,
-                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
-                UserId = SourceObject.UserId
-            };
-            return caption;
-        }
+            Pk = SourceObject.Pk,
+            CreatedAt = DateTimeHelper.UnixTimestampToDateTime(SourceObject.CreatedAtUnixLike),
+            CreatedAtUtc = DateTimeHelper.UnixTimestampToDateTime(SourceObject.CreatedAtUtcUnixLike),
+            MediaId = SourceObject.MediaId,
+            Text = SourceObject.Text,
+            User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
+            UserId = SourceObject.UserId
+        };
+        return caption;
     }
 }

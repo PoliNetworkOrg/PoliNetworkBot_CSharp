@@ -4,15 +4,14 @@ using Telegram.Bot.Types;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Anon
-{
-    public class CallbackQueryEventArgs
-    {
-        internal readonly CallbackQuery CallbackQuery;
+namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-        public CallbackQueryEventArgs(CallbackQuery callbackQuery)
-        {
-            CallbackQuery = callbackQuery;
-        }
+public class CallbackQueryEventArgs
+{
+    internal readonly CallbackQuery CallbackQuery;
+
+    public CallbackQueryEventArgs(CallbackQuery callbackQuery)
+    {
+        CallbackQuery = callbackQuery;
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaMessageRepliesType
 {
-    public enum InstaMessageRepliesType
-    {
-        Everyone,
-        Following,
-        Off
-    }
+    Everyone,
+    Following,
+    Off
 }

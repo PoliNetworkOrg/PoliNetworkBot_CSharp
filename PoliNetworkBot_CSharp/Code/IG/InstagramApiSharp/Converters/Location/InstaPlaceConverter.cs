@@ -1,28 +1,27 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class InstaPlaceConverter : IObjectConverter<InstaPlace, InstaPlaceResponse>
 {
-    internal class InstaPlaceConverter : IObjectConverter<InstaPlace, InstaPlaceResponse>
+    public InstaPlaceResponse SourceObject { get; set; }
+
+    public InstaPlace Convert()
     {
-        public InstaPlaceResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaPlace Convert()
+        var place = new InstaPlace
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-
-            var place = new InstaPlace
-            {
-                Location = ConvertersFabric.GetPlaceShortConverter(SourceObject.Location).Convert(),
-                Title = SourceObject.Title,
-                Subtitle = SourceObject.Subtitle
-            };
-            return place;
-        }
+            Location = ConvertersFabric.GetPlaceShortConverter(SourceObject.Location).Convert(),
+            Title = SourceObject.Title,
+            Subtitle = SourceObject.Subtitle
+        };
+        return place;
     }
 }

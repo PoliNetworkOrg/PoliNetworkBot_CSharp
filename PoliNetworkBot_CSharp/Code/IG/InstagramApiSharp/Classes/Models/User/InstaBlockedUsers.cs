@@ -4,14 +4,13 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBlockedUsers : InstaDefault
 {
-    public class InstaBlockedUsers : InstaDefault
-    {
-        public List<InstaBlockedUserInfo> BlockedList { get; set; } = new();
+    public List<InstaBlockedUserInfo> BlockedList { get; set; } = new();
 
-        public int? PageSize { get; set; }
+    public int? PageSize { get; set; }
 
-        public string MaxId { get; set; }
-    }
+    public string MaxId { get; set; }
 }

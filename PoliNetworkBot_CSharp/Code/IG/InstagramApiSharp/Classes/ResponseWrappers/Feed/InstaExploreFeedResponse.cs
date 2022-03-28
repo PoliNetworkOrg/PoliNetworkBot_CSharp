@@ -5,12 +5,11 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
-{
-    public class InstaExploreFeedResponse : BaseLoadableResponse
-    {
-        [JsonIgnore] public InstaExploreItemsResponse Items { get; set; } = new();
+namespace InstagramApiSharp.Classes.ResponseWrappers;
 
-        [JsonProperty("max_id")] public string MaxId { get; set; }
-    }
+public class InstaExploreFeedResponse : BaseLoadableResponse
+{
+    [JsonIgnore] public InstaExploreItemsResponse Items { get; set; } = new();
+
+    [JsonProperty("max_id")] public string MaxId { get; set; }
 }

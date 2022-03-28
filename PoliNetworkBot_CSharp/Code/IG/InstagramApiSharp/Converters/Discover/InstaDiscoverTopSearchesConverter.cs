@@ -1,35 +1,34 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaDiscoverTopSearchesConverter : IObjectConverter<InstaDiscoverTopSearches, InstaDiscoverTopSearchesResponse>
 {
-    internal class
-        InstaDiscoverTopSearchesConverter : IObjectConverter<InstaDiscoverTopSearches, InstaDiscoverTopSearchesResponse>
+    public InstaDiscoverTopSearchesResponse SourceObject { get; set; }
+
+    public InstaDiscoverTopSearches Convert()
     {
-        public InstaDiscoverTopSearchesResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var recents = new InstaDiscoverTopSearches();
+        if (SourceObject.TopResults == null || !SourceObject.TopResults.Any()) return recents;
+        foreach (var search in SourceObject.TopResults)
+            try
+            {
+                recents.TopResults.Add(ConvertersFabric.GetDiscoverSearchesConverter(search)
+                    .Convert());
+            }
+            catch
+            {
+            }
 
-        public InstaDiscoverTopSearches Convert()
-        {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var recents = new InstaDiscoverTopSearches();
-            if (SourceObject.TopResults == null || !SourceObject.TopResults.Any()) return recents;
-            foreach (var search in SourceObject.TopResults)
-                try
-                {
-                    recents.TopResults.Add(ConvertersFabric.GetDiscoverSearchesConverter(search)
-                        .Convert());
-                }
-                catch
-                {
-                }
-
-            return recents;
-        }
+        return recents;
     }
 }

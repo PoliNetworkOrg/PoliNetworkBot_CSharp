@@ -4,16 +4,15 @@ using System;
 
 #endregion
 
-namespace Bot.Enums
+namespace Bot.Enums;
+
+[Serializable]
+public enum Stati
 {
-    [Serializable]
-    public enum Stati
-    {
-        start,
-        Scuola,
-        Corso,
-        Cartella,
-        newCartella,
-        AttesaFile
-    }
+    start,
+    Scuola,
+    Corso,
+    Cartella,
+    newCartella,
+    AttesaFile
 }

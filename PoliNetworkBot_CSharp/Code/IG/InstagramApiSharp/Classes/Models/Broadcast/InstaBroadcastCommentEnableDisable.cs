@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastCommentEnableDisable
 {
-    public class InstaBroadcastCommentEnableDisable
-    {
-        public int CommentMuted { get; set; }
-    }
+    public int CommentMuted { get; set; }
 }

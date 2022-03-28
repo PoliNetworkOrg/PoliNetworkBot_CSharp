@@ -1,7 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models
+﻿namespace InstagramApiSharp.Classes.Models;
+
+public class InstaBroadcastStart
 {
-    public class InstaBroadcastStart
-    {
-        public string MediaId { get; set; }
-    }
+    public string MediaId { get; set; }
 }

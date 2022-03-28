@@ -1,15 +1,14 @@
-﻿namespace InstagramApiSharp.Classes
+﻿namespace InstagramApiSharp.Classes;
+
+public enum InstaLoginResult
 {
-    public enum InstaLoginResult
-    {
-        Success,
-        BadPassword,
-        InvalidUser,
-        TwoFactorRequired,
-        Exception,
-        ChallengeRequired,
-        LimitError,
-        InactiveUser,
-        CheckpointLoggedOut
-    }
+    Success,
+    BadPassword,
+    InvalidUser,
+    TwoFactorRequired,
+    Exception,
+    ChallengeRequired,
+    LimitError,
+    InactiveUser,
+    CheckpointLoggedOut
 }

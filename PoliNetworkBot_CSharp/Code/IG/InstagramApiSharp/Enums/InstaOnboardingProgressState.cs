@@ -1,9 +1,8 @@
-﻿namespace InstagramApiSharp.Enums
+﻿namespace InstagramApiSharp.Enums;
+
+public enum InstaOnboardingProgressState
 {
-    public enum InstaOnboardingProgressState
-    {
-        Prefetch,
-        Start,
-        Finish
-    }
+    Prefetch,
+    Start,
+    Finish
 }

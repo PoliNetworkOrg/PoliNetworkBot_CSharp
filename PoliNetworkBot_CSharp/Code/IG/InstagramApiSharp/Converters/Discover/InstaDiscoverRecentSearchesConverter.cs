@@ -1,35 +1,34 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaDiscoverRecentSearchesConverter : IObjectConverter<InstaDiscoverRecentSearches,
+        InstaDiscoverRecentSearchesResponse>
 {
-    internal class
-        InstaDiscoverRecentSearchesConverter : IObjectConverter<InstaDiscoverRecentSearches,
-            InstaDiscoverRecentSearchesResponse>
+    public InstaDiscoverRecentSearchesResponse SourceObject { get; set; }
+
+    public InstaDiscoverRecentSearches Convert()
     {
-        public InstaDiscoverRecentSearchesResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
+        var recents = new InstaDiscoverRecentSearches();
+        if (SourceObject.Recent == null || !SourceObject.Recent.Any()) return recents;
+        foreach (var search in SourceObject.Recent)
+            try
+            {
+                recents.Recent.Add(ConvertersFabric.GetDiscoverSearchesConverter(search).Convert());
+            }
+            catch
+            {
+            }
 
-        public InstaDiscoverRecentSearches Convert()
-        {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var recents = new InstaDiscoverRecentSearches();
-            if (SourceObject.Recent == null || !SourceObject.Recent.Any()) return recents;
-            foreach (var search in SourceObject.Recent)
-                try
-                {
-                    recents.Recent.Add(ConvertersFabric.GetDiscoverSearchesConverter(search).Convert());
-                }
-                catch
-                {
-                }
-
-            return recents;
-        }
+        return recents;
     }
 }

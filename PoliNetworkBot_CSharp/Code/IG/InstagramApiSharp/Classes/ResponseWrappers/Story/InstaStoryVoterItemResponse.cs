@@ -4,14 +4,13 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaStoryVoterItemResponse
 {
-    public class InstaStoryVoterItemResponse
-    {
-        [JsonProperty("user")] public InstaUserShortFriendshipResponse User { get; set; }
+    [JsonProperty("user")] public InstaUserShortFriendshipResponse User { get; set; }
 
-        [JsonProperty("vote")] public double? Vote { get; set; }
+    [JsonProperty("vote")] public double? Vote { get; set; }
 
-        [JsonProperty("ts")] public long Ts { get; set; }
-    }
+    [JsonProperty("ts")] public long Ts { get; set; }
 }

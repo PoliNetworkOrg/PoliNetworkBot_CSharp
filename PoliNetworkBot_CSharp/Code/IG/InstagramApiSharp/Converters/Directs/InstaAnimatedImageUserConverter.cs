@@ -1,29 +1,28 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 
-namespace InstagramApiSharp.Converters
+namespace InstagramApiSharp.Converters;
+
+internal class
+    InstaAnimatedImageUserConverter : IObjectConverter<InstaAnimatedImageUser, InstaAnimatedImageUserResponse>
 {
-    internal class
-        InstaAnimatedImageUserConverter : IObjectConverter<InstaAnimatedImageUser, InstaAnimatedImageUserResponse>
+    public InstaAnimatedImageUserResponse SourceObject { get; set; }
+
+    public InstaAnimatedImageUser Convert()
     {
-        public InstaAnimatedImageUserResponse SourceObject { get; set; }
+        if (SourceObject == null) throw new ArgumentNullException("Source object");
 
-        public InstaAnimatedImageUser Convert()
+        var user = new InstaAnimatedImageUser
         {
-            if (SourceObject == null) throw new ArgumentNullException("Source object");
+            IsVerified = SourceObject.IsVerified,
+            Username = SourceObject.Username
+        };
 
-            var user = new InstaAnimatedImageUser
-            {
-                IsVerified = SourceObject.IsVerified,
-                Username = SourceObject.Username
-            };
-
-            return user;
-        }
+        return user;
     }
 }

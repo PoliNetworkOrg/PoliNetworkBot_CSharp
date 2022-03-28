@@ -4,18 +4,17 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models
+namespace InstagramApiSharp.Classes.Models;
+
+public class InstaAccountDetails
 {
-    public class InstaAccountDetails
-    {
-        public DateTime DateJoined { get; set; }
+    public DateTime DateJoined { get; set; }
 
-        public bool HasFormerUsernames { get; set; } = false;
+    public bool HasFormerUsernames { get; set; } = false;
 
-        public InstaPrimaryCountryInfo PrimaryCountryInfo { get; set; }
+    public InstaPrimaryCountryInfo PrimaryCountryInfo { get; set; }
 
-        public bool HasSharedFollowerAccounts { get; set; } = false;
+    public bool HasSharedFollowerAccounts { get; set; } = false;
 
-        public InstaAdsInfo AdsInfo { get; set; }
-    }
+    public InstaAdsInfo AdsInfo { get; set; }
 }

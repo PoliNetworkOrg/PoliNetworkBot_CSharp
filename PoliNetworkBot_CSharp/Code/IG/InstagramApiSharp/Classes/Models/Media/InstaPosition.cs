@@ -1,14 +1,13 @@
-﻿namespace InstagramApiSharp.Classes.Models
-{
-    public class InstaPosition
-    {
-        public InstaPosition(double x, double y)
-        {
-            X = x;
-            Y = y;
-        }
+﻿namespace InstagramApiSharp.Classes.Models;
 
-        public double X { get; set; }
-        public double Y { get; set; }
+public class InstaPosition
+{
+    public InstaPosition(double x, double y)
+    {
+        X = x;
+        Y = y;
     }
+
+    public double X { get; set; }
+    public double Y { get; set; }
 }

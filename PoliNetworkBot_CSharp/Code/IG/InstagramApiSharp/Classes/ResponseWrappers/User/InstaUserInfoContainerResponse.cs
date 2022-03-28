@@ -5,10 +5,9 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers
+namespace InstagramApiSharp.Classes.ResponseWrappers;
+
+public class InstaUserInfoContainerResponse : BaseStatusResponse
 {
-    public class InstaUserInfoContainerResponse : BaseStatusResponse
-    {
-        [JsonProperty("user")] public InstaUserInfoResponse User { get; set; }
-    }
+    [JsonProperty("user")] public InstaUserInfoResponse User { get; set; }
 }
