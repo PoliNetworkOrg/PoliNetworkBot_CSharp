@@ -16,7 +16,7 @@ namespace InstagramApiSharp.Converters
         public InstaCollections Convert()
         {
             var instaCollectionList = new List<InstaCollectionItem>();
-            instaCollectionList.AddRange(SourceObject.Items.Select(ConvertersFabric.Instance.GetCollectionConverter)
+            instaCollectionList.AddRange(SourceObject.Items.Select(ConvertersFabric.GetCollectionConverter)
                 .Select(converter => converter.Convert()));
 
             return new InstaCollections

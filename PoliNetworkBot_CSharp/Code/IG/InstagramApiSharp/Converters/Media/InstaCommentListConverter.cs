@@ -17,7 +17,7 @@ namespace InstagramApiSharp.Converters
             var commentList = new InstaCommentList
             {
                 Caption = SourceObject.Caption != null
-                    ? ConvertersFabric.Instance.GetCaptionConverter(SourceObject.Caption).Convert()
+                    ? ConvertersFabric.GetCaptionConverter(SourceObject.Caption).Convert()
                     : null,
                 CanViewMorePreviewComments = SourceObject.CanViewMorePreviewComments,
                 CaptionIsEdited = SourceObject.CaptionIsEdited,
@@ -34,14 +34,14 @@ namespace InstagramApiSharp.Converters
             };
             if (SourceObject.Comments == null || !(SourceObject?.Comments?.Count > 0)) return commentList;
             foreach (var converter in SourceObject.Comments.Select(commentResponse =>
-                         ConvertersFabric.Instance.GetCommentConverter(commentResponse)))
+                         ConvertersFabric.GetCommentConverter(commentResponse)))
                 commentList.Comments.Add(converter.Convert());
 
             if (SourceObject.PreviewComments == null || !SourceObject.PreviewComments.Any()) return commentList;
             foreach (var cmt in SourceObject.PreviewComments)
                 try
                 {
-                    commentList.PreviewComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
+                    commentList.PreviewComments.Add(ConvertersFabric.GetCommentConverter(cmt).Convert());
                 }
                 catch
                 {

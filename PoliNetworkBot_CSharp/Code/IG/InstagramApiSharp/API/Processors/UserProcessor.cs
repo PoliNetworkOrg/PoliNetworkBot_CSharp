@@ -196,7 +196,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaBlockedUsers Convert(InstaBlockedUsersResponse instaBlockedUsers)
                 {
-                    return ConvertersFabric.Instance.GetBlockedUsersConverter(instaBlockedUsers).Convert();
+                    return ConvertersFabric.GetBlockedUsersConverter(instaBlockedUsers).Convert();
                 }
 
                 var blockedUsersResponse = await GetBlockedUsers(paginationParameters?.NextMaxId);
@@ -313,7 +313,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaStoryFriendshipStatus>(response, json);
                 var friendshipStatusResponse = JsonConvert.DeserializeObject<InstaStoryFriendshipStatusResponse>(json);
-                var converter = ConvertersFabric.Instance.GetStoryFriendshipStatusConverter(friendshipStatusResponse);
+                var converter = ConvertersFabric.GetStoryFriendshipStatusConverter(friendshipStatusResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -362,7 +362,7 @@ namespace InstagramApiSharp.API.Processors
                     json,
                     new InstaFriendShipShortDataConverter());
                 var converter =
-                    ConvertersFabric.Instance.GetFriendshipShortStatusListConverter(friendshipStatusesResponse);
+                    ConvertersFabric.GetFriendshipShortStatusListConverter(friendshipStatusesResponse);
 
                 return Result.Success(converter.Convert());
             }
@@ -393,7 +393,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaFullUserInfo>(response, json);
                 var fullUserInfoResponse = JsonConvert.DeserializeObject<InstaFullUserInfoResponse>(json);
-                var converter = ConvertersFabric.Instance.GetFullUserInfoConverter(fullUserInfoResponse);
+                var converter = ConvertersFabric.GetFullUserInfoConverter(fullUserInfoResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -473,7 +473,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaSuggestionItemListResponse>(json,
                     new InstaSuggestionUserDetailDataConverter());
-                return Result.Success(ConvertersFabric.Instance.GetSuggestionItemListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetSuggestionItemListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -934,7 +934,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
+                    return ConvertersFabric.GetMediaListConverter(mediaListResponse).Convert();
                 }
 
                 var mediaResult = await GetUserMedia(userId, paginationParameters);
@@ -1032,7 +1032,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static IEnumerable<InstaMedia> Convert(InstaMediaListResponse mediaListResponse)
                 {
-                    return mediaListResponse.Medias.Select(ConvertersFabric.Instance.GetSingleMediaConverter)
+                    return mediaListResponse.Medias.Select(ConvertersFabric.GetSingleMediaConverter)
                         .Select(converter => converter.Convert());
                 }
 
@@ -1108,7 +1108,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaFriendshipFullStatus>(response, json);
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaFriendshipFullStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -1426,7 +1426,7 @@ namespace InstagramApiSharp.API.Processors
                     json,
                     new InstaFriendShipShortDataConverter());
                 var converter =
-                    ConvertersFabric.Instance.GetFriendshipShortStatusListConverter(friendshipStatusesResponse);
+                    ConvertersFabric.GetFriendshipShortStatusListConverter(friendshipStatusesResponse);
 
                 return Result.Success(converter.Convert());
             }
@@ -1462,7 +1462,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaFriendshipFullStatus>(response, json);
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaFriendshipFullStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -1497,7 +1497,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaFriendshipFullStatus>(response, json);
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaFriendshipFullStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetFriendshipFullStatusConverter(friendshipStatus.FriendshipStatus);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -1555,7 +1555,7 @@ namespace InstagramApiSharp.API.Processors
                 activityFeed.IsOwnActivity = feedPage.IsOwnActivity;
                 var nextId = feedPage.NextMaxId;
                 activityFeed.Items.AddRange(
-                    feedPage.Stories.Select(ConvertersFabric.Instance.GetSingleRecentActivityConverter)
+                    feedPage.Stories.Select(ConvertersFabric.GetSingleRecentActivityConverter)
                         .Select(converter => converter.Convert()));
                 paginationParameters.PagesLoaded++;
                 activityFeed.NextMaxId = paginationParameters.NextMaxId = feedPage.NextMaxId;
@@ -1567,7 +1567,7 @@ namespace InstagramApiSharp.API.Processors
                         return Result.Fail(nextFollowingFeed.Info, activityFeed);
                     nextId = nextFollowingFeed.Value.NextMaxId;
                     activityFeed.Items.AddRange(
-                        feedPage.Stories.Select(ConvertersFabric.Instance.GetSingleRecentActivityConverter)
+                        feedPage.Stories.Select(ConvertersFabric.GetSingleRecentActivityConverter)
                             .Select(converter => converter.Convert()));
                     paginationParameters.PagesLoaded++;
                     activityFeed.NextMaxId = paginationParameters.NextMaxId = nextId;
@@ -1668,7 +1668,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaUserInfo>(response, json);
                 var userInfo = JsonConvert.DeserializeObject<InstaUserInfoContainerResponse>(json);
-                var converter = ConvertersFabric.Instance.GetUserInfoConverter(userInfo);
+                var converter = ConvertersFabric.GetUserInfoConverter(userInfo);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -1867,7 +1867,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaStoryFriendshipStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
 
                 return Result.Success(converter.Convert());
             }
@@ -1905,7 +1905,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaStoryFriendshipStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
 
                 return Result.Success(converter.Convert());
             }
@@ -1942,7 +1942,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var friendshipStatus = JsonConvert.DeserializeObject<InstaStoryFriendshipStatusContainerResponse>(json);
                 var converter =
-                    ConvertersFabric.Instance.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
+                    ConvertersFabric.GetStoryFriendshipStatusConverter(friendshipStatus.FriendshipStatus);
 
                 return Result.Success(converter.Convert());
             }

@@ -23,8 +23,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.User != null)
-                postLive.User = ConvertersFabric.Instance
-                    .GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
+                postLive.User = ConvertersFabric.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
             try
             {
                 if (SourceObject.Broadcasts?.Count > 0)

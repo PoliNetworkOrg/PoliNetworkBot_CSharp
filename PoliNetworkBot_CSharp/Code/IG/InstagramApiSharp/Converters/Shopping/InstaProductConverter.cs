@@ -23,7 +23,7 @@ namespace InstagramApiSharp.Converters
                 ExternalUrl = SourceObject.ExternalUrl,
                 FullPrice = SourceObject.FullPrice,
                 HasViewerSaved = SourceObject.HasViewerSaved,
-                Merchant = ConvertersFabric.Instance.GetMerchantConverter(SourceObject.Merchant).Convert(),
+                Merchant = ConvertersFabric.GetMerchantConverter(SourceObject.Merchant).Convert(),
                 Name = SourceObject.Name,
                 Price = SourceObject.Price,
                 ProductId = SourceObject.ProductId,

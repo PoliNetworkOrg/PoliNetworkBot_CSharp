@@ -77,7 +77,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaProductInfo>(response, json);
 
                 var productInfoResponse = JsonConvert.DeserializeObject<InstaProductInfoResponse>(json);
-                var converted = ConvertersFabric.Instance.GetProductInfoConverter(productInfoResponse).Convert();
+                var converted = ConvertersFabric.GetProductInfoConverter(productInfoResponse).Convert();
 
                 return Result.Success(converted);
             }
@@ -122,7 +122,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaProductInfo>(response, json);
 
                 var productInfoResponse = JsonConvert.DeserializeObject<InstaProductInfoResponse>(json);
-                var converted = ConvertersFabric.Instance.GetProductInfoConverter(productInfoResponse).Convert();
+                var converted = ConvertersFabric.GetProductInfoConverter(productInfoResponse).Convert();
 
                 return Result.Success(converted);
             }
@@ -148,7 +148,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
+                    return ConvertersFabric.GetMediaListConverter(mediaListResponse).Convert();
                 }
 
                 var mediaResult = await GetShoppableMedia(userId, paginationParameters);
@@ -157,7 +157,7 @@ namespace InstagramApiSharp.API.Processors
                         mediaResult.Value != null ? Convert(mediaResult.Value) : mediaList);
 
                 var mediaResponse = mediaResult.Value;
-                mediaList = ConvertersFabric.Instance.GetMediaListConverter(mediaResponse).Convert();
+                mediaList = ConvertersFabric.GetMediaListConverter(mediaResponse).Convert();
                 mediaList.NextMaxId = paginationParameters.NextMaxId = mediaResponse.NextMaxId;
                 paginationParameters.PagesLoaded++;
 

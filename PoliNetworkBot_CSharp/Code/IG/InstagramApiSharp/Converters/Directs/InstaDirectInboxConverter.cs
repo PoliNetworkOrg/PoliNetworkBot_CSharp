@@ -44,15 +44,14 @@ namespace InstagramApiSharp.Converters
                 {
                     inbox.Inbox.Threads = new List<InstaDirectInboxThread>();
                     foreach (var converter in SourceObject.Inbox.Threads.Select(inboxThread =>
-                                 ConvertersFabric.Instance.GetDirectThreadConverter(inboxThread)))
+                                 ConvertersFabric.GetDirectThreadConverter(inboxThread)))
                         inbox.Inbox.Threads.Add(converter.Convert());
                 }
             }
 
             if (SourceObject.PendingUsers is not { Count: > 0 }) return inbox;
             {
-                foreach (var converter in SourceObject.PendingUsers.Select(user =>
-                             ConvertersFabric.GetUserShortConverter(user)))
+                foreach (var converter in SourceObject.PendingUsers.Select(ConvertersFabric.GetUserShortConverter))
                     inbox.PendingUsers.Add(converter.Convert());
             }
             return inbox;

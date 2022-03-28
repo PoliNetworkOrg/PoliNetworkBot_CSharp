@@ -61,7 +61,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 static InstaExploreFeed Convert(InstaExploreFeedResponse exploreFeedResponse)
                 {
-                    return ConvertersFabric.Instance.GetExploreFeedConverter(exploreFeedResponse).Convert();
+                    return ConvertersFabric.GetExploreFeedConverter(exploreFeedResponse).Convert();
                 }
 
                 var feeds = await GetExploreFeed(paginationParameters);
@@ -164,7 +164,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
+                    return ConvertersFabric.GetMediaListConverter(mediaListResponse).Convert();
                 }
 
                 var mediaResult = await GetAnyFeeds(UriCreator.GetUserLikeFeedUri(paginationParameters.NextMaxId));
@@ -240,7 +240,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
+                    return ConvertersFabric.GetMediaListConverter(mediaListResponse).Convert();
                 }
 
                 var mediaFeedsResult = await GetAnyFeeds(UriCreator.GetSavedFeedUri(paginationParameters?.NextMaxId));
@@ -303,7 +303,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaTagFeed Convert(InstaTagFeedResponse instaTagFeedResponse)
                 {
-                    return ConvertersFabric.Instance.GetTagFeedConverter(instaTagFeedResponse).Convert();
+                    return ConvertersFabric.GetTagFeedConverter(instaTagFeedResponse).Convert();
                 }
 
                 var tags = await GetTagFeed(tag, paginationParameters);
@@ -525,7 +525,7 @@ namespace InstagramApiSharp.API.Processors
                 activityFeed.IsOwnActivity = feedPage.IsOwnActivity;
                 var nextId = feedPage.NextMaxId;
                 activityFeed.Items.AddRange(
-                    feedPage.Stories.Select(ConvertersFabric.Instance.GetSingleRecentActivityConverter)
+                    feedPage.Stories.Select(ConvertersFabric.GetSingleRecentActivityConverter)
                         .Select(converter => converter.Convert()));
                 paginationParameters.PagesLoaded++;
                 activityFeed.NextMaxId = paginationParameters.NextMaxId = feedPage.NextMaxId;
@@ -537,7 +537,7 @@ namespace InstagramApiSharp.API.Processors
                         return Result.Fail(nextFollowingFeed.Info, activityFeed);
                     nextId = nextFollowingFeed.Value.NextMaxId;
                     activityFeed.Items.AddRange(
-                        feedPage.Stories.Select(ConvertersFabric.Instance.GetSingleRecentActivityConverter)
+                        feedPage.Stories.Select(ConvertersFabric.GetSingleRecentActivityConverter)
                             .Select(converter => converter.Convert()));
                     paginationParameters.PagesLoaded++;
                     activityFeed.NextMaxId = paginationParameters.NextMaxId = nextId;

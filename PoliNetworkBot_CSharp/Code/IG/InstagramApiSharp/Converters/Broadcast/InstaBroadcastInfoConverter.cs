@@ -36,8 +36,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.BroadcastOwner != null)
-                broadcastInfo.BroadcastOwner = ConvertersFabric.Instance
-                    .GetUserShortFriendshipFullConverter(SourceObject.BroadcastOwner).Convert();
+                broadcastInfo.BroadcastOwner = ConvertersFabric.GetUserShortFriendshipFullConverter(SourceObject.BroadcastOwner).Convert();
             return broadcastInfo;
         }
     }

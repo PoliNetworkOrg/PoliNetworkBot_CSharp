@@ -21,7 +21,7 @@ namespace InstagramApiSharp.Converters
             {
                 Vote = SourceObject.Vote ?? 0,
                 Time = SourceObject.Ts.FromUnixTimeSeconds(),
-                User = ConvertersFabric.Instance.GetUserShortFriendshipConverter(SourceObject.User).Convert()
+                User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User).Convert()
             };
 
             return voterItem;

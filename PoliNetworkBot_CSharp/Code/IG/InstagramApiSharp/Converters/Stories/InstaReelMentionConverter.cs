@@ -27,7 +27,7 @@ namespace InstagramApiSharp.Converters
                 Z = SourceObject.Z
             };
             if (SourceObject.Hashtag != null)
-                mention.Hashtag = ConvertersFabric.Instance.GetHashTagConverter(SourceObject.Hashtag).Convert();
+                mention.Hashtag = ConvertersFabric.GetHashTagConverter(SourceObject.Hashtag).Convert();
             if (SourceObject.User != null)
                 mention.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
             return mention;

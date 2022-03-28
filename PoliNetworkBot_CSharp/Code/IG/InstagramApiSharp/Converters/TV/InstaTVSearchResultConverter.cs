@@ -25,7 +25,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.Channel != null)
                 try
                 {
-                    search.Channel = ConvertersFabric.Instance.GetTVChannelConverter(SourceObject.Channel).Convert();
+                    search.Channel = ConvertersFabric.GetTvChannelConverter(SourceObject.Channel).Convert();
                 }
                 catch
                 {
@@ -34,7 +34,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.User == null) return search;
             try
             {
-                search.User = ConvertersFabric.Instance.GetUserShortFriendshipConverter(SourceObject.User)
+                search.User = ConvertersFabric.GetUserShortFriendshipConverter(SourceObject.User)
                     .Convert();
             }
             catch

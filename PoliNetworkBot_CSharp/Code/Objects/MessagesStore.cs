@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             try
             {
                 Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-                    File.ReadAllText(Paths.Data.MessageStore)) ?? new();
+                    File.ReadAllText(Paths.Data.MessageStore)) ?? new Dictionary<string, StoredMessage>();
             }
             catch (Exception ex)
             {
@@ -260,11 +260,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
         public static void AllowMessageOwner(string text)
         {
-            if (string.IsNullOrEmpty(text) == false)
-            {
-                AllowMessage(text);
-                Store[text].ForceAllowMessage();
-            }
+            if (string.IsNullOrEmpty(text)) return;
+            AllowMessage(text);
+            Store[text].ForceAllowMessage();
         }
 
         public static bool CanBeVetoed(string message)

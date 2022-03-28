@@ -72,7 +72,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastAddToPostLiveResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetAddToPostLiveConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetAddToPostLiveConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -116,7 +116,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaComment>(response, json);
                 var commentResponse = JsonConvert.DeserializeObject<InstaCommentResponse>(json,
                     new InstaCommentDataConverter());
-                var converter = ConvertersFabric.Instance.GetCommentConverter(commentResponse);
+                var converter = ConvertersFabric.GetCommentConverter(commentResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -235,7 +235,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBroadcastCommentEnableDisable>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastCommentEnableDisableResponse>(json);
                 return Result.Success(
-                    ConvertersFabric.Instance.GetBroadcastCommentEnableDisableConverter(obj).Convert());
+                    ConvertersFabric.GetBroadcastCommentEnableDisableConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -273,7 +273,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBroadcastCommentEnableDisable>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastCommentEnableDisableResponse>(json);
                 return Result.Success(
-                    ConvertersFabric.Instance.GetBroadcastCommentEnableDisableConverter(obj).Convert());
+                    ConvertersFabric.GetBroadcastCommentEnableDisableConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -345,7 +345,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastCommentList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastCommentListResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastCommentListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastCommentListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -477,7 +477,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastLiveHeartBeatViewerCount>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastLiveHeartBeatViewerCountResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastLiveHeartBeatViewerCountConverter(obj)
+                return Result.Success(ConvertersFabric.GetBroadcastLiveHeartBeatViewerCountConverter(obj)
                     .Convert());
             }
             catch (HttpRequestException httpException)
@@ -574,7 +574,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastLike>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastLikeResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastLikeConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastLikeConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -638,7 +638,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastSuggestedResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastListConverter(obj?.Broadcasts).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastListConverter(obj?.Broadcasts).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -674,7 +674,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastTopLiveStatusList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastTopLiveStatusResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastTopLiveStatusListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastTopLiveStatusListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -747,7 +747,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastLike>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastLikeResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastLikeConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastLikeConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -823,7 +823,7 @@ namespace InstagramApiSharp.API.Processors
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastStartResponse>(json);
                 return response.StatusCode != HttpStatusCode.OK
                     ? Result.UnExpectedResponse<InstaBroadcastStart>(response, json)
-                    : Result.Success(ConvertersFabric.Instance.GetBroadcastStartConverter(obj).Convert());
+                    : Result.Success(ConvertersFabric.GetBroadcastStartConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

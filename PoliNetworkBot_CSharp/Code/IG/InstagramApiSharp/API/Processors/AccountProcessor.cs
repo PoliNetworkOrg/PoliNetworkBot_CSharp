@@ -1288,7 +1288,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaPresence>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaPresenceResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetPresenceConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetPresenceConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -1355,7 +1355,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBusinessUser>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -1424,7 +1424,7 @@ namespace InstagramApiSharp.API.Processors
                 //{"message": "Can not convert to business, Try again later", "error_identifier": "CANNOT_CONVERT", "status": "fail"}
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

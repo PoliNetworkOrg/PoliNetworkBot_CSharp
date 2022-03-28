@@ -545,14 +545,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var depClub = new Language(new Dictionary<string, string>
             {
                 { "en", "Departmental Club" },
-                { "it", "Club Dipartimentale" },
+                { "it", "Club Dipartimentale" }
             });
 
             var assocAndClub = assocList.Select(a =>
                 new Language(
                     new Dictionary<string, string>
                     {
-                        {"uni", a},
+                        {"uni", a}
                     })
             ).ToList();
 
@@ -579,7 +579,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var permittedSpamMessage =
                 await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
 
-            var privateConfirmationMessage = new Language(new Dictionary<string, string>
+            var privateConfirmationMessage = new Language(new()
             {
                 { "uni", permittedSpamMessage },
             });
@@ -602,20 +602,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         {
             try
             {
-                if (MessagesStore.MessageIsAllowed(message))
+                if (!MessagesStore.MessageIsAllowed(message)) return;
+                var privateText = new Language(new Dictionary<string, string>
                 {
-                    var privateText = new Language(new Dictionary<string, string>
-                    {
-                        {"en", "The message is allowed to be sent"},
-                        {"it", "Il messaggio è approvato per l'invio"}
-                    });
+                    {"en", "The message is allowed to be sent"},
+                    {"it", "Il messaggio è approvato per l'invio"}
+                });
 
-                    await sender.SendTextMessageAsync(
-                        eventArgs?.Message?.From?.Id,
-                        privateText, ChatType.Private,
-                        eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
-                        eventArgs.Message.MessageId);
-                }
+                await sender.SendTextMessageAsync(
+                    eventArgs?.Message?.From?.Id,
+                    privateText, ChatType.Private,
+                    eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
+                    eventArgs.Message.MessageId);
             }
             catch (Exception ex)
             {

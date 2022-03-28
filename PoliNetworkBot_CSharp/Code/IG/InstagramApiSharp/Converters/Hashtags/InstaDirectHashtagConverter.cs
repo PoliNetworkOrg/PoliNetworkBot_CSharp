@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.Media != null)
-                hashtag.Media = ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.Media).Convert();
+                hashtag.Media = ConvertersFabric.GetSingleMediaConverter(SourceObject.Media).Convert();
             return hashtag;
         }
     }

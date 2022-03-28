@@ -27,7 +27,7 @@ namespace InstagramApiSharp.Converters
             foreach (var place in SourceObject.Items)
                 try
                 {
-                    list.Items.Add(ConvertersFabric.Instance.GetPlaceConverter(place).Convert());
+                    list.Items.Add(ConvertersFabric.GetPlaceConverter(place).Convert());
                 }
                 catch
                 {

@@ -27,7 +27,7 @@ namespace InstagramApiSharp.Converters
             };
             if (SourceObject.Medias == null || !SourceObject.Medias.Any()) return productMedia;
             foreach (var media in SourceObject.Medias)
-                productMedia.Medias.Add(ConvertersFabric.Instance.GetSingleMediaConverter(media).Convert());
+                productMedia.Medias.Add(ConvertersFabric.GetSingleMediaConverter(media).Convert());
 
             return productMedia;
         }

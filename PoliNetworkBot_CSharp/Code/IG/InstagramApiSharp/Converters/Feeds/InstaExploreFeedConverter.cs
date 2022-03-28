@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
                     return medias;
                 medias.AddRange(from instaUserFeedItemResponse in mediasResponse
                                 where instaUserFeedItemResponse?.Type == 0
-                                select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
+                                select ConvertersFabric.GetSingleMediaConverter(instaUserFeedItemResponse)
                                     .Convert());
 
                 return medias;
@@ -42,10 +42,10 @@ namespace InstagramApiSharp.Converters
                 RankToken = SourceObject.RankToken
             };
             if (SourceObject.Items?.StoryTray != null)
-                feed.StoryTray = ConvertersFabric.Instance.GetStoryTrayConverter(SourceObject.Items.StoryTray)
+                feed.StoryTray = ConvertersFabric.GetStoryTrayConverter(SourceObject.Items.StoryTray)
                     .Convert();
             if (SourceObject.Items?.Channel != null)
-                feed.Channel = ConvertersFabric.Instance.GetChannelConverter(SourceObject.Items.Channel).Convert();
+                feed.Channel = ConvertersFabric.GetChannelConverter(SourceObject.Items.Channel).Convert();
 
             feed.Medias.AddRange(ConvertMedia(SourceObject.Items?.Medias));
             return feed;

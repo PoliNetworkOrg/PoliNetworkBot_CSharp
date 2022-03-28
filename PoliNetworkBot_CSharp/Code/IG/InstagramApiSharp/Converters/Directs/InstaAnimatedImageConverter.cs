@@ -24,12 +24,11 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.Images is { Media: { } })
-                animatedImage.Media = ConvertersFabric.Instance
-                    .GetAnimatedImageMediaConverter(SourceObject.Images.Media).Convert();
+                animatedImage.Media = ConvertersFabric.GetAnimatedImageMediaConverter(SourceObject.Images.Media).Convert();
 
             if (SourceObject.User != null)
                 animatedImage.User =
-                    ConvertersFabric.Instance.GetAnimatedImageUserConverter(SourceObject.User).Convert();
+                    ConvertersFabric.GetAnimatedImageUserConverter(SourceObject.User).Convert();
 
             return animatedImage;
         }

@@ -164,7 +164,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
             var text = new Language(new Dictionary<string, string>
             {
-                { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) },
+                { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) }
             });
 
             return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs, Data.Constants.Groups.GroupException,

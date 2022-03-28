@@ -964,7 +964,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResponse =
                     JsonConvert.DeserializeObject<InstaMediaItemResponse>(json, new InstaMediaDataConverter());
-                var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaConverter(mediaResponse);
                 var obj = converter.Convert();
                 if (obj.Caption == null && !string.IsNullOrEmpty(caption))
                 {
@@ -1025,7 +1025,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResponse =
                     JsonConvert.DeserializeObject<InstaMediaItemResponse>(json, new InstaMediaDataConverter());
-                var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaConverter(mediaResponse);
                 var obj = converter.Convert();
                 //{
                 //	"_csrftoken": "5zpWUcNSwJQuYlua9fKDWWXzUhUofqul",
@@ -1324,7 +1324,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!response.IsSuccessStatusCode) return Result.UnExpectedResponse<InstaMedia>(response, json);
                 var mediaResponse =
                     JsonConvert.DeserializeObject<InstaMediaItemResponse>(json, new InstaMediaDataConverter());
-                var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaConverter(mediaResponse);
                 upProgress.UploadState = InstaUploadState.Configured;
                 progress?.Invoke(upProgress);
                 var obj = Result.Success(converter.Convert());

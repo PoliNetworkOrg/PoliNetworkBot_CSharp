@@ -31,7 +31,7 @@ namespace InstagramApiSharp.Converters
                 foreach (var item in SourceObject.Items)
                     try
                     {
-                        channel.Items.Add(ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert());
+                        channel.Items.Add(ConvertersFabric.GetSingleMediaConverter(item).Convert());
                     }
                     catch
                     {
@@ -40,7 +40,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.User == null) return channel;
             try
             {
-                channel.User = ConvertersFabric.Instance.GetTVUserConverter(SourceObject.User).Convert();
+                channel.User = ConvertersFabric.GetTvUserConverter(SourceObject.User).Convert();
             }
             catch
             {

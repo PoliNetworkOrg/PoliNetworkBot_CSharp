@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
             };
             try
             {
-                reelShare.Media = ConvertersFabric.Instance.GetStoryItemConverter(SourceObject.Media).Convert();
+                reelShare.Media = ConvertersFabric.GetStoryItemConverter(SourceObject.Media).Convert();
             }
             catch
             {

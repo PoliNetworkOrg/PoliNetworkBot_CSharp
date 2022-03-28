@@ -18,7 +18,7 @@ namespace InstagramApiSharp.Converters
 
             var voice = new InstaVoice
             {
-                Audio = ConvertersFabric.Instance.GetAudioConverter(SourceObject.Audio).Convert(),
+                Audio = ConvertersFabric.GetAudioConverter(SourceObject.Audio).Convert(),
                 Id = SourceObject.Id,
                 MediaType = SourceObject.MediaType,
                 OrganicTrackingToken = SourceObject.OrganicTrackingToken,

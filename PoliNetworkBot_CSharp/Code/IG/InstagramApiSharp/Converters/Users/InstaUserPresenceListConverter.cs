@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters
             foreach (var item in SourceObject.Items)
                 try
                 {
-                    list.Add(ConvertersFabric.Instance.GetSingleUserPresenceConverter(item).Convert());
+                    list.Add(ConvertersFabric.GetSingleUserPresenceConverter(item).Convert());
                 }
                 catch
                 {

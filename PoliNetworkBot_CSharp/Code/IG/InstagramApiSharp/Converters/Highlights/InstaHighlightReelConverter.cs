@@ -50,7 +50,7 @@ namespace InstagramApiSharp.Converters
             hLight.Items = new List<InstaStoryItem>();
             if (SourceObject.Reel.Items == null) return hLight;
             foreach (var media in SourceObject.Reel.Items)
-                hLight.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(media).Convert());
+                hLight.Items.Add(ConvertersFabric.GetStoryItemConverter(media).Convert());
             return hLight;
         }
     }

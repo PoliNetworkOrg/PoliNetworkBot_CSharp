@@ -199,7 +199,7 @@ namespace InstagramApiSharp.API.Processors
                 {
                     var mediaResponse = JsonConvert.DeserializeObject<InstaMediaItemResponse>(json,
                         new InstaMediaDataConverter());
-                    var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
+                    var converter = ConvertersFabric.GetSingleMediaConverter(mediaResponse);
                     return Result.Success(converter.Convert());
                 }
 
@@ -227,7 +227,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaMediaList Convert(InstaMediaListResponse instaMediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetMediaListConverter(instaMediaListResponse).Convert();
+                    return ConvertersFabric.GetMediaListConverter(instaMediaListResponse).Convert();
                 }
 
                 var archivedPostsResult = await GetArchivedMedia(paginationParameters?.NextMaxId);
@@ -330,7 +330,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResponse = JsonConvert.DeserializeObject<InstaMediaListResponse>(json,
                     new InstaMediaListDataConverter());
-                mediaList = ConvertersFabric.Instance.GetMediaListConverter(mediaResponse).Convert();
+                mediaList = ConvertersFabric.GetMediaListConverter(mediaResponse).Convert();
 
                 return Result.Success(mediaList);
             }
@@ -374,7 +374,7 @@ namespace InstagramApiSharp.API.Processors
                 }
 
                 var converter =
-                    ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse.Medias.FirstOrDefault());
+                    ConvertersFabric.GetSingleMediaConverter(mediaResponse.Medias.FirstOrDefault());
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -1462,15 +1462,12 @@ namespace InstagramApiSharp.API.Processors
 
                 var mediaResponse = JsonConvert.DeserializeObject<InstaMediaItemResponse>(json,
                     new InstaMediaDataConverter());
-                var converter = ConvertersFabric.Instance.GetSingleMediaConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaConverter(mediaResponse);
                 var obj = converter.Convert();
                 if (obj.Caption != null || string.IsNullOrEmpty(caption)) return Result.Success(obj);
                 var editedMedia =
                     await _instaApi.MediaProcessor.EditMediaAsync(obj.InstaIdentifier, caption, location);
-                if (editedMedia.Succeeded)
-                    return Result.Success(editedMedia.Value);
-
-                return Result.Success(obj);
+                return Result.Success(editedMedia.Succeeded ? editedMedia.Value : obj);
             }
             catch (HttpRequestException httpException)
             {

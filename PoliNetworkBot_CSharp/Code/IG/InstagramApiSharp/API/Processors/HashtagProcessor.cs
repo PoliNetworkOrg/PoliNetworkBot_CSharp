@@ -112,7 +112,7 @@ namespace InstagramApiSharp.API.Processors
                 var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
                     new InstaHashtagSuggestedDataConverter());
 
-                tags = ConvertersFabric.Instance.GetHashTagsSearchConverter(tagsResponse).Convert();
+                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
                 return Result.Success(tags);
             }
             catch (HttpRequestException httpException)
@@ -146,7 +146,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaHashtag>(response, json);
 
                 var tagInfoResponse = JsonConvert.DeserializeObject<InstaHashtagResponse>(json);
-                var tagInfo = ConvertersFabric.Instance.GetHashTagConverter(tagInfoResponse).Convert();
+                var tagInfo = ConvertersFabric.GetHashTagConverter(tagInfoResponse).Convert();
 
                 return Result.Success(tagInfo);
             }
@@ -211,7 +211,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
+                    return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
                 }
 
                 var mediaResponse = await GetHashtagSection(tagname,
@@ -247,7 +247,7 @@ namespace InstagramApiSharp.API.Processors
                     paginationParameters.PagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetHashtagMediaListConverter(mediaResponse.Value)
+                return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
                     .Convert());
             }
             catch (HttpRequestException httpException)
@@ -285,7 +285,7 @@ namespace InstagramApiSharp.API.Processors
                 var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
                     new InstaHashtagSuggestedDataConverter());
 
-                tags = ConvertersFabric.Instance.GetHashTagsSearchConverter(tagsResponse).Convert();
+                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
                 return Result.Success(tags);
             }
             catch (HttpRequestException httpException)
@@ -315,7 +315,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
+                    return ConvertersFabric.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
                 }
 
                 var mediaResponse = await GetHashtagSection(tagname,
@@ -352,7 +352,7 @@ namespace InstagramApiSharp.API.Processors
                     paginationParameters.PagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetHashtagMediaListConverter(mediaResponse.Value)
+                return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
                     .Convert());
             }
             catch (HttpRequestException httpException)
@@ -401,7 +401,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var tagsResponse = JsonConvert.DeserializeObject<InstaHashtagSearchResponse>(json,
                     new InstaHashtagSearchDataConverter());
-                tags = ConvertersFabric.Instance.GetHashTagsSearchConverter(tagsResponse).Convert();
+                tags = ConvertersFabric.GetHashTagsSearchConverter(tagsResponse).Convert();
 
                 if (tags.Any() && excludeList != null && excludeList.Contains(tags.First().Id))
                     tags.RemoveAt(0);

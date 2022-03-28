@@ -86,7 +86,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaTVSearch>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaTVSearchResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetTVSearchConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetTvSearchConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -117,7 +117,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaTV>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaTVResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetTVConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetTvConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -149,7 +149,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaTVSearch>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaTVSearchResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetTVSearchConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetTvSearchConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -217,7 +217,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaTVChannel>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaTVChannelResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetTVChannelConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetTvChannelConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

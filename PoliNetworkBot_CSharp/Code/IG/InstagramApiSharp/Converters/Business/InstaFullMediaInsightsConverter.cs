@@ -62,7 +62,7 @@ namespace InstagramApiSharp.Converters.Business
                         };
                         foreach (var item in inlineInsights.Metrics.Reach.FollowStatus.Nodes)
                         {
-                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                            var convertedItem = ConvertersFabric.GetInsightsDataNodeConverter(item)
                                 .Convert();
                             reach.Items.Add(convertedItem);
                         }
@@ -82,7 +82,7 @@ namespace InstagramApiSharp.Converters.Business
                         };
                         foreach (var item in inlineInsights.Metrics.Impressions.Surfaces.Nodes)
                         {
-                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                            var convertedItem = ConvertersFabric.GetInsightsDataNodeConverter(item)
                                 .Convert();
                             impressions.Items.Add(convertedItem);
                         }
@@ -102,7 +102,7 @@ namespace InstagramApiSharp.Converters.Business
                         };
                         foreach (var item in inlineInsights.Metrics.ProfileActions.Actions.Nodes)
                         {
-                            var convertedItem = ConvertersFabric.Instance.GetInsightsDataNodeConverter(item)
+                            var convertedItem = ConvertersFabric.GetInsightsDataNodeConverter(item)
                                 .Convert();
                             profileActions.Items.Add(convertedItem);
                         }

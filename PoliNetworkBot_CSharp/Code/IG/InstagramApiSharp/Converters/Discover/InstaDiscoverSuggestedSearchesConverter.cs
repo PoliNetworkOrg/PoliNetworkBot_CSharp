@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
                 try
                 {
                     suggested.Suggested.Add(
-                        ConvertersFabric.Instance.GetDiscoverSearchesConverter(search).Convert());
+                        ConvertersFabric.GetDiscoverSearchesConverter(search).Convert());
                 }
                 catch
                 {

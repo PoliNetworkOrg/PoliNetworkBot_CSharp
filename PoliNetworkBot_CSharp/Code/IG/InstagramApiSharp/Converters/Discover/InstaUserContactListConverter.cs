@@ -21,7 +21,7 @@ namespace InstagramApiSharp.Converters
                 foreach (var item in SourceObject.Items)
                     try
                     {
-                        userList.Add(ConvertersFabric.Instance.GetSingleUserContactConverter(item.User).Convert());
+                        userList.Add(ConvertersFabric.GetSingleUserContactConverter(item.User).Convert());
                     }
                     catch
                     {

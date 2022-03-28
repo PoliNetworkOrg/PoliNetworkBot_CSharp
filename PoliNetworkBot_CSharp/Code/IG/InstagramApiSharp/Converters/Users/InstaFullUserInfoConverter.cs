@@ -36,7 +36,7 @@ namespace InstagramApiSharp.Converters
                     foreach (var media in SourceObject.Feed.Items)
                         try
                         {
-                            fullUserInfo.Feed.Items.Add(ConvertersFabric.Instance.GetSingleMediaConverter(media)
+                            fullUserInfo.Feed.Items.Add(ConvertersFabric.GetSingleMediaConverter(media)
                                 .Convert());
                         }
                         catch
@@ -48,7 +48,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.UserDetail is { User: { } })
                 try
                 {
-                    fullUserInfo.UserDetail = ConvertersFabric.Instance.GetUserInfoConverter(SourceObject.UserDetail)
+                    fullUserInfo.UserDetail = ConvertersFabric.GetUserInfoConverter(SourceObject.UserDetail)
                         .Convert();
                 }
                 catch
@@ -79,7 +79,7 @@ namespace InstagramApiSharp.Converters
                         foreach (var story in SourceObject.ReelFeed.Items)
                             try
                             {
-                                fullUserInfo.ReelFeed.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(story)
+                                fullUserInfo.ReelFeed.Items.Add(ConvertersFabric.GetStoryItemConverter(story)
                                     .Convert());
                             }
                             catch
@@ -97,8 +97,7 @@ namespace InstagramApiSharp.Converters
                 if (SourceObject.UserStory.Broadcast != null)
                     try
                     {
-                        fullUserInfo.UserStory.Broadcast = ConvertersFabric.Instance
-                            .GetBroadcastListConverter(SourceObject.UserStory.Broadcast?.Broadcasts).Convert();
+                        fullUserInfo.UserStory.Broadcast = ConvertersFabric.GetBroadcastListConverter(SourceObject.UserStory.Broadcast?.Broadcasts).Convert();
                     }
                     catch
                     {
@@ -126,8 +125,7 @@ namespace InstagramApiSharp.Converters
                 foreach (var story in SourceObject.UserStory.Reel.Items)
                     try
                     {
-                        fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.Instance
-                            .GetStoryItemConverter(story).Convert());
+                        fullUserInfo.UserStory.Reel.Items.Add(ConvertersFabric.GetStoryItemConverter(story).Convert());
                     }
                     catch
                     {

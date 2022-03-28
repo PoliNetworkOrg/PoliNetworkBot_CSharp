@@ -71,13 +71,13 @@ namespace InstagramApiSharp.Converters
 
                 case InstaDirectThreadItemType.Media when SourceObject.Media != null:
                     {
-                        var converter = ConvertersFabric.Instance.GetInboxMediaConverter(SourceObject.Media);
+                        var converter = ConvertersFabric.GetInboxMediaConverter(SourceObject.Media);
                         threadItem.Media = converter.Convert();
                         break;
                     }
                 case InstaDirectThreadItemType.MediaShare when SourceObject.MediaShare != null:
                     {
-                        var converter = ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.MediaShare);
+                        var converter = ConvertersFabric.GetSingleMediaConverter(SourceObject.MediaShare);
                         threadItem.MediaShare = converter.Convert();
                         break;
                     }
@@ -95,7 +95,7 @@ namespace InstagramApiSharp.Converters
                         if (SourceObject.StoryShare.Media != null)
                         {
                             var converter =
-                                ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.StoryShare.Media);
+                                ConvertersFabric.GetSingleMediaConverter(SourceObject.StoryShare.Media);
                             threadItem.StoryShare.Media = converter.Convert();
                         }
 
@@ -154,7 +154,7 @@ namespace InstagramApiSharp.Converters
                             try
                             {
                                 var previewMedias = SourceObject.ProfileMediasPreview.Select(item =>
-                                    ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert()).ToList();
+                                    ConvertersFabric.GetSingleMediaConverter(item).Convert()).ToList();
 
                                 threadItem.ProfileMediasPreview = previewMedias;
                             }
@@ -207,8 +207,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.FelixShare when SourceObject.FelixShareMedia is { Video: { } }:
                     try
                     {
-                        threadItem.FelixShareMedia = ConvertersFabric.Instance
-                            .GetSingleMediaConverter(SourceObject.FelixShareMedia.Video).Convert();
+                        threadItem.FelixShareMedia = ConvertersFabric.GetSingleMediaConverter(SourceObject.FelixShareMedia.Video).Convert();
                     }
                     catch
                     {
@@ -219,8 +218,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.ReelShare when SourceObject.ReelShareMedia != null:
                     try
                     {
-                        threadItem.ReelShareMedia = ConvertersFabric.Instance
-                            .GetReelShareConverter(SourceObject.ReelShareMedia).Convert();
+                        threadItem.ReelShareMedia = ConvertersFabric.GetReelShareConverter(SourceObject.ReelShareMedia).Convert();
                     }
                     catch
                     {
@@ -231,8 +229,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.VoiceMedia when SourceObject.VoiceMedia != null:
                     try
                     {
-                        threadItem.VoiceMedia = ConvertersFabric.Instance
-                            .GetVoiceMediaConverter(SourceObject.VoiceMedia)
+                        threadItem.VoiceMedia = ConvertersFabric.GetVoiceMediaConverter(SourceObject.VoiceMedia)
                             .Convert();
                     }
                     catch
@@ -244,8 +241,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.AnimatedMedia when SourceObject.AnimatedMedia != null:
                     try
                     {
-                        threadItem.AnimatedMedia = ConvertersFabric.Instance
-                            .GetAnimatedImageConverter(SourceObject.AnimatedMedia).Convert();
+                        threadItem.AnimatedMedia = ConvertersFabric.GetAnimatedImageConverter(SourceObject.AnimatedMedia).Convert();
                     }
                     catch
                     {
@@ -256,8 +252,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.Hashtag when SourceObject.HashtagMedia != null:
                     try
                     {
-                        threadItem.HashtagMedia = ConvertersFabric.Instance
-                            .GetDirectHashtagConverter(SourceObject.HashtagMedia).Convert();
+                        threadItem.HashtagMedia = ConvertersFabric.GetDirectHashtagConverter(SourceObject.HashtagMedia).Convert();
                     }
                     catch
                     {
@@ -268,8 +263,7 @@ namespace InstagramApiSharp.Converters
                 case InstaDirectThreadItemType.LiveViewerInvite when SourceObject.LiveViewerInvite != null:
                     try
                     {
-                        threadItem.LiveViewerInvite = ConvertersFabric.Instance
-                            .GetDirectBroadcastConverter(SourceObject.LiveViewerInvite).Convert();
+                        threadItem.LiveViewerInvite = ConvertersFabric.GetDirectBroadcastConverter(SourceObject.LiveViewerInvite).Convert();
                     }
                     catch
                     {

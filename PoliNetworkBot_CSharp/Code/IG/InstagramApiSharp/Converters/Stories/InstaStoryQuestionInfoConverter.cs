@@ -34,8 +34,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.Responders?.Count > 0)) return questionInfo;
             foreach (var responder in SourceObject.Responders)
-                questionInfo.Responders.Add(ConvertersFabric.Instance
-                    .GetStoryQuestionResponderConverter(responder).Convert());
+                questionInfo.Responders.Add(ConvertersFabric.GetStoryQuestionResponderConverter(responder).Convert());
 
             return questionInfo;
         }

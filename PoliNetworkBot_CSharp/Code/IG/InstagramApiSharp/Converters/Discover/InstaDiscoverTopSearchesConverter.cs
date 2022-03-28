@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters
             foreach (var search in SourceObject.TopResults)
                 try
                 {
-                    recents.TopResults.Add(ConvertersFabric.Instance.GetDiscoverSearchesConverter(search)
+                    recents.TopResults.Add(ConvertersFabric.GetDiscoverSearchesConverter(search)
                         .Convert());
                 }
                 catch

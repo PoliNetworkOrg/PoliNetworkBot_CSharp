@@ -25,7 +25,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.MyChannel != null)
                 try
                 {
-                    tv.MyChannel = ConvertersFabric.Instance.GetTVSelfChannelConverter(SourceObject.MyChannel)
+                    tv.MyChannel = ConvertersFabric.GetTvSelfChannelConverter(SourceObject.MyChannel)
                         .Convert();
                 }
                 catch
@@ -36,7 +36,7 @@ namespace InstagramApiSharp.Converters
             foreach (var channel in SourceObject.Channels)
                 try
                 {
-                    tv.Channels.Add(ConvertersFabric.Instance.GetTVChannelConverter(channel).Convert());
+                    tv.Channels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
                 }
                 catch
                 {

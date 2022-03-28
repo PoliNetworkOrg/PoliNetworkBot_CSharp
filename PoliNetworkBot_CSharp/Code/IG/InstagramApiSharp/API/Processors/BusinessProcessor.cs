@@ -74,7 +74,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -148,7 +148,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -389,7 +389,7 @@ namespace InstagramApiSharp.API.Processors
                 var mediaResponse = JsonConvert.DeserializeObject<InstaMediaListResponse>(json,
                     new InstaMediaListDataConverter());
 
-                mediaList = ConvertersFabric.Instance.GetMediaListConverter(mediaResponse).Convert();
+                mediaList = ConvertersFabric.GetMediaListConverter(mediaResponse).Convert();
                 mediaList.PageSize = mediaResponse.ResultsCount;
                 return Result.Success(mediaList);
             }
@@ -442,7 +442,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaStatistics>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaStatisticsRootResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetStatisticsConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetStatisticsConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -623,7 +623,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -734,7 +734,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaDiscoverSearchResult>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaDiscoverSearchResultResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetDiscoverSearchResultConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetDiscoverSearchResultConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -820,7 +820,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBusinessUserContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBusinessUserConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBusinessUserConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

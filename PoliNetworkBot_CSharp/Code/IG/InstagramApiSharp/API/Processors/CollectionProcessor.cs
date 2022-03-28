@@ -77,7 +77,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaCollectionItem>(response, json);
                 var newCollectionResponse = JsonConvert.DeserializeObject<InstaCollectionItemResponse>(json);
-                var converter = ConvertersFabric.Instance.GetCollectionConverter(newCollectionResponse);
+                var converter = ConvertersFabric.GetCollectionConverter(newCollectionResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -121,7 +121,7 @@ namespace InstagramApiSharp.API.Processors
                 var json = await response.Content.ReadAsStringAsync();
 
                 var newCollectionResponse = JsonConvert.DeserializeObject<InstaCollectionItemResponse>(json);
-                var converter = ConvertersFabric.Instance.GetCollectionConverter(newCollectionResponse);
+                var converter = ConvertersFabric.GetCollectionConverter(newCollectionResponse);
 
                 return response.StatusCode != HttpStatusCode.OK
                     ? Result.UnExpectedResponse<InstaCollectionItem>(response, json)
@@ -217,7 +217,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaCollectionItem>(response, json);
                 var newCollectionResponse = JsonConvert.DeserializeObject<InstaCollectionItemResponse>(json);
-                var converter = ConvertersFabric.Instance.GetCollectionConverter(newCollectionResponse);
+                var converter = ConvertersFabric.GetCollectionConverter(newCollectionResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -250,7 +250,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaCollectionItem Convert(InstaCollectionItemResponse instaCollectionItemResponse)
                 {
-                    return ConvertersFabric.Instance.GetCollectionConverter(instaCollectionItemResponse).Convert();
+                    return ConvertersFabric.GetCollectionConverter(instaCollectionItemResponse).Convert();
                 }
 
                 var collectionList = await GetSingleCollection(collectionId, paginationParameters);
@@ -279,7 +279,7 @@ namespace InstagramApiSharp.API.Processors
                     pagesLoaded++;
                 }
 
-                var converter = ConvertersFabric.Instance.GetCollectionConverter(collectionsListResponse);
+                var converter = ConvertersFabric.GetCollectionConverter(collectionsListResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)

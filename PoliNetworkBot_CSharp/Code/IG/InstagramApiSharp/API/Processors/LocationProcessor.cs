@@ -66,7 +66,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaStory>(response, json);
 
                 var feedResponse = JsonConvert.DeserializeObject<InstaLocationFeedResponse>(json);
-                var feed = ConvertersFabric.Instance.GetLocationFeedConverter(feedResponse).Convert();
+                var feed = ConvertersFabric.GetLocationFeedConverter(feedResponse).Convert();
 
                 return Result.Success(feed.Story);
             }
@@ -197,7 +197,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaLocationShortList>(response, json);
                 var locations = JsonConvert.DeserializeObject<InstaLocationSearchResponse>(json);
-                var converter = ConvertersFabric.Instance.GetLocationsSearchConverter(locations);
+                var converter = ConvertersFabric.GetLocationsSearchConverter(locations);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -300,7 +300,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaPlaceList Convert(InstaPlaceListResponse placelistResponse)
                 {
-                    return ConvertersFabric.Instance.GetPlaceListConverter(placelistResponse).Convert();
+                    return ConvertersFabric.GetPlaceListConverter(placelistResponse).Convert();
                 }
 
                 var places = await SearchPlaces(latitude, longitude, query, paginationParameters);
@@ -329,7 +329,7 @@ namespace InstagramApiSharp.API.Processors
                     pagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetPlaceListConverter(placesResponse).Convert());
+                return Result.Success(ConvertersFabric.GetPlaceListConverter(placesResponse).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -390,7 +390,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaSectionMedia Convert(InstaSectionMediaListResponse sectionMediaListResponse)
                 {
-                    return ConvertersFabric.Instance.GetHashtagMediaListConverter(sectionMediaListResponse).Convert();
+                    return ConvertersFabric.GetHashtagMediaListConverter(sectionMediaListResponse).Convert();
                 }
 
                 var mediaResponse = await GetSectionMedia(sectionType,
@@ -430,7 +430,7 @@ namespace InstagramApiSharp.API.Processors
                     paginationParameters.PagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetHashtagMediaListConverter(mediaResponse.Value)
+                return Result.Success(ConvertersFabric.GetHashtagMediaListConverter(mediaResponse.Value)
                     .Convert());
             }
             catch (HttpRequestException httpException)

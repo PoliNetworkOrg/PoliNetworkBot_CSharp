@@ -1680,7 +1680,7 @@ namespace InstagramApiSharp.API
                 var obj = JsonConvert.DeserializeObject<InstaUserLookupResponse>(json);
                 return response.StatusCode != HttpStatusCode.OK
                     ? Result.Fail<InstaUserLookup>(obj.Message)
-                    : Result.Success(ConvertersFabric.Instance.GetUserLookupConverter(obj).Convert());
+                    : Result.Success(ConvertersFabric.GetUserLookupConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

@@ -32,18 +32,15 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.Caption != null)
-                broadcastCommentList.Caption = ConvertersFabric.Instance
-                    .GetCaptionConverter(SourceObject.Caption).Convert();
+                broadcastCommentList.Caption = ConvertersFabric.GetCaptionConverter(SourceObject.Caption).Convert();
 
             if (SourceObject.PinnedComment != null)
-                broadcastCommentList.PinnedComment = ConvertersFabric.Instance
-                    .GetBroadcastCommentConverter(SourceObject.PinnedComment).Convert();
+                broadcastCommentList.PinnedComment = ConvertersFabric.GetBroadcastCommentConverter(SourceObject.PinnedComment).Convert();
             try
             {
                 if (SourceObject.Comments?.Count > 0)
                     foreach (var comment in SourceObject.Comments)
-                        broadcastCommentList.Comments.Add(ConvertersFabric.Instance
-                            .GetBroadcastCommentConverter(comment).Convert());
+                        broadcastCommentList.Comments.Add(ConvertersFabric.GetBroadcastCommentConverter(comment).Convert());
             }
             catch
             {

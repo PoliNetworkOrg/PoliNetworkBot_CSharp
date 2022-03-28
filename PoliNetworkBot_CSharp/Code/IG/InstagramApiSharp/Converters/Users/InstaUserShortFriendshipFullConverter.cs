@@ -29,8 +29,7 @@ namespace InstagramApiSharp.Converters.Users
                 ProfilePicUrl = SourceObject.ProfilePicture
             };
             if (SourceObject.FriendshipStatus != null)
-                user.FriendshipStatus = ConvertersFabric.Instance
-                    .GetFriendshipFullStatusConverter(SourceObject.FriendshipStatus).Convert();
+                user.FriendshipStatus = ConvertersFabric.GetFriendshipFullStatusConverter(SourceObject.FriendshipStatus).Convert();
             return user;
         }
     }

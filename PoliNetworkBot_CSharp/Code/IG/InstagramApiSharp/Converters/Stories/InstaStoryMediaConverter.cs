@@ -15,7 +15,7 @@ namespace InstagramApiSharp.Converters
         {
             var instaStoryMedia = new InstaStoryMedia
             {
-                Media = ConvertersFabric.Instance.GetStoryItemConverter(SourceObject.Media).Convert()
+                Media = ConvertersFabric.GetStoryItemConverter(SourceObject.Media).Convert()
             };
 
             return instaStoryMedia;

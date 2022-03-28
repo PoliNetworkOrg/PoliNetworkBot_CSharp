@@ -17,7 +17,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var productTag = new InstaProductTag
             {
-                Product = ConvertersFabric.Instance.GetProductConverter(SourceObject.Product).Convert()
+                Product = ConvertersFabric.GetProductConverter(SourceObject.Product).Convert()
             };
 
             if (SourceObject.Position != null)

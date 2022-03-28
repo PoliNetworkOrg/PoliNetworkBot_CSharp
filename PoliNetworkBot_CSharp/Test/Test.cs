@@ -7,7 +7,7 @@ namespace PoliNetworkBot_CSharp.Test
     {
         private static void Main2(string[] args)
         {
-            new MessageAllowedStatus(MessageAllowedStatusEnum.PENDING, new TimeSpan(4, 0, 0));
+            var messageAllowedStatus = new MessageAllowedStatus(MessageAllowedStatusEnum.PENDING, new TimeSpan(4, 0, 0));
         }
     }
 }

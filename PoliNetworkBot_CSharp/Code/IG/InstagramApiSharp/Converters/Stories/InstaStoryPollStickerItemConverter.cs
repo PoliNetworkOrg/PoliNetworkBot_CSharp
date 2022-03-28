@@ -32,7 +32,7 @@ namespace InstagramApiSharp.Converters
             foreach (var tallies in SourceObject.Tallies)
                 try
                 {
-                    pollSticker.Tallies.Add(ConvertersFabric.Instance.GetStoryTalliesItemConverter(tallies)
+                    pollSticker.Tallies.Add(ConvertersFabric.GetStoryTalliesItemConverter(tallies)
                         .Convert());
                 }
                 catch

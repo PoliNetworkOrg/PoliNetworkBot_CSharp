@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.Voters?.Count > 0)) return voterInfoItem;
             foreach (var voter in SourceObject.Voters)
-                voterInfoItem.Voters.Add(ConvertersFabric.Instance.GetStoryPollVoterItemConverter(voter).Convert());
+                voterInfoItem.Voters.Add(ConvertersFabric.GetStoryPollVoterItemConverter(voter).Convert());
 
             return voterInfoItem;
         }

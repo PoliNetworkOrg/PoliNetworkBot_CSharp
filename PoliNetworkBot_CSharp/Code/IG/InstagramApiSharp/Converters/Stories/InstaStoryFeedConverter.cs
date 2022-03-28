@@ -32,7 +32,7 @@ namespace InstagramApiSharp.Converters
                     if (reel.Id.ToLower().StartsWith("tag:"))
                         feed.HashtagStories.Add(ConvertersFabric.GetHashtagStoryConverter(itemResponse.ToObject<InstaHashtagStoryResponse>()).Convert());
                     else
-                        feed.Items.Add(ConvertersFabric.Instance.GetReelFeedConverter(reel).Convert());
+                        feed.Items.Add(ConvertersFabric.GetReelFeedConverter(reel).Convert());
                 }
 
             if (SourceObject.Broadcasts?.Count > 0)
@@ -41,7 +41,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.PostLives?.PostLiveItems?.Count > 0)) return feed;
             foreach (var postlive in SourceObject.PostLives.PostLiveItems)
-                feed.PostLives.Add(ConvertersFabric.Instance.GetAddToPostLiveConverter(postlive).Convert());
+                feed.PostLives.Add(ConvertersFabric.GetAddToPostLiveConverter(postlive).Convert());
 
             return feed;
         }

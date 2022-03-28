@@ -32,8 +32,7 @@ namespace InstagramApiSharp.Converters
                 UserId = SourceObject.UserId
             };
             if (SourceObject.User != null)
-                broadcastComment.User = ConvertersFabric.Instance
-                    .GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
+                broadcastComment.User = ConvertersFabric.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
 
             return broadcastComment;
         }

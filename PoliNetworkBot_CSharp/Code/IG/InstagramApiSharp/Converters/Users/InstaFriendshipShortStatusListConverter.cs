@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters.Users
             foreach (var item in SourceObject)
                 try
                 {
-                    var friend = ConvertersFabric.Instance.GetSingleFriendshipShortStatusConverter(item).Convert();
+                    var friend = ConvertersFabric.GetSingleFriendshipShortStatusConverter(item).Convert();
                     friend.Pk = item.Pk;
                     friendships.Add(friend);
                 }

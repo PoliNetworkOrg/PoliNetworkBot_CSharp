@@ -25,7 +25,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Tray == null) return storyTray;
             foreach (var story in SourceObject.Tray.Select(item =>
-                         ConvertersFabric.Instance.GetStoryConverter(item).Convert())) storyTray.Tray.Add(story);
+                         ConvertersFabric.GetStoryConverter(item).Convert())) storyTray.Tray.Add(story);
 
             return storyTray;
         }

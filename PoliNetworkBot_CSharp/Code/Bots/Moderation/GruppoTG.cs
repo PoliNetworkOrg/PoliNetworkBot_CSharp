@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
         public readonly string nome;
         public string idLink;
         public string newLink;
-        public List<string> oldLinks;
+        public readonly List<string> oldLinks;
         public long? permanentId;
 
         public GruppoTG(JToken idLink, JToken nome, JToken id, JToken LastUpdateInviteLinkTime)

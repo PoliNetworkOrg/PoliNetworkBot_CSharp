@@ -48,7 +48,7 @@ namespace InstagramApiSharp.Converters
             comment.PreviewChildComments ??= new List<InstaCommentShort>();
 
             foreach (var cm in SourceObject.PreviewChildComments)
-                comment.PreviewChildComments.Add(ConvertersFabric.Instance.GetCommentShortConverter(cm).Convert());
+                comment.PreviewChildComments.Add(ConvertersFabric.GetCommentShortConverter(cm).Convert());
 
             return comment;
         }

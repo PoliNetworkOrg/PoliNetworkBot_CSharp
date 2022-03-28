@@ -27,14 +27,14 @@ namespace InstagramApiSharp.Converters.Hashtags
                 PrefetchCount = SourceObject.PrefetchCount,
                 ReelType = SourceObject.ReelType,
                 UniqueIntegerReelId = SourceObject.UniqueIntegerReelId,
-                Owner = ConvertersFabric.Instance.GetHashtagOwnerConverter(SourceObject.Owner).Convert()
+                Owner = ConvertersFabric.GetHashtagOwnerConverter(SourceObject.Owner).Convert()
             };
             try
             {
                 foreach (var story in SourceObject.Items)
                     try
                     {
-                        hashtagStory.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(story).Convert());
+                        hashtagStory.Items.Add(ConvertersFabric.GetStoryItemConverter(story).Convert());
                     }
                     catch
                     {

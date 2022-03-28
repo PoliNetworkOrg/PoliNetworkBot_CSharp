@@ -34,13 +34,13 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.HDProfilePicVersions is { Length: > 0 })
                 foreach (var imageResponse in SourceObject.HDProfilePicVersions)
                 {
-                    var converter = ConvertersFabric.Instance.GetImageConverter(imageResponse);
+                    var converter = ConvertersFabric.GetImageConverter(imageResponse);
                     user.HdProfileImages.Add(converter.Convert());
                 }
 
             if (SourceObject.HDProfilePicture == null) return user;
             {
-                var converter = ConvertersFabric.Instance.GetImageConverter(SourceObject.HDProfilePicture);
+                var converter = ConvertersFabric.GetImageConverter(SourceObject.HDProfilePicture);
                 user.HdProfilePicture = converter.Convert();
             }
 

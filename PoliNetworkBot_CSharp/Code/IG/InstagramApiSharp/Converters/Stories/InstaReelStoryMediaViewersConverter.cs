@@ -32,7 +32,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.UpdatedMedia != null)
                 reelViewers.UpdatedMedia =
-                    ConvertersFabric.Instance.GetStoryItemConverter(SourceObject.UpdatedMedia).Convert();
+                    ConvertersFabric.GetStoryItemConverter(SourceObject.UpdatedMedia).Convert();
 
             return reelViewers;
         }

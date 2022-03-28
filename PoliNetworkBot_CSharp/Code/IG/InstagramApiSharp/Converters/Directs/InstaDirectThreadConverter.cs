@@ -56,24 +56,24 @@ namespace InstagramApiSharp.Converters
             {
                 thread.Items = new List<InstaDirectInboxItem>();
                 foreach (var converter in SourceObject.Items.Select(item =>
-                             ConvertersFabric.Instance.GetDirectThreadItemConverter(item)))
+                             ConvertersFabric.GetDirectThreadItemConverter(item)))
                     thread.Items.Add(converter.Convert());
             }
 
             if (SourceObject.LastPermanentItem != null)
             {
-                var converter = ConvertersFabric.Instance.GetDirectThreadItemConverter(SourceObject.LastPermanentItem);
+                var converter = ConvertersFabric.GetDirectThreadItemConverter(SourceObject.LastPermanentItem);
                 thread.LastPermanentItem = converter.Convert();
             }
 
             if (SourceObject.Users is { Count: > 0 })
                 foreach (var converter in SourceObject.Users.Select(user =>
-                             ConvertersFabric.Instance.GetUserShortFriendshipConverter(user)))
+                             ConvertersFabric.GetUserShortFriendshipConverter(user)))
                     thread.Users.Add(converter.Convert());
 
             if (SourceObject.LeftUsers is { Count: > 0 })
                 foreach (var converter in SourceObject.LeftUsers.Select(user =>
-                             ConvertersFabric.Instance.GetUserShortFriendshipConverter(user)))
+                             ConvertersFabric.GetUserShortFriendshipConverter(user)))
                     thread.LeftUsers.Add(converter.Convert());
 
             if (SourceObject.LastSeenAt is { })

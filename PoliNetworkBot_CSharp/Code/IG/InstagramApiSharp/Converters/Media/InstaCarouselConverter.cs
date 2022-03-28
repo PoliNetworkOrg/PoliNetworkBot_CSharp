@@ -17,7 +17,7 @@ namespace InstagramApiSharp.Converters
         {
             var carousel = new InstaCarousel();
             if (SourceObject == null) throw new ArgumentNullException("Source object");
-            carousel.AddRange(SourceObject.Select(item => ConvertersFabric.Instance.GetCarouselItemConverter(item))
+            carousel.AddRange(SourceObject.Select(item => ConvertersFabric.GetCarouselItemConverter(item))
                 .Select(carouselItem => carouselItem.Convert()));
 
             return carousel;

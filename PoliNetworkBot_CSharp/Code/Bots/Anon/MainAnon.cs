@@ -299,7 +299,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 return;
             }
 
-            var x = dataAnon;
             var e = new CallbackQueryEventArgs(dataAnon.CallBackQueryFromTelegram);
             var telegramBotAbstract = dataAnon.Bot;
 
@@ -308,8 +307,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
                 var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-                await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup, dataAnon.CallBackQueryFromTelegram.Message.MessageId,
-                    "Hai scelto [" + x.GetResultEnum() + "]");
+                if (dataAnon.CallBackQueryFromTelegram.Message != null)
+                    await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
+                        dataAnon.CallBackQueryFromTelegram.Message.MessageId,
+                        "Hai scelto [" + dataAnon.GetResultEnum() + "]");
             }
             catch (Exception e1)
             {
@@ -330,7 +331,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                         try
                         {
-                            var messageSentResult = await SendMessageToChannel(dataAnon.Bot, e, x);
+                            var messageSentResult = await SendMessageToChannel(dataAnon.Bot, e, dataAnon);
                             if (messageSentResult != null)
                                 link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonMain.ToString(), true);
                         }
@@ -339,33 +340,33 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             ;
                         }
 
-                        if (x.from_telegram != null && x.from_telegram.Value)
+                        if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                         {
                             var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                         });
-                            await telegramBotAbstract.SendTextMessageAsync(x.authorId.Value, t1, ChatType.Private,
-                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                                x.messageIdUser);
+                            await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                                dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), dataAnon.username,
+                                dataAnon.messageIdUser);
                         }
                         else
                         {
-                            await WebPost.SetApprovedStatusAsync(x);
+                            await WebPost.SetApprovedStatusAsync(dataAnon);
                         }
 
                         break;
                     }
                 case ResultQueueEnum.GO_TO_UNCENSORED:
                     {
-                        if (x.authorId == null)
+                        if (dataAnon.authorId == null)
                             return;
 
                         var link = "";
 
                         try
                         {
-                            var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, x);
+                            var messageSentResult = await SendMessageToChannel(telegramBotAbstract, e, dataAnon);
                             if (messageSentResult != null)
                                 link = messageSentResult.GetLink(ConfigAnon.WhereToPublishAnonUncensored.ToString(), true);
                         }
@@ -374,19 +375,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                             ;
                         }
 
-                        if (x.from_telegram != null && x.from_telegram.Value)
+                        if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                         {
                             var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato messo nella zona uncensored! " + link }
                         });
-                            await telegramBotAbstract.SendTextMessageAsync(x.authorId.Value, t1, ChatType.Private,
-                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                                x.messageIdUser);
+                            await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                                dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), dataAnon.username,
+                                dataAnon.messageIdUser);
                         }
                         else
                         {
-                            await WebPost.SetApprovedStatusAsync(x);
+                            await WebPost.SetApprovedStatusAsync(dataAnon);
                         }
 
                         break;
@@ -394,22 +395,22 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
 
                 case ResultQueueEnum.DELETE:
                     {
-                        if (x.authorId == null)
+                        if (dataAnon.authorId == null)
                             return;
 
-                        if (x.from_telegram != null && x.from_telegram.Value)
+                        if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                         {
                             var t1 = new Language(new Dictionary<string, string>
                         {
                             { "it", "Il tuo post è stato rifiutato!" }
                         });
-                            await telegramBotAbstract.SendTextMessageAsync(x.authorId.Value, t1, ChatType.Private,
-                                x.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), x.username,
-                                x.messageIdUser);
+                            await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                                dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), dataAnon.username,
+                                dataAnon.messageIdUser);
                         }
                         else
                         {
-                            await WebPost.SetApprovedStatusAsync(x);
+                            await WebPost.SetApprovedStatusAsync(dataAnon);
                         }
 
                         break;
@@ -508,17 +509,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon
                 new CallbackOption("Sì, uncensored", ResultQueueEnum.GO_TO_UNCENSORED),
                 new CallbackOption("No, elimina", ResultQueueEnum.DELETE)
             };
-            CallBackDataAnon callBackDataAnon = new(options, (cb) => { _ = CallbackMethod2Async(cb); });
-            callBackDataAnon.identity = identity;
-            callBackDataAnon.authorId = e.GetFromUserId();
-            callBackDataAnon.langUser = e.GetLanguageCode();
-            callBackDataAnon.username = e.GetUsername();
-            callBackDataAnon.from_telegram = true;
-            callBackDataAnon.messageIdUser = e.GetMessage().MessageId;
-            callBackDataAnon.messageIdReplyTo = messageIdReplyTo;
+            CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
+            {
+                identity = identity,
+                authorId = e.GetFromUserId(),
+                langUser = e.GetLanguageCode(),
+                username = e.GetUsername(),
+                from_telegram = true,
+                messageIdUser = e.GetMessage().MessageId,
+                messageIdReplyTo = messageIdReplyTo
+            };
 
             var m4 = await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
-                language, telegramBotAbstract, ChatType.Group, "it", null, false, x.GetMessageID());
+                language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
 
             return m4 != null;
         }

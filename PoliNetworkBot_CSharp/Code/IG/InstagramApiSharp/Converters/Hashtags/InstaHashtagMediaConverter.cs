@@ -33,7 +33,7 @@ namespace InstagramApiSharp.Converters.Hashtags
                             try
                             {
                                 media.Medias.Add(
-                                    ConvertersFabric.Instance.GetSingleMediaConverter(item.Media).Convert());
+                                    ConvertersFabric.GetSingleMediaConverter(item.Media).Convert());
                             }
                             catch
                             {

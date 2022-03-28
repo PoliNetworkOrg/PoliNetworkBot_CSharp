@@ -21,8 +21,7 @@ namespace InstagramApiSharp.Helpers
             var separator = "";
             foreach (var (key, value) in parameters.Where(kvp => kvp.Value != null))
             {
-                builder.AppendFormat("{0}{1}={2}", separator, WebUtility.UrlEncode(key),
-                    WebUtility.UrlEncode(value));
+                builder.Append($"{separator}{WebUtility.UrlEncode(key)}={WebUtility.UrlEncode(value)}");
                 separator = "&";
             }
 

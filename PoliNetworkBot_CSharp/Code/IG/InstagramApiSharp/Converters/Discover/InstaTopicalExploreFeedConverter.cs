@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
                     return medias;
                 medias.AddRange(from instaUserFeedItemResponse in mediasResponse
                                 where instaUserFeedItemResponse?.Type == 0
-                                select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
+                                select ConvertersFabric.GetSingleMediaConverter(instaUserFeedItemResponse)
                                     .Convert());
 
                 return medias;
@@ -46,7 +46,7 @@ namespace InstagramApiSharp.Converters
                 foreach (var channel in SourceObject.TVChannels)
                     try
                     {
-                        feed.TVChannels.Add(ConvertersFabric.Instance.GetTVChannelConverter(channel).Convert());
+                        feed.TVChannels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
                     }
                     catch
                     {
@@ -63,7 +63,7 @@ namespace InstagramApiSharp.Converters
                     }
 
             if (SourceObject.Channel != null)
-                feed.Channel = ConvertersFabric.Instance.GetChannelConverter(SourceObject.Channel).Convert();
+                feed.Channel = ConvertersFabric.GetChannelConverter(SourceObject.Channel).Convert();
 
             feed.Medias.AddRange(ConvertMedia(SourceObject.Medias));
             return feed;

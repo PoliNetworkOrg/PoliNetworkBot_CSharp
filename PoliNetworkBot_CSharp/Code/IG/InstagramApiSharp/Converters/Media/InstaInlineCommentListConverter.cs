@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.ParentComment != null)
                 try
                 {
-                    inline.ParentComment = ConvertersFabric.Instance.GetCommentConverter(SourceObject.ParentComment)
+                    inline.ParentComment = ConvertersFabric.GetCommentConverter(SourceObject.ParentComment)
                         .Convert();
                 }
                 catch
@@ -40,7 +40,7 @@ namespace InstagramApiSharp.Converters
             foreach (var cmt in SourceObject.ChildComments)
                 try
                 {
-                    inline.ChildComments.Add(ConvertersFabric.Instance.GetCommentConverter(cmt).Convert());
+                    inline.ChildComments.Add(ConvertersFabric.GetCommentConverter(cmt).Convert());
                 }
                 catch
                 {

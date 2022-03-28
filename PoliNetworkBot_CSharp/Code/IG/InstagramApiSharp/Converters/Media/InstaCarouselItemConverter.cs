@@ -33,7 +33,7 @@ namespace InstagramApiSharp.Converters
                         video.Type));
             if (SourceObject.UserTagList?.In is not { Count: > 0 }) return carouselItem;
             foreach (var tag in SourceObject.UserTagList.In)
-                carouselItem.UserTags.Add(ConvertersFabric.Instance.GetUserTagConverter(tag).Convert());
+                carouselItem.UserTags.Add(ConvertersFabric.GetUserTagConverter(tag).Convert());
             return carouselItem;
         }
     }

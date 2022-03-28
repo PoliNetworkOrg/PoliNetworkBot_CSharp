@@ -39,7 +39,7 @@ namespace InstagramApiSharp.Converters
                     foreach (var item in SourceObject.MediaInfos)
                         try
                         {
-                            var converted = ConvertersFabric.Instance.GetSingleMediaConverter(item).Convert();
+                            var converted = ConvertersFabric.GetSingleMediaConverter(item).Convert();
                             suggestion.MediaInfos.Add(converted);
                         }
                         catch

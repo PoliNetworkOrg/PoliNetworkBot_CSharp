@@ -27,8 +27,7 @@ namespace InstagramApiSharp.Converters
             {
                 if (SourceObject.Friends?.Count > 0)
                     foreach (var friend in SourceObject.Friends)
-                        broadcastNotifyFriends.Friends.Add(ConvertersFabric.Instance
-                            .GetUserShortFriendshipFullConverter(friend).Convert());
+                        broadcastNotifyFriends.Friends.Add(ConvertersFabric.GetUserShortFriendshipFullConverter(friend).Convert());
             }
             catch
             {

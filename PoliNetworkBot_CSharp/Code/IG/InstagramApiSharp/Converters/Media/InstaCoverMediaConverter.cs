@@ -19,7 +19,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.ImageVersions != null)
                 instaImageList.AddRange(SourceObject.ImageVersions.Candidates
-                    .Select(ConvertersFabric.Instance.GetImageConverter).Select(converter => converter.Convert()));
+                    .Select(ConvertersFabric.GetImageConverter).Select(converter => converter.Convert()));
 
             return new InstaCoverMedia
             {

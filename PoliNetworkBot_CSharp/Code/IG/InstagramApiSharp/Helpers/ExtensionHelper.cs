@@ -118,7 +118,7 @@ namespace InstagramApiSharp
             return EncodeRecipients(recipients.ToList());
         }
 
-        public static string EncodeRecipients(this List<long> recipients)
+        public static string EncodeRecipients(this IEnumerable<long> recipients)
         {
             var list = recipients.Select(item => $"[{item}]").ToList();
             return string.Join(",", list);

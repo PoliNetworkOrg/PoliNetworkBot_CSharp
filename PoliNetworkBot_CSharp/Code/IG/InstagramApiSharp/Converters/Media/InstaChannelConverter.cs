@@ -24,7 +24,7 @@ namespace InstagramApiSharp.Converters
                 Title = SourceObject.Title
             };
             if (SourceObject.Media != null)
-                channel.Media = ConvertersFabric.Instance.GetSingleMediaConverter(SourceObject.Media).Convert();
+                channel.Media = ConvertersFabric.GetSingleMediaConverter(SourceObject.Media).Convert();
             return channel;
         }
     }

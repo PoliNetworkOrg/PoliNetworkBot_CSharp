@@ -25,7 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             return permission switch
             {
                 Permission.HEAD_ADMIN => HeadAdminCheck(messageFrom).Result,
-                _ => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
             };
         }
 

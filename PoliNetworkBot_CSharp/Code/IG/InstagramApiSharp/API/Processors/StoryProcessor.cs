@@ -308,7 +308,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaHighlightFeeds>(response, json);
                 var highlightFeedResponse = JsonConvert.DeserializeObject<InstaHighlightFeedsResponse>(json);
-                var highlightStoryFeed = ConvertersFabric.Instance.GetHighlightFeedsConverter(highlightFeedResponse)
+                var highlightStoryFeed = ConvertersFabric.GetHighlightFeedsConverter(highlightFeedResponse)
                     .Convert();
                 return Result.Success(highlightStoryFeed);
             }
@@ -345,7 +345,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaHighlightShortList>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaHighlightShortListResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetHighlightShortListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetHighlightShortListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -480,7 +480,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaStoryFeed>(response, json);
                 var storyFeedResponse = JsonConvert.DeserializeObject<InstaStoryFeedResponse>(json);
-                var instaStoryFeed = ConvertersFabric.Instance.GetStoryFeedConverter(storyFeedResponse).Convert();
+                var instaStoryFeed = ConvertersFabric.GetStoryFeedConverter(storyFeedResponse).Convert();
                 return Result.Success(instaStoryFeed);
             }
             catch (HttpRequestException httpException)
@@ -510,7 +510,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaReelStoryMediaViewers Convert(InstaReelStoryMediaViewersResponse reelResponse)
                 {
-                    return ConvertersFabric.Instance.GetReelStoryMediaViewersConverter(reelResponse).Convert();
+                    return ConvertersFabric.GetReelStoryMediaViewersConverter(reelResponse).Convert();
                 }
 
                 var storyMediaViewersResult = await GetStoryMediaViewers(storyMediaId, paginationParameters?.NextMaxId);
@@ -563,7 +563,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaStoryPollVotersList Convert(InstaStoryPollVotersListResponse storyVotersResponse)
                 {
-                    return ConvertersFabric.Instance.GetStoryPollVotersListConverter(storyVotersResponse).Convert();
+                    return ConvertersFabric.GetStoryPollVotersListConverter(storyVotersResponse).Convert();
                 }
 
                 var votersResult = await GetStoryPollVoters(storyMediaId, pollId, paginationParameters?.NextMaxId);
@@ -618,7 +618,7 @@ namespace InstagramApiSharp.API.Processors
 
                 if (response.StatusCode != HttpStatusCode.OK) Result.UnExpectedResponse<InstaStory>(response, json);
                 var userStoryResponse = JsonConvert.DeserializeObject<InstaStoryResponse>(json);
-                var userStory = ConvertersFabric.Instance.GetStoryConverter(userStoryResponse).Convert();
+                var userStory = ConvertersFabric.GetStoryConverter(userStoryResponse).Convert();
                 return Result.Success(userStory);
             }
             catch (HttpRequestException httpException)
@@ -651,7 +651,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaReelFeed>(response, json);
                 var feedResponse = JsonConvert.DeserializeObject<InstaReelFeedResponse>(json);
-                feed = ConvertersFabric.Instance.GetReelFeedConverter(feedResponse).Convert();
+                feed = ConvertersFabric.GetReelFeedConverter(feedResponse).Convert();
                 return Result.Success(feed);
             }
             catch (HttpRequestException httpException)
@@ -1476,7 +1476,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaStoryItem>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaReelStoryMediaViewersResponse>(json);
-                var covertedObj = ConvertersFabric.Instance.GetReelStoryMediaViewersConverter(obj).Convert();
+                var covertedObj = ConvertersFabric.GetReelStoryMediaViewersConverter(obj).Convert();
 
                 return Result.Success(covertedObj.UpdatedMedia);
             }
@@ -1533,7 +1533,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaStoryItem>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaReelStoryMediaViewersResponse>(json);
-                var covertedObj = ConvertersFabric.Instance.GetReelStoryMediaViewersConverter(obj).Convert();
+                var covertedObj = ConvertersFabric.GetReelStoryMediaViewersConverter(obj).Convert();
 
                 return Result.Success(covertedObj.UpdatedMedia);
             }
@@ -1784,7 +1784,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.IsSuccessStatusCode)
                 {
                     var mediaResponse = JsonConvert.DeserializeObject<InstaStoryMediaResponse>(json);
-                    var converter = ConvertersFabric.Instance.GetStoryMediaConverter(mediaResponse);
+                    var converter = ConvertersFabric.GetStoryMediaConverter(mediaResponse);
                     var obj = converter.Convert();
                     upProgress.UploadState = InstaUploadState.Configured;
                     progress?.Invoke(upProgress);
@@ -1971,7 +1971,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.IsSuccessStatusCode)
                 {
                     var mediaResponse = JsonConvert.DeserializeObject<InstaStoryMediaResponse>(json);
-                    var converter = ConvertersFabric.Instance.GetStoryMediaConverter(mediaResponse);
+                    var converter = ConvertersFabric.GetStoryMediaConverter(mediaResponse);
                     var obj = Result.Success(converter.Convert());
                     upProgress.UploadState = InstaUploadState.Configured;
                     progress?.Invoke(upProgress);

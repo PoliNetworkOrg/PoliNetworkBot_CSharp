@@ -44,7 +44,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.StoryHashtags != null)
                 foreach (var item in SourceObject.StoryHashtags)
-                    story.StoryHashtags.Add(ConvertersFabric.Instance.GetMentionConverter(item).Convert());
+                    story.StoryHashtags.Add(ConvertersFabric.GetMentionConverter(item).Convert());
 
             if (SourceObject.StoryLocation != null)
                 story.StoryLocation = SourceObject.StoryLocation;
@@ -53,12 +53,12 @@ namespace InstagramApiSharp.Converters
                 story.Owner = ConvertersFabric.GetUserShortConverter(SourceObject.Owner).Convert();
 
             if (SourceObject.User != null)
-                story.User = ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
+                story.User = ConvertersFabric.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();
 
             if (SourceObject.Items == null) return story;
             {
                 foreach (var item in SourceObject.Items)
-                    story.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(item).Convert());
+                    story.Items.Add(ConvertersFabric.GetStoryItemConverter(item).Convert());
             }
             return story;
         }

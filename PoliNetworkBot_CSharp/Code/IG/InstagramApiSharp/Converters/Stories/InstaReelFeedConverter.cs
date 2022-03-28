@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
                 LatestReelMedia = SourceObject.LatestReelMedia ?? 0,
                 PrefetchCount = SourceObject.PrefetchCount,
                 Seen = SourceObject.Seen ?? 0,
-                User = ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(SourceObject.User).Convert()
+                User = ConvertersFabric.GetUserShortFriendshipFullConverter(SourceObject.User).Convert()
             };
             try
             {
@@ -41,7 +41,7 @@ namespace InstagramApiSharp.Converters
             foreach (var item in SourceObject.Items)
                 try
                 {
-                    reelFeed.Items.Add(ConvertersFabric.Instance.GetStoryItemConverter(item).Convert());
+                    reelFeed.Items.Add(ConvertersFabric.GetStoryItemConverter(item).Convert());
                 }
                 catch
                 {

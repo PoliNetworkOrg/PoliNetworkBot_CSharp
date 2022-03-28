@@ -30,7 +30,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.AdsInfo != null)
                 try
                 {
-                    details.AdsInfo = ConvertersFabric.Instance.GetAdsInfoConverter(SourceObject.AdsInfo).Convert();
+                    details.AdsInfo = ConvertersFabric.GetAdsInfoConverter(SourceObject.AdsInfo).Convert();
                 }
                 catch
                 {
@@ -39,8 +39,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.PrimaryCountryInfo == null) return details;
             try
             {
-                details.PrimaryCountryInfo = ConvertersFabric.Instance
-                    .GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
+                details.PrimaryCountryInfo = ConvertersFabric.GetPrimaryCountryInfoConverter(SourceObject.PrimaryCountryInfo).Convert();
             }
             catch
             {

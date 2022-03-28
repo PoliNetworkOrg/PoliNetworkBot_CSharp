@@ -18,7 +18,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Media != null)
                 instaMediaList.AddRange(SourceObject.Media.Medias
-                    .Select(ConvertersFabric.Instance.GetSingleMediaConverter)
+                    .Select(ConvertersFabric.GetSingleMediaConverter)
                     .Select(converter => converter.Convert()));
 
             return new InstaCollectionItem
@@ -28,7 +28,7 @@ namespace InstagramApiSharp.Converters
                 HasRelatedMedia = SourceObject.HasRelatedMedia,
                 Media = instaMediaList,
                 CoverMedia = SourceObject.CoverMedia != null
-                    ? ConvertersFabric.Instance.GetCoverMediaConverter(SourceObject.CoverMedia).Convert()
+                    ? ConvertersFabric.GetCoverMediaConverter(SourceObject.CoverMedia).Convert()
                     : null,
                 NextMaxId = SourceObject.NextMaxId
             };

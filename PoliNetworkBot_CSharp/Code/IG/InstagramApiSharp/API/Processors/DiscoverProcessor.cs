@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -128,7 +127,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaDiscoverRecentSearches>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaDiscoverRecentSearchesResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetDiscoverRecentSearchesConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetDiscoverRecentSearchesConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -166,7 +165,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaDiscoverTopSearches>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaDiscoverTopSearchesResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetDiscoverTopSearchesConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetDiscoverTopSearchesConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -199,7 +198,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaDiscoverSuggestedSearches>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaDiscoverSuggestedSearchesResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetDiscoverSuggestedSearchesConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetDiscoverSuggestedSearchesConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -231,7 +230,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaDiscoverSearchResult>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaDiscoverSearchResultResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetDiscoverSearchResultConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetDiscoverSearchResultConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -301,7 +300,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaContactUserListResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetUserContactListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetUserContactListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

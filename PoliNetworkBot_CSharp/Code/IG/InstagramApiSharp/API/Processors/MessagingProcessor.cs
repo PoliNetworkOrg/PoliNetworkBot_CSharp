@@ -83,7 +83,7 @@ namespace InstagramApiSharp.API.Processors
 
                 //Reverse for Chat Order
                 threadResponse.Items.Reverse();
-                var converter = ConvertersFabric.Instance.GetDirectThreadConverter(threadResponse);
+                var converter = ConvertersFabric.GetDirectThreadConverter(threadResponse);
 
                 return Result.Success(converter.Convert());
             }
@@ -258,7 +258,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
                 {
-                    return ConvertersFabric.Instance.GetDirectInboxConverter(inboxContainerResponse).Convert();
+                    return ConvertersFabric.GetDirectInboxConverter(inboxContainerResponse).Convert();
                 }
 
                 var inbox = await GetDirectInbox(paginationParameters.NextMaxId);
@@ -286,7 +286,7 @@ namespace InstagramApiSharp.API.Processors
                     pagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetDirectInboxConverter(inboxResponse).Convert());
+                return Result.Success(ConvertersFabric.GetDirectInboxConverter(inboxResponse).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -322,7 +322,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaDirectInboxThread Convert(InstaDirectInboxThreadResponse inboxThreadResponse)
                 {
-                    return ConvertersFabric.Instance.GetDirectThreadConverter(inboxThreadResponse).Convert();
+                    return ConvertersFabric.GetDirectThreadConverter(inboxThreadResponse).Convert();
                 }
 
                 var threadResponse = thread.Value;
@@ -366,7 +366,7 @@ namespace InstagramApiSharp.API.Processors
 
                 //Reverse for Chat Order
                 threadResponse.Items.Reverse();
-                var converter = ConvertersFabric.Instance.GetDirectThreadConverter(threadResponse);
+                var converter = ConvertersFabric.GetDirectThreadConverter(threadResponse);
 
                 return Result.Success(converter.Convert());
             }
@@ -399,7 +399,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
                 {
-                    return ConvertersFabric.Instance.GetDirectInboxConverter(inboxContainerResponse).Convert();
+                    return ConvertersFabric.GetDirectInboxConverter(inboxContainerResponse).Convert();
                 }
 
                 var inbox = await GetPendingDirect(paginationParameters.NextMaxId);
@@ -427,7 +427,7 @@ namespace InstagramApiSharp.API.Processors
                     pagesLoaded++;
                 }
 
-                return Result.Success(ConvertersFabric.Instance.GetDirectInboxConverter(inboxResponse).Convert());
+                return Result.Success(ConvertersFabric.GetDirectInboxConverter(inboxResponse).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -477,7 +477,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaRecipients>(response, json);
                 var responseRecipients = JsonConvert.DeserializeObject<InstaRankedRecipientsResponse>(json);
-                var converter = ConvertersFabric.Instance.GetRecipientsConverter(responseRecipients);
+                var converter = ConvertersFabric.GetRecipientsConverter(responseRecipients);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -511,7 +511,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaRecipients>(response, json);
                 var responseRecipients = JsonConvert.DeserializeObject<InstaRecentRecipientsResponse>(json);
-                var converter = ConvertersFabric.Instance.GetRecipientsConverter(responseRecipients);
+                var converter = ConvertersFabric.GetRecipientsConverter(responseRecipients);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -546,7 +546,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaUserPresenceContainerResponse>(json,
                     new InstaUserPresenceContainerDataConverter());
-                return Result.Success(ConvertersFabric.Instance.GetUserPresenceListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetUserPresenceListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -1153,7 +1153,7 @@ namespace InstagramApiSharp.API.Processors
                 var result = JsonConvert.DeserializeObject<InstaSendDirectMessageResponse>(json);
                 if (!result.IsOk()) return Result.Fail<InstaDirectInboxThreadList>(result.Status);
                 threads.AddRange(result.Threads.Select(thread =>
-                    ConvertersFabric.Instance.GetDirectThreadConverter(thread).Convert()));
+                    ConvertersFabric.GetDirectThreadConverter(thread).Convert()));
                 return Result.Success(threads);
             }
             catch (HttpRequestException httpException)

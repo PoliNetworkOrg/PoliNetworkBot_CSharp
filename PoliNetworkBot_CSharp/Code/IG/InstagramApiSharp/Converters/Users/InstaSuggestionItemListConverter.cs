@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters
             foreach (var item in SourceObject)
                 try
                 {
-                    var convertedItem = ConvertersFabric.Instance.GetSuggestionItemConverter(item).Convert();
+                    var convertedItem = ConvertersFabric.GetSuggestionItemConverter(item).Convert();
                     suggest.Add(convertedItem);
                 }
                 catch

@@ -226,7 +226,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
                     var dict = new Dictionary<string, string>
                     {
-                        { "uni", "Log:\n\n" + logMessage},
+                        { "uni", "Log:\n\n" + logMessage}
                     };
                     var text = new Language(dict);
 

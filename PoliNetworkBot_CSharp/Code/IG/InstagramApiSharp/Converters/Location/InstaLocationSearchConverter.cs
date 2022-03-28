@@ -18,7 +18,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var locations = new InstaLocationShortList();
             locations.AddRange(SourceObject.Locations.Select(location =>
-                ConvertersFabric.Instance.GetLocationShortConverter(location).Convert()));
+                ConvertersFabric.GetLocationShortConverter(location).Convert()));
             return locations;
         }
     }

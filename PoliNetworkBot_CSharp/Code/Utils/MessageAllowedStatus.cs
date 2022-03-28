@@ -70,7 +70,7 @@ namespace PoliNetworkBot_CSharp.Code.Enums
                 }
                 else
                 {
-                    allowedTimeTemp = allowedTimeTemp.Add(remainingTime).Add(new TimeSpan((24 - VetoHigherBound) + VetoLowerBound, 0, 0));
+                    allowedTimeTemp = allowedTimeTemp.Add(remainingTime).Add(new TimeSpan(24 - VetoHigherBound + VetoLowerBound, 0, 0));
                     timeSpan -= remainingTime;
                     dayInCount++;
                 }

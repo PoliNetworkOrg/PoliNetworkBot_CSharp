@@ -37,7 +37,7 @@ namespace InstagramApiSharp.Converters
                     voiceMedia.SeenUserIds.Add(pk);
 
             if (SourceObject.Media != null)
-                voiceMedia.Media = ConvertersFabric.Instance.GetVoiceConverter(SourceObject.Media).Convert();
+                voiceMedia.Media = ConvertersFabric.GetVoiceConverter(SourceObject.Media).Convert();
 
             return voiceMedia;
         }

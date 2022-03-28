@@ -121,8 +121,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.User.HdProfilePicUrlInfo != null)
                 try
                 {
-                    userInfo.HdProfilePicUrlInfo = ConvertersFabric.Instance
-                        .GetImageConverter(SourceObject.User.HdProfilePicUrlInfo).Convert();
+                    userInfo.HdProfilePicUrlInfo = ConvertersFabric.GetImageConverter(SourceObject.User.HdProfilePicUrlInfo).Convert();
                 }
                 catch
                 {
@@ -132,7 +131,7 @@ namespace InstagramApiSharp.Converters
                 try
                 {
                     foreach (var img in SourceObject.User.HdProfilePicVersions)
-                        userInfo.HdProfilePicVersions.Add(ConvertersFabric.Instance.GetImageConverter(img).Convert());
+                        userInfo.HdProfilePicVersions.Add(ConvertersFabric.GetImageConverter(img).Convert());
                 }
                 catch
                 {
@@ -157,8 +156,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.User.FriendshipStatus == null) return userInfo;
             try
             {
-                userInfo.FriendshipStatus = ConvertersFabric.Instance
-                    .GetStoryFriendshipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
+                userInfo.FriendshipStatus = ConvertersFabric.GetStoryFriendshipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
             }
             catch
             {

@@ -87,7 +87,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaComment>(response, json);
                 var commentResponse = JsonConvert.DeserializeObject<InstaCommentResponse>(json,
                     new InstaCommentDataConverter());
-                var converter = ConvertersFabric.Instance.GetCommentConverter(commentResponse);
+                var converter = ConvertersFabric.GetCommentConverter(commentResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -267,7 +267,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaBlockedCommentersResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetBlockedCommentersConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBlockedCommentersConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -423,7 +423,7 @@ namespace InstagramApiSharp.API.Processors
 
                 static InstaInlineCommentList Convert(InstaInlineCommentListResponse commentsResponse)
                 {
-                    return ConvertersFabric.Instance.GetInlineCommentsConverter(commentsResponse).Convert();
+                    return ConvertersFabric.GetInlineCommentsConverter(commentsResponse).Convert();
                 }
 
                 while (commentListResponse.HasMoreTailChildComments
@@ -454,7 +454,7 @@ namespace InstagramApiSharp.API.Processors
 
                 paginationParameters.NextMaxId = commentListResponse.NextMaxId;
                 paginationParameters.NextMinId = commentListResponse.NextMinId;
-                var comments = ConvertersFabric.Instance.GetInlineCommentsConverter(commentListResponse).Convert();
+                var comments = ConvertersFabric.GetInlineCommentsConverter(commentListResponse).Convert();
                 return Result.Success(comments);
             }
             catch (HttpRequestException httpException)
@@ -540,7 +540,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaComment>(response, json);
                 var commentResponse = JsonConvert.DeserializeObject<InstaCommentResponse>(json,
                     new InstaCommentDataConverter());
-                var converter = ConvertersFabric.Instance.GetCommentConverter(commentResponse);
+                var converter = ConvertersFabric.GetCommentConverter(commentResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)

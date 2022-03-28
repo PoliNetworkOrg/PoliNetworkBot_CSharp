@@ -25,7 +25,7 @@ namespace InstagramApiSharp.Converters
             };
 
             tags.AddRange(SourceObject.Tags.Select(tag =>
-                ConvertersFabric.Instance.GetHashTagConverter(tag).Convert()));
+                ConvertersFabric.GetHashTagConverter(tag).Convert()));
 
             return tags;
         }

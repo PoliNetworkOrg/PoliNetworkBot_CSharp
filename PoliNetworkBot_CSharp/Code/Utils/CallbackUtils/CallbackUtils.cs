@@ -5,6 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,8 +29,8 @@ public class CallbackUtils
         callbackGenericData.Bot = telegramBotAbstract;
         callbackGenericData.InsertedTime = DateTime.Now;
 
-        BigInteger newLast = CallbackUtils.GetLast();
-        string key = GetKeyFromNumber(newLast);
+        var newLast = CallbackUtils.GetLast();
+        var key = GetKeyFromNumber(newLast);
         callbackGenericData.id = key;
         callBackDataFull.Add(key, callbackGenericData);
 
@@ -59,18 +60,7 @@ public class CallbackUtils
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
     {
-        var x2 = new List<List<InlineKeyboardButton>>();
-        for (int i1 = 0; i1 < callbackGenericData.options.Count; i1++)
-        {
-            CallbackOption option = callbackGenericData.options[i1];
-            x2.Add(new List<InlineKeyboardButton>
-                {
-                    new(option.displayed)
-                    {
-                        CallbackData = key + SEPARATOR + i1.ToString()
-                    }
-                });
-        }
+        var x2 = callbackGenericData.options.Select((option, i1) => new List<InlineKeyboardButton> { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
         return new ReplyMarkupObject(inlineKeyboardMarkup);
@@ -149,11 +139,11 @@ public class CallbackUtils
         try
         {
             callBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
-                File.ReadAllText(Paths.Data.CallbackData)) ?? new();
+                File.ReadAllText(Paths.Data.CallbackData)) ?? new CallBackDataFull();
         }
         catch (Exception ex)
         {
-            callBackDataFull = new();
+            callBackDataFull = new CallBackDataFull();
             Logger.WriteLine(ex);
         }
     }

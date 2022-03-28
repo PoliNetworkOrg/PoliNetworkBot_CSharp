@@ -24,7 +24,7 @@ namespace InstagramApiSharp.Converters
             {
                 return (from instaUserFeedItemResponse in mediasResponse
                         where instaUserFeedItemResponse?.Type == 0
-                        select ConvertersFabric.Instance.GetSingleMediaConverter(instaUserFeedItemResponse)
+                        select ConvertersFabric.GetSingleMediaConverter(instaUserFeedItemResponse)
                             .Convert()).ToList();
             }
 
@@ -32,7 +32,7 @@ namespace InstagramApiSharp.Converters
             feed.Medias.AddRange(ConvertMedia(SourceObject.Medias));
             feed.NextMaxId = SourceObject.NextMaxId;
             foreach (var feedItem in SourceObject.Stories.Select(story =>
-                         ConvertersFabric.Instance.GetStoryConverter(story).Convert())) feed.Stories.Add(feedItem);
+                         ConvertersFabric.GetStoryConverter(story).Convert())) feed.Stories.Add(feedItem);
 
             return feed;
         }

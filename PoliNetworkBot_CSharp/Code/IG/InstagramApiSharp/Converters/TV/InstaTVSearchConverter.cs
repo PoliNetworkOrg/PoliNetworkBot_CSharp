@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
             foreach (var result in SourceObject.Results)
                 try
                 {
-                    search.Results.Add(ConvertersFabric.Instance.GetTVSearchResultConverter(result).Convert());
+                    search.Results.Add(ConvertersFabric.GetTvSearchResultConverter(result).Convert());
                 }
                 catch
                 {

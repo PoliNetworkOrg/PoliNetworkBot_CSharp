@@ -18,16 +18,15 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null) throw new ArgumentNullException("Source object");
             var productInfo = new InstaProductInfo
             {
-                Product = ConvertersFabric.Instance.GetProductConverter(SourceObject.Product).Convert(),
+                Product = ConvertersFabric.GetProductConverter(SourceObject.Product).Convert(),
                 User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert()
             };
             if (SourceObject.OtherProductItems != null && SourceObject.OtherProductItems.Any())
                 foreach (var product in SourceObject.OtherProductItems)
-                    productInfo.OtherProducts.Add(ConvertersFabric.Instance.GetProductConverter(product).Convert());
+                    productInfo.OtherProducts.Add(ConvertersFabric.GetProductConverter(product).Convert());
 
             if (SourceObject.MoreFromBusiness != null)
-                productInfo.MoreFromBusiness = ConvertersFabric.Instance
-                    .GetProductMediaListConverter(SourceObject.MoreFromBusiness).Convert();
+                productInfo.MoreFromBusiness = ConvertersFabric.GetProductMediaListConverter(SourceObject.MoreFromBusiness).Convert();
             return productInfo;
         }
     }
