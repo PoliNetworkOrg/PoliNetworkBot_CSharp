@@ -225,7 +225,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaMediaList Convert(InstaMediaListResponse instaMediaListResponse)
+                static InstaMediaList Convert(InstaMediaListResponse instaMediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetMediaListConverter(instaMediaListResponse).Convert();
                 }
@@ -1244,7 +1244,7 @@ namespace InstagramApiSharp.API.Processors
                 }
 
                 var mediaResponse = JsonConvert.DeserializeObject<InstaMediaAlbumResponse>(json);
-                var converter = ConvertersFabric.Instance.GetSingleMediaFromAlbumConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaFromAlbumConverter(mediaResponse);
                 var obj = converter.Convert();
                 if (obj.Caption == null && !string.IsNullOrEmpty(caption))
                 {
@@ -1335,7 +1335,7 @@ namespace InstagramApiSharp.API.Processors
                 }
 
                 var mediaResponse = JsonConvert.DeserializeObject<InstaMediaAlbumResponse>(json);
-                var converter = ConvertersFabric.Instance.GetSingleMediaFromAlbumConverter(mediaResponse);
+                var converter = ConvertersFabric.GetSingleMediaFromAlbumConverter(mediaResponse);
                 var obj = converter.Convert();
                 if (obj.Caption == null && !string.IsNullOrEmpty(caption))
                 {

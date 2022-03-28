@@ -59,7 +59,7 @@ namespace InstagramApiSharp.API.Processors
             var exploreFeed = new InstaExploreFeed();
             try
             {
-                InstaExploreFeed Convert(InstaExploreFeedResponse exploreFeedResponse)
+                static InstaExploreFeed Convert(InstaExploreFeedResponse exploreFeedResponse)
                 {
                     return ConvertersFabric.Instance.GetExploreFeedConverter(exploreFeedResponse).Convert();
                 }
@@ -162,7 +162,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
+                static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
                 }
@@ -238,7 +238,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
+                static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
                 }
@@ -301,7 +301,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaTagFeed Convert(InstaTagFeedResponse instaTagFeedResponse)
+                static InstaTagFeed Convert(InstaTagFeedResponse instaTagFeedResponse)
                 {
                     return ConvertersFabric.Instance.GetTagFeedConverter(instaTagFeedResponse).Convert();
                 }
@@ -364,9 +364,9 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaFeed Convert(InstaFeedResponse instaFeedResponse)
+                static InstaFeed Convert(InstaFeedResponse instaFeedResponse)
                 {
-                    return ConvertersFabric.Instance.GetFeedConverter(instaFeedResponse).Convert();
+                    return ConvertersFabric.GetFeedConverter(instaFeedResponse).Convert();
                 }
 
                 var timelineFeeds = await GetUserTimelineFeed(paginationParameters, seenMediaIds, refreshRequest);
@@ -426,9 +426,9 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaTopicalExploreFeed Convert(InstaTopicalExploreFeedResponse topicalExploreFeedResponse)
+                static InstaTopicalExploreFeed Convert(InstaTopicalExploreFeedResponse topicalExploreFeedResponse)
                 {
-                    return ConvertersFabric.Instance.GetTopicalExploreFeedConverter(topicalExploreFeedResponse)
+                    return ConvertersFabric.GetTopicalExploreFeedConverter(topicalExploreFeedResponse)
                         .Convert();
                 }
 

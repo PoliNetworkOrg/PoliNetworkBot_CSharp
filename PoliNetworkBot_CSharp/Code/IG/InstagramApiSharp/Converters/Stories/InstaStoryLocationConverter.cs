@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
                 X = SourceObject.X,
                 Y = SourceObject.Y,
                 Z = SourceObject.Z,
-                Location = ConvertersFabric.Instance.GetPlaceShortConverter(SourceObject.Location).Convert()
+                Location = ConvertersFabric.GetPlaceShortConverter(SourceObject.Location).Convert()
             };
 
             return storyLocation;

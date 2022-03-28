@@ -20,7 +20,7 @@ namespace InstagramApiSharp.Converters
                 throw new ArgumentNullException("InstaFeedResponse or its media list");
             var feed = new InstaTagFeed();
 
-            IEnumerable<InstaMedia> ConvertMedia(IEnumerable<InstaMediaItemResponse> mediasResponse)
+            static IEnumerable<InstaMedia> ConvertMedia(IEnumerable<InstaMediaItemResponse> mediasResponse)
             {
                 return (from instaUserFeedItemResponse in mediasResponse
                         where instaUserFeedItemResponse?.Type == 0

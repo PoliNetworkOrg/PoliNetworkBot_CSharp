@@ -26,8 +26,7 @@ namespace InstagramApiSharp.Converters
                 X = SourceObject.X,
                 Y = SourceObject.Y,
                 Z = SourceObject.Z,
-                QuestionSticker = ConvertersFabric.Instance
-                    .GetStoryQuestionStickerItemConverter(SourceObject.QuestionSticker).Convert()
+                QuestionSticker = ConvertersFabric.GetStoryQuestionStickerItemConverter(SourceObject.QuestionSticker).Convert()
             };
             return QuestionItem;
         }

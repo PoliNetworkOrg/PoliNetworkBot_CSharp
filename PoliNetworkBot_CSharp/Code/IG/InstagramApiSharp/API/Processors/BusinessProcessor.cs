@@ -182,7 +182,7 @@ namespace InstagramApiSharp.API.Processors
                         "Can't find account details for this user pk", json);
 
                 var obj = JsonConvert.DeserializeObject<InstaAccountDetailsResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetAccountDetailsConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetAccountDetailsConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -325,7 +325,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaFullMediaInsights>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaFullMediaInsightsRootResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetFullMediaInsightsConverter(obj.Data.Media)
+                return Result.Success(ConvertersFabric.GetFullMediaInsightsConverter(obj.Data.Media)
                     .Convert());
             }
             catch (HttpRequestException httpException)

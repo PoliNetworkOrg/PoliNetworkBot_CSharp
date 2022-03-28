@@ -146,7 +146,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
+                static InstaMediaList Convert(InstaMediaListResponse mediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetMediaListConverter(mediaListResponse).Convert();
                 }

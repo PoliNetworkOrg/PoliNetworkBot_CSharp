@@ -80,17 +80,17 @@ namespace InstagramApiSharp.Converters.Json
             return feed;
         }
 
-        private List<InstaTVChannelResponse> GetTVs(JToken token)
+        private static List<InstaTVChannelResponse> GetTVs(JToken token)
         {
             return token.ToObject<List<InstaTVChannelResponse>>();
         }
 
-        private InstaChannelResponse GetChannel(JToken token)
+        private static InstaChannelResponse GetChannel(JToken token)
         {
             return token.ToObject<InstaChannelResponse>();
         }
 
-        private InstaMediaItemResponse GetMedia(JToken token)
+        private static InstaMediaItemResponse GetMedia(JToken token)
         {
             return token.ToObject<InstaMediaItemResponse>();
         }

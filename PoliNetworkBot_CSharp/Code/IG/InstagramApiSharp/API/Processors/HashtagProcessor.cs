@@ -209,7 +209,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
+                static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
                 }

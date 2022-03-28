@@ -35,13 +35,13 @@ namespace InstagramApiSharp.Converters
             return new InstaBlockedUserInfoConverter { SourceObject = instaresponse };
         }
 
-        public IObjectConverter<InstaCurrentUser, InstaCurrentUserResponse> GetCurrentUserConverter(
+        public static IObjectConverter<InstaCurrentUser, InstaCurrentUserResponse> GetCurrentUserConverter(
             InstaCurrentUserResponse instaresponse)
         {
             return new InstaCurrentUserConverter { SourceObject = instaresponse };
         }
 
-        public IObjectConverter<InstaUser, InstaUserResponse> GetUserConverter(InstaUserResponse instaresponse)
+        public static IObjectConverter<InstaUser, InstaUserResponse> GetUserConverter(InstaUserResponse instaresponse)
         {
             return new InstaUserConverter { SourceObject = instaresponse };
         }
@@ -52,13 +52,13 @@ namespace InstagramApiSharp.Converters
             return new InstaMediaConverter { SourceObject = responseMedia };
         }
 
-        public IObjectConverter<InstaMedia, InstaMediaAlbumResponse> GetSingleMediaFromAlbumConverter(
+        public static IObjectConverter<InstaMedia, InstaMediaAlbumResponse> GetSingleMediaFromAlbumConverter(
             InstaMediaAlbumResponse responseMedia)
         {
             return new InstaMediaAlbumConverter { SourceObject = responseMedia };
         }
 
-        public IObjectConverter<InstaFeed, InstaFeedResponse> GetFeedConverter(
+        public static IObjectConverter<InstaFeed, InstaFeedResponse> GetFeedConverter(
             InstaFeedResponse feedResponse)
         {
             return new InstaFeedConverter { SourceObject = feedResponse };
@@ -82,7 +82,7 @@ namespace InstagramApiSharp.Converters
             return new InstaCaptionConverter { SourceObject = captionResponse };
         }
 
-        public IObjectConverter<InstaFriendshipStatus, InstaFriendshipStatusResponse>
+        public static IObjectConverter<InstaFriendshipStatus, InstaFriendshipStatusResponse>
             GetFriendShipStatusConverter(InstaFriendshipStatusResponse friendshipStatusResponse)
         {
             return new InstaFriendshipStatusConverter { SourceObject = friendshipStatusResponse };
@@ -165,7 +165,7 @@ namespace InstagramApiSharp.Converters
             return new InstaStoryItemConverter { SourceObject = storyItem };
         }
 
-        public IObjectConverter<InstaStoryFeedMedia, InstaStoryFeedMediaResponse> GetStoryFeedMediaConverter(
+        public static IObjectConverter<InstaStoryFeedMedia, InstaStoryFeedMediaResponse> GetStoryFeedMediaConverter(
             InstaStoryFeedMediaResponse storyItem)
         {
             return new InstaStoryFeedMediaConverter { SourceObject = storyItem };
@@ -211,7 +211,7 @@ namespace InstagramApiSharp.Converters
             return new InstaChannelConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaTopLive, InstaTopLiveResponse> GetTopLiveConverter(
+        public static IObjectConverter<InstaTopLive, InstaTopLiveResponse> GetTopLiveConverter(
             InstaTopLiveResponse response)
         {
             return new InstaTopLiveConverter { SourceObject = response };
@@ -265,7 +265,7 @@ namespace InstagramApiSharp.Converters
             return new InstaHighlightConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaHighlightSingleFeed, InstaHighlightReelResponse> GetHighlightReelConverter(
+        public static IObjectConverter<InstaHighlightSingleFeed, InstaHighlightReelResponse> GetHighlightReelConverter(
             InstaHighlightReelResponse response)
         {
             return new InstaHighlightReelConverter { SourceObject = response };
@@ -362,13 +362,13 @@ namespace InstagramApiSharp.Converters
             return new InstaStatisticsConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaMediaShort, InstaMediaShortResponse> GetMediaShortConverter(
+        public static IObjectConverter<InstaMediaShort, InstaMediaShortResponse> GetMediaShortConverter(
             InstaMediaShortResponse response)
         {
             return new InstaMediaShortConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStatisticsDataPointItem, InstaStatisticsDataPointItemResponse>
+        public static IObjectConverter<InstaStatisticsDataPointItem, InstaStatisticsDataPointItemResponse>
             GetStatisticsDataPointConverter(
                 InstaStatisticsDataPointItemResponse response)
         {
@@ -381,7 +381,7 @@ namespace InstagramApiSharp.Converters
             return new InstaInsightsDataNodeConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaFullMediaInsights, InstaFullMediaInsightsResponse> GetFullMediaInsightsConverter(
+        public static IObjectConverter<InstaFullMediaInsights, InstaFullMediaInsightsResponse> GetFullMediaInsightsConverter(
             InstaFullMediaInsightsResponse response)
         {
             return new InstaFullMediaInsightsConverter { SourceObject = response };
@@ -526,7 +526,7 @@ namespace InstagramApiSharp.Converters
             return new InstaTranslateContainerConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaPlaceShort, InstaPlaceShortResponse> GetPlaceShortConverter(
+        public static IObjectConverter<InstaPlaceShort, InstaPlaceShortResponse> GetPlaceShortConverter(
             InstaPlaceShortResponse response)
         {
             return new InstaPlaceShortConverter { SourceObject = response };
@@ -696,21 +696,21 @@ namespace InstagramApiSharp.Converters
             return new InstaStoryTalliesItemConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStoryQuestionStickerItem, InstaStoryQuestionStickerItemResponse>
+        public static IObjectConverter<InstaStoryQuestionStickerItem, InstaStoryQuestionStickerItemResponse>
             GetStoryQuestionStickerItemConverter(
                 InstaStoryQuestionStickerItemResponse response)
         {
             return new InstaStoryQuestionStickerItemConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStoryPollStickerItem, InstaStoryPollStickerItemResponse>
+        public static IObjectConverter<InstaStoryPollStickerItem, InstaStoryPollStickerItemResponse>
             GetStoryPollStickerItemConverter(
                 InstaStoryPollStickerItemResponse response)
         {
             return new InstaStoryPollStickerItemConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStorySliderStickerItem, InstaStorySliderStickerItemResponse>
+        public static IObjectConverter<InstaStorySliderStickerItem, InstaStorySliderStickerItemResponse>
             GetStorySliderStickerItemConverter(
                 InstaStorySliderStickerItemResponse response)
         {
@@ -841,7 +841,7 @@ namespace InstagramApiSharp.Converters
             return new InstaBroadcastStartConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaBroadcastPinUnpin, InstaBroadcastPinUnpinResponse> GetBroadcastPinUnpinConverter(
+        public static IObjectConverter<InstaBroadcastPinUnpin, InstaBroadcastPinUnpinResponse> GetBroadcastPinUnpinConverter(
             InstaBroadcastPinUnpinResponse response)
         {
             return new InstaBroadcastPinUnpinConverter { SourceObject = response };
@@ -887,13 +887,13 @@ namespace InstagramApiSharp.Converters
             return new InstaBroadcastCommentListConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaBroadcastPostLive, InstaBroadcastPostLiveResponse> GetBroadcastPostLiveConverter(
+        public static IObjectConverter<InstaBroadcastPostLive, InstaBroadcastPostLiveResponse> GetBroadcastPostLiveConverter(
             InstaBroadcastPostLiveResponse response)
         {
             return new InstaBroadcastPostLiveConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaDiscoverTopLive, InstaDiscoverTopLiveResponse> GetDiscoverTopLiveConverter(
+        public static IObjectConverter<InstaDiscoverTopLive, InstaDiscoverTopLiveResponse> GetDiscoverTopLiveConverter(
             InstaDiscoverTopLiveResponse response)
         {
             return new InstaDiscoverTopLiveConverter { SourceObject = response };
@@ -926,7 +926,7 @@ namespace InstagramApiSharp.Converters
             return new InstaAdsInfoConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaAccountDetails, InstaAccountDetailsResponse> GetAccountDetailsConverter(
+        public static IObjectConverter<InstaAccountDetails, InstaAccountDetailsResponse> GetAccountDetailsConverter(
             InstaAccountDetailsResponse response)
         {
             return new InstaAccountDetailsConverter { SourceObject = response };
@@ -945,27 +945,27 @@ namespace InstagramApiSharp.Converters
             return new InstaStoryQuestionInfoConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStoryCountdownStickerItem, InstaStoryCountdownStickerItemResponse>
+        public static IObjectConverter<InstaStoryCountdownStickerItem, InstaStoryCountdownStickerItemResponse>
             GetStoryCountdownStickerItemConverter(
                 InstaStoryCountdownStickerItemResponse response)
         {
             return new InstaStoryCountdownStickerItemConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaStoryCountdownItem, InstaStoryCountdownItemResponse>
+        public static IObjectConverter<InstaStoryCountdownItem, InstaStoryCountdownItemResponse>
             GetStoryCountdownItemConverter(
                 InstaStoryCountdownItemResponse response)
         {
             return new InstaStoryCountdownItemConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaVisualMedia, InstaVisualMediaResponse> GetVisualMediaConverter(
+        public static IObjectConverter<InstaVisualMedia, InstaVisualMediaResponse> GetVisualMediaConverter(
             InstaVisualMediaResponse response)
         {
             return new InstaVisualMediaConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaVisualMediaContainer, InstaVisualMediaContainerResponse>
+        public static IObjectConverter<InstaVisualMediaContainer, InstaVisualMediaContainerResponse>
             GetVisualMediaContainerConverter(
                 InstaVisualMediaContainerResponse response)
         {
@@ -1009,20 +1009,20 @@ namespace InstagramApiSharp.Converters
             return new InstaStoryCountdownListConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaRelatedHashtag, InstaRelatedHashtagResponse> GetRelatedHashtagConverter(
+        public static IObjectConverter<InstaRelatedHashtag, InstaRelatedHashtagResponse> GetRelatedHashtagConverter(
             InstaRelatedHashtagResponse response)
         {
             return new InstaRelatedHashtagConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaTopicalExploreCluster, InstaTopicalExploreClusterResponse>
+        public static IObjectConverter<InstaTopicalExploreCluster, InstaTopicalExploreClusterResponse>
             GetExploreClusterConverter(
                 InstaTopicalExploreClusterResponse response)
         {
             return new InstaTopicalExploreClusterConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaTopicalExploreFeed, InstaTopicalExploreFeedResponse>
+        public static IObjectConverter<InstaTopicalExploreFeed, InstaTopicalExploreFeedResponse>
             GetTopicalExploreFeedConverter(
                 InstaTopicalExploreFeedResponse response)
         {

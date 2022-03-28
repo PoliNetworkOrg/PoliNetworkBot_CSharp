@@ -19,7 +19,7 @@ namespace InstagramApiSharp.Converters
         {
             if (SourceObject == null) throw new ArgumentNullException("SourceObject");
 
-            IEnumerable<InstaMedia> ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
+            static IEnumerable<InstaMedia> ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
             {
                 var medias = new List<InstaMedia>();
                 if (mediasResponse == null)
@@ -56,7 +56,7 @@ namespace InstagramApiSharp.Converters
                 foreach (var cluster in SourceObject.Clusters)
                     try
                     {
-                        feed.Clusters.Add(ConvertersFabric.Instance.GetExploreClusterConverter(cluster).Convert());
+                        feed.Clusters.Add(ConvertersFabric.GetExploreClusterConverter(cluster).Convert());
                     }
                     catch
                     {

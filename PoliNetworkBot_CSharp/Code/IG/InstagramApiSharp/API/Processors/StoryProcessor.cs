@@ -139,7 +139,7 @@ namespace InstagramApiSharp.API.Processors
                 var highlightFeedResponse = JsonConvert.DeserializeObject<InstaHighlightReelResponse>(json,
                     new InstaHighlightReelDataConverter());
                 var highlightStoryFeed =
-                    ConvertersFabric.Instance.GetHighlightReelConverter(highlightFeedResponse).Convert();
+                    ConvertersFabric.GetHighlightReelConverter(highlightFeedResponse).Convert();
                 return Result.Success(highlightStoryFeed);
             }
             catch (HttpRequestException httpException)
@@ -397,7 +397,7 @@ namespace InstagramApiSharp.API.Processors
                     new InstaHighlightReelsListDataConverter());
 
                 return obj?.Reel != null
-                    ? Result.Success(ConvertersFabric.Instance.GetHighlightReelConverter(obj).Convert())
+                    ? Result.Success(ConvertersFabric.GetHighlightReelConverter(obj).Convert())
                     : Result.Fail<InstaHighlightSingleFeed>("No reels found");
             }
             catch (HttpRequestException httpException)
@@ -449,7 +449,7 @@ namespace InstagramApiSharp.API.Processors
                     new InstaHighlightReelsListDataConverter());
 
                 return obj?.Reel != null
-                    ? Result.Success(ConvertersFabric.Instance.GetHighlightReelConverter(obj).Convert())
+                    ? Result.Success(ConvertersFabric.GetHighlightReelConverter(obj).Convert())
                     : Result.Fail<InstaHighlightSingleFeed>("No reels found");
             }
             catch (HttpRequestException httpException)
@@ -508,7 +508,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaReelStoryMediaViewers Convert(InstaReelStoryMediaViewersResponse reelResponse)
+                static InstaReelStoryMediaViewers Convert(InstaReelStoryMediaViewersResponse reelResponse)
                 {
                     return ConvertersFabric.Instance.GetReelStoryMediaViewersConverter(reelResponse).Convert();
                 }
@@ -561,7 +561,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaStoryPollVotersList Convert(InstaStoryPollVotersListResponse storyVotersResponse)
+                static InstaStoryPollVotersList Convert(InstaStoryPollVotersListResponse storyVotersResponse)
                 {
                     return ConvertersFabric.Instance.GetStoryPollVotersListConverter(storyVotersResponse).Convert();
                 }

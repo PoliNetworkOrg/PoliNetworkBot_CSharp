@@ -52,8 +52,7 @@ namespace InstagramApiSharp.Converters.Hashtags
                                  .SelectMany(section => section.LayoutContent.Related))
                         try
                         {
-                            media.RelatedHashtags.Add(ConvertersFabric.Instance
-                                .GetRelatedHashtagConverter(related).Convert());
+                            media.RelatedHashtags.Add(ConvertersFabric.GetRelatedHashtagConverter(related).Convert());
                         }
                         catch
                         {

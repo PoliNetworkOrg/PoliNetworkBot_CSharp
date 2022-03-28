@@ -21,7 +21,7 @@ namespace InstagramApiSharp.Converters
             {
                 ClientTime = DateTimeHelper.FromUnixTimeSeconds(SourceObject.ClientTime ?? 0),
                 Position = SourceObject.Position,
-                User = ConvertersFabric.Instance.GetUserConverter(SourceObject.User).Convert()
+                User = ConvertersFabric.GetUserConverter(SourceObject.User).Convert()
             };
             return searches;
         }

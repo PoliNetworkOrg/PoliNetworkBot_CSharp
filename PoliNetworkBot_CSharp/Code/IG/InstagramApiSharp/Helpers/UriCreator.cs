@@ -824,7 +824,7 @@ namespace InstagramApiSharp.Helpers
                     .AddQueryParameter("page", page.ToString());
             if (!string.IsNullOrEmpty(rankToken))
                 instaUri = instaUri.AddQueryParameter("rank_token",
-                    rankToken.Contains("_") ? rankToken.Split('_')[1] : rankToken);
+                    rankToken.Contains('_') ? rankToken.Split('_')[1] : rankToken);
 
             if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
             var mediaIds = $"[{string.Join(",", nextMediaIds)}]";

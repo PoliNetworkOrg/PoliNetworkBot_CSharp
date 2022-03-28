@@ -343,7 +343,7 @@ namespace InstagramApiSharp.API.Processors
                 var commentListResponse = JsonConvert.DeserializeObject<InstaCommentListResponse>(json);
                 var pagesLoaded = 1;
 
-                InstaCommentList Convert(InstaCommentListResponse commentsResponse)
+                static InstaCommentList Convert(InstaCommentListResponse commentsResponse)
                 {
                     return ConvertersFabric.GetCommentListConverter(commentsResponse).Convert();
                 }
@@ -421,7 +421,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var pagesLoaded = 1;
 
-                InstaInlineCommentList Convert(InstaInlineCommentListResponse commentsResponse)
+                static InstaInlineCommentList Convert(InstaInlineCommentListResponse commentsResponse)
                 {
                     return ConvertersFabric.Instance.GetInlineCommentsConverter(commentsResponse).Convert();
                 }

@@ -372,9 +372,9 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaDiscoverTopLive Convert(InstaDiscoverTopLiveResponse instaDiscoverTop)
+                static InstaDiscoverTopLive Convert(InstaDiscoverTopLiveResponse instaDiscoverTop)
                 {
-                    return ConvertersFabric.Instance.GetDiscoverTopLiveConverter(instaDiscoverTop).Convert();
+                    return ConvertersFabric.GetDiscoverTopLiveConverter(instaDiscoverTop).Convert();
                 }
 
                 var topLiveResult = await GetDiscoverTopLive(paginationParameters.NextMaxId);
@@ -786,7 +786,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastPinUnpin>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastPinUnpinResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastPinUnpinConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastPinUnpinConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -934,7 +934,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastPinUnpin>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastPinUnpinResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastPinUnpinConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastPinUnpinConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

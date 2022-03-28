@@ -42,7 +42,7 @@ namespace InstagramApiSharp.Converters
                 media.Carousel = ConvertersFabric.Instance.GetCarouselConverter(SourceObject.Media.CarouselMedia)
                     .Convert();
             if (SourceObject.Media.User != null)
-                media.User = ConvertersFabric.Instance.GetUserConverter(SourceObject.Media.User).Convert();
+                media.User = ConvertersFabric.GetUserConverter(SourceObject.Media.User).Convert();
             if (SourceObject.Media.Caption != null)
                 media.Caption = ConvertersFabric.Instance.GetCaptionConverter(SourceObject.Media.Caption).Convert();
             if (SourceObject.Media.NextMaxId != null) media.NextMaxId = SourceObject.Media.NextMaxId;

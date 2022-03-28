@@ -25,8 +25,7 @@ namespace InstagramApiSharp.Converters
                 ProductType = SourceObject.ProductType
             };
             if (SourceObject.User != null)
-                voice.FriendshipStatus = ConvertersFabric.Instance
-                    .GetFriendShipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
+                voice.FriendshipStatus = ConvertersFabric.GetFriendShipStatusConverter(SourceObject.User.FriendshipStatus).Convert();
 
             return voice;
         }

@@ -93,7 +93,7 @@ namespace InstagramApiSharp.Converters.Business
                         foreach (var media in businessManager.TopPostsUnit.SummaryPosts.Edges)
                             try
                             {
-                                var convertedMedia = ConvertersFabric.Instance.GetMediaShortConverter(media.Node)
+                                var convertedMedia = ConvertersFabric.GetMediaShortConverter(media.Node)
                                     .Convert();
                                 statisfics.BusinessManager.TopPostsUnit.SummaryPosts.Add(convertedMedia);
                             }
@@ -105,7 +105,7 @@ namespace InstagramApiSharp.Converters.Business
                         foreach (var media in businessManager.TopPostsUnit.TopPosts.Edges)
                             try
                             {
-                                var convertedMedia = ConvertersFabric.Instance.GetMediaShortConverter(media.Node)
+                                var convertedMedia = ConvertersFabric.GetMediaShortConverter(media.Node)
                                     .Convert();
                                 statisfics.BusinessManager.TopPostsUnit.TopPosts.Add(convertedMedia);
                             }
@@ -129,8 +129,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.AllFollowersAgeGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.AllFollowersAgeGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -141,8 +140,7 @@ namespace InstagramApiSharp.Converters.Business
                         foreach (var dataPoint in graph.DataPoints)
                             try
                             {
-                                var convertedDataPoint = ConvertersFabric.Instance
-                                    .GetStatisticsDataPointConverter(dataPoint).Convert();
+                                var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                                 statisfics.BusinessManager.FollowersUnit.DaysHourlyFollowersGraphs.Add(convertedDataPoint);
                             }
                             catch
@@ -152,8 +150,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.FollowersTopCitiesGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.FollowersTopCitiesGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -163,8 +160,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.FollowersTopCountriesGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.FollowersTopCountriesGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -174,8 +170,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.GenderGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.GenderGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -185,8 +180,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.MenFollowersAgeGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.MenFollowersAgeGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -196,8 +190,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.TodayHourlyGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.TodayHourlyGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -207,8 +200,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.WeekDailyFollowersGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.WeekDailyFollowersGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -218,8 +210,7 @@ namespace InstagramApiSharp.Converters.Business
                     foreach (var dataPoint in businessManager.FollowersUnit.WomenFollowersAgeGraph.DataPoints)
                         try
                         {
-                            var convertedDataPoint = ConvertersFabric.Instance
-                                .GetStatisticsDataPointConverter(dataPoint).Convert();
+                            var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                             statisfics.BusinessManager.FollowersUnit.WomenFollowersAgeGraph.Add(convertedDataPoint);
                         }
                         catch
@@ -281,8 +272,7 @@ namespace InstagramApiSharp.Converters.Business
                                      .TotalCountGraph.DataPoints)
                             try
                             {
-                                var convertedDataPoint = ConvertersFabric.Instance
-                                    .GetStatisticsDataPointConverter(dataPoint).Convert();
+                                var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                                 statisfics.BusinessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph.Add(
                                     convertedDataPoint);
                             }
@@ -296,8 +286,7 @@ namespace InstagramApiSharp.Converters.Business
                             foreach (var dataPoint in node.DataPoints)
                                 try
                                 {
-                                    var convertedDataPoint = ConvertersFabric.Instance
-                                        .GetStatisticsDataPointConverter(dataPoint).Convert();
+                                    var convertedDataPoint = ConvertersFabric.GetStatisticsDataPointConverter(dataPoint).Convert();
                                     statisfics.BusinessManager.AccountInsightsUnit.AccountDiscoveryLastWeekDailyGraph.Add(
                                         convertedDataPoint);
                                 }

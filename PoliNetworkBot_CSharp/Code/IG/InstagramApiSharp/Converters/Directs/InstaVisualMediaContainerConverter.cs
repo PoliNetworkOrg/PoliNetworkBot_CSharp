@@ -33,7 +33,7 @@ namespace InstagramApiSharp.Converters
                     DateTime.MinValue /*SourceObject.ReplayExpiringAtUs.Value.FromUnixTimeSeconds()*/;
 
             if (SourceObject.Media != null)
-                visualMedia.Media = ConvertersFabric.Instance.GetVisualMediaConverter(SourceObject.Media).Convert();
+                visualMedia.Media = ConvertersFabric.GetVisualMediaConverter(SourceObject.Media).Convert();
 
             if (!string.IsNullOrEmpty(SourceObject.ViewMode))
                 visualMedia.ViewMode = (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.ViewMode, true);

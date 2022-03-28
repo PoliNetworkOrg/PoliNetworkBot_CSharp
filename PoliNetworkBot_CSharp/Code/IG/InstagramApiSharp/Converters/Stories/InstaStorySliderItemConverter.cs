@@ -27,8 +27,7 @@ namespace InstagramApiSharp.Converters
                 Z = SourceObject.Z
             };
             if (SourceObject.SliderSticker != null)
-                Slider.SliderSticker = ConvertersFabric.Instance
-                    .GetStorySliderStickerItemConverter(SourceObject.SliderSticker).Convert();
+                Slider.SliderSticker = ConvertersFabric.GetStorySliderStickerItemConverter(SourceObject.SliderSticker).Convert();
 
             return Slider;
         }

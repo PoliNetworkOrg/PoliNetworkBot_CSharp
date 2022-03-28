@@ -256,7 +256,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
+                static InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
                 {
                     return ConvertersFabric.Instance.GetDirectInboxConverter(inboxContainerResponse).Convert();
                 }
@@ -320,7 +320,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!thread.Succeeded)
                     return Result.Fail(thread.Info, default(InstaDirectInboxThread));
 
-                InstaDirectInboxThread Convert(InstaDirectInboxThreadResponse inboxThreadResponse)
+                static InstaDirectInboxThread Convert(InstaDirectInboxThreadResponse inboxThreadResponse)
                 {
                     return ConvertersFabric.Instance.GetDirectThreadConverter(inboxThreadResponse).Convert();
                 }
@@ -397,7 +397,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
+                static InstaDirectInboxContainer Convert(InstaDirectInboxContainerResponse inboxContainerResponse)
                 {
                     return ConvertersFabric.Instance.GetDirectInboxConverter(inboxContainerResponse).Convert();
                 }

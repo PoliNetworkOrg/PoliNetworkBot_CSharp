@@ -1324,7 +1324,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUser>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaUserContainerResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetUserConverter(obj.User).Convert());
+                return Result.Success(ConvertersFabric.GetUserConverter(obj.User).Convert());
             }
             catch (HttpRequestException httpException)
             {

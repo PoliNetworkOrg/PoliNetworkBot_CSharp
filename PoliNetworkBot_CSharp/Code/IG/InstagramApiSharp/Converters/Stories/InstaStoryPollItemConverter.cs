@@ -27,7 +27,7 @@ namespace InstagramApiSharp.Converters
                 Z = SourceObject.Z
             };
             if (SourceObject.PollSticker != null)
-                poll.PollSticker = ConvertersFabric.Instance.GetStoryPollStickerItemConverter(SourceObject.PollSticker)
+                poll.PollSticker = ConvertersFabric.GetStoryPollStickerItemConverter(SourceObject.PollSticker)
                     .Convert();
 
             return poll;

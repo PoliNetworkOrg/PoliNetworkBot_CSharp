@@ -25,8 +25,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.Items?.Count > 0)) return storyCountdownList;
             foreach (var countdown in SourceObject.Items)
-                storyCountdownList.Items.Add(ConvertersFabric.Instance
-                    .GetStoryCountdownStickerItemConverter(countdown).Convert());
+                storyCountdownList.Items.Add(ConvertersFabric.GetStoryCountdownStickerItemConverter(countdown).Convert());
 
             return storyCountdownList;
         }

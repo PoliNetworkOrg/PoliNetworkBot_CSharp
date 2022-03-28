@@ -30,8 +30,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.CountdownSticker != null)
-                storyCountdownItem.CountdownSticker = ConvertersFabric.Instance
-                    .GetStoryCountdownStickerItemConverter(SourceObject.CountdownSticker).Convert();
+                storyCountdownItem.CountdownSticker = ConvertersFabric.GetStoryCountdownStickerItemConverter(SourceObject.CountdownSticker).Convert();
 
             return storyCountdownItem;
         }

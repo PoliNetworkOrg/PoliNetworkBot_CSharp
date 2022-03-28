@@ -107,7 +107,7 @@ namespace InstagramApiSharp.Converters
 
                 case InstaDirectThreadItemType.RavenMedia when SourceObject.RavenMedia != null:
                     {
-                        var converter = ConvertersFabric.Instance.GetVisualMediaConverter(SourceObject.RavenMedia);
+                        var converter = ConvertersFabric.GetVisualMediaConverter(SourceObject.RavenMedia);
                         threadItem.RavenMedia = converter.Convert();
                         threadItem.RavenSeenUserIds = SourceObject.RavenSeenUserIds;
                         if (!string.IsNullOrEmpty(SourceObject.RavenViewMode))
@@ -136,8 +136,7 @@ namespace InstagramApiSharp.Converters
                     }
                 // VisualMedia is updated RavenMedia for v61 and newer
                 case InstaDirectThreadItemType.RavenMedia when SourceObject.VisualMedia != null:
-                    threadItem.VisualMedia = ConvertersFabric.Instance
-                        .GetVisualMediaContainerConverter(SourceObject.VisualMedia).Convert();
+                    threadItem.VisualMedia = ConvertersFabric.GetVisualMediaContainerConverter(SourceObject.VisualMedia).Convert();
                     break;
 
                 case InstaDirectThreadItemType.ActionLog when SourceObject.ActionLogMedia != null:

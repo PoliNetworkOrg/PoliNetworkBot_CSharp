@@ -88,7 +88,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.StoryFeedMedia != null && SourceObject.StoryFeedMedia.Any())
                 foreach (var storyFeed in SourceObject.StoryFeedMedia)
-                    instaStory.StoryFeedMedia.Add(ConvertersFabric.Instance.GetStoryFeedMediaConverter(storyFeed)
+                    instaStory.StoryFeedMedia.Add(ConvertersFabric.GetStoryFeedMediaConverter(storyFeed)
                         .Convert());
 
             if (SourceObject.StoryCTA != null && SourceObject.StoryCTA.Any())
@@ -139,7 +139,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.Countdowns?.Count > 0)) return instaStory;
             foreach (var countdown in SourceObject.Countdowns)
-                instaStory.Countdowns.Add(ConvertersFabric.Instance.GetStoryCountdownItemConverter(countdown)
+                instaStory.Countdowns.Add(ConvertersFabric.GetStoryCountdownItemConverter(countdown)
                     .Convert());
 
             return instaStory;

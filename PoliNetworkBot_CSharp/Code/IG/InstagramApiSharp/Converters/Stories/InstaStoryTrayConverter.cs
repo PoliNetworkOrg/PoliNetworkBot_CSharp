@@ -20,7 +20,7 @@ namespace InstagramApiSharp.Converters
             {
                 Id = SourceObject.Id,
                 IsPortrait = SourceObject.IsPortrait,
-                TopLive = ConvertersFabric.Instance.GetTopLiveConverter(SourceObject.TopLive).Convert()
+                TopLive = ConvertersFabric.GetTopLiveConverter(SourceObject.TopLive).Convert()
             };
 
             if (SourceObject.Tray == null) return storyTray;

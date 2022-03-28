@@ -101,7 +101,7 @@ namespace InstagramApiSharp.Logger
             Write(WebUtility.UrlDecode(raw));
         }
 
-        private void WriteSeprator()
+        private static void WriteSeprator()
         {
             var sep = new StringBuilder();
             for (var i = 0; i < 100; i++) sep.Append('-');

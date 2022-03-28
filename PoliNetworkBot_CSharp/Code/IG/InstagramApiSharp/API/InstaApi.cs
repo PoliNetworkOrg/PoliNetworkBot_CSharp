@@ -2265,11 +2265,7 @@ namespace InstagramApiSharp.API
         ///     Exception --> Something wrong happened
         ///     ChallengeRequired --> You need to pass Instagram challenge
         /// </returns>
-        public async Task<IResult<InstaLoginResult>> LoginWithFacebookAsync(string fbAccessToken,
-            string cookiesContainer)
-        {
-            return await LoginWithFacebookAsync(fbAccessToken, cookiesContainer, true);
-        }
+
 
         public async Task<IResult<InstaLoginResult>> LoginWithFacebookAsync(string fbAccessToken,
             string cookiesContainer,

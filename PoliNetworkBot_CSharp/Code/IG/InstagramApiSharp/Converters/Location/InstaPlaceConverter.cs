@@ -18,7 +18,7 @@ namespace InstagramApiSharp.Converters
 
             var place = new InstaPlace
             {
-                Location = ConvertersFabric.Instance.GetPlaceShortConverter(SourceObject.Location).Convert(),
+                Location = ConvertersFabric.GetPlaceShortConverter(SourceObject.Location).Convert(),
                 Title = SourceObject.Title,
                 Subtitle = SourceObject.Subtitle
             };
