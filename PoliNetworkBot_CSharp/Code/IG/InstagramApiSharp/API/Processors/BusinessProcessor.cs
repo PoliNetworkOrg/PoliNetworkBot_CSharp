@@ -582,7 +582,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBrandedContent>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaBrandedContentResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBrandedContentConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBrandedContentConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -923,7 +923,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaBrandedContent>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaBrandedContentResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBrandedContentConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBrandedContentConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

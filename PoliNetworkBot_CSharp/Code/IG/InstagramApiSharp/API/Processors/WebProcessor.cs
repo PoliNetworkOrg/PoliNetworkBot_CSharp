@@ -97,7 +97,7 @@ namespace InstagramApiSharp.API.Processors
 
                 InstaWebTextData Convert(InstaWebSettingsPageResponse settingsPageResponse)
                 {
-                    return ConvertersFabric.Instance.GetWebTextDataListConverter(settingsPageResponse).Convert();
+                    return ConvertersFabric.GetWebTextDataListConverter(settingsPageResponse).Convert();
                 }
 
                 Uri CreateUri(string cursor = null)

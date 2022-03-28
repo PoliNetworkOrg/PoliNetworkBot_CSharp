@@ -95,17 +95,17 @@ public class CallbackUtils
 
 #pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
 
-    public static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
+    private static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
 #pragma warning restore CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
     {
-        TelegramBotClient telegramBotClientBot = null;
+
         TelegramBotAbstract telegramBotClient = null;
 
         try
         {
-            if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
+            if (sender is TelegramBotClient tmp) telegramBotClient = new TelegramBotAbstract(tmp);
 
-            if (telegramBotClientBot == null)
+            if (telegramBotClient == null)
                 return false;
 
             await CallbackMethodRun(telegramBotClient, callbackQueryEventArgs);
@@ -118,15 +118,18 @@ public class CallbackUtils
         return false;
     }
 
-    internal static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
+    private static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot, CallbackQueryEventArgs callbackQueryEventArgs)
     {
         try
         {
-            string data = callbackQueryEventArgs.CallbackQuery.Data;
-            var datas = data.Split(SEPARATOR);
-            var key = datas[0];
-            var answer = Convert.ToInt32(datas[1]);
-            callBackDataFull.UpdateAndRun(callbackQueryEventArgs, answer, key);
+            var data = callbackQueryEventArgs.CallbackQuery.Data;
+            if (string.IsNullOrEmpty(data)==false)
+            {
+                var datas = data.Split(SEPARATOR);
+                var key = datas[0];
+                var answer = Convert.ToInt32(datas[1]);
+                callBackDataFull.UpdateAndRun(callbackQueryEventArgs, answer, key);
+            }
         }
         catch (Exception exception)
         {

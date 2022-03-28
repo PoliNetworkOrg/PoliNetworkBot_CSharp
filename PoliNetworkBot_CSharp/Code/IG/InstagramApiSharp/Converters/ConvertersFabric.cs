@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace InstagramApiSharp.Converters
 {
-    internal class ConvertersFabric
+    internal  class ConvertersFabric
     {
         private static readonly Lazy<ConvertersFabric> LazyInstance = new(() => new ConvertersFabric());
 
@@ -471,19 +471,19 @@ namespace InstagramApiSharp.Converters
             return new InstaFriendshipShortStatusConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaUserChaining, InstaUserChainingResponse> GetSingleUserChainingConverter(
+        public static IObjectConverter<InstaUserChaining, InstaUserChainingResponse> GetSingleUserChainingConverter(
             InstaUserChainingResponse response)
         {
             return new InstaUserChainingConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaUserChainingList, InstaUserChainingContainerResponse> GetUserChainingListConverter(
+        public static IObjectConverter<InstaUserChainingList, InstaUserChainingContainerResponse> GetUserChainingListConverter(
             InstaUserChainingContainerResponse response)
         {
             return new InstaUserChainingListConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaHighlightShort, InstaHighlightShortResponse> GetSingleHighlightShortConverter(
+        public static IObjectConverter<InstaHighlightShort, InstaHighlightShortResponse> GetSingleHighlightShortConverter(
             InstaHighlightShortResponse response)
         {
             return new InstaHighlightShortConverter { SourceObject = response };
@@ -496,19 +496,19 @@ namespace InstagramApiSharp.Converters
             return new InstaHighlightShortListConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaBrandedContent, InstaBrandedContentResponse> GetBrandedContentConverter(
+        public static IObjectConverter<InstaBrandedContent, InstaBrandedContentResponse> GetBrandedContentConverter(
             InstaBrandedContentResponse response)
         {
             return new InstaBrandedContentConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaTranslate, InstaTranslateResponse> GetSingleTranslateConverter(
+        public static IObjectConverter<InstaTranslate, InstaTranslateResponse> GetSingleTranslateConverter(
             InstaTranslateResponse response)
         {
             return new InstaTranslateConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaTranslateList, InstaTranslateContainerResponse> GetTranslateContainerConverter(
+        public static IObjectConverter<InstaTranslateList, InstaTranslateContainerResponse> GetTranslateContainerConverter(
             InstaTranslateContainerResponse response)
         {
             return new InstaTranslateContainerConverter { SourceObject = response };
@@ -771,7 +771,7 @@ namespace InstagramApiSharp.Converters
             return new InstaUserShortFriendshipFullConverter { SourceObject = response };
         }
 
-        public IObjectConverter<InstaBroadcast, InstaBroadcastResponse> GetBroadcastConverter(
+        public static IObjectConverter<InstaBroadcast, InstaBroadcastResponse> GetBroadcastConverter(
             InstaBroadcastResponse response)
         {
             return new InstaBroadcastConverter { SourceObject = response };

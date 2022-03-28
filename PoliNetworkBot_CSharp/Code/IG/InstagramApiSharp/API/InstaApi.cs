@@ -44,7 +44,7 @@ namespace InstagramApiSharp.API
             _deviceInfo = deviceInfo;
             HttpRequestProcessor = httpRequestProcessor;
             InstaApiVersionType = apiVersionType;
-            _apiVersion = InstaApiVersionList.GetApiVersionList().GetApiVersion(apiVersionType);
+            _apiVersion = InstaApiVersionList.GetApiVersion(apiVersionType);
             HttpHelper = new HttpHelper(_apiVersion, httpRequestProcessor, this);
             RegistrationService = new RegistrationService(_deviceInfo, User, HttpRequestProcessor, _logger,
                 _userAuthValidate, this, HttpHelper);
@@ -172,7 +172,7 @@ namespace InstagramApiSharp.API
         /// <summary>
         ///     Collection api functions.
         /// </summary>
-        public ICollectionProcessor CollectionProcessor { get; private set; }
+        public CollectionProcessor CollectionProcessor { get; private set; }
 
         /// <summary>
         ///     Location api functions.
@@ -2740,7 +2740,7 @@ namespace InstagramApiSharp.API
         public void SetApiVersion(InstaApiVersionType apiVersion)
         {
             InstaApiVersionType = apiVersion;
-            _apiVersion = InstaApiVersionList.GetApiVersionList().GetApiVersion(apiVersion);
+            _apiVersion = InstaApiVersionList.GetApiVersion(apiVersion);
             HttpHelper._apiVersion = _apiVersion;
         }
 
@@ -3084,7 +3084,7 @@ namespace InstagramApiSharp.API
 
             stateData.InstaApiVersion ??= InstaApiVersionType.Version180;
             InstaApiVersionType = stateData.InstaApiVersion.Value;
-            _apiVersion = InstaApiVersionList.GetApiVersionList().GetApiVersion(InstaApiVersionType);
+            _apiVersion = InstaApiVersionList.GetApiVersion(InstaApiVersionType);
             HttpHelper = new HttpHelper(_apiVersion, HttpRequestProcessor, this);
 
             IsUserAuthenticated = stateData.IsAuthenticated;

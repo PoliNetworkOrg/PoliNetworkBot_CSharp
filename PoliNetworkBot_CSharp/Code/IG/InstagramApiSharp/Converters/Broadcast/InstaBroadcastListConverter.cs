@@ -19,7 +19,7 @@ namespace InstagramApiSharp.Converters
             var broadcastList = new InstaBroadcastList();
             if (SourceObject?.Count > 0)
                 broadcastList.AddRange(SourceObject.Select(broadcast =>
-                    ConvertersFabric.Instance.GetBroadcastConverter(broadcast).Convert()));
+                    ConvertersFabric.GetBroadcastConverter(broadcast).Convert()));
 
             return broadcastList;
         }

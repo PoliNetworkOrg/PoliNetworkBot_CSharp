@@ -8,12 +8,9 @@ using System.Linq;
 
 namespace InstagramApiSharp.API.Versions
 {
-    internal class InstaApiVersionList
+    internal static class InstaApiVersionList
     {
-        public static InstaApiVersionList GetApiVersionList()
-        {
-            return new InstaApiVersionList();
-        }
+
 
         public static Dictionary<InstaApiVersionType, InstaApiVersion> ApiVersions()
         {

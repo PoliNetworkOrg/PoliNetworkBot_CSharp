@@ -43,8 +43,7 @@ namespace InstagramApiSharp.Converters
                 if (SourceObject.Inbox.Threads is { Count: > 0 })
                 {
                     inbox.Inbox.Threads = new List<InstaDirectInboxThread>();
-                    foreach (var converter in SourceObject.Inbox.Threads.Select(inboxThread =>
-                                 ConvertersFabric.GetDirectThreadConverter(inboxThread)))
+                    foreach (var converter in SourceObject.Inbox.Threads.Select(ConvertersFabric.GetDirectThreadConverter))
                         inbox.Inbox.Threads.Add(converter.Convert());
                 }
             }

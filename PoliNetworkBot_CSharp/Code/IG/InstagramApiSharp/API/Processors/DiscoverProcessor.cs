@@ -97,7 +97,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUserChainingList>(response, json);
 
                 var obj = JsonConvert.DeserializeObject<InstaUserChainingContainerResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetUserChainingListConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetUserChainingListConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

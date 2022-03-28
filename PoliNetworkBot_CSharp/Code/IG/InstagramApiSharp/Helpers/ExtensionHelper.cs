@@ -95,7 +95,7 @@ namespace InstagramApiSharp
             return string.Join(",", list);
         }
 
-        public static string EncodeList(this List<string> listOfValues, bool appendQuotation = true)
+        private static string EncodeList(this IEnumerable<string> listOfValues, bool appendQuotation = true)
         {
             if (!appendQuotation)
                 return string.Join(",", listOfValues);
@@ -108,7 +108,7 @@ namespace InstagramApiSharp
             return content.ToString().Encode();
         }
 
-        public static string Encode(this string content)
+        private static string Encode(this string content)
         {
             return "\"" + content + "\"";
         }

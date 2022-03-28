@@ -28,7 +28,7 @@ namespace InstagramApiSharp.Converters
             foreach (var item in SourceObject.Items)
                 try
                 {
-                    highlight.Items.Add(ConvertersFabric.Instance.GetSingleHighlightShortConverter(item).Convert());
+                    highlight.Items.Add(ConvertersFabric.GetSingleHighlightShortConverter(item).Convert());
                 }
                 catch
                 {

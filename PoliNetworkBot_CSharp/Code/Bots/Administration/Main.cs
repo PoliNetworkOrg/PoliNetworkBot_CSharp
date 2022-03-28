@@ -80,7 +80,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration
                             Thread.Sleep(1 * 1000 * 10);
                             TLAbsInputPeer u =
                                 await UserbotPeer.GetPeerUserWithAccessHash(admin,
-                                    telegramBotAbstract._userbotClient);
+                                    telegramBotAbstract.UserbotClient);
                             if (u is not TLInputPeerUser u2) continue;
                             var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
                             admins.Add(user1);

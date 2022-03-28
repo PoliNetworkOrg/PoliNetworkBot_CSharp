@@ -664,7 +664,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaTranslateContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetTranslateContainerConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetTranslateContainerConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {

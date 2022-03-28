@@ -33,8 +33,7 @@ namespace InstagramApiSharp.Converters
                 NextMinId = SourceObject.NextMinId
             };
             if (SourceObject.Comments == null || !(SourceObject?.Comments?.Count > 0)) return commentList;
-            foreach (var converter in SourceObject.Comments.Select(commentResponse =>
-                         ConvertersFabric.GetCommentConverter(commentResponse)))
+            foreach (var converter in SourceObject.Comments.Select(ConvertersFabric.GetCommentConverter))
                 commentList.Comments.Add(converter.Convert());
 
             if (SourceObject.PreviewComments == null || !SourceObject.PreviewComments.Any()) return commentList;

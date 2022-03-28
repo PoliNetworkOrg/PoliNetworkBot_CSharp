@@ -34,7 +34,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private readonly long? _id;
         private readonly BotTypeApi _isbot;
 
-        public readonly TelegramClient _userbotClient;
+        public readonly TelegramClient UserbotClient;
 
         private readonly string _website;
         private readonly string mode;
@@ -43,7 +43,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
         private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi,
             string website, string contactString, long? id)
         {
-            _userbotClient = userBotClient;
+            UserbotClient = userBotClient;
             _botClient = botClient;
             _isbot = botTypeApi;
             _website = website;
@@ -62,6 +62,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             BotTypeApi botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
         {
             this.mode = mode;
+        }
+
+        public TelegramBotAbstract(TelegramBotClient botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null ,null, null)
+        {
         }
 
         internal async Task ExitGroupAsync(MessageEventArgs e)
@@ -111,7 +115,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             var users = new TLVector<TLAbsInputUser>();
                             if (userID.StartsWith("@"))
                             {
-                                var u = await UserbotPeer.GetPeerUserWithAccessHash(userID[1..], _userbotClient);
+                                var u = await UserbotPeer.GetPeerUserWithAccessHash(userID[1..], UserbotClient);
                                 TLAbsInputUser input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
                                 users.Add(input2);
                             }
@@ -124,7 +128,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                             if (channel.AccessHash != null)
                                 tLInputChannel.AccessHash = channel.AccessHash.Value;
 
-                            var r = await _userbotClient.ChannelsInviteToChannel(tLInputChannel, users);
+                            var r = await UserbotClient.ChannelsInviteToChannel(tLInputChannel, users);
                             return r;
                         }
                         catch (Exception e)
@@ -150,7 +154,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var r = await _userbotClient.UpgradeGroupIntoSupergroup(chatID);
+                        var r = await UserbotClient.UpgradeGroupIntoSupergroup(chatID);
                         if (r is TLUpdates { Chats.Count: 2 } r2)
                         {
                             var c1 = r2.Chats[1];
@@ -176,7 +180,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var r = await _userbotClient.Channels_EditDescription(channel, desc);
+                        var r = await UserbotClient.Channels_EditDescription(channel, desc);
                         return r;
                     }
 
@@ -296,7 +300,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         var peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
 
-                        var r1 = await _userbotClient.ChannelsDeleteMessageAsync(peer,
+                        var r1 = await UserbotClient.ChannelsDeleteMessageAsync(peer,
                             new TLVector<int> { (int)messageId });
 
                         return r1 != null;
@@ -337,7 +341,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         {
                             TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
 
-                            await _userbotClient.ChannelsEditAdmin(
+                            await UserbotClient.ChannelsEditAdmin(
                                 UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
                                 userIdInput,
                                 role);
@@ -371,7 +375,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     }
 
                 case BotTypeApi.USER_BOT:
-                    var r = await _userbotClient.ResolveUsernameAsync(target);
+                    var r = await UserbotClient.ResolveUsernameAsync(target);
                     return r.Peer switch
                     {
                         null => new UserIdFound(null, "UserbotCantFindTheIDofTarget(1)"),
@@ -618,7 +622,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         TLAbsReplyMarkup replyMarkup = null;
                         if (replyMarkupObject != null) replyMarkup = replyMarkupObject.GetReplyMarkupUserBot();
-                        var m3 = await SendMessage.SendMessageUserBot(_userbotClient,
+                        var m3 = await SendMessage.SendMessageUserBot(UserbotClient,
                             peer, text, username, replyMarkup, lang, replyToMessageId, disablePreviewLink);
                         var b3 = m3 != null;
                         return new MessageSentResult(b3, m3, chatType);
@@ -735,9 +739,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                 case BotTypeApi.USER_BOT:
                     {
                         var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-                        var media2 = await genericFile.GetMediaTl(_userbotClient);
+                        var media2 = await genericFile.GetMediaTl(UserbotClient);
 
-                        var r = await media2.SendMedia(peer, _userbotClient, caption, username, lang);
+                        var r = await media2.SendMedia(peer, UserbotClient, caption, username, lang);
                         return r != null;
                     }
                 case BotTypeApi.DISGUISED_BOT:
@@ -1078,26 +1082,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     {
                         case TextAsCaption.AS_CAPTION:
                             {
-                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), _userbotClient, text, username, lang);
+                                var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, text, username, lang);
                                 return r != null;
                             }
 
                         case TextAsCaption.BEFORE_FILE:
                             {
-                                var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.GetPeer(), text,
+                                var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
                                     username,
                                     new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
-                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), _userbotClient, null, username, lang);
+                                var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
                                 return r != null && r2 != null;
                             }
 
                         case TextAsCaption.AFTER_FILE:
                             {
-                                var tlFileToSend = await documentInput.GetMediaTl(_userbotClient);
-                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), _userbotClient, null, username, lang);
-                                var r2 = await SendMessage.SendMessageUserBot(_userbotClient, peer.GetPeer(), text,
+                                var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                                var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
+                                var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
                                     username,
                                     new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
                                 return r != null && r2 != null;
@@ -1129,7 +1133,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.DISGUISED_BOT:
                     {
-                        var c = await _userbotClient.ResolveUsernameAsync(from);
+                        var c = await UserbotClient.ResolveUsernameAsync(from);
                         var c2 = c.Peer;
                         if (c2 == null)
                             return false;
@@ -1139,7 +1143,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         if (c2 is not TLPeerChannel) return false;
                         try
                         {
-                            return await _userbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
+                            return await UserbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
                         }
                         catch (Exception e2)
                         {
@@ -1172,7 +1176,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                         return new SuccessWithException(b1);
                         ;
                     case BotTypeApi.USER_BOT:
-                        var r = await _userbotClient.ChannelsGetParticipant(
+                        var r = await UserbotClient.ChannelsGetParticipant(
                             UserbotPeer.GetPeerChannelFromIdAndType(chatId, null),
                             UserbotPeer.GetPeerUserFromdId(userId));
 
@@ -1203,7 +1207,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     ;
                 case BotTypeApi.USER_BOT:
                     var channel = new TLChannel { AccessHash = accessHash, Id = (int)Convert.ToInt64(chatId) };
-                    var invite = await _userbotClient.ChannelsGetInviteLink(channel);
+                    var invite = await UserbotClient.ChannelsGetInviteLink(channel);
                     if (invite is TLChatInviteExported c1) return c1.Link;
                     return null;
 
@@ -1296,7 +1300,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
                     return null;
 
                 case BotTypeApi.USER_BOT:
-                    return await _userbotClient.GetUserDialogsAsync(limit: 100);
+                    return await UserbotClient.GetUserDialogsAsync(limit: 100);
                     ;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -1394,11 +1398,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
 
-                    var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(_userbotClient);
+                    var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(UserbotClient);
                     if (photoFile?.Item1 == null)
                         return new MessageSentResult(false, null, chatTypeToSendTo);
 
-                    var m2 = await _userbotClient.SendUploadedPhoto(
+                    var m2 = await UserbotClient.SendUploadedPhoto(
                         UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
                         file: photoFile.Item1);
                     return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
@@ -1427,7 +1431,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                     try
                     {
-                        var r = await _userbotClient.Messages_CreateChat(name, users);
+                        var r = await UserbotClient.Messages_CreateChat(name, users);
                         if (r is TLUpdates { Chats.Count: 1 } r2)
                         {
                             var c1 = r2.Chats[0];
@@ -1477,13 +1481,13 @@ namespace PoliNetworkBot_CSharp.Code.Objects
 
                 case BotTypeApi.USER_BOT:
                     {
-                        var videoFile = ObjectVideo.GetTelegramUserBotInputVideo(_userbotClient);
+                        var videoFile = ObjectVideo.GetTelegramUserBotInputVideo(UserbotClient);
                         if (videoFile == null)
                             return new MessageSentResult(false, null, chatTypeToSendTo);
 
                         //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
                         var media2 = ObjectVideo.GetTLabsInputMedia();
-                        var m2 = await _userbotClient.Messages_SendMedia(
+                        var m2 = await UserbotClient.Messages_SendMedia(
                             UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
                         return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
                     }

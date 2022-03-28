@@ -13,7 +13,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         private static readonly Random Rnd = new();
 
         private static AndroidVersion LastAndriodVersion =
-            AndroidVersionList.GetVersionList().AndroidVersions()[^2];
+            AndroidVersionList.AndroidVersions()[^2];
 
         internal AndroidVersion()
         {
@@ -26,14 +26,12 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         public static AndroidVersion FromString(string versionString)
         {
             var version = new Version(versionString);
-            return AndroidVersionList.GetVersionList()
-                .AndroidVersions()
+            return AndroidVersionList.AndroidVersions()
                 .FirstOrDefault(androidVersion => version.CompareTo(new Version(androidVersion.VersionNumber)) == 0 ||
                                                   version.CompareTo(new Version(androidVersion.VersionNumber)) > 0 &&
-                                                  androidVersion != AndroidVersionList.GetVersionList()
-                                                      .AndroidVersions().Last() && version.CompareTo(new Version(
-                                                      AndroidVersionList.GetVersionList().AndroidVersions()[
-                                                              AndroidVersionList.GetVersionList().AndroidVersions()
+                                                  androidVersion != AndroidVersionList.AndroidVersions().Last() && version.CompareTo(new Version(
+                                                      AndroidVersionList.AndroidVersions()[
+                                                              AndroidVersionList.AndroidVersions()
                                                                   .IndexOf(androidVersion) + 1]
                                                           .VersionNumber)) < 0);
         }
@@ -41,8 +39,8 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         public static AndroidVersion GetRandomAndriodVersion()
         {
         TryLabel:
-            var randomDeviceIndex = Rnd.Next(0, AndroidVersionList.GetVersionList().AndroidVersions().Count);
-            var androidVersion = AndroidVersionList.GetVersionList().AndroidVersions().ElementAt(randomDeviceIndex);
+            var randomDeviceIndex = Rnd.Next(0, AndroidVersionList.AndroidVersions().Count);
+            var androidVersion = AndroidVersionList.AndroidVersions().ElementAt(randomDeviceIndex);
             if (LastAndriodVersion != null)
                 if (androidVersion.APILevel == LastAndriodVersion.APILevel)
                     goto TryLabel;
@@ -54,7 +52,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         {
             if (string.IsNullOrEmpty(apiLevel)) return null;
 
-            return AndroidVersionList.GetVersionList().AndroidVersions()
+            return AndroidVersionList.AndroidVersions()
                 .FirstOrDefault(api => api.APILevel == apiLevel);
         }
     }

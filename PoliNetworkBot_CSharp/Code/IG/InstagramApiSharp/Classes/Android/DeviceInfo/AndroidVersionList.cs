@@ -13,7 +13,7 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
             return new AndroidVersionList();
         }
 
-        public List<AndroidVersion> AndroidVersions()
+        public static List<AndroidVersion> AndroidVersions()
         {
             return new List<AndroidVersion>
             {

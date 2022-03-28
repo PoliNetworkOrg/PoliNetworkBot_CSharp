@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             const int LIMIT = 20;
             var i = 0;
             TLAbsInputPeer u =
-                await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract._userbotClient);
+                await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract.UserbotClient);
             if (u == null)
                 return false;
 
@@ -38,7 +38,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 FloodException floodException1 = null;
                 try
                 {
-                    x = await telegramBotAbstract._userbotClient.GetUserDialogsAsync(limit: LIMIT, offsetId: i);
+                    x = await telegramBotAbstract.UserbotClient.GetUserDialogsAsync(limit: LIMIT, offsetId: i);
                 }
                 catch (FloodException floodException)
                 {
@@ -52,7 +52,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
                     try
                     {
-                        x = await telegramBotAbstract._userbotClient.GetUserDialogsAsync(limit: LIMIT, offsetId: i);
+                        x = await telegramBotAbstract.UserbotClient.GetUserDialogsAsync(limit: LIMIT, offsetId: i);
                     }
                     catch (Exception e7)
                     {
@@ -221,7 +221,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLChatFull x = null;
             try
             {
-                x = await telegramBotAbstract._userbotClient.getFullChat(channel);
+                x = await telegramBotAbstract.UserbotClient.getFullChat(channel);
             }
             catch (Exception e)
             {
@@ -335,7 +335,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                                 (int)idMessageAdded.Value
                             };
                             TLAbsInputChannel x7 = new TLInputChannel { AccessHash = accessHash.Value, ChannelId = id };
-                            await telegramBotAbstract._userbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
+                            await telegramBotAbstract.UserbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
                         }
                         catch
                         {
@@ -410,7 +410,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             try
             {
                 TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
-                r2 = await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role);
+                r2 = await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role);
             }
             catch (Exception e2)
             {
@@ -419,13 +419,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 try
                 {
                     TLAbsChannelParticipantRole role2 = new TLChannelRoleModerator();
-                    await telegramBotAbstract._userbotClient.ChannelsEditAdmin(channel, u2, role2);
+                    await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role2);
                 }
                 catch (Exception e3)
                 {
                     try
                     {
-                        var r3 = await telegramBotAbstract._userbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
+                        var r3 = await telegramBotAbstract.UserbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
                             true);
                         if (r3 == false) return new Tuple<TLAbsUpdates, Exception>(null, e3);
                     }
@@ -467,7 +467,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLAbsUpdates r = null;
             try
             {
-                r = await telegramBotAbstract._userbotClient.ChannelsInviteToChannel(channel, users);
+                r = await telegramBotAbstract.UserbotClient.ChannelsInviteToChannel(channel, users);
             }
             catch (Exception e)
             {
@@ -653,7 +653,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             TLChatFull x = null;
             try
             {
-                x = await telegramBotAbstract._userbotClient.Messages_getFullChat(x5.Id);
+                x = await telegramBotAbstract.UserbotClient.Messages_getFullChat(x5.Id);
             }
             catch (Exception e)
             {
