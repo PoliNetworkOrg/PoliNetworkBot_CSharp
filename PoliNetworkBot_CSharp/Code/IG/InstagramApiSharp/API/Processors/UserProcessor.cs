@@ -717,7 +717,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!followersResponse.Succeeded)
                     return Result.Fail(followersResponse.Info, (InstaUserShortList)null);
                 followers.AddRange(
-                    followersResponse.Value.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    followersResponse.Value.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 paginationParameters.NextMaxId = followers.NextMaxId = followersResponse.Value.NextMaxId;
 
@@ -732,7 +732,7 @@ namespace InstagramApiSharp.API.Processors
                     if (!followersResponse.Succeeded)
                         return Result.Fail(followersResponse.Info, followers);
                     followers.AddRange(
-                        followersResponse.Value.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                        followersResponse.Value.Items?.Select(ConvertersFabric.GetUserShortConverter)
                             .Select(converter => converter.Convert()));
                     pagesLoaded++;
                     paginationParameters.PagesLoaded = pagesLoaded;
@@ -813,7 +813,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!userListResponse.Succeeded)
                     return Result.Fail(userListResponse.Info, (InstaUserShortList)null);
                 following.AddRange(
-                    userListResponse.Value.Items.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    userListResponse.Value.Items.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 paginationParameters.NextMaxId = following.NextMaxId = userListResponse.Value.NextMaxId;
                 var pages = 1;
@@ -827,7 +827,7 @@ namespace InstagramApiSharp.API.Processors
                     if (!userListResponse.Succeeded)
                         return Result.Fail(userListResponse.Info, following);
                     following.AddRange(
-                        userListResponse.Value.Items.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                        userListResponse.Value.Items.Select(ConvertersFabric.GetUserShortConverter)
                             .Select(converter => converter.Convert()));
                     pages++;
                     paginationParameters.PagesLoaded = pages;
@@ -1700,7 +1700,7 @@ namespace InstagramApiSharp.API.Processors
                 if (!bestiesResponse.Succeeded)
                     return Result.Fail(bestiesResponse.Info, (InstaUserShortList)null);
                 besties.AddRange(
-                    bestiesResponse.Value.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    bestiesResponse.Value.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 paginationParameters.NextMaxId = besties.NextMaxId = bestiesResponse.Value.NextMaxId;
 
@@ -1715,7 +1715,7 @@ namespace InstagramApiSharp.API.Processors
                     if (!bestiesResponse.Succeeded)
                         return Result.Fail(bestiesResponse.Info, besties);
                     besties.AddRange(
-                        bestiesResponse.Value.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                        bestiesResponse.Value.Items?.Select(ConvertersFabric.GetUserShortConverter)
                             .Select(converter => converter.Convert()));
                     pagesLoaded++;
                     paginationParameters.PagesLoaded = pagesLoaded;

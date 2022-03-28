@@ -81,7 +81,7 @@ namespace InstagramApiSharp.Logger
             Write($"Properties:\n{JsonConvert.SerializeObject(properties, Formatting.Indented)}");
         }
 
-        private async void WriteContent(HttpContent content, Formatting formatting, int maxLength = 0)
+        private static async void WriteContent(HttpContent content, Formatting formatting, int maxLength = 0)
         {
             Write("Content:");
             var raw = await content.ReadAsStringAsync();

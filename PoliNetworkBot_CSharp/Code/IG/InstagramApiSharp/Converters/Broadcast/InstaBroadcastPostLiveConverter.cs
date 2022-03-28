@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
             {
                 if (SourceObject.Broadcasts?.Count > 0)
                     foreach (var broadcastInfo in SourceObject.Broadcasts)
-                        postLive.Broadcasts.Add(ConvertersFabric.Instance.GetBroadcastInfoConverter(broadcastInfo)
+                        postLive.Broadcasts.Add(ConvertersFabric.GetBroadcastInfoConverter(broadcastInfo)
                             .Convert());
             }
             catch

@@ -47,7 +47,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
                 var month = s4[1];
                 var day = s4[2];
 
-                if (!s3.Contains(".")) return;
+                if (!s3.Contains('.')) return;
                 var s5 = s3.Split(".");
                 var s6 = s5[0]; //22:12:06
                 var millisecond = s5[1];

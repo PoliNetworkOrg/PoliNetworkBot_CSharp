@@ -101,7 +101,7 @@ namespace InstagramApiSharp.API.Services
 
         private void ValidateUser(InstaUserShortResponse user)
         {
-            _user.LoggedInUser = ConvertersFabric.Instance.GetUserShortConverter(user)?.Convert();
+            _user.LoggedInUser = ConvertersFabric.GetUserShortConverter(user)?.Convert();
         }
 
         private async Task<IResult<bool>> GetResultAsync(Uri instaUri, Dictionary<string, string> data = null,

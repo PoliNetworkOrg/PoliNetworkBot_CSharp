@@ -2047,7 +2047,7 @@ namespace InstagramApiSharp.Helpers
         public static Uri GetVerifyEmailUri(Uri uri)
         {
             var u = uri.ToString();
-            if (u.Contains("?"))
+            if (u.Contains('?'))
                 u = u[..u.IndexOf("?", StringComparison.Ordinal)];
             u = u[u.IndexOf("/accounts/", StringComparison.Ordinal)..];
 
@@ -2066,10 +2066,12 @@ namespace InstagramApiSharp.Helpers
 
         public static Uri GetDeleteDirectMessageUri(string threadId, string itemId)
         {
-            if (!Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.DIRECT_THREAD_HIDE, threadId, itemId),
-                    out var instaUri))
-                throw new Exception("Cant create URI for delete direct message");
-            return instaUri;
+#pragma warning disable CA2241 // Fornire gli argomenti corretti ai metodi di formattazione
+            return !Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.DIRECT_THREAD_HIDE, threadId, itemId),
+                    out var instaUri)
+                ? throw new Exception("Cant create URI for delete direct message")
+                : instaUri;
+#pragma warning restore CA2241 // Fornire gli argomenti corretti ai metodi di formattazione
         }
 
         public static Uri GetLocationInfoUri(string externalId)

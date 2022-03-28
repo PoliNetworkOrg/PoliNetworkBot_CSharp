@@ -244,7 +244,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     if (!string.IsNullOrEmpty(gruppoTG.idLink))
                     {
                         var r1 = SqLite.ExecuteSelect(sql1);
-                        if (r1 is { Rows: { Count: > 0 } } && r1.Rows[0].ItemArray.Length > 0)
+                        if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                         {
                             var r2 = r1.Rows[0];
                             var r3 = r2.ItemArray[0];
@@ -290,7 +290,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                     {
                         var r1 = SqLite.ExecuteSelect(sql2,
                             new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
-                        if (r1 is { Rows: { Count: > 0 } } && r1.Rows[0].ItemArray.Length > 0)
+                        if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                         {
                             var r2 = r1.Rows[0];
                             var r3 = r2.ItemArray[0];

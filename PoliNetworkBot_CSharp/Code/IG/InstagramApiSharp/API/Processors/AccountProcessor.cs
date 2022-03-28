@@ -127,7 +127,7 @@ namespace InstagramApiSharp.API.Processors
                     JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
                 if (userInfoUpdated.Pk < 1)
                     return Result.Fail<InstaUserShort>("Pk is null or empty");
-                var converter = ConvertersFabric.Instance.GetUserShortConverter(userInfoUpdated);
+                var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)
@@ -174,7 +174,7 @@ namespace InstagramApiSharp.API.Processors
                     JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
                 if (userInfoUpdated.Pk < 1)
                     return Result.Fail<InstaUserShort>("Pk is incorrect");
-                var converter = ConvertersFabric.Instance.GetUserShortConverter(userInfoUpdated);
+                var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)

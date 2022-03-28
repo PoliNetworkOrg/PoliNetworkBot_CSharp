@@ -248,7 +248,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaCollectionItem Convert(InstaCollectionItemResponse instaCollectionItemResponse)
+                static InstaCollectionItem Convert(InstaCollectionItemResponse instaCollectionItemResponse)
                 {
                     return ConvertersFabric.Instance.GetCollectionConverter(instaCollectionItemResponse).Convert();
                 }
@@ -308,7 +308,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaCollections Convert(InstaCollectionsResponse instaCollectionsResponse)
+                static InstaCollections Convert(InstaCollectionsResponse instaCollectionsResponse)
                 {
                     return ConvertersFabric.Instance.GetCollectionsConverter(instaCollectionsResponse).Convert();
                 }

@@ -10,11 +10,10 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
     [Serializable]
     public class AndroidVersion
     {
-        private static Random Rnd = new();
+        private static readonly Random Rnd = new();
 
         private static AndroidVersion LastAndriodVersion =
-            AndroidVersionList.GetVersionList().AndroidVersions()[
-                AndroidVersionList.GetVersionList().AndroidVersions().Count - 2];
+            AndroidVersionList.GetVersionList().AndroidVersions()[^2];
 
         internal AndroidVersion()
         {

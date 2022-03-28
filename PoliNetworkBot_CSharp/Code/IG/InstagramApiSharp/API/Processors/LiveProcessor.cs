@@ -435,7 +435,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUserShortList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
                 viewers.AddRange(
-                    obj.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    obj.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
 
                 return Result.Success(viewers);
@@ -509,7 +509,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaBroadcastInfo>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaBroadcastInfoResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetBroadcastInfoConverter(obj).Convert());
+                return Result.Success(ConvertersFabric.GetBroadcastInfoConverter(obj).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -541,7 +541,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUserShortList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
                 viewers.AddRange(
-                    obj.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    obj.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(viewers);
             }
@@ -607,7 +607,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUserShortList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
                 viewers.AddRange(
-                    obj.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    obj.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(viewers);
             }
@@ -707,7 +707,7 @@ namespace InstagramApiSharp.API.Processors
                     return Result.UnExpectedResponse<InstaUserShortList>(response, json);
                 var obj = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
                 viewers.AddRange(
-                    obj.Items?.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    obj.Items?.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(viewers);
             }

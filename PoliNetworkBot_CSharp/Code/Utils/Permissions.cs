@@ -22,17 +22,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils
         /// <exception cref="NotImplementedException"></exception>
         internal static bool CheckPermissions(Permission permission, User messageFrom)
         {
-            switch (permission)
+            return permission switch
             {
-                case Permission.HEAD_ADMIN:
-                    return HeadAdminCheck(messageFrom).Result;
-
-                case Permission.USER:
-                case Permission.OWNER:
-                case Permission.CREATOR:
-                default:
-                    throw new NotImplementedException();
-            }
+                Permission.HEAD_ADMIN => HeadAdminCheck(messageFrom).Result,
+                _ => throw new NotImplementedException(),
+            };
         }
 
         private static async Task<bool> HeadAdminCheck(User messageFrom)

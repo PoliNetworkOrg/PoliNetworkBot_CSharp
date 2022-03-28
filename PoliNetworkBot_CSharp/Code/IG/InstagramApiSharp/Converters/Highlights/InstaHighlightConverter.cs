@@ -49,7 +49,7 @@ namespace InstagramApiSharp.Converters
                     hLight.CoverMedia.Image = new InstaImage(item.CoverMedia.FullImageVersion.Url,
                         int.Parse(item.CoverMedia.FullImageVersion.Width),
                         int.Parse(item.CoverMedia.FullImageVersion.Height));
-                var userConverter = ConvertersFabric.Instance.GetUserShortConverter(item.User);
+                var userConverter = ConvertersFabric.GetUserShortConverter(item.User);
                 hLight.User = userConverter.Convert();
 
                 highlight.Items.Add(hLight);

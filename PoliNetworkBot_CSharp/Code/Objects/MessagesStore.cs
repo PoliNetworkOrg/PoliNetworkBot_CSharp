@@ -5,12 +5,12 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -35,6 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             catch (Exception ex)
             {
                 Store = new();
+                Logger.WriteLine(ex);
             }
         }
 
@@ -249,7 +250,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects
             return Store[message].AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
         }
 
+#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
         private static void DisallowMessage(string message)
+#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         {
             Store[message].RemoveMessage(false);
         }

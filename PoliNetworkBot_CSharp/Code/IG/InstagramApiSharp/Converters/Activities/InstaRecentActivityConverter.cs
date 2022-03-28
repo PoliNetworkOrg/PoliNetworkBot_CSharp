@@ -46,7 +46,7 @@ namespace InstagramApiSharp.Converters
                 };
                 if (SourceObject.Args.InlineFollow.UserInfo != null)
                     activityStory.InlineFollow.User =
-                        ConvertersFabric.Instance.GetUserShortConverter(SourceObject.Args.InlineFollow.UserInfo)
+                        ConvertersFabric.GetUserShortConverter(SourceObject.Args.InlineFollow.UserInfo)
                             .Convert();
             }
 

@@ -27,7 +27,7 @@ namespace InstagramApiSharp.Converters
                 Status = SourceObject.Status,
                 Text = SourceObject.Text,
                 Type = SourceObject.Type,
-                User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert(),
+                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
                 HasLikedComment = SourceObject.HasLikedComment,
                 MediaId = SourceObject.MediaId,
                 ParentCommentId = SourceObject.ParentCommentId

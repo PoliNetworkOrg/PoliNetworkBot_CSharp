@@ -1072,7 +1072,7 @@ namespace InstagramApiSharp.API
                 IsUserAuthenticated = loginInfo.User != null;
                 if (loginInfo.User != null)
                     HttpRequestProcessor.RequestMessage.Username = loginInfo.User.UserName;
-                var converter = ConvertersFabric.Instance.GetUserShortConverter(loginInfo.User);
+                var converter = ConvertersFabric.GetUserShortConverter(loginInfo.User);
                 User.LoggedInUser = converter.Convert();
                 User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
                 if (string.IsNullOrEmpty(User.CsrfToken))
@@ -1240,7 +1240,7 @@ namespace InstagramApiSharp.API
                     User.UserName = loginInfo.User?.UserName;
                     IsUserAuthenticated = loginInfo.User != null;
                     HttpRequestProcessor.RequestMessage.Username = loginInfo.User?.UserName;
-                    var converter = ConvertersFabric.Instance.GetUserShortConverter(loginInfo.User);
+                    var converter = ConvertersFabric.GetUserShortConverter(loginInfo.User);
                     User.LoggedInUser = converter.Convert();
                     User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
 
@@ -2402,7 +2402,7 @@ namespace InstagramApiSharp.API
                 }
 
                 IsUserAuthenticated = true;
-                var converter = ConvertersFabric.Instance.GetUserShortConverter(loginInfoUser);
+                var converter = ConvertersFabric.GetUserShortConverter(loginInfoUser);
                 User.LoggedInUser = converter.Convert();
                 User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
                 User.CsrfToken = csrftoken;
@@ -3222,7 +3222,7 @@ namespace InstagramApiSharp.API
         {
             try
             {
-                var converter = ConvertersFabric.Instance.GetUserShortConverter(user);
+                var converter = ConvertersFabric.GetUserShortConverter(user);
                 User.LoggedInUser = converter.Convert();
                 if (password != null)
                     User.Password = password;

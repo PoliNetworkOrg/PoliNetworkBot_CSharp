@@ -80,31 +80,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                         Console.WriteLine(e.Message.Text);
                         if (!UsersConversations.ContainsKey(e.Message.From.Id)) GeneraStart(e);
 
-                        var state = UsersConversations[e.Message.From.Id].getStato();
+                        var state = UsersConversations[e.Message.From.Id].GetStato();
 
                         switch (state)
                         {
-                            case stati.start:
+                            case Stati.start:
                                 await GestisciStartAsync(e, telegramBotClient);
                                 break;
 
-                            case stati.Scuola:
+                            case Stati.Scuola:
                                 await GestisciScuolaAsync(e, telegramBotClient);
                                 break;
 
-                            case stati.Corso:
+                            case Stati.Corso:
                                 await GestisciCorsoAsync(e, telegramBotClient);
                                 break;
 
-                            case stati.Cartella:
+                            case Stati.Cartella:
                                 await GestisciCartellaAsync(e, telegramBotClient);
                                 break;
 
-                            case stati.AttesaFile:
+                            case Stati.AttesaFile:
                                 await GestisciFileAsync(e, telegramBotClient);
                                 break;
 
-                            case stati.newCartella:
+                            case Stati.newCartella:
                                 await GestisciNewCartellaAsync(e, telegramBotClient);
                                 break;
 
@@ -217,13 +217,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
                     var push = @"git push https://polibot:" + Config.Password +
                                "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
-                    
+
                     BotUtils.Logger.WriteLine(DoScript(powershell, push, true));
-                    
+
                     logMessage += "Push Executed";
 
                     BotUtils.Logger.WriteLine(logMessage);
-                    
+
                     var dict = new Dictionary<string, string>
                     {
                         { "uni", "Log:\n\n" + logMessage},
@@ -324,7 +324,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
                             var text = new Language(dict);
                             await sender.SendTextMessageAsync(
-                                ChannelsForApproval.GetChannel(UsersConversations[FromId].getcorso()), text,
+                                ChannelsForApproval.GetChannel(UsersConversations[FromId].Getcorso()), text,
                                 ChatType.Private,
                                 callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
                         }
@@ -437,9 +437,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 return;
             }
 
-            UsersConversations[e.Message.From.Id].scesoDiUnLivello(e.Message.Text);
+            UsersConversations[e.Message.From.Id].ScesoDiUnLivello(e.Message.Text);
             await GenerateFolderKeyboard(e, telegramBotAbstract);
-            UsersConversations[e.Message.From.Id].setStato(stati.Cartella);
+            UsersConversations[e.Message.From.Id].SetStato(Stati.Cartella);
         }
 
         private static async Task GenerateFolderKeyboard(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
@@ -480,8 +480,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 return;
             }
 
-            var file = Config.RootDir + UsersConversations[e.Message.From.Id].getcorso().ToLower() + "/" +
-                       UsersConversations[e.Message.From.Id].getPercorso() + "/" + e.Message.Document.FileName;
+            var file = Config.RootDir + UsersConversations[e.Message.From.Id].Getcorso().ToLower() + "/" +
+                       UsersConversations[e.Message.From.Id].GetPercorso() + "/" + e.Message.Document.FileName;
             BotUtils.Logger.WriteLine("File requested: " + file);
             var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
             var fileAlreadyPresent = false;
@@ -494,7 +494,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 else
                     throw new Exception("Fatal error while handling path dictionary");
             }
-            
+
             try
             {
                 Serialize(DictPaths, File.Open(Data.Constants.Paths.Data.FilePaths, FileMode.Create));
@@ -527,20 +527,20 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
                 var messageFw = await telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                     e.Message.Chat.Id,
-                    ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].getcorso()));
+                    ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].Getcorso()));
 
                 var approveMessage = new Dictionary<string, string>
                 {
                     {
                         "uni", "Approvi l'inserimento del documento in " +
-                               UsersConversations[e.Message.From.Id].getcorso() + "/" +
-                               UsersConversations[e.Message.From.Id].getPercorso() + " ?"
+                               UsersConversations[e.Message.From.Id].Getcorso() + "/" +
+                               UsersConversations[e.Message.From.Id].GetPercorso() + " ?"
                     }
                 };
                 var approveText = new Language(approveMessage);
 
                 var queryAw = await telegramBotAbstract.SendTextMessageAsync(
-                    ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].getcorso()),
+                    ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].Getcorso()),
                     approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                     new ReplyMarkupObject(inlineKeyboardMarkup), null,
                     messageFw.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
@@ -563,8 +563,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             }
             else
             {
-                UsersConversations[e.Message.From.Id].setStato(stati.start);
-                UsersConversations[e.Message.From.Id].resetPercorso();
+                UsersConversations[e.Message.From.Id].SetStato(Stati.start);
+                UsersConversations[e.Message.From.Id].ResetPercorso();
             }
         }
 
@@ -595,14 +595,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                     e.Message.From.LanguageCode,
                     ParseMode.Html, null, null);
 
-                UsersConversations[e.Message.From.Id].setStato(stati.AttesaFile);
+                UsersConversations[e.Message.From.Id].SetStato(Stati.AttesaFile);
                 await GestisciFileAsync(e, sender);
                 return;
             }
 
             if (e.Message.Text.StartsWith("🆗"))
             {
-                UsersConversations[e.Message.From.Id].setStato(stati.AttesaFile);
+                UsersConversations[e.Message.From.Id].SetStato(Stati.AttesaFile);
 
                 var dict = new Dictionary<string, string>
                 {
@@ -644,7 +644,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 }
                 else
                 {
-                    UsersConversations[e.Message.From.Id].scesoDiUnLivello(e.Message.Text);
+                    UsersConversations[e.Message.From.Id].ScesoDiUnLivello(e.Message.Text);
                     var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
                     await InviaCartellaAsync(e, replyKeyboard, sender);
                 }
@@ -659,7 +659,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         private static async Task GeneraCartellaAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
-            UsersConversations[e.Message.From.Id].setStato(stati.newCartella);
+            UsersConversations[e.Message.From.Id].SetStato(Stati.newCartella);
             var dict = new Dictionary<string, string>
             {
                 { "en", "Write the name of the new folder" },
@@ -674,7 +674,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         private static async Task GestisciStartAsync(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
         {
-            UsersConversations[e.Message.From.Id].setStato(stati.Scuola);
+            UsersConversations[e.Message.From.Id].SetStato(Stati.Scuola);
             var replyKeyboard = Keyboards.GetKeyboardSchools();
             var dict = new Dictionary<string, string>
             {
@@ -694,7 +694,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
 
         private static async Task GestisciCorsoAsync(MessageEventArgs e, TelegramBotAbstract sender)
         {
-            UsersConversations[e.Message.From.Id].resetPercorso();
+            UsersConversations[e.Message.From.Id].ResetPercorso();
             if (e.Message.Text == null
                 || e.Message.Text.StartsWith("🔙")
                 || !Navigator.CorsoHandler(UsersConversations[e.Message.From.Id], e.Message.Text))
@@ -729,7 +729,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             {
                 var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
                 if (replyKeyboard.Count == 0)
-                    throw new Exception("No paths for folder " + UsersConversations[e.Message.From.Id].getcorso());
+                    throw new Exception("No paths for folder " + UsersConversations[e.Message.From.Id].Getcorso());
                 await InviaCartellaAsync(e, replyKeyboard, sender);
             }
             catch (Exception ex)
@@ -797,7 +797,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
                 return;
             }
 
-            var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].getScuola());
+            var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetScuola());
             var replyMarkupObject = new ReplyMarkupObject(
                 new ReplyMarkupOptions(
                     BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode)
@@ -805,8 +805,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials
             );
             var dict1 = new Dictionary<string, string>
             {
-                { "en", "Chosen " + UsersConversations[e.Message.From.Id].getScuola() },
-                { "it", "Selezionata " + UsersConversations[e.Message.From.Id].getScuola() }
+                { "en", "Chosen " + UsersConversations[e.Message.From.Id].GetScuola() },
+                { "it", "Selezionata " + UsersConversations[e.Message.From.Id].GetScuola() }
             };
             var text1 = new Language(dict1);
             await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,

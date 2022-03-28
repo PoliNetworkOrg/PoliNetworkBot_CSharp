@@ -302,7 +302,7 @@ namespace InstagramApiSharp.API.Processors
                 var likersResponse = JsonConvert.DeserializeObject<InstaMediaLikersResponse>(json);
                 likers.UsersCount = likersResponse.UsersCount;
                 likers.AddRange(
-                    likersResponse.Users.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    likersResponse.Users.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(likers);
             }
@@ -345,7 +345,7 @@ namespace InstagramApiSharp.API.Processors
 
                 InstaCommentList Convert(InstaCommentListResponse commentsResponse)
                 {
-                    return ConvertersFabric.Instance.GetCommentListConverter(commentsResponse).Convert();
+                    return ConvertersFabric.GetCommentListConverter(commentsResponse).Convert();
                 }
 
                 while (commentListResponse.MoreCommentsAvailable
@@ -375,7 +375,7 @@ namespace InstagramApiSharp.API.Processors
 
                 paginationParameters.NextMaxId = commentListResponse.NextMaxId;
                 paginationParameters.NextMinId = commentListResponse.NextMinId;
-                var converter = ConvertersFabric.Instance.GetCommentListConverter(commentListResponse);
+                var converter = ConvertersFabric.GetCommentListConverter(commentListResponse);
                 return Result.Success(converter.Convert());
             }
             catch (HttpRequestException httpException)

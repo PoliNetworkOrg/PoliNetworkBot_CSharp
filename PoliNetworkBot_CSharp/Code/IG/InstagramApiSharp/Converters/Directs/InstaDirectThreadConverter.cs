@@ -48,7 +48,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Inviter != null)
             {
-                var userConverter = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.Inviter);
+                var userConverter = ConvertersFabric.GetUserShortConverter(SourceObject.Inviter);
                 thread.Inviter = userConverter.Convert();
             }
 

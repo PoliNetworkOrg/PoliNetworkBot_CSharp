@@ -44,7 +44,7 @@ namespace InstagramApiSharp.Converters
                 hLight.CoverMedia.Image = new InstaImage(SourceObject.Reel.CoverMedia.FullImageVersion.Url,
                     int.Parse(SourceObject.Reel.CoverMedia.FullImageVersion.Width),
                     int.Parse(SourceObject.Reel.CoverMedia.FullImageVersion.Height));
-            var userConverter = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.Reel.User);
+            var userConverter = ConvertersFabric.GetUserShortConverter(SourceObject.Reel.User);
             hLight.User = userConverter.Convert();
 
             hLight.Items = new List<InstaStoryItem>();

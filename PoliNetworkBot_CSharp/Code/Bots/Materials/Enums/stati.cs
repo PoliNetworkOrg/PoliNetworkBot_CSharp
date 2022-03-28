@@ -7,7 +7,7 @@ using System;
 namespace Bot.Enums
 {
     [Serializable]
-    public enum stati
+    public enum Stati
     {
         start,
         Scuola,

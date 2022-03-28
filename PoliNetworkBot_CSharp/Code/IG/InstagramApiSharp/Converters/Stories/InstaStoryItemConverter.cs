@@ -59,7 +59,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.User != null)
-                instaStory.User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert();
+                instaStory.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
 
             if (SourceObject.Caption != null)
                 instaStory.Caption = ConvertersFabric.Instance.GetCaptionConverter(SourceObject.Caption).Convert();
@@ -83,7 +83,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.StoryLocations != null && SourceObject.StoryLocations.Any())
                 foreach (var location in SourceObject.StoryLocations)
-                    instaStory.StoryLocations.Add(ConvertersFabric.Instance.GetStoryLocationConverter(location)
+                    instaStory.StoryLocations.Add(ConvertersFabric.GetStoryLocationConverter(location)
                         .Convert());
 
             if (SourceObject.StoryFeedMedia != null && SourceObject.StoryFeedMedia.Any())
@@ -117,11 +117,11 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Viewers?.Count > 0)
                 foreach (var viewer in SourceObject.Viewers)
-                    instaStory.Viewers.Add(ConvertersFabric.Instance.GetUserShortConverter(viewer).Convert());
+                    instaStory.Viewers.Add(ConvertersFabric.GetUserShortConverter(viewer).Convert());
 
             if (SourceObject.Likers?.Count > 0)
                 foreach (var liker in SourceObject.Likers)
-                    instaStory.Likers.Add(ConvertersFabric.Instance.GetUserShortConverter(liker).Convert());
+                    instaStory.Likers.Add(ConvertersFabric.GetUserShortConverter(liker).Convert());
 
             if (SourceObject.PreviewComments?.Count > 0)
                 foreach (var comment in SourceObject.PreviewComments)

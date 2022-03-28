@@ -182,7 +182,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var obj = JsonConvert.DeserializeObject<InstaHashtagStoryContainerResponse>(json);
 
-                return Result.Success(ConvertersFabric.Instance.GetHashtagStoryConverter(obj.Story).Convert());
+                return Result.Success(ConvertersFabric.GetHashtagStoryConverter(obj.Story).Convert());
             }
             catch (HttpRequestException httpException)
             {
@@ -313,7 +313,7 @@ namespace InstagramApiSharp.API.Processors
             {
                 paginationParameters ??= PaginationParameters.MaxPagesToLoad(1);
 
-                InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
+                static InstaSectionMedia Convert(InstaSectionMediaListResponse hashtagMediaListResponse)
                 {
                     return ConvertersFabric.Instance.GetHashtagMediaListConverter(hashtagMediaListResponse).Convert();
                 }
@@ -460,41 +460,6 @@ namespace InstagramApiSharp.API.Processors
             {
                 _logger?.LogException(exception);
                 return Result.Fail<bool>(exception);
-            }
-        }
-
-        private async Task<IResult<InstaSectionMediaListResponse>> GetHashtagRecentMedia(string tagname,
-            string rankToken = null,
-            string maxId = null,
-            int? page = null,
-            IEnumerable<long> nextMediaIds = null)
-        {
-            try
-            {
-                var instaUri = UriCreator.GetHashtagRecentMediaUri(tagname, rankToken,
-                    maxId, page, nextMediaIds);
-
-                var request =
-                    _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaSectionMediaListResponse>(response, json);
-
-                var obj = JsonConvert.DeserializeObject<InstaSectionMediaListResponse>(json);
-
-                return Result.Success(obj);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaSectionMediaListResponse), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaSectionMediaListResponse>(exception);
             }
         }
 

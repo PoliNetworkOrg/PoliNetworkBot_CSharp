@@ -54,15 +54,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils
 
         private static void CriticalError(Exception e, object log)
         {
-            Console.WriteLine("#############1#############");
-            Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
-            Console.WriteLine(e);
-            Console.WriteLine("#############2#############");
-            if (log == null)
-                Console.WriteLine("[null]");
-            else
-                Console.WriteLine(log);
-            Console.WriteLine("#############3#############");
+            try
+            {
+                Console.WriteLine("#############1#############");
+                Console.WriteLine("CRITICAL ERROR IN LOGGER APPLICATION! NOTIFY ASAP!");
+                Console.WriteLine(e);
+                Console.WriteLine("#############2#############");
+                if (log == null)
+                    Console.WriteLine("[null]");
+                else
+                    Console.WriteLine(log);
+                Console.WriteLine("#############3#############");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)

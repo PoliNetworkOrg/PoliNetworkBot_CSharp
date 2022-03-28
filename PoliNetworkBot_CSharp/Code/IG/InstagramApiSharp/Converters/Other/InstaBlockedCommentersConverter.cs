@@ -22,7 +22,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.BlockedCommenters?.Count > 0)
                 users.AddRange(SourceObject.BlockedCommenters.Select(user =>
-                    ConvertersFabric.Instance.GetUserShortConverter(user).Convert()));
+                    ConvertersFabric.GetUserShortConverter(user).Convert()));
 
             return users;
         }

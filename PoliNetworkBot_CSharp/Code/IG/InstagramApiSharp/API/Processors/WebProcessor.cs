@@ -68,7 +68,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var first = obj.Entry?.SettingsPages?.FirstOrDefault();
                 return first != null
-                    ? Result.Success(ConvertersFabric.Instance.GetWebAccountInfoConverter(first).Convert())
+                    ? Result.Success(ConvertersFabric.GetWebAccountInfoConverter(first).Convert())
                     : Result.Fail("Date joined isn't available.", default(InstaWebAccountInfo));
             }
             catch (HttpRequestException httpException)
@@ -211,7 +211,7 @@ namespace InstagramApiSharp.API.Processors
 
                 InstaWebData Convert(InstaWebSettingsPageResponse settingsPageResponse)
                 {
-                    return ConvertersFabric.Instance.GetWebDataConverter(settingsPageResponse).Convert();
+                    return ConvertersFabric.GetWebDataConverter(settingsPageResponse).Convert();
                 }
 
                 Uri CreateUri(string cursor = null)

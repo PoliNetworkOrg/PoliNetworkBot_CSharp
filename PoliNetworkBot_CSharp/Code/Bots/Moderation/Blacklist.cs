@@ -222,7 +222,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation
 
         private static string GetTelegramLink(string text)
         {
-            var s = text.Contains(" ") ? text.Split(' ') : new[] { text };
+            var s = text.Contains(' ') ? text.Split(' ') : new[] { text };
             return s.FirstOrDefault(s2 => s2.ToLower().Contains("t.me/"));
         }
 

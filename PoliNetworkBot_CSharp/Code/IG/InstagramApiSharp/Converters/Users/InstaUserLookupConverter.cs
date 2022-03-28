@@ -42,7 +42,7 @@ namespace InstagramApiSharp.Converters
             try
             {
                 if (SourceObject.User != null)
-                    lookup.User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert();
+                    lookup.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
             }
             catch
             {

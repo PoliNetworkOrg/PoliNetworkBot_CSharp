@@ -20,7 +20,7 @@ namespace InstagramApiSharp.Converters
 
             if (!(SourceObject.Data?.Data?.Count > 0)) return data;
             foreach (var item in SourceObject.Data.Data)
-                data.Items.Add(ConvertersFabric.Instance.GetWebDataItemConverter(item).Convert());
+                data.Items.Add(ConvertersFabric.GetWebDataItemConverter(item).Convert());
 
             data.MaxId = SourceObject.Data.Cursor;
 

@@ -20,7 +20,7 @@ namespace InstagramApiSharp.Converters
                 userTag.Position = new InstaPosition(SourceObject.Position[0], SourceObject.Position[1]);
             userTag.TimeInVideo = SourceObject.TimeInVideo;
             if (SourceObject.User != null)
-                userTag.User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert();
+                userTag.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
             return userTag;
         }
     }

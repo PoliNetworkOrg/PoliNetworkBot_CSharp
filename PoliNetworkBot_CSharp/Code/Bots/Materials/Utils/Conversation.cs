@@ -15,44 +15,44 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
         private string percorso;
         private string scuolaenum;
 
-        private stati? stato;
+        private Stati? stato;
 
         public Conversation()
         {
-            stato = stati.start;
+            stato = Stati.start;
         }
 
-        public void setStato(stati? var)
+        public void SetStato(Stati? var)
         {
             stato = var;
         }
 
-        public stati? getStato()
+        public Stati? GetStato()
         {
             return stato;
         }
 
-        internal void setCorso(string corsienum)
+        internal void SetCorso(string corsienum)
         {
             this.corsienum = corsienum;
         }
 
-        internal void setScuola(string scuolaenum)
+        internal void SetScuola(string scuolaenum)
         {
             this.scuolaenum = scuolaenum;
         }
 
-        internal string getScuola()
+        internal string GetScuola()
         {
             return scuolaenum;
         }
 
-        internal string getcorso()
+        internal string Getcorso()
         {
             return corsienum;
         }
 
-        internal void scesoDiUnLivello(string text)
+        internal void ScesoDiUnLivello(string text)
         {
             if (string.IsNullOrEmpty(percorso))
             {
@@ -63,19 +63,19 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils
             percorso += "/" + text;
         }
 
-        internal void resetPercorso()
+        internal void ResetPercorso()
         {
             percorso = null;
         }
 
-        internal string getPercorso()
+        internal string GetPercorso()
         {
             return percorso;
         }
 
-        internal string getGit()
+        internal string GetGit()
         {
-            return getPercorso().Split(@"/").First();
+            return GetPercorso().Split(@"/").First();
         }
     }
 }

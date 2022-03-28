@@ -124,7 +124,7 @@ namespace InstagramApiSharp.Converters.Business
                     {
                         FollowersUnitState = businessManager.FollowersUnit.FollowersUnitState,
                         FollowersDeltaFromLastWeek =
-                            businessManager.FollowersUnit.FollowersDeltaFromLastWeek ?? default(int)
+                            businessManager.FollowersUnit.FollowersDeltaFromLastWeek ?? default
                     };
                     foreach (var dataPoint in businessManager.FollowersUnit.AllFollowersAgeGraph.DataPoints)
                         try
@@ -274,10 +274,8 @@ namespace InstagramApiSharp.Converters.Business
 
                     if (businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph is
                         {
-                            TotalCountGraph:
-                            {
-                                DataPoints: { }
-                            }
+                            TotalCountGraph.DataPoints:
+                            { }
                         })
                         foreach (var dataPoint in businessManager.AccountInsightsUnit.AccountActionsLastWeekDailyGraph
                                      .TotalCountGraph.DataPoints)

@@ -21,7 +21,7 @@ namespace InstagramApiSharp.Converters
                 CreatedAtUtc = DateTimeHelper.UnixTimestampToDateTime(SourceObject.CreatedAtUtcUnixLike),
                 MediaId = SourceObject.MediaId,
                 Text = SourceObject.Text,
-                User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert(),
+                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
                 UserId = SourceObject.UserId
             };
             return caption;

@@ -25,7 +25,7 @@ namespace InstagramApiSharp.Converters
             };
             if (SourceObject.Subscription != null)
             {
-                var converter = ConvertersFabric.Instance.GetDirectSubscriptionConverter(SourceObject.Subscription);
+                var converter = ConvertersFabric.GetDirectSubscriptionConverter(SourceObject.Subscription);
                 inbox.Subscription = converter.Convert();
             }
 
@@ -52,7 +52,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.PendingUsers is not { Count: > 0 }) return inbox;
             {
                 foreach (var converter in SourceObject.PendingUsers.Select(user =>
-                             ConvertersFabric.Instance.GetUserShortConverter(user)))
+                             ConvertersFabric.GetUserShortConverter(user)))
                     inbox.PendingUsers.Add(converter.Convert());
             }
             return inbox;

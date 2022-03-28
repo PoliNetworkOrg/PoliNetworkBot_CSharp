@@ -29,7 +29,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject.Hashtag != null)
                 mention.Hashtag = ConvertersFabric.Instance.GetHashTagConverter(SourceObject.Hashtag).Convert();
             if (SourceObject.User != null)
-                mention.User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert();
+                mention.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
             return mention;
         }
     }

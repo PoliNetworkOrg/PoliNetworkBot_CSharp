@@ -19,7 +19,7 @@ namespace InstagramApiSharp.Converters
             if (SourceObject == null)
                 throw new ArgumentNullException("SourceObject");
 
-            InstaMediaList ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
+            static InstaMediaList ConvertMedia(List<InstaMediaItemResponse> mediasResponse)
             {
                 var medias = new InstaMediaList();
                 if (mediasResponse == null)

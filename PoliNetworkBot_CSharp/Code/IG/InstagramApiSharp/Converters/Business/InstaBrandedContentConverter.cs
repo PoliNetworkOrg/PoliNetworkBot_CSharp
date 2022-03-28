@@ -26,7 +26,7 @@ namespace InstagramApiSharp.Converters
             foreach (var item in SourceObject.WhitelistedUsers)
                 try
                 {
-                    brandedContent.WhitelistedUsers.Add(ConvertersFabric.Instance.GetUserShortConverter(item)
+                    brandedContent.WhitelistedUsers.Add(ConvertersFabric.GetUserShortConverter(item)
                         .Convert());
                 }
                 catch

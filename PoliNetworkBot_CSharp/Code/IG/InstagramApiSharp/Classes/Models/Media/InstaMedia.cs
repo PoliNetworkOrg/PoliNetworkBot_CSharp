@@ -47,7 +47,7 @@ namespace InstagramApiSharp.Classes.Models
             set
             {
                 _likecount = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LikesCount"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LikesCount)));
             }
         }
 
@@ -61,7 +61,7 @@ namespace InstagramApiSharp.Classes.Models
             set
             {
                 _cmcount = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CommentsCount"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CommentsCount)));
             }
         }
 
@@ -69,15 +69,15 @@ namespace InstagramApiSharp.Classes.Models
 
         public bool PhotoOfYou { get; set; }
 
-        private bool _hasliked { get; set; }
+        private bool Hasliked { get; set; }
 
         public bool HasLiked
         {
-            get => _hasliked;
+            get => Hasliked;
             set
             {
-                _hasliked = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HasLiked"));
+                Hasliked = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasLiked)));
             }
         }
 
@@ -103,7 +103,7 @@ namespace InstagramApiSharp.Classes.Models
             set
             {
                 _play = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Play"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Play)));
             }
         }
 
@@ -129,7 +129,7 @@ namespace InstagramApiSharp.Classes.Models
             set
             {
                 _hasviewersaved = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HasViewerSaved"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasViewerSaved)));
             }
         }
 

@@ -87,13 +87,26 @@ public class CallbackUtils
         return callBackDataFull.GetLast();
     }
 
+#pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
+
     public static void CallbackMethodStart(object? sender, CallbackQueryEventArgs e)
+#pragma warning restore CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
     {
-        var t = new Thread(() => _ = CallbackMethodHandle(sender, e));
-        t.Start();
+        try
+        {
+            var t = new Thread(() => _ = CallbackMethodHandle(sender, e));
+            t.Start();
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteLine(ex);
+        }
     }
 
+#pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
+
     public static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
+#pragma warning restore CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
     {
         TelegramBotClient telegramBotClientBot = null;
         TelegramBotAbstract telegramBotClient = null;
@@ -105,7 +118,7 @@ public class CallbackUtils
             if (telegramBotClientBot == null)
                 return false;
 
-            await Utils.CallbackUtils.CallbackUtils.CallbackMethodRun(telegramBotClient, callbackQueryEventArgs);
+            await CallbackMethodRun(telegramBotClient, callbackQueryEventArgs);
         }
         catch (Exception exc)
         {
@@ -141,6 +154,7 @@ public class CallbackUtils
         catch (Exception ex)
         {
             callBackDataFull = new();
+            Logger.WriteLine(ex);
         }
     }
 }

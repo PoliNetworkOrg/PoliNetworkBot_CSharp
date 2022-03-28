@@ -16,7 +16,7 @@ namespace InstagramApiSharp.Converters
         public InstaCurrentUser Convert()
         {
             if (SourceObject == null) throw new ArgumentNullException("Source object");
-            var shortConverter = ConvertersFabric.Instance.GetUserShortConverter(SourceObject);
+            var shortConverter = ConvertersFabric.GetUserShortConverter(SourceObject);
             var user = new InstaCurrentUser(shortConverter.Convert())
             {
                 HasAnonymousProfilePicture = SourceObject.HasAnonymousProfilePicture,

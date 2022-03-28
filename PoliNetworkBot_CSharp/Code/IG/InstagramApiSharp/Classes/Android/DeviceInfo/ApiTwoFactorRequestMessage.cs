@@ -13,16 +13,16 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo
         internal ApiTwoFactorRequestMessage(string verificationCode, string username, string deviceId,
             string twoFactorIdentifier)
         {
-            verification_code = verificationCode;
-            this.username = username;
-            device_id = deviceId;
-            two_factor_identifier = twoFactorIdentifier;
+            Verification_code = verificationCode;
+            this.Username = username;
+            Device_id = deviceId;
+            Two_factor_identifier = twoFactorIdentifier;
         }
 
-        public string verification_code { get; set; }
-        public string username { get; set; }
-        public string device_id { get; set; }
-        public string two_factor_identifier { get; set; }
+        public string Verification_code { get; set; }
+        public string Username { get; set; }
+        public string Device_id { get; set; }
+        public string Two_factor_identifier { get; set; }
 
         internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey)
         {

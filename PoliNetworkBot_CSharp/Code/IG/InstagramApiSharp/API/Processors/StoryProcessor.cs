@@ -245,7 +245,7 @@ namespace InstagramApiSharp.API.Processors
 
                 var usersResponse = JsonConvert.DeserializeObject<InstaUserListShortResponse>(json);
                 list.AddRange(
-                    usersResponse.Items.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    usersResponse.Items.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(list);
             }
@@ -276,7 +276,7 @@ namespace InstagramApiSharp.API.Processors
                 if (response.StatusCode != HttpStatusCode.OK)
                     return Result.UnExpectedResponse<InstaStoryCountdownList>(response, json);
                 var countdownListResponse = JsonConvert.DeserializeObject<InstaStoryCountdownListResponse>(json);
-                return Result.Success(ConvertersFabric.Instance.GetStoryCountdownListConverter(countdownListResponse)
+                return Result.Success(ConvertersFabric.GetStoryCountdownListConverter(countdownListResponse)
                     .Convert());
             }
             catch (HttpRequestException httpException)
@@ -2095,104 +2095,6 @@ namespace InstagramApiSharp.API.Processors
         }
 
         #region Old functions
-
-        private async Task<IResult<InstaStoryMedia>> UploadStoryPhotoWithUrlAsyncOLD(
-            Action<InstaUploaderProgress> progress, InstaImage image,
-            string caption, Uri uri,
-            InstaStoryUploadOptions uploadOptions = null)
-        {
-            UserAuthValidator.Validate(_userAuthValidate);
-            var upProgress = new InstaUploaderProgress
-            {
-                Caption = caption ?? string.Empty,
-                UploadState = InstaUploadState.Preparing
-            };
-            try
-            {
-                if (uploadOptions?.Mentions?.Count > 0)
-                {
-                    var currentDelay = _instaApi.GetRequestDelay();
-                    _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                    foreach (var t in uploadOptions.Mentions)
-                        try
-                        {
-                            var tried = false;
-                        TryLabel:
-                            var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                            if (!u.Succeeded)
-                            {
-                                if (tried) continue;
-                                tried = true;
-                                goto TryLabel;
-                            }
-
-                            t.Pk = u.Value.Pk;
-                        }
-                        catch
-                        {
-                        }
-
-                    _instaApi.SetRequestDelay(currentDelay);
-                }
-
-                var instaUri = UriCreator.GetUploadPhotoUri();
-                var uploadId = ApiRequestMessage.GenerateUploadId();
-                upProgress.UploadId = uploadId;
-                progress?.Invoke(upProgress);
-                var requestContent = new MultipartFormDataContent(uploadId)
-                {
-                    { new StringContent(uploadId), "\"upload_id\"" },
-                    //{new StringContent(_deviceInfo.DeviceGuid.ToString()), "\"_uuid\""},
-                    //{new StringContent(_user.CsrfToken), "\"_csrftoken\""},
-                    {
-                        new StringContent("{\"lib_name\":\"jt\",\"lib_version\":\"1.3.0\",\"quality\":\"87\"}"),
-                        "\"image_compression\""
-                    }
-                };
-                byte[] imageBytes;
-                imageBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
-                var imageContent = new ByteArrayContent(imageBytes);
-                imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
-                imageContent.Headers.Add("Content-Type", "application/octet-stream");
-
-                //var progressContent = new ProgressableStreamContent(imageContent, 4096, progress)
-                //{
-                //    UploaderProgress = upProgress
-                //};
-                upProgress.UploadState = InstaUploadState.Uploading;
-                progress?.Invoke(upProgress);
-                requestContent.Add(imageContent, "photo", $"pending_media_{ApiRequestMessage.GenerateUploadId()}.jpg");
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
-                request.Content = requestContent;
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    upProgress.UploadState = InstaUploadState.Uploaded;
-                    progress?.Invoke(upProgress);
-                    //upProgress = progressContent?.UploaderProgress;
-                    return await ConfigureStoryPhotoAsync(progress, upProgress, image, uploadId, caption, uri,
-                        uploadOptions);
-                }
-
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                return Result.UnExpectedResponse<InstaStoryMedia>(response, json);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaStoryMedia), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                _logger?.LogException(exception);
-                return Result.Fail<InstaStoryMedia>(exception);
-            }
-        }
 
         #endregion Old functions
     }

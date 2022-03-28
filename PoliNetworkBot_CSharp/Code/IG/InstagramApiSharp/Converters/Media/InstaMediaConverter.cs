@@ -73,7 +73,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Likers?.Count > 0)
                 foreach (var liker in SourceObject.Likers)
-                    media.Likers.Add(ConvertersFabric.Instance.GetUserShortConverter(liker).Convert());
+                    media.Likers.Add(ConvertersFabric.GetUserShortConverter(liker).Convert());
 
             if (SourceObject.UserTagList?.In?.Count > 0)
                 foreach (var tag in SourceObject.UserTagList.In)

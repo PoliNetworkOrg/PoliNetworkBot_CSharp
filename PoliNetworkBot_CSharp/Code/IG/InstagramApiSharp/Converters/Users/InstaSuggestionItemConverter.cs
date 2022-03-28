@@ -18,7 +18,7 @@ namespace InstagramApiSharp.Converters
                 Caption = SourceObject.Caption ?? string.Empty,
                 IsNewSuggestion = SourceObject.IsNewSuggestion,
                 SocialContext = SourceObject.SocialContext ?? string.Empty,
-                User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert(),
+                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
                 Algorithm = SourceObject.Algorithm ?? string.Empty,
                 Icon = SourceObject.Icon ?? string.Empty,
                 Value = SourceObject.Value ?? 0,

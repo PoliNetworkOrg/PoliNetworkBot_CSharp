@@ -441,7 +441,7 @@ namespace InstagramApiSharp.API.Processors
                 likers.UsersCount = mediaLikersResponse.UsersCount;
                 if (mediaLikersResponse.UsersCount < 1) return Result.Success(likers);
                 likers.AddRange(
-                    mediaLikersResponse.Users.Select(ConvertersFabric.Instance.GetUserShortConverter)
+                    mediaLikersResponse.Users.Select(ConvertersFabric.GetUserShortConverter)
                         .Select(converter => converter.Convert()));
                 return Result.Success(likers);
             }
@@ -1514,61 +1514,6 @@ namespace InstagramApiSharp.API.Processors
             }
             catch (Exception exception)
             {
-                return Result.Fail<bool>(exception);
-            }
-        }
-
-        private async Task<IResult<bool>> UploadVideoThumbnailAsync(Action<InstaUploaderProgress> progress,
-            InstaUploaderProgress upProgress, InstaImage image, string uploadId)
-        {
-            try
-            {
-                var instaUri = UriCreator.GetUploadPhotoUri();
-                upProgress.UploadState = InstaUploadState.UploadingThumbnail;
-                progress?.Invoke(upProgress);
-                var requestContent = new MultipartFormDataContent(uploadId)
-                {
-                    { new StringContent(uploadId), "\"upload_id\"" },
-                    { new StringContent(_deviceInfo.DeviceGuid.ToString()), "\"_uuid\"" },
-                    { new StringContent(_user.CsrfToken), "\"_csrftoken\"" },
-                    {
-                        new StringContent("{\"lib_name\":\"jt\",\"lib_version\":\"1.3.0\",\"quality\":\"87\"}"),
-                        "\"image_compression\""
-                    }
-                };
-                byte[] fileBytes;
-                fileBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
-
-                var imageContent = new ByteArrayContent(fileBytes);
-                imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
-                imageContent.Headers.Add("Content-Type", "application/octet-stream");
-                requestContent.Add(imageContent, "photo", $"pending_media_{uploadId}.jpg");
-                var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
-                request.Content = requestContent;
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                var imgResp = JsonConvert.DeserializeObject<ImageThumbnailResponse>(json);
-                if (imgResp.Status.ToLower() == "ok")
-                {
-                    upProgress.UploadState = InstaUploadState.ThumbnailUploaded;
-                    progress?.Invoke(upProgress);
-                    return Result.Success(true);
-                }
-
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                return Result.Fail<bool>("Could not upload thumbnail");
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(bool), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                _logger?.LogException(exception);
                 return Result.Fail<bool>(exception);
             }
         }

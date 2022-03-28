@@ -30,8 +30,7 @@ namespace InstagramApiSharp.Converters
                 {
                     var reel = itemResponse.ToObject<InstaReelFeedResponse>();
                     if (reel.Id.ToLower().StartsWith("tag:"))
-                        feed.HashtagStories.Add(ConvertersFabric.Instance
-                            .GetHashtagStoryConverter(itemResponse.ToObject<InstaHashtagStoryResponse>()).Convert());
+                        feed.HashtagStories.Add(ConvertersFabric.GetHashtagStoryConverter(itemResponse.ToObject<InstaHashtagStoryResponse>()).Convert());
                     else
                         feed.Items.Add(ConvertersFabric.Instance.GetReelFeedConverter(reel).Convert());
                 }

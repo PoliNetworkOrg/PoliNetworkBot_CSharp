@@ -398,7 +398,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs, Data.Constants.Groups.PermittedSpamGroup,
                 ChatType.Group,
                 ParseMode.Html, null, true);
-            
+
             return message;
         }
 

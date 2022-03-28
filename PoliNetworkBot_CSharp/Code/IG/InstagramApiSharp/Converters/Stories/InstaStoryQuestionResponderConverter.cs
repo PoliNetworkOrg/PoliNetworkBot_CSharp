@@ -28,7 +28,7 @@ namespace InstagramApiSharp.Converters
             };
 
             if (SourceObject.User != null)
-                responder.User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert();
+                responder.User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert();
 
             return responder;
         }

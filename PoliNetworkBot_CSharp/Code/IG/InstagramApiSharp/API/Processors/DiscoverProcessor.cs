@@ -245,48 +245,6 @@ namespace InstagramApiSharp.API.Processors
             }
         }
 
-        /// <summary>
-        ///     NOT COMPLETE
-        /// </summary>
-        /// <returns></returns>
-        private async Task<IResult<object>> DiscoverPeopleAsync()
-        {
-            try
-            {
-                var instaUri = UriCreator.GetDiscoverPeopleUri();
-                Debug.WriteLine(instaUri.ToString());
-
-                var data = new JObject
-                {
-                    { "phone_id", _deviceInfo.DeviceGuid.ToString() },
-                    { "module", "discover_people" },
-                    { "_csrftoken", _user.CsrfToken },
-                    { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                    { "paginate", "true" }
-                    //{"_uid", _user.LoggedInUder.Pk.ToString()},
-                };
-
-                var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
-                var response = await _httpRequestProcessor.SendAsync(request);
-                var json = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(json);
-                if (response.StatusCode != HttpStatusCode.OK)
-                    return Result.UnExpectedResponse<InstaDefaultResponse>(response, json);
-                var obj = JsonConvert.DeserializeObject<InstaDefaultResponse>(json);
-                return Result.Success(obj);
-            }
-            catch (HttpRequestException httpException)
-            {
-                _logger?.LogException(httpException);
-                return Result.Fail(httpException, default(InstaDefaultResponse), ResponseType.NetworkProblem);
-            }
-            catch (Exception exception)
-            {
-                _logger?.LogException(exception);
-                return Result.Fail<InstaDefaultResponse>(exception);
-            }
-        }
-
         #region Other functions
 
         /// <summary>

@@ -1,6 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System;
 
 namespace PoliNetworkBot_CSharp.Code.Enums
 {
@@ -20,20 +20,24 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, TimeSpan? timeSpan)
         {
             _messageAllowedStatus = allowedSpam;
-            switch(allowedSpam)
+            switch (allowedSpam)
             {
                 case MessageAllowedStatusEnum.ALLOWED:
                     allowedTime = DateTime.Now;
                     return;
+
                 case MessageAllowedStatusEnum.NOT_ALLOWED:
                     allowedTime = null;
                     return;
+
                 case MessageAllowedStatusEnum.PENDING:
                     allowedTime = CalculateTimeSpan(timeSpan);
                     break;
+
                 case MessageAllowedStatusEnum.NOT_DEFINED:
                     allowedTime = null;
                     return;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(allowedSpam), allowedSpam, null);
             }
@@ -43,7 +47,7 @@ namespace PoliNetworkBot_CSharp.Code.Enums
         {
             if (timeSpan == null)
                 return null;
-            if(timeSpan == TimeSpan.Zero)
+            if (timeSpan == TimeSpan.Zero)
                 return DateTime.Now;
             var now = DateTime.Now;
             var dayInCount = 0;
@@ -87,11 +91,11 @@ namespace PoliNetworkBot_CSharp.Code.Enums
                     return _messageAllowedStatus;
 
                 case MessageAllowedStatusEnum.PENDING or MessageAllowedStatusEnum.ALLOWED:
-                {
-                    if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
-                        return MessageAllowedStatusEnum.NOT_DEFINED;
-                    return MessageAllowedStatusEnum.ALLOWED;
-                }
+                    {
+                        if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
+                            return MessageAllowedStatusEnum.NOT_DEFINED;
+                        return MessageAllowedStatusEnum.ALLOWED;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }

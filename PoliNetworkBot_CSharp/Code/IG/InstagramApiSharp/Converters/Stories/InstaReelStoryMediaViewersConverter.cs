@@ -28,7 +28,7 @@ namespace InstagramApiSharp.Converters
 
             if (SourceObject.Users?.Count > 0)
                 foreach (var user in SourceObject.Users)
-                    reelViewers.Users.Add(ConvertersFabric.Instance.GetUserShortConverter(user).Convert());
+                    reelViewers.Users.Add(ConvertersFabric.GetUserShortConverter(user).Convert());
 
             if (SourceObject.UpdatedMedia != null)
                 reelViewers.UpdatedMedia =

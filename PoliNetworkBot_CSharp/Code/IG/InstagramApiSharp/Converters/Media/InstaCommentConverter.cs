@@ -30,7 +30,7 @@ namespace InstagramApiSharp.Converters
                 Text = SourceObject.Text,
                 Type = SourceObject.Type,
                 UserId = SourceObject.UserId,
-                User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert(),
+                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert(),
                 DidReportAsSpam = SourceObject.DidReportAsSpam,
                 ChildCommentCount = SourceObject.ChildCommentCount,
                 HasLikedComment = SourceObject.HasLikedComment,
@@ -41,7 +41,7 @@ namespace InstagramApiSharp.Converters
             {
                 comment.OtherPreviewUsers ??= new List<InstaUserShort>();
                 foreach (var user in SourceObject.OtherPreviewUsers)
-                    comment.OtherPreviewUsers.Add(ConvertersFabric.Instance.GetUserShortConverter(user).Convert());
+                    comment.OtherPreviewUsers.Add(ConvertersFabric.GetUserShortConverter(user).Convert());
             }
 
             if (SourceObject.PreviewChildComments == null || !SourceObject.PreviewChildComments.Any()) return comment;

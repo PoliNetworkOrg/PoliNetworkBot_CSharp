@@ -1,6 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Code.Enums;
 using System;
-using System.Threading.Tasks;
 
 namespace PoliNetworkBot_CSharp.Test
 {

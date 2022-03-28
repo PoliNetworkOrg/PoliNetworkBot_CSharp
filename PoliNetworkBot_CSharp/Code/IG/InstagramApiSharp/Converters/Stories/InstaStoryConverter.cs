@@ -50,7 +50,7 @@ namespace InstagramApiSharp.Converters
                 story.StoryLocation = SourceObject.StoryLocation;
 
             if (SourceObject.Owner != null)
-                story.Owner = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.Owner).Convert();
+                story.Owner = ConvertersFabric.GetUserShortConverter(SourceObject.Owner).Convert();
 
             if (SourceObject.User != null)
                 story.User = ConvertersFabric.Instance.GetUserShortFriendshipFullConverter(SourceObject.User).Convert();

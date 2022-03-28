@@ -38,13 +38,13 @@ namespace InstagramApiSharp.Converters
                         ViewerId = recipient.Thread.ViewerId
                     };
                     foreach (var user in recipient.Thread.Users)
-                        rankedThread.Users.Add(ConvertersFabric.Instance.GetUserShortConverter(user).Convert());
+                        rankedThread.Users.Add(ConvertersFabric.GetUserShortConverter(user).Convert());
                     recipients.Threads.Add(rankedThread);
                 }
 
                 if (recipient.User == null) continue;
                 {
-                    var user = ConvertersFabric.Instance.GetUserShortConverter(recipient.User).Convert();
+                    var user = ConvertersFabric.GetUserShortConverter(recipient.User).Convert();
                     recipients.Users.Add(user);
                 }
             }

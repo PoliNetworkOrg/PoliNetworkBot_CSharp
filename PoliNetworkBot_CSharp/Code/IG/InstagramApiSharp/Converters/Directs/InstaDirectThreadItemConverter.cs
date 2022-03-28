@@ -149,7 +149,7 @@ namespace InstagramApiSharp.Converters
 
                 case InstaDirectThreadItemType.Profile when SourceObject.ProfileMedia != null:
                     {
-                        var converter = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.ProfileMedia);
+                        var converter = ConvertersFabric.GetUserShortConverter(SourceObject.ProfileMedia);
                         threadItem.ProfileMedia = converter.Convert();
                         if (SourceObject.ProfileMediasPreview != null && SourceObject.ProfileMediasPreview.Any())
                             try

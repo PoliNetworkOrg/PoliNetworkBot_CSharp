@@ -25,7 +25,7 @@ namespace Minista.Helpers
             var buf = new StringBuilder(capacity);
             var length = 0;
 
-            UrlMkGetSessionOption(URLMON_OPTION_USERAGENT, buf, capacity, ref length, 0);
+            _ = UrlMkGetSessionOption(URLMON_OPTION_USERAGENT, buf, capacity, ref length, 0);
 
             return buf.ToString();
         }

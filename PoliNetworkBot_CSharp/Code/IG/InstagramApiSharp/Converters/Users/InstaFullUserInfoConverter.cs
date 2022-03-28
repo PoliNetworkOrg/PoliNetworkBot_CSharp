@@ -71,8 +71,7 @@ namespace InstagramApiSharp.Converters
                         Seen = SourceObject.ReelFeed.Seen ?? 0
                     };
                     if (SourceObject.ReelFeed.User != null)
-                        fullUserInfo.ReelFeed.User = ConvertersFabric.Instance
-                            .GetUserShortConverter(SourceObject.ReelFeed.User).Convert();
+                        fullUserInfo.ReelFeed.User = ConvertersFabric.GetUserShortConverter(SourceObject.ReelFeed.User).Convert();
 
                     if (SourceObject.ReelFeed.Items != null && SourceObject.ReelFeed.Items.Any())
                     {
@@ -119,8 +118,7 @@ namespace InstagramApiSharp.Converters
                     Seen = SourceObject.UserStory.Reel.Seen ?? 0
                 };
                 if (SourceObject.UserStory.Reel.User != null)
-                    fullUserInfo.UserStory.Reel.User = ConvertersFabric.Instance
-                        .GetUserShortConverter(SourceObject.UserStory.Reel.User).Convert();
+                    fullUserInfo.UserStory.Reel.User = ConvertersFabric.GetUserShortConverter(SourceObject.UserStory.Reel.User).Convert();
 
                 if (SourceObject.UserStory.Reel.Items == null || !SourceObject.UserStory.Reel.Items.Any())
                     return fullUserInfo;

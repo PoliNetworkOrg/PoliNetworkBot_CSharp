@@ -19,7 +19,7 @@ namespace InstagramApiSharp.Converters
             var productInfo = new InstaProductInfo
             {
                 Product = ConvertersFabric.Instance.GetProductConverter(SourceObject.Product).Convert(),
-                User = ConvertersFabric.Instance.GetUserShortConverter(SourceObject.User).Convert()
+                User = ConvertersFabric.GetUserShortConverter(SourceObject.User).Convert()
             };
             if (SourceObject.OtherProductItems != null && SourceObject.OtherProductItems.Any())
                 foreach (var product in SourceObject.OtherProductItems)

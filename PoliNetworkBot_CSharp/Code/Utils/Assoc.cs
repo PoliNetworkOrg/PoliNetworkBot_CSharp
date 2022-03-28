@@ -583,7 +583,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             {
                 { "uni", permittedSpamMessage },
             });
-            
+
             await SendMessage.SendMessageInPrivate(sender,
                 e.Message.From.Id, "uni", null, privateConfirmationMessage, ParseMode.Html, null);
 
@@ -673,7 +673,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
                 {
                     {"uni", permittedSpamMessage}
                 });
-            
+
             List<CallbackOption> options = new()
             {
                 new CallbackOption("❌ Veto")
@@ -682,7 +682,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils
             var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs, permittedSpamMessage);
 
             await Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData, Data.Constants.Groups.ConsiglioDegliAdminRiservato,
-            councilMessage, sender, ChatType.Group, "uni" , null, true, replyTo);
+            councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
             _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
         }
