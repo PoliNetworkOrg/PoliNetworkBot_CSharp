@@ -35,7 +35,7 @@ public class CallbackUtils
 
         var newLast = GetLast();
         var key = GetKeyFromNumber(newLast);
-        callbackGenericData.id = key;
+        callbackGenericData.Id = key;
         callBackDataFull.Add(key, callbackGenericData);
 
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
@@ -66,7 +66,7 @@ public class CallbackUtils
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
     {
-        var x2 = callbackGenericData.options.Select((option, i1) => new List<InlineKeyboardButton>
+        var x2 = callbackGenericData.Options.Select((option, i1) => new List<InlineKeyboardButton>
             { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);

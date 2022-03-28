@@ -36,6 +36,6 @@ internal class CallBackDataAnon : CallbackGenericData
 
     internal ResultQueueEnum GetResultEnum()
     {
-        return (ResultQueueEnum)options[SelectedAnswer].value;
+        return (ResultQueueEnum)Options[SelectedAnswer].value;
     }
 }

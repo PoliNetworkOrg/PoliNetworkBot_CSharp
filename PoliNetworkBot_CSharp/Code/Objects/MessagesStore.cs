@@ -202,8 +202,8 @@ public static class MessagesStore
                     "en", "There are no messages"
                 }
             });
-            await sender.SendTextMessageAsync(e.Message.From.Id, language1, ChatType.Private,
-                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username);
+            await sender.SendTextMessageAsync(e.Message.From?.Id, language1, ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username);
             return;
         }
 
@@ -221,9 +221,9 @@ public static class MessagesStore
 
         var stream = UtilsFileText.GenerateStreamFromString(json);
         var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
-        PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From.Username,
-            e.Message.From.LanguageCode, null, true);
+        PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
+        await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
+            e.Message.From?.LanguageCode, null, true);
     }
 
     /// <summary>

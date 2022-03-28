@@ -339,7 +339,7 @@ internal static class InviteLinks
             {
                 if (group_id != null)
                 {
-                    gruppoTG.UpdateID(group_id.Value);
+                    gruppoTG.UpdateId(group_id.Value);
 
                     s3 = await CreateInviteLinkAsync(group_id.Value, sender, e);
                     if (s3 != null) gruppoTG.UpdateNewLink(s3.link);

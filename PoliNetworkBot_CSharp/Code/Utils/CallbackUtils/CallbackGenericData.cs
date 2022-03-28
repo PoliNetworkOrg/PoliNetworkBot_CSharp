@@ -16,16 +16,16 @@ public class CallbackGenericData
 {
     internal TelegramBotAbstract Bot;
     internal CallbackQuery CallBackQueryFromTelegram;
-    public string id;
+    public string Id;
     internal DateTime? InsertedTime;
     internal MessageSentResult MessageSent;
-    public List<CallbackOption> options = new();
+    public List<CallbackOption> Options;
     public Action<CallbackGenericData> RunAfterSelection;
     internal int SelectedAnswer;
 
     public CallbackGenericData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection)
     {
-        this.options = options;
+        this.Options = options;
         RunAfterSelection = runAfterSelection;
     }
 

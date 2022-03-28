@@ -13,19 +13,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 internal class PeerAbstract
 {
-    public readonly long id;
-    public readonly TLAbsInputPeer peer;
-    public readonly ChatType type;
+    public readonly long? Id;
+    public readonly TLAbsInputPeer Peer;
+    public readonly ChatType Type;
 
-    public PeerAbstract(long id, ChatType type)
+    public PeerAbstract(long? id, ChatType type)
     {
-        this.id = id;
-        this.type = type;
+        this.Id = id;
+        this.Type = type;
+        
+        
         switch (type)
         {
             case ChatType.Private:
             {
-                peer = new TLInputPeerUser { UserId = (int)id };
+                Peer = new TLInputPeerUser { UserId = id ==null?default: (int)id };
                 break;
             }
 
@@ -40,16 +42,18 @@ internal class PeerAbstract
 
             case ChatType.Sender:
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
     }
 
-    internal long GetUserId()
+    internal long? GetUserId()
     {
-        return id;
+        return Id;
     }
 
     internal TLAbsInputPeer GetPeer()
     {
-        return peer;
+        return Peer;
     }
 }

@@ -16,7 +16,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-internal class MainAnon
+internal static class MainAnon
 {
     internal static void MainMethod(object sender, MessageEventArgs e)
     {
@@ -80,10 +80,10 @@ internal class MainAnon
 
         var botId = telegramBotAbstract.GetId();
 
-        if (AskUser.UserAnswers.ContainsUser(e.Message.From.Id, botId))
-            if (AskUser.UserAnswers.GetState(e.Message.From.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+        if (AskUser.UserAnswers.ContainsUser(e.Message.From?.Id, botId))
+            if (AskUser.UserAnswers.GetState(e.Message.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
             {
-                AskUser.UserAnswers.RecordAnswer(e.Message.From.Id, botId, e.Message.Text);
+                AskUser.UserAnswers.RecordAnswer(e.Message.From?.Id, botId, e.Message.Text);
                 return;
             }
 
@@ -144,8 +144,9 @@ internal class MainAnon
             }
         };
 
-        var r = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract,
-            e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
+        var r = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, telegramBotAbstract,
+            e.Message.From?.LanguageCode, options, 
+            e.Message.From?.Username, true, e.Message.MessageId);
 
         if (l1.Matches(r))
         {
@@ -168,8 +169,8 @@ internal class MainAnon
             }
         });
 
-        var r = await AskUser.AskYesNo(e.Message.From.Id, question, false, telegramBotAbstract,
-            e.Message.From.LanguageCode, e.Message.From.Username);
+        var r = await AskUser.AskYesNo(e.Message.From?.Id, question, false, telegramBotAbstract,
+            e.Message.From?.LanguageCode, e.Message.From?.Username);
 
         if (r == false)
         {
@@ -189,8 +190,8 @@ internal class MainAnon
         {
             { "it", "Inserisci il link del messaggio a cui vuoi rispondere" }
         });
-        var r = await AskUser.AskAsync(e.Message.From.Id, question, telegramBotAbstract,
-            e.Message.From.LanguageCode, e.Message.From.Username);
+        var r = await AskUser.AskAsync(e.Message.From?.Id, question, telegramBotAbstract,
+            e.Message.From?.LanguageCode, e.Message.From?.Username);
         var tuple = GetMessageReply(r);
         if (r == null)
         {
@@ -273,8 +274,9 @@ internal class MainAnon
 
         ;
 
-        var r = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract,
-            e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
+        var r = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, telegramBotAbstract,
+            e.Message.From?.LanguageCode, options, e.Message.From?.Username,
+            true, e.Message.MessageId);
 
         var chosen = GetIdentityFromReply(r);
         if (chosen == null)
@@ -426,7 +428,7 @@ internal class MainAnon
     private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract,
         CallbackQueryEventArgs e, CallBackDataAnon x)
     {
-        var r2 = e.CallbackQuery.Message.ReplyToMessage; //todo: fill this with the message to send
+        var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
 
         ;
 
@@ -489,7 +491,7 @@ internal class MainAnon
                     ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
                     e.GetMessage().MessageId);
 
-            m3 = m2.GetMessageID();
+            m3 = m2?.GetMessageID();
         }
         catch (Exception e1)
         {

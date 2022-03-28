@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 [JsonObject(MemberSerialization.Fields)]
 public class CallbackAssocVetoData : CallbackGenericData
 {
-    public readonly string message;
+    public readonly string Message;
     public readonly MessageEventArgs MessageEventArgs;
     public readonly string MessageWithMetadata;
     public bool Modified;
@@ -24,8 +24,8 @@ public class CallbackAssocVetoData : CallbackGenericData
     {
         MessageWithMetadata = messageWithMetadata;
         MessageEventArgs = messageEventArgs;
-        this.message = message;
-        this.options = options;
+        this.Message = message;
+        this.Options = options;
         RunAfterSelection = runAfterSelection;
     }
 

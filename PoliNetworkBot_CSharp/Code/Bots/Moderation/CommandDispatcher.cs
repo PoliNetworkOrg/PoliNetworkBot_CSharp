@@ -665,8 +665,8 @@ internal static class CommandDispatcher
                 { "it", "You have to reply to a message containing the message" }
             });
 
-            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+            await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
                 e.Message.MessageId);
         }
         else

@@ -60,7 +60,7 @@ internal static class SendMessage
     }
 
     internal static async Task<MessageSentResult> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
-        long userIdToSendTo, string langCode, string usernameToSendTo,
+        long? userIdToSendTo, string langCode, string usernameToSendTo,
         Language text, ParseMode parseMode, long? messageIdToReplyTo,
         InlineKeyboardMarkup inlineKeyboardMarkup = null)
     {

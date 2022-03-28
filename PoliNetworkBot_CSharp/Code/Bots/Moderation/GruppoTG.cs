@@ -74,7 +74,7 @@ public class GruppoTG
         }
     }
 
-    internal void UpdateID(long value)
+    internal void UpdateId(long value)
     {
         permanentId = value;
     }

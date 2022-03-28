@@ -16,7 +16,7 @@ internal static class AskUser
 {
     public static readonly DictionaryUserAnswer UserAnswers = new();
 
-    internal static async Task<string> AskAsync(long idUser, Language question,
+    internal static async Task<string> AskAsync(long? idUser, Language question,
         TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
     {
         var botId = sender.GetId();
@@ -31,15 +31,18 @@ internal static class AskUser
         return result;
     }
 
-    private static async Task<string> WaitForAnswer(long idUser, bool sendMessageConfirmationChoice,
+    private static async Task<string> WaitForAnswer(long? idUser, bool sendMessageConfirmationChoice,
         TelegramBotAbstract telegramBotAbstract, string lang, string username)
     {
+        if (idUser == null)
+            return null;
+        
         try
         {
             var botId = telegramBotAbstract.GetId();
-            var tcs = UserAnswers.GetNewTCS(idUser, botId);
-            UserAnswers.SetAnswerProcessed(idUser, botId, false);
-            UserAnswers.AddWorkCompleted(idUser, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang,
+            var tcs = UserAnswers.GetNewTcs(idUser.Value, botId);
+            UserAnswers.SetAnswerProcessed(idUser.Value, botId, false);
+            UserAnswers.AddWorkCompleted(idUser.Value, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang,
                 username);
 
             return await tcs.Task;
@@ -52,7 +55,7 @@ internal static class AskUser
         return null;
     }
 
-    internal static async Task<string> AskBetweenRangeAsync(long idUser, Language question,
+    internal static async Task<string> AskBetweenRangeAsync(long? idUser, Language question,
         TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options,
         string username,
         bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
@@ -112,7 +115,7 @@ internal static class AskUser
         };
     }
 
-    internal static async Task<bool> AskYesNo(long id, Language question, bool defaultBool,
+    internal static async Task<bool> AskYesNo(long? id, Language question, bool defaultBool,
         TelegramBotAbstract sender, string lang, string username)
     {
         var l1 = new Language(new Dictionary<string, string>
@@ -141,14 +144,14 @@ internal static class AskUser
         return !l2.Matches(r) && defaultBool;
     }
 
-    internal static async Task<DateTime?> AskHours(long id, Language question, TelegramBotAbstract sender,
+    internal static async Task<DateTime?> AskHours(long? id, Language question, TelegramBotAbstract sender,
         string languageCode, string username)
     {
         var s = await AskAsync(id, question, sender, languageCode, username);
         return DateTimeClass.GetHours(s);
     }
 
-    internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long id, string text,
+    internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long? id, string text,
         string lang,
         TelegramBotAbstract sender,
         string username)
@@ -172,7 +175,7 @@ internal static class AskUser
         return await AskDate2Async(id, lang, sender, username);
     }
 
-    private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long id, string lang,
+    private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long? id, string lang,
         TelegramBotAbstract sender,
         string username)
     {

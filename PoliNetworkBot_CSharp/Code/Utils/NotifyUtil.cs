@@ -14,9 +14,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class NotifyUtil
+internal static class NotifyUtil
 {
-    private const string default_lang = "en";
+    private const string DefaultLang = "en";
 
     /// <summary>
     ///     Used to notify of permitted spam in the permitted spam group.
@@ -71,7 +71,7 @@ internal class NotifyUtil
 
     internal static async Task NotifyOwners(ExceptionNumbered exception,
         TelegramBotAbstract sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string extrainfo = null,
-        string langCode = default_lang,
+        string langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
         if (sender == null)

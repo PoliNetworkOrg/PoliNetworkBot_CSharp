@@ -711,7 +711,7 @@ internal static class Assoc
                 if (callbackGenericData is not CallbackAssocVetoData assocVetoData)
                     throw new Exception("callbackGenericData needs to be an instance of CallbackAssocVetoData");
 
-                if (!MessagesStore.CanBeVetoed(assocVetoData.message))
+                if (!MessagesStore.CanBeVetoed(assocVetoData.Message))
                 {
                     await callbackGenericData.Bot.AnswerCallbackQueryAsync(
                         callbackGenericData.CallBackQueryFromTelegram.Id,
@@ -722,7 +722,7 @@ internal static class Assoc
                 if (assocVetoData.CallBackQueryFromTelegram.Message == null)
                     throw new Exception("callBackQueryFromTelegram is null on callbackButton");
 
-                var vetoInTime = MessagesStore.VetoMessage(assocVetoData.message);
+                var vetoInTime = MessagesStore.VetoMessage(assocVetoData.Message);
 
                 try
                 {
