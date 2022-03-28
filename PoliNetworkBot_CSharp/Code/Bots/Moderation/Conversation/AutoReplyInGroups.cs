@@ -26,8 +26,14 @@ public static class AutoReplyInGroups
     private static readonly Dictionary<SpecialGroup, List<SpecialGroup>> ExcludedGroupsMatch =
         new()
         {
-            { SpecialGroup.ASK_POLIMI, new List<SpecialGroup> { SpecialGroup.ASK_POLIMI } },
-            { SpecialGroup.DSU, new List<SpecialGroup> { SpecialGroup.DSU, SpecialGroup.ASK_POLIMI } },
+            {
+                SpecialGroup.ASK_POLIMI, 
+                new List<SpecialGroup> { SpecialGroup.ASK_POLIMI }
+            },
+            {
+                SpecialGroup.DSU, 
+                new List<SpecialGroup> { SpecialGroup.DSU, SpecialGroup.ASK_POLIMI }
+            },
             {
                 SpecialGroup.PIANO_DI_STUDI,
                 new List<SpecialGroup> { SpecialGroup.PIANO_DI_STUDI, SpecialGroup.ASK_POLIMI }
@@ -150,6 +156,36 @@ public static class AutoReplyInGroups
                         "Hi 👋 it seems you are asking questions about groups. " +
                         "We advice you to visit our website, " +
                         "<a href='https://polinetwork.github.io/'>click here</a>!"
+                    }
+                }
+            );
+            await SendMessage.SendMessageInAGroup(telegramBotClient,
+                e.Message.From?.LanguageCode,
+                text2,
+                e,
+                e.Message.Chat.Id,
+                e.Message.Chat.Type,
+                ParseMode.Html,
+                e.Message.MessageId,
+                true);
+        }
+        
+        if (text.Contains("graduatorie") &&(text.Contains("qualcuno") || text.Contains("punteggi")))
+        {
+            var text2 = new Language(
+                new Dictionary<string, string>
+                {
+                    {
+                        "it",
+                        "Ciao 👋 sembra tu stia chiedendo domande alle graduatorie degli anni passati. " +
+                        "Ti consigliamo di visitare il nostro sito, " +
+                        "<a href='https://polinetworkorg.github.io/Rankings/'>clicca qui</a>!"
+                    },
+                    {
+                        "en",
+                        "Hi 👋 it seems you are asking questions about rankings of previous years. " +
+                        "We advice you to visit our website, " +
+                        "<a href='https://polinetworkorg.github.io/Rankings/'>click here</a>!"
                     }
                 }
             );
