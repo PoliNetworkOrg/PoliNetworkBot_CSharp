@@ -657,7 +657,7 @@ internal static class Assoc
             _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater,
                 () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
             permittedSpamMessage += "\nAllowed at time: " + TimeZoneInfo
-                .ConvertTime(allowedTime.Value, TimeZoneInfo.Local).ToString("dd'-'MM'-'yyyy' 'HH':'mm':'ss");
+                .ConvertTime(allowedTime.Value, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd'-'MM'-'yyyy' 'HH':'mm':'ss");
         }
 
         long? replyTo = null;
