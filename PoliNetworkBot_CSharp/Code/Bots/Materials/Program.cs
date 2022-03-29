@@ -171,26 +171,28 @@ public class Program
         return (TObject)Activator.CreateInstance(typeof(TObject));
     }
 
-    private static void GitHandler(CallbackQueryEventArgs e, TelegramBotAbstract sender)
+    private static async void GitHandler(CallbackQueryEventArgs e, TelegramBotAbstract sender)
     {
-        lock (_lock1)
+        try
         {
-            var callbackQuery = e.CallbackQuery;
-            var callbackdata = callbackQuery.Data.Split("|");
-            var fromId = long.Parse(callbackdata[1]);
-            if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
-                throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
-            var a = directory.Split("/");
-            directory = "";
-            for (var i = 0; i < a.Length - 1; i++) directory = directory + a[i] + "/";
-
-            var b = directory.Split("'");
-            directory = b.Aggregate("", (current, t) => current + t + "\'\'");
-
-            var logMessage = "Log for message ID: " + e.CallbackQuery.From.Id;
-            directory = directory[..^2];
-            try
+            string logMessage;
+            lock (_lock1)
             {
+                var callbackQuery = e.CallbackQuery;
+                var callbackdata = callbackQuery.Data.Split("|");
+                var fromId = long.Parse(callbackdata[1]);
+                if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
+                    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
+                var a = directory.Split("/");
+                directory = "";
+                for (var i = 0; i < a.Length - 1; i++) directory = directory + a[i] + "/";
+
+                var b = directory.Split("'");
+                directory = b.Aggregate("", (current, t) => current + t + "\'\'");
+
+                logMessage = "Log for message ID: " + e.CallbackQuery.From.Id;
+                directory = directory[..^2];
+            
                 logMessage += "\n\n";
                 logMessage += "To Directory: " + directory;
                 logMessage += "\n";
@@ -225,22 +227,21 @@ public class Program
                 logMessage += "Push Executed";
 
                 BotUtils.Logger.WriteLine(logMessage);
-
-                var dict = new Dictionary<string, string>
-                {
-                    { "uni", "Log:\n\n" + logMessage }
-                };
-                var text = new Language(dict);
-
-                _ = sender.SendTextMessageAsync(LogGroup,
-                    text, ChatType.Group, "uni", ParseMode.Html, null, null);
-
+                
                 powershell.Stop();
             }
-            catch (Exception ex)
+            
+            var dict = new Dictionary<string, string>
             {
-                _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
-            }
+                { "uni", "Log:\n\n" + logMessage }
+            };
+            var text = new Language(dict);
+
+            await sender.SendTextMessageAsync(LogGroup,
+                text, ChatType.Group, "uni", ParseMode.Html, null, null); 
+        } catch (Exception ex)
+        {
+            _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
         }
     }
 
