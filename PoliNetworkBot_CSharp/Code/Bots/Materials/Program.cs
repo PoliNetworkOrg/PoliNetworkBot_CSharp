@@ -36,10 +36,10 @@ public class Program
 
     public static Dictionary<string, List<string>> ModifiedFilesInGitFolder = new();
 
-    private static readonly object _lock1 = new();
+    private static object _lock1 = new();
     public static Utils.Config Config;
-    private static readonly long _logGroup = -1001399914655;
-    private static object _slowDownLock;
+    private const long LogGroup = -1001399914655;
+    private static object _slowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
     {
@@ -232,7 +232,7 @@ public class Program
                 };
                 var text = new Language(dict);
 
-                _ = sender.SendTextMessageAsync(_logGroup,
+                _ = sender.SendTextMessageAsync(LogGroup,
                     text, ChatType.Group, "uni", ParseMode.Html, null, null);
 
                 powershell.Stop();
