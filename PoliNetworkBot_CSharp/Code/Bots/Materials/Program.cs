@@ -8,6 +8,7 @@ using System.Management.Automation;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
@@ -79,7 +80,7 @@ public class Program
                 {
                     if (e.Message.Text == "/start") GenerateStart(e);
 
-                    Console.WriteLine(e.Message.Text);
+                    BotUtils.Logger.WriteLine( "Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
                     if (!UsersConversations.ContainsKey(e.Message.From.Id)) GenerateStart(e);
 
                     var state = UsersConversations[e.Message.From.Id].GetState();
@@ -233,12 +234,13 @@ public class Program
             
             var dict = new Dictionary<string, string>
             {
-                { "uni", "Log:\n\n" + logMessage }
+                { "uni", "Log:\n\n" +  HttpUtility.HtmlEncode(logMessage) }
             };
             var text = new Language(dict);
 
             await sender.SendTextMessageAsync(LogGroup,
                 text, ChatType.Group, "uni", ParseMode.Html, null, null); 
+            
         } catch (Exception ex)
         {
             _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
