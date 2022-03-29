@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Bot.Enums;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 
 #endregion
@@ -13,7 +13,7 @@ public static class Navigator
 {
     public static readonly Dictionary<string, string[]> ScuoleCorso = new()
     {
-        ["3I"] = new[]
+        ["3I"] = new []
         {
             "MatNano",
             "Info",
@@ -24,33 +24,33 @@ public static class Navigator
             "Chimica",
             "Elettrica"
         },
-        ["AUIC"] = null,
-        ["ICAT"] = null,
-        ["Design"] = null
+        ["AUIC"] = new string[]{},
+        ["ICAT"] = new string[]{},
+        ["Design"] = new string[]{}
     };
 
-    public static bool CorsoHandler(Conversation conversation, string messageText)
+    public static bool CourseHandler(Conversation conversation, string messageText)
     {
-        foreach (var corso in from scuola in ScuoleCorso.Values
+        foreach (var course in from scuola in ScuoleCorso.Values
                  where scuola != null
-                 from corso in scuola
-                 where messageText == corso
-                 select corso)
+                 from course in scuola
+                 where messageText == course
+                 select course)
         {
-            conversation.SetCorso(corso);
-            conversation.SetStato(Stati.Cartella);
+            conversation.SetCourse(course);
+            conversation.SetState(UserState.FOLDER);
             return true;
         }
 
         return false;
     }
 
-    public static bool ScuolaHandler(Conversation conversation, string messageText)
+    public static bool SchoolHandler(Conversation conversation, string messageText)
     {
-        foreach (var scuola in ScuoleCorso.Keys.Where(scuola => messageText == scuola))
+        foreach (var school in ScuoleCorso.Keys.Where(school => messageText == school))
         {
-            conversation.SetScuola(scuola);
-            conversation.SetStato(Stati.Corso);
+            conversation.SetSchool(school);
+            conversation.SetState(UserState.COURSE);
             return true;
         }
 

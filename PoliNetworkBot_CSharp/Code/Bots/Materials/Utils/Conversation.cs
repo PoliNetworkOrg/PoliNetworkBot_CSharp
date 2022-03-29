@@ -2,7 +2,7 @@
 
 using System;
 using System.Linq;
-using Bot.Enums;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 
 #endregion
 
@@ -11,70 +11,70 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [Serializable]
 public class Conversation
 {
-    private string corsienum;
-    private string percorso;
-    private string scuolaenum;
+    private string course;
+    private string path;
+    private string school;
 
-    private Stati? stato;
+    private UserState? state;
 
     public Conversation()
     {
-        stato = Stati.start;
+        state = UserState.START;
     }
 
-    public void SetStato(Stati? var)
+    public void SetState(UserState? var)
     {
-        stato = var;
+        state = var;
     }
 
-    public Stati? GetStato()
+    public UserState? GetState()
     {
-        return stato;
+        return state;
     }
 
-    internal void SetCorso(string corsienum)
+    internal void SetCourse(string courseToSet)
     {
-        this.corsienum = corsienum;
+        course = courseToSet;
     }
 
-    internal void SetScuola(string scuolaenum)
+    internal void SetSchool(string schoolToSet)
     {
-        this.scuolaenum = scuolaenum;
+        school = schoolToSet;
     }
 
-    internal string GetScuola()
+    internal string GetSchool()
     {
-        return scuolaenum;
+        return school;
     }
 
-    internal string Getcorso()
+    internal string GetCourse()
     {
-        return corsienum;
+        return course;
     }
 
-    internal void ScesoDiUnLivello(string text)
+    internal void PathDroppedOneLevel(string droppedTo)
     {
-        if (string.IsNullOrEmpty(percorso))
+        if (string.IsNullOrEmpty(path))
         {
-            percorso = text;
+            path = droppedTo;
             return;
         }
 
-        percorso += "/" + text;
+        path += "/" + droppedTo;
     }
 
-    internal void ResetPercorso()
+    internal void ResetPath()
     {
-        percorso = null;
+        path = null;
     }
 
-    internal string GetPercorso()
+    internal string GetPath()
     {
-        return percorso;
+        return path;
     }
 
     internal string GetGit()
     {
-        return GetPercorso().Split(@"/").First();
+        return GetPath().Split(@"/").First();
     }
 }

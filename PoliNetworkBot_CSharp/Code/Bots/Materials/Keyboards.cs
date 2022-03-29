@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Bot.Enums;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -31,15 +31,15 @@ public static class Keyboards
 
     internal static string[] GetDir(long id)
     {
-        var corso = Program.UsersConversations[id].Getcorso();
+        var corso = Program.UsersConversations[id].GetCourse();
         if (string.IsNullOrEmpty(corso))
             return null;
         corso = corso.ToLower();
         var root = Program.Config.RootDir + corso;
-        var percorso = Program.UsersConversations[id].GetPercorso();
+        var percorso = Program.UsersConversations[id].GetPath();
         if (!string.IsNullOrEmpty(percorso)) root += @"/" + percorso;
         string[] subdirectoryEntries = null;
-        if (Program.UsersConversations[id].GetStato() != Stati.newCartella)
+        if (Program.UsersConversations[id].GetState() != UserState.NEW_FOLDER)
             subdirectoryEntries = Directory.GetDirectories(root);
         if (subdirectoryEntries != null) subdirectoryEntries = RemoveGit(subdirectoryEntries);
         return subdirectoryEntries;
@@ -48,7 +48,7 @@ public static class Keyboards
     internal static List<List<Language>> GetPathsKeyboard(long id)
     {
         var subdirectoryEntries = GetDir(id);
-        var percorso = Program.UsersConversations[id].GetPercorso();
+        var percorso = Program.UsersConversations[id].GetPath();
         Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " +
                          subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
         var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
