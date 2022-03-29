@@ -767,8 +767,7 @@ public class Program
 
     private static async Task GenerateStartOnBackAndNull(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract)
     {
-        GenerateStart(e);
-        await BotClient_OnMessageAsync2Async(telegramBotAbstract, e);
+        await HandleStartAsync(e, telegramBotAbstract);
     }
 
     private static async Task SendFolderAsync(MessageEventArgs e,
