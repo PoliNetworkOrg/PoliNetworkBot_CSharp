@@ -643,11 +643,11 @@ public class Program
         }
         else if (e.Message.Text.StartsWith("🆕"))
         {
-            await GeneraCartellaAsync(e, sender);
+            await GenerateFolderAsync(e, sender);
         }
         else
         {
-            if (!VerificaSottoCartelle(e))
+            if (!VerifySubfolder(e))
             {
                 var dict = new Dictionary<string, string>
                 {
@@ -669,13 +669,13 @@ public class Program
         }
     }
 
-    private static bool VerificaSottoCartelle(MessageEventArgs e)
+    private static bool VerifySubfolder(MessageEventArgs e)
     {
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
         return sottoCartelle.Any(a => a.Split(@"/").Last().Equals(e.Message.Text.Split(@"/").Last()));
     }
 
-    private static async Task GeneraCartellaAsync(MessageEventArgs e, TelegramBotAbstract sender)
+    private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract sender)
     {
         UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
         var dict = new Dictionary<string, string>
