@@ -70,7 +70,7 @@ internal static class NotifyUtil
     }
 
     internal static async Task NotifyOwners(ExceptionNumbered exception,
-        TelegramBotAbstract sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string extrainfo = null,
+        TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null,
         string langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {

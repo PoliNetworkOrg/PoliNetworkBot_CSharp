@@ -17,7 +17,6 @@ public static class Keyboards
 {
     internal static IEnumerable<List<Language>> GetKeyboardCorsi(string scuola)
     {
-        var testo = "";
         var options2 = new List<Language>();
         if (Navigator.ScuoleCorso[scuola] != null)
             options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso =>

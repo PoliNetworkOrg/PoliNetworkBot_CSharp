@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -356,6 +357,7 @@ public class Program
                 }
                 catch (Exception exception)
                 {
+                    Logger.WriteLine(exception);
                     var dict = new Dictionary<string, string>
                     {
                         {
