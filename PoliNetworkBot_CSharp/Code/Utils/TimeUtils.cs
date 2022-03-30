@@ -19,7 +19,7 @@ internal static class TimeUtils
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex, LogSeverityLevel.ERROR);
+            Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 }

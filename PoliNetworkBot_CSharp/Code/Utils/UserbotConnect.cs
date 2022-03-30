@@ -67,7 +67,7 @@ internal static class UserbotConnect
                 }
                 catch (CloudPasswordNeededException ex)
                 {
-                    Logger.WriteLine(ex.Message);
+                    Logger.Logger.WriteLine(ex.Message);
 
                     var passwordSetting = await telegramClient.GetPasswordSetting();
 

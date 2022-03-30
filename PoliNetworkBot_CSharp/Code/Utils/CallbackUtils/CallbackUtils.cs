@@ -96,7 +96,7 @@ public class CallbackUtils
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex);
+            Logger.Logger.WriteLine(ex);
         }
     }
 
@@ -154,7 +154,7 @@ public class CallbackUtils
         catch (Exception ex)
         {
             callBackDataFull = new CallBackDataFull();
-            Logger.WriteLine(ex);
+            Logger.Logger.WriteLine(ex);
         }
     }
 }

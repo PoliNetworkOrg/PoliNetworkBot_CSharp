@@ -61,7 +61,7 @@ internal static class NotifyUtil
             {
                 { "it", message }
             });
-            Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+            Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
                 Data.Constants.Groups.PermittedSpamGroup,
                 ChatType.Group,
@@ -161,7 +161,7 @@ internal static class NotifyUtil
     private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
         long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
     {
-        Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
+        Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
         var text = new Language(new Dictionary<string, string>
         {
@@ -177,7 +177,7 @@ internal static class NotifyUtil
         MessageEventArgs messageEventArgs, int loopNumber = 0)
     {
         await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
-        Logger.WriteLine(e);
+        Logger.Logger.WriteLine(e);
     }
 
     private static async Task<MessageSentResult> NotifyOwners2Async(Language text, TelegramBotAbstract sender,
@@ -317,7 +317,7 @@ internal static class NotifyUtil
                 {
                     { "it", message }
                 });
-                Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
                     Data.Constants.Groups.BanNotificationGroup,
                     ChatType.Group,
@@ -326,7 +326,7 @@ internal static class NotifyUtil
         }
         catch (Exception e)
         {
-            Logger.WriteLine(e);
+            Logger.Logger.WriteLine(e);
         }
     }
 
@@ -354,7 +354,7 @@ internal static class NotifyUtil
                 {
                     { "it", message }
                 });
-                Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
                     Data.Constants.Groups.BanNotificationGroup,
                     ChatType.Group,
@@ -363,7 +363,7 @@ internal static class NotifyUtil
         }
         catch (Exception e)
         {
-            Logger.WriteLine(e);
+            Logger.Logger.WriteLine(e);
         }
     }
 
@@ -371,7 +371,7 @@ internal static class NotifyUtil
         int loopNumber = 0)
     {
         await NotifyOwners(new ExceptionNumbered(exception), telegramBotAbstract, null, loopNumber);
-        Logger.WriteLine(exception);
+        Logger.Logger.WriteLine(exception);
     }
 
     /// <summary>
@@ -396,7 +396,7 @@ internal static class NotifyUtil
             { "en", message }
         });
 
-        Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
+        Logger.Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
         await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
             Data.Constants.Groups.PermittedSpamGroup,
             ChatType.Group,

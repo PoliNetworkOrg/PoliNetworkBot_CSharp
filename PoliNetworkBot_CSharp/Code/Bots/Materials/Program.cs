@@ -37,10 +37,10 @@ public class Program
 
     public static Dictionary<string, List<string>> ModifiedFilesInGitFolder = new();
 
-    private static object _lock1 = new();
+    private static readonly object _lock1 = new();
     public static Utils.Config Config;
     private const long LogGroup = -1001399914655;
-    private static object _slowDownLock = new();
+    private static readonly object _slowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
     {
@@ -50,7 +50,7 @@ public class Program
         }
         catch (Exception exception)
         {
-            BotUtils.Logger.WriteLine(exception, LogSeverityLevel.CRITICAL);
+            BotUtils.Logger.Logger.WriteLine(exception, LogSeverityLevel.CRITICAL);
         }
     }
 
@@ -80,7 +80,7 @@ public class Program
                 {
                     if (e.Message.Text == "/start") GenerateStart(e);
 
-                    BotUtils.Logger.WriteLine( "Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
+                    BotUtils.Logger.Logger.WriteLine( "Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
                     if (!UsersConversations.ContainsKey(e.Message.From.Id)) GenerateStart(e);
 
                     var state = UsersConversations[e.Message.From.Id].GetState();
@@ -123,7 +123,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            BotUtils.Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
+            BotUtils.Logger.Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
         }
     }
 
@@ -223,11 +223,11 @@ public class Program
                 var push = @"git push https://polibot:" + Config.Password +
                            "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
 
-                BotUtils.Logger.WriteLine(DoScript(powershell, push, true));
+                BotUtils.Logger.Logger.WriteLine(DoScript(powershell, push, true));
 
                 logMessage += "Push Executed";
 
-                BotUtils.Logger.WriteLine(logMessage);
+                BotUtils.Logger.Logger.WriteLine(logMessage);
                 
                 powershell.Stop();
             }
@@ -487,7 +487,7 @@ public class Program
 
         var file = Config.RootDir + UsersConversations[e.Message.From.Id].GetCourse().ToLower() + "/" +
                    UsersConversations[e.Message.From.Id].GetPath() + "/" + e.Message.Document.FileName;
-        BotUtils.Logger.WriteLine("File requested: " + file);
+        BotUtils.Logger.Logger.WriteLine("File requested: " + file);
         var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
         var fileAlreadyPresent = false;
         string oldPath = null;

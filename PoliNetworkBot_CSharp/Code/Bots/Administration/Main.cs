@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using TeleSharp.TL;
 
 #endregion

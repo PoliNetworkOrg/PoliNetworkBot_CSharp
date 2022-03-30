@@ -55,7 +55,7 @@ public static class SqLite
         }
         catch (SQLiteException e)
         {
-            Logger.WriteLine(e);
+            Logger.Logger.WriteLine(e);
             throw new SQLiteException(e.Message);
         }
     }

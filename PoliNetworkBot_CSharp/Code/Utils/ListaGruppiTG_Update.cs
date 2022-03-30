@@ -70,7 +70,7 @@ internal class ListaGruppiTG_Update
             }
             catch (Exception ex2)
             {
-                Logger.WriteLine(ex2);
+                Logger.Logger.WriteLine(ex2);
             }
 
         //Thread.Sleep(500);

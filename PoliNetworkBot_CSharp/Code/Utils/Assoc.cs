@@ -623,7 +623,7 @@ internal static class Assoc
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex, LogSeverityLevel.ERROR);
+            Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 
@@ -639,7 +639,7 @@ internal static class Assoc
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex, LogSeverityLevel.ERROR);
+            Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 

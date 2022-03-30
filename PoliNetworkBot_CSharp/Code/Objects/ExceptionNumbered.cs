@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
-internal class ExceptionNumbered : Exception
+public class ExceptionNumbered : Exception
 {
     private const int default_v = 1;
     private int v;

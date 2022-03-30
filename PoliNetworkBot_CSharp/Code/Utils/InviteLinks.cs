@@ -90,7 +90,7 @@ internal static class InviteLinks
         }
         catch (Exception ex1)
         {
-            Logger.WriteLine(ex1);
+            Logger.Logger.WriteLine(ex1);
             var ex3M = "5" +
                 "\n\n" + ex1.Message +
                 "\n\n" + chatId +
@@ -128,13 +128,13 @@ internal static class InviteLinks
 
             var d = e.Message.ReplyToMessage.Document;
             var (_, item2) = await sender.DownloadFileAsync(d);
-            Logger.WriteLine(item2.Length);
+            Logger.Logger.WriteLine(item2.Length);
             item2.Seek(0, SeekOrigin.Begin);
             var reader = new StreamReader(item2);
             var text = await reader.ReadToEndAsync();
 
             var obj = JsonConvert.DeserializeObject(text);
-            Logger.WriteLine(obj.GetType());
+            Logger.Logger.WriteLine(obj.GetType());
             var jArray = (JArray)obj;
 
             var L = new ListaGruppiTG_Update();
@@ -172,7 +172,7 @@ internal static class InviteLinks
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteLine(ex);
+                    Logger.Logger.WriteLine(ex);
                     var ex4m = "4" + "\n\n" + ex.Message;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(
@@ -219,7 +219,7 @@ internal static class InviteLinks
         }
         catch (Exception ex)
         {
-            Logger.WriteLine(ex);
+            Logger.Logger.WriteLine(ex);
         }
     }
 
@@ -258,7 +258,7 @@ internal static class InviteLinks
             }
             catch (Exception ex1)
             {
-                Logger.WriteLine(ex1);
+                Logger.Logger.WriteLine(ex1);
                 var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink + "\n\n" +
                            gruppoTG.nome + "\n\n" + gruppoTG.newLink + "\n\n" + gruppoTG.permanentId;
                 await sender.SendTextMessageAsync(e.Message.From.Id,
@@ -304,7 +304,7 @@ internal static class InviteLinks
             }
             catch (Exception ex2)
             {
-                Logger.WriteLine(ex2);
+                Logger.Logger.WriteLine(ex2);
                 var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
                 await sender.SendTextMessageAsync(e.Message.From.Id,
                     new Language(
@@ -347,7 +347,7 @@ internal static class InviteLinks
             }
             catch (Exception ex3)
             {
-                Logger.WriteLine(ex3);
+                Logger.Logger.WriteLine(ex3);
                 var ex3m = "3" + "\n\n" + ex3.Message;
                 await sender.SendTextMessageAsync(e.Message.From.Id,
                     new Language(

@@ -56,7 +56,7 @@ internal static class UserBotFixBotAdmin
                 }
                 catch (Exception e7)
                 {
-                    Logger.WriteLine(e7);
+                    Logger.Logger.WriteLine(e7);
                 }
             }
 
@@ -316,7 +316,7 @@ internal static class UserBotFixBotAdmin
             }
             catch (Exception e3)
             {
-                Logger.WriteLine(e3);
+                Logger.Logger.WriteLine(e3);
 
                 try
                 {
@@ -494,7 +494,7 @@ internal static class UserBotFixBotAdmin
         }
         catch (Exception e2)
         {
-            Logger.WriteLine(e2);
+            Logger.Logger.WriteLine(e2);
         }
 
         ;

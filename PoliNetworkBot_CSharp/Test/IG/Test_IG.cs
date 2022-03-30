@@ -10,6 +10,7 @@ using InstagramApiSharp.Logger;
 using Minista.Helpers;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
 

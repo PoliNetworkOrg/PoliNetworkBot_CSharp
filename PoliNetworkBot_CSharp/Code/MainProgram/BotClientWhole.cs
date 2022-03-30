@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using Telegram.Bot;
 
