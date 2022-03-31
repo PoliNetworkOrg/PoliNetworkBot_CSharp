@@ -11,6 +11,6 @@ internal class Owners
 {
     internal static bool CheckIfOwner(long id)
     {
-        return GlobalVariables.Owners.Any(x => x.Item1 == id);
+        return GlobalVariables.Owners.Any(x => x.id == id);
     }
 }

@@ -1,11 +1,10 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -14,13 +13,13 @@ namespace PoliNetworkBot_CSharp.Code.Data;
 public static class GlobalVariables
 {
     public static Dictionary<long, TelegramBotAbstract> Bots;
-    public static List<string> Creators;
-    public static List<string> SubCreators;
-    public static List<string> AllowedBanAll;
-    public static List<string> AllowedMuteAll;
+    public static List<TelegramUser> Creators;
+    public static List<TelegramUser> SubCreators;
+    public static List<TelegramUser> AllowedBanAll;
+    public static List<TelegramUser> AllowedMuteAll;
     public static List<long> AllowedNoUsernameFromThisUserId;
-    public static List<Tuple<long, string>> Owners;
-    public static List<string> AllowedSpam;
+    public static List<TelegramUser> Owners;
+    public static List<TelegramUser> AllowedSpam;
     public static List<MessageToDelete> MessagesToDelete;
     public static List<WordToBeFirst> wordToBeFirsts;
     public static List<long> ExcludedChatsForBot;
@@ -38,34 +37,59 @@ public static class GlobalVariables
 
         LoadMessagesToDelete();
 
-        Creators = new List<string>
+        Creators = new List<TelegramUser>
         {
-            "policreator", "policreator2", "policreator3",
-            "policreator4", "policreator5", "armef97", "poliadmin",
-            "eliamaggioni"
+            new TelegramUser( "policreator"),
+             new TelegramUser( "policreator2"),
+             new TelegramUser( "policreator3"),
+             new TelegramUser( "policreator4"),
+             new TelegramUser( "policreator5"),
+                      new TelegramUser(5651789),
+             new TelegramUser( "poliadmin"),
+             new TelegramUser( "eliamaggioni")
         };
 
-        SubCreators = new List<string>
+        SubCreators = new List<TelegramUser>
         {
-            "carlogiova", "giovannieffe777", "testpolinetwork",
-            "albus25", "deet98", "alberto_fattori", "scala98",
-            "giulia_ye", "andre_crc", "perularrabeiti", "fllippo", "marcol_8", "andre_crc", "lucreziaal",
-            "giada_marti", "raif9", "diegoaldarese"
+                new TelegramUser("carlogiova"),
+                new TelegramUser("giovannieffe777"),
+                new TelegramUser("testpolinetwork"),
+                    new TelegramUser(            "albus25"),
+                new TelegramUser("deet98"),
+                new TelegramUser("alberto_fattori"),
+                new TelegramUser("scala98"),
+                    new TelegramUser(            "giulia_ye"),
+                new TelegramUser("andre_crc"),
+                new TelegramUser("perularrabeiti"),
+                new TelegramUser("fllippo"),
+                new TelegramUser("marcol_8"),
+                new TelegramUser("andre_crc"),
+                new TelegramUser("lucreziaal"),
+                    new TelegramUser(            "giada_marti"),
+                new TelegramUser("raif9"),
+                new TelegramUser("diegoaldarese")
         };
 
-        AllowedBanAll = new List<string>
+        AllowedBanAll = new List<TelegramUser>
         {
-            "armef97", "raif9", "eliamaggioni"
+                 new TelegramUser(5651789),
+                new TelegramUser("raif9"),
+                new TelegramUser("eliamaggioni")
         };
 
-        AllowedMuteAll = new List<string>
+        AllowedMuteAll = new List<TelegramUser>
         {
-            "armef97", "raif9", "eliamaggioni"
+                  new TelegramUser(5651789),
+                new TelegramUser("raif9"),
+                new TelegramUser("eliamaggioni")
         };
 
-        AllowedSpam = new List<string>
+        AllowedSpam = new List<TelegramUser>
         {
-            "armef97", "raif9", "eliamaggioni", "tlpats"
+                new TelegramUser(5651789),
+                new TelegramUser("raif9"),
+                new TelegramUser("eliamaggioni"),
+                new TelegramUser("tlpats")
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>
@@ -78,9 +102,9 @@ public static class GlobalVariables
             "poligruppo", "polirules", "polibook", "poliextra"
         };
 
-        Owners = new List<Tuple<long, string>>
+        Owners = new List<TelegramUser>
         {
-            new(5651789, "armef97"),
+                     new TelegramUser(5651789),
             new(107050697, "eliamaggioni")
         };
 
@@ -124,6 +148,6 @@ public static class GlobalVariables
 
     internal static bool IsOwner(long id)
     {
-        return Owners.Any(x => x.Item1 == id);
+        return Owners.Any(x => x.id == id);
     }
 }

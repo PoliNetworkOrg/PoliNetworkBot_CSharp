@@ -53,7 +53,7 @@ internal static class Groups
     internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
         TelegramBotAbstract telegramBotAbstract)
     {
-        if (GlobalVariables.Creators.Contains(username))
+        if (GlobalVariables.Creators.ToList().Any(x => x.Matches(userId,username)))
             return new SuccessWithException(true);
 
         return await telegramBotAbstract.IsAdminAsync(userId, chatId);

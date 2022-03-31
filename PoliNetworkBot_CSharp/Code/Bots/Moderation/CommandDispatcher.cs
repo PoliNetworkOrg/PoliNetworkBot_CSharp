@@ -53,7 +53,7 @@ internal static class CommandDispatcher
 
             case "/force_check_invite_links":
             {
-                if (GlobalVariables.Creators.Contains(e.Message?.Chat?.Username?.ToLower()))
+                if (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = ForceCheckInviteLinksAsync(sender, e);
                 else
                     await DefaultCommand(sender, e);
@@ -86,9 +86,10 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                        false);
+
+                if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username,                  false);
                 else
                     await DefaultCommand(sender, e);
                 return;
@@ -107,8 +108,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                        _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -129,8 +130,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -151,8 +152,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         true);
                 else
                     await DefaultCommand(sender, e);
@@ -210,8 +211,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
+                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                        _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -284,7 +285,7 @@ internal static class CommandDispatcher
 
             case "/getGroups":
             {
-                if ((GlobalVariables.Creators.Contains(e.Message.From.Username) ||
+                if ((GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message.From)) ||
                      Owners.CheckIfOwner(e.Message.From.Id))
                     && e.Message.Chat.Type == ChatType.Private)
                 {
