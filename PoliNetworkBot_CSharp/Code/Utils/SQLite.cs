@@ -16,12 +16,12 @@ public static class SqLite
     {
         //setup the connection to the database
         using var con = new SQLiteConnection(Paths.Db);
+        con.Open();
         return Execute(query, con, args);
     }
 
     public static int Execute(string query, SQLiteConnection connection, Dictionary<string, object> args = null)
     {
-        connection.Open();
         //open a new command
         using var cmd = new SQLiteCommand(query, connection);
         //set the arguments given in the query
@@ -43,6 +43,7 @@ public static class SqLite
                 return null;
 
             using var con = new SQLiteConnection(Paths.Db);
+            con.Open();
             return ExecuteSelect(query, con, args);
         }
         catch (SQLiteException e)
@@ -54,7 +55,6 @@ public static class SqLite
 
     public static DataTable ExecuteSelect(string query, SQLiteConnection connection , Dictionary<string, object> args = null)
     {
-        connection.Open();
         using var cmd = new SQLiteCommand(query, connection);
         if (args != null)
             foreach (var (key, value) in args)

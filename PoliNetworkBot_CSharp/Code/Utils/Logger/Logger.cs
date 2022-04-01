@@ -26,7 +26,7 @@ public static class Logger
     private const string LogSeparator = "#@#LOG ENTRY#@#";
     private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
-    private static readonly object Lock = new();
+    private static readonly object LogFileLock = new();
 
     private static readonly object PrintLogLock = new();
 
@@ -70,7 +70,7 @@ public static class Logger
             Console.WriteLine(ex);
         }
     }
-
+    
     public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
@@ -82,7 +82,7 @@ public static class Logger
             if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
 
             if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
-            lock (Lock)
+            lock (LogFileLock)
             {
                 File.AppendAllLinesAsync(DataLogPath, new[]
                 {
@@ -146,7 +146,10 @@ public static class Logger
                 List<string> text = null;
                 try
                 {
-                    text = File.ReadAllLines(path).ToList();
+                    lock (LogFileLock)
+                    {
+                        text = File.ReadAllLines(path).ToList();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -167,7 +170,12 @@ public static class Logger
 
     private static void PrintLog2(List<long> sendTo, TelegramBotAbstract sender, string path)
     {
-        var file = File.ReadAllText(path);
+        string file;
+        lock (LogFileLock)
+        {
+            file = File.ReadAllText(path);
+        }
+
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
         var encoding = Encoding.UTF8;
 
@@ -188,7 +196,10 @@ public static class Logger
                 sender, null, "it", null, true).Wait();
         }
 
-        File.WriteAllText(path, "\n");
+        lock (LogFileLock)
+        {
+            File.WriteAllText(path, "\n");
+        }
     }
 
     private static void EmptyLog(TelegramBotAbstract sender, List<long> sendTo)
@@ -211,11 +222,16 @@ public static class Logger
 
     public static bool ContainsCriticalErrors(out string s)
     {
-        var log = File.ReadAllText(DataLogPath);
+        string log;
+        lock (LogFileLock)
+        {
+             log = File.ReadAllText(DataLogPath);
+        }
         var entries = log.Split(LogSeparator).ToList();
         s = "";
         var toReturn = false;
         foreach (var entry in entries)
+        {
             try
             {
                 var severityLevel = entry[(GetTime().Length + 3)..];
@@ -229,7 +245,7 @@ public static class Logger
             catch (ArgumentOutOfRangeException)
             {
             }
-
+        }
         return toReturn;
     }
 }

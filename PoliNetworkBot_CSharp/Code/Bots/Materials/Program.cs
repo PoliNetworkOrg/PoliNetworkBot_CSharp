@@ -43,9 +43,21 @@ public class Program
     
     private static readonly object Lock1 = new();
     
-    public static Utils.Config Config = JsonConvert.DeserializeObject<Utils.Config>(
-        File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
-    
+    public static Utils.Config Config = InitializeConfig();
+
+    private static Utils.Config InitializeConfig()
+    {
+        try
+        {
+            return JsonConvert.DeserializeObject<Utils.Config>(
+                File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
+        }
+        catch (Exception ex)
+        {
+            return new Utils.Config();
+        }
+    }
+
     private static readonly object SlowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
@@ -665,7 +677,7 @@ public class Program
     private static bool VerifySubfolder(MessageEventArgs e)
     {
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
-        return sottoCartelle.Any(a => a.Split(@"/").Last().Equals(e.Message.Text.Split(@"/").Last()));
+        return sottoCartelle.Any(a => a.Split(@"/").Last().Split(@"\").Last().Equals(e.Message.Text.Split(@"/").Last().Split(@"\").Last()));
     }
 
     private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract sender)

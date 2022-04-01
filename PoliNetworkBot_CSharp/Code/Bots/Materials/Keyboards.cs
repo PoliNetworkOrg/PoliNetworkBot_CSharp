@@ -51,7 +51,7 @@ public static class Keyboards
         Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " +
                          subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
         var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
-            { { "it", v.Split("/").Last() }, { "en", v.Split("/").Last() } })).ToList();
+            { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } })).ToList();
         if (percorso == null)
         {
             options2.Add(new Language(new Dictionary<string, string>

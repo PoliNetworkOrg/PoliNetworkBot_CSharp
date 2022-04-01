@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using Newtonsoft.Json;
@@ -24,24 +25,26 @@ public static class FilePaths
     /// Initialize connection
     /// </summary>
     /// <returns></returns>
-    public static SQLiteConnection Initialize()
+    public static SQLiteConnection Initialize(int i = 0)
     {
         try
         {
             SQLiteConnection con;
             if (!File.Exists(Paths.Data.MaterialDbPath))
             {
-                File.Create(Paths.Data.MaterialDbPath);
+                File.WriteAllText(Paths.Data.MaterialDbPath, "");
                 con = new SQLiteConnection(Paths.MaterialDb);
                 SqLite.Execute("CREATE TABLE FilePaths (" +
-                               "id BIGINT PRIMARY KEY AUTOINCREMENT, " +
+                               "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                "file_and_git NVARCHAR(250)," +
                                "location NVARCHAR(250)" +
                                ") ", con);
+                con.Open();
             }
             else
             {
                 con = new SQLiteConnection(Paths.MaterialDb);
+                con.Open();
             }
             
             return con;
@@ -52,7 +55,7 @@ public static class FilePaths
             throw new Exception("Error while initializing material db");
         }
     }
-    
+
     public static bool TryGetValue(string fileAndGit, out string output)
     {
         const string q1 = "SELECT location FROM FilePaths WHERE file_and_git = @v";
@@ -83,7 +86,7 @@ public static class FilePaths
                 {"@path", file}
 
             };
-            SqLite.Execute(q, keyValuePairs);
+            SqLite.Execute(q, _con,  keyValuePairs);
             return true;
         }
         catch (Exception ex)
