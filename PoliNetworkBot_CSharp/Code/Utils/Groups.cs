@@ -35,7 +35,7 @@ internal static class Groups
             ? "SELECT * FROM Groups WHERE ( valid = 'Y' or valid = 1 )"
             : "SELECT * FROM Groups";
 
-        return Database.ExecuteSelect(q1, sender.Connection);
+        return Database.ExecuteSelect(q1, sender.DbConfig);
     }
 
     internal static DataTable GetGroupsByTitle(string query, int limit, TelegramBotAbstract sender)
@@ -47,7 +47,7 @@ internal static class Groups
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
-        return Database.ExecuteSelect(q1, sender.Connection , new Dictionary<string, object> { { "@title", query2 }, {"@limit", limit} });
+        return Database.ExecuteSelect(q1, sender.DbConfig , new Dictionary<string, object> { { "@title", query2 }, {"@limit", limit} });
     }
 
     internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
@@ -67,7 +67,7 @@ internal static class Groups
             Logger.Logger.WriteLine("Starting fix of groups name");
             ;
             const string q1 = "SELECT * FROM Groups";
-            var groups = Database.ExecuteSelect(q1, telegramBotAbstract.Connection);
+            var groups = Database.ExecuteSelect(q1, telegramBotAbstract.DbConfig);
             var indexTitle = groups.Columns.IndexOf("title");
             var indexId = groups.Columns.IndexOf("id");
             for (var i = 0; i < groups.Rows.Count; i++)
@@ -155,7 +155,8 @@ internal static class Groups
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
-            var groups = Database.ExecuteSelect(q1, telegramBotClient.Connection, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+            var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig, 
+                new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
                 throw new Exception("No group found with id: " + e.Message.Chat.Id +
                                     " while running CheckForGroupTitleUpdateAsync");
@@ -205,7 +206,8 @@ internal static class Groups
         }
 
         const string q1 = "SELECT * FROM Groups WHERE id = @id";
-        var groups = Database.ExecuteSelect(q1, sender.Connection, new Dictionary<string, object> { { "@id", group.Id } });
+        var groups = Database.ExecuteSelect(q1, sender.DbConfig, 
+            new Dictionary<string, object> { { "@id", group.Id } });
         if (groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
                                 " while running CheckForGroupTitleUpdateAsync");
@@ -270,7 +272,7 @@ internal static class Groups
             { "@title", newTitle },
             { "@id", id }
         };
-        Database.Execute(q, sender.Connection, d);
+        Database.Execute(q, sender.DbConfig, d);
         GroupsFixLog.NameChange(oldTitle, newTitle);
         return GroupsFixLogUpdatedEnum.NEW_NAME;
     }

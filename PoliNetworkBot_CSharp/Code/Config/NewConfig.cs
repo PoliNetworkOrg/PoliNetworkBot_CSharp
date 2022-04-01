@@ -87,7 +87,7 @@ public static class NewConfig
     private static void CleanDb()
     {
         const string s = "SELECT name FROM sqlite_master WHERE type='table'";
-        var r1 = Database.ExecuteSelect(s, GlobalVariables.DbConnection);
+        var r1 = Database.ExecuteSelect(s, GlobalVariables.DbConfig);
         if (r1 == null)
             return;
 
@@ -101,7 +101,7 @@ public static class NewConfig
             else
             {
                 var q = "DROP TABLE IF EXISTS " + name;
-                Database.Execute(q, GlobalVariables.DbConnection);
+                Database.Execute(q, GlobalVariables.DbConfig);
             }
         }
     }
@@ -116,7 +116,7 @@ public static class NewConfig
                        "last_update_link DATETIME," +
                        "type VARCHAR(250)," +
                        "title VARCHAR(250)" +
-                       ") ", GlobalVariables.DbConnection);
+                       ") ", GlobalVariables.DbConfig);
 
         if (alsoFillTablesFromJson)
             FillGroups(0);
@@ -125,15 +125,15 @@ public static class NewConfig
                        "id_entity INT(12)," +
                        "id_person INT(12)," +
                        "CONSTRAINT PK_Person PRIMARY KEY (id_entity,id_person)" +
-                       ");", GlobalVariables.DbConnection);
+                       ");", GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE Entities (" +
                        "id INT(12) PRIMARY KEY," +
                        "name VARCHAR(250)" +
-                       ");", GlobalVariables.DbConnection);
+                       ");", GlobalVariables.DbConfig);
 
         if (alsoFillTablesFromJson)
-            FillAssoc(GlobalVariables.DbConnection);
+            FillAssoc(GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE Messages (" +
                        "id INT(12) PRIMARY KEY," +
@@ -153,12 +153,12 @@ public static class NewConfig
                        "id_chat_sent_into BIGINT," +
                        "from_id_bot INT(12)," +
                        "type_chat_sent_into VARCHAR(250)" +
-                       ");" , GlobalVariables.DbConnection);
+                       ");" , GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE MessageTypes (" +
                        "id INT(12) PRIMARY KEY," +
                        "name VARCHAR(250)" +
-                       ");" , GlobalVariables.DbConnection);
+                       ");" , GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE Photos (" +
                        "id_photo INT(12) PRIMARY KEY," +
@@ -167,7 +167,7 @@ public static class NewConfig
                        "height INT(12)," +
                        "width INT(12)," +
                        "unique_id VARCHAR(250)" +
-                       ");", GlobalVariables.DbConnection);
+                       ");", GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE Videos (" +
                        "id_video INT(12) PRIMARY KEY," +
@@ -178,7 +178,7 @@ public static class NewConfig
                        "unique_id VARCHAR(250)," +
                        "duration INT," +
                        "mime VARCHAR(250)" +
-                       ");", GlobalVariables.DbConnection);
+                       ");", GlobalVariables.DbConfig);
     }
 
     private static void FillGroups(int botIdWhoInsertedThem)
@@ -265,7 +265,7 @@ public static class NewConfig
             const string q1 = "INSERT INTO Groups (id, bot_id, type, title, link, last_update_link, valid) " +
                               " VALUES " +
                               " (@id, @botid, @type, @title, @link, @lul, @valid)";
-            Database.Execute(q1, GlobalVariables.DbConnection, new Dictionary<string, object>
+            Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object>
             {
                 { "@id", chat.id },
                 { "@botid", botIdWhoInsertedThem },
@@ -393,7 +393,7 @@ public static class NewConfig
         return null;
     }
 
-    private static void FillAssoc(MySqlConnection mySqlConnection)
+    private static void FillAssoc(DbConfig DbConfig)
     {
         try
         {
@@ -407,7 +407,7 @@ public static class NewConfig
                     var name = r4.Name;
                     var r5 = r4.Value;
                     var users = GetUsersFromAssocJson(r5);
-                    AddAssocToDb(name, users, mySqlConnection);
+                    AddAssocToDb(name, users, DbConfig);
                 }
         }
         catch (FileNotFoundException e)
@@ -422,15 +422,15 @@ public static class NewConfig
         }
     }
 
-    private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users, MySqlConnection connection)
+    private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users, DbConfig DbConfig)
     {
         const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-        _ = Database.Execute(q1 , GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
+        _ = Database.Execute(q1 , GlobalVariables.DbConfig, new Dictionary<string, object> { { "@name", name } });
 
-        Tables.FixIdTable("Entities", "id", "name", connection);
+        Tables.FixIdTable("Entities", "id", "name", DbConfig);
 
         const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-        var r2 = Database.ExecuteSelect(q2, GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
+        var r2 = Database.ExecuteSelect(q2, GlobalVariables.DbConfig, new Dictionary<string, object> { { "@name", name } });
 
         var r3 = Database.GetFirstValueFromDataTable(r2);
         long? r4 = null;
@@ -455,7 +455,7 @@ public static class NewConfig
         foreach (var u in users)
         {
             const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-            _ = Database.Execute(q3, GlobalVariables.DbConnection , new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+            _ = Database.Execute(q3, GlobalVariables.DbConfig , new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
         }
 
         return true;

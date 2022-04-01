@@ -40,8 +40,8 @@ public static class UtilsVideo
             { "@mime", video.MimeType }
         };
 
-        Database.Execute(q, sender.Connection, keyValuePairs);
-        Tables.FixIdTable("Videos", "id_video", "file_id", sender.Connection);
+        Database.Execute(q, sender.DbConfig, keyValuePairs);
+        Tables.FixIdTable("Videos", "id_video", "file_id", sender.DbConfig);
 
         return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
     }
@@ -59,7 +59,7 @@ public static class UtilsVideo
         {
             { "@fi", fileUniqueId }
         };
-        var r1 = Database.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
+        var r1 = Database.ExecuteSelect(q2, sender.DbConfig, keyValuePairs2);
         var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -82,7 +82,7 @@ public static class UtilsVideo
         {
             { "@fi", fileId }
         };
-        var r1 = Database.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
+        var r1 = Database.ExecuteSelect(q2, sender.DbConfig, keyValuePairs2);
         var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -102,7 +102,7 @@ public static class UtilsVideo
         in long chatIdFromIdPerson, ChatType chatType, TelegramBotAbstract sender)
     {
         var q = "SELECT * FROM Videos WHERE id_video = " + videoId;
-        var dt = Database.ExecuteSelect(q, sender.Connection);
+        var dt = Database.ExecuteSelect(q, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
             return null;
 

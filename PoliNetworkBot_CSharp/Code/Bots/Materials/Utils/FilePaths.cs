@@ -23,7 +23,7 @@ public static class FilePaths
         {
             { "@v", fileAndGit }
         };
-        var data = Database.ExecuteSelect(q1, telegramBotAbstract.Connection, d);
+        var data = Database.ExecuteSelect(q1, telegramBotAbstract.DbConfig, d);
         var value = Database.GetFirstValueFromDataTable(data);
         if (value == null)
         {
@@ -46,7 +46,7 @@ public static class FilePaths
                 {"@path", file}
 
             };
-            Database.Execute(q, telegramBotAbstract.Connection,  keyValuePairs);
+            Database.Execute(q, telegramBotAbstract.DbConfig,  keyValuePairs);
             return true;
         }
         catch (Exception ex)

@@ -370,8 +370,7 @@ internal static class Program
                     new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
                         BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2)
                     {
-                        Connection = bot.DbConfig != null 
-                            ? new MySqlConnection(bot.DbConfig.GetConnectionString()) : GlobalVariables.DbConnection
+                        DbConfig = bot.DbConfig ?? GlobalVariables.DbConfig
                     };
 
                 var acceptMessages = bot.AcceptsMessages();
@@ -483,14 +482,14 @@ internal static class Program
         {
             try
             {
-                _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.Connection);
+                _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);
             }
             catch (MySqlException ex)
             {
                 Database.Execute("CREATE TABLE FilePaths (" +
                                  "file_and_git VARCHAR(250)," +
                                  "location VARCHAR(250)" +
-                                 ") ", telegramBotAbstract.Connection);
+                                 ") ", telegramBotAbstract.DbConfig);
             }
             
         }

@@ -90,7 +90,7 @@ internal static class RestrictUser
         }
 
         const string q1 = "SELECT id, type FROM Groups";
-        var dt = Database.ExecuteSelect(q1, sender.Connection);
+        var dt = Database.ExecuteSelect(q1, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
         {
             var text3 = new Language(new Dictionary<string, string>
@@ -381,7 +381,7 @@ internal static class RestrictUser
                 { "@target", targetId },
                 { "@btuf", StringUtil.ToSN(b) }
             };
-            var done = Database.Execute(q, sender.Connection , dict);
+            var done = Database.Execute(q, sender.DbConfig , dict);
 
             return done > 0;
         }

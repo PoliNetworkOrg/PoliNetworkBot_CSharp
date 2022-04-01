@@ -207,7 +207,7 @@ internal static class Blacklist
         DataTable dt = null;
         try
         {
-            dt = Database.ExecuteSelect(q1, botAbstract.Connection, new Dictionary<string, object> { { "@link", link } });
+            dt = Database.ExecuteSelect(q1, botAbstract.DbConfig, new Dictionary<string, object> { { "@link", link } });
         }
         catch
         {

@@ -108,7 +108,7 @@ public class Main
     private static List<string> GetTaken(TelegramBotAbstract telegramBotAbstract)
     {
         const string q = "SELECT * FROM Primo";
-        var r = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
+        var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
         if (r == null || r.Rows.Count == 0)
             return new List<string>();
 
@@ -133,7 +133,7 @@ public class Main
             return;
 
         const string q = "SELECT * FROM Primo WHERE title = @t";
-        var r = Database.ExecuteSelect(q, telegramBotClient.Connection, new Dictionary<string, object> { { "@t", t } });
+        var r = Database.ExecuteSelect(q, telegramBotClient.DbConfig, new Dictionary<string, object> { { "@t", t } });
         if (r == null || r.Rows.Count == 0)
         {
             await MaybeKing(telegramBotClient, e, t, true);
@@ -172,7 +172,7 @@ public class Main
                                   " VALUES " +
                                   " (@title, @fn, @ln, @wk, @ki)";
 
-                var r2 = Database.Execute(q2, telegramBotClient.Connection, new Dictionary<string, object>
+                var r2 = Database.Execute(q2, telegramBotClient.DbConfig, new Dictionary<string, object>
                 {
                     { "@title", t },
                     { "@fn", e.Message.From.FirstName },
@@ -193,7 +193,7 @@ public class Main
                     { "@wk", DateTime.Now },
                     { "@ki", e.Message.From.Id }
                 };
-                var r3 = Database.Execute(q3, telegramBotClient.Connection , dict3);
+                var r3 = Database.Execute(q3, telegramBotClient.DbConfig , dict3);
             }
 
             await SendMessageYouAreKingAsync(telegramBotClient, e, t);
@@ -207,7 +207,7 @@ public class Main
             { "en", "You have already too many titles!" + roles }
         };
         var text = new Language(dict4);
-        var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From.LanguageCode, text, e,
+        var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e.Message.From?.LanguageCode, text, e,
             e.Message.Chat.Id, e.Message.Chat.Type, ParseMode.Html, e.Message.MessageId, true);
     }
 
@@ -228,7 +228,7 @@ public class Main
         TelegramBotAbstract telegramBotAbstract)
     {
         var q = "SELECT * FROM Primo";
-        var r = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
+        var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
         if (r == null || r.Rows.Count == 0)
             return new Tuple<bool, List<string>>(false, null);
 

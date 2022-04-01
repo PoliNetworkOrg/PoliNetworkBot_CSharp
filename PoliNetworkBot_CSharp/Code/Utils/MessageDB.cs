@@ -36,10 +36,10 @@ public static class MessageDb
         var typeI = GetMessageTypeByName(type, sender);
         if (typeI == null) return false;
 
-        var id = Tables.GetMaxId("Messages", "id", sender.Connection);
+        var id = Tables.GetMaxId("Messages", "id", sender.DbConfig);
         id++;
 
-        Database.Execute(q, sender.Connection, new Dictionary<string, object>
+        Database.Execute(q, sender.DbConfig, new Dictionary<string, object>
         {
             { "@id", id },
             { "@fip", messageFromIdPerson },
@@ -67,7 +67,7 @@ public static class MessageDb
 
             const string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
             var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-            var r1 = Database.ExecuteSelect(q1, sender.Connection, keyValuePairs);
+            var r1 = Database.ExecuteSelect(q1, sender.DbConfig, keyValuePairs);
             var r2 = Database.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)
             {
@@ -91,8 +91,8 @@ public static class MessageDb
     {
         const string q = "INSERT INTO MessageTypes (name) VALUES (@name)";
         var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-        Database.Execute(q, bot.Connection, keyValuePairs);
-        Tables.FixIdTable("MessageTypes", "id", "name", bot.Connection);
+        Database.Execute(q, bot.DbConfig, keyValuePairs);
+        Tables.FixIdTable("MessageTypes", "id", "name", bot.DbConfig);
     }
 
     public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
@@ -102,7 +102,7 @@ public static class MessageDb
         const string q = "SELECT * " +
                          "FROM Messages ";
 
-        dt = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
+        dt = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -242,7 +242,7 @@ public static class MessageDb
             return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
         var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
-        Database.Execute(q2, telegramBotAbstract.Connection);
+        Database.Execute(q2, telegramBotAbstract.DbConfig);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
     }
@@ -503,7 +503,7 @@ public static class MessageDb
             return MessageTypesInRam[typeI];
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
-        var dt = Database.ExecuteSelect(q, sender.Connection);
+        var dt = Database.ExecuteSelect(q, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0) return null;
 
         var value = Database.GetFirstValueFromDataTable(dt).ToString();

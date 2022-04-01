@@ -25,7 +25,8 @@ internal static class Assoc
     {
         const string q =
             "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
-        var r = Database.ExecuteSelect(q, sender.Connection, new Dictionary<string, object> { { "@idp", id } });
+        var r = Database.ExecuteSelect(q, sender.DbConfig, 
+            new Dictionary<string, object> { { "@idp", id } });
         if (r == null || r.Rows.Count == 0) return null;
 
         if (r.Rows.Count == 1) return Convert.ToInt64(r.Rows[0].ItemArray[0]);
@@ -336,7 +337,7 @@ internal static class Assoc
         {
             { "@id", id }
         };
-        Database.Execute(q, sender.Connection, args);
+        Database.Execute(q, sender.DbConfig, args);
 
         return true;
     }
@@ -344,11 +345,11 @@ internal static class Assoc
     internal static string GetNameOfEntityFromItsId(long value, TelegramBotAbstract sender)
     {
         var q = "SELECT name FROM Entities WHERE id = " + value;
-        var r = Database.ExecuteSelect(q, sender.Connection);
+        var r = Database.ExecuteSelect(q, sender.DbConfig);
         if (r == null || r.Rows.Count == 0)
             return null;
 
-        return r.Rows[0].ItemArray[0].ToString();
+        return r.Rows[0].ItemArray[0]?.ToString();
     }
 
     internal static async Task<bool> Assoc_ReadAll(TelegramBotAbstract sender, MessageEventArgs e)
@@ -414,7 +415,7 @@ internal static class Assoc
         }
 
         var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
-        var r = Database.ExecuteSelect(q, sender.Connection, dict2);
+        var r = Database.ExecuteSelect(q, sender.DbConfig, dict2);
         if (r != null && r.Rows.Count != 0) return r.Rows;
         var text = new Language(new Dictionary<string, string>
         {
@@ -446,7 +447,7 @@ internal static class Assoc
                 "WHERE Messages.from_id_entity = " + messageFromIdEntity +
                 " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
 
-        var dt = Database.ExecuteSelect(q, sender.Connection);
+        var dt = Database.ExecuteSelect(q, sender.DbConfig);
 
         if (dt?.Rows == null)
             return null;
