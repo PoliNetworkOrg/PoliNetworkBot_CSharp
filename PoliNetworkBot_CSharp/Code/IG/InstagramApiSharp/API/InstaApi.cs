@@ -112,8 +112,6 @@ public class InstaApi
     /// <summary>
     ///     Registration Service
     /// </summary>
-
-
     /// <summary>
     ///     Gets or sets challenge login info
     /// </summary>

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using InstagramApiSharp.API;
 using InstagramApiSharp.Classes;
 using Minista.Helpers;
 using Newtonsoft.Json;

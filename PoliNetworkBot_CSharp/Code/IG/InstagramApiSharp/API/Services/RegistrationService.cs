@@ -21,7 +21,7 @@ using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 namespace InstagramApiSharp.API.Services;
 
-internal class RegistrationService 
+internal class RegistrationService
 {
     #region Public functions
 
