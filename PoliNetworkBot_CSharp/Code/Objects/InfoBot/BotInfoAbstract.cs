@@ -4,6 +4,7 @@ using System;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
+using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
@@ -30,6 +31,7 @@ public class BotInfoAbstract
     public string token;
     public long? userId;
     public string website;
+    public DbConfig DbConfig;
 
     internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
     {

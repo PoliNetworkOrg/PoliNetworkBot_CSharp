@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -27,6 +29,8 @@ public static class GlobalVariables
     public static List<string> AllowedTags;
 
     public static bool alreadyLoaded;
+    public static DbConfig DbConfig { get; set; }
+    public static MySqlConnection DbConnection { get; set; }
 
     internal static void LoadToRam()
     {
