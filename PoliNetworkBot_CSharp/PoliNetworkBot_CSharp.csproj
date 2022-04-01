@@ -3,16 +3,13 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-        <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.3" />
         <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.1" />
+        <PackageReference Include="MySql.Data" Version="8.0.28" />
         <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
         <PackageReference Include="System.Management.Automation" Version="7.2.1" />
         <PackageReference Include="Telegram.Bot" Version="17.0.0" />
     </ItemGroup>
