@@ -16,10 +16,14 @@ public static class SqLite
     {
         //setup the connection to the database
         using var con = new SQLiteConnection(Paths.Db);
-        con.Open();
+        return Execute(query, con, args);
+    }
 
+    public static int Execute(string query, SQLiteConnection connection, Dictionary<string, object> args = null)
+    {
+        connection.Open();
         //open a new command
-        using var cmd = new SQLiteCommand(query, con);
+        using var cmd = new SQLiteCommand(query, connection);
         //set the arguments given in the query
         if (args != null)
             foreach (var (key, value) in args)
@@ -39,25 +43,30 @@ public static class SqLite
                 return null;
 
             using var con = new SQLiteConnection(Paths.Db);
-            con.Open();
-            using var cmd = new SQLiteCommand(query, con);
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
-
-            var da = new SQLiteDataAdapter(cmd);
-
-            var dt = new DataTable();
-            da.Fill(dt);
-
-            da.Dispose();
-            return dt;
+            return ExecuteSelect(query, con, args);
         }
         catch (SQLiteException e)
         {
             Logger.Logger.WriteLine(e);
             throw new SQLiteException(e.Message);
         }
+    }
+
+    public static DataTable ExecuteSelect(string query, SQLiteConnection connection , Dictionary<string, object> args = null)
+    {
+        connection.Open();
+        using var cmd = new SQLiteCommand(query, connection);
+        if (args != null)
+            foreach (var (key, value) in args)
+                cmd.Parameters.AddWithValue(key, value);
+
+        var da = new SQLiteDataAdapter(cmd);
+
+        var dt = new DataTable();
+        da.Fill(dt);
+
+        da.Dispose();
+        return dt;
     }
 
     internal static object GetFirstValueFromDataTable(DataTable dt)
