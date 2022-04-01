@@ -33,15 +33,19 @@ public class Program
     public static Dictionary<long, Conversation>
         UsersConversations = new(); //inizializzazione del dizionario <utente, Conversation>
 
-    public static Dictionary<string, string>
-        DictPaths = new(); //inizializzazione del dizionario <ID univoco file, stringa documento>
+    //public static Dictionary<string, string>
+    //    DictPaths = Deserialize<Dictionary<string, string>>(File.Open(Data.Constants.Paths.Data.PoliMaterialsDictPaths, FileMode.OpenOrCreate)) 
+    //                ?? new Dictionary<string, string>();
 
     public static Dictionary<string, List<string>> ModifiedFilesInGitFolder = new();
-
-    private static readonly object _lock1 = new();
-    public static Utils.Config Config;
+    
+    private static readonly object Lock1 = new();
+    
+    public static Utils.Config Config = JsonConvert.DeserializeObject<Utils.Config>(
+        File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
+    
     private const long LogGroup = -1001399914655;
-    private static readonly object _slowDownLock = new();
+    private static readonly object SlowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
     {
@@ -51,18 +55,12 @@ public class Program
         }
         catch (Exception exception)
         {
-            BotUtils.Logger.Logger.WriteLine(exception, LogSeverityLevel.CRITICAL);
+            Logger.WriteLine(exception, LogSeverityLevel.CRITICAL);
         }
     }
 
     private static async Task BotClient_OnMessageAsync2Async(object sender, MessageEventArgs e)
     {
-        Config ??= JsonConvert.DeserializeObject<Utils.Config>(
-            await File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig));
-
-        DictPaths ??= Deserialize<Dictionary<string, string>>(File.Open(
-            Data.Constants.Paths.Data.PoliMaterialsDictPaths,
-            FileMode.OpenOrCreate));
 
         TelegramBotClient telegramBotClientBot = null;
         TelegramBotAbstract telegramBotClient = null;
@@ -178,12 +176,14 @@ public class Program
         try
         {
             string logMessage;
-            lock (_lock1)
+            lock (Lock1)
             {
                 var callbackQuery = e.CallbackQuery;
                 var callbackdata = callbackQuery.Data.Split("|");
                 var fromId = long.Parse(callbackdata[1]);
-                if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
+                //if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
+                //    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
+                if(!FilePaths.TryGetValue(callbackdata[2], out var directory))
                     throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
                 var a = directory.Split("/");
                 directory = "";
@@ -291,7 +291,7 @@ public class Program
         var callbackQuery = callbackQueryEventArgs.CallbackQuery;
         var callbackdata = callbackQuery.Data.Split("|");
         var FromId = long.Parse(callbackdata[1]);
-        if (!DictPaths.TryGetValue(callbackdata[2], out var fileNameWithPath))
+        if (!FilePaths.TryGetValue(callbackdata[2], out var fileNameWithPath))
             throw new Exception("Errore nel dizionario dei Path!");
         if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
         {
@@ -314,7 +314,7 @@ public class Program
                     callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
                     ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
 
-                if (callbackQuery.Message.ReplyToMessage.Document.FileSize > 20000000)
+                if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
                 {
                     var dict = new Dictionary<string, string>
                     {
@@ -343,7 +343,7 @@ public class Program
                     Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
                     await using var fileStream = File.OpenWrite(fileNameWithPath);
                     var tupleFileStream =
-                        await sender.DownloadFileAsync(callbackQuery.Message.ReplyToMessage.Document);
+                        await sender.DownloadFileAsync(callbackQuery?.Message?.ReplyToMessage?.Document);
                     await tupleFileStream.Item2.CopyToAsync(fileStream);
                     fileStream.Close();
                     var dict = new Dictionary<string, string>
@@ -493,10 +493,10 @@ public class Program
         var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
         var fileAlreadyPresent = false;
         string oldPath = null;
-        if (!DictPaths.TryAdd(FileUniqueAndGit, file))
+        if (!FilePaths.TryAdd(FileUniqueAndGit, file))
         {
             //Verifica anti-SPAM, da attivare se servisse
-            if (DictPaths.TryGetValue(FileUniqueAndGit, out oldPath))
+            if (FilePaths.TryGetValue(FileUniqueAndGit, out oldPath))
                 fileAlreadyPresent = true;
             else
                 throw new Exception("Fatal error while handling path dictionary");
@@ -507,14 +507,6 @@ public class Program
         filesInGit.Add(e.Message.Document.FileName);
         ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);   
         
-        try
-        {
-            Serialize(DictPaths, File.Open(Data.Constants.Paths.Data.FilePaths, FileMode.Create));
-        }
-        catch (Exception exception)
-        {
-            await BotUtils.NotifyUtil.NotifyOwners(exception, telegramBotAbstract);
-        }
 
         var inlineKeyboardButton = new List<InlineKeyboardButton>
         {
@@ -539,7 +531,7 @@ public class Program
 
             MessageSentResult messageFw;
             
-            lock (_slowDownLock)
+            lock (SlowDownLock)
             {
                 messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                     e.Message.Chat.Id,

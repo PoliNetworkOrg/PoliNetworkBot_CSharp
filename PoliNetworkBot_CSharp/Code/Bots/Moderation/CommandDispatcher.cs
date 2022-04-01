@@ -945,7 +945,7 @@ internal static class CommandDispatcher
     {
         try
         {
-            var db = await File.ReadAllBytesAsync(Paths.Data.Db);
+            var db = await File.ReadAllBytesAsync(Paths.Data.DbPath);
 
             var stream = new MemoryStream(db);
 
