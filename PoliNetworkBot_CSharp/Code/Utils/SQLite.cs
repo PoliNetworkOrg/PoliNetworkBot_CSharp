@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
+using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Data;
 
 #endregion
 
@@ -12,10 +12,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class SqLite
 {
+
+    /*
     public static int Execute(string query, Dictionary<string, object> args = null)
     {
         //setup the connection to the database
-        using var con = new SQLiteConnection(Paths.Db);
+        using var con = new SQLiteConn(Paths.Db);
         con.Open();
         return Execute(query, con, args);
     }
@@ -34,6 +36,7 @@ public static class SqLite
 
         return numberOfRowsAffected;
     }
+    
 
     public static DataTable ExecuteSelect(string query, Dictionary<string, object> args = null)
     {
@@ -67,6 +70,56 @@ public static class SqLite
 
         da.Dispose();
         return dt;
+    }
+*/
+
+    public static int Execute(string query, MySqlConnection connection, Dictionary<string, object> args = null)
+    {
+        var cmd = new MySqlCommand(query, connection);
+        
+        OpenConnection();
+        
+        if (args != null)
+            foreach (var (key, value) in args)
+                cmd.Parameters.AddWithValue(key, value);
+        
+        var numberOfRowsAffected = cmd.ExecuteNonQuery();
+
+        return numberOfRowsAffected;
+    }
+
+    public static DataTable ExecuteSelect(string query, MySqlConnection connection, Dictionary<string, object> args = null)
+    {
+        
+        var cmd = new MySqlCommand(query, connection);
+        
+        if (args != null)
+            foreach (var (key, value) in args)
+                cmd.Parameters.AddWithValue(key, value);
+
+        OpenConnection();
+        
+        var dr = cmd.ExecuteReader();
+
+        var dt = new DataTable();
+        var da = new MySqlDataAdapter(cmd);
+        
+        if (dr.HasRows)
+        {
+            dr.Read();
+        }
+
+        da.Fill(dt);
+        da.Dispose();
+        return dt;
+    }
+
+    private static void OpenConnection()
+    {
+        if (GlobalVariables.DbConnection.State != ConnectionState.Open)
+        {
+            GlobalVariables.DbConnection.Open();
+        }
     }
 
     internal static object GetFirstValueFromDataTable(DataTable dt)
