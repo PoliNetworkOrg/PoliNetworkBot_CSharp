@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using InstagramApiSharp;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Processors;
-using InstagramApiSharp.API.Services;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
