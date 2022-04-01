@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using Newtonsoft.Json;
@@ -25,7 +24,7 @@ public static class FilePaths
     /// Initialize connection
     /// </summary>
     /// <returns></returns>
-    public static SQLiteConnection Initialize(int i = 0)
+    public static SQLiteConnection Initialize()
     {
         try
         {
