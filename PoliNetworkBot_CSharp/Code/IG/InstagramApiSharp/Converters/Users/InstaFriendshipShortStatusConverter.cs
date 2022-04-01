@@ -11,7 +11,7 @@ namespace InstagramApiSharp.Converters.Users;
 internal class InstaFriendshipShortStatusConverter :
     IObjectConverter<InstaFriendshipShortStatus, InstaFriendshipShortStatusResponse>
 {
-    public InstaFriendshipShortStatusResponse SourceObject { get; set; }
+    public InstaFriendshipShortStatusResponse SourceObject { get; init; }
 
     public InstaFriendshipShortStatus Convert()
     {

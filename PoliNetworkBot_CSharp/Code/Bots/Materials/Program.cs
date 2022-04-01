@@ -538,11 +538,9 @@ public class Program
                 e.Message.From.LanguageCode,
                 ParseMode.Html, null, null);
 
-            MessageSentResult messageFw;
-
             lock (_slowDownLock)
             {
-                messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
+                var messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                     e.Message.Chat.Id,
                     ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].GetCourse())).Result;
 

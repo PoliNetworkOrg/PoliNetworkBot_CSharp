@@ -12,6 +12,7 @@ using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -45,6 +46,8 @@ public class HttpHelper
 
         var request = new HttpRequestMessage(method, uri);
         var currentUser = _instaApi.GetLoggedUser();
+        if (HttpRequestProcessor.Client
+                .BaseAddress == null) return request;
         var cookies = HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
             .BaseAddress);
         var mid = currentUser.XMidHeader;

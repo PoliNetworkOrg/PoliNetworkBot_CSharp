@@ -1,6 +1,7 @@
 ﻿#region
 
 using InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 

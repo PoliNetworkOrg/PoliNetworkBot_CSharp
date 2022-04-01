@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -14,7 +15,7 @@ internal class UploadOperation
 {
     private readonly BackgroundUploader backgroundUploader;
     private readonly StorageFile file;
-    public readonly InstaApi instaApi;
+    private readonly InstaApi instaApi;
     private readonly Uri instaUri;
     internal string Guid;
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 

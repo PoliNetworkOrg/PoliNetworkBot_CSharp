@@ -406,12 +406,12 @@ public static class PemKeyUtils
     }
 
     // ----- Decrypt the 3DES encrypted RSA private key ----------
-    private static byte[] DecryptKey(byte[] cipherData, byte[] desKey, byte[] IV)
+    private static byte[] DecryptKey(byte[] cipherData, byte[] desKey, byte[] iv)
     {
         var memst = new MemoryStream();
         var alg = TripleDES.Create();
         alg.Key = desKey;
-        alg.IV = IV;
+        alg.IV = iv;
         try
         {
             var cs = new CryptoStream(memst, alg.CreateDecryptor(), CryptoStreamMode.Write);
@@ -431,12 +431,11 @@ public static class PemKeyUtils
     //-----   OpenSSL PBKD uses only one hash cycle (count); miter is number of iterations required to build sufficient bytes ---
     private static byte[] GetOpenSsl3deskey(byte[] salt, SecureString secpswd, int count, int miter)
     {
-        IntPtr unmanagedPswd;
-        var HASHLENGTH = 16; //MD5 bytes
-        var keymaterial = new byte[HASHLENGTH * miter]; //to store contatenated Mi hashed results
+        const int hashlength = 16; //MD5 bytes
+        var keymaterial = new byte[hashlength * miter]; //to store contatenated Mi hashed results
 
         var psbytes = new byte[secpswd.Length];
-        unmanagedPswd = Marshal.SecureStringToGlobalAllocAnsi(secpswd);
+        var unmanagedPswd = Marshal.SecureStringToGlobalAllocAnsi(secpswd);
         Marshal.Copy(unmanagedPswd, psbytes, 0, psbytes.Length);
         Marshal.ZeroFreeGlobalAllocAnsi(unmanagedPswd);
 
@@ -451,7 +450,7 @@ public static class PemKeyUtils
         // ---- do multi-hashing and contatenate results  D1, D2 ...  into keymaterial bytes ----
         MD5 md5 = new MD5CryptoServiceProvider();
         byte[] result = null;
-        var hashtarget = new byte[HASHLENGTH + data00.Length]; //fixed length initial hashtarget
+        var hashtarget = new byte[hashlength + data00.Length]; //fixed length initial hashtarget
 
         for (var j = 0; j < miter; j++)
         {
@@ -475,7 +474,7 @@ public static class PemKeyUtils
 
             for (var i = 0; i < count; i++)
                 result = md5.ComputeHash(result);
-            Array.Copy(result, 0, keymaterial, j * HASHLENGTH, result.Length); //contatenate to keymaterial
+            Array.Copy(result, 0, keymaterial, j * hashlength, result.Length); //contatenate to keymaterial
         }
 
         //showBytes("Final key material", keymaterial);

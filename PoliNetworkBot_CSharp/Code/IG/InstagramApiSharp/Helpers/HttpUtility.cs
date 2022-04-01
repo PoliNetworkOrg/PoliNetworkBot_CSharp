@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace InstagramApiSharp.Helpers;
 
-public class HttpUtility
+public static class HttpUtility
 {
     public static Dictionary<string, string> ParseQueryString(Uri uri)
     {

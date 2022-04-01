@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using InstagramApiSharp;
+using InstagramApiSharp.API;
 using InstagramApiSharp.API.Processors;
 using InstagramApiSharp.API.Services;
 using InstagramApiSharp.API.Versions;
@@ -26,7 +28,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace InstagramApiSharp.API;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 /// <summary>
 ///     Base of everything that you want.
@@ -46,8 +48,6 @@ public class InstaApi
         InstaApiVersionType = apiVersionType;
         _apiVersion = InstaApiVersionList.GetApiVersion(apiVersionType);
         HttpHelper = new HttpHelper(_apiVersion, httpRequestProcessor, this);
-        RegistrationService = new RegistrationService(_deviceInfo, User, HttpRequestProcessor, _logger,
-            _userAuthValidate, this, HttpHelper);
     }
 
     #endregion Constructor
@@ -113,7 +113,7 @@ public class InstaApi
     /// <summary>
     ///     Registration Service
     /// </summary>
-    public IRegistrationService RegistrationService { get; }
+
 
     /// <summary>
     ///     Gets or sets challenge login info
@@ -448,7 +448,7 @@ public class InstaApi
                 { "device_id", _deviceInfo.DeviceId },
                 { "waterfall_id", _waterfallIdReg }
             };
-            var instaUri = UriCreator.GetValidateSignUpSMSCodeUri();
+            var instaUri = UriCreator.GetValidateSignUpSmsCodeUri();
             var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();

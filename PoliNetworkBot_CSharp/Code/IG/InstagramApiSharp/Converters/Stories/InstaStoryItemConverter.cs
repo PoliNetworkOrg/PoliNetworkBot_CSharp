@@ -106,8 +106,8 @@ internal class InstaStoryItemConverter : IObjectConverter<InstaStoryItem, InstaS
                     .Convert());
 
         if (SourceObject.StoryQuestions?.Count > 0)
-            foreach (var Question in SourceObject.StoryQuestions)
-                instaStory.StoryQuestions.Add(ConvertersFabric.GetStoryQuestionItemConverter(Question)
+            foreach (var question in SourceObject.StoryQuestions)
+                instaStory.StoryQuestions.Add(ConvertersFabric.GetStoryQuestionItemConverter(question)
                     .Convert());
 
         if (SourceObject.StoryPollVoters?.Count > 0)

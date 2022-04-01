@@ -13,6 +13,7 @@ using InstagramApiSharp.Classes;
 using Minista.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 //using static Helper;
 

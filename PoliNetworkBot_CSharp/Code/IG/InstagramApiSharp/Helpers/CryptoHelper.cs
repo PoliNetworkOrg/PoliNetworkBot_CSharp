@@ -13,12 +13,12 @@ namespace InstagramApiSharp.Helpers;
 
 internal class CryptoHelper
 {
-    public static string ByteToString(IEnumerable<byte> buff)
+    private static string ByteToString(IEnumerable<byte> buff)
     {
         return buff.Aggregate("", (current, item) => current + item.ToString("X2"));
     }
 
-    public static string Base64Encode(string plainText)
+    private static string Base64Encode(string plainText)
     {
         var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
         return Convert.ToBase64String(plainTextBytes);
@@ -46,21 +46,21 @@ internal class CryptoHelper
 
         //Reference http://en.wikipedia.org/wiki/Secure_Hash_Algorithm
         //SHA256 block size is 512 bits => 64 bytes.
-        const int HashBlockSize = 64;
+        const int hashBlockSize = 64;
 
         var keyBytes = encoding.GetBytes(key);
-        var opadKeySet = new byte[HashBlockSize];
-        var ipadKeySet = new byte[HashBlockSize];
+        var opadKeySet = new byte[hashBlockSize];
+        var ipadKeySet = new byte[hashBlockSize];
 
-        if (keyBytes.Length > HashBlockSize) keyBytes = GetHash(keyBytes);
+        if (keyBytes.Length > hashBlockSize) keyBytes = GetHash(keyBytes);
 
         // This condition is independent of previous
         // condition. If previous was true
         // we still need to execute this to make keyBytes same length
         // as blocksize with 0 padded if its less than block size
-        if (keyBytes.Length < HashBlockSize)
+        if (keyBytes.Length < hashBlockSize)
         {
-            var newKeyBytes = new byte[HashBlockSize];
+            var newKeyBytes = new byte[hashBlockSize];
             keyBytes.CopyTo(newKeyBytes, 0);
             keyBytes = newKeyBytes;
         }
@@ -79,13 +79,13 @@ internal class CryptoHelper
             .Aggregate((a, b) => $"{a}{b}");
     }
 
-    public static byte[] GetHash(byte[] bytes)
+    private static byte[] GetHash(byte[] bytes)
     {
         using var hash = SHA256.Create();
         return hash.ComputeHash(bytes);
     }
 
-    public static byte[] ByteConcat(byte[] left, byte[] right)
+    private static byte[] ByteConcat(byte[] left, byte[] right)
     {
         if (null == left) return right;
 

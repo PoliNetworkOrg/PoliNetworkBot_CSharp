@@ -15,12 +15,13 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
 namespace InstagramApiSharp.API.Services;
 
-internal class RegistrationService : IRegistrationService
+internal class RegistrationService 
 {
     #region Public functions
 
@@ -897,7 +898,7 @@ internal class RegistrationService : IRegistrationService
                 { "device_id", _deviceInfo.DeviceId },
                 { "waterfall_id", RegistrationWaterfallId }
             };
-            var instaUri = UriCreator.GetValidateSignUpSMSCodeUri();
+            var instaUri = UriCreator.GetValidateSignUpSmsCodeUri();
             var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
