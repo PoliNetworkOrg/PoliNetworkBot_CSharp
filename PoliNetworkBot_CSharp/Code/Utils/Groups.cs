@@ -6,10 +6,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -53,7 +53,7 @@ internal static class Groups
     internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
         TelegramBotAbstract telegramBotAbstract)
     {
-        if (GlobalVariables.Creators.Contains(username))
+        if (GlobalVariables.Creators.ToList().Any(x => x.Matches(userId, username)))
             return new SuccessWithException(true);
 
         return await telegramBotAbstract.IsAdminAsync(userId, chatId);
@@ -89,7 +89,7 @@ internal static class Groups
                     }
 
                     newTitle = newTitleWithException?.Item1?.Title;
-                    GroupCheckAndUpdate(telegramBotAbstract, indexIdInTable, oldTitle, newTitleWithException);
+                    GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException);
                 }
                 catch (Exception e2)
                 {
@@ -99,7 +99,7 @@ internal static class Groups
                 }
             }
 
-            Logger.GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
+            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
         }
         catch (Exception e)
         {
@@ -117,7 +117,7 @@ internal static class Groups
             var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
 
             if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
-                Logger.GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
+                GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);
         }
@@ -231,34 +231,33 @@ internal static class Groups
             : GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
-    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
-        long indexIdInTable,
+    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(long indexIdInTable,
         string oldTitle,
         Tuple<Chat, Exception> newTitleWithException)
     {
         var newTitle = newTitleWithException?.Item1?.Title;
         if (string.IsNullOrEmpty(oldTitle) && string.IsNullOrEmpty(newTitle))
         {
-            Logger.GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, indexIdInTable);
-            Logger.GroupsFixLog.CountIgnored();
+            GroupsFixLog.OldNullNewNull(newTitleWithException?.Item1?.Id, indexIdInTable);
+            GroupsFixLog.CountIgnored();
             return GroupsFixLogUpdatedEnum.DID_NOTHING;
         }
 
         if (string.IsNullOrEmpty(newTitle))
         {
-            Logger.GroupsFixLog.NewNull(indexIdInTable, oldTitle, newTitleWithException?.Item2);
-            Logger.GroupsFixLog.CountIgnored();
+            GroupsFixLog.NewNull(indexIdInTable, oldTitle, newTitleWithException?.Item2);
+            GroupsFixLog.CountIgnored();
             return GroupsFixLogUpdatedEnum.DID_NOTHING;
         }
 
         if (string.IsNullOrEmpty(oldTitle))
         {
-            Logger.GroupsFixLog.OldNull(newTitle);
+            GroupsFixLog.OldNull(newTitle);
             oldTitle = "[previously null]";
         }
 
         if (oldTitle != newTitle) return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle);
-        Logger.GroupsFixLog.CountIgnored();
+        GroupsFixLog.CountIgnored();
         return GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
@@ -272,7 +271,7 @@ internal static class Groups
             { "@id", id }
         };
         SqLite.Execute(q, d);
-        Logger.GroupsFixLog.NameChange(oldTitle, newTitle);
+        GroupsFixLog.NameChange(oldTitle, newTitle);
         return GroupsFixLogUpdatedEnum.NEW_NAME;
     }
 

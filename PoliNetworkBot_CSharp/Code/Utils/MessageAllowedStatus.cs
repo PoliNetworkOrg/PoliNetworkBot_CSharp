@@ -2,12 +2,11 @@
 
 using System;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Enums;
+namespace PoliNetworkBot_CSharp.Code.Utils;
 
 /// <summary>
 ///     Hides PENDING messages responding only ALLOWED, NOT_ALLOWED, NOT_DEFINED
@@ -84,7 +83,7 @@ public class MessageAllowedStatus
             }
         }
 
-        Logger.WriteLine("Scheduled message for " + allowedTimeTemp);
+        Logger.Logger.WriteLine("Scheduled message for " + allowedTimeTemp);
         return allowedTimeTemp;
     }
 

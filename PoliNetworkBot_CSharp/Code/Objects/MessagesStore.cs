@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
@@ -116,7 +114,7 @@ public static class MessagesStore
         return r;
     }
 
-    internal static SpamType StoreAndCheck(MessageEventArgs e, Message message)
+    internal static SpamType StoreAndCheck(Message message)
     {
         if (message == null)
             return SpamType.UNDEFINED;

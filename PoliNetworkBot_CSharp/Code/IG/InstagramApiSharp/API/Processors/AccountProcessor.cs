@@ -18,6 +18,7 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -228,7 +229,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "new_password2", enc3 }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Get, changePasswordUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(changePasswordUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.OK)
@@ -300,7 +301,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "email", email }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -342,7 +343,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "raw_text", bio }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -412,7 +413,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "first_name", name },
                 { "phone_number", phoneNumber }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -448,7 +449,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "_csrftoken", _user.CsrfToken }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -512,7 +513,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
 
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -573,7 +574,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "email", email },
                 { "password", password }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaRequestDownloadData>(json);
@@ -653,7 +654,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "save_to_camera_roll", 1.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -689,7 +690,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "save_to_camera_roll", 0.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -726,7 +727,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "reel_auto_archive", "on" }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -764,7 +765,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "check_pending_archive", "1" },
                 { "reel_auto_archive", "off" }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -801,7 +802,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "allow_story_reshare", allow ? "1" : "0" }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -838,7 +839,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "message_prefs", repliesType.ToString().ToLower() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -882,7 +883,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "username", desiredUsername }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -921,7 +922,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -956,7 +957,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -994,7 +995,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "phone_number", phoneNumber }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1035,7 +1036,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "phone_number", phoneNumber },
                 { "verification_code", verificationCode }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1071,7 +1072,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "send_source", "edit_profile" }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1109,7 +1110,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "phone_number", phoneNumber }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1147,7 +1148,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1191,7 +1192,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "phone_number", phoneNumber },
                 { "verification_code", verificationCode }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1226,7 +1227,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1317,7 +1318,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1415,7 +1416,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "category_id", categoryId }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1451,7 +1452,7 @@ internal class AccountProcessor : IAccountProcessor
                 { "disabled", enable ? "0" : "1" },
                 { "_csrftoken", _user.CsrfToken }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)

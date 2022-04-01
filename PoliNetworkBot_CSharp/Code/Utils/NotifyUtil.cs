@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
@@ -204,17 +203,6 @@ internal static class NotifyUtil
 
         var exception = new ExceptionNumbered(error);
         await NotifyOwners(exception, sender, null);
-    }
-
-    internal static async Task NotifyOwners(Exception item2, string message, TelegramBotAbstract sender,
-        string langCode, MessageEventArgs messageEventArgs, long? replyToMessageId = null)
-    {
-        var dict = new Dictionary<string, string>
-        {
-            { "en", message }
-        };
-        var text = new Language(dict);
-        await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
     }
 
     internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,

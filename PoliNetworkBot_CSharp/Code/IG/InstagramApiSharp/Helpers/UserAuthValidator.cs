@@ -21,12 +21,6 @@ public static class UserAuthValidator
         ValidateLoggedIn(userAuthValidate.IsUserAuthenticated);
     }
 
-    public static void Validate(UserSessionData user, bool isUserAuthenticated)
-    {
-        ValidateUser(user);
-        ValidateLoggedIn(isUserAuthenticated);
-    }
-
     private static void ValidateUser(UserSessionData user)
     {
         if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))

@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -53,7 +52,7 @@ internal static class CommandDispatcher
 
             case "/force_check_invite_links":
             {
-                if (GlobalVariables.Creators.Contains(e.Message?.Chat?.Username?.ToLower()))
+                if (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = ForceCheckInviteLinksAsync(sender, e);
                 else
                     await DefaultCommand(sender, e);
@@ -86,9 +85,10 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
-                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                        false);
+
+                if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username, false);
                 else
                     await DefaultCommand(sender, e);
                 return;
@@ -107,7 +107,7 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedMuteAll.Contains(e.Message.From?.Username?.ToLower()))
+                if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
@@ -129,7 +129,7 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
@@ -151,7 +151,7 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         true);
                 else
@@ -210,7 +210,7 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
                         false);
                 else
@@ -284,7 +284,7 @@ internal static class CommandDispatcher
 
             case "/getGroups":
             {
-                if ((GlobalVariables.Creators.Contains(e.Message.From.Username) ||
+                if ((GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message.From)) ||
                      Owners.CheckIfOwner(e.Message.From.Id))
                     && e.Message.Chat.Type == ChatType.Private)
                 {
@@ -969,7 +969,7 @@ internal static class CommandDispatcher
 
     private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
     {
-        var r2 = MessagesStore.StoreAndCheck(e, e.Message.ReplyToMessage);
+        var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
             r2 = Blacklist.IsSpam(message.Text, message.Chat.Id);
@@ -1333,11 +1333,11 @@ internal static class CommandDispatcher
             if (targetId != null)
                 return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);
-            {
-                var e2 = new Exception("Can't find userid (2)");
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
-                return new SuccessWithException(false, e2);
-            }
+
+
+            var e3 = new Exception("Can't find userid (2)");
+            await NotifyUtil.NotifyOwners(new ExceptionNumbered(e3), sender, e);
+            return new SuccessWithException(false, e3);
         }
 
         var targetInt = e.Message.ReplyToMessage.From.Id;
@@ -1388,7 +1388,7 @@ internal static class CommandDispatcher
         var d1 = GetDateTime(target);
         try
         {
-            await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(e, target), e, sender, lang,
+            await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(target), e, sender, lang,
                 username,
                 d1?.GetValue(), revokeMessage);
             return new SuccessWithException(true, d1?.GetExceptions());
@@ -1506,7 +1506,7 @@ internal static class CommandDispatcher
             sender, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
     }
 
-    private static string GetFinalTargetForRestrictAll(MessageEventArgs e, IReadOnlyList<string> target)
+    private static string GetFinalTargetForRestrictAll(IReadOnlyList<string> target)
     {
         return target[1];
     }

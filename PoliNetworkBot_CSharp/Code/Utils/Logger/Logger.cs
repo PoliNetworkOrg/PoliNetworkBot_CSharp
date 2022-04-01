@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Web;
 using JsonPolimi_Core_nf.Tipi;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -233,6 +232,4 @@ public static class Logger
 
         return toReturn;
     }
-
-    
 }

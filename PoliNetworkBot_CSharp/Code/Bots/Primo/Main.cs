@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -164,7 +163,7 @@ public class Main
     private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t,
         bool toInsert)
     {
-        var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(telegramBotClient, e, t);
+        var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(e);
         if (b == false)
         {
             if (toInsert)
@@ -225,8 +224,7 @@ public class Main
         return r;
     }
 
-    private static Tuple<bool, List<string>> CheckIfLimitOfMaxKingsHasBeenReached(
-        TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t)
+    private static Tuple<bool, List<string>> CheckIfLimitOfMaxKingsHasBeenReached(MessageEventArgs e)
     {
         var q = "SELECT * FROM Primo";
         var r = SqLite.ExecuteSelect(q);
@@ -245,13 +243,13 @@ public class Main
 
     private static List<string> CountOfUserMethod(DataTable r, MessageEventArgs e)
     {
-        if (r == null || e == null || r.Rows == null)
+        if (r == null || e == null)
             return null;
 
         return (from DataRow dr in r.Rows
             where dr != null
             let id = (long)dr["king_id"]
-            where id == e.Message.From.Id
+            where e.Message.From != null && id == e.Message.From.Id
             let dt = (DateTime)dr["when_king"]
             where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
             select dr["title"].ToString()).ToList();

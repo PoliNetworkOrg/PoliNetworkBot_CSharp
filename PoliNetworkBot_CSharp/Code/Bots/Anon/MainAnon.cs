@@ -230,7 +230,7 @@ internal static class MainAnon
             ;
         }
 
-        var f2 = GetMessageReply2(r, r2);
+        var f2 = GetMessageReply2(r2);
 
         if (f1 == null || f2 == null)
             return null;
@@ -238,9 +238,9 @@ internal static class MainAnon
         return new Tuple<int?, ResultQueueEnum?>(f1, f2);
     }
 
-    private static ResultQueueEnum? GetMessageReply2(string r, string[] r2)
+    private static ResultQueueEnum? GetMessageReply2(IReadOnlyList<string> r2)
     {
-        if (r2.Length <= 1) return null;
+        if (r2.Count <= 1) return null;
         if (r2[^2] == ConfigAnon.WhereToPublishAnonMain.ToString())
             return ResultQueueEnum.APPROVED_MAIN;
         if (r2[^2] == ConfigAnon.WhereToPublishAnonUncensored.ToString())

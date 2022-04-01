@@ -1,6 +1,6 @@
 namespace InstagramApiSharp.Classes.Android.DeviceInfo;
 
-public class AndroidDevices
+public static class AndroidDevices
 {
     public const string LG_OPTIMUS_G = "lg-optimus-g";
     public const string NEXUS7_GEN2 = "nexus7gen2";

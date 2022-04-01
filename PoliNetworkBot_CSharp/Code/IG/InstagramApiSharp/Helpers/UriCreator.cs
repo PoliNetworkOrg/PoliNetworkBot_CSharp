@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using InstagramApiSharp.API;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Enums;
@@ -673,14 +672,6 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetUploadAccountPictureUri(string uploadId, int fileHashCode)
-    {
-        if (!Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.UPLOAD_PHOTO, uploadId, fileHashCode),
-                out var instaUri))
-            throw new Exception("Cant create URI for account pic upload photo");
-        return instaUri;
-    }
-
     public static Uri GetEditProfileUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.ACCOUNTS_EDIT_PROFILE, out var instaUri))
@@ -783,54 +774,6 @@ internal class UriCreator
                 string.Format(InstaApiConstants.GRAPH_QL_STATISTICS, locale, surfaceType.ToString().ToLower()),
                 out var instaUri))
             throw new Exception("Cant create URI for graph ql statistics");
-        return instaUri;
-    }
-
-    public static Uri GetHashtagRankedMediaUri(string hashtag, string rankToken = null,
-        string nextId = null, int? page = null, IEnumerable<long> nextMediaIds = null)
-    {
-        if (
-            !Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.TAG_RANKED, hashtag.EncodeUri()),
-                out var instaUri))
-            throw new Exception("Cant create URI for hashtag ranked(top) media");
-        if (!string.IsNullOrEmpty(rankToken))
-            instaUri = instaUri.AddQueryParameter("rank_token", rankToken);
-        if (!string.IsNullOrEmpty(nextId))
-            instaUri = instaUri
-                .AddQueryParameter("max_id", nextId);
-        if (page is > 0)
-            instaUri = instaUri
-                .AddQueryParameter("page", page.ToString());
-        if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
-        var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
-        instaUri = instaUri
-            .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
-
-        return instaUri;
-    }
-
-    public static Uri GetHashtagRecentMediaUri(string hashtag, string rankToken = null,
-        string nextId = null, int? page = null, IEnumerable<long> nextMediaIds = null)
-    {
-        if (
-            !Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.TAG_RECENT, hashtag.EncodeUri()),
-                out var instaUri))
-            throw new Exception("Cant create URI for hashtag recent media");
-        if (!string.IsNullOrEmpty(nextId))
-            instaUri = instaUri
-                .AddQueryParameter("max_id", nextId.EncodeUri());
-        if (page is > 0)
-            instaUri = instaUri
-                .AddQueryParameter("page", page.ToString());
-        if (!string.IsNullOrEmpty(rankToken))
-            instaUri = instaUri.AddQueryParameter("rank_token",
-                rankToken.Contains('_') ? rankToken.Split('_')[1] : rankToken);
-
-        if (nextMediaIds == null || !nextMediaIds.Any()) return instaUri;
-        var mediaIds = $"[{string.Join(",", nextMediaIds)}]";
-        instaUri = instaUri
-            .AddQueryParameter("next_media_ids", mediaIds.EncodeUri());
-
         return instaUri;
     }
 
@@ -1090,15 +1033,6 @@ internal class UriCreator
             : instaUri;
     }
 
-    public static Uri GetMediaInsightsUri(string unixTime)
-    {
-        if (
-            !Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.INSIGHTS_MEDIA, unixTime),
-                out var instaUri))
-            throw new Exception("Cant create URI for media insights");
-        return instaUri;
-    }
-
     public static Uri GetMediaLikersUri(string mediaId)
     {
         if (!Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.MEDIA_LIKERS, mediaId),
@@ -1172,14 +1106,6 @@ internal class UriCreator
         if (!Uri.TryCreate(BaseInstagramUri,
                 string.Format(InstaApiConstants.LIVE_GET_POST_LIVE_VIEWERS_LIST, broadcastId), out var instaUri))
             throw new Exception("Cant create URI for get post live viewer list");
-        return instaUri;
-    }
-
-    public static Uri GetProfileSearchUri(string query, int count)
-    {
-        if (!Uri.TryCreate(BaseInstagramUri, string.Format(InstaApiConstants.FBSEARCH_PROFILE_SEARCH, query, count),
-                out var instaUri))
-            throw new Exception("Cant create URI for profile search");
         return instaUri;
     }
 
@@ -1435,13 +1361,6 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetStoryConfigureUri()
-    {
-        if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.STORY_CONFIGURE, out var instaUri))
-            throw new Exception("Can't create URI for configuring story media");
-        return instaUri;
-    }
-
     public static Uri GetStoryFeedUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.GET_STORY_TRAY, out var instaUri))
@@ -1547,14 +1466,6 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetTimelineWithMaxIdUri(string nextId)
-    {
-        if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.TIMELINEFEED, out var instaUri))
-            throw new Exception("Cant create search URI for timeline");
-        var uriBuilder = new UriBuilder(instaUri) { Query = $"max_id={nextId}" };
-        return uriBuilder.Uri;
-    }
-
     public static Uri GetTwoFactorLoginUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.ACCOUNTS_2FA_LOGIN, out var instaUri))
@@ -1627,22 +1538,6 @@ internal class UriCreator
             !Uri.TryCreate(BaseInstagramUri, InstaApiConstants.ACCOUNTS_UPDATE_BUSINESS_INFO,
                 out var instaUri))
             throw new Exception("Cant create URI for update business info");
-        return instaUri;
-    }
-
-    public static Uri GetUploadPhotoUri()
-    {
-        if (
-            !Uri.TryCreate(BaseInstagramUri, InstaApiConstants.UPLOAD_PHOTO_OLD, out var instaUri))
-            throw new Exception("Cant create URI for upload photo");
-        return instaUri;
-    }
-
-    public static Uri GetUploadVideoUri()
-    {
-        if (
-            !Uri.TryCreate(BaseInstagramUri, InstaApiConstants.UPLOAD_VIDEO_OLD, out var instaUri))
-            throw new Exception("Cant create URI for upload video");
         return instaUri;
     }
 
@@ -1812,7 +1707,7 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetValidateSignUpSMSCodeUri()
+    public static Uri GetValidateSignUpSmsCodeUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.ACCOUNTS_VALIDATE_SIGNUP_SMS_CODE, out var instaUri))
             throw new Exception("Cant create URI for validate signup sms code");
@@ -1869,13 +1764,6 @@ internal class UriCreator
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.USERS_NAMETAG_LOOKUP, out var instaUri))
             throw new Exception("Cant create URI for users nametag lookup");
-        return instaUri;
-    }
-
-    public static Uri GetUsersNametagConfigUri()
-    {
-        if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.USERS_NAMETAG_CONFIG, out var instaUri))
-            throw new Exception("Cant create URI for users nametag config");
         return instaUri;
     }
 
@@ -1989,14 +1877,14 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetMuteUserMediaStoryUri(long userId)
+    public static Uri GetMuteUserMediaStoryUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.FRIENDSHIPS_MUTE_POST_STORY, out var instaUri))
             throw new Exception("Cant create URI for mute user media or story");
         return instaUri;
     }
 
-    public static Uri GetUnMuteUserMediaStoryUri(long userId)
+    public static Uri GetUnMuteUserMediaStoryUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.FRIENDSHIPS_UNMUTE_POST_STORY, out var instaUri))
             throw new Exception("Cant create URI for unmute user media or story");

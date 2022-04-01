@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -100,9 +99,9 @@ public class TelegramBotAbstract
         return mode;
     }
 
-    public async Task<TLAbsUpdates> AddUserIntoChannel(string userID, TLChannel channel)
+    public async Task<TLAbsUpdates> AddUserIntoChannel(string userId, TLChannel channel)
     {
-        if (string.IsNullOrEmpty(userID))
+        if (string.IsNullOrEmpty(userId))
             return null;
 
         switch (_isbot)
@@ -115,15 +114,15 @@ public class TelegramBotAbstract
                 try
                 {
                     var users = new TLVector<TLAbsInputUser>();
-                    if (userID.StartsWith("@"))
+                    if (userId.StartsWith("@"))
                     {
-                        var u = await UserbotPeer.GetPeerUserWithAccessHash(userID[1..], UserbotClient);
+                        var u = await UserbotPeer.GetPeerUserWithAccessHash(userId[1..], UserbotClient);
                         TLAbsInputUser input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
                         users.Add(input2);
                     }
                     else
                     {
-                        users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userID)));
+                        users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userId)));
                     }
 
                     var tLInputChannel = new TLInputChannel { ChannelId = channel.Id };
@@ -204,7 +203,7 @@ public class TelegramBotAbstract
             {
                 var x = await _botClient.GetMeAsync();
                 var u1 = x.Username;
-                if (u1.StartsWith("@"))
+                if (u1 != null && u1.StartsWith("@"))
                     u1 = u1[1..];
 
                 username = u1;
@@ -604,14 +603,18 @@ public class TelegramBotAbstract
                 Message m1;
                 while (splitMessage && message.Length > 4096)
                 {
-                    m1 = await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
-                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
+                    if (chatid != null)
+                        m1 = await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
+                            replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                     message = message[4095..];
                     Thread.Sleep(100);
                 }
 
-                m1 = await _botClient.SendTextMessageAsync(chatid, message, parseMode,
-                    replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
+                if (chatid != null)
+                    m1 = await _botClient.SendTextMessageAsync(chatid, message, parseMode,
+                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
+                else
+                    return null;
                 var b1 = m1 != null;
                 return new MessageSentResult(b1, m1, chatType);
 
@@ -812,6 +815,7 @@ public class TelegramBotAbstract
                 {
                     case BotTypeApi.REAL_BOT:
                     {
+                        if (message.Video == null) return null;
                         var m1 = await _botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message),
                             message.Video.Duration, message.Video.Width, message.Video.Height, null,
                             message.Caption,
@@ -943,25 +947,27 @@ public class TelegramBotAbstract
             case MessageType.Photo:
             {
                 var idMax = FindMax(message.Photo);
-                return idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId);
+                return message.Photo != null
+                    ? idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId)
+                    : null;
             }
             case MessageType.Audio:
                 break;
 
             case MessageType.Video:
             {
-                return new InputOnlineFile(message.Video.FileId);
+                return message.Video != null ? new InputOnlineFile(message.Video.FileId) : null;
             }
             case MessageType.Voice:
                 break;
 
             case MessageType.Document:
             {
-                return new InputOnlineFile(message.Document.FileId);
+                return message.Document != null ? new InputOnlineFile(message.Document.FileId) : null;
             }
             case MessageType.Sticker:
             {
-                return new InputOnlineFile(message.Sticker.FileId);
+                return message.Sticker != null ? new InputOnlineFile(message.Sticker.FileId) : null;
             }
             case MessageType.Location:
                 break;
@@ -1024,15 +1030,15 @@ public class TelegramBotAbstract
         return null;
     }
 
-    private static long? FindMax(PhotoSize[] photo)
+    private static long? FindMax(IReadOnlyList<PhotoSize> photo)
     {
-        if (photo == null || photo.Length == 0)
+        if (photo == null || photo.Count == 0)
             return null;
 
         var maxValue = -1;
         var maxPos = -1;
 
-        for (var i = 0; i < photo.Length; i++)
+        for (var i = 0; i < photo.Count; i++)
             if (photo[i].Width > maxValue)
             {
                 maxValue = photo[i].Width;
@@ -1051,32 +1057,38 @@ public class TelegramBotAbstract
             case BotTypeApi.REAL_BOT:
             {
                 var inputOnlineFile = documentInput.GetOnlineFile();
+                var userId = peer.GetUserId();
+                if (userId == null)
+                    return false;
+
                 switch (textAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
-                        _ = await _botClient.SendDocumentAsync(peer.GetUserId(), inputOnlineFile,
+                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
                             text.Select(lang));
                         return true;
                     }
 
                     case TextAsCaption.BEFORE_FILE:
                     {
-                        _ = await _botClient.SendTextMessageAsync(peer.GetUserId(), text.Select(lang));
-                        _ = await _botClient.SendDocumentAsync(peer.GetUserId(), inputOnlineFile);
+                        _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
+                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
                         return true;
                     }
 
                     case TextAsCaption.AFTER_FILE:
                     {
-                        _ = await _botClient.SendDocumentAsync(peer.GetUserId(), inputOnlineFile);
-                        _ = await _botClient.SendTextMessageAsync(peer.GetUserId(), text.Select(lang));
+                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                        _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
                         return true;
                     }
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
                 }
+
+                return false;
             }
 
             case BotTypeApi.USER_BOT:

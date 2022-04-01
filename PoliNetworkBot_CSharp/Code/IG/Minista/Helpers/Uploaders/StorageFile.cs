@@ -10,7 +10,7 @@ namespace Minista.Helpers;
 
 internal class StorageFile
 {
-    public StorageFile(string path)
+    private StorageFile(string path)
     {
         Path = path;
     }

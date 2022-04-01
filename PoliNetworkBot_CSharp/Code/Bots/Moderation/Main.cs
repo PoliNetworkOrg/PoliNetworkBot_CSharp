@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -90,7 +89,7 @@ internal static class Main
 
             if (checkSpam == SpamType.SPAM_PERMITTED)
             {
-                await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
+                await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e);
                 return;
             }
 

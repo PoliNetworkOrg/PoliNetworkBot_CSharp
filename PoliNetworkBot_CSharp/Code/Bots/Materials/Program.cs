@@ -30,6 +30,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials;
 [Serializable]
 public class Program
 {
+    private const long LogGroup = -1001399914655;
+
     public static Dictionary<long, Conversation>
         UsersConversations = new(); //inizializzazione del dizionario <utente, Conversation>
 
@@ -44,7 +46,6 @@ public class Program
     public static Utils.Config Config = JsonConvert.DeserializeObject<Utils.Config>(
         File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
     
-    private const long LogGroup = -1001399914655;
     private static readonly object SlowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
@@ -79,7 +80,7 @@ public class Program
                 {
                     if (e.Message.Text == "/start") GenerateStart(e);
 
-                    BotUtils.Logger.Logger.WriteLine( "Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
+                    Logger.WriteLine("Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
                     if (!UsersConversations.ContainsKey(e.Message.From.Id)) GenerateStart(e);
 
                     var state = UsersConversations[e.Message.From.Id].GetState();
@@ -122,7 +123,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            BotUtils.Logger.Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
+            Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
         }
     }
 
@@ -194,7 +195,7 @@ public class Program
 
                 logMessage = "Log for message ID: " + e.CallbackQuery.From.Id;
                 directory = directory[..^2];
-            
+
                 logMessage += "\n\n";
                 logMessage += "To Directory: " + directory;
                 logMessage += "\n";
@@ -208,14 +209,14 @@ public class Program
                 logMessage += DoScript(powershell, "git add . --ignore-errors", true) + "\n\n";
 
                 ModifiedFilesInGitFolder.TryGetValue(GetGit(directory), out var diffList);
-                
-                var diff = (diffList ?? new List<string>{"--"}).Aggregate("", (current, s) => current + s + ", ");
-                
+
+                var diff = (diffList ?? new List<string> { "--" }).Aggregate("", (current, s) => current + s + ", ");
+
                 if (diff.EndsWith(", ")) diff = diff[..^2];
                 logMessage += "Git diff: " + diff + "\n";
 
                 ModifiedFilesInGitFolder.Remove(GetGit(directory));
-                
+
                 var commit = @"git commit -m 'git commit by bot updated file: " + diff +
                              @"' --author=""PoliBot <polinetwork2@gmail.com>""";
 
@@ -224,25 +225,25 @@ public class Program
                 var push = @"git push https://polibot:" + Config.Password +
                            "@gitlab.com/polinetwork/" + GetGit(directory) + @".git --all";
 
-                BotUtils.Logger.Logger.WriteLine(DoScript(powershell, push, true));
+                Logger.WriteLine(DoScript(powershell, push, true));
 
                 logMessage += "Push Executed";
 
-                BotUtils.Logger.Logger.WriteLine(logMessage);
-                
+                Logger.WriteLine(logMessage);
+
                 powershell.Stop();
             }
-            
+
             var dict = new Dictionary<string, string>
             {
-                { "uni", "Log:\n\n" +  HttpUtility.HtmlEncode(logMessage) }
+                { "uni", "Log:\n\n" + HttpUtility.HtmlEncode(logMessage) }
             };
             var text = new Language(dict);
 
             await sender.SendTextMessageAsync(LogGroup,
-                text, ChatType.Group, "uni", ParseMode.Html, null, null); 
-            
-        } catch (Exception ex)
+                text, ChatType.Group, "uni", ParseMode.Html, null, null);
+        }
+        catch (Exception ex)
         {
             _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
         }
@@ -489,7 +490,7 @@ public class Program
 
         var file = Config.RootDir + UsersConversations[e.Message.From.Id].GetCourse().ToLower() + "/" +
                    UsersConversations[e.Message.From.Id].GetPath() + "/" + e.Message.Document.FileName;
-        BotUtils.Logger.Logger.WriteLine("File requested: " + file);
+        Logger.WriteLine("File requested: " + file);
         var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
         var fileAlreadyPresent = false;
         string oldPath = null;
@@ -529,16 +530,14 @@ public class Program
                 e.Message.From.LanguageCode,
                 ParseMode.Html, null, null);
 
-            MessageSentResult messageFw;
-            
             lock (SlowDownLock)
             {
-                messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
+                var messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                     e.Message.Chat.Id,
                     ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].GetCourse())).Result;
-                
+
                 Thread.Sleep(100);
-                
+
                 var approveMessage = new Dictionary<string, string>
                 {
                     {
@@ -549,13 +548,13 @@ public class Program
                 };
                 var approveText = new Language(approveMessage);
 
-                
+
                 _ = telegramBotAbstract.SendTextMessageAsync(
                     ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].GetCourse()),
                     approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                     new ReplyMarkupObject(inlineKeyboardMarkup), null,
                     messageFw.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
-                
+
                 Thread.Sleep(100);
             }
         }

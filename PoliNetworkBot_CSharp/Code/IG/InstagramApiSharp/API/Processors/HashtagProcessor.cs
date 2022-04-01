@@ -17,6 +17,7 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -66,7 +67,7 @@ internal class HashtagProcessor : IHashtagProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -441,7 +442,7 @@ internal class HashtagProcessor : IHashtagProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -486,7 +487,7 @@ internal class HashtagProcessor : IHashtagProcessor
             if (!string.IsNullOrEmpty(maxId))
                 data.Add("max_id", maxId);
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 

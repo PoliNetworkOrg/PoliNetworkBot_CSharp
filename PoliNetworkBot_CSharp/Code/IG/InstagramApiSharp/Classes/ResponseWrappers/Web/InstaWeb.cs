@@ -1,8 +1,6 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
-using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
 
 #endregion
@@ -37,26 +35,6 @@ public class InstaWebSettingsPageResponse
     [JsonProperty("is_blocked")] public bool? IsBlocked { get; set; }
 
     [JsonProperty("page_name")] public string PageName { get; set; }
-
-    internal InstaWebType PageType
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(PageName))
-                return InstaWebType.Unknown;
-            try
-            {
-                var name = PageName.Replace("_", "");
-
-                return (InstaWebType)Enum.Parse(typeof(InstaWebType), name, true);
-            }
-            catch
-            {
-            }
-
-            return InstaWebType.Unknown;
-        }
-    }
 
     [JsonProperty("date_joined")] public InstaWebDataResponse DateJoined { get; set; }
 

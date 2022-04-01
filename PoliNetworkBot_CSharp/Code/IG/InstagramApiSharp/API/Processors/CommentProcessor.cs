@@ -16,6 +16,7 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -80,7 +81,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "radio_type", "wifi-none" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -120,7 +121,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -158,7 +159,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "comment_ids_to_delete", commentIds.EncodeList(false) }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -194,7 +195,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -231,7 +232,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -486,7 +487,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -533,7 +534,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "radio_type", "wifi-none" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -576,7 +577,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -621,7 +622,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -788,7 +789,7 @@ internal class CommentProcessor : ICommentProcessor
                 { "_csrftoken", _user.CsrfToken },
                 { "commenter_block_status", commenterBlockStatus }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK

@@ -12,6 +12,7 @@ using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -45,6 +46,8 @@ public class HttpHelper
 
         var request = new HttpRequestMessage(method, uri);
         var currentUser = _instaApi.GetLoggedUser();
+        if (HttpRequestProcessor.Client
+                .BaseAddress == null) return request;
         var cookies = HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
             .BaseAddress);
         var mid = currentUser.XMidHeader;
@@ -157,7 +160,7 @@ public class HttpHelper
         return request;
     }
 
-    public HttpRequestMessage GetDefaultRequest(HttpMethod method, Uri uri, AndroidDevice deviceInfo,
+    public HttpRequestMessage GetDefaultRequest(Uri uri, AndroidDevice deviceInfo,
         Dictionary<string, string> data)
     {
         var request = GetDefaultRequest(HttpMethod.Post, uri, deviceInfo);
@@ -173,7 +176,7 @@ public class HttpHelper
     /// <summary>
     ///     This is only for https://instagram.com site
     /// </summary>
-    public HttpRequestMessage GetWebRequest(HttpMethod method, Uri uri, AndroidDevice deviceInfo)
+    public HttpRequestMessage GetWebRequest(Uri uri, AndroidDevice deviceInfo)
     {
         var request = GetDefaultRequest(HttpMethod.Get, uri, deviceInfo);
         request.Headers.Remove(InstaApiConstants.HEADER_USER_AGENT);
@@ -181,8 +184,7 @@ public class HttpHelper
         return request;
     }
 
-    public HttpRequestMessage GetSignedRequest(HttpMethod method,
-        Uri uri,
+    public HttpRequestMessage GetSignedRequest(Uri uri,
         AndroidDevice deviceInfo,
         Dictionary<string, string> data)
     {
@@ -210,11 +212,11 @@ public class HttpHelper
         if (!IsNewerApis)
             request.Properties.Add(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
                 InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
+
         return request;
     }
 
-    public HttpRequestMessage GetSignedRequest(HttpMethod method,
-        Uri uri,
+    public HttpRequestMessage GetSignedRequest(Uri uri,
         AndroidDevice deviceInfo,
         JObject data)
     {
@@ -255,7 +257,7 @@ public class HttpHelper
         return signature;
     }
 
-    internal static CultureInfo GetCurrentCulture()
+    private static CultureInfo GetCurrentCulture()
     {
         return CultureInfo.CurrentCulture;
     }

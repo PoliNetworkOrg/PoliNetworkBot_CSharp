@@ -15,6 +15,7 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -59,7 +60,7 @@ internal class DiscoverProcessor : IDiscoverProcessor
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -290,7 +291,7 @@ internal class DiscoverProcessor : IDiscoverProcessor
                 { "contacts", jsonContacts }
             };
 
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, fields);
 
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();

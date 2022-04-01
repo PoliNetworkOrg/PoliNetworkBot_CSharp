@@ -8,8 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using InstagramApiSharp;
+using InstagramApiSharp.API;
 using InstagramApiSharp.API.Processors;
-using InstagramApiSharp.API.Services;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
@@ -26,7 +27,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace InstagramApiSharp.API;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 /// <summary>
 ///     Base of everything that you want.
@@ -46,8 +47,6 @@ public class InstaApi
         InstaApiVersionType = apiVersionType;
         _apiVersion = InstaApiVersionList.GetApiVersion(apiVersionType);
         HttpHelper = new HttpHelper(_apiVersion, httpRequestProcessor, this);
-        RegistrationService = new RegistrationService(_deviceInfo, User, HttpRequestProcessor, _logger,
-            _userAuthValidate, this, HttpHelper);
     }
 
     #endregion Constructor
@@ -113,8 +112,6 @@ public class InstaApi
     /// <summary>
     ///     Registration Service
     /// </summary>
-    public IRegistrationService RegistrationService { get; }
-
     /// <summary>
     ///     Gets or sets challenge login info
     /// </summary>
@@ -252,7 +249,7 @@ public class InstaApi
                 { "waterfall_id", _waterfallIdReg }
             };
             var instaUri = UriCreator.GetCheckEmailUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -317,7 +314,7 @@ public class InstaApi
                 { "device_id", _deviceInfo.DeviceId }
             };
             var instaUri = UriCreator.GetCheckPhoneNumberUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode != HttpStatusCode.OK
@@ -350,7 +347,7 @@ public class InstaApi
                 { "_csrftoken", User.CsrfToken },
                 { "username", username }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaAccountCheck>(json);
@@ -396,7 +393,7 @@ public class InstaApi
                 { "waterfall_id", _waterfallIdReg }
             };
             var instaUri = UriCreator.GetSignUpSMSCodeUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -448,8 +445,8 @@ public class InstaApi
                 { "device_id", _deviceInfo.DeviceId },
                 { "waterfall_id", _waterfallIdReg }
             };
-            var instaUri = UriCreator.GetValidateSignUpSMSCodeUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var instaUri = UriCreator.GetValidateSignUpSmsCodeUri();
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -529,7 +526,7 @@ public class InstaApi
             }
 
             var instaUri = UriCreator.GetUsernameSuggestionsUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -608,7 +605,7 @@ public class InstaApi
                 postData.Add("gdpr_s", "[0,2,0,null]");
 
             var instaUri = UriCreator.GetCreateValidatedUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -665,7 +662,7 @@ public class InstaApi
                 { "tos_accepted", "false" }
             };
             var instaUri = UriCreator.GetOnboardingStepsUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -764,7 +761,7 @@ public class InstaApi
                 postData.Add("gdpr_s", "[0,2,0,null]");
 
             var instaUri = UriCreator.GetCreateAccountUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -836,7 +833,7 @@ public class InstaApi
                 { "password", password }
             };
             var instaUri = UriCreator.GetCreateAccountUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -880,7 +877,7 @@ public class InstaApi
                 { "phone_id", _deviceInfo.PhoneGuid },
                 { "_csrftoken", User.CsrfToken }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -911,7 +908,7 @@ public class InstaApi
                 data.Add("phone", phone);
             }
 
-            request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             response = await HttpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
 
@@ -930,7 +927,7 @@ public class InstaApi
                 { "guid", _deviceInfo.DeviceGuid },
                 { "device_id", _deviceInfo.DeviceId }
             };
-            request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             response = await HttpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
 
@@ -1011,7 +1008,7 @@ public class InstaApi
                 { InstaApiConstants.HEADER_IG_SIGNATURE, signature },
                 { InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION, InstaApiConstants.IG_SIGNATURE_KEY_VERSION }
             };
-            var request = HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+            var request = HttpHelper.GetDefaultRequest(instaUri, _deviceInfo, fields);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1224,7 +1221,7 @@ public class InstaApi
                 { "waterfall_id", Guid.NewGuid().ToString() },
                 { "verification_method", verificationMethod.ToString() }
             };
-            var request = HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
 
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
@@ -1366,7 +1363,7 @@ public class InstaApi
             if (!string.IsNullOrEmpty(csrftoken))
                 data.Add("_csrftoken", csrftoken);
             var instaUri = UriCreator.GetNotificationBadgeUri();
-            var request = HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
         }
         catch (HttpRequestException httpException)
@@ -1396,7 +1393,7 @@ public class InstaApi
                 data.Add("_csrftoken", csrftoken);
             data.Add("usage", "prefill");
             var instaUri = UriCreator.GetContactPointPrefillUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
         }
         catch (HttpRequestException httpException)
@@ -1429,7 +1426,7 @@ public class InstaApi
             if (!string.IsNullOrEmpty(csrftoken))
                 data.Add("_csrftoken", csrftoken);
             var instaUri = UriCreator.GetReadMsisdnHeaderUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
         }
         catch (HttpRequestException httpException)
@@ -1469,7 +1466,7 @@ public class InstaApi
             if (!string.IsNullOrEmpty(csrftoken))
                 data.Add("_csrftoken", csrftoken);
             var instaUri = UriCreator.GetPrefillCandidatesUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
         }
         catch (HttpRequestException httpException)
@@ -1506,7 +1503,7 @@ public class InstaApi
             }
 
             var uri = UriCreator.GetLauncherSyncUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, uri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(uri, _deviceInfo, data);
 
             var response = await HttpRequestProcessor.SendAsync(request);
             await AfterLoginAsync(response, true).ConfigureAwait(false);
@@ -1579,7 +1576,7 @@ public class InstaApi
             }
 
             var uri = UriCreator.GetQeSyncUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, uri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(uri, _deviceInfo, data);
             request.Headers.Add("X-DEVICE-ID", _deviceInfo.DeviceGuid.ToString());
             var response = await HttpRequestProcessor.SendAsync(request);
         }
@@ -1614,7 +1611,7 @@ public class InstaApi
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var instaUri = UriCreator.GetLogoutUri();
-            var request = HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK) return Result.UnExpectedResponse<bool>(response, json);
@@ -1668,7 +1665,7 @@ public class InstaApi
             };
 
             var instaUri = UriCreator.GetUsersLookupUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
 
             var response = await HttpRequestProcessor.SendAsync(request);
 
@@ -1731,7 +1728,7 @@ public class InstaApi
             };
 
             var instaUri = UriCreator.GetAccountRecoveryEmailUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
 
             var response = await HttpRequestProcessor.SendAsync(request);
 
@@ -1782,7 +1779,7 @@ public class InstaApi
             };
 
             var instaUri = UriCreator.GetAccountRecoverPhoneUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
 
             var response = await HttpRequestProcessor.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
@@ -1836,7 +1833,7 @@ public class InstaApi
             };
 
             var instaUri = UriCreator.GetAccount2FALoginAgainUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
 
@@ -1916,7 +1913,7 @@ public class InstaApi
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
 
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1988,7 +1985,7 @@ public class InstaApi
                 { "guid", _deviceInfo.DeviceGuid.ToString() },
                 { "device_id", _deviceInfo.DeviceId }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -2055,9 +2052,7 @@ public class InstaApi
 
         try
         {
-            Uri instaUri;
-
-            instaUri = replayChallenge
+            var instaUri = replayChallenge
                 ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath)
                 : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
@@ -2072,7 +2067,7 @@ public class InstaApi
             else
                 data.Add("choice", "0");
 
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -2117,9 +2112,7 @@ public class InstaApi
 
         try
         {
-            Uri instaUri;
-
-            instaUri = replayChallenge
+            var instaUri = replayChallenge
                 ? UriCreator.GetChallengeReplayUri(ChallengeLoginInfo.ApiPath)
                 : UriCreator.GetChallengeRequireUri(ChallengeLoginInfo.ApiPath);
 
@@ -2130,7 +2123,7 @@ public class InstaApi
                 { "guid", _deviceInfo.DeviceGuid.ToString() },
                 { "device_id", _deviceInfo.DeviceId }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -2192,7 +2185,7 @@ public class InstaApi
                 { "guid", _deviceInfo.DeviceGuid.ToString() },
                 { "device_id", _deviceInfo.DeviceId }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -2312,7 +2305,7 @@ public class InstaApi
                 data.Add("username", username);
 
             _facebookAccessToken = fbAccessToken;
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -2474,7 +2467,7 @@ public class InstaApi
             };
 
             var instaUri = UriCreator.GetOnboardingStepsUri();
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -2517,7 +2510,7 @@ public class InstaApi
                 { "phone_id", _deviceInfo.PhoneGuid },
                 { "_csrftoken", User.CsrfToken }
             };
-            var request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -2548,7 +2541,7 @@ public class InstaApi
                 data.Add("phone", phone);
             }
 
-            request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             response = await HttpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
 
@@ -2567,7 +2560,7 @@ public class InstaApi
                 { "guid", _deviceInfo.DeviceGuid },
                 { "device_id", _deviceInfo.DeviceId }
             };
-            request = HttpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             response = await HttpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
 
@@ -2871,14 +2864,14 @@ public class InstaApi
                 JData.Add("_uuid", _deviceInfo.DeviceGuid.ToString());
                 JData.Add("_uid", User.LoggedInUser.Pk.ToString());
                 JData.Add("_csrftoken", User.CsrfToken);
-                request = HttpHelper.GetSignedRequest(HttpMethod.Post, uri, _deviceInfo, JData);
+                request = HttpHelper.GetSignedRequest(uri, _deviceInfo, JData);
             }
             else
             {
                 DicData.Add("_uuid", _deviceInfo.DeviceGuid.ToString());
                 DicData.Add("_uid", User.LoggedInUser.Pk.ToString());
                 DicData.Add("_csrftoken", User.CsrfToken);
-                request = HttpHelper.GetSignedRequest(HttpMethod.Post, uri, _deviceInfo, DicData);
+                request = HttpHelper.GetSignedRequest(uri, _deviceInfo, DicData);
             }
 
             var response = await HttpRequestProcessor.SendAsync(request);
@@ -2915,7 +2908,7 @@ public class InstaApi
             data.Add("_uuid", _deviceInfo.DeviceGuid.ToString());
             data.Add("_uid", User.LoggedInUser.Pk.ToString());
             data.Add("_csrftoken", User.CsrfToken);
-            var request = HttpHelper.GetDefaultRequest(HttpMethod.Post, uri, _deviceInfo, data);
+            var request = HttpHelper.GetDefaultRequest(uri, _deviceInfo, data);
             var response = await HttpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -3121,7 +3114,7 @@ public class InstaApi
             {
                 var wwwClaimHeader = response.Headers.GetValues(InstaApiConstants.HEADER_RESPONSE_X_WWW_CLAIM);
                 if (wwwClaimHeader != null &&
-                    string.Join("", wwwClaimHeader) is string wwwClaim &&
+                    string.Join("", wwwClaimHeader) is { } wwwClaim &&
                     !string.IsNullOrEmpty(wwwClaim))
                     User.WwwClaim = wwwClaim;
             }
@@ -3130,7 +3123,7 @@ public class InstaApi
             {
                 var fbTripIdHeader = response.Headers.GetValues(InstaApiConstants.HEADER_X_FB_TRIP_ID);
                 if (fbTripIdHeader != null &&
-                    string.Join("", fbTripIdHeader) is string fbTripId &&
+                    string.Join("", fbTripIdHeader) is { } fbTripId &&
                     !string.IsNullOrEmpty(fbTripId))
                     User.FbTripId = fbTripId;
             }
@@ -3140,7 +3133,7 @@ public class InstaApi
                 var authorizationHeader =
                     response.Headers.GetValues(InstaApiConstants.HEADER_RESPONSE_AUTHORIZATION);
                 if (authorizationHeader != null &&
-                    string.Join("", authorizationHeader) is string authorization &&
+                    string.Join("", authorizationHeader) is { } authorization &&
                     !string.IsNullOrEmpty(authorization) &&
                     authorization != InstaApiConstants.HEADER_BEARER_IGT_2_VALUE)
                     User.Authorization = authorization;

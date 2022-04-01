@@ -8,6 +8,7 @@ using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.SessionHandlers;
 using InstagramApiSharp.Enums;
 using InstagramApiSharp.Logger;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 

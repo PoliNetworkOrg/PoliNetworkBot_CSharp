@@ -14,6 +14,7 @@ using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -209,7 +210,7 @@ internal class TVProcessor : ITVProcessor
             };
             if (paginationParameters != null && !string.IsNullOrEmpty(paginationParameters.NextMaxId))
                 data.Add("max_id", paginationParameters.NextMaxId);
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -14,7 +14,7 @@ internal class UploadOperation
 {
     private readonly BackgroundUploader backgroundUploader;
     private readonly StorageFile file;
-    public readonly InstaApi instaApi;
+    private readonly InstaApi instaApi;
     private readonly Uri instaUri;
     internal string Guid;
 
@@ -44,7 +44,7 @@ internal class UploadOperation
             Console.WriteLine(responseString);
             ;
 
-            var request = instaApi.HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, instaApi._deviceInfo, c);
+            var request = instaApi.HttpHelper.GetDefaultRequest(instaUri, instaApi._deviceInfo, c);
             var response2 = await instaApi.HttpRequestProcessor.SendAsync(request);
             var json = await response2.Content.ReadAsStringAsync();
             ;

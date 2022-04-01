@@ -14,6 +14,7 @@ using InstagramApiSharp.Enums;
 using InstagramApiSharp.Helpers;
 using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -53,7 +54,7 @@ internal class WebProcessor : IWebProcessor
         try
         {
             var instaUri = WebUriCreator.GetAccountsDataUri();
-            var request = _httpHelper.GetWebRequest(HttpMethod.Get, instaUri, _deviceInfo);
+            var request = _httpHelper.GetWebRequest(instaUri, _deviceInfo);
             var response = await _httpRequestProcessor.SendAsync(request);
             var html = await response.Content.ReadAsStringAsync();
 
@@ -269,7 +270,7 @@ internal class WebProcessor : IWebProcessor
     {
         try
         {
-            var request = _httpHelper.GetWebRequest(HttpMethod.Get, instaUri, _deviceInfo);
+            var request = _httpHelper.GetWebRequest(instaUri, _deviceInfo);
 
             request.Headers.Add("upgrade-insecure-requests", "1");
             request.Headers.Add("accept",

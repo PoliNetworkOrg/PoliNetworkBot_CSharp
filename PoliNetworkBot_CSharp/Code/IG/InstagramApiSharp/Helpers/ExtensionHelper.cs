@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
@@ -55,16 +56,6 @@ internal static class ExtensionHelper
             deviceInfo.DeviceModelIdentifier, deviceInfo.FirmwareBrand, deviceInfo.HardwareModel,
             apiVersion.AppVersion, deviceInfo.AndroidVer.APILevel,
             deviceInfo.AndroidVer.VersionNumber, apiVersion.AppApiVersionCode);
-    }
-
-    public static string GenerateFacebookUserAgent()
-    {
-        var deviceInfo = AndroidDeviceGenerator.GetRandomAndroidDevice();
-        //Mozilla/5.0 (Linux; Android 7.0; PRA-LA1 Build/HONORPRA-LA1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/69.0.3497.100 Mobile Safari/537.36
-
-        return string.Format(InstaApiConstants.FACEBOOK_USER_AGENT,
-            deviceInfo.AndroidVer.VersionNumber, deviceInfo.DeviceModelIdentifier,
-            $"{deviceInfo.AndroidBoardName}{deviceInfo.DeviceModel}");
     }
 
     public static bool IsEmpty(this string content)
@@ -118,7 +109,7 @@ internal static class ExtensionHelper
         return EncodeRecipients(recipients.ToList());
     }
 
-    public static string EncodeRecipients(this IEnumerable<long> recipients)
+    private static string EncodeRecipients(this IEnumerable<long> recipients)
     {
         var list = recipients.Select(item => $"[{item}]").ToList();
         return string.Join(",", list);
@@ -148,7 +139,7 @@ internal static class ExtensionHelper
         var associatedData = Encoding.UTF8.GetBytes(time.ToString());
         var pubKEY = Encoding.UTF8.GetString(Convert.FromBase64String(pubKey));
         byte[] encryptedKey;
-        using (var rdr = PemKeyUtils.GetRSAProviderFromPemString(pubKEY.Trim()))
+        using (var rdr = PemKeyUtils.GetRsaProviderFromPemString(pubKEY.Trim()))
         {
             encryptedKey = rdr.Encrypt(randKey, false);
         }

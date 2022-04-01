@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using Telegram.Bot.Types;
 
@@ -17,7 +18,8 @@ internal class Creators
         if (string.IsNullOrEmpty(chatMember.User.Username))
             return false;
 
-        return GlobalVariables.Creators.Contains(chatMember.User.Username.ToLower()) ||
-               GlobalVariables.SubCreators.Contains(chatMember.User.Username.ToLower());
+        return GlobalVariables.Creators.ToList().Any(x => x.Matches(chatMember.User))
+               ||
+               GlobalVariables.SubCreators.ToList().Any(x => x.Matches(chatMember.User));
     }
 }
