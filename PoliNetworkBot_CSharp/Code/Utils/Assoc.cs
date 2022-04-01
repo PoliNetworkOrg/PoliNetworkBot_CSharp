@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -657,7 +656,8 @@ internal static class Assoc
             _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater,
                 () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
             permittedSpamMessage += "\nAllowed at time: " + TimeZoneInfo
-                .ConvertTime(allowedTime.Value, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time")).ToString("dd'-'MM'-'yyyy' 'HH':'mm':'ss");
+                .ConvertTime(allowedTime.Value, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time"))
+                .ToString("dd'-'MM'-'yyyy' 'HH':'mm':'ss");
         }
 
         long? replyTo = null;

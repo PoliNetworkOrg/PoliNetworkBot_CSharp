@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -27,11 +26,11 @@ public static class AutoReplyInGroups
         new()
         {
             {
-                SpecialGroup.ASK_POLIMI, 
+                SpecialGroup.ASK_POLIMI,
                 new List<SpecialGroup> { SpecialGroup.ASK_POLIMI }
             },
             {
-                SpecialGroup.DSU, 
+                SpecialGroup.DSU,
                 new List<SpecialGroup> { SpecialGroup.DSU, SpecialGroup.ASK_POLIMI }
             },
             {
@@ -169,8 +168,8 @@ public static class AutoReplyInGroups
                 e.Message.MessageId,
                 true);
         }
-        
-        if (text.Contains("graduatorie") &&(text.Contains("qualcuno") || text.Contains("punteggi")))
+
+        if (text.Contains("graduatorie") && (text.Contains("qualcuno") || text.Contains("punteggi")))
         {
             var text2 = new Language(
                 new Dictionary<string, string>

@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
-using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -89,7 +88,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
                     _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                        e.Message.From?.Username,                  false);
+                        e.Message.From?.Username, false);
                 else
                     await DefaultCommand(sender, e);
                 return;
@@ -108,8 +107,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                    if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                if (GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -130,8 +129,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -152,8 +151,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         true);
                 else
                     await DefaultCommand(sender, e);
@@ -211,8 +210,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                    if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
+                if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -1334,11 +1333,11 @@ internal static class CommandDispatcher
             if (targetId != null)
                 return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);
-            {
-                var e2 = new Exception("Can't find userid (2)");
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
-                return new SuccessWithException(false, e2);
-            }
+
+
+            var e3 = new Exception("Can't find userid (2)");
+            await NotifyUtil.NotifyOwners(new ExceptionNumbered(e3), sender, e);
+            return new SuccessWithException(false, e3);
         }
 
         var targetInt = e.Message.ReplyToMessage.From.Id;

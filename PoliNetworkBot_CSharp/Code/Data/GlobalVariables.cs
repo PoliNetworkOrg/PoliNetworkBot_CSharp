@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -39,57 +39,57 @@ public static class GlobalVariables
 
         Creators = new List<TelegramUser>
         {
-            new TelegramUser( "policreator"),
-             new TelegramUser( "policreator2"),
-             new TelegramUser( "policreator3"),
-             new TelegramUser( "policreator4"),
-             new TelegramUser( "policreator5"),
-                      new TelegramUser(5651789),
-             new TelegramUser( "poliadmin"),
-             new TelegramUser( "eliamaggioni")
+            new("policreator"),
+            new("policreator2"),
+            new("policreator3"),
+            new("policreator4"),
+            new("policreator5"),
+            new(5651789),
+            new("poliadmin"),
+            new("eliamaggioni")
         };
 
         SubCreators = new List<TelegramUser>
         {
-                new TelegramUser("carlogiova"),
-                new TelegramUser("giovannieffe777"),
-                new TelegramUser("testpolinetwork"),
-                    new TelegramUser(            "albus25"),
-                new TelegramUser("deet98"),
-                new TelegramUser("alberto_fattori"),
-                new TelegramUser("scala98"),
-                    new TelegramUser(            "giulia_ye"),
-                new TelegramUser("andre_crc"),
-                new TelegramUser("perularrabeiti"),
-                new TelegramUser("fllippo"),
-                new TelegramUser("marcol_8"),
-                new TelegramUser("andre_crc"),
-                new TelegramUser("lucreziaal"),
-                    new TelegramUser(            "giada_marti"),
-                new TelegramUser("raif9"),
-                new TelegramUser("diegoaldarese")
+            new("carlogiova"),
+            new("giovannieffe777"),
+            new("testpolinetwork"),
+            new("albus25"),
+            new("deet98"),
+            new("alberto_fattori"),
+            new("scala98"),
+            new("giulia_ye"),
+            new("andre_crc"),
+            new("perularrabeiti"),
+            new("fllippo"),
+            new("marcol_8"),
+            new("andre_crc"),
+            new("lucreziaal"),
+            new("giada_marti"),
+            new("raif9"),
+            new("diegoaldarese")
         };
 
         AllowedBanAll = new List<TelegramUser>
         {
-                 new TelegramUser(5651789),
-                new TelegramUser("raif9"),
-                new TelegramUser("eliamaggioni")
+            new(5651789),
+            new("raif9"),
+            new("eliamaggioni")
         };
 
         AllowedMuteAll = new List<TelegramUser>
         {
-                  new TelegramUser(5651789),
-                new TelegramUser("raif9"),
-                new TelegramUser("eliamaggioni")
+            new(5651789),
+            new("raif9"),
+            new("eliamaggioni")
         };
 
         AllowedSpam = new List<TelegramUser>
         {
-                new TelegramUser(5651789),
-                new TelegramUser("raif9"),
-                new TelegramUser("eliamaggioni"),
-                new TelegramUser("tlpats")
+            new(5651789),
+            new("raif9"),
+            new("eliamaggioni"),
+            new("tlpats")
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>
@@ -104,7 +104,7 @@ public static class GlobalVariables
 
         Owners = new List<TelegramUser>
         {
-                     new TelegramUser(5651789),
+            new(5651789),
             new(107050697, "eliamaggioni")
         };
 

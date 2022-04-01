@@ -13,7 +13,7 @@ public static class Navigator
 {
     public static readonly Dictionary<string, string[]> ScuoleCorso = new()
     {
-        ["3I"] = new []
+        ["3I"] = new[]
         {
             "MatNano",
             "Info",
@@ -24,9 +24,9 @@ public static class Navigator
             "Chimica",
             "Elettrica"
         },
-        ["AUIC"] = new string[]{},
-        ["ICAT"] = new string[]{},
-        ["Design"] = new string[]{}
+        ["AUIC"] = new string[] { },
+        ["ICAT"] = new string[] { },
+        ["Design"] = new string[] { }
     };
 
     public static bool CourseHandler(Conversation conversation, string messageText)

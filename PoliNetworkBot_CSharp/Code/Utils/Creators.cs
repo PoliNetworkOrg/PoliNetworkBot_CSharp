@@ -1,7 +1,7 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data;
 using Telegram.Bot.Types;
 
 #endregion
@@ -19,7 +19,7 @@ internal class Creators
             return false;
 
         return GlobalVariables.Creators.ToList().Any(x => x.Matches(chatMember.User))
-     ||
+               ||
                GlobalVariables.SubCreators.ToList().Any(x => x.Matches(chatMember.User));
     }
 }
