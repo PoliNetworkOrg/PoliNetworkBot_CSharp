@@ -58,6 +58,6 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server=localhost;user=bot;database=polinetwork;port=3306;password=root";
+        return "server=" + Host + ";user=" + User + ";database=" + Database + ";port=" + Port + ";password=" + Password;
     }
 }

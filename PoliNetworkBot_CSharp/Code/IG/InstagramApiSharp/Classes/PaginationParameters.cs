@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
 
 /// <summary>
 ///     Pagination of everything! use NextMaxId instead of using old NextId
@@ -23,7 +23,7 @@ public class PaginationParameters
     /// </summary>
     public string NextMinId { get; set; } = string.Empty;
 
-    public int MaximumPagesToLoad { get; private set; }
+    public int MaximumPagesToLoad { get; private init; }
     public int PagesLoaded { get; set; } = 1;
 
     /// <summary>
@@ -38,31 +38,8 @@ public class PaginationParameters
     /// </summary>
     public List<long> NextMediaIds { get; set; }
 
-    public static PaginationParameters Empty => MaxPagesToLoad(int.MaxValue);
-
     public static PaginationParameters MaxPagesToLoad(int maxPagesToLoad)
     {
         return new PaginationParameters { MaximumPagesToLoad = maxPagesToLoad };
-    }
-
-    public PaginationParameters StartFromMaxId(string maxId)
-    {
-        NextMaxId = maxId;
-        NextMinId = null;
-        return this;
-    }
-
-    public PaginationParameters StartFromMinId(string minId)
-    {
-        NextMinId = minId;
-        NextMaxId = null;
-        return this;
-    }
-
-    public PaginationParameters StartFromRankToken(string nextId, string rankToken)
-    {
-        NextMaxId = nextId;
-        RankToken = rankToken;
-        return this;
     }
 }

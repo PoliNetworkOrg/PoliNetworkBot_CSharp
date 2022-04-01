@@ -1,9 +1,7 @@
 ﻿#region
 
-using System;
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 
 #endregion
 
@@ -15,30 +13,22 @@ internal class InstaMediaShortConverter : IObjectConverter<InstaMediaShort, Inst
 
     public InstaMediaShort Convert()
     {
-        var media = new InstaMediaShort
-        {
-            Id = SourceObject.Id,
-            MediaIdentifier = SourceObject.MediaIdentifier
-        };
+        var media = new InstaMediaShort();
         if (!string.IsNullOrEmpty(SourceObject.InstagramMediaType))
             try
             {
-                media.MediaType =
-                    (InstaMediaType)Enum.Parse(typeof(InstaMediaType), SourceObject.InstagramMediaType, true);
             }
             catch
             {
             }
 
         if (SourceObject.Image is { Uri: { } })
-            media.Image = SourceObject.Image.Uri;
+        {
+        }
 
         if (SourceObject.InlineInsightsNode == null) return media;
         try
         {
-            media.InsightsState = SourceObject.InlineInsightsNode.State;
-            media.MetricsImpressionsOrganicValue =
-                SourceObject.InlineInsightsNode.Metrics.Impressions.Organic.Value ?? 0;
         }
         catch
         {

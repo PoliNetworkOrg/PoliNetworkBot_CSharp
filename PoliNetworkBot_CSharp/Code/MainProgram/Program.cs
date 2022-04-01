@@ -394,16 +394,11 @@ internal static class Program
                 });
                 t.Start();
 
-                switch (onmessageMethod2.Item2)
-                {
-                    case BotStartMethods.Moderation:
-                        moderationBots++;
-                        break;
 
-                    case BotStartMethods.Anon:
-                        anonBots++;
-                        break;
-                }
+                if (onmessageMethod2.Item2 == BotStartMethods.Moderation.Item1)
+                    moderationBots++;
+                else if (onmessageMethod2.Item2 == BotStartMethods.Anon.Item1)
+                    anonBots++;
             }
 
         if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
@@ -476,7 +471,7 @@ internal static class Program
         using var powershell = PowerShell.Create();
         foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
-        if (botInfoAbstract.onMessages == BotStartMethods.Material)
+        if (botInfoAbstract.onMessages == BotStartMethods.Material.Item1)
             try
             {
                 _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);

@@ -28,7 +28,7 @@ internal class RegistrationService
     /// <summary>
     ///     Generate random birthday
     /// </summary>
-    public DateTime GenerateRandomBirthday()
+    private static DateTime GenerateRandomBirthday()
     {
         return ExtensionHelper.GenerateRandomBirthday();
     }
@@ -149,7 +149,7 @@ internal class RegistrationService
 
             var obj = JsonConvert.DeserializeObject<InstaDefaultResponse>(json);
 
-            return obj.IsSucceed ? Result.Success(true) : Result.UnExpectedResponse<bool>(response, json);
+            return obj is { IsSucceed: true } ? Result.Success(true) : Result.UnExpectedResponse<bool>(response, json);
         }
         catch (HttpRequestException httpException)
         {

@@ -3,14 +3,15 @@
 using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Stories;
 
 internal class InstaReelMentionConverter : IObjectConverter<InstaReelMention, InstaReelMentionResponse>
 {
-    public InstaReelMentionResponse SourceObject { get; set; }
+    public InstaReelMentionResponse SourceObject { get; init; }
 
     public InstaReelMention Convert()
     {

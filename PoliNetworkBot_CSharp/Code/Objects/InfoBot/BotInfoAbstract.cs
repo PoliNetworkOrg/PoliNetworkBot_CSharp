@@ -20,6 +20,7 @@ public class BotInfoAbstract
     public bool? acceptedMessages;
     public string apiHash;
     public long? apiId;
+    public BotProgramTypeEnum? botProgramType;
     public BotTypeApi? botTypeApi;
     public string contactString;
     public DbConfig DbConfig;
@@ -30,19 +31,19 @@ public class BotInfoAbstract
     public string passwordToAuthenticate;
     public string SessionUserId;
     public string token;
-    public BotProgramType Type; //todo
+    public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
     public string website;
 
     internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
     {
-        return onMessages switch //return BotProgramType
-        {
-            BotStartMethods.Anon => CallbackUtils.CallbackMethodStart,
-            BotStartMethods.Moderation => CallbackUtils.CallbackMethodStart,
-            BotStartMethods.Material => Program.BotOnCallbackQueryReceived,
-            _ => null
-        };
+        return onMessages == BotStartMethods.Anon.Item1
+            ? CallbackUtils.CallbackMethodStart
+            : onMessages == BotStartMethods.Moderation.Item1
+                ? CallbackUtils.CallbackMethodStart
+                : onMessages == BotStartMethods.Material.Item1
+                    ? Program.BotOnCallbackQueryReceived
+                    : null;
     }
 
     internal string GetToken()
@@ -52,6 +53,7 @@ public class BotInfoAbstract
 
     internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
     {
+        TrySetBotType();
         try
         {
             var s = onMessages;
@@ -64,6 +66,22 @@ public class BotInfoAbstract
         }
 
         return new Tuple<EventHandler<MessageEventArgs>, string>(null, null);
+    }
+
+    private void TrySetBotType()
+    {
+        if (onMessages == BotStartMethods.Moderation.Item1)
+            botProgramType = BotProgramTypeEnum.MODERATION;
+        else if (onMessages == BotStartMethods.Anon.Item1)
+            botProgramType = BotProgramTypeEnum.ANON;
+        else if (onMessages == BotStartMethods.Material.Item1)
+            botProgramType = BotProgramTypeEnum.MATERIALS;
+        else if (onMessages == BotStartMethods.Admin.Item1)
+            botProgramType = BotProgramTypeEnum.ADMIN;
+        else if (onMessages == BotStartMethods.Primo.Item1)
+            botProgramType = BotProgramTypeEnum.PRIMO;
+        else
+            botProgramType = null;
     }
 
     internal bool? AcceptsMessages()

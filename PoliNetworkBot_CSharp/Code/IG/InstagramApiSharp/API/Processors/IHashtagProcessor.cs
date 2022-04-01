@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Hashtags;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
 
 #endregion
 

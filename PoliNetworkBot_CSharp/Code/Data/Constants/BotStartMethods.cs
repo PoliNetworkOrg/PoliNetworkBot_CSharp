@@ -12,20 +12,20 @@ namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
 public static class BotStartMethods
 {
-    public const string Moderation = "m";
-    public const string Primo = "p";
-    public const string Anon = "a";
-    public const string Material = "mat";
+    public static readonly Tuple<string, int> Moderation = new("m", 1);
+    public static readonly Tuple<string, int> Primo = new("p", 2);
+    public static readonly Tuple<string, int> Anon = new("a", 3);
+    public static readonly Tuple<string, int> Material = new("mat", 4);
+    public static readonly Tuple<string, int> Admin = new("ad", 5);
+
 
     internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
     {
-        return s switch
-        {
-            Moderation => Main.MainMethod,
-            Primo => Bots.Primo.Main.MainMethod,
-            Anon => MainAnon.MainMethod,
-            Material => Program.BotClient_OnMessageAsync,
-            _ => null
-        };
+        return s == Moderation.Item1 ? Main.MainMethod :
+            s == Primo.Item1 ? Bots.Primo.Main.MainMethod :
+            s == Anon.Item1 ? MainAnon.MainMethod :
+            s == Material.Item1 ? Program.BotClient_OnMessageAsync : null;
     }
 }
+
+//see PoliNetworkBot_CSharp.Code.Enums.BotProgramTypeEnum

@@ -2,9 +2,9 @@
 
 public class InstaApiVersion
 {
-    public string SignatureKey { get; set; }
-    public string AppVersion { get; set; }
-    public string AppApiVersionCode { get; set; }
-    public string Capabilities { get; set; }
-    public string BloksVersionId { get; set; }
+    public string SignatureKey { get; init; }
+    public string AppVersion { get; init; }
+    public string AppApiVersionCode { get; init; }
+    public string Capabilities { get; init; }
+    public string BloksVersionId { get; init; }
 }

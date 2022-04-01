@@ -1,8 +1,4 @@
-﻿#region
-
-#endregion
-
-namespace PoliNetworkBot_CSharp.Test.CheckLink;
+﻿namespace PoliNetworkBot_CSharp.Test.CheckLink;
 
 public static class Test_CheckLink
 {

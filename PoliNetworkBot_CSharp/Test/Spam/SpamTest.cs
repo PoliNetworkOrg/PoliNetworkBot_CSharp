@@ -1,8 +1,4 @@
-﻿#region
-
-#endregion
-
-namespace PoliNetworkBot_CSharp.Test.Spam;
+﻿namespace PoliNetworkBot_CSharp.Test.Spam;
 
 internal class SpamTest
 {

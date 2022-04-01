@@ -60,7 +60,7 @@ public class ThreadAsync
     {
         try
         {
-            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
 
@@ -106,7 +106,7 @@ public class ThreadAsync
     {
         try
         {
-            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
 
@@ -148,7 +148,7 @@ public class ThreadAsync
     {
         try
         {
-            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
 
@@ -189,7 +189,7 @@ public class ThreadAsync
         }
         catch (Exception e)
         {
-            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation);
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
             await NotifyUtil.NotifyOwners(e, bots[0], null);

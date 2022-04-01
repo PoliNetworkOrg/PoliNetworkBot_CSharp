@@ -6,6 +6,7 @@ using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Enums;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 
 #endregion
 
