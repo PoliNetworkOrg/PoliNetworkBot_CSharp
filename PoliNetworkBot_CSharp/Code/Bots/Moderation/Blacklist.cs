@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
@@ -15,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
-    internal static SpamType IsSpam(string text, long? groupId)
+    internal static SpamType IsSpam(string text, long? groupId, TelegramBotAbstract telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -29,7 +30,7 @@ internal static class Blacklist
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId);
         var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
-        if (words2.Any(word => CheckSpamLink(word, groupId) == SpamType.SPAM_LINK))
+        if (words2.Any(word => CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
         return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
@@ -113,17 +114,17 @@ internal static class Blacklist
                 .Aggregate("", (current, c) => current + c);
     }
 
-    private static SpamType CheckSpamLink(string text, long? groupId)
+    private static SpamType CheckSpamLink(string text, long? groupId, TelegramBotAbstract bot)
     {
         return groupId switch
         {
             -1001307671408 => //gruppo politica
                 SpamType.ALL_GOOD,
-            _ => CheckSpamLink_DefaultGroup(text)
+            _ => CheckSpamLink_DefaultGroup(text, bot)
         };
     }
 
-    private static SpamType CheckSpamLink_DefaultGroup(string text)
+    private static SpamType CheckSpamLink_DefaultGroup(string text, TelegramBotAbstract bot)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -147,20 +148,20 @@ internal static class Blacklist
         }
 
         if (!text.Contains("t.me/"))
-            return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+            return MustBeTrue(CheckIfIsOurTgLink(text, bot)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         if (text.Contains("t.me/c/"))
             return SpamType.ALL_GOOD;
 
         var text1 = text.ToLower();
         var t2 = text1.Split("/");
         var t3 = Find(t2, "t.me");
-        if (t3 == null) return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+        if (t3 == null) return MustBeTrue(CheckIfIsOurTgLink(text, bot)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
         var t4 = t2[t3.Value + 1];
         var valid = CheckIfAllowedTag(t4);
         if (valid == SpamType.ALL_GOOD)
             return SpamType.ALL_GOOD;
 
-        return MustBeTrue(CheckIfIsOurTgLink(text)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
+        return MustBeTrue(CheckIfIsOurTgLink(text, bot)) ? SpamType.ALL_GOOD : SpamType.SPAM_LINK;
     }
 
     private static bool MustBeTrue(bool? v)
@@ -193,7 +194,7 @@ internal static class Blacklist
         return null;
     }
 
-    private static bool? CheckIfIsOurTgLink(string text)
+    private static bool? CheckIfIsOurTgLink(string text, TelegramBotAbstract botAbstract)
     {
         const string q1 = "SELECT id FROM Groups WHERE link = @link";
         var link = GetTelegramLink(text);
@@ -206,7 +207,7 @@ internal static class Blacklist
         DataTable dt = null;
         try
         {
-            dt = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@link", link } });
+            dt = SqLite.ExecuteSelect(q1, botAbstract.Connection, new Dictionary<string, object> { { "@link", link } });
         }
         catch
         {

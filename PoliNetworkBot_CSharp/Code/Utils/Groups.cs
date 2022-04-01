@@ -26,19 +26,19 @@ internal static class Groups
         MessageEventArgs messageEventArgs)
     {
         await FixAllGroupsName(telegramBotAbstract, messageEventArgs);
-        return GetAllGroups();
+        return GetAllGroups(telegramBotAbstract);
     }
 
-    internal static DataTable GetAllGroups(bool onlyValids = false)
+    internal static DataTable GetAllGroups(TelegramBotAbstract sender, bool onlyValids = false)
     {
         var q1 = onlyValids
             ? "SELECT * FROM Groups WHERE ( valid = 'Y' or valid = 1 )"
             : "SELECT * FROM Groups";
 
-        return SqLite.ExecuteSelect(q1);
+        return SqLite.ExecuteSelect(q1, sender.Connection);
     }
 
-    internal static DataTable GetGroupsByTitle(string query, int limit)
+    internal static DataTable GetGroupsByTitle(string query, int limit, TelegramBotAbstract sender)
     {
         var q1 = "SELECT id,title,link " +
                  "FROM Groups " +
@@ -47,7 +47,7 @@ internal static class Groups
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
-        return SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@title", query2 } });
+        return SqLite.ExecuteSelect(q1, sender.Connection , new Dictionary<string, object> { { "@title", query2 } });
     }
 
     internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
@@ -67,7 +67,7 @@ internal static class Groups
             Logger.Logger.WriteLine("Starting fix of groups name");
             ;
             const string q1 = "SELECT * FROM Groups";
-            var groups = SqLite.ExecuteSelect(q1);
+            var groups = SqLite.ExecuteSelect(q1, telegramBotAbstract.Connection);
             var indexTitle = groups.Columns.IndexOf("title");
             var indexId = groups.Columns.IndexOf("id");
             for (var i = 0; i < groups.Rows.Count; i++)
@@ -89,7 +89,7 @@ internal static class Groups
                     }
 
                     newTitle = newTitleWithException?.Item1?.Title;
-                    GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException);
+                    GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException, telegramBotAbstract);
                 }
                 catch (Exception e2)
                 {
@@ -114,7 +114,7 @@ internal static class Groups
             if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
                 return;
 
-            var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat);
+            var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat, telegramBotClient);
 
             if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
@@ -155,7 +155,7 @@ internal static class Groups
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
-            var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+            var groups = SqLite.ExecuteSelect(q1, telegramBotClient.Connection, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
                 throw new Exception("No group found with id: " + e.Message.Chat.Id +
                                     " while running CheckForGroupTitleUpdateAsync");
@@ -183,7 +183,7 @@ internal static class Groups
         }
     }
 
-    private static GroupsFixLogUpdatedEnum CheckForGroupUpdateAsync2(Chat group)
+    private static GroupsFixLogUpdatedEnum CheckForGroupUpdateAsync2(Chat group, TelegramBotAbstract sender)
     {
         InfoChat telegramGroup;
         bool? groupInRamGetDone;
@@ -201,11 +201,11 @@ internal static class Groups
                 GroupsInRam.Add(group.Id, new InfoChat(group, DateTime.Now));
             }
 
-            return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title);
+            return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title, sender);
         }
 
         const string q1 = "SELECT * FROM Groups WHERE id = @id";
-        var groups = SqLite.ExecuteSelect(q1, new Dictionary<string, object> { { "@id", group.Id } });
+        var groups = SqLite.ExecuteSelect(q1, sender.Connection, new Dictionary<string, object> { { "@id", group.Id } });
         if (groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
                                 " while running CheckForGroupTitleUpdateAsync");
@@ -227,13 +227,13 @@ internal static class Groups
         var oldTitle = (string)row[indexTitle];
 
         return oldTitle != group.Title
-            ? GroupCheckAndUpdate2(group.Id, group.Title, oldTitle)
+            ? GroupCheckAndUpdate2(group.Id, group.Title, oldTitle, sender)
             : GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
     private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(long indexIdInTable,
         string oldTitle,
-        Tuple<Chat, Exception> newTitleWithException)
+        Tuple<Chat, Exception> newTitleWithException, TelegramBotAbstract sender)
     {
         var newTitle = newTitleWithException?.Item1?.Title;
         if (string.IsNullOrEmpty(oldTitle) && string.IsNullOrEmpty(newTitle))
@@ -256,12 +256,12 @@ internal static class Groups
             oldTitle = "[previously null]";
         }
 
-        if (oldTitle != newTitle) return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle);
+        if (oldTitle != newTitle) return GroupCheckAndUpdate2(indexIdInTable, newTitle, oldTitle, sender);
         GroupsFixLog.CountIgnored();
         return GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
-    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle)
+    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle, TelegramBotAbstract sender)
     {
         const string q = "UPDATE Groups SET title = @title WHERE id = @id";
 
@@ -270,7 +270,7 @@ internal static class Groups
             { "@title", newTitle },
             { "@id", id }
         };
-        SqLite.Execute(q, d);
+        SqLite.Execute(q, sender.Connection, d);
         GroupsFixLog.NameChange(oldTitle, newTitle);
         return GroupsFixLogUpdatedEnum.NEW_NAME;
     }

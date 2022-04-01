@@ -24,7 +24,7 @@ public static class MessageDb
         long idChatSentInto, DateTime? sentDate,
         bool hasBeenSent, long messageFromIdBot,
         int messageIdTgFrom, ChatType type_chat_sent_into,
-        long? photo_id, long? video_id)
+        long? photo_id, long? video_id, TelegramBotAbstract sender)
     {
         const string q = "INSERT INTO Messages " +
                          "(id, from_id_person, from_id_entity, type, " +
@@ -33,13 +33,13 @@ public static class MessageDb
                          "VALUES " +
                          "(@id, @fip, @fie, @t, @idp, @idv, @mt, @icsi, @sent_date, @hbs, @fib, @mitf, @tcsi);";
 
-        var typeI = GetMessageTypeByName(type);
+        var typeI = GetMessageTypeByName(type, sender);
         if (typeI == null) return false;
 
-        var id = Tables.GetMaxId("Messages", "id");
+        var id = Tables.GetMaxId("Messages", "id", sender.Connection);
         id++;
 
-        SqLite.Execute(q, new Dictionary<string, object>
+        SqLite.Execute(q, sender.Connection, new Dictionary<string, object>
         {
             { "@id", id },
             { "@fip", messageFromIdPerson },
@@ -59,7 +59,7 @@ public static class MessageDb
         return true;
     }
 
-    private static long? GetMessageTypeByName(MessageType type, int times = 1)
+    private static long? GetMessageTypeByName(MessageType type, TelegramBotAbstract sender, int times = 1)
     {
         while (true)
         {
@@ -67,11 +67,11 @@ public static class MessageDb
 
             const string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
             var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-            var r1 = SqLite.ExecuteSelect(q1, keyValuePairs);
+            var r1 = SqLite.ExecuteSelect(q1, sender.Connection, keyValuePairs);
             var r2 = SqLite.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)
             {
-                AddMessageType(type);
+                AddMessageType(type,sender);
                 times--;
                 continue;
             }
@@ -87,12 +87,12 @@ public static class MessageDb
         }
     }
 
-    private static void AddMessageType(MessageType type)
+    private static void AddMessageType(MessageType type, TelegramBotAbstract bot)
     {
         const string q = "INSERT INTO MessageTypes (name) VALUES (@name)";
         var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-        SqLite.Execute(q, keyValuePairs);
-        Tables.FixIdTable("MessageTypes", "id", "name");
+        SqLite.Execute(q, bot.Connection, keyValuePairs);
+        Tables.FixIdTable("MessageTypes", "id", "name", bot.Connection);
     }
 
     public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
@@ -102,7 +102,7 @@ public static class MessageDb
         const string q = "SELECT * " +
                          "FROM Messages ";
 
-        dt = SqLite.ExecuteSelect(q);
+        dt = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -242,7 +242,7 @@ public static class MessageDb
             return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
         var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
-        SqLite.Execute(q2);
+        SqLite.Execute(q2, telegramBotAbstract.Connection);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
     }
@@ -304,7 +304,7 @@ public static class MessageDb
     public static async Task<MessageSentResult> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract telegramBotAbstract, int count)
     {
-        var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo);
+        var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract);
 
         if (!extraInfo) return r1;
         var r2 = await SendExtraInfoDbForThisMessage(r1, dr, chatIdToSendTo, chatTypeToSendTo,
@@ -358,7 +358,7 @@ public static class MessageDb
         if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
         if (from_id_entity != null)
         {
-            var entity_name = Assoc.GetNameOfEntityFromItsId(from_id_entity.Value);
+            var entity_name = Assoc.GetNameOfEntityFromItsId(from_id_entity.Value, telegramBotAbstract);
             text1 += "👥 " + entity_name + "\n";
         }
 
@@ -375,13 +375,13 @@ public static class MessageDb
     }
 
     private static async Task<MessageSentResult> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
-        ChatType? chatTypeToSendTo)
+        ChatType? chatTypeToSendTo, TelegramBotAbstract sender)
     {
         var botId = Convert.ToInt64(dr["from_id_bot"]);
         var botClass = GlobalVariables.Bots[botId];
 
         var typeI = Convert.ToInt64(dr["type"]);
-        var typeT = GetMessageTypeClassById(typeI);
+        var typeT = GetMessageTypeClassById(typeI, sender);
         if (typeT == null)
             return new MessageSentResult(false, null, chatTypeToSendTo);
 
@@ -475,9 +475,9 @@ public static class MessageDb
         return new MessageSentResult(false, null, chatTypeToSendTo);
     }
 
-    public static MessageType? GetMessageTypeClassById(in long typeI)
+    public static MessageType? GetMessageTypeClassById(in long typeI, TelegramBotAbstract sender)
     {
-        var typeS = GetMessageTypeNameById(typeI);
+        var typeS = GetMessageTypeNameById(typeI, sender);
 
         if (string.IsNullOrEmpty(typeS))
             return null;
@@ -494,15 +494,16 @@ public static class MessageDb
     private static MessageSentResult SendTextFromDataRow(DataRow dr, TelegramBotAbstract botClass)
     {
         throw new NotImplementedException();
+        //non serve perché le assoc mandano solo immagini
     }
 
-    private static string GetMessageTypeNameById(in long typeI)
+    private static string GetMessageTypeNameById(in long typeI, TelegramBotAbstract sender)
     {
         if (MessageTypesInRam.ContainsKey(typeI))
             return MessageTypesInRam[typeI];
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
-        var dt = SqLite.ExecuteSelect(q);
+        var dt = SqLite.ExecuteSelect(q, sender.Connection);
         if (dt == null || dt.Rows.Count == 0) return null;
 
         var value = SqLite.GetFirstValueFromDataTable(dt).ToString();
@@ -547,7 +548,7 @@ public static class MessageDb
             videoId.Value,
             messageIdFrom,
             chatIdFromIdPerson,
-            ChatType.Private);
+            ChatType.Private, botClass);
 
         return await botClass.SendVideoAsync(chatIdToSendTo, video,
             caption, parseMode, typeOfChatSentInto.Value);
@@ -588,7 +589,7 @@ public static class MessageDb
             photoId.Value,
             messageIdFrom,
             chatIdFromIdPerson,
-            ChatType.Private);
+            ChatType.Private, botClass);
 
         return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
             caption, parseMode, typeOfChatSentInto.Value);

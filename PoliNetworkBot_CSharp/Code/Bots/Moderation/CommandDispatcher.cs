@@ -738,7 +738,7 @@ internal static class CommandDispatcher
             if (string.IsNullOrEmpty(query))
                 return null;
 
-            var groups = Utils.Groups.GetGroupsByTitle(query, limit);
+            var groups = Utils.Groups.GetGroupsByTitle(query, limit, sender);
 
             var indexTitle = groups.Columns.IndexOf("title");
             var indexLink = groups.Columns.IndexOf("link");
@@ -816,7 +816,7 @@ internal static class CommandDispatcher
 
         if (updateDb) await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
 
-        var groups = Utils.Groups.GetAllGroups(true);
+        var groups = Utils.Groups.GetAllGroups(sender,true);
 
         Variabili.L = new ListaGruppo();
 
@@ -972,7 +972,7 @@ internal static class CommandDispatcher
         var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-            r2 = Blacklist.IsSpam(message.Text, message.Chat.Id);
+            r2 = Blacklist.IsSpam(message.Text, message.Chat.Id, sender);
 
         var dict = new Dictionary<string, string>
         {
@@ -1004,7 +1004,7 @@ internal static class CommandDispatcher
 
          */
 
-        var groups = SqLite.ExecuteSelect("Select id From Groups");
+        var groups = SqLite.ExecuteSelect("Select id From Groups", sender.Connection);
 
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
@@ -1085,7 +1085,7 @@ internal static class CommandDispatcher
     {
         const string queryForBannedUsers =
             "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target == B2.target) and banned_true_unbanned_false == 83";
-        var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers);
+        var bannedUsers = SqLite.ExecuteSelect(queryForBannedUsers, sender.Connection);
         var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
         var bannedUsersIdArray = bannedUsersId.Select(user => long.Parse(user.ToString())).ToList();
 
@@ -1192,7 +1192,7 @@ internal static class CommandDispatcher
         var query = e.Message.ReplyToMessage.Text;
         if (execute_true_select_false)
         {
-            var i = SqLite.Execute(query);
+            var i = SqLite.Execute(query, sender.Connection);
 
             var text = new Language(new Dictionary<string, string>
             {
@@ -1203,7 +1203,7 @@ internal static class CommandDispatcher
             return i;
         }
 
-        var x = SqLite.ExecuteSelect(query);
+        var x = SqLite.ExecuteSelect(query, sender.Connection);
         var x2 = StreamSerialization.SerializeToStream(x);
         var documentInput =
             new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
@@ -1293,7 +1293,7 @@ internal static class CommandDispatcher
     public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
         string lang, ChatType chatType)
     {
-        var groups = Utils.Groups.GetAllGroups();
+        var groups = Utils.Groups.GetAllGroups(sender);
         Stream stream = new MemoryStream();
         FileSerialization.SerializeFile(groups, ref stream);
 

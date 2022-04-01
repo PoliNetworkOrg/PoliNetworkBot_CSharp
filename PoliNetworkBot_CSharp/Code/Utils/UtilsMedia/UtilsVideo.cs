@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -17,9 +18,9 @@ public static class UtilsVideo
         return replyToVideo;
     }
 
-    public static long? AddVideoToDb(Video video)
+    public static long? AddVideoToDb(Video video, TelegramBotAbstract sender)
     {
-        var photoId = GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId);
+        var photoId = GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
         if (photoId != null) return photoId.Value;
 
         var q =
@@ -39,26 +40,26 @@ public static class UtilsVideo
             { "@mime", video.MimeType }
         };
 
-        SqLite.Execute(q, keyValuePairs);
-        Tables.FixIdTable("Videos", "id_video", "file_id");
+        SqLite.Execute(q, sender.Connection, keyValuePairs);
+        Tables.FixIdTable("Videos", "id_video", "file_id", sender.Connection);
 
-        return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId);
+        return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
     }
 
-    private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
+    private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId, TelegramBotAbstract sender)
     {
-        var a = GetVideoId_From_FileId(fileId);
-        return a ?? GetVideoId_From_UniqueFileId(fileUniqueId);
+        var a = GetVideoId_From_FileId(fileId, sender);
+        return a ?? GetVideoId_From_UniqueFileId(fileUniqueId, sender);
     }
 
-    private static long? GetVideoId_From_UniqueFileId(string fileUniqueId)
+    private static long? GetVideoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract sender)
     {
         const string q2 = "SELECT id_video FROM Videos WHERE unique_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object>
         {
             { "@fi", fileUniqueId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
+        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
         var r2 = SqLite.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -74,14 +75,14 @@ public static class UtilsVideo
         }
     }
 
-    private static long? GetVideoId_From_FileId(string fileId)
+    private static long? GetVideoId_From_FileId(string fileId, TelegramBotAbstract sender)
     {
         const string q2 = "SELECT id_video FROM Videos WHERE file_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object>
         {
             { "@fi", fileId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
+        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
         var r2 = SqLite.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -98,10 +99,10 @@ public static class UtilsVideo
     }
 
     public static ObjectVideo GetVideoByIdFromDb(long videoId, long? messageIdFrom,
-        in long chatIdFromIdPerson, ChatType chatType)
+        in long chatIdFromIdPerson, ChatType chatType, TelegramBotAbstract sender)
     {
         var q = "SELECT * FROM Videos WHERE id_video = " + videoId;
-        var dt = SqLite.ExecuteSelect(q);
+        var dt = SqLite.ExecuteSelect(q, sender.Connection);
         if (dt == null || dt.Rows.Count == 0)
             return null;
 

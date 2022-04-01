@@ -90,7 +90,7 @@ internal static class RestrictUser
         }
 
         const string q1 = "SELECT id, type FROM Groups";
-        var dt = SqLite.ExecuteSelect(q1);
+        var dt = SqLite.ExecuteSelect(q1, sender.Connection);
         if (dt == null || dt.Rows.Count == 0)
         {
             var text3 = new Language(new Dictionary<string, string>
@@ -237,7 +237,7 @@ internal static class RestrictUser
                 throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
         }
 
-        LogBanAction(targetId.GetID().Value, banTarget, sender, e.Message.From.Id);
+        LogBanAction(targetId.GetID().Value, banTarget, sender, e.Message.From.Id, sender);
 
         var targetId2 = targetId.GetID();
         var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
@@ -355,7 +355,7 @@ internal static class RestrictUser
     }
 
     private static bool LogBanAction(long targetId, RestrictAction banned_true_unbanned_false,
-        TelegramBotAbstract bot, long who_banned)
+        TelegramBotAbstract bot, long who_banned, TelegramBotAbstract sender)
     {
         if (banned_true_unbanned_false != RestrictAction.BAN &&
             banned_true_unbanned_false != RestrictAction.UNBAN) return false;
@@ -381,7 +381,7 @@ internal static class RestrictUser
                 { "@target", targetId },
                 { "@btuf", StringUtil.ToSN(b) }
             };
-            var done = SqLite.Execute(q, dict);
+            var done = SqLite.Execute(q, sender.Connection , dict);
 
             return done > 0;
         }

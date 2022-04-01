@@ -8,6 +8,7 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
@@ -16,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -156,6 +158,7 @@ internal static class Program
 
         MessagesStore.InitializeMessageStore();
         CallbackUtils.InitializeCallbackDatas();
+        DbConfig.InitializeDbConfig();
     }
 
     private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -353,7 +356,7 @@ internal static class Program
 
         GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
         if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
-            foreach (var bot in _botInfos.bots)
+            foreach (BotInfoAbstract bot in _botInfos.bots)
             {
                 var token = bot.GetToken();
                 if (string.IsNullOrEmpty(token))
@@ -363,7 +366,11 @@ internal static class Program
                 if (botClient.BotId == null) continue;
                 GlobalVariables.Bots[botClient.BotId.Value] =
                     new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                        BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2);
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2)
+                    {
+                        Connection = bot.DbConfig != null 
+                            ? new MySqlConnection(bot.DbConfig.GetConnectionString()) : GlobalVariables.DbConnection
+                    };
 
                 var acceptMessages = bot.AcceptsMessages();
                 if (acceptMessages is null or false)

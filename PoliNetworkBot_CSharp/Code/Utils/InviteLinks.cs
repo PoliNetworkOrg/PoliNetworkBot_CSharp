@@ -24,7 +24,7 @@ internal static class InviteLinks
     internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender, MessageEventArgs e)
     {
         const string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
-        var dt = SqLite.ExecuteSelect(q1);
+        var dt = SqLite.ExecuteSelect(q1, sender.Connection);
 
         var n = 0;
         if (dt == null || dt.Rows.Count == 0)
@@ -72,7 +72,7 @@ internal static class InviteLinks
             return new NuovoLink(successoGenerazione);
         successoGenerazione = SuccessoGenerazioneLink.NUOVO_LINK;
 
-        SalvaNuovoLink(r, chatId);
+        SalvaNuovoLink(r, chatId, sender);
 
         return new NuovoLink(successoGenerazione, r);
     }
@@ -101,10 +101,10 @@ internal static class InviteLinks
         }
     }
 
-    private static void SalvaNuovoLink(string nuovoLink, long chatId)
+    private static void SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender)
     {
         const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
-        SqLite.Execute(q1, new Dictionary<string, object>
+        SqLite.Execute(q1, sender.Connection , new Dictionary<string, object>
         {
             { "@link", nuovoLink },
             { "@lul", DateTime.Now },
@@ -242,7 +242,7 @@ internal static class InviteLinks
             {
                 if (!string.IsNullOrEmpty(gruppoTG.idLink))
                 {
-                    var r1 = SqLite.ExecuteSelect(sql1);
+                    var r1 = SqLite.ExecuteSelect(sql1, sender.Connection);
                     if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                     {
                         var r2 = r1.Rows[0];
@@ -287,7 +287,7 @@ internal static class InviteLinks
             {
                 if (!string.IsNullOrEmpty(gruppoTG.nome))
                 {
-                    var r1 = SqLite.ExecuteSelect(sql2,
+                    var r1 = SqLite.ExecuteSelect(sql2, sender.Connection,
                         new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
                     if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                     {

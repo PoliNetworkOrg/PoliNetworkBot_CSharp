@@ -2,11 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
@@ -18,51 +15,15 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [JsonObject(MemberSerialization.Fields)]
 public static class FilePaths
 {
-    private static SQLiteConnection _con = Initialize();
 
-    /// <summary>
-    /// Initialize connection
-    /// </summary>
-    /// <returns></returns>
-    public static SQLiteConnection Initialize()
-    {
-        try
-        {
-            SQLiteConnection con;
-            if (!File.Exists(Paths.Data.MaterialDbPath))
-            {
-                File.WriteAllText(Paths.Data.MaterialDbPath, "");
-                con = new SQLiteConnection(Paths.MaterialDb);
-                SqLite.Execute("CREATE TABLE FilePaths (" +
-                               "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                               "file_and_git NVARCHAR(250)," +
-                               "location NVARCHAR(250)" +
-                               ") ", con);
-                con.Open();
-            }
-            else
-            {
-                con = new SQLiteConnection(Paths.MaterialDb);
-                con.Open();
-            }
-            
-            return con;
-        }
-        catch (Exception ex)
-        {
-            Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
-            throw new Exception("Error while initializing material db");
-        }
-    }
-
-    public static bool TryGetValue(string fileAndGit, out string output)
+    public static bool TryGetValue(string fileAndGit, TelegramBotAbstract telegramBotAbstract, out string output)
     {
         const string q1 = "SELECT location FROM FilePaths WHERE file_and_git = @v";
         var d = new Dictionary<string, object>
         {
             { "@v", fileAndGit }
         };
-        var data = SqLite.ExecuteSelect(q1, _con, d);
+        var data = SqLite.ExecuteSelect(q1, telegramBotAbstract.Connection, d);
         var value = SqLite.GetFirstValueFromDataTable(data);
         if (value == null)
         {
@@ -74,7 +35,7 @@ public static class FilePaths
         return true;
     }
 
-    public static bool TryAdd(string fileUniqueAndGit, string file)
+    public static bool TryAdd(string fileUniqueAndGit, TelegramBotAbstract telegramBotAbstract , string file)
     {
         try
         {
@@ -85,7 +46,7 @@ public static class FilePaths
                 {"@path", file}
 
             };
-            SqLite.Execute(q, _con,  keyValuePairs);
+            SqLite.Execute(q, telegramBotAbstract.Connection,  keyValuePairs);
             return true;
         }
         catch (Exception ex)

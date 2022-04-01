@@ -74,7 +74,7 @@ public class Main
 
     private static async Task HandleListAsync(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
     {
-        var taken = GetTaken();
+        var taken = GetTaken(telegramBotClient);
 
         const string emojiTaken = "🚫";
         const string emojiFree = "✅️";
@@ -105,10 +105,10 @@ public class Main
             ParseMode.Html, e.Message.MessageId, true);
     }
 
-    private static List<string> GetTaken()
+    private static List<string> GetTaken(TelegramBotAbstract telegramBotAbstract)
     {
         const string q = "SELECT * FROM Primo";
-        var r = SqLite.ExecuteSelect(q);
+        var r = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (r == null || r.Rows.Count == 0)
             return new List<string>();
 
@@ -133,7 +133,7 @@ public class Main
             return;
 
         const string q = "SELECT * FROM Primo WHERE title = @t";
-        var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@t", t } });
+        var r = SqLite.ExecuteSelect(q, telegramBotClient.Connection, new Dictionary<string, object> { { "@t", t } });
         if (r == null || r.Rows.Count == 0)
         {
             await MaybeKing(telegramBotClient, e, t, true);
@@ -163,7 +163,7 @@ public class Main
     private static async Task MaybeKing(TelegramBotAbstract telegramBotClient, MessageEventArgs e, string t,
         bool toInsert)
     {
-        var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(e);
+        var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(e, telegramBotClient);
         if (b == false)
         {
             if (toInsert)
@@ -172,7 +172,7 @@ public class Main
                                   " VALUES " +
                                   " (@title, @fn, @ln, @wk, @ki)";
 
-                var r2 = SqLite.Execute(q2, new Dictionary<string, object>
+                var r2 = SqLite.Execute(q2, telegramBotClient.Connection, new Dictionary<string, object>
                 {
                     { "@title", t },
                     { "@fn", e.Message.From.FirstName },
@@ -193,7 +193,7 @@ public class Main
                     { "@wk", DateTime.Now },
                     { "@ki", e.Message.From.Id }
                 };
-                var r3 = SqLite.Execute(q3, dict3);
+                var r3 = SqLite.Execute(q3, telegramBotClient.Connection , dict3);
             }
 
             await SendMessageYouAreKingAsync(telegramBotClient, e, t);
@@ -224,10 +224,11 @@ public class Main
         return r;
     }
 
-    private static Tuple<bool, List<string>> CheckIfLimitOfMaxKingsHasBeenReached(MessageEventArgs e)
+    private static Tuple<bool, List<string>> CheckIfLimitOfMaxKingsHasBeenReached(MessageEventArgs e,
+        TelegramBotAbstract telegramBotAbstract)
     {
         var q = "SELECT * FROM Primo";
-        var r = SqLite.ExecuteSelect(q);
+        var r = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (r == null || r.Rows.Count == 0)
             return new Tuple<bool, List<string>>(false, null);
 

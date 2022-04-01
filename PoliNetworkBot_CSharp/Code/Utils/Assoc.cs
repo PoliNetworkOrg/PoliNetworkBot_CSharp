@@ -25,7 +25,7 @@ internal static class Assoc
     {
         const string q =
             "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
-        var r = SqLite.ExecuteSelect(q, new Dictionary<string, object> { { "@idp", id } });
+        var r = SqLite.ExecuteSelect(q, sender.Connection, new Dictionary<string, object> { { "@idp", id } });
         if (r == null || r.Rows.Count == 0) return null;
 
         if (r.Rows.Count == 1) return Convert.ToInt64(r.Rows[0].ItemArray[0]);
@@ -77,7 +77,7 @@ internal static class Assoc
             return false;
         }
 
-        var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value);
+        var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender);
         if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
         {
             var languageList4 = new Language(new Dictionary<string, string>
@@ -286,7 +286,7 @@ internal static class Assoc
     private static async Task<bool> DeleteMessageFromQueueAsync(DataRowCollection messages, long v,
         TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
     {
-        var r = DeleteMessageFromQueueSingle(messages, v);
+        var r = DeleteMessageFromQueueSingle(messages, v, telegramBotAbstract);
         if (r)
         {
             var text1 = new Language(new Dictionary<string, string>
@@ -313,7 +313,7 @@ internal static class Assoc
         return r;
     }
 
-    private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v)
+    private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v, TelegramBotAbstract sender)
     {
         const string q = "DELETE FROM Messages WHERE ID = @id";
         DataRow dr = null;
@@ -336,15 +336,15 @@ internal static class Assoc
         {
             { "@id", id }
         };
-        SqLite.Execute(q, args);
+        SqLite.Execute(q, sender.Connection, args);
 
         return true;
     }
 
-    internal static string GetNameOfEntityFromItsId(long value)
+    internal static string GetNameOfEntityFromItsId(long value, TelegramBotAbstract sender)
     {
         var q = "SELECT name FROM Entities WHERE id = " + value;
-        var r = SqLite.ExecuteSelect(q);
+        var r = SqLite.ExecuteSelect(q, sender.Connection);
         if (r == null || r.Rows.Count == 0)
             return null;
 
@@ -414,7 +414,7 @@ internal static class Assoc
         }
 
         var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
-        var r = SqLite.ExecuteSelect(q, dict2);
+        var r = SqLite.ExecuteSelect(q, sender.Connection, dict2);
         if (r != null && r.Rows.Count != 0) return r.Rows;
         var text = new Language(new Dictionary<string, string>
         {
@@ -437,7 +437,7 @@ internal static class Assoc
             count);
     }
 
-    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity)
+    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender)
     {
         if (messageFromIdEntity == 2) return false;
 
@@ -446,7 +446,7 @@ internal static class Assoc
                 "WHERE Messages.from_id_entity = " + messageFromIdEntity +
                 " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
 
-        var dt = SqLite.ExecuteSelect(q);
+        var dt = SqLite.ExecuteSelect(q, sender.Connection);
 
         if (dt?.Rows == null)
             return null;

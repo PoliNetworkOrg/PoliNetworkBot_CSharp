@@ -196,7 +196,7 @@ public class Program
                 var fromId = long.Parse(callbackdata[1]);
                 //if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
                 //    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
-                if(!FilePaths.TryGetValue(callbackdata[2], out var directory))
+                if(!FilePaths.TryGetValue(callbackdata[2], sender, out var directory))
                     throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
                 var a = directory.Split("/");
                 directory = "";
@@ -304,7 +304,7 @@ public class Program
         var callbackQuery = callbackQueryEventArgs.CallbackQuery;
         var callbackdata = callbackQuery.Data.Split("|");
         var FromId = long.Parse(callbackdata[1]);
-        if (!FilePaths.TryGetValue(callbackdata[2], out var fileNameWithPath))
+        if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
             throw new Exception("Errore nel dizionario dei Path!");
         if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
         {
@@ -506,10 +506,10 @@ public class Program
         var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
         var fileAlreadyPresent = false;
         string oldPath = null;
-        if (!FilePaths.TryAdd(FileUniqueAndGit, file))
+        if (!FilePaths.TryAdd(FileUniqueAndGit, telegramBotAbstract, file))
         {
             //Verifica anti-SPAM, da attivare se servisse
-            if (FilePaths.TryGetValue(FileUniqueAndGit, out oldPath))
+            if (FilePaths.TryGetValue(FileUniqueAndGit, telegramBotAbstract, out oldPath))
                 fileAlreadyPresent = true;
             else
                 throw new Exception("Fatal error while handling path dictionary");

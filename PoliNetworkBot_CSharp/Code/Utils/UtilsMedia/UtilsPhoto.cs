@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -30,9 +31,9 @@ internal static class UtilsPhoto
         return r;
     }
 
-    internal static long? AddPhotoToDb(PhotoSize photoLarge)
+    internal static long? AddPhotoToDb(PhotoSize photoLarge, TelegramBotAbstract sender)
     {
-        var photoId = GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId);
+        var photoId = GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
         if (photoId != null) return photoId.Value;
 
         const string q =
@@ -46,26 +47,26 @@ internal static class UtilsPhoto
             { "@u", photoLarge.FileUniqueId }
         };
 
-        SqLite.Execute(q, keyValuePairs);
-        Tables.FixIdTable("Photos", "id_photo", "file_id");
+        SqLite.Execute(q, sender.Connection, keyValuePairs);
+        Tables.FixIdTable("Photos", "id_photo", "file_id", sender.Connection);
 
-        return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId);
+        return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId)
+    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId, TelegramBotAbstract sender)
     {
-        var a = GetPhotoId_From_FileId(fileId);
-        return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId);
+        var a = GetPhotoId_From_FileId(fileId, sender);
+        return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId)
+    private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract sender)
     {
         const string q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object>
         {
             { "@fi", fileUniqueId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
+        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
         var r2 = SqLite.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -81,14 +82,14 @@ internal static class UtilsPhoto
         }
     }
 
-    private static long? GetPhotoId_From_FileId(string fileId)
+    private static long? GetPhotoId_From_FileId(string fileId , TelegramBotAbstract sender)
     {
         const string q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object>
         {
             { "@fi", fileId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, keyValuePairs2);
+        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
         var r2 = SqLite.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -105,10 +106,10 @@ internal static class UtilsPhoto
     }
 
     public static ObjectPhoto GetPhotoByIdFromDb(long photoIdFromFb, long? messageIdFrom, long chatId,
-        ChatType chatType)
+        ChatType chatType, TelegramBotAbstract sender)
     {
         var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;
-        var dt = SqLite.ExecuteSelect(q);
+        var dt = SqLite.ExecuteSelect(q, sender.Connection);
         if (dt == null || dt.Rows.Count == 0)
             return null;
 

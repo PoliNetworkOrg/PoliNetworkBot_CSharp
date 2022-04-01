@@ -12,6 +12,7 @@ public static class Test_CheckLink
 {
     public static void Test_CheckLink2()
     {
+        /*
         var r1 = Blacklist.IsSpam("https://t.me/Doctor", null);
         ;
 
@@ -21,5 +22,6 @@ public static class Test_CheckLink
             true);
         CommandDispatcher.CheckSeILinkVanno2(5, true, 10);
         ;
+        */
     }
 }

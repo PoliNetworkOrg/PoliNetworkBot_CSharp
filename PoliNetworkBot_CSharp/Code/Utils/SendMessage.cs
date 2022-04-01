@@ -164,7 +164,7 @@ internal static class SendMessage
         {
             var photoLarge = UtilsPhoto.GetLargest(replyTo.Photo);
             if (photoLarge == null) return SuccessQueue.INVALID_OBJECT;
-            var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge);
+            var photoIdDb = UtilsPhoto.AddPhotoToDb(photoLarge, sender);
             if (photoIdDb == null)
                 return SuccessQueue.INVALID_ID_TO_DB;
 
@@ -173,7 +173,7 @@ internal static class SendMessage
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
                 (long)sender.GetId(), replyTo.MessageId,
-                typeChatSentInto, photoIdDb.Value, null);
+                typeChatSentInto, photoIdDb.Value, null, sender);
         }
         else if (replyTo.Video != null)
         {
@@ -181,7 +181,7 @@ internal static class SendMessage
             var video = replyTo.Video;
 
             var videoMax = UtilsVideo.GetLargest(video);
-            var videoIdDb = UtilsVideo.AddVideoToDb(videoMax);
+            var videoIdDb = UtilsVideo.AddVideoToDb(videoMax, sender);
             if (videoIdDb == null)
                 return SuccessQueue.INVALID_ID_TO_DB;
 
@@ -190,7 +190,7 @@ internal static class SendMessage
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
                 (long)sender.GetId(), replyTo.MessageId,
-                typeChatSentInto, null, videoIdDb.Value);
+                typeChatSentInto, null, videoIdDb.Value, sender);
         }
         else
         {
