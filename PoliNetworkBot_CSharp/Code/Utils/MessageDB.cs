@@ -39,7 +39,7 @@ public static class MessageDb
         var id = Tables.GetMaxId("Messages", "id", sender.Connection);
         id++;
 
-        SqLite.Execute(q, sender.Connection, new Dictionary<string, object>
+        Database.Execute(q, sender.Connection, new Dictionary<string, object>
         {
             { "@id", id },
             { "@fip", messageFromIdPerson },
@@ -67,8 +67,8 @@ public static class MessageDb
 
             const string q1 = "SELECT id FROM MessageTypes WHERE name = @name";
             var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-            var r1 = SqLite.ExecuteSelect(q1, sender.Connection, keyValuePairs);
-            var r2 = SqLite.GetFirstValueFromDataTable(r1);
+            var r1 = Database.ExecuteSelect(q1, sender.Connection, keyValuePairs);
+            var r2 = Database.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)
             {
                 AddMessageType(type,sender);
@@ -91,7 +91,7 @@ public static class MessageDb
     {
         const string q = "INSERT INTO MessageTypes (name) VALUES (@name)";
         var keyValuePairs = new Dictionary<string, object> { { "@name", type.ToString() } };
-        SqLite.Execute(q, bot.Connection, keyValuePairs);
+        Database.Execute(q, bot.Connection, keyValuePairs);
         Tables.FixIdTable("MessageTypes", "id", "name", bot.Connection);
     }
 
@@ -102,7 +102,7 @@ public static class MessageDb
         const string q = "SELECT * " +
                          "FROM Messages ";
 
-        dt = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
+        dt = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -242,7 +242,7 @@ public static class MessageDb
             return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
         var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
-        SqLite.Execute(q2, telegramBotAbstract.Connection);
+        Database.Execute(q2, telegramBotAbstract.Connection);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
     }
@@ -503,10 +503,10 @@ public static class MessageDb
             return MessageTypesInRam[typeI];
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
-        var dt = SqLite.ExecuteSelect(q, sender.Connection);
+        var dt = Database.ExecuteSelect(q, sender.Connection);
         if (dt == null || dt.Rows.Count == 0) return null;
 
-        var value = SqLite.GetFirstValueFromDataTable(dt).ToString();
+        var value = Database.GetFirstValueFromDataTable(dt).ToString();
         if (string.IsNullOrEmpty(value)) return null;
 
         MessageTypesInRam[typeI] = value;
@@ -516,7 +516,7 @@ public static class MessageDb
     private static async Task<MessageSentResult> SendVideoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
         ParseMode parseMode, long? chatIdToSendTo2, ChatType? chatTypeToSendTo)
     {
-        var videoId = SqLite.GetIntFromColumn(dr, "id_video");
+        var videoId = Database.GetIntFromColumn(dr, "id_video");
         if (videoId == null)
             return new MessageSentResult(false, null, chatTypeToSendTo);
 
@@ -557,7 +557,7 @@ public static class MessageDb
     private static async Task<MessageSentResult> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract botClass,
         ParseMode parseMode, long? chatIdToSendTo2, ChatType? chatTypeToSendTo)
     {
-        var photoId = SqLite.GetIntFromColumn(dr, "id_photo");
+        var photoId = Database.GetIntFromColumn(dr, "id_photo");
         if (photoId == null)
             return new MessageSentResult(false, null, chatTypeToSendTo);
 

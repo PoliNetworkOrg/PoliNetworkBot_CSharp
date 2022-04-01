@@ -108,7 +108,7 @@ public class Main
     private static List<string> GetTaken(TelegramBotAbstract telegramBotAbstract)
     {
         const string q = "SELECT * FROM Primo";
-        var r = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
+        var r = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (r == null || r.Rows.Count == 0)
             return new List<string>();
 
@@ -133,7 +133,7 @@ public class Main
             return;
 
         const string q = "SELECT * FROM Primo WHERE title = @t";
-        var r = SqLite.ExecuteSelect(q, telegramBotClient.Connection, new Dictionary<string, object> { { "@t", t } });
+        var r = Database.ExecuteSelect(q, telegramBotClient.Connection, new Dictionary<string, object> { { "@t", t } });
         if (r == null || r.Rows.Count == 0)
         {
             await MaybeKing(telegramBotClient, e, t, true);
@@ -172,7 +172,7 @@ public class Main
                                   " VALUES " +
                                   " (@title, @fn, @ln, @wk, @ki)";
 
-                var r2 = SqLite.Execute(q2, telegramBotClient.Connection, new Dictionary<string, object>
+                var r2 = Database.Execute(q2, telegramBotClient.Connection, new Dictionary<string, object>
                 {
                     { "@title", t },
                     { "@fn", e.Message.From.FirstName },
@@ -193,7 +193,7 @@ public class Main
                     { "@wk", DateTime.Now },
                     { "@ki", e.Message.From.Id }
                 };
-                var r3 = SqLite.Execute(q3, telegramBotClient.Connection , dict3);
+                var r3 = Database.Execute(q3, telegramBotClient.Connection , dict3);
             }
 
             await SendMessageYouAreKingAsync(telegramBotClient, e, t);
@@ -228,7 +228,7 @@ public class Main
         TelegramBotAbstract telegramBotAbstract)
     {
         var q = "SELECT * FROM Primo";
-        var r = SqLite.ExecuteSelect(q, telegramBotAbstract.Connection);
+        var r = Database.ExecuteSelect(q, telegramBotAbstract.Connection);
         if (r == null || r.Rows.Count == 0)
             return new Tuple<bool, List<string>>(false, null);
 

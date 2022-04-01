@@ -10,7 +10,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public static class SqLite
+public static class Database
 {
 
     /*
@@ -77,15 +77,19 @@ public static class SqLite
     {
         var cmd = new MySqlCommand(query, connection);
         
-        OpenConnection();
+        OpenConnection(connection);
         
         if (args != null)
             foreach (var (key, value) in args)
                 cmd.Parameters.AddWithValue(key, value);
-        
-        var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
-        return numberOfRowsAffected;
+        lock (connection)
+        {
+            var numberOfRowsAffected = cmd.ExecuteNonQuery();
+            
+            
+            return numberOfRowsAffected;
+        }
     }
 
     public static DataTable ExecuteSelect(string query, MySqlConnection connection, Dictionary<string, object> args = null)
@@ -97,9 +101,12 @@ public static class SqLite
             foreach (var (key, value) in args)
                 cmd.Parameters.AddWithValue(key, value);
 
-        OpenConnection();
-        
-        var dr = cmd.ExecuteReader();
+        OpenConnection(connection);
+        MySqlDataReader dr;
+        lock (connection)
+        {
+            dr = cmd.ExecuteReader();
+     
 
         var dt = new DataTable();
         var da = new MySqlDataAdapter(cmd);
@@ -111,14 +118,17 @@ public static class SqLite
 
         da.Fill(dt);
         da.Dispose();
+        dr.Close();
+        dr.Dispose();
         return dt;
+        }
     }
 
-    private static void OpenConnection()
+    private static void OpenConnection(MySqlConnection connection)
     {
-        if (GlobalVariables.DbConnection.State != ConnectionState.Open)
+        if (connection.State != ConnectionState.Open)
         {
-            GlobalVariables.DbConnection.Open();
+            connection.Open();
         }
     }
 

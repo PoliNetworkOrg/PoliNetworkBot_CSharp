@@ -59,7 +59,7 @@ internal static class ModerationCheck
         lock (Lock)
         {
             const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
-            var dt = SqLite.ExecuteSelect(q1, GlobalVariables.DbConnection, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+            var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConnection, new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)
             {
                 var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
@@ -167,7 +167,7 @@ internal static class ModerationCheck
                 { "@valid", valid },
                 { "@id", messageEventArgs.Message.Chat.Id }
             };
-            SqLite.Execute(q, GlobalVariables.DbConnection, d);
+            Database.Execute(q, GlobalVariables.DbConnection, d);
             var name = "";
             if (messageEventArgs is { Message.Chat.Title: { } })
                 name = messageEventArgs.Message.Chat.Title;
@@ -196,7 +196,7 @@ internal static class ModerationCheck
             { "@valid", valid },
             { "@id", e.Message.Chat.Id }
         };
-        SqLite.Execute(q, GlobalVariables.DbConnection, d);
+        Database.Execute(q, GlobalVariables.DbConnection, d);
 
         ints.Insert(0, 2);
         return new Tuple<ToExit, ChatMember[], List<int>>(toExit, chatMembers, ints);
@@ -220,7 +220,7 @@ internal static class ModerationCheck
         try
         {
             const string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
-            SqLite.Execute(q1, GlobalVariables.DbConnection, new Dictionary<string, object>
+            Database.Execute(q1, GlobalVariables.DbConnection, new Dictionary<string, object>
             {
                 { "@id", e.Message.Chat.Id },
                 { "@botid", sender.GetId() },

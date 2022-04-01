@@ -1,14 +1,12 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
@@ -29,21 +27,41 @@ public class DbConfig
     {
         if (File.Exists(Paths.Info.DbConfig))
         {
-            GlobalVariables.DbConfig = JsonConvert.DeserializeObject<DbConfig>(Paths.Info.DbConfig);
+            try
+            {
+                var text = File.ReadAllText(Paths.Info.DbConfig);
+                GlobalVariables.DbConfig = JsonConvert.DeserializeObject<DbConfig>(text);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
+
+            if (GlobalVariables.DbConfig == null)
+            {
+                GenerateDbConfigEmpty();
+            }
         }
         else
         {
-            GlobalVariables.DbConfig = new DbConfig();
-            var x = JsonConvert.SerializeObject(GlobalVariables.DbConfig);
-            File.WriteAllText(Paths.Info.DbConfig, x);
-            Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
+            GenerateDbConfigEmpty();
         }
-        GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfig.GetConnectionString());
+        
+        GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfig?.GetConnectionString());
         
     }
 
+    private static void GenerateDbConfigEmpty()
+    {
+        GlobalVariables.DbConfig = new DbConfig();
+        var x = JsonConvert.SerializeObject(GlobalVariables.DbConfig);
+        File.WriteAllText(Paths.Info.DbConfig, x);
+        Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
+        throw new Exception("Database failed to initialize, we generated an empty file to fill");
+    }
+
     public string GetConnectionString()
-    { /*todo*/
-        return "server=localhost;user=bot;database=polinetwork;port=3306;password=temp";
+    {
+        return "server=localhost;user=bot;database=polinetwork;port=3306;password=root";
     }
 }

@@ -15,7 +15,7 @@ internal static class Tables
     {
         var r4 = GetMaxId(tableName, columnIdName, connection);
         var q2 = "SELECT * FROM " + tableName + " WHERE " + columnIdName + " IS NULL";
-        var r5 = SqLite.ExecuteSelect(q2, connection);
+        var r5 = Database.ExecuteSelect(q2, connection);
         if (r5 == null)
             return;
 
@@ -26,15 +26,15 @@ internal static class Tables
             var valueUnique = dr[uniqueColumn].ToString();
             var q3 = "UPDATE " + tableName + " SET " + columnIdName + "=" + r4 + " WHERE " + uniqueColumn +
                      "='" + valueUnique + "'";
-            SqLite.Execute(q3, connection);
+            Database.Execute(q3, connection);
         }
     }
 
     internal static long GetMaxId(string tableName, string columnIdName, MySqlConnection connection)
     {
         var q = "SELECT MAX(" + columnIdName + ") FROM " + tableName;
-        var r = SqLite.ExecuteSelect(q, connection);
-        var r2 = SqLite.GetFirstValueFromDataTable(r);
+        var r = Database.ExecuteSelect(q, connection);
+        var r2 = Database.GetFirstValueFromDataTable(r);
         if (r2 == null) return 0;
 
         try

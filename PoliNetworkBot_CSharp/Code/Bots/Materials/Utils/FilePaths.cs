@@ -23,8 +23,8 @@ public static class FilePaths
         {
             { "@v", fileAndGit }
         };
-        var data = SqLite.ExecuteSelect(q1, telegramBotAbstract.Connection, d);
-        var value = SqLite.GetFirstValueFromDataTable(data);
+        var data = Database.ExecuteSelect(q1, telegramBotAbstract.Connection, d);
+        var value = Database.GetFirstValueFromDataTable(data);
         if (value == null)
         {
             output = null;
@@ -46,7 +46,7 @@ public static class FilePaths
                 {"@path", file}
 
             };
-            SqLite.Execute(q, telegramBotAbstract.Connection,  keyValuePairs);
+            Database.Execute(q, telegramBotAbstract.Connection,  keyValuePairs);
             return true;
         }
         catch (Exception ex)

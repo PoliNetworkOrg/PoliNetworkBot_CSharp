@@ -207,14 +207,14 @@ internal static class Blacklist
         DataTable dt = null;
         try
         {
-            dt = SqLite.ExecuteSelect(q1, botAbstract.Connection, new Dictionary<string, object> { { "@link", link } });
+            dt = Database.ExecuteSelect(q1, botAbstract.Connection, new Dictionary<string, object> { { "@link", link } });
         }
         catch
         {
             ;
         }
 
-        var value = SqLite.GetFirstValueFromDataTable(dt);
+        var value = Database.GetFirstValueFromDataTable(dt);
         if (value == null)
             return false;
         var s = value.ToString();

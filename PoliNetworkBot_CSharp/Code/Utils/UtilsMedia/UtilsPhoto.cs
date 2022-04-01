@@ -47,7 +47,7 @@ internal static class UtilsPhoto
             { "@u", photoLarge.FileUniqueId }
         };
 
-        SqLite.Execute(q, sender.Connection, keyValuePairs);
+        Database.Execute(q, sender.Connection, keyValuePairs);
         Tables.FixIdTable("Photos", "id_photo", "file_id", sender.Connection);
 
         return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
@@ -66,8 +66,8 @@ internal static class UtilsPhoto
         {
             { "@fi", fileUniqueId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
-        var r2 = SqLite.GetFirstValueFromDataTable(r1);
+        var r1 = Database.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
+        var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
             return null;
@@ -89,8 +89,8 @@ internal static class UtilsPhoto
         {
             { "@fi", fileId }
         };
-        var r1 = SqLite.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
-        var r2 = SqLite.GetFirstValueFromDataTable(r1);
+        var r1 = Database.ExecuteSelect(q2, sender.Connection, keyValuePairs2);
+        var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
             return null;
@@ -109,7 +109,7 @@ internal static class UtilsPhoto
         ChatType chatType, TelegramBotAbstract sender)
     {
         var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;
-        var dt = SqLite.ExecuteSelect(q, sender.Connection);
+        var dt = Database.ExecuteSelect(q, sender.Connection);
         if (dt == null || dt.Rows.Count == 0)
             return null;
 

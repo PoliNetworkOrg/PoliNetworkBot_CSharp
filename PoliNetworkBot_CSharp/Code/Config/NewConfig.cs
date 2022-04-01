@@ -87,7 +87,7 @@ public static class NewConfig
     private static void CleanDb()
     {
         const string s = "SELECT name FROM sqlite_master WHERE type='table'";
-        var r1 = SqLite.ExecuteSelect(s, GlobalVariables.DbConnection);
+        var r1 = Database.ExecuteSelect(s, GlobalVariables.DbConnection);
         if (r1 == null)
             return;
 
@@ -101,14 +101,14 @@ public static class NewConfig
             else
             {
                 var q = "DROP TABLE IF EXISTS " + name;
-                SqLite.Execute(q, GlobalVariables.DbConnection);
+                Database.Execute(q, GlobalVariables.DbConnection);
             }
         }
     }
 
     private static void Redo_DB(bool alsoFillTablesFromJson)
     {
-        SqLite.Execute("CREATE TABLE Groups (" +
+        Database.Execute("CREATE TABLE Groups (" +
                        "id BIGINT PRIMARY KEY, " +
                        "bot_id INT(12)," +
                        "valid CHAR(1)," +
@@ -121,13 +121,13 @@ public static class NewConfig
         if (alsoFillTablesFromJson)
             FillGroups(0);
 
-        SqLite.Execute("CREATE TABLE PeopleInEntities (" +
+        Database.Execute("CREATE TABLE PeopleInEntities (" +
                        "id_entity INT(12)," +
                        "id_person INT(12)," +
                        "CONSTRAINT PK_Person PRIMARY KEY (id_entity,id_person)" +
                        ");", GlobalVariables.DbConnection);
 
-        SqLite.Execute("CREATE TABLE Entities (" +
+        Database.Execute("CREATE TABLE Entities (" +
                        "id INT(12) PRIMARY KEY," +
                        "name VARCHAR(250)" +
                        ");", GlobalVariables.DbConnection);
@@ -135,7 +135,7 @@ public static class NewConfig
         if (alsoFillTablesFromJson)
             FillAssoc(GlobalVariables.DbConnection);
 
-        SqLite.Execute("CREATE TABLE Messages (" +
+        Database.Execute("CREATE TABLE Messages (" +
                        "id INT(12) PRIMARY KEY," +
                        "from_id_person INT(12)," +
                        "from_id_entity INT(12)," +
@@ -155,12 +155,12 @@ public static class NewConfig
                        "type_chat_sent_into VARCHAR(250)" +
                        ");" , GlobalVariables.DbConnection);
 
-        SqLite.Execute("CREATE TABLE MessageTypes (" +
+        Database.Execute("CREATE TABLE MessageTypes (" +
                        "id INT(12) PRIMARY KEY," +
                        "name VARCHAR(250)" +
                        ");" , GlobalVariables.DbConnection);
 
-        SqLite.Execute("CREATE TABLE Photos (" +
+        Database.Execute("CREATE TABLE Photos (" +
                        "id_photo INT(12) PRIMARY KEY," +
                        "file_id VARCHAR(250)," +
                        "file_size INT(12)," +
@@ -169,7 +169,7 @@ public static class NewConfig
                        "unique_id VARCHAR(250)" +
                        ");", GlobalVariables.DbConnection);
 
-        SqLite.Execute("CREATE TABLE Videos (" +
+        Database.Execute("CREATE TABLE Videos (" +
                        "id_video INT(12) PRIMARY KEY," +
                        "file_id VARCHAR(250)," +
                        "file_size INT(12)," +
@@ -265,7 +265,7 @@ public static class NewConfig
             const string q1 = "INSERT INTO Groups (id, bot_id, type, title, link, last_update_link, valid) " +
                               " VALUES " +
                               " (@id, @botid, @type, @title, @link, @lul, @valid)";
-            SqLite.Execute(q1, GlobalVariables.DbConnection, new Dictionary<string, object>
+            Database.Execute(q1, GlobalVariables.DbConnection, new Dictionary<string, object>
             {
                 { "@id", chat.id },
                 { "@botid", botIdWhoInsertedThem },
@@ -425,14 +425,14 @@ public static class NewConfig
     private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users, MySqlConnection connection)
     {
         const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-        _ = SqLite.Execute(q1 , GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
+        _ = Database.Execute(q1 , GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
 
         Tables.FixIdTable("Entities", "id", "name", connection);
 
         const string q2 = "SELECT id FROM Entities WHERE Name = @name";
-        var r2 = SqLite.ExecuteSelect(q2, GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
+        var r2 = Database.ExecuteSelect(q2, GlobalVariables.DbConnection, new Dictionary<string, object> { { "@name", name } });
 
-        var r3 = SqLite.GetFirstValueFromDataTable(r2);
+        var r3 = Database.GetFirstValueFromDataTable(r2);
         long? r4 = null;
         try
         {
@@ -455,7 +455,7 @@ public static class NewConfig
         foreach (var u in users)
         {
             const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
-            _ = SqLite.Execute(q3, GlobalVariables.DbConnection , new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+            _ = Database.Execute(q3, GlobalVariables.DbConnection , new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
         }
 
         return true;

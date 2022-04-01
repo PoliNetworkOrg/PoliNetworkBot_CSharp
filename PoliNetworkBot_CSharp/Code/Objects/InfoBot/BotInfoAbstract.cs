@@ -32,14 +32,15 @@ public class BotInfoAbstract
     public long? userId;
     public string website;
     public DbConfig DbConfig;
+    public BotProgramType Type; //todo
 
     internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
     {
-        return onMessages switch
+        return onMessages switch //return BotProgramType
         {
-            "a" => CallbackUtils.CallbackMethodStart,
-            "m" => CallbackUtils.CallbackMethodStart,
-            "mat" => Program.BotOnCallbackQueryReceived,
+            BotStartMethods.Anon => CallbackUtils.CallbackMethodStart,
+            BotStartMethods.Moderation => CallbackUtils.CallbackMethodStart,
+            BotStartMethods.Material => Program.BotOnCallbackQueryReceived,
             _ => null
         };
     }

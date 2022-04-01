@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -385,7 +387,7 @@ internal static class Program
                 {
                     try
                     {
-                        PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value], null);
+                        PreStartupActionsAsync(GlobalVariables.Bots[botClient.BotId.Value], null, bot);
                         _ = StartBotsAsync2Async(botClientWhole);
                     }
                     catch (Exception ex)
@@ -465,7 +467,7 @@ internal static class Program
     }
 
     private static void PreStartupActionsAsync(TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+        MessageEventArgs messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
         if (Logger.ContainsCriticalErrors(out var critics))
         {
@@ -476,6 +478,22 @@ internal static class Program
 
         using var powershell = PowerShell.Create();
         foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
+
+        if (botInfoAbstract.onMessages == BotStartMethods.Material)
+        {
+            try
+            {
+                _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.Connection);
+            }
+            catch (MySqlException ex)
+            {
+                Database.Execute("CREATE TABLE FilePaths (" +
+                                 "file_and_git VARCHAR(250)," +
+                                 "location VARCHAR(250)" +
+                                 ") ", telegramBotAbstract.Connection);
+            }
+            
+        }
     }
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
