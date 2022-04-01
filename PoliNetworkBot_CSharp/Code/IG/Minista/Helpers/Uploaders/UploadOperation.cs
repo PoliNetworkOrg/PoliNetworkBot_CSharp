@@ -44,7 +44,7 @@ internal class UploadOperation
             Console.WriteLine(responseString);
             ;
 
-            var request = instaApi.HttpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, instaApi._deviceInfo, c);
+            var request = instaApi.HttpHelper.GetDefaultRequest(instaUri, instaApi._deviceInfo, c);
             var response2 = await instaApi.HttpRequestProcessor.SendAsync(request);
             var json = await response2.Content.ReadAsStringAsync();
             ;

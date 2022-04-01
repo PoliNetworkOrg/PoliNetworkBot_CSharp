@@ -89,7 +89,7 @@ internal static class Main
 
             if (checkSpam == SpamType.SPAM_PERMITTED)
             {
-                await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e, checkSpam);
+                await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e);
                 return;
             }
 

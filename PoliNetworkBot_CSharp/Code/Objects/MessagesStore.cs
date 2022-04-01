@@ -114,7 +114,7 @@ public static class MessagesStore
         return r;
     }
 
-    internal static SpamType StoreAndCheck(MessageEventArgs e, Message message)
+    internal static SpamType StoreAndCheck(Message message)
     {
         if (message == null)
             return SpamType.UNDEFINED;

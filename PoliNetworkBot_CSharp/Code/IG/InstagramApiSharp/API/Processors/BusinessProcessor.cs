@@ -66,7 +66,7 @@ internal class BusinessProcessor : IBusinessProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -140,7 +140,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "category_id", subCategoryId }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -267,7 +267,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "query_params", queryParams.ToString(Formatting.None) }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -318,7 +318,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "doc_id", "1527362987318283" }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -435,7 +435,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "doc_id", "1926322010754880" }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -486,7 +486,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "query_params", queryParams.ToString(Formatting.None) }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -539,7 +539,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "query_params", queryParams.ToString(Formatting.None) }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -615,7 +615,7 @@ internal class BusinessProcessor : IBusinessProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -688,7 +688,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "query_params", queryParams.ToString(Formatting.None) }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -812,7 +812,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "business_address", businessAddress.ToString(Formatting.None) }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -867,7 +867,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaBusinessValidateUrl>(json);
@@ -915,7 +915,7 @@ internal class BusinessProcessor : IBusinessProcessor
             data.Add("removed_user_ids", removeArray);
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
 
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
@@ -982,7 +982,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1022,7 +1022,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 

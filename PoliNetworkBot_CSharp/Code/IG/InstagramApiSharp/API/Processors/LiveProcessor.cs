@@ -64,7 +64,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -109,7 +109,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -155,7 +155,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "broadcast_type", "RTMP" },
                 { "internal_only", 0 }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -192,7 +192,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -228,7 +228,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -266,7 +266,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -306,7 +306,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uid", _user.LoggedInUser.UserName },
                 { "end_after_copyright_warning", endAfterCopyrightWarning.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -561,8 +561,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     Get broadcast like count.
     /// </summary>
     /// <param name="broadcastId">Broadcast id</param>
-    /// <param name="likeTs">Like time stamp</param>
-    public async Task<IResult<InstaBroadcastLike>> GetLikeCountAsync(string broadcastId, int likeTs = 0)
+    public async Task<IResult<InstaBroadcastLike>> GetLikeCountAsync(string broadcastId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -592,8 +591,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     Get post live viewer list.
     /// </summary>
     /// <param name="broadcastId">Broadcast id</param>
-    /// <param name="maxId">Max id</param>
-    public async Task<IResult<InstaUserShortList>> GetPostLiveViewerListAsync(string broadcastId, int? maxId = null)
+    public async Task<IResult<InstaUserShortList>> GetPostLiveViewerListAsync(string broadcastId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var viewers = new InstaUserShortList();
@@ -668,7 +666,7 @@ internal class LiveProcessor : ILiveProcessor
             {
                 { "broadcast_ids", new JArray(broadcastIds) }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -741,7 +739,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "user_like_count", likeCount }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -780,7 +778,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "comment_id", commentId },
                 { "offset_to_video_start", 0 }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -817,7 +815,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "should_send_notifications", sendNotifications }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaBroadcastStartResponse>(json);
@@ -875,7 +873,7 @@ internal class LiveProcessor : ILiveProcessor
             };
             if (threadIds?.Length > 0) data.Add("thread_ids", $"[{threadIds.EncodeList(false)}]");
             if (recipients?.Length > 0) data.Add("recipient_users", "[[" + recipients.EncodeList(false) + "]]");
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -928,7 +926,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "comment_id", commentId },
                 { "offset_to_video_start", 0 }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1062,7 +1060,7 @@ internal class LiveProcessor : ILiveProcessor
                 { "live_vods", new JObject() },
                 { "reel_media_skipped", new JObject() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode != HttpStatusCode.OK

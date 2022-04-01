@@ -148,7 +148,7 @@ internal static class ExtensionHelper
         var associatedData = Encoding.UTF8.GetBytes(time.ToString());
         var pubKEY = Encoding.UTF8.GetString(Convert.FromBase64String(pubKey));
         byte[] encryptedKey;
-        using (var rdr = PemKeyUtils.GetRSAProviderFromPemString(pubKEY.Trim()))
+        using (var rdr = PemKeyUtils.GetRsaProviderFromPemString(pubKEY.Trim()))
         {
             encryptedKey = rdr.Encrypt(randKey, false);
         }

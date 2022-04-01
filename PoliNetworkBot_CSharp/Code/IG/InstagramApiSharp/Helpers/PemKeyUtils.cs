@@ -1,8 +1,8 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -14,7 +14,7 @@ namespace InstagramApiSharp.Helpers;
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable IDE0051 // Remove unused private members
 
-public class PemKeyUtils
+public static class PemKeyUtils
 {
     private const string pemprivheader = "-----BEGIN RSA PRIVATE KEY-----";
     private const string pemprivfooter = "-----END RSA PRIVATE KEY-----";
@@ -24,23 +24,22 @@ public class PemKeyUtils
     private const string pemp8footer = "-----END PRIVATE KEY-----";
     private const string pemp8encheader = "-----BEGIN ENCRYPTED PRIVATE KEY-----";
     private const string pemp8encfooter = "-----END ENCRYPTED PRIVATE KEY-----";
-    public static bool Verbose = false;
+    private const bool Verbose = false;
 
-    public static RSACryptoServiceProvider GetRSAProviderFromPemString(string pemstr)
+    public static RSACryptoServiceProvider GetRsaProviderFromPemString(string pemstr)
     {
         var isPrivateKeyFile = !(pemstr.StartsWith(pempubheader) && pemstr.EndsWith(pempubfooter));
 
-        byte[] pemkey;
-        pemkey = isPrivateKeyFile ? DecodeOpenSSLPrivateKey(pemstr) : DecodeOpenSSLPublicKey(pemstr);
+        var pemkey = isPrivateKeyFile ? DecodeOpenSslPrivateKey(pemstr) : DecodeOpenSslPublicKey(pemstr);
 
         if (pemkey == null)
             return null;
 
-        return isPrivateKeyFile ? DecodeRSAPrivateKey(pemkey) : DecodeX509PublicKey(pemkey);
+        return isPrivateKeyFile ? DecodeRsaPrivateKey(pemkey) : DecodeX509PublicKey(pemkey);
     }
 
     //--------   Get the binary RSA PUBLIC key   --------
-    private static byte[] DecodeOpenSSLPublicKey(string instr)
+    private static byte[] DecodeOpenSslPublicKey(string instr)
     {
         const string pempubheader = "-----BEGIN PUBLIC KEY-----";
         const string pempubfooter = "-----END PUBLIC KEY-----";
@@ -197,19 +196,14 @@ public class PemKeyUtils
     }
 
     //------- Parses binary ans.1 RSA private key; returns RSACryptoServiceProvider  ---
-    private static RSACryptoServiceProvider DecodeRSAPrivateKey(byte[] privkey)
+    private static RSACryptoServiceProvider DecodeRsaPrivateKey(byte[] privkey)
     {
-        byte[] MODULUS, E, D, P, Q, DP, DQ, IQ;
-
         // ---------  Set up stream to decode the asn.1 encoded RSA private key  ------
         var mem = new MemoryStream(privkey);
         var binr = new BinaryReader(mem); //wrap Memory Stream with BinaryReader for easy reading
-        byte bt = 0;
-        ushort twobytes = 0;
-        var elems = 0;
         try
         {
-            twobytes = binr.ReadUInt16();
+            var twobytes = binr.ReadUInt16();
             switch (twobytes)
             {
                 //data read as little endian order (actual data order for Sequence is 30 81)
@@ -228,63 +222,63 @@ public class PemKeyUtils
             twobytes = binr.ReadUInt16();
             if (twobytes != 0x0102) //version number
                 return null;
-            bt = binr.ReadByte();
+            var bt = binr.ReadByte();
             if (bt != 0x00)
                 return null;
 
             //------  all private key components are Integer sequences ----
-            elems = GetIntegerSize(binr);
-            MODULUS = binr.ReadBytes(elems);
+            var elems = GetIntegerSize(binr);
+            var modulus = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            E = binr.ReadBytes(elems);
+            var e = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            D = binr.ReadBytes(elems);
+            var d = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            P = binr.ReadBytes(elems);
+            var p = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            Q = binr.ReadBytes(elems);
+            var q = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            DP = binr.ReadBytes(elems);
+            var dp = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            DQ = binr.ReadBytes(elems);
+            var dq = binr.ReadBytes(elems);
 
             elems = GetIntegerSize(binr);
-            IQ = binr.ReadBytes(elems);
+            var iq = binr.ReadBytes(elems);
 
             Console.WriteLine("showing components ..");
             if (Verbose)
             {
-                ShowBytes("\nModulus", MODULUS);
-                ShowBytes("\nExponent", E);
-                ShowBytes("\nD", D);
-                ShowBytes("\nP", P);
-                ShowBytes("\nQ", Q);
-                ShowBytes("\nDP", DP);
-                ShowBytes("\nDQ", DQ);
-                ShowBytes("\nIQ", IQ);
+                ShowBytes("\nModulus", modulus);
+                ShowBytes("\nExponent", e);
+                ShowBytes("\nD", d);
+                ShowBytes("\nP", p);
+                ShowBytes("\nQ", q);
+                ShowBytes("\nDP", dp);
+                ShowBytes("\nDQ", dq);
+                ShowBytes("\nIQ", iq);
             }
 
             // ------- create RSACryptoServiceProvider instance and initialize with public key -----
-            var RSA = new RSACryptoServiceProvider();
-            var RSAparams = new RSAParameters
+            var rsa = new RSACryptoServiceProvider();
+            var rsaParams = new RSAParameters
             {
-                Modulus = MODULUS,
-                Exponent = E,
-                D = D,
-                P = P,
-                Q = Q,
-                DP = DP,
-                DQ = DQ,
-                InverseQ = IQ
+                Modulus = modulus,
+                Exponent = e,
+                D = d,
+                P = p,
+                Q = q,
+                DP = dp,
+                DQ = dq,
+                InverseQ = iq
             };
-            RSA.ImportParameters(RSAparams);
-            return RSA;
+            rsa.ImportParameters(rsaParams);
+            return rsa;
         }
         catch (Exception)
         {
@@ -299,8 +293,6 @@ public class PemKeyUtils
     private static int GetIntegerSize(BinaryReader binr)
     {
         byte bt = 0;
-        byte lowbyte = 0x00;
-        byte highbyte = 0x00;
         var count = 0;
         bt = binr.ReadByte();
         if (bt != 0x02) //expect integer
@@ -315,8 +307,8 @@ public class PemKeyUtils
 
             case 0x82:
             {
-                highbyte = binr.ReadByte(); // data size in next 2 bytes
-                lowbyte = binr.ReadByte();
+                var highbyte = binr.ReadByte();
+                var lowbyte = binr.ReadByte();
                 byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
                 count = BitConverter.ToInt32(modint, 0);
                 break;
@@ -334,12 +326,12 @@ public class PemKeyUtils
     }
 
     //-----  Get the binary RSA PRIVATE key, decrypting if necessary ----
-    private static byte[] DecodeOpenSSLPrivateKey(string instr)
+    private static byte[] DecodeOpenSslPrivateKey(string instr)
     {
         const string pemprivheader = "-----BEGIN RSA PRIVATE KEY-----";
         const string pemprivfooter = "-----END RSA PRIVATE KEY-----";
         var pemstr = instr.Trim();
-        byte[] binkey;
+        var binkey = Array.Empty<byte>();
         if (!pemstr.StartsWith(pemprivheader) || !pemstr.EndsWith(pemprivfooter))
             return null;
 
@@ -364,47 +356,50 @@ public class PemKeyUtils
         var str = new StringReader(pvkstr);
 
         //-------- read PEM encryption info. lines and extract salt -----
-        if (!str.ReadLine().StartsWith("Proc-Type: 4,ENCRYPTED"))
+        if (!str.ReadLine()!.StartsWith("Proc-Type: 4,ENCRYPTED"))
             return null;
         var saltline = str.ReadLine();
-        if (!saltline.StartsWith("DEK-Info: DES-EDE3-CBC,"))
+        if (saltline != null && !saltline.StartsWith("DEK-Info: DES-EDE3-CBC,"))
             return null;
-        var saltstr = saltline[(saltline.IndexOf(",", StringComparison.Ordinal) + 1)..].Trim();
-        var salt = new byte[saltstr.Length / 2];
-        for (var i = 0; i < salt.Length; i++)
-            salt[i] = Convert.ToByte(saltstr.Substring(i * 2, 2), 16);
-        if (str.ReadLine() != "")
-            return null;
-
-        //------ remaining b64 data is encrypted RSA key ----
-        var encryptedstr = str.ReadToEnd();
-
-        try
+        if (saltline != null)
         {
-            //should have b64 encrypted RSA key now
-            binkey = Convert.FromBase64String(encryptedstr);
+            var saltstr = saltline[(saltline.IndexOf(",", StringComparison.Ordinal) + 1)..].Trim();
+            var salt = new byte[saltstr.Length / 2];
+            for (var i = 0; i < salt.Length; i++)
+                salt[i] = Convert.ToByte(saltstr.Substring(i * 2, 2), 16);
+            if (str.ReadLine() != "")
+                return null;
+
+            //------ remaining b64 data is encrypted RSA key ----
+            var encryptedstr = str.ReadToEnd();
+
+            try
+            {
+                //should have b64 encrypted RSA key now
+                if (encryptedstr != null) binkey = Convert.FromBase64String(encryptedstr);
+            }
+            catch (FormatException)
+            {
+                // bad b64 data.
+                return null;
+            }
+
+            //------ Get the 3DES 24 byte key using PDK used by OpenSSL ----
+
+            var despswd = GetSecPswd("Enter password to derive 3DES key==>");
+            //Console.Write("\nEnter password to derive 3DES key: ");
+            //String pswd = Console.ReadLine();
+            var deskey =
+                GetOpenSsl3deskey(salt, despswd, 1,
+                    2); // count=1 (for OpenSSL implementation); 2 iterations to get at least 24 bytes
+            if (deskey == null)
+                return null;
+            //showBytes("3DES key", deskey) ;
+
+            //------ Decrypt the encrypted 3des-encrypted RSA private key ------
+            var rsakey = DecryptKey(binkey, deskey, salt); //OpenSSL uses salt value in PEM header also as 3DES IV
+            if (rsakey != null) return rsakey; //we have a decrypted RSA private key
         }
-        catch (FormatException)
-        {
-            // bad b64 data.
-            return null;
-        }
-
-        //------ Get the 3DES 24 byte key using PDK used by OpenSSL ----
-
-        var despswd = GetSecPswd("Enter password to derive 3DES key==>");
-        //Console.Write("\nEnter password to derive 3DES key: ");
-        //String pswd = Console.ReadLine();
-        var deskey =
-            GetOpenSSL3deskey(salt, despswd, 1,
-                2); // count=1 (for OpenSSL implementation); 2 iterations to get at least 24 bytes
-        if (deskey == null)
-            return null;
-        //showBytes("3DES key", deskey) ;
-
-        //------ Decrypt the encrypted 3des-encrypted RSA private key ------
-        var rsakey = DecryptKey(binkey, deskey, salt); //OpenSSL uses salt value in PEM header also as 3DES IV
-        if (rsakey != null) return rsakey; //we have a decrypted RSA private key
 
         Console.WriteLine("Failed to decrypt RSA private key; probably wrong password.");
         return null;
@@ -434,9 +429,9 @@ public class PemKeyUtils
     }
 
     //-----   OpenSSL PBKD uses only one hash cycle (count); miter is number of iterations required to build sufficient bytes ---
-    private static byte[] GetOpenSSL3deskey(byte[] salt, SecureString secpswd, int count, int miter)
+    private static byte[] GetOpenSsl3deskey(byte[] salt, SecureString secpswd, int count, int miter)
     {
-        var unmanagedPswd = IntPtr.Zero;
+        IntPtr unmanagedPswd;
         var HASHLENGTH = 16; //MD5 bytes
         var keymaterial = new byte[HASHLENGTH * miter]; //to store contatenated Mi hashed results
 
@@ -467,8 +462,12 @@ public class PemKeyUtils
             }
             else
             {
-                Array.Copy(result, hashtarget, result.Length);
-                Array.Copy(data00, 0, hashtarget, result.Length, data00.Length);
+                if (result != null)
+                {
+                    Array.Copy(result, hashtarget, result.Length);
+                    Array.Copy(data00, 0, hashtarget, result.Length, data00.Length);
+                }
+
                 result = hashtarget;
                 //Console.WriteLine("Updated new initial hash target:") ;
                 //showBytes(result) ;
@@ -485,7 +484,7 @@ public class PemKeyUtils
 
         Array.Clear(psbytes, 0, psbytes.Length);
         Array.Clear(data00, 0, data00.Length);
-        Array.Clear(result, 0, result.Length);
+        if (result != null) Array.Clear(result, 0, result.Length);
         Array.Clear(hashtarget, 0, hashtarget.Length);
         Array.Clear(keymaterial, 0, keymaterial.Length);
 
@@ -549,9 +548,9 @@ public class PemKeyUtils
         }
     }
 
-    private static bool CompareBytearrays(byte[] a, byte[] b)
+    private static bool CompareBytearrays(IReadOnlyCollection<byte> a, IReadOnlyList<byte> b)
     {
-        if (a.Length != b.Length)
+        if (a.Count != b.Count)
             return false;
         var i = 0;
         foreach (var c in a)
@@ -564,10 +563,10 @@ public class PemKeyUtils
         return true;
     }
 
-    private static void ShowBytes(string info, byte[] data)
+    private static void ShowBytes(string info, IReadOnlyList<byte> data)
     {
-        Console.WriteLine("{0}  [{1} bytes]", info, data.Length);
-        for (var i = 1; i <= data.Length; i++)
+        Console.WriteLine("{0}  [{1} bytes]", info, data.Count);
+        for (var i = 1; i <= data.Count; i++)
         {
             Console.Write("{0:X2}  ", data[i - 1]);
             if (i % 16 == 0)
@@ -577,127 +576,7 @@ public class PemKeyUtils
         Console.WriteLine("\n\n");
     }
 
-    /// <summary>
-    ///     Export public key from MS RSACryptoServiceProvider into OpenSSH PEM string
-    ///     slightly modified from https://stackoverflow.com/a/28407693
-    /// </summary>
-    /// <param name="csp"></param>
-    /// <returns></returns>
-    public static string ExportPublicKey(RSACryptoServiceProvider csp)
-    {
-        var outputStream = new StringWriter();
-        var parameters = csp.ExportParameters(false);
-        using (var stream = new MemoryStream())
-        {
-            var writer = new BinaryWriter(stream);
-            writer.Write((byte)0x30); // SEQUENCE
-            using (var innerStream = new MemoryStream())
-            {
-                var innerWriter = new BinaryWriter(innerStream);
-                innerWriter.Write((byte)0x30); // SEQUENCE
-                EncodeLength(innerWriter, 13);
-                innerWriter.Write((byte)0x06); // OBJECT IDENTIFIER
-                var rsaEncryptionOid = new byte[] { 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01 };
-                EncodeLength(innerWriter, rsaEncryptionOid.Length);
-                innerWriter.Write(rsaEncryptionOid);
-                innerWriter.Write((byte)0x05); // NULL
-                EncodeLength(innerWriter, 0);
-                innerWriter.Write((byte)0x03); // BIT STRING
-                using (var bitStringStream = new MemoryStream())
-                {
-                    var bitStringWriter = new BinaryWriter(bitStringStream);
-                    bitStringWriter.Write((byte)0x00); // # of unused bits
-                    bitStringWriter.Write((byte)0x30); // SEQUENCE
-                    using (var paramsStream = new MemoryStream())
-                    {
-                        var paramsWriter = new BinaryWriter(paramsStream);
-                        EncodeIntegerBigEndian(paramsWriter, parameters.Modulus); // Modulus
-                        EncodeIntegerBigEndian(paramsWriter, parameters.Exponent); // Exponent
-                        var paramsLength = (int)paramsStream.Length;
-                        EncodeLength(bitStringWriter, paramsLength);
-                        bitStringWriter.Write(paramsStream.GetBuffer(), 0, paramsLength);
-                    }
-
-                    var bitStringLength = (int)bitStringStream.Length;
-                    EncodeLength(innerWriter, bitStringLength);
-                    innerWriter.Write(bitStringStream.GetBuffer(), 0, bitStringLength);
-                }
-
-                var length = (int)innerStream.Length;
-                EncodeLength(writer, length);
-                writer.Write(innerStream.GetBuffer(), 0, length);
-            }
-
-            var base64 = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length).ToCharArray();
-            // WriteLine terminates with \r\n, we want only \n
-            outputStream.Write("-----BEGIN PUBLIC KEY-----\n");
-            for (var i = 0; i < base64.Length; i += 64)
-            {
-                outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
-                outputStream.Write("\n");
-            }
-
-            outputStream.Write("-----END PUBLIC KEY-----");
-        }
-
-        return outputStream.ToString();
-    }
-
     // https://stackoverflow.com/a/23739932/2860309
-    private static void EncodeLength(BinaryWriter stream, int length)
-    {
-        switch (length)
-        {
-            case < 0:
-                throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative");
-            case < 0x80:
-                // Short form
-                stream.Write((byte)length);
-                break;
-
-            default:
-            {
-                // Long form
-                var temp = length;
-                var bytesRequired = 0;
-                while (temp > 0)
-                {
-                    temp >>= 8;
-                    bytesRequired++;
-                }
-
-                stream.Write((byte)(bytesRequired | 0x80));
-                for (var i = bytesRequired - 1; i >= 0; i--) stream.Write((byte)((length >> (8 * i)) & 0xff));
-                break;
-            }
-        }
-    }
 
     //https://stackoverflow.com/a/23739932/2860309
-    private static void EncodeIntegerBigEndian(BinaryWriter stream, byte[] value, bool forceUnsigned = true)
-    {
-        stream.Write((byte)0x02); // INTEGER
-        var prefixZeros = value.TakeWhile(t => t == 0).Count();
-
-        if (value.Length - prefixZeros == 0)
-        {
-            EncodeLength(stream, 1);
-            stream.Write((byte)0);
-        }
-        else
-        {
-            if (forceUnsigned && value[prefixZeros] > 0x7f)
-            {
-                // Add a prefix zero to force unsigned if the MSB is 1
-                EncodeLength(stream, value.Length - prefixZeros + 1);
-                stream.Write((byte)0);
-            }
-            else
-            {
-                EncodeLength(stream, value.Length - prefixZeros);
-            }
-
-            for (var i = prefixZeros; i < value.Length; i++) stream.Write(value[i]);
-        }
-    }
 }

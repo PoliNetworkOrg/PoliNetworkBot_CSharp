@@ -108,7 +108,7 @@ internal static class Rooms
     private static async Task FreeClassroomAsync(TelegramBotAbstract sender, MessageEventArgs e)
     {
         var t3 = await GetDailySituationAsync(sender, e);
-        if (t3 == null || t3.Item1 != null)
+        if (t3 is not { Item1: null })
         {
             Logger.WriteLine(t3.Item1);
             var text4 = new Language(new Dictionary<string, string>

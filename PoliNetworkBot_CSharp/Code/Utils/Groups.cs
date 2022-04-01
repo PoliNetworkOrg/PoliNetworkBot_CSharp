@@ -89,7 +89,7 @@ internal static class Groups
                     }
 
                     newTitle = newTitleWithException?.Item1?.Title;
-                    GroupCheckAndUpdate(telegramBotAbstract, indexIdInTable, oldTitle, newTitleWithException);
+                    GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException);
                 }
                 catch (Exception e2)
                 {
@@ -231,8 +231,7 @@ internal static class Groups
             : GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
-    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(TelegramBotAbstract telegramBotAbstract,
-        long indexIdInTable,
+    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(long indexIdInTable,
         string oldTitle,
         Tuple<Chat, Exception> newTitleWithException)
     {

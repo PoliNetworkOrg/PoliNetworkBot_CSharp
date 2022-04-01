@@ -71,7 +71,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "response", responseText ?? string.Empty },
                 { "type", "text" }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -130,7 +130,7 @@ internal class StoryProcessor : IStoryProcessor
             };
 
             var instaUri = UriCreator.GetHighlightCreateUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -187,7 +187,7 @@ internal class StoryProcessor : IStoryProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, deleteMediaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(deleteMediaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -235,7 +235,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -387,7 +387,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "user_ids", new JArray(highlightId) }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -439,7 +439,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "user_ids", new JArray(highlightId) }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -697,7 +697,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "reel_media_skipped", new JObject() }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -753,7 +753,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "reel_media_skipped", new JObject() }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -865,7 +865,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -912,7 +912,7 @@ internal class StoryProcessor : IStoryProcessor
             };
 
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1090,7 +1090,7 @@ internal class StoryProcessor : IStoryProcessor
                     }
                 }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, UriCreator.GetStoryMediaInfoUploadUri(),
+            var request = _httpHelper.GetSignedRequest(UriCreator.GetStoryMediaInfoUploadUri(),
                 _deviceInfo, videoMediaInfoData);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
@@ -1118,17 +1118,21 @@ internal class StoryProcessor : IStoryProcessor
 
             upProgress.UploadState = InstaUploadState.Uploading;
             progress?.Invoke(upProgress);
-            var imageBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
-            var imageContent = new ByteArrayContent(imageBytes);
-            imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
-            imageContent.Headers.Add("Content-Type", "application/octet-stream");
-            request = _httpHelper.GetDefaultRequest(HttpMethod.Post, photoUri, _deviceInfo);
-            request.Content = imageContent;
-            request.Headers.Add("X-Entity-Type", "image/jpeg");
-            request.Headers.Add("Offset", "0");
-            request.Headers.Add("X-Instagram-Rupload-Params", photoUploadParams);
-            request.Headers.Add("X-Entity-Name", photoEntityName);
-            request.Headers.Add("X-Entity-Length", imageBytes.Length.ToString());
+            if (image.Uri != null)
+            {
+                var imageBytes = image.ImageBytes ?? await File.ReadAllBytesAsync(image.Uri);
+                var imageContent = new ByteArrayContent(imageBytes);
+                imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
+                imageContent.Headers.Add("Content-Type", "application/octet-stream");
+                request = _httpHelper.GetDefaultRequest(HttpMethod.Post, photoUri, _deviceInfo);
+                request.Content = imageContent;
+                request.Headers.Add("X-Entity-Type", "image/jpeg");
+                request.Headers.Add("Offset", "0");
+                request.Headers.Add("X-Instagram-Rupload-Params", photoUploadParams);
+                request.Headers.Add("X-Entity-Name", photoEntityName);
+                request.Headers.Add("X-Entity-Length", imageBytes.Length.ToString());
+            }
+
             request.Headers.Add("X_FB_PHOTO_WATERFALL_ID", waterfallId);
             response = await _httpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
@@ -1285,7 +1289,7 @@ internal class StoryProcessor : IStoryProcessor
                     }
                 }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, UriCreator.GetStoryMediaInfoUploadUri(),
+            var request = _httpHelper.GetSignedRequest(UriCreator.GetStoryMediaInfoUploadUri(),
                 _deviceInfo, videoMediaInfoData);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
@@ -1313,25 +1317,29 @@ internal class StoryProcessor : IStoryProcessor
                 return Result.UnExpectedResponse<InstaStoryMedia>(response, json);
             }
 
-            var videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
-            var videoContent = new ByteArrayContent(videoBytes);
-            videoContent.Headers.Add("Content-Transfer-Encoding", "binary");
-            videoContent.Headers.Add("Content-Type", "application/octet-stream");
-            //var progressContent = new ProgressableStreamContent(videoContent, 4096, progress)
-            //{
-            //    UploaderProgress = upProgress
-            //};
-            request = _httpHelper.GetDefaultRequest(HttpMethod.Post, videoUri, _deviceInfo);
-            request.Content = videoContent;
-            upProgress.UploadState = InstaUploadState.Uploading;
-            progress?.Invoke(upProgress);
-            var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4")
-                .Replace(".", "").ToLower();
-            request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "image/quicktime" : "image/mp4");
-            request.Headers.Add("Offset", "0");
-            request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
-            request.Headers.Add("X-Entity-Name", videoEntityName);
-            request.Headers.Add("X-Entity-Length", videoBytes.Length.ToString());
+            if (video.Video.Uri != null)
+            {
+                var videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
+                var videoContent = new ByteArrayContent(videoBytes);
+                videoContent.Headers.Add("Content-Transfer-Encoding", "binary");
+                videoContent.Headers.Add("Content-Type", "application/octet-stream");
+                //var progressContent = new ProgressableStreamContent(videoContent, 4096, progress)
+                //{
+                //    UploaderProgress = upProgress
+                //};
+                request = _httpHelper.GetDefaultRequest(HttpMethod.Post, videoUri, _deviceInfo);
+                request.Content = videoContent;
+                upProgress.UploadState = InstaUploadState.Uploading;
+                progress?.Invoke(upProgress);
+                var vidExt = Path.GetExtension(video.Video.Uri ?? $"C:\\{13.GenerateRandomString()}.mp4")
+                    .Replace(".", "").ToLower();
+                request.Headers.Add("X-Entity-Type", vidExt == "mov" ? "image/quicktime" : "image/mp4");
+                request.Headers.Add("Offset", "0");
+                request.Headers.Add("X-Instagram-Rupload-Params", videoUploadParams);
+                request.Headers.Add("X-Entity-Name", videoEntityName);
+                request.Headers.Add("X-Entity-Length", videoBytes.Length.ToString());
+            }
+
             request.Headers.Add("X_FB_VIDEO_WATERFALL_ID", waterfallId);
             response = await _httpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
@@ -1366,17 +1374,22 @@ internal class StoryProcessor : IStoryProcessor
 
             upProgress.UploadState = InstaUploadState.UploadingThumbnail;
             progress?.Invoke(upProgress);
-            var imageBytes = video.VideoThumbnail.ImageBytes ?? File.ReadAllBytes(video.VideoThumbnail.Uri);
-            var imageContent = new ByteArrayContent(imageBytes);
-            imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
-            imageContent.Headers.Add("Content-Type", "application/octet-stream");
-            request = _httpHelper.GetDefaultRequest(HttpMethod.Post, photoUri, _deviceInfo);
-            request.Content = imageContent;
-            request.Headers.Add("X-Entity-Type", "image/jpeg");
-            request.Headers.Add("Offset", "0");
-            request.Headers.Add("X-Instagram-Rupload-Params", photoUploadParams);
-            request.Headers.Add("X-Entity-Name", photoEntityName);
-            request.Headers.Add("X-Entity-Length", imageBytes.Length.ToString());
+            if (video.VideoThumbnail.Uri != null)
+            {
+                var imageBytes = video.VideoThumbnail.ImageBytes ??
+                                 await File.ReadAllBytesAsync(video.VideoThumbnail.Uri);
+                var imageContent = new ByteArrayContent(imageBytes);
+                imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
+                imageContent.Headers.Add("Content-Type", "application/octet-stream");
+                request = _httpHelper.GetDefaultRequest(HttpMethod.Post, photoUri, _deviceInfo);
+                request.Content = imageContent;
+                request.Headers.Add("X-Entity-Type", "image/jpeg");
+                request.Headers.Add("Offset", "0");
+                request.Headers.Add("X-Instagram-Rupload-Params", photoUploadParams);
+                request.Headers.Add("X-Entity-Name", photoEntityName);
+                request.Headers.Add("X-Entity-Length", imageBytes.Length.ToString());
+            }
+
             request.Headers.Add("X_FB_PHOTO_WATERFALL_ID", waterfallId);
             response = await _httpRequestProcessor.SendAsync(request);
             json = await response.Content.ReadAsStringAsync();
@@ -1468,7 +1481,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "vote", ((int)pollVote).ToString() }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1525,7 +1538,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "vote", sliderVote.ToString(CultureInfo.InvariantCulture) }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1580,7 +1593,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "url", url }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1626,7 +1639,7 @@ internal class StoryProcessor : IStoryProcessor
             }
 
             var instaUri = UriCreator.GetHighlightEditUri(highlightId);
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK) return Result.UnExpectedResponse<bool>(response, json);
@@ -1778,7 +1791,7 @@ internal class StoryProcessor : IStoryProcessor
                 }
             }
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
@@ -1957,7 +1970,7 @@ internal class StoryProcessor : IStoryProcessor
                 }
             }
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var uploadParamsObj = new JObject
             {
                 { "num_step_auto_retry", 0 },
@@ -2071,7 +2084,7 @@ internal class StoryProcessor : IStoryProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 

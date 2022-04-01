@@ -71,7 +71,7 @@ public class CollectionProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Get, editCollectionUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(editCollectionUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -116,7 +116,7 @@ public class CollectionProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Get, createCollectionUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(createCollectionUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -160,7 +160,7 @@ public class CollectionProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Get, createCollectionUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(createCollectionUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -211,7 +211,7 @@ public class CollectionProcessor
                 data.Add("cover_media_id", photoCoverMediaId);
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Get, editCollectionUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(editCollectionUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)

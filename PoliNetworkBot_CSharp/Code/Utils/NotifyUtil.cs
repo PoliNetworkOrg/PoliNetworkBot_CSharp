@@ -205,17 +205,6 @@ internal static class NotifyUtil
         await NotifyOwners(exception, sender, null);
     }
 
-    internal static async Task NotifyOwners(Exception item2, string message, TelegramBotAbstract sender,
-        string langCode, MessageEventArgs messageEventArgs, long? replyToMessageId = null)
-    {
-        var dict = new Dictionary<string, string>
-        {
-            { "en", message }
-        };
-        var text = new Language(dict);
-        await NotifyOwners2Async(text, sender, 0, langCode, replyToMessageId, messageEventArgs);
-    }
-
     internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,
         TelegramBotAbstract sender, MessageEventArgs messageEventArgs, string v, string langCode,
         long? replyToMessageId = null)

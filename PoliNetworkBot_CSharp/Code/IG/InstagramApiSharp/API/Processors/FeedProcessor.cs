@@ -635,7 +635,7 @@ internal class FeedProcessor : IFeedProcessor
                 data.Add("is_pull_to_refresh", "0");
             }
 
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, userFeedUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(userFeedUri, _deviceInfo, data);
             request.Headers.Add("X-Ads-Opt-Out", "0");
             request.Headers.Add("X-Google-AD-ID", _deviceInfo.GoogleAdId.ToString());
             request.Headers.Add("X-DEVICE-ID", _deviceInfo.DeviceGuid.ToString());

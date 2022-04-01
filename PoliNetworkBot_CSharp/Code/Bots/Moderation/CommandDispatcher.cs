@@ -945,7 +945,7 @@ internal static class CommandDispatcher
     {
         try
         {
-            var db = await File.ReadAllBytesAsync(Paths.Data.Db);
+            var db = await File.ReadAllBytesAsync(Paths.Data.DbPath);
 
             var stream = new MemoryStream(db);
 
@@ -969,7 +969,7 @@ internal static class CommandDispatcher
 
     private static async Task TestSpamAsync(Message message, TelegramBotAbstract sender, MessageEventArgs e)
     {
-        var r2 = MessagesStore.StoreAndCheck(e, e.Message.ReplyToMessage);
+        var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
             r2 = Blacklist.IsSpam(message.Text, message.Chat.Id);
@@ -1388,7 +1388,7 @@ internal static class CommandDispatcher
         var d1 = GetDateTime(target);
         try
         {
-            await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(e, target), e, sender, lang,
+            await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(target), e, sender, lang,
                 username,
                 d1?.GetValue(), revokeMessage);
             return new SuccessWithException(true, d1?.GetExceptions());
@@ -1506,7 +1506,7 @@ internal static class CommandDispatcher
             sender, e.Message.From.Username, e.Message.From.LanguageCode, null, true);
     }
 
-    private static string GetFinalTargetForRestrictAll(MessageEventArgs e, IReadOnlyList<string> target)
+    private static string GetFinalTargetForRestrictAll(IReadOnlyList<string> target)
     {
         return target[1];
     }

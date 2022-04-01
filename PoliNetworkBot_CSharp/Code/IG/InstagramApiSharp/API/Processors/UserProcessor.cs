@@ -70,7 +70,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -351,7 +351,7 @@ internal class UserProcessor : IUserProcessor
                 { "user_ids", string.Join(",", userIds) },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, userUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(userUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -622,8 +622,7 @@ internal class UserProcessor : IUserProcessor
                 },
                 { new StringContent(signedBody), "signed_body" }
             };
-            byte[] fileBytes;
-            fileBytes = nametagImage.ImageBytes ?? File.ReadAllBytes(nametagImage.Uri);
+            var fileBytes = nametagImage.ImageBytes ?? await File.ReadAllBytesAsync(nametagImage.Uri);
 
             var imageContent = new ByteArrayContent(fileBytes);
             imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
@@ -1101,7 +1100,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1150,7 +1149,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -1190,7 +1189,7 @@ internal class UserProcessor : IUserProcessor
     public async Task<IResult<InstaStoryFriendshipStatus>> MuteUserMediaAsync(long userId,
         InstaMuteOption unmuteOption)
     {
-        return await MuteUnMuteUserMedia(UriCreator.GetMuteUserMediaStoryUri(userId), userId, unmuteOption);
+        return await MuteUnMuteUserMedia(UriCreator.GetMuteUserMediaStoryUri(), userId, unmuteOption);
     }
 
     /// <summary>
@@ -1214,7 +1213,7 @@ internal class UserProcessor : IUserProcessor
                 { "is_spam", "true" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             return response.StatusCode == HttpStatusCode.OK
@@ -1297,7 +1296,7 @@ internal class UserProcessor : IUserProcessor
     public async Task<IResult<InstaStoryFriendshipStatus>> UnMuteUserMediaAsync(long userId,
         InstaMuteOption unmuteOption)
     {
-        return await MuteUnMuteUserMedia(UriCreator.GetUnMuteUserMediaStoryUri(userId), userId, unmuteOption);
+        return await MuteUnMuteUserMedia(UriCreator.GetUnMuteUserMediaStoryUri(), userId, unmuteOption);
     }
 
     /// <summary>
@@ -1320,7 +1319,7 @@ internal class UserProcessor : IUserProcessor
             };
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK || string.IsNullOrEmpty(json))
@@ -1415,7 +1414,7 @@ internal class UserProcessor : IUserProcessor
                 data.Add("remove", jArr);
             }
 
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1455,7 +1454,7 @@ internal class UserProcessor : IUserProcessor
                 { "radio_type", "wifi-none" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK || string.IsNullOrEmpty(json))
@@ -1490,7 +1489,7 @@ internal class UserProcessor : IUserProcessor
                 { "radio_type", "wifi-none" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, fields);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, fields);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK || string.IsNullOrEmpty(json))
@@ -1634,7 +1633,7 @@ internal class UserProcessor : IUserProcessor
                 data.Add("max_id", paginationParameters.NextMaxId);
 
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1805,7 +1804,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -1857,7 +1856,7 @@ internal class UserProcessor : IUserProcessor
             }
 
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -1895,7 +1894,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
@@ -1932,7 +1931,7 @@ internal class UserProcessor : IUserProcessor
                 { "_csrftoken", _user.CsrfToken }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaDefault>(json);

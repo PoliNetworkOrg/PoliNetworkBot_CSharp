@@ -2,13 +2,13 @@
 
 public static class Paths
 {
-    public const string Db = "Data Source=" + Data.Db;
+    public const string DbSource = "Data Source=" + Data.DbPath;
 
     public static class Data
     {
         public const string Log = "../data/log.txt";
         public const string PoliNetworkWebsiteData = "../data/polinetworkWebsiteData";
-        public const string Db = "../data/db.db";
+        public const string DbPath = "../data/db.db";
         public const string PoliMaterialsDictPaths = "../data/dictPath.bin";
         public const string MessageStore = "../data/MessageStore.bin";
         public const string CallbackData = "../data/Callback.bin";

@@ -15,7 +15,7 @@ public static class SqLite
     public static int Execute(string query, Dictionary<string, object> args = null)
     {
         //setup the connection to the database
-        using var con = new SQLiteConnection(Paths.Db);
+        using var con = new SQLiteConnection(Paths.DbSource);
         con.Open();
 
         //open a new command
@@ -38,7 +38,7 @@ public static class SqLite
             if (string.IsNullOrEmpty(query.Trim()))
                 return null;
 
-            using var con = new SQLiteConnection(Paths.Db);
+            using var con = new SQLiteConnection(Paths.DbSource);
             con.Open();
             using var cmd = new SQLiteCommand(query, con);
             if (args != null)

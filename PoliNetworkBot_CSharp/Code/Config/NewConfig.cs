@@ -66,7 +66,7 @@ public static class NewConfig
     {
         DirectoryUtils.CreateDirectory("data");
 
-        var dbPath = Paths.Db;
+        var dbPath = Paths.DbSource;
         dbPath = dbPath.Split('=')[1];
         try
         {

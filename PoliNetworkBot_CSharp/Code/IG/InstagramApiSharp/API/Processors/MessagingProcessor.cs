@@ -72,7 +72,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -124,7 +124,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 data.Add("thread_ids", threadIds.EncodeList(false));
             }
 
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -180,7 +180,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "use_unified_inbox", "true" }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -219,7 +219,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -465,8 +465,7 @@ internal class MessagingProcessor : IMessagingProcessor
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
-            Uri instaUri;
-            instaUri = string.IsNullOrEmpty(username)
+            var instaUri = string.IsNullOrEmpty(username)
                 ? UriCreator.GetRankedRecipientsUri()
                 : UriCreator.GetRankRecipientsByUserUri(username);
 
@@ -577,7 +576,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -625,7 +624,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "item_id", itemId }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -669,7 +668,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "use_unified_inbox", "true" }
             };
             var request =
-                _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -708,7 +707,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -840,7 +839,7 @@ internal class MessagingProcessor : IMessagingProcessor
             if (threadIds?.Length > 0) data.Add("thread_ids", $"[{threadIds.EncodeList(false)}]");
             if (recipients?.Length > 0) data.Add("recipient_users", "[[" + recipients.EncodeList(false) + "]]");
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -912,7 +911,7 @@ internal class MessagingProcessor : IMessagingProcessor
             if (threadIds?.Length > 0) data.Add("thread_ids", $"[{threadIds.EncodeList(false)}]");
             if (recipients?.Length > 0) data.Add("recipient_users", "[[" + recipients.EncodeList(false) + "]]");
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -957,7 +956,7 @@ internal class MessagingProcessor : IMessagingProcessor
             };
 
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1053,7 +1052,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1097,7 +1096,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1346,7 +1345,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "item_id", itemId }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1385,7 +1384,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1426,7 +1425,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "title", title }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1468,7 +1467,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 { "client_context", Guid.NewGuid().ToString() }
             };
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1514,7 +1513,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 data.Add("recipient_users", $"[{userIds.EncodeRecipients()}]");
 
             var request =
-                _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -1561,7 +1560,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 }
             }
 
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -1608,8 +1607,7 @@ internal class MessagingProcessor : IMessagingProcessor
                 requestContent.Add(new StringContent($"[[{recipients}]]"), "recipient_users");
             else
                 requestContent.Add(new StringContent($"[{threadId}]"), "thread_ids");
-            byte[] fileBytes;
-            fileBytes = image.ImageBytes ?? File.ReadAllBytes(image.Uri);
+            var fileBytes = image.ImageBytes ?? await File.ReadAllBytesAsync(image.Uri);
             var imageContent = new ByteArrayContent(fileBytes);
             imageContent.Headers.Add("Content-Transfer-Encoding", "binary");
             imageContent.Headers.Add("Content-Type", "application/octet-stream");

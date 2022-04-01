@@ -1989,14 +1989,14 @@ internal class UriCreator
         return instaUri;
     }
 
-    public static Uri GetMuteUserMediaStoryUri(long userId)
+    public static Uri GetMuteUserMediaStoryUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.FRIENDSHIPS_MUTE_POST_STORY, out var instaUri))
             throw new Exception("Cant create URI for mute user media or story");
         return instaUri;
     }
 
-    public static Uri GetUnMuteUserMediaStoryUri(long userId)
+    public static Uri GetUnMuteUserMediaStoryUri()
     {
         if (!Uri.TryCreate(BaseInstagramUri, InstaApiConstants.FRIENDSHIPS_UNMUTE_POST_STORY, out var instaUri))
             throw new Exception("Cant create URI for unmute user media or story");

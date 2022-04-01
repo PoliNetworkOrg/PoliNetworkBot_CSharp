@@ -112,8 +112,8 @@ internal class RegistrationService : IRegistrationService
             HttpRequestMessage request = null;
             if (data?.Count > 0)
                 request = signedRequest
-                    ? _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data)
-                    : _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+                    ? _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data)
+                    : _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             else
                 request = _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
             var response = await _httpRequestProcessor.SendAsync(request);
@@ -140,7 +140,7 @@ internal class RegistrationService : IRegistrationService
     {
         try
         {
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (setCsrfToken)
@@ -228,7 +228,7 @@ internal class RegistrationService : IRegistrationService
                 { "_csrftoken", _user.CsrfToken },
                 { "username", username }
             };
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<InstaAccountCheck>(json);
@@ -275,7 +275,7 @@ internal class RegistrationService : IRegistrationService
                 { "waterfall_id", RegistrationWaterfallId }
             };
             var instaUri = UriCreator.GetCheckEmailUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             _user.SetCsrfTokenIfAvailable(response, _httpRequestProcessor);
@@ -397,7 +397,7 @@ internal class RegistrationService : IRegistrationService
                 { "waterfall_id", RegistrationWaterfallId }
             };
             var instaUri = UriCreator.GetCheckRegistrationConfirmationCodeUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             _user.SetCsrfTokenIfAvailable(response, _httpRequestProcessor);
@@ -455,7 +455,7 @@ internal class RegistrationService : IRegistrationService
                 { "waterfall_id", RegistrationWaterfallId }
             };
             var instaUri = UriCreator.GetUsernameSuggestionsUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             _user.SetCsrfTokenIfAvailable(response, _httpRequestProcessor);
@@ -502,7 +502,7 @@ internal class RegistrationService : IRegistrationService
                 { "month", Birthday.Month.ToString() }
             };
             var instaUri = UriCreator.GetCheckAgeEligibilityUri();
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -591,7 +591,7 @@ internal class RegistrationService : IRegistrationService
                 data.Add("seen_steps", "[]");
 
             var instaUri = UriCreator.GetOnboardingStepsUri(progressState == InstaOnboardingProgressState.Start);
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             if (progressState == InstaOnboardingProgressState.Prefetch)
@@ -693,7 +693,7 @@ internal class RegistrationService : IRegistrationService
                 data.Add("tos_version", "row");
 
             var instaUri = UriCreator.GetCreateAccountUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
             _user.SetCsrfTokenIfAvailable(response, _httpRequestProcessor, true);
@@ -898,7 +898,7 @@ internal class RegistrationService : IRegistrationService
                 { "waterfall_id", RegistrationWaterfallId }
             };
             var instaUri = UriCreator.GetValidateSignUpSMSCodeUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, data);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
@@ -993,7 +993,7 @@ internal class RegistrationService : IRegistrationService
                 { "one_tap_opt_in", "true" }
             };
             var instaUri = UriCreator.GetCreateValidatedUri();
-            var request = _httpHelper.GetSignedRequest(HttpMethod.Post, instaUri, _deviceInfo, postData);
+            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
             var response = await _httpRequestProcessor.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
