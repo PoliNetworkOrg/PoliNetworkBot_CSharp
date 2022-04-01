@@ -46,7 +46,8 @@ public static class UtilsVideo
         return GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
     }
 
-    private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId, TelegramBotAbstract sender)
+    private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId,
+        TelegramBotAbstract sender)
     {
         var a = GetVideoId_From_FileId(fileId, sender);
         return a ?? GetVideoId_From_UniqueFileId(fileUniqueId, sender);

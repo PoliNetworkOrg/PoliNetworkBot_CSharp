@@ -47,7 +47,8 @@ internal static class Groups
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
-        return Database.ExecuteSelect(q1, sender.DbConfig , new Dictionary<string, object> { { "@title", query2 }, {"@limit", limit} });
+        return Database.ExecuteSelect(q1, sender.DbConfig,
+            new Dictionary<string, object> { { "@title", query2 }, { "@limit", limit } });
     }
 
     internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
@@ -155,7 +156,7 @@ internal static class Groups
             }
 
             const string q1 = "SELECT * FROM Groups WHERE id = @id";
-            var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig, 
+            var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
                 new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
                 throw new Exception("No group found with id: " + e.Message.Chat.Id +
@@ -206,7 +207,7 @@ internal static class Groups
         }
 
         const string q1 = "SELECT * FROM Groups WHERE id = @id";
-        var groups = Database.ExecuteSelect(q1, sender.DbConfig, 
+        var groups = Database.ExecuteSelect(q1, sender.DbConfig,
             new Dictionary<string, object> { { "@id", group.Id } });
         if (groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
@@ -263,7 +264,8 @@ internal static class Groups
         return GroupsFixLogUpdatedEnum.DID_NOTHING;
     }
 
-    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle, TelegramBotAbstract sender)
+    private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle,
+        TelegramBotAbstract sender)
     {
         const string q = "UPDATE Groups SET title = @title WHERE id = @id";
 

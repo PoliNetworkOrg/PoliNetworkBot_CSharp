@@ -71,7 +71,7 @@ public static class MessageDb
             var r2 = Database.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)
             {
-                AddMessageType(type,sender);
+                AddMessageType(type, sender);
                 times--;
                 continue;
             }

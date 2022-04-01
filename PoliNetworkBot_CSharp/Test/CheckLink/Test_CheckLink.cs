@@ -1,9 +1,5 @@
 ﻿#region
 
-using JsonPolimi_Core_nf.Data;
-using JsonPolimi_Core_nf.Tipi;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
-
 #endregion
 
 namespace PoliNetworkBot_CSharp.Test.CheckLink;

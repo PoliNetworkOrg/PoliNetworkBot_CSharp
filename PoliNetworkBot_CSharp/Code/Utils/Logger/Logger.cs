@@ -70,7 +70,7 @@ public static class Logger
             Console.WriteLine(ex);
         }
     }
-    
+
     public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
@@ -225,13 +225,13 @@ public static class Logger
         string log;
         lock (LogFileLock)
         {
-             log = File.ReadAllText(DataLogPath);
+            log = File.ReadAllText(DataLogPath);
         }
+
         var entries = log.Split(LogSeparator).ToList();
         s = "";
         var toReturn = false;
         foreach (var entry in entries)
-        {
             try
             {
                 var severityLevel = entry[(GetTime().Length + 3)..];
@@ -245,7 +245,7 @@ public static class Logger
             catch (ArgumentOutOfRangeException)
             {
             }
-        }
+
         return toReturn;
     }
 }

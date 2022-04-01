@@ -22,6 +22,7 @@ public class BotInfoAbstract
     public long? apiId;
     public BotTypeApi? botTypeApi;
     public string contactString;
+    public DbConfig DbConfig;
     public string method;
     public string NumberCountry;
     public string NumberNumber;
@@ -29,10 +30,9 @@ public class BotInfoAbstract
     public string passwordToAuthenticate;
     public string SessionUserId;
     public string token;
+    public BotProgramType Type; //todo
     public long? userId;
     public string website;
-    public DbConfig DbConfig;
-    public BotProgramType Type; //todo
 
     internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
     {

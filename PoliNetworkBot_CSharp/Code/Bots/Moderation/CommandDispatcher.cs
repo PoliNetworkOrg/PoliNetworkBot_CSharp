@@ -816,7 +816,7 @@ internal static class CommandDispatcher
 
         if (updateDb) await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
 
-        var groups = Utils.Groups.GetAllGroups(sender,true);
+        var groups = Utils.Groups.GetAllGroups(sender, true);
 
         Variabili.L = new ListaGruppo();
 

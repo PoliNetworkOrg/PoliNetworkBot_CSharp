@@ -4,7 +4,7 @@ public static class Paths
 {
     public const string Db = "Data Source=" + Data.DbPath;
     public const string MaterialDb = "Data Source=" + Data.MaterialDbPath;
-    
+
 
     public static class Data
     {
@@ -39,5 +39,4 @@ public static class Paths
     {
         public const string CREDENTIALS = "../config/ig.txt";
     }
-
 }

@@ -381,7 +381,7 @@ internal static class RestrictUser
                 { "@target", targetId },
                 { "@btuf", StringUtil.ToSN(b) }
             };
-            var done = Database.Execute(q, sender.DbConfig , dict);
+            var done = Database.Execute(q, sender.DbConfig, dict);
 
             return done > 0;
         }

@@ -53,7 +53,8 @@ internal static class UtilsPhoto
         return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId, TelegramBotAbstract sender)
+    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId,
+        TelegramBotAbstract sender)
     {
         var a = GetPhotoId_From_FileId(fileId, sender);
         return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId, sender);
@@ -82,7 +83,7 @@ internal static class UtilsPhoto
         }
     }
 
-    private static long? GetPhotoId_From_FileId(string fileId , TelegramBotAbstract sender)
+    private static long? GetPhotoId_From_FileId(string fileId, TelegramBotAbstract sender)
     {
         const string q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object>

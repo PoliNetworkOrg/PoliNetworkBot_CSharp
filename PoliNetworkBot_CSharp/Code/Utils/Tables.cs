@@ -2,9 +2,7 @@
 
 using System;
 using System.Data;
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
-using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 

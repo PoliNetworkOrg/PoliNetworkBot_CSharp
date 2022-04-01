@@ -193,7 +193,7 @@ public class Main
                     { "@wk", DateTime.Now },
                     { "@ki", e.Message.From.Id }
                 };
-                var r3 = Database.Execute(q3, telegramBotClient.DbConfig , dict3);
+                var r3 = Database.Execute(q3, telegramBotClient.DbConfig, dict3);
             }
 
             await SendMessageYouAreKingAsync(telegramBotClient, e, t);

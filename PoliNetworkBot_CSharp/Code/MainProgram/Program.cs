@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -12,7 +11,6 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -358,7 +356,7 @@ internal static class Program
 
         GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract>();
         if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
-            foreach (BotInfoAbstract bot in _botInfos.bots)
+            foreach (var bot in _botInfos.bots)
             {
                 var token = bot.GetToken();
                 if (string.IsNullOrEmpty(token))
@@ -479,7 +477,6 @@ internal static class Program
         foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
         if (botInfoAbstract.onMessages == BotStartMethods.Material)
-        {
             try
             {
                 _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);
@@ -491,8 +488,6 @@ internal static class Program
                                  "location VARCHAR(250)" +
                                  ") ", telegramBotAbstract.DbConfig);
             }
-            
-        }
     }
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -40,9 +39,9 @@ public class TelegramBotAbstract
     private readonly string mode;
 
     public readonly TelegramClient UserbotClient;
-    private string username;
 
     public DbConfig DbConfig;
+    private string username;
 
     private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi,
         string website, string contactString, long? id)

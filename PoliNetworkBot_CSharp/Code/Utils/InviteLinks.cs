@@ -104,7 +104,7 @@ internal static class InviteLinks
     private static void SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender)
     {
         const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
-        Database.Execute(q1, sender.DbConfig , new Dictionary<string, object>
+        Database.Execute(q1, sender.DbConfig, new Dictionary<string, object>
         {
             { "@link", nuovoLink },
             { "@lul", DateTime.Now },

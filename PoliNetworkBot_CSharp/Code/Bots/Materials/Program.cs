@@ -15,6 +15,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -40,25 +41,25 @@ public class Program
     //                ?? new Dictionary<string, string>();
 
     public static Dictionary<string, List<string>> ModifiedFilesInGitFolder = new();
-    
+
     private static readonly object Lock1 = new();
-    
+
     public static Utils.Config Config = InitializeConfig();
+
+    private static readonly object SlowDownLock = new();
 
     private static Utils.Config InitializeConfig()
     {
         try
         {
             return JsonConvert.DeserializeObject<Utils.Config>(
-                File.ReadAllTextAsync(Data.Constants.Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
+                File.ReadAllTextAsync(Paths.Config.PoliMaterialsConfig).Result) ?? new Utils.Config();
         }
         catch (Exception ex)
         {
             return new Utils.Config();
         }
     }
-
-    private static readonly object SlowDownLock = new();
 
     public static async void BotClient_OnMessageAsync(object sender, MessageEventArgs e)
     {
@@ -74,7 +75,6 @@ public class Program
 
     private static async Task BotClient_OnMessageAsync2Async(object sender, MessageEventArgs e)
     {
-
         TelegramBotClient telegramBotClientBot = null;
         TelegramBotAbstract telegramBotClient = null;
 
@@ -196,7 +196,7 @@ public class Program
                 var fromId = long.Parse(callbackdata[1]);
                 //if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
                 //    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
-                if(!FilePaths.TryGetValue(callbackdata[2], sender, out var directory))
+                if (!FilePaths.TryGetValue(callbackdata[2], sender, out var directory))
                     throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
                 var a = directory.Split("/");
                 directory = "";
@@ -518,8 +518,8 @@ public class Program
         ModifiedFilesInGitFolder.TryGetValue(GetGit(file), out var filesInGit);
         filesInGit ??= new List<string>();
         filesInGit.Add(e.Message.Document.FileName);
-        ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);   
-        
+        ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);
+
 
         var inlineKeyboardButton = new List<InlineKeyboardButton>
         {
@@ -677,7 +677,8 @@ public class Program
     private static bool VerifySubfolder(MessageEventArgs e)
     {
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
-        return sottoCartelle.Any(a => a.Split(@"/").Last().Split(@"\").Last().Equals(e.Message.Text.Split(@"/").Last().Split(@"\").Last()));
+        return sottoCartelle.Any(a =>
+            a.Split(@"/").Last().Split(@"\").Last().Equals(e.Message.Text.Split(@"/").Last().Split(@"\").Last()));
     }
 
     private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract sender)

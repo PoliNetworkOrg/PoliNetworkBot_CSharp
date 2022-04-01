@@ -17,11 +17,11 @@ namespace PoliNetworkBot_CSharp.Code.Config;
 [JsonObject(MemberSerialization.Fields)]
 public class DbConfig
 {
-    public string User;
-    public string Password;
-    public int Port;
     public string Database;
     public string Host;
+    public string Password;
+    public int Port;
+    public string User;
 
     public static void InitializeDbConfig()
     {
@@ -37,18 +37,14 @@ public class DbConfig
                 Logger.WriteLine(ex);
             }
 
-            if (GlobalVariables.DbConfig == null)
-            {
-                GenerateDbConfigEmpty();
-            }
+            if (GlobalVariables.DbConfig == null) GenerateDbConfigEmpty();
         }
         else
         {
             GenerateDbConfigEmpty();
         }
-        
+
         GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfig?.GetConnectionString());
-        
     }
 
     private static void GenerateDbConfigEmpty()
