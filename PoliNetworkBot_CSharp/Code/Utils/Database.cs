@@ -41,19 +41,21 @@ public static class Database
 
         OpenConnection(connection);
 
-        var dr = cmd.ExecuteReader();
+        //var dr = cmd.ExecuteReader();
 
+        
+        var adapter = new MySqlDataAdapter
+        {
+            SelectCommand = cmd
+        };
 
-        var dt = new DataTable();
-        var da = new MySqlDataAdapter(cmd);
+        var ret = new DataSet();
 
-        if (dr.HasRows) dr.Read();
+        adapter.Fill(ret);
 
-        da.Fill(dt);
-        da.Dispose();
-        dr.Close();
-        dr.Dispose();
-        return dt;
+        adapter.Dispose();
+
+        return ret.Tables[0];
     }
 
     private static void OpenConnection(IDbConnection connection)
