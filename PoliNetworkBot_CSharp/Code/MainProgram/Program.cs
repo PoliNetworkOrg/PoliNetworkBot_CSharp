@@ -487,6 +487,7 @@ internal static class Program
                                  "file_and_git VARCHAR(250)," +
                                  "location VARCHAR(250)" +
                                  ") ", telegramBotAbstract.DbConfig);
+                Logger.WriteLine("Created table FilePaths");
             }
     }
 

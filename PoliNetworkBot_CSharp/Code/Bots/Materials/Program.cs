@@ -518,7 +518,11 @@ public class Program
         ModifiedFilesInGitFolder.TryGetValue(GetGit(file), out var filesInGit);
         filesInGit ??= new List<string>();
         filesInGit.Add(e.Message.Document.FileName);
-        ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);
+        if(!ModifiedFilesInGitFolder.TryAdd(GetGit(file), filesInGit))
+        {
+            ModifiedFilesInGitFolder.Remove(GetGit(file));
+            ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);
+        }
 
 
         var inlineKeyboardButton = new List<InlineKeyboardButton>
