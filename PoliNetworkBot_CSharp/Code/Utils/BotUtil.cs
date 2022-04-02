@@ -27,7 +27,7 @@ internal class BotUtil
                 case BotTypeApi.REAL_BOT:
                 {
                     var botMode = bot.GetMode();
-                    if (botMode == BotStartMethods.Moderation)
+                    if (botMode == BotStartMethods.Moderation.Item1)
                         return bot;
 
                     break;

@@ -10,7 +10,7 @@ using System.Text;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable IDE0051 // Remove unused private members
 

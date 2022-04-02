@@ -20,6 +20,7 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 

@@ -1,7 +1,7 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 
 #endregion
 
@@ -16,19 +16,15 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (SourceObject?.Data?.User == null)
             return null;
         var user = SourceObject.Data.User;
-        var statisfics = new InstaStatistics
-        {
-            BusinessProfileId = user.BusinessProfile.Id,
-            FollowersCount = user.FollowersCount ?? 0,
-            Id = user.Id,
-            UserId = user.InstagramUserId,
-            Username = user.Username
-        };
+        var statisfics = new InstaStatistics();
         if (user.BusinessProfile is { Id: { } })
-            statisfics.BusinessProfileId = user.BusinessProfile.Id;
+        {
+        }
 
         if (user.ProfilePicture is { Uri: { } })
-            statisfics.ProfilePicture = user.ProfilePicture.Uri;
+        {
+        }
+
         statisfics.BusinessManager = new InstaStatisticsBusinessManager();
 
         var businessManager = user.BusinessManager;
@@ -36,10 +32,7 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (businessManager.PromotionsUnit is { SummaryPromotions: { } })
             try
             {
-                statisfics.BusinessManager.PromotionsUnit = new InstaStatisticsSummaryPromotions
-                {
-                    Edges = businessManager.PromotionsUnit.SummaryPromotions.Edges
-                };
+                new InstaStatisticsSummaryPromotions();
             }
             catch
             {
@@ -48,13 +41,7 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (businessManager.AccountSummaryUnit is { })
             try
             {
-                statisfics.BusinessManager.AccountSummaryUnit = new InstaStatisticsAccountSummaryUnit
-                {
-                    FollowersCount = businessManager.AccountSummaryUnit.FollowersCount ?? 0,
-                    FollowersDeltaFromLastWeek = businessManager.AccountSummaryUnit.FollowersDeltaFromLastWeek ?? 0,
-                    PostsCount = businessManager.AccountSummaryUnit.PostsCount ?? 0,
-                    PostsDeltaFromLastWeek = businessManager.AccountSummaryUnit.PostsDeltaFromLastWeek ?? 0
-                };
+                new InstaStatisticsAccountSummaryUnit();
             }
             catch
             {
@@ -63,19 +50,9 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (businessManager.StoriesUnit != null)
             try
             {
-                var storyUnit = new InstaStatisticsStoriesUnit
-                {
-                    LastWeekStoriesCount = businessManager.StoriesUnit.LastWeekStoriesCount ?? 0,
-                    State = businessManager.StoriesUnit.State,
-                    WeekOverWeekStoriesDelta = businessManager.StoriesUnit.WeekOverWeekStoriesDelta ?? 0
-                };
+                var storyUnit = new InstaStatisticsStoriesUnit();
                 if (businessManager.StoriesUnit.SummaryStories != null)
-                    storyUnit.SummaryStories = new InstaStatisticsSummaryStories
-                    {
-                        Count = businessManager.StoriesUnit.SummaryStories.Count ?? 0,
-                        Edges = businessManager.StoriesUnit.SummaryStories.Edges
-                    };
-                statisfics.BusinessManager.StoriesUnit = storyUnit;
+                    new InstaStatisticsSummaryStories();
             }
             catch
             {
@@ -84,11 +61,7 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (businessManager.TopPostsUnit != null)
             try
             {
-                statisfics.BusinessManager.TopPostsUnit = new InstaStatisticsTopPostsUnit
-                {
-                    LastWeekPostsCount = businessManager.TopPostsUnit.LastWeekPostsCount ?? 0,
-                    WeekOverWeekPostsDelta = businessManager.TopPostsUnit.WeekOverWeekPostsDelta ?? 0
-                };
+                statisfics.BusinessManager.TopPostsUnit = new InstaStatisticsTopPostsUnit();
                 if (businessManager.TopPostsUnit.SummaryPosts != null)
                     foreach (var media in businessManager.TopPostsUnit.SummaryPosts.Edges)
                         try
@@ -120,12 +93,7 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         if (businessManager.FollowersUnit != null)
             try
             {
-                statisfics.BusinessManager.FollowersUnit = new InstaStatisticsFollowersUnit
-                {
-                    FollowersUnitState = businessManager.FollowersUnit.FollowersUnitState,
-                    FollowersDeltaFromLastWeek =
-                        businessManager.FollowersUnit.FollowersDeltaFromLastWeek ?? default
-                };
+                statisfics.BusinessManager.FollowersUnit = new InstaStatisticsFollowersUnit();
                 foreach (var dataPoint in businessManager.FollowersUnit.AllFollowersAgeGraph.DataPoints)
                     try
                     {
@@ -225,39 +193,12 @@ internal class InstaStatisticsConverter : IObjectConverter<InstaStatistics, Inst
         {
             try
             {
-                statisfics.BusinessManager.AccountInsightsUnit = new InstaStatisticsAccountInsightsUnit
-                {
-                    LastWeekCall = businessManager.AccountInsightsUnit.LastWeekCall ?? 0,
-                    LastWeekGetDirection = businessManager.AccountInsightsUnit.LastWeekGetDirection ?? 0,
-                    LastWeekImpressions = businessManager.AccountInsightsUnit.LastWeekImpressions ?? 0,
-                    LastWeekProfileVisits = businessManager.AccountInsightsUnit.LastWeekProfileVisits ?? 0,
-                    LastWeekReach = businessManager.AccountInsightsUnit.LastWeekReach ?? 0,
-                    LastWeekText = businessManager.AccountInsightsUnit.LastWeekText ?? 0,
-                    LastWeekWebsiteVisits = businessManager.AccountInsightsUnit.LastWeekWebsiteVisits ?? 0,
-                    LastWeekEmail = businessManager.AccountInsightsUnit.LastWeekWebsiteVisits ?? 0,
-                    WeekOverWeekCall = businessManager.AccountInsightsUnit.WeekOverWeekEmail ?? 0,
-                    WeekOverWeekEmail = businessManager.AccountInsightsUnit.WeekOverWeekEmail ?? 0,
-                    WeekOverWeekGetDirection = businessManager.AccountInsightsUnit.WeekOverWeekGetDirection ?? 0,
-                    WeekOverWeekImpressions = businessManager.AccountInsightsUnit.WeekOverWeekImpressions ?? 0,
-                    WeekOverWeekProfileVisits = businessManager.AccountInsightsUnit.WeekOverWeekReach ?? 0,
-                    WeekOverWeekReach = businessManager.AccountInsightsUnit.WeekOverWeekReach ?? 0,
-                    WeekOverWeekText = businessManager.AccountInsightsUnit.WeekOverWeekText ?? 0,
-                    WeekOverWeekWebsiteVisits = businessManager.AccountInsightsUnit.WeekOverWeekWebsiteVisits ?? 0
-                };
+                statisfics.BusinessManager.AccountInsightsUnit = new InstaStatisticsAccountInsightsUnit();
 
                 if (businessManager.AccountInsightsUnit.InstagramAccountInsightsChannel != null)
                     try
                     {
-                        statisfics.BusinessManager.AccountInsightsUnit.InstagramAccountInsightsChannel =
-                            new InstaStatisticsInsightsChannel
-                            {
-                                ChannelId = businessManager.AccountInsightsUnit.InstagramAccountInsightsChannel
-                                    .ChannelId,
-                                Id = businessManager.AccountInsightsUnit.InstagramAccountInsightsChannel.Id,
-                                Tips = businessManager.AccountInsightsUnit.InstagramAccountInsightsChannel.Tips,
-                                UnseenCount = businessManager.AccountInsightsUnit.InstagramAccountInsightsChannel
-                                    .UnseenCount ?? 0
-                            };
+                        new InstaStatisticsInsightsChannel();
                     }
                     catch
                     {

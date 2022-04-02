@@ -43,7 +43,7 @@ public static class Database
 
         //var dr = cmd.ExecuteReader();
 
-        
+
         var adapter = new MySqlDataAdapter
         {
             SelectCommand = cmd

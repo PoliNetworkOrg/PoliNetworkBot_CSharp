@@ -1,7 +1,7 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 
 #endregion
 
@@ -15,11 +15,7 @@ internal class
 
     public InstaStatisticsDataPointItem Convert()
     {
-        var dataPoint = new InstaStatisticsDataPointItem
-        {
-            Label = SourceObject.Label,
-            Value = SourceObject.Value ?? 0
-        };
+        var dataPoint = new InstaStatisticsDataPointItem();
         return dataPoint;
     }
 }

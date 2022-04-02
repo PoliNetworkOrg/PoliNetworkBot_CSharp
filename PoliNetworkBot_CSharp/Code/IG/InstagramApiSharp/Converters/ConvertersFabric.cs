@@ -12,6 +12,10 @@ using InstagramApiSharp.Classes.ResponseWrappers.Web;
 using InstagramApiSharp.Converters.Business;
 using InstagramApiSharp.Converters.Hashtags;
 using InstagramApiSharp.Converters.Users;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Broadcast;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Discover;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Stories;
 
 #endregion
 

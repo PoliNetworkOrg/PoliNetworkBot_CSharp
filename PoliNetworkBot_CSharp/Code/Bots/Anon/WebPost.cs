@@ -119,7 +119,7 @@ internal class WebPost
         if (GlobalVariables.Bots != null)
             return (from key in GlobalVariables.Bots.Keys
                 let m = GlobalVariables.Bots[key].GetMode()
-                where m == BotStartMethods.Anon
+                where m == BotStartMethods.Anon.Item1
                 select GlobalVariables.Bots[key]).FirstOrDefault();
         try
         {
@@ -130,9 +130,9 @@ internal class WebPost
             ;
         }
 
-        return (from key in GlobalVariables.Bots.Keys
+        return (from key in GlobalVariables.Bots?.Keys
             let m = GlobalVariables.Bots[key].GetMode()
-            where m == BotStartMethods.Anon
+            where m == BotStartMethods.Anon.Item1
             select GlobalVariables.Bots[key]).FirstOrDefault();
     }
 
