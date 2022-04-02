@@ -229,7 +229,7 @@ public class Program
 
                 ModifiedFilesInGitFolder.Remove(GetGit(directory));
 
-                var commit = @"git commit -m 'git commit by bot updated file: " + diff +
+                var commit = @"git commit -m '[Bot] files changed:  " + diff +
                              @"' --author=""PoliBot <polinetwork2@gmail.com>""";
 
                 logMessage += "Commit results: " + DoScript(powershell, commit, true) + "\n";

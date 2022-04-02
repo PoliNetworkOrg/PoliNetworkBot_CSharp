@@ -48,8 +48,9 @@ public static class Keyboards
     {
         var subdirectoryEntries = GetDir(id);
         var percorso = Program.UsersConversations[id].GetPath();
-        Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " +
-                         subdirectoryEntries.Aggregate("", (current, s) => current + s + ";"));
+        Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: " 
+                         + ( subdirectoryEntries != null ? subdirectoryEntries
+                             .Aggregate("", (current, s) => current + s + ";") : "null"));
         var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
                 { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } }))
             .ToList();
