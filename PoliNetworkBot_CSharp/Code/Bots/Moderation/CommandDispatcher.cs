@@ -834,7 +834,7 @@ internal static class CommandDispatcher
             InitGithubRepo();
         }
 
-        var path = Paths.Data.PoliNetworkWebsiteData + "groupsGenerated.json";
+        var path = Paths.Data.PoliNetworkWebsiteData + "/groupsGenerated.json";
         await File.WriteAllTextAsync(path, json, Encoding.UTF8);
         if (dry)
         {
@@ -910,8 +910,9 @@ internal static class CommandDispatcher
 
     private static void InitGithubRepo()
     {
+        Logger.WriteLine("Init websitedata repository");
         using var powershell = PowerShell.Create();
-        DoScript(powershell, "cd ./data/", true);
+        DoScript(powershell, "cd ../data/", true);
         DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
         DoScript(powershell, "cd ./polinetworkWebsiteData", true);
         DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);

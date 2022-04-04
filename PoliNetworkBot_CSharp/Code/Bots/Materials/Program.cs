@@ -90,6 +90,7 @@ public class Program
             {
                 try
                 {
+                    if (e.Message.Chat.Type != ChatType.Private) return;
                     if (e.Message.Text == "/start") GenerateStart(e);
 
                     Logger.WriteLine("Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
