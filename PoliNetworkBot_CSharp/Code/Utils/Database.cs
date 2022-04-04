@@ -20,11 +20,12 @@ public static class Database
 
         
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
-        connection.ChangeDatabase(dbConfig.Database);
         
         var cmd = new MySqlCommand(query, connection);
 
         OpenConnection(connection);
+        
+        connection.ChangeDatabase(dbConfig.Database);
 
         if (args != null)
             foreach (var (key, value) in args)
@@ -44,8 +45,6 @@ public static class Database
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
-        connection.ChangeDatabase(dbConfig.Database);
-
         var cmd = new MySqlCommand(query, connection);
         
         if (args != null)
@@ -53,6 +52,8 @@ public static class Database
                 cmd.Parameters.AddWithValue(key, value);
 
         OpenConnection(connection);
+        
+        connection.ChangeDatabase(dbConfig.Database);
 
         //UseDatabase(dbConfig.Database, connection);
         
