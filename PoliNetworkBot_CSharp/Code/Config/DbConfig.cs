@@ -58,6 +58,6 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port='" + Port + "';password='" + Password + "'";
+        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
     }
 }

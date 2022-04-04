@@ -58,7 +58,7 @@ internal static class ModerationCheck
         //end | exclude groups
         lock (Lock)
         {
-            const string q1 = "SELECT id, valid FROM Groups WHERE id = @id";
+            const string q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
             var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
                 new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)
@@ -161,7 +161,7 @@ internal static class ModerationCheck
             return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, item3, oldValid);
         try
         {
-            const string q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+            const string q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
             const string valid = "Y";
             var d = new Dictionary<string, object>
             {
@@ -191,7 +191,7 @@ internal static class ModerationCheck
         var (toExit, chatMembers, ints) = await CheckIfToExit_NullValue2Async(telegramBotClient, e);
         var valid = toExit == ToExit.STAY ? "Y" : "N";
 
-        var q = "UPDATE Groups SET valid = @valid WHERE id = @id";
+        var q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
         var d = new Dictionary<string, object>
         {
             { "@valid", valid },
@@ -220,7 +220,7 @@ internal static class ModerationCheck
     {
         try
         {
-            const string q1 = "INSERT INTO Groups (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
+            const string q1 = "INSERT INTO GroupsTelegram (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
             Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object>
             {
                 { "@id", e.Message.Chat.Id },

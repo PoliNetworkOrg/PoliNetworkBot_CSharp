@@ -196,7 +196,7 @@ internal static class Blacklist
 
     private static bool? CheckIfIsOurTgLink(string text, TelegramBotAbstract botAbstract)
     {
-        const string q1 = "SELECT id FROM Groups WHERE link = @link";
+        const string q1 = "SELECT id FROM GroupsTelegram WHERE link = @link";
         var link = GetTelegramLink(text);
 
         if (string.IsNullOrEmpty(link))

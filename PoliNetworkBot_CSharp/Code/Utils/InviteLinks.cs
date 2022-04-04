@@ -23,7 +23,7 @@ internal static class InviteLinks
 {
     internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        const string q1 = "SELECT id FROM Groups WHERE link IS NULL OR link = ''";
+        const string q1 = "SELECT id FROM GroupsTelegram WHERE link IS NULL OR link = ''";
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
 
         var n = 0;
@@ -103,7 +103,7 @@ internal static class InviteLinks
 
     private static void SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender)
     {
-        const string q1 = "UPDATE Groups SET link = @link, last_update_link = @lul WHERE id = @id";
+        const string q1 = "UPDATE GroupsTelegram SET link = @link, last_update_link = @lul WHERE id = @id";
         Database.Execute(q1, sender.DbConfig, new Dictionary<string, object>
         {
             { "@link", nuovoLink },
@@ -231,8 +231,8 @@ internal static class InviteLinks
         var sql1 = "empty";
         if (!string.IsNullOrEmpty(gruppoTG.idLink))
         {
-            sql1 = "SELECT id FROM Groups " +
-                   "WHERE Groups.link LIKE '%" + gruppoTG.idLink + "%'";
+            sql1 = "SELECT id FROM GroupsTelegram " +
+                   "WHERE GroupsTelegram.link LIKE '%" + gruppoTG.idLink + "%'";
 
             if (gruppoTG.idLink.Length < 3) gruppoTG.idLink = "";
         }
@@ -280,7 +280,7 @@ internal static class InviteLinks
                 return;
             }
 
-        const string sql2 = "SELECT id FROM Groups WHERE Groups.title LIKE '%' || @nome || '%'";
+        const string sql2 = "SELECT id FROM GroupsTelegram WHERE GroupsTelegram.title LIKE '%' || @nome || '%'";
 
         if (group_id == null)
             try

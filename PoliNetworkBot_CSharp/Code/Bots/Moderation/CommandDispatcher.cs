@@ -1005,7 +1005,7 @@ internal static class CommandDispatcher
 
          */
 
-        var groups = Database.ExecuteSelect("Select id From Groups", sender.DbConfig);
+        var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender.DbConfig);
 
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
@@ -1119,7 +1119,7 @@ internal static class CommandDispatcher
             return false;
         }
 
-        var groups = SqLite.ExecuteSelect("Select id From Groups");
+        var groups = SqLite.ExecuteSelect("Select id FROM GroupsTelegram");
         /*
         if(e.Message.Text.Length !=10)
         {

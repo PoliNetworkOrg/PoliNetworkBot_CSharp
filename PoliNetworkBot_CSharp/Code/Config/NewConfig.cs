@@ -107,7 +107,7 @@ public static class NewConfig
 
     private static void Redo_DB(bool alsoFillTablesFromJson)
     {
-        Database.Execute("CREATE TABLE Groups (" +
+        Database.Execute("CREATE TABLE GroupsTelegram (" +
                          "id BIGINT PRIMARY KEY, " +
                          "bot_id INT(12)," +
                          "valid CHAR(1)," +
@@ -261,7 +261,7 @@ public static class NewConfig
     {
         try
         {
-            const string q1 = "INSERT INTO Groups (id, bot_id, type, title, link, last_update_link, valid) " +
+            const string q1 = "INSERT INTO GroupsTelegram (id, bot_id, type, title, link, last_update_link, valid) " +
                               " VALUES " +
                               " (@id, @botid, @type, @title, @link, @lul, @valid)";
             Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object>

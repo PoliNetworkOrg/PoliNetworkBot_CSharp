@@ -89,7 +89,7 @@ internal static class RestrictUser
             return null;
         }
 
-        const string q1 = "SELECT id, type FROM Groups";
+        const string q1 = "SELECT id, type FROM GroupsTelegram";
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
         {

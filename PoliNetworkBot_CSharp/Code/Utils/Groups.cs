@@ -32,8 +32,8 @@ internal static class Groups
     internal static DataTable GetAllGroups(TelegramBotAbstract sender, bool onlyValids = false)
     {
         var q1 = onlyValids
-            ? "SELECT * FROM Groups WHERE ( valid = 'Y' or valid = 1 )"
-            : "SELECT * FROM Groups";
+            ? "SELECT * FROM GroupsTelegram WHERE ( valid = 'Y' or valid = 1 )"
+            : "SELECT * FROM GroupsTelegram";
 
         return Database.ExecuteSelect(q1, sender.DbConfig);
     }
@@ -41,7 +41,7 @@ internal static class Groups
     internal static DataTable GetGroupsByTitle(string query, int limit, TelegramBotAbstract sender)
     {
         var q1 = "SELECT id,title,link " +
-                 "FROM Groups " +
+                 "FROM GroupsTelegram " +
                  "WHERE title LIKE @title " +
                  "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
         var seo = query.Split(" ");
@@ -67,7 +67,7 @@ internal static class Groups
         {
             Logger.Logger.WriteLine("Starting fix of groups name");
             ;
-            const string q1 = "SELECT * FROM Groups";
+            const string q1 = "SELECT * FROM GroupsTelegram";
             var groups = Database.ExecuteSelect(q1, telegramBotAbstract.DbConfig);
             var indexTitle = groups.Columns.IndexOf("title");
             var indexId = groups.Columns.IndexOf("id");
@@ -155,7 +155,7 @@ internal static class Groups
                 }
             }
 
-            const string q1 = "SELECT * FROM Groups WHERE id = @id";
+            const string q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
             var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
                 new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
@@ -206,7 +206,7 @@ internal static class Groups
             return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title, sender);
         }
 
-        const string q1 = "SELECT * FROM Groups WHERE id = @id";
+        const string q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
         var groups = Database.ExecuteSelect(q1, sender.DbConfig,
             new Dictionary<string, object> { { "@id", group.Id } });
         if (groups.Rows.Count == 0)
@@ -267,7 +267,7 @@ internal static class Groups
     private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle,
         TelegramBotAbstract sender)
     {
-        const string q = "UPDATE Groups SET title = @title WHERE id = @id";
+        const string q = "UPDATE GroupsTelegram SET title = @title WHERE id = @id";
 
         var d = new Dictionary<string, object>
         {
