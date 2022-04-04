@@ -25,7 +25,9 @@ public static class Database
 
         OpenConnection(connection);
         
-        connection.ChangeDatabase(dbConfig.Database);
+        //connection.ChangeDatabase(dbConfig.Database);
+        
+        UseDatabase(dbConfig.Database, connection);
 
         if (args != null)
             foreach (var (key, value) in args)
@@ -53,12 +55,10 @@ public static class Database
 
         OpenConnection(connection);
         
-        connection.ChangeDatabase(dbConfig.Database);
+        //connection.ChangeDatabase(dbConfig.Database);
 
-        //UseDatabase(dbConfig.Database, connection);
+        UseDatabase(dbConfig.Database, connection);
         
-        //var dr = cmd.ExecuteReader();
-
 
         var adapter = new MySqlDataAdapter
         {
