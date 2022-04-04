@@ -1,7 +1,7 @@
 // https://dbdiagram.io/d
 
 
-Table Groups {
+Table GroupsTelegram {
   id bigint [pk]
   bot_id int(12)
   valid varchar(1)
