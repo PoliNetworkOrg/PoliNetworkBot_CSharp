@@ -28,7 +28,7 @@ public static class Database
         
         //connection.ChangeDatabase(dbConfig.Database);
         
-        UseDatabase(dbConfig.Database, connection);
+        //UseDatabase(dbConfig.Database, connection);
 
         if (args != null)
             foreach (var (key, value) in args)
@@ -60,9 +60,8 @@ public static class Database
         
         //connection.ChangeDatabase(dbConfig.Database);
 
-        UseDatabase(dbConfig.Database, connection);
+        //UseDatabase(dbConfig.Database, connection);
         
-
         var adapter = new MySqlDataAdapter
         {
             SelectCommand = cmd
