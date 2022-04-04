@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -14,7 +16,12 @@ public static class Database
 {
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
     {
+        Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+
+        
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
+        connection.ChangeDatabase(dbConfig.Database);
+        
         var cmd = new MySqlCommand(query, connection);
 
         OpenConnection(connection);
@@ -32,15 +39,23 @@ public static class Database
 
     public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
     {
-        var connection = new MySqlConnection(dbConfig.GetConnectionString());
-        var cmd = new MySqlCommand(query, connection);
+        
+        Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY);//todo metti gli args
 
+        var connection = new MySqlConnection(dbConfig.GetConnectionString());
+
+        connection.ChangeDatabase(dbConfig.Database);
+
+        var cmd = new MySqlCommand(query, connection);
+        
         if (args != null)
             foreach (var (key, value) in args)
                 cmd.Parameters.AddWithValue(key, value);
 
         OpenConnection(connection);
 
+        //UseDatabase(dbConfig.Database, connection);
+        
         //var dr = cmd.ExecuteReader();
 
 
@@ -56,6 +71,15 @@ public static class Database
         adapter.Dispose();
 
         return ret.Tables[0];
+    }
+
+    private static void UseDatabase(string dbConfigDatabase, MySqlConnection connection)
+    {
+        var query = "USE DATABASE " + dbConfigDatabase + ";";
+        
+        var cmd = new MySqlCommand(query, connection);
+
+        cmd.ExecuteNonQuery();
     }
 
     private static void OpenConnection(IDbConnection connection)

@@ -9,5 +9,6 @@ public enum LogSeverityLevel
     WARNING,
     NOTICE,
     INFO,
-    DEBUG
+    DEBUG,
+    DATABASE_QUERY
 }
