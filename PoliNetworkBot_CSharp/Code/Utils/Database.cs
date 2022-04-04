@@ -18,7 +18,8 @@ public static class Database
     {
         Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        
+        Logger.Logger.WriteLine("----------->" + dbConfig.GetConnectionString());
+
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
         
         var cmd = new MySqlCommand(query, connection);
@@ -44,6 +45,8 @@ public static class Database
     {
         
         Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY);//todo metti gli args
+        
+        Logger.Logger.WriteLine("----------->" + dbConfig.GetConnectionString());
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
