@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Telegram.Bot.Types;
 
 #endregion
@@ -36,7 +37,7 @@ public class TelegramUser
     {
         return id switch
         {
-            null => !string.IsNullOrEmpty(username) && usernameParam == username,
+            null => !string.IsNullOrEmpty(username) && string.Equals(usernameParam, username, StringComparison.CurrentCultureIgnoreCase),
             _ => id == userIdParam
         };
     }

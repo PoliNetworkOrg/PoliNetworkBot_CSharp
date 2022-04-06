@@ -16,7 +16,7 @@ public static class Database
 {
     public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
     {
-        Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
         
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
         
@@ -24,10 +24,6 @@ public static class Database
 
         OpenConnection(connection);
         
-        //connection.ChangeDatabase(dbConfig.Database);
-        
-        //UseDatabase(dbConfig.Database, connection);
-
         if (args != null)
             foreach (var (key, value) in args)
                 cmd.Parameters.AddWithValue(key, value);
@@ -42,7 +38,7 @@ public static class Database
     public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
     {
         
-        Logger.Logger.WriteLine(query + "\n\n" + Environment.StackTrace, LogSeverityLevel.DATABASE_QUERY);//todo metti gli args
+        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY);//todo metti gli args
         
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
@@ -54,9 +50,6 @@ public static class Database
 
         OpenConnection(connection);
         
-        //connection.ChangeDatabase(dbConfig.Database);
-
-        //UseDatabase(dbConfig.Database, connection);
         
         var adapter = new MySqlDataAdapter
         {
@@ -70,15 +63,6 @@ public static class Database
         adapter.Dispose();
 
         return ret.Tables[0];
-    }
-
-    private static void UseDatabase(string dbConfigDatabase, MySqlConnection connection)
-    {
-        var query = "USE DATABASE " + dbConfigDatabase + ";";
-        
-        var cmd = new MySqlCommand(query, connection);
-
-        cmd.ExecuteNonQuery();
     }
 
     private static void OpenConnection(IDbConnection connection)
