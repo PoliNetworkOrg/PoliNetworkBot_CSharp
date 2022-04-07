@@ -454,14 +454,15 @@ internal static class Assoc
 
     private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender)
     {
-        if (messageFromIdEntity == 2) return false;
-        
-        return false; //todo
+        if (messageFromIdEntity == 2)
+            return false;
 
-        var q = "SELECT COUNT (*) " +
+        return false; //todo: remove this line
+
+        string q = "SELECT COUNT (*) " +
                 "FROM Messages " +
                 "WHERE Messages.from_id_entity = " + messageFromIdEntity +
-                " AND(julianday('now') - 30) <= julianday(Messages.sent_date) ";
+                " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
 
         var dt = Database.ExecuteSelect(q, sender.DbConfig);
 
