@@ -1,12 +1,12 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -38,7 +38,6 @@ public static class AutoReplyInGroups
                 new List<SpecialGroup> { SpecialGroup.PIANO_DI_STUDI, SpecialGroup.ASK_POLIMI }
             }
         };
-
 
     private static bool CheckIfToSend(SpecialGroup s, long id)
     {

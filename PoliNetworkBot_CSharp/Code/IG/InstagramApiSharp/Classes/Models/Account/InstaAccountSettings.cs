@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 

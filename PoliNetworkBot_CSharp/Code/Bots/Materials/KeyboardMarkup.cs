@@ -17,95 +17,95 @@ internal static class KeyboardMarkup
         switch (list.Count)
         {
             case 1:
-            {
-                var r2 = new List<string>
+                {
+                    var r2 = new List<string>
                 {
                     list[0]
                 };
-                r.Add(r2);
-                return r;
-            }
+                    r.Add(r2);
+                    return r;
+                }
 
             case 2:
-            {
-                var r2 = new List<string>
+                {
+                    var r2 = new List<string>
                 {
                     list[0],
                     list[1]
                 };
-                r.Add(r2);
-                return r;
-            }
-            /*
-                            case 3:
-                                {
-                                    var r2 = new List<string>
-                                {
-                                    list[0],
-                                    list[1],
-                                    list[2]
-                                };
-                                    r.Add(r2);
-                                    return r;
-                                }
+                    r.Add(r2);
+                    return r;
+                }
+                /*
+                                case 3:
+                                    {
+                                        var r2 = new List<string>
+                                    {
+                                        list[0],
+                                        list[1],
+                                        list[2]
+                                    };
+                                        r.Add(r2);
+                                        return r;
+                                    }
 
-                            case 4:
-                                {
-                                    var r2 = new List<string>
-                                {
-                                    list[0],
-                                    list[1]
-                                };
-                                    r.Add(r2);
+                                case 4:
+                                    {
+                                        var r2 = new List<string>
+                                    {
+                                        list[0],
+                                        list[1]
+                                    };
+                                        r.Add(r2);
 
-                                    var r3 = new List<string>
-                                {
-                                    list[2],
-                                    list[3]
-                                };
-                                    r.Add(r3);
-                                    return r;
-                                }
+                                        var r3 = new List<string>
+                                    {
+                                        list[2],
+                                        list[3]
+                                    };
+                                        r.Add(r3);
+                                        return r;
+                                    }
 
-                            case 5:
-                                {
-                                    var r2 = new List<string>
-                                {
-                                    list[0],
-                                    list[1]
-                                };
-                                    r.Add(r2);
+                                case 5:
+                                    {
+                                        var r2 = new List<string>
+                                    {
+                                        list[0],
+                                        list[1]
+                                    };
+                                        r.Add(r2);
 
-                                    var r3 = new List<string>
-                                {
-                                    list[2],
-                                    list[3],
-                                    list[4]
-                                };
-                                    r.Add(r3);
-                                    return r;
-                                }
+                                        var r3 = new List<string>
+                                    {
+                                        list[2],
+                                        list[3],
+                                        list[4]
+                                    };
+                                        r.Add(r3);
+                                        return r;
+                                    }
 
-                            case 6:
-                                {
-                                    var r2 = new List<string>
-                                {
-                                    list[0],
-                                    list[1],
-                                    list[2]
-                                };
-                                    r.Add(r2);
+                                case 6:
+                                    {
+                                        var r2 = new List<string>
+                                    {
+                                        list[0],
+                                        list[1],
+                                        list[2]
+                                    };
+                                        r.Add(r2);
 
-                                    var r3 = new List<string>
-                                {
-                                    list[3],
-                                    list[4],
-                                    list[5]
-                                };
-                                    r.Add(r3);
-                                    return r;
-                                }
-            */
+                                        var r3 = new List<string>
+                                    {
+                                        list[3],
+                                        list[4],
+                                        list[5]
+                                    };
+                                        r.Add(r3);
+                                        return r;
+                                    }
+                */
         }
 
         var lines = list.Count / 2;

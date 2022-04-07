@@ -221,11 +221,12 @@ public static class MessageDb
         switch (schedule)
         {
             case true when dt == null:
-                return new MessageSendScheduled(ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED, null, null,
-                    r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED,
+                    null, null, r1);
 
             case true when dt > DateTime.Now:
-                return new MessageSendScheduled(ScheduleMessageSentResult.NOT_THE_RIGHT_TIME, null, null, r1);
+                return new MessageSendScheduled(ScheduleMessageSentResult.NOT_THE_RIGHT_TIME,
+                    null, null, r1);
         }
 
         var done = await SendMessageFromDataRow(dr, null, null, false, telegramBotAbstract, 0);

@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using System;
 using System.Linq;
-using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 
 #endregion
 

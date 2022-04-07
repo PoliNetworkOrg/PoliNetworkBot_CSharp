@@ -39,7 +39,7 @@ public class AndroidVersion
 
     public static AndroidVersion GetRandomAndriodVersion()
     {
-        TryLabel:
+    TryLabel:
         var randomDeviceIndex = Rnd.Next(0, AndroidVersionList.AndroidVersions().Count);
         var androidVersion = AndroidVersionList.AndroidVersions().ElementAt(randomDeviceIndex);
         if (LastAndriodVersion != null)

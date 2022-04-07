@@ -1,12 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -19,6 +12,13 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -796,7 +796,7 @@ internal class HelperProcessor
                     try
                     {
                         var tried = false;
-                        TryLabel:
+                    TryLabel:
                         var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                         if (!u.Succeeded)
                         {
@@ -948,9 +948,9 @@ internal class HelperProcessor
             {
                 var tagArr = new JArray();
                 foreach (var singleTag in from tag in userTags
-                         where tag.Pk != -1
-                         let position = new JArray(tag.X, tag.Y)
-                         select new JObject
+                                          where tag.Pk != -1
+                                          let position = new JArray(tag.X, tag.Y)
+                                          select new JObject
                          {
                              { "user_id", tag.Pk },
                              { "position", position }

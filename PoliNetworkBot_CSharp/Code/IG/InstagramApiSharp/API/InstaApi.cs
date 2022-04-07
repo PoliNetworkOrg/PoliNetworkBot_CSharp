@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Processors;
@@ -25,6 +17,14 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -698,6 +698,7 @@ public class InstaApi
     /// <param name="firstName">First name (optional)</param>
     /// <param name="delay">Delay between requests. null = 2.5 seconds</param>
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
+
     private async Task<IResult<InstaAccountCreation>> CreateNewAccountAsync(string username, string password,
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
         string email, string firstName = "", TimeSpan? delay = null)
@@ -980,7 +981,7 @@ public class InstaApi
             }
 
             var needsRelogin = false;
-            ReloginLabel:
+        ReloginLabel:
             //if (isNewLogin)
             //    await GetToken();
             var cookies =
@@ -1049,13 +1050,13 @@ public class InstaApi
                             InstaLoginResult.InactiveUser);
 
                     case "checkpoint_logged_out":
-                    {
-                        if (needsRelogin)
-                            return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
-                                InstaLoginResult.CheckpointLoggedOut);
-                        needsRelogin = true;
-                        goto ReloginLabel;
-                    }
+                        {
+                            if (needsRelogin)
+                                return Result.Fail($"{loginFailReason.ErrorType} {loginFailReason.CheckpointUrl}",
+                                    InstaLoginResult.CheckpointLoggedOut);
+                            needsRelogin = true;
+                            goto ReloginLabel;
+                        }
                     default:
                         return Result.UnExpectedResponse<InstaLoginResult>(response, json);
                 }

@@ -5,7 +5,6 @@ public static class Paths
     public const string Db = "Data Source=" + Data.DbPath;
     public const string MaterialDb = "Data Source=" + Data.MaterialDbPath;
 
-
     public static class Data
     {
         public const string Log = "../data/log.txt";

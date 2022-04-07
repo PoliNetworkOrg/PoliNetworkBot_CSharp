@@ -1,9 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -14,6 +10,10 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 
 #endregion
 
@@ -238,14 +238,14 @@ public static class NewConfig
                     break;
 
                 case "LastUpdateInviteLinkTime":
-                {
-                    var d1 = GetLastUpdateLinkTimeFromJson(r3);
-                    if (d1.HasValue())
-                        lastUpdateLinkTime = d1.GetValue();
-                    else
-                        exceptions.AddRange(d1.GetExceptions());
-                    break;
-                }
+                    {
+                        var d1 = GetLastUpdateLinkTimeFromJson(r3);
+                        if (d1.HasValue())
+                            lastUpdateLinkTime = d1.GetValue();
+                        else
+                            exceptions.AddRange(d1.GetExceptions());
+                        break;
+                    }
                 case "we_are_admin":
                     we_are_admin = GetWeAreAdminFromJson(r3);
                     break;

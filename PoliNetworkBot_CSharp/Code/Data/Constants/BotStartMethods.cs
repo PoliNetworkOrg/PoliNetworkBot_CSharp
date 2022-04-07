@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 
 #endregion
 
@@ -17,7 +17,6 @@ public static class BotStartMethods
     public static readonly Tuple<string, int> Anon = new("a", 3);
     public static readonly Tuple<string, int> Material = new("mat", 4);
     public static readonly Tuple<string, int> Admin = new("ad", 5);
-
 
     internal static EventHandler<MessageEventArgs> GetMethodFromString(string s)
     {

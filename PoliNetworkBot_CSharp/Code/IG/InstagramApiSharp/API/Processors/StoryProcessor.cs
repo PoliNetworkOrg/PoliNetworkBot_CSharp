@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -21,6 +13,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -1016,7 +1016,7 @@ internal class StoryProcessor : IStoryProcessor
                     try
                     {
                         var tried = false;
-                        TryLabel:
+                    TryLabel:
                         var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                         if (!u.Succeeded)
                         {
@@ -1039,7 +1039,7 @@ internal class StoryProcessor : IStoryProcessor
                 {
                     var tried = false;
                     var profilePicture = string.Empty;
-                    TryToGetMyUser:
+                TryToGetMyUser:
                     // get latest profile picture
                     var myUser = await _instaApi.UserProcessor.GetUserAsync(_user.UserName.ToLower());
                     if (!myUser.Succeeded)

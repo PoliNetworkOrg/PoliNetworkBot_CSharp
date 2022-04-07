@@ -1,12 +1,12 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 

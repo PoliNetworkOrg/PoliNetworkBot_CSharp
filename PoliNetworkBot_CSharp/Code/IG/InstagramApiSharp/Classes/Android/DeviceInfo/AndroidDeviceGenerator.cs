@@ -552,7 +552,7 @@ public class AndroidDeviceGenerator
 
     public static AndroidDevice GetRandomAndroidDevice()
     {
-        TryLabel:
+    TryLabel:
         var randomDeviceIndex = Rnd.Next(0, DevicesNames.Count);
         var device = AndroidAndroidDeviceSets.ElementAt(randomDeviceIndex).Value;
         device.PhoneGuid = Guid.NewGuid();
