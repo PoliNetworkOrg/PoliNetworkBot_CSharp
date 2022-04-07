@@ -28,7 +28,7 @@ public class DebugLogger : IInstaLogger
         WriteSeprator();
         Write($"Request: {request.Method} {request.RequestUri}");
         WriteHeaders(request.Headers);
-        WriteProperties(request.Properties);
+        WriteProperties(request.Options);
         if (request.Method == HttpMethod.Post)
             WriteRequestContent(request.Content);
     }

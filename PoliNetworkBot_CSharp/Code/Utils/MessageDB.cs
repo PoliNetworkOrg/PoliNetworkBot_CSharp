@@ -379,7 +379,7 @@ public static class MessageDb
     {
         var botId = Convert.ToInt64(dr["from_id_bot"]);
         if (!GlobalVariables.Bots.ContainsKey(botId))
-            return new MessageSentResult(false, null, null);
+            return new MessageSentResult(false, null, chatTypeToSendTo);
 
         var botClass = GlobalVariables.Bots[botId];
 
