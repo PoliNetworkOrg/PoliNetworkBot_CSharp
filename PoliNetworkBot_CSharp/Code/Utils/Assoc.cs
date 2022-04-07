@@ -442,7 +442,7 @@ internal static class Assoc
     {
         if (messageFromIdEntity == 2) return false;
         
-        return true; //todo
+        return false; //todo
 
         var q = "SELECT COUNT (*) " +
                 "FROM Messages " +
