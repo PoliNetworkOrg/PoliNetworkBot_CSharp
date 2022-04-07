@@ -441,6 +441,8 @@ internal static class Assoc
     private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender)
     {
         if (messageFromIdEntity == 2) return false;
+        
+        return true; //todo
 
         var q = "SELECT COUNT (*) " +
                 "FROM Messages " +
