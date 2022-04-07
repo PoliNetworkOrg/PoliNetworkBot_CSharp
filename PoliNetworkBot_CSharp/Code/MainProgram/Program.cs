@@ -478,6 +478,7 @@ internal static class Program
             }
             catch (MySqlException ex)
             {
+                Logger.WriteLine(ex);
                 Database.Execute("CREATE TABLE FilePaths (" +
                                  "file_and_git VARCHAR(250)," +
                                  "location VARCHAR(250)" +

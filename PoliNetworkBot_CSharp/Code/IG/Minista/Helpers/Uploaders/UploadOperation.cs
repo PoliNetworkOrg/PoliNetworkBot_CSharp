@@ -16,7 +16,7 @@ internal class UploadOperation
     private readonly StorageFile file;
     private readonly InstaApi instaApi;
     private readonly Uri instaUri;
-    internal string Guid;
+    internal string Guid = null;
 
     public UploadOperation(Uri instaUri, StorageFile file, BackgroundUploader backgroundUploader, InstaApi instaApi)
     {

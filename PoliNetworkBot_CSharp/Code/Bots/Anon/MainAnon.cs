@@ -508,9 +508,9 @@ internal static class MainAnon
 
         List<CallbackOption> options = new()
         {
-            new CallbackOption("Sì, principale", ResultQueueEnum.APPROVED_MAIN),
-            new CallbackOption("Sì, uncensored", ResultQueueEnum.GO_TO_UNCENSORED),
-            new CallbackOption("No, elimina", ResultQueueEnum.DELETE)
+            new CallbackOption("Sì, principale", 0, ResultQueueEnum.APPROVED_MAIN),
+            new CallbackOption("Sì, uncensored", 1, ResultQueueEnum.GO_TO_UNCENSORED),
+            new CallbackOption("No, elimina", 2, ResultQueueEnum.DELETE)
         };
         CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
         {

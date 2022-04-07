@@ -698,7 +698,7 @@ internal static class Assoc
 
         List<CallbackOption> options = new()
         {
-            new CallbackOption("❌ Veto")
+            new CallbackOption("❌ Veto", 0, null)
         };
 
         var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs,

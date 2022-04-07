@@ -23,7 +23,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for current follow requests");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -35,7 +35,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former biography texts");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -47,7 +47,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former biography links");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -59,7 +59,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former usernames");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -71,7 +71,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former full names");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -83,7 +83,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former phone numbers");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
@@ -95,7 +95,7 @@ internal class WebUriCreator
             throw new Exception("Cant create URI for former emails");
         var query = string.Empty;
         if (cursor.IsNotEmpty())
-            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeUriString(cursor));
+            query = string.Format(InstaApiConstants.WebCursor, Uri.EscapeDataString(cursor));
 
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }

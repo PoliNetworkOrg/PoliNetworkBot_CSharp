@@ -57,6 +57,7 @@ public class Program
         }
         catch (Exception ex)
         {
+            Logger.WriteLine(ex);
             return new Utils.Config();
         }
     }

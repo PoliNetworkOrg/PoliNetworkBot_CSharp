@@ -216,16 +216,7 @@ public static class MessageDb
         if (has_been_sent.Value)
             return new MessageSendScheduled(ScheduleMessageSentResult.ALREADY_SENT, null, null, r1);
 
-        DateTime? dt = null;
-
-        try
-        {
-            dt = (DateTime)dr["sent_date"];
-        }
-        catch
-        {
-            ;
-        }
+        DateTime? dt = GetDateTime(dr, "sent_date");
 
         switch (schedule)
         {
@@ -245,6 +236,34 @@ public static class MessageDb
         Database.Execute(q2, telegramBotAbstract.DbConfig);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
+    }
+
+    private static DateTime? GetDateTime(DataRow dr, string v)
+    {
+        DateTime? dt = null;
+        
+        try
+        {
+            dt = (DateTime)dr[v];
+        }
+        catch
+        {
+            ;
+        }
+
+        try
+        {
+            var s = dr[v].ToString();
+            var r = Utils.DateTimeClass.GetDateTimeFromString(s);
+            if (r != null && r.Item2 == null && r.Item1 != null)
+                return r.Item1;
+        }
+        catch
+        {
+            ;
+        }
+
+        return null;
     }
 
     private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract sender,
