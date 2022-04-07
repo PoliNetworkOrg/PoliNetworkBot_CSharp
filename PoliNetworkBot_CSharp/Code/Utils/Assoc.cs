@@ -55,134 +55,148 @@ internal static class Assoc
 
     public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        var replyTo = e.Message.ReplyToMessage;
-
-        if (replyTo == null)
+        try
         {
-            await Assoc_ObjectToSendNotValid(sender, e);
-            return false;
-        }
+            var replyTo = e.Message.ReplyToMessage;
 
-        var languageList = new Language(new Dictionary<string, string>
-        {
-            { "it", "Scegli l'entità per il quale stai componendo il messaggio" },
-            { "en", "Choose the entity you are writing this message for" }
-        });
-
-        var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
-            sender, e.Message.From.LanguageCode, e.Message.From.Username);
-
-        if (messageFromIdEntity == null)
-        {
-            await EntityNotFoundAsync(sender, e);
-            return false;
-        }
-
-        var hasThisEntityAlreadyReachedItsLimit = CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender);
-        if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
-        {
-            var languageList4 = new Language(new Dictionary<string, string>
-            {
-                { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
-                { "en", "I'm sorry! In this period you have sent too many messages" }
-            });
-            await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
-                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
-            return false;
-        }
-
-        var languageList2 = new Language(new Dictionary<string, string>
-            {
-                { "it", "Data di pubblicazione?" },
-                { "en", "Date of publication?" }
-            }
-        );
-
-        var opt1 = new Language(new Dictionary<string, string>
-            { { "it", "Metti in coda" }, { "en", "Place in queue" } });
-        var opt2 = new Language(
-            new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
-        var options = new List<List<Language>>
-        {
-            new() { opt1, opt2 }
-        };
-
-        var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
-            languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
-
-        Tuple<DateTimeSchedule, Exception, string> sentDate;
-        if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
-        {
-            sentDate = new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(null, false), null,
-                null);
-        }
-        else
-        {
-            sentDate = await AskUser.AskDateAsync(e.Message.From.Id, e.Message.Text,
-                e.Message.From.LanguageCode, sender, e.Message.From.Username);
-
-            if (sentDate.Item2 != null)
-            {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
-                return false;
-            }
-
-            var sdt = sentDate.Item1.GetDate();
-            if (CheckIfDateTimeIsValid(sdt) == false)
-            {
-                var lang4 = new Language(new Dictionary<string, string>
-                {
-                    { "en", "The date you choose is invalid!" },
-                    { "it", "La data che hai scelto non è valida!" }
-                });
-                await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
-                    ChatType.Private, e.Message.From.LanguageCode,
-                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                    e.Message.From.Username);
-                return false;
-            }
-        }
-
-        const long idChatSentInto = Channels.PoliAssociazioni;
-        //const long idChatSentInto = -432645805;
-        var chatTypeSendInto = ChatType.Group;
-
-        var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
-            messageFromIdEntity, idChatSentInto, sender, chatTypeSendInto);
-
-        switch (successQueue)
-        {
-            case SuccessQueue.INVALID_ID_TO_DB:
-                break;
-
-            case SuccessQueue.INVALID_OBJECT:
+            if (replyTo == null)
             {
                 await Assoc_ObjectToSendNotValid(sender, e);
                 return false;
             }
 
-            case SuccessQueue.SUCCESS:
-                break;
+            var languageList = new Language(new Dictionary<string, string>
+            {
+                {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
+                {"en", "Choose the entity you are writing this message for"}
+            });
 
-            case SuccessQueue.DATE_INVALID:
-                break;
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
+                sender, e.Message.From.LanguageCode, e.Message.From.Username);
 
-            default:
-                throw new ArgumentOutOfRangeException();
+            if (messageFromIdEntity == null)
+            {
+                await EntityNotFoundAsync(sender, e);
+                return false;
+            }
+
+            var hasThisEntityAlreadyReachedItsLimit =
+                CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender);
+            if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
+            {
+                var languageList4 = new Language(new Dictionary<string, string>
+                {
+                    {"it", "Spiacente! In questo periodo hai inviato troppi messaggi"},
+                    {"en", "I'm sorry! In this period you have sent too many messages"}
+                });
+                await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
+                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                return false;
+            }
+
+            var languageList2 = new Language(new Dictionary<string, string>
+                {
+                    {"it", "Data di pubblicazione?"},
+                    {"en", "Date of publication?"}
+                }
+            );
+
+            var opt1 = new Language(new Dictionary<string, string>
+                {{"it", "Metti in coda"}, {"en", "Place in queue"}});
+            var opt2 = new Language(
+                new Dictionary<string, string> {{"it", "Scegli la data"}, {"en", "Choose the date"}});
+            var options = new List<List<Language>>
+            {
+                new() {opt1, opt2}
+            };
+
+            var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
+                languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
+
+            Tuple<DateTimeSchedule, Exception, string> sentDate;
+            if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
+            {
+                sentDate = new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(null, false), null,
+                    null);
+            }
+            else
+            {
+                sentDate = await AskUser.AskDateAsync(e.Message.From.Id, e.Message.Text,
+                    e.Message.From.LanguageCode, sender, e.Message.From.Username);
+
+                if (sentDate.Item2 != null)
+                {
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
+                    return false;
+                }
+
+                var sdt = sentDate.Item1.GetDate();
+                if (CheckIfDateTimeIsValid(sdt) == false)
+                {
+                    var lang4 = new Language(new Dictionary<string, string>
+                    {
+                        {"en", "The date you choose is invalid!"},
+                        {"it", "La data che hai scelto non è valida!"}
+                    });
+                    await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
+                        ChatType.Private, e.Message.From.LanguageCode,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        e.Message.From.Username);
+                    return false;
+                }
+            }
+
+            const long idChatSentInto = Channels.PoliAssociazioni;
+            //const long idChatSentInto = -432645805;
+            var chatTypeSendInto = ChatType.Group;
+
+            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
+                messageFromIdEntity, idChatSentInto, sender, chatTypeSendInto);
+
+            switch (successQueue)
+            {
+                case SuccessQueue.INVALID_ID_TO_DB:
+                    break;
+
+                case SuccessQueue.INVALID_OBJECT:
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return false;
+                }
+
+                case SuccessQueue.SUCCESS:
+                    break;
+
+                case SuccessQueue.DATE_INVALID:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (successQueue != SuccessQueue.SUCCESS)
+            {
+                await NotifyUtil.NotifyOwners(
+                    new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
+                return false;
+            }
+
+            var lang3 = new Language(new Dictionary<string, string>
+            {
+                {"en", "The message has been submitted correctly"},
+                {"it", "Il messaggio è stato inviato correttamente"}
+            });
+            await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
+                ChatType.Private, e.Message.From.LanguageCode,
+                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                e.Message.From.Username);
+            return true;
         }
-
-        if (successQueue != SuccessQueue.SUCCESS) return false;
-
-        var lang3 = new Language(new Dictionary<string, string>
+        catch (Exception ex)
         {
-            { "en", "The message has been submitted correctly" },
-            { "it", "Il messaggio è stato inviato correttamente" }
-        });
-        await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
-            ChatType.Private, e.Message.From.LanguageCode,
-            ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-            e.Message.From.Username);
-        return true;
+            await NotifyUtil.NotifyOwners(ex, sender, e);
+            return false;
+        }
     }
 
     private static bool CheckIfDateTimeIsValid(DateTime? sdt)
