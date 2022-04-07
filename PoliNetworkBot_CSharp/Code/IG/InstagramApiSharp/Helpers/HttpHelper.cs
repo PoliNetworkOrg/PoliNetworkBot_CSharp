@@ -208,9 +208,9 @@ public class HttpHelper
                 InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
         var request = GetDefaultRequest(HttpMethod.Post, uri, deviceInfo);
         request.Content = new FormUrlEncodedContent(fields);
-        request.Properties.Add(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
+        request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
         if (!IsNewerApis)
-            request.Properties.Add(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
+            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
                 InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
 
         return request;
@@ -237,10 +237,10 @@ public class HttpHelper
                 InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
         var request = GetDefaultRequest(HttpMethod.Post, uri, deviceInfo);
         request.Content = new FormUrlEncodedContent(fields);
-        request.Properties.Add(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
+        request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
 
         if (!IsNewerApis)
-            request.Properties.Add(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
+            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
                 InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
         return request;
     }

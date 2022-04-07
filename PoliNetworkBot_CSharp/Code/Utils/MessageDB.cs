@@ -378,6 +378,9 @@ public static class MessageDb
         ChatType? chatTypeToSendTo, TelegramBotAbstract sender)
     {
         var botId = Convert.ToInt64(dr["from_id_bot"]);
+        if (!GlobalVariables.Bots.ContainsKey(botId))
+            return new MessageSentResult(false, null, chatTypeToSendTo);
+
         var botClass = GlobalVariables.Bots[botId];
 
         var typeI = Convert.ToInt64(dr["type"]);
