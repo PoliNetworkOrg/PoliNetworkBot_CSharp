@@ -220,7 +220,7 @@ public static class MessageDb
 
         try
         {
-            dt = (DateTime)dr["sent_date"];
+            dt = DateTime.Parse(dr["sent_date"].ToString() ?? string.Empty);
         }
         catch
         {
