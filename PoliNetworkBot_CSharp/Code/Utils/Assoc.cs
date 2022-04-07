@@ -459,7 +459,7 @@ internal static class Assoc
 
         return false; //todo: remove this line
 
-        string q = "SELECT COUNT (*) " +
+        string q = "SELECT COUNT(*) " +
                 "FROM Messages " +
                 "WHERE Messages.from_id_entity = " + messageFromIdEntity +
                 " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
