@@ -259,7 +259,7 @@ public class ThreadAsync
         {
             try
             {
-                await MessageDb.CheckMessagesToSend(false, null, null);
+                await MessageDb.CheckMessagesToSend(false, BotUtil.GetFirstModerationRealBot(), null);
             }
             catch (Exception ex)
             {
