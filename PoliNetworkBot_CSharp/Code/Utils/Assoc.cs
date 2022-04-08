@@ -1,16 +1,16 @@
 ﻿#region
 
+using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net.Cache;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -104,7 +104,7 @@ internal static class Assoc
             var opt1 = new Language(new Dictionary<string, string>
                 {{"it", "Metti in coda"}, {"en", "Place in queue"}});
             var opt2 = new Language(
-                new Dictionary<string, string> {{"it", "Scegli la data"}, {"en", "Choose the date"}});
+                new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
                 new() {opt1, opt2}
@@ -159,10 +159,10 @@ internal static class Assoc
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                {
-                    await Assoc_ObjectToSendNotValid(sender, e);
-                    return false;
-                }
+                    {
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false;
+                    }
 
                 case SuccessQueue.SUCCESS:
                     break;

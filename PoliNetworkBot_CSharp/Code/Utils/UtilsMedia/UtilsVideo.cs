@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using System;
+using System.Collections.Generic;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 

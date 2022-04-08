@@ -1,12 +1,12 @@
 ﻿#region
 
+using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types;
 
 #endregion

@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Objects;
+using System;
 
 #endregion
 
@@ -53,51 +53,51 @@ internal static class DateTimeClass
             case "years":
             case "anni":
             case "anno":
-            {
-                return 60 * 60 * 24 * 365;
-            }
+                {
+                    return 60 * 60 * 24 * 365;
+                }
 
             case "stagioni":
             case "stagione":
-            {
-                return 60 * 60 * 24 * 91;
-            }
+                {
+                    return 60 * 60 * 24 * 91;
+                }
 
             case "mo":
             case "month":
             case "months":
             case "mesi":
             case "mese":
-            {
-                return 60 * 60 * 24 * 30;
-            }
+                {
+                    return 60 * 60 * 24 * 30;
+                }
 
             case "w":
             case "week":
             case "weeks":
             case "settimane":
             case "settimana":
-            {
-                return 60 * 60 * 24 * 7;
-            }
+                {
+                    return 60 * 60 * 24 * 7;
+                }
 
             case "d":
             case "day":
             case "days":
             case "giorni":
             case "giorno":
-            {
-                return 60 * 60 * 24;
-            }
+                {
+                    return 60 * 60 * 24;
+                }
 
             case "h":
             case "hour":
             case "hours":
             case "ore":
             case "ora":
-            {
-                return 60 * 60;
-            }
+                {
+                    return 60 * 60;
+                }
 
             case "m":
             case "min":
@@ -106,14 +106,14 @@ internal static class DateTimeClass
             case "minutes":
             case "minuti":
             case "minuto":
-            {
-                return 60;
-            }
+                {
+                    return 60;
+                }
 
             default:
-            {
-                return 1;
-            }
+                {
+                    return 1;
+                }
         }
     }
 
@@ -309,35 +309,35 @@ internal static class DateTimeClass
             case "un ora":
             case "1 hour":
             case "1 ora":
-            {
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddHours(1), null);
-            }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddHours(1), null);
+                }
 
             case "un mese":
             case "month":
             case "1 mese":
             case "1 month":
-            {
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddMonths(1), null);
-            }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddMonths(1), null);
+                }
 
             case "giorno":
             case "day":
             case "un giorno":
             case "1 giorno":
             case "1 day":
-            {
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
-            }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
+                }
 
             case "anno":
             case "year":
             case "un anno":
             case "1 anno":
             case "1 year":
-            {
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddYears(1), null);
-            }
+                {
+                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddYears(1), null);
+                }
         }
 
         if (reply.StartsWith("un'"))

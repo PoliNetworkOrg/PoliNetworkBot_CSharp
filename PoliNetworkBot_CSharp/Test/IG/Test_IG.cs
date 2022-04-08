@@ -1,8 +1,5 @@
 ﻿#region
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using InstagramApiSharp.API.Builder;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Logger;
@@ -11,6 +8,9 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.Minista.Helpers.Uploaders;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 #endregion
 

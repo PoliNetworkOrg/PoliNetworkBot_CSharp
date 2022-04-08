@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Objects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 

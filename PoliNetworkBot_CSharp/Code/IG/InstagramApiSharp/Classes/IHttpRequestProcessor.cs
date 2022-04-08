@@ -1,9 +1,9 @@
 ﻿#region
 
+using InstagramApiSharp.Classes.Android.DeviceInfo;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using InstagramApiSharp.Classes.Android.DeviceInfo;
 
 #endregion
 

@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Newtonsoft.Json;
+using System;
 
 #endregion
 
@@ -18,7 +18,7 @@ public class CallbackOption
     public CallbackOption(string display, int id, object value)
     {
         displayed = display;
-        this.id = id;   
+        this.id = id;
         this.value = value;
     }
 }

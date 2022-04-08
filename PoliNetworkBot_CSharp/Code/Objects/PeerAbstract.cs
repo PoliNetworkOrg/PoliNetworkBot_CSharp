@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Newtonsoft.Json;
+using System;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 
@@ -22,14 +22,13 @@ internal class PeerAbstract
         Id = id;
         Type = type;
 
-
         switch (type)
         {
             case ChatType.Private:
-            {
-                Peer = new TLInputPeerUser { UserId = id == null ? default : (int)id };
-                break;
-            }
+                {
+                    Peer = new TLInputPeerUser { UserId = id == null ? default : (int)id };
+                    break;
+                }
 
             case ChatType.Group:
                 break;
@@ -42,6 +41,7 @@ internal class PeerAbstract
 
             case ChatType.Sender:
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }

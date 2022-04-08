@@ -1,10 +1,10 @@
 ﻿#region
 
+using InstagramApiSharp.Classes.Android.DeviceInfo;
+using InstagramApiSharp.Enums;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using InstagramApiSharp.Classes.Android.DeviceInfo;
-using InstagramApiSharp.Enums;
 
 #endregion
 

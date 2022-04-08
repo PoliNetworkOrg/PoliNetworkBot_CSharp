@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Globalization;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
+using System.Globalization;
 
 #endregion
 

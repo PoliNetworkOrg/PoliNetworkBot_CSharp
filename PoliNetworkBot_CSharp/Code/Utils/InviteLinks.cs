@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
@@ -12,6 +7,11 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -388,15 +388,15 @@ internal static class InviteLinks
             return new List<GruppoTG>();
 
         for (var i = 0; i < gruppoTGs.Count; i++)
-        for (var j = i + 1; j < gruppoTGs.Count; j++)
-            if (i != j)
-                if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
-                    if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
-                    {
-                        gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
-                        gruppoTGs.RemoveAt(j);
-                        j--;
-                    }
+            for (var j = i + 1; j < gruppoTGs.Count; j++)
+                if (i != j)
+                    if (gruppoTGs[i].permanentId != null && gruppoTGs[j].permanentId != null)
+                        if (gruppoTGs[i].permanentId == gruppoTGs[j].permanentId)
+                        {
+                            gruppoTGs[i].oldLinks.AddRange(gruppoTGs[j].oldLinks);
+                            gruppoTGs.RemoveAt(j);
+                            j--;
+                        }
 
         return gruppoTGs;
     }

@@ -1,8 +1,8 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Enums;
 using System.Collections.Generic;
 using System.Data;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -25,8 +25,8 @@ internal class BanUnbanAllResult
         switch (ban_true_unban_false)
         {
             case RestrictAction.UNBAN:
-            {
-                var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                 {
                     {
                         "en",
@@ -43,12 +43,12 @@ internal class BanUnbanAllResult
                     }
                 });
 
-                return text2;
-            }
+                    return text2;
+                }
 
             case RestrictAction.BAN:
-            {
-                var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                 {
                     {
                         "en",
@@ -65,12 +65,12 @@ internal class BanUnbanAllResult
                     }
                 });
 
-                return text2;
-            }
+                    return text2;
+                }
 
             case RestrictAction.MUTE:
-            {
-                var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                 {
                     {
                         "en",
@@ -87,11 +87,11 @@ internal class BanUnbanAllResult
                     }
                 });
 
-                return text2;
-            }
+                    return text2;
+                }
             case RestrictAction.UNMUTE:
-            {
-                var text2 = new Language(new Dictionary<string, string>
+                {
+                    var text2 = new Language(new Dictionary<string, string>
                 {
                     {
                         "en",
@@ -108,8 +108,8 @@ internal class BanUnbanAllResult
                     }
                 });
 
-                return text2;
-            }
+                    return text2;
+                }
         }
 
         return null;

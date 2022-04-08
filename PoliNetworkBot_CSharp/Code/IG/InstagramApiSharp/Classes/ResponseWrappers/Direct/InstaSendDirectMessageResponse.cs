@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
+using System.Collections.Generic;
 
 #endregion
 

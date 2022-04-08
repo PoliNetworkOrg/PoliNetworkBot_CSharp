@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
 using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
 using InstagramApiSharp.Enums;
+using System;
 
 #endregion
 
