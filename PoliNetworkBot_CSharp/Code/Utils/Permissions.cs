@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
@@ -31,7 +32,6 @@ internal class Permissions
 
     private static async Task<bool> HeadAdminCheck(User messageFrom)
     {
-        using var client = new WebClient();
         const string url = "https://polinetwork.org/en/learnmore/about_us/";
         var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
         if (webReply == null || !webReply.IsValid()) return false;

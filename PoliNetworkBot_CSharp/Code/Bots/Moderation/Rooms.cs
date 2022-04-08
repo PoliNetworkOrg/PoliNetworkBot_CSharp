@@ -495,6 +495,7 @@ internal static class Rooms
         var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value:dd/MM/yyyy}</b>";
         var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value:dd/MM/yyyy}</b>";
 
+#pragma warning disable CS8794 // L'input corrisponde sempre al criterio specificato.
         if (d2.Value.Hour is >= 8 or < 20)
         {
             // if we are in a period between open hours, say more specific things
@@ -519,6 +520,7 @@ internal static class Rooms
             text += "\n\nQuest'aula";
             textEng += "\n\nThis room";
         }
+#pragma warning restore CS8794 // L'input corrisponde sempre al criterio specificato.
 
         // add a list with all the free slots
         var freeSlots = GetFreeTimeSlots(occupationRow);
