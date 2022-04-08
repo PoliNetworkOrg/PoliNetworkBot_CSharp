@@ -4,9 +4,7 @@ using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Cache;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
