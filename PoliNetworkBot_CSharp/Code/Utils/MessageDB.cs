@@ -256,14 +256,15 @@ public static class MessageDb
         {
             var s = dr[v].ToString();
             var r = Utils.DateTimeClass.GetDateTimeFromString(s);
-            if (r != null && r.Item2 == null && r.Item1 != null)
-                return r.Item1;
+            if (r != null && r.Item2 == null && r.Item1 != null){}
+                return TimeZoneInfo.ConvertTimeToUtc(r.Item1.Value, TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time"));
+                
         }
         catch
         {
             ;
         }
-
+        
         return null;
     }
 
