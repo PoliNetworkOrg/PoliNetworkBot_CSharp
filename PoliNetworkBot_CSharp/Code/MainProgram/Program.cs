@@ -40,7 +40,12 @@ internal static class Program
 
     private static async Task Main(string[] args)
     {
-        FirstThingsToDo();
+        var toExit = FirstThingsToDo();
+        if (toExit == ToExit.EXIT)
+        {
+            Logger.WriteLine("Program will stop.");
+            return;
+        }
 
         while (true)
         {
@@ -146,7 +151,7 @@ internal static class Program
             Console.ReadKey();
     }
 
-    private static void FirstThingsToDo()
+    private static Enums.ToExit FirstThingsToDo()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -159,6 +164,16 @@ internal static class Program
         MessagesStore.InitializeMessageStore();
         CallbackUtils.InitializeCallbackDatas();
         DbConfig.InitializeDbConfig();
+
+        var currentTimeZone = TimeZoneInfo.Local;
+        Logger.WriteLine("Current TimeZone: " + currentTimeZone);
+        var allowedTextTimeZone = new List<string>() { "roma", "rome", "europe" };
+        if (!allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x)))
+        {
+            return ToExit.EXIT;
+        }
+
+        return ToExit.STAY;
     }
 
     private static void ResetEverything(bool alsoFillTablesFromJson)
