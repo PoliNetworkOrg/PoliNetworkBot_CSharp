@@ -110,7 +110,7 @@ public static class MessageDb
             try
             {
                 var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                var r1 = await SendMessageToSend(dr, null, !force_send_everything_in_queue, botToReportException,
+                var r1 = await SendMessageToSend(dr, telegramBotAbstract, !force_send_everything_in_queue, botToReportException,
                     messageEventArgs);
                 telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
                 if (telegramBotAbstract != null &&
@@ -256,14 +256,15 @@ public static class MessageDb
         {
             var s = dr[v].ToString();
             var r = Utils.DateTimeClass.GetDateTimeFromString(s);
-            if (r != null && r.Item2 == null && r.Item1 != null)
-                return r.Item1;
+            if (r != null && r.Item2 == null && r.Item1 != null){}
+                return r.Item1.Value;
+                
         }
         catch
         {
             ;
         }
-
+        
         return null;
     }
 
