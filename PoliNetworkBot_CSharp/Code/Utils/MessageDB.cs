@@ -116,8 +116,7 @@ public static class MessageDb
                 if (telegramBotAbstract != null &&
                     r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                     switch (r1.ScheduleMessageSentResult)
-                    {
-                        case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+                    {            
                         case ScheduleMessageSentResult.FAILED_SEND:
                         case ScheduleMessageSentResult.SUCCESS:
                         case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
@@ -126,6 +125,8 @@ public static class MessageDb
                                 break;
                             }
 
+
+                        case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
                         case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
                         case ScheduleMessageSentResult.ALREADY_SENT:
                             break;
