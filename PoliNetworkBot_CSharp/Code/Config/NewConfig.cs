@@ -271,7 +271,7 @@ public static class NewConfig
                 { "@type", chat.type },
                 { "@title", chat.title },
                 { "@link", chat.invite_link },
-                { "@lul", lastUpdateLinkTime },
+                { "@lul", Utils.InviteLinks.GetDateTimeLastUpdateLinkFormattedString(lastUpdateLinkTime) },
                 { "@valid", we_are_admin }
             });
         }
