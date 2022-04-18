@@ -16,6 +16,8 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Web;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 

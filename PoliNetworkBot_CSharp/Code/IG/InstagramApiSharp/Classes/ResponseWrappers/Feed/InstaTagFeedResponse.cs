@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Media;
 
 #endregion
 

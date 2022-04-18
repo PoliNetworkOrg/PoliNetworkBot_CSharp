@@ -494,9 +494,9 @@ internal static class Assoc
     ///     Looks up the associations list from the polimi website
     /// </summary>
     /// <returns>a list with the name of the associations</returns>
-    public static async Task<List<string>> GetAssocList()
+    private static async Task<List<string>> GetAssocList()
     {
-        var url = "https://www.polimi.it/studenti-iscritti/rappresentanti-e-associazioni/";
+        const string url = "https://www.polimi.it/studenti-iscritti/rappresentanti-e-associazioni/";
         var webReply = await Web.DownloadHtmlAsync(url);
         if (webReply == null || !webReply.IsValid()) return null;
 

@@ -168,9 +168,7 @@ internal static class Program
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.WriteLine("Current TimeZone: " + currentTimeZone);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
-        if (!allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))) return ToExit.EXIT;
-
-        return ToExit.STAY;
+        return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x)) ? ToExit.STAY : ToExit.EXIT;
     }
 
     private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -482,20 +480,22 @@ internal static class Program
         using var powershell = PowerShell.Create();
         foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
-        if (botInfoAbstract.onMessages == BotStartMethods.Material.Item1)
-            try
-            {
-                _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);
-            }
-            catch (MySqlException ex)
-            {
-                Logger.WriteLine(ex);
-                Database.Execute("CREATE TABLE FilePaths (" +
-                                 "file_and_git VARCHAR(250)," +
-                                 "location VARCHAR(250)" +
-                                 ") ", telegramBotAbstract.DbConfig);
-                Logger.WriteLine("Created table FilePaths");
-            }
+        if (botInfoAbstract.onMessages != BotStartMethods.Material.Item1)
+            return;
+        
+        try
+        {
+            _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);
+        }
+        catch (MySqlException ex)
+        {
+            Logger.WriteLine(ex);
+            Database.Execute("CREATE TABLE FilePaths (" +
+                             "file_and_git VARCHAR(250)," +
+                             "location VARCHAR(250)" +
+                             ") ", telegramBotAbstract.DbConfig);
+            Logger.WriteLine("Created table FilePaths");
+        }
     }
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)

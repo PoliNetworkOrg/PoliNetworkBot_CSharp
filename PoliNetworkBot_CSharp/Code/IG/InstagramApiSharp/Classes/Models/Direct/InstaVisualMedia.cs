@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.Models;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Direct;
 
 public class InstaVisualMedia
 {

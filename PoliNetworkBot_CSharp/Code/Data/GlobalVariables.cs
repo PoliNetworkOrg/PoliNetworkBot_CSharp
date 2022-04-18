@@ -28,7 +28,7 @@ public static class GlobalVariables
     public static List<long> NoUsernameCheckInThisChats;
     public static List<string> AllowedTags;
 
-    public static bool alreadyLoaded;
+    private static bool alreadyLoaded;
 
     public static DbConfig DbConfig { get; set; }
     public static MySqlConnection DbConnection { get; set; }

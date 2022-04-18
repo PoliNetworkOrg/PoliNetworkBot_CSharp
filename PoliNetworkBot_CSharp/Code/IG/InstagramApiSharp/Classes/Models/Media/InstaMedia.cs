@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 #endregion
 

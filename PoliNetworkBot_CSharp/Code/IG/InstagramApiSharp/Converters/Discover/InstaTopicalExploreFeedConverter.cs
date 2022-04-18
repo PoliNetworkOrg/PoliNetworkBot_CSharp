@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
 
 #endregion
 
@@ -42,11 +44,11 @@ internal class
             RankToken = SourceObject.RankToken,
             HasShoppingChannelContent = SourceObject.HasShoppingChannelContent ?? false
         };
-        if (SourceObject.TVChannels?.Count > 0)
-            foreach (var channel in SourceObject.TVChannels)
+        if (SourceObject.TvChannels?.Count > 0)
+            foreach (var channel in SourceObject.TvChannels)
                 try
                 {
-                    feed.TVChannels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
+                    feed.TvChannels.Add(ConvertersFabric.GetTvChannelConverter(channel).Convert());
                 }
                 catch
                 {

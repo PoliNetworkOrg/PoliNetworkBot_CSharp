@@ -1,12 +1,13 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Media;
 
 public class InstaMediaListResponse : BaseLoadableResponse
 {

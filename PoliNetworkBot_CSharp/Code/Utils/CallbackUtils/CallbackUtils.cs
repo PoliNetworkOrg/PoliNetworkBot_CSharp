@@ -19,10 +19,10 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 
-public class CallbackUtils
+public static class CallbackUtils
 {
-    public const string SEPARATOR = "-";
-    public static CallBackDataFull callBackDataFull = new();
+    private const string SEPARATOR = "-";
+    public static CallBackDataFull CallBackDataFull = new();
 
     public static async Task<MessageSentResult> SendMessageWithCallbackQueryAsync(
         CallbackGenericData callbackGenericData,
@@ -36,7 +36,7 @@ public class CallbackUtils
         var newLast = GetLast();
         var key = GetKeyFromNumber(newLast);
         callbackGenericData.Id = key;
-        callBackDataFull.Add(key, callbackGenericData);
+        CallBackDataFull.Add(key, callbackGenericData);
 
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
         var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
@@ -53,7 +53,7 @@ public class CallbackUtils
         {
             try
             {
-                callBackDataFull.ChechCallbackDataExpired();
+                CallBackDataFull.ChechCallbackDataExpired();
             }
             catch
             {
@@ -81,7 +81,7 @@ public class CallbackUtils
 
     private static BigInteger GetLast()
     {
-        return callBackDataFull.GetLast();
+        return CallBackDataFull.GetLast();
     }
 
 #pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
@@ -135,7 +135,7 @@ public class CallbackUtils
                 var datas = data.Split(SEPARATOR);
                 var key = datas[0];
                 var answer = Convert.ToInt32(datas[1]);
-                callBackDataFull.UpdateAndRun(callbackQueryEventArgs, answer, key);
+                CallBackDataFull.UpdateAndRun(callbackQueryEventArgs, answer, key);
             }
         }
         catch (Exception exception)
@@ -148,12 +148,12 @@ public class CallbackUtils
     {
         try
         {
-            callBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
+            CallBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
                 File.ReadAllText(Paths.Data.CallbackData)) ?? new CallBackDataFull();
         }
         catch (Exception ex)
         {
-            callBackDataFull = new CallBackDataFull();
+            CallBackDataFull = new CallBackDataFull();
             Logger.Logger.WriteLine(ex);
         }
     }

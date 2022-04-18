@@ -2,10 +2,11 @@
 
 using System;
 using System.ComponentModel;
+using InstagramApiSharp.Classes.Models;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
 
 public class InstaCommentShort : INotifyPropertyChanged
 {

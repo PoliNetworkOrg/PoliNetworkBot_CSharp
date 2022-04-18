@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Collections;
 
 internal class InstaCollectionsConverter : IObjectConverter<InstaCollections, InstaCollectionsResponse>
 {

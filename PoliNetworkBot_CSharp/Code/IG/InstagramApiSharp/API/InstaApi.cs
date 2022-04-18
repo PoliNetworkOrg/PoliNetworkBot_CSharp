@@ -25,6 +25,8 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Android.DeviceInfo;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 
@@ -2624,7 +2626,7 @@ public class InstaApi
     /// <summary>
     ///     Sets user credentials
     /// </summary>
-    public void SetUser(string username, string password)
+    private void SetUser(string username, string password)
     {
         User.UserName = username;
         User.Password = password;

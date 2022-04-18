@@ -1,11 +1,12 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Hashtags;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Story;
 
 public class InstaStoryFeed
 {

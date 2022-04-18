@@ -1,17 +1,18 @@
 ﻿#region
 
 using System;
+using InstagramApiSharp;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
-internal static class WebHelper
+internal static class Helper
 {
     private const string StartTag = "type=\"text/javascript\">window._sharedData";
     private const string EndTag = ";</script>";
 
-    public static bool CanReadJson(this string html)
+    private static bool CanReadJson(this string html)
     {
         return html.Contains(StartTag);
     }

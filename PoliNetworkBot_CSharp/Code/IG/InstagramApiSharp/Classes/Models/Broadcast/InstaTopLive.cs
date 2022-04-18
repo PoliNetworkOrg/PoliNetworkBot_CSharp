@@ -1,10 +1,11 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.Models;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Broadcast;
 
 public class InstaTopLive
 {

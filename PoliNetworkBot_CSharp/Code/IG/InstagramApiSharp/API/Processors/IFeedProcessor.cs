@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
 
 #endregion
 

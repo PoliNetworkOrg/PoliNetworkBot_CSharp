@@ -3,10 +3,11 @@
 using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Broadcast;
 
 internal class
     InstaBroadcastNotifyFriendsConverter : IObjectConverter<InstaBroadcastNotifyFriends,

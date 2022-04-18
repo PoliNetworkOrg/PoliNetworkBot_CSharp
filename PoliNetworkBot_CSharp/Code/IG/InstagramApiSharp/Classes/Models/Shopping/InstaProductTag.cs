@@ -1,4 +1,6 @@
-﻿namespace InstagramApiSharp.Classes.Models;
+﻿using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
+
+namespace InstagramApiSharp.Classes.Models;
 
 public class InstaProductTag
 {

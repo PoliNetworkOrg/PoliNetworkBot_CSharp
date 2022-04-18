@@ -1,13 +1,14 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Enums;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
-public class InstaTVChannel
+public class InstaTvChannel
 {
     public InstaTVChannelType Type { get; set; }
 
@@ -25,7 +26,7 @@ public class InstaTVChannel
     public InstaTVUser UserDetail { get; set; }
 }
 
-public class InstaTVSelfChannel : InstaTVChannel
+public class InstaTvSelfChannel : InstaTvChannel
 {
     public InstaTVUser User { get; set; }
 }

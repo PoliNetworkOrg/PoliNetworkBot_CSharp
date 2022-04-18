@@ -6,6 +6,7 @@ using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Enums;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
 #endregion
 
@@ -21,14 +22,14 @@ public interface ITVProcessor
     /// </summary>
     /// <param name="userId">User id (pk) => channel owner</param>
     /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-    Task<IResult<InstaTVChannel>> GetChannelByIdAsync(long userId, PaginationParameters paginationParameters);
+    Task<IResult<InstaTvChannel>> GetChannelByIdAsync(long userId, PaginationParameters paginationParameters);
 
     /// <summary>
     ///     Get channel by <seealso cref="InstaTVChannelType" />
     /// </summary>
     /// <param name="channelType">Channel type</param>
     /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-    Task<IResult<InstaTVChannel>> GetChannelByTypeAsync(InstaTVChannelType channelType,
+    Task<IResult<InstaTvChannel>> GetChannelByTypeAsync(InstaTVChannelType channelType,
         PaginationParameters paginationParameters);
 
     /// <summary>

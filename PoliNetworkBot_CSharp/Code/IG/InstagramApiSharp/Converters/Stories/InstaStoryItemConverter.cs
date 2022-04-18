@@ -5,6 +5,7 @@ using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 #endregion
 
@@ -94,7 +95,7 @@ internal class InstaStoryItemConverter : IObjectConverter<InstaStoryItem, InstaS
         if (SourceObject.StoryCTA != null && SourceObject.StoryCTA.Any())
             foreach (var link in SourceObject.StoryCTA.Where(cta => cta.Links != null && cta.Links.Any())
                          .SelectMany(cta => cta.Links))
-                instaStory.StoryCTA.Add(ConvertersFabric.GetStoryCtaConverter(link).Convert());
+                instaStory.StoryCta.Add(ConvertersFabric.GetStoryCtaConverter(link).Convert());
 
         if (SourceObject.StoryPolls?.Count > 0)
             foreach (var poll in SourceObject.StoryPolls)

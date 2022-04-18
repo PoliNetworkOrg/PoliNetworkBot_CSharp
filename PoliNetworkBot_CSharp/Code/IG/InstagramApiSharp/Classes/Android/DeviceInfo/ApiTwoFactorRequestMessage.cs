@@ -6,23 +6,23 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Android.DeviceInfo;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Android.DeviceInfo;
 
 internal class ApiTwoFactorRequestMessage
 {
     internal ApiTwoFactorRequestMessage(string verificationCode, string username, string deviceId,
         string twoFactorIdentifier)
     {
-        Verification_code = verificationCode;
+        VerificationCode = verificationCode;
         Username = username;
-        Device_id = deviceId;
-        Two_factor_identifier = twoFactorIdentifier;
+        DeviceId = deviceId;
+        TwoFactorIdentifier = twoFactorIdentifier;
     }
 
-    public string Verification_code { get; set; }
+    public string VerificationCode { get; set; }
     public string Username { get; set; }
-    public string Device_id { get; set; }
-    public string Two_factor_identifier { get; set; }
+    public string DeviceId { get; set; }
+    public string TwoFactorIdentifier { get; set; }
 
     internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey)
     {

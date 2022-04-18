@@ -889,7 +889,7 @@ internal static class CommandDispatcher
         return text;
     }
 
-    public static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo,
+    private static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo,
         int waitOgniVoltaCheCiRiprova)
     {
         ParametriFunzione parametriFunzione = new();
@@ -1285,12 +1285,12 @@ internal static class CommandDispatcher
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-            e.Message.From.LanguageCode,
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode,
             e.Message.From.Username, text2, ParseMode.Html, null);
     }
 
-    public static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
+    private static async Task<bool> GetAllGroups(long chatId, string username, TelegramBotAbstract sender,
         string lang, ChatType chatType)
     {
         var groups = Utils.Groups.GetAllGroups(sender);
@@ -1329,7 +1329,7 @@ internal static class CommandDispatcher
                 return new SuccessWithException(false, e2);
             }
 
-            var targetId = userIdFound.GetID();
+            var targetId = userIdFound.GetId();
             if (targetId != null)
                 return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);

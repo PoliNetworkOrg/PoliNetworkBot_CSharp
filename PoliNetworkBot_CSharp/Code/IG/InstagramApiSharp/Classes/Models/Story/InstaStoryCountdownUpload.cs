@@ -4,9 +4,9 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Story;
 
-public class InstaStoryCountdownUpload
+public abstract class InstaStoryCountdownUpload
 {
     public double X { get; set; } = 0.5;
     public double Y { get; set; } = 0.5;

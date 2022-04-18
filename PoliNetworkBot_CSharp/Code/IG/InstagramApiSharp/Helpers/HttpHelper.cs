@@ -5,24 +5,26 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using InstagramApiSharp;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Enums;
+using InstagramApiSharp.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
-namespace InstagramApiSharp.Helpers;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 public class HttpHelper
 {
-    internal static readonly CultureInfo EnglishCulture = new("en-us");
-    public readonly InstaApi _instaApi;
-    public readonly IHttpRequestProcessor HttpRequestProcessor;
+    private static readonly CultureInfo EnglishCulture = new("en-us");
+    private readonly InstaApi _instaApi;
+    private readonly IHttpRequestProcessor HttpRequestProcessor;
     private readonly Random Rnd = new();
     public InstaApiVersion _apiVersion;
 
@@ -34,7 +36,7 @@ public class HttpHelper
         _instaApi = instaApi;
     }
 
-    internal bool IsNewerApis => _instaApi.InstaApiVersionType > InstaApiVersionType.Version126;
+    private bool IsNewerApis => _instaApi.InstaApiVersionType > InstaApiVersionType.Version126;
 
     public HttpRequestMessage GetDefaultRequest(HttpMethod method, Uri uri, AndroidDevice deviceInfo)
     {

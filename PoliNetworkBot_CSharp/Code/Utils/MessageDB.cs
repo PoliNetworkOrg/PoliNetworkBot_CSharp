@@ -198,7 +198,7 @@ public static class MessageDb
         TelegramBotAbstract telegramBotAbstract,
         bool schedule, TelegramBotAbstract botToReportException, MessageEventArgs messageEventArgs)
     {
-        bool? has_been_sent = null;
+        bool? hasBeenSent = null;
         Tuple<bool?, int, string> r1 = null;
         try
         {
@@ -209,13 +209,13 @@ public static class MessageDb
             await NotifyUtil.NotifyOwners(e3, botToReportException, messageEventArgs);
         }
 
-        if (r1 != null) has_been_sent = r1.Item1;
+        if (r1 != null) hasBeenSent = r1.Item1;
 
-        if (has_been_sent == null)
+        if (hasBeenSent == null)
             return new MessageSendScheduled(ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null,
                 r1);
 
-        if (has_been_sent.Value)
+        if (hasBeenSent.Value)
             return new MessageSendScheduled(ScheduleMessageSentResult.ALREADY_SENT, null, null, r1);
 
         var dt = GetDateTime(dr, "sent_date");
@@ -243,26 +243,16 @@ public static class MessageDb
 
     private static DateTime? GetDateTime(DataRow dr, string v)
     {
-        DateTime? dt = null;
-
-        try
-        {
-            dt = (DateTime)dr[v];
-        }
-        catch
-        {
-            ;
-        }
-
         try
         {
             var s = dr[v].ToString();
             var r = DateTimeClass.GetDateTimeFromString(s);
-            if (r != null && r.Item2 == null && r.Item1 != null)
+            if (r is { Item2: null, Item1: { } })
             {
             }
 
-            return r.Item1.Value;
+            if (r.Item1 != null) 
+                return r.Item1.Value;
         }
         catch
         {
@@ -503,7 +493,7 @@ public static class MessageDb
         return new MessageSentResult(false, null, chatTypeToSendTo);
     }
 
-    public static MessageType? GetMessageTypeClassById(in long typeI, TelegramBotAbstract sender)
+    private static MessageType? GetMessageTypeClassById(in long typeI, TelegramBotAbstract sender)
     {
         var typeS = GetMessageTypeNameById(typeI, sender);
 

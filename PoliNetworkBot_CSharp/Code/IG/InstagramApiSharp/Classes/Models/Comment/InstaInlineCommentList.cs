@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
 
 public class InstaInlineCommentList
 {

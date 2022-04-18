@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using InstagramApiSharp.Classes.Models;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
 
 public class InstaComment : INotifyPropertyChanged
 {
@@ -27,7 +28,7 @@ public class InstaComment : INotifyPropertyChanged
 
     public InstaContentType ContentType { get; set; }
     public InstaUserShort User { get; set; }
-    public long Pk { get; set; }
+    public long Pk { get; }
     public string Text { get; set; }
 
     public bool DidReportAsSpam { get; set; }
@@ -57,12 +58,12 @@ public class InstaComment : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private void Update(string PName)
+    private void Update(string pName)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(pName));
     }
 
-    public bool Equals(InstaComment comment)
+    private bool Equals(InstaComment comment)
     {
         return Pk == comment?.Pk;
     }

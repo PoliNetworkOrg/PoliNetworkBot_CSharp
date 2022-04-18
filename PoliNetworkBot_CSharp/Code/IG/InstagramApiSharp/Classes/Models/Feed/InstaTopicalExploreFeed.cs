@@ -1,10 +1,12 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.Models;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
 
 public class InstaTopicalExploreFeed
 {
@@ -14,7 +16,7 @@ public class InstaTopicalExploreFeed
 
     public string NextMaxId { get; set; }
 
-    public List<InstaTVChannel> TVChannels { get; set; } = new();
+    public List<InstaTvChannel> TvChannels { get; set; } = new();
 
     public InstaChannel Channel { get; set; } = new();
 

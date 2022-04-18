@@ -17,6 +17,10 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Media;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 using InstaRecentActivityConverter = InstagramApiSharp.Converters.Json.InstaRecentActivityConverter;
 
 #endregion
@@ -460,7 +464,7 @@ internal class FeedProcessor : IFeedProcessor
                 feedResponse.ResultsCount = nextFeed.Value.ResultsCount;
                 feedResponse.Channel = nextFeed.Value.Channel;
                 feedResponse.Medias.AddRange(nextFeed.Value.Medias);
-                feedResponse.TVChannels.AddRange(nextFeed.Value.TVChannels);
+                feedResponse.TvChannels.AddRange(nextFeed.Value.TvChannels);
                 feedResponse.Clusters.AddRange(nextFeed.Value.Clusters);
                 feedResponse.MaxId = nextFeed.Value.MaxId;
                 feedResponse.HasShoppingChannelContent = nextFeed.Value.HasShoppingChannelContent;

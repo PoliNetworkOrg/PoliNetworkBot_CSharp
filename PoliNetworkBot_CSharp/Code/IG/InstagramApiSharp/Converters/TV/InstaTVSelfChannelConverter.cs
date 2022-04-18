@@ -4,21 +4,22 @@ using System;
 using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
 #endregion
 
 namespace InstagramApiSharp.Converters;
 
-internal class InstaTVSelfChannelConverter : IObjectConverter<InstaTVSelfChannel, InstaTVSelfChannelResponse>
+internal class InstaTVSelfChannelConverter : IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse>
 {
     public InstaTVSelfChannelResponse SourceObject { get; set; }
 
-    public InstaTVSelfChannel Convert()
+    public InstaTvSelfChannel Convert()
     {
         if (SourceObject == null)
             throw new ArgumentNullException("SourceObject");
 
-        var channel = new InstaTVSelfChannel
+        var channel = new InstaTvSelfChannel
         {
             HasMoreAvailable = SourceObject.HasMoreAvailable,
             Id = SourceObject.Id,

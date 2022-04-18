@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
 
 #endregion
 

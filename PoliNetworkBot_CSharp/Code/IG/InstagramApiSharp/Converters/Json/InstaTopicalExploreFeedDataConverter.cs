@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
 
 #endregion
 
@@ -67,7 +68,7 @@ internal class InstaTopicalExploreFeedDataConverter : JsonConverter
                         {
                             var channels = GetTVs(channelsToken);
                             if (channels?.Count > 0)
-                                feed.TVChannels.AddRange(channels);
+                                feed.TvChannels.AddRange(channels);
                         }
                     }
                 }

@@ -1,12 +1,13 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Classes.ResponseWrappers.BaseResponse;
 using Newtonsoft.Json;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.ResponseWrappers;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
 
 public class InstaTopicalExploreFeedResponse : BaseLoadableResponse
 {
@@ -16,7 +17,7 @@ public class InstaTopicalExploreFeedResponse : BaseLoadableResponse
 
     [JsonIgnore] public InstaChannelResponse Channel { get; set; }
 
-    [JsonIgnore] public List<InstaTVChannelResponse> TVChannels { get; set; } = new();
+    [JsonIgnore] public List<InstaTVChannelResponse> TvChannels { get; set; } = new();
 
     [JsonProperty("max_id")] public string MaxId { get; set; }
 

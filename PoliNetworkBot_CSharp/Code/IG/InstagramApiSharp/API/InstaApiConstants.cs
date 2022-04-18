@@ -97,11 +97,11 @@ internal static class InstaApiConstants
     public const string HOST = "Host";
     public const string HOST_URI = "i.instagram.com";
     public const string ACCEPT_ENCODING = "gzip, deflate, sdch";
-    public const string API = "/api";
+    private const string API = "/api";
     public const string API_SUFFIX = API + API_VERSION;
     public const string API_SUFFIX_V2 = API + API_VERSION_V2;
-    public const string API_VERSION = "/v1";
-    public const string API_VERSION_V2 = "/v2";
+    private const string API_VERSION = "/v1";
+    private const string API_VERSION_V2 = "/v2";
     public const string BASE_INSTAGRAM_API_URL = INSTAGRAM_URL + API_SUFFIX + "/";
     public const string COMMENT_BREADCRUMB_KEY = "iN4$aGr0m";
     public const string CSRFTOKEN = "csrftoken";

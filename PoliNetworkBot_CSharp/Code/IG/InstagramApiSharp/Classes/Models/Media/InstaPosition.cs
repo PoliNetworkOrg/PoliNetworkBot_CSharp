@@ -1,4 +1,4 @@
-﻿namespace InstagramApiSharp.Classes.Models;
+﻿namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 public class InstaPosition
 {

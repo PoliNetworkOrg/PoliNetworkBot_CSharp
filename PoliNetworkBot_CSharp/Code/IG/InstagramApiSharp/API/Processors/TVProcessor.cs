@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 
@@ -52,7 +54,7 @@ internal class TVProcessor : ITVProcessor
     /// </summary>
     /// <param name="userId">User id (pk) => channel owner</param>
     /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-    public async Task<IResult<InstaTVChannel>> GetChannelByIdAsync(long userId,
+    public async Task<IResult<InstaTvChannel>> GetChannelByIdAsync(long userId,
         PaginationParameters paginationParameters)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -64,7 +66,7 @@ internal class TVProcessor : ITVProcessor
     /// </summary>
     /// <param name="channelType">Channel type</param>
     /// <param name="paginationParameters">Pagination parameters: next id and max amount of pages to load</param>
-    public async Task<IResult<InstaTVChannel>> GetChannelByTypeAsync(InstaTVChannelType channelType,
+    public async Task<IResult<InstaTvChannel>> GetChannelByTypeAsync(InstaTVChannelType channelType,
         PaginationParameters paginationParameters)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -196,7 +198,7 @@ internal class TVProcessor : ITVProcessor
         return await _instaApi.HelperProcessor.SendIGTVVideoAsync(progress, video, title, caption);
     }
 
-    private async Task<IResult<InstaTVChannel>> GetChannel(InstaTVChannelType? channelType, long? userId,
+    private async Task<IResult<InstaTvChannel>> GetChannel(InstaTVChannelType? channelType, long? userId,
         PaginationParameters paginationParameters)
     {
         try
@@ -216,7 +218,7 @@ internal class TVProcessor : ITVProcessor
             var json = await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaTVChannel>(response, json);
+                return Result.UnExpectedResponse<InstaTvChannel>(response, json);
             var obj = JsonConvert.DeserializeObject<InstaTVChannelResponse>(json);
 
             return Result.Success(ConvertersFabric.GetTvChannelConverter(obj).Convert());
@@ -224,12 +226,12 @@ internal class TVProcessor : ITVProcessor
         catch (HttpRequestException httpException)
         {
             _logger?.LogException(httpException);
-            return Result.Fail(httpException, default(InstaTVChannel), ResponseType.NetworkProblem);
+            return Result.Fail(httpException, default(InstaTvChannel), ResponseType.NetworkProblem);
         }
         catch (Exception exception)
         {
             _logger?.LogException(exception);
-            return Result.Fail<InstaTVChannel>(exception);
+            return Result.Fail<InstaTvChannel>(exception);
         }
     }
 }

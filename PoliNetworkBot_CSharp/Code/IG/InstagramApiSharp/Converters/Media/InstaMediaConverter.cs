@@ -5,6 +5,7 @@ using System.Globalization;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 #endregion
 

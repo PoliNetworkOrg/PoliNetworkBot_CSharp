@@ -12,7 +12,17 @@ using InstagramApiSharp.Classes.ResponseWrappers.Web;
 using InstagramApiSharp.Converters.Business;
 using InstagramApiSharp.Converters.Hashtags;
 using InstagramApiSharp.Converters.Users;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Broadcast;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Direct;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Feed;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Hashtags;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Story;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Web;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Media;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Broadcast;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Discover;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Stories;
@@ -552,13 +562,13 @@ internal class ConvertersFabric
         return new InstaTVUserConverter { SourceObject = response };
     }
 
-    public static IObjectConverter<InstaTVChannel, InstaTVChannelResponse> GetTvChannelConverter(
+    public static IObjectConverter<InstaTvChannel, InstaTVChannelResponse> GetTvChannelConverter(
         InstaTVChannelResponse response)
     {
         return new InstaTVChannelConverter { SourceObject = response };
     }
 
-    public static IObjectConverter<InstaTVSelfChannel, InstaTVSelfChannelResponse> GetTvSelfChannelConverter(
+    public static IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse> GetTvSelfChannelConverter(
         InstaTVSelfChannelResponse response)
     {
         return new InstaTVSelfChannelConverter { SourceObject = response };

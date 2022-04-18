@@ -21,6 +21,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Story;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 
@@ -1321,7 +1323,7 @@ internal class StoryProcessor : IStoryProcessor
 
             if (video.Video.Uri != null)
             {
-                var videoBytes = video.Video.VideoBytes ?? File.ReadAllBytes(video.Video.Uri);
+                var videoBytes = video.Video.VideoBytes ?? await File.ReadAllBytesAsync(video.Video.Uri);
                 var videoContent = new ByteArrayContent(videoBytes);
                 videoContent.Headers.Add("Content-Transfer-Encoding", "binary");
                 videoContent.Headers.Add("Content-Type", "application/octet-stream");

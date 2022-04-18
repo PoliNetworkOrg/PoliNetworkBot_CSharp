@@ -3,6 +3,7 @@
 using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers.Web;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Web;
 
 #endregion
 

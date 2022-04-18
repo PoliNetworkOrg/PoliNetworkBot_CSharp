@@ -44,7 +44,7 @@ internal static class Blacklist
             return null;
 
         List<string> r = new();
-        foreach (var words in vs.Select(vs2 => vs2.Split(v).ToList()).Where(words => words != null))
+        foreach (var words in vs.Select(vs2 => vs2.Split(v).ToList()))
             r.AddRange(words);
 
         return r;
@@ -182,9 +182,9 @@ internal static class Blacklist
                 : SpamType.SPAM_LINK;
     }
 
-    private static long? Find(string[] t2, string v)
+    private static long? Find(IReadOnlyList<string> t2, string v)
     {
-        for (var i = 0; i < t2.Length; i++)
+        for (var i = 0; i < t2.Count; i++)
         {
             var t3 = t2[i];
             if (t3 == v)

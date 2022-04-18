@@ -2,6 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Story;
 
 #endregion
 
@@ -97,7 +100,7 @@ public class InstaStoryItem
 
     public bool SupportsReelReactions { get; set; }
 
-    public List<InstaStoryCTA> StoryCTA { get; set; } = new();
+    public List<InstaStoryCTA> StoryCta { get; set; } = new();
 
     public List<InstaStoryFeedMedia> StoryFeedMedia { get; set; } = new();
 

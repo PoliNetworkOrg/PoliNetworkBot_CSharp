@@ -111,10 +111,7 @@ internal static class InviteLinks
 
     public static string GetDateTimeLastUpdateLinkFormattedString(DateTime? lastUpdateLinkTime)
     {
-        if (lastUpdateLinkTime == null)
-            return null;
-
-        return lastUpdateLinkTime.Value.ToString("yyyy-MM-dd HH:mm:ss");
+        return lastUpdateLinkTime?.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
     internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract sender, MessageEventArgs e)
@@ -124,6 +121,9 @@ internal static class InviteLinks
             if (e.Message.Chat.Type != ChatType.Private)
                 return;
 
+            if (e.Message.From == null)
+                return;
+            
             if (!Owners.CheckIfOwner(e.Message.From.Id))
                 return;
 
@@ -138,28 +138,29 @@ internal static class InviteLinks
             var text = await reader.ReadToEndAsync();
 
             var obj = JsonConvert.DeserializeObject(text);
-            Logger.Logger.WriteLine(obj.GetType());
+            Logger.Logger.WriteLine(obj?.GetType());
             var jArray = (JArray)obj;
 
-            var L = new ListaGruppiTG_Update();
+            var l = new ListaGruppiTG_Update();
 
             var gruppoTGs = new List<GruppoTG>();
-            foreach (var x in jArray)
-                try
-                {
-                    var jObject = (JObject)x;
-                    var gruppoTG = new GruppoTG(jObject["id_link"], jObject["class"], jObject["permanentId"],
-                        jObject["LastUpdateInviteLinkTime"]);
-                    gruppoTGs.Add(gruppoTG);
-                }
-                catch
-                {
-                    ;
-                }
+            if (jArray != null)
+                foreach (var x in jArray)
+                    try
+                    {
+                        var jObject = (JObject)x;
+                        var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"], jObject["permanentId"],
+                            jObject["LastUpdateInviteLinkTime"]);
+                        gruppoTGs.Add(gruppoTg);
+                    }
+                    catch
+                    {
+                        ;
+                    }
 
             gruppoTGs = RimuoviDuplicati(gruppoTGs);
 
-            foreach (var gruppoTG in gruppoTGs)
+            foreach (var gruppoTg in gruppoTGs)
             {
                 try
                 {
@@ -172,19 +173,19 @@ internal static class InviteLinks
 
                 try
                 {
-                    await UpdateLinksFromJson2Async(gruppoTG, sender, e, L);
+                    await UpdateLinksFromJson2Async(gruppoTg, sender, e, l);
                 }
                 catch (Exception ex)
                 {
                     Logger.Logger.WriteLine(ex);
-                    var ex4m = "4" + "\n\n" + ex.Message;
+                    var ex4M = "4" + "\n\n" + ex.Message;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(
                             new Dictionary<string, string>
                             {
                                 {
                                     "it",
-                                    ex4m
+                                    ex4M
                                 }
                             }),
                         ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
@@ -193,10 +194,10 @@ internal static class InviteLinks
             }
 
             var s2 = "Link generati\n\n" +
-                     "Totale: " + L.Count() + "\n" +
-                     "Nuovi: " + L.GetCount_Filtered(SuccessoGenerazioneLink.NUOVO_LINK) + "\n" +
-                     "Riciclati: " + L.GetCount_Filtered(SuccessoGenerazioneLink.RICICLATO) + "\n" +
-                     "Errori: " + L.GetCount_Filtered(SuccessoGenerazioneLink.ERRORE) + "\n";
+                     "Totale: " + l.Count() + "\n" +
+                     "Nuovi: " + l.GetCount_Filtered(SuccessoGenerazioneLink.NUOVO_LINK) + "\n" +
+                     "Riciclati: " + l.GetCount_Filtered(SuccessoGenerazioneLink.RICICLATO) + "\n" +
+                     "Errori: " + l.GetCount_Filtered(SuccessoGenerazioneLink.ERRORE) + "\n";
 
             await sender.SendTextMessageAsync(e.Message.From.Id,
                 new Language(
@@ -209,7 +210,7 @@ internal static class InviteLinks
                     }),
                 ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
-            var st = L.GetStringList();
+            var st = l.GetStringList();
 
             var dict = new Dictionary<string, string>
             {
@@ -227,32 +228,32 @@ internal static class InviteLinks
         }
     }
 
-    private static async Task UpdateLinksFromJson2Async(GruppoTG gruppoTG, TelegramBotAbstract sender,
+    private static async Task UpdateLinksFromJson2Async(GruppoTG gruppoTg, TelegramBotAbstract sender,
         MessageEventArgs e, ListaGruppiTG_Update L)
     {
         var result = new GruppoTG_Update(null, SuccessoGenerazioneLink.ERRORE);
 
-        var group_id = gruppoTG.permanentId;
+        var groupId = gruppoTg.permanentId;
         var sql1 = "empty";
-        if (!string.IsNullOrEmpty(gruppoTG.idLink))
+        if (!string.IsNullOrEmpty(gruppoTg.idLink))
         {
             sql1 = "SELECT id FROM GroupsTelegram " +
-                   "WHERE GroupsTelegram.link LIKE '%" + gruppoTG.idLink + "%'";
+                   "WHERE GroupsTelegram.link LIKE '%" + gruppoTg.idLink + "%'";
 
-            if (gruppoTG.idLink.Length < 3) gruppoTG.idLink = "";
+            if (gruppoTg.idLink.Length < 3) gruppoTg.idLink = "";
         }
 
-        if (group_id == null)
+        if (groupId == null)
             try
             {
-                if (!string.IsNullOrEmpty(gruppoTG.idLink))
+                if (!string.IsNullOrEmpty(gruppoTg.idLink))
                 {
                     var r1 = Database.ExecuteSelect(sql1, sender.DbConfig);
                     if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                     {
                         var r2 = r1.Rows[0];
                         var r3 = r2.ItemArray[0];
-                        group_id = Convert.ToInt64(r3);
+                        groupId = Convert.ToInt64(r3);
                     }
                     else
                     {
@@ -263,9 +264,9 @@ internal static class InviteLinks
             catch (Exception ex1)
             {
                 Logger.Logger.WriteLine(ex1);
-                var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTG.idLink + "\n\n" +
-                           gruppoTG.nome + "\n\n" + gruppoTG.newLink + "\n\n" + gruppoTG.permanentId;
-                await sender.SendTextMessageAsync(e.Message.From.Id,
+                var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.idLink + "\n\n" +
+                           gruppoTg.nome + "\n\n" + gruppoTg.newLink + "\n\n" + gruppoTg.permanentId;
+                await sender.SendTextMessageAsync(e.Message.From?.Id,
                     new Language(
                         new Dictionary<string, string>
                         {
@@ -274,9 +275,9 @@ internal static class InviteLinks
                                 ex1m
                             }
                         }),
-                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
-                result.gruppoTG = gruppoTG;
+                result.gruppoTG = gruppoTg;
                 result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                 result.ExceptionMessage = ex1m;
                 result.ExceptionObject = ex1;
@@ -287,18 +288,18 @@ internal static class InviteLinks
 
         const string sql2 = "SELECT id FROM GroupsTelegram WHERE GroupsTelegram.title LIKE '%' || @nome || '%'";
 
-        if (group_id == null)
+        if (groupId == null)
             try
             {
-                if (!string.IsNullOrEmpty(gruppoTG.nome))
+                if (!string.IsNullOrEmpty(gruppoTg.nome))
                 {
                     var r1 = Database.ExecuteSelect(sql2, sender.DbConfig,
-                        new Dictionary<string, object> { { "@nome", gruppoTG.nome } });
+                        new Dictionary<string, object> { { "@nome", gruppoTg.nome } });
                     if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                     {
                         var r2 = r1.Rows[0];
                         var r3 = r2.ItemArray[0];
-                        group_id = Convert.ToInt64(r3);
+                        groupId = Convert.ToInt64(r3);
                     }
                     else
                     {
@@ -309,8 +310,8 @@ internal static class InviteLinks
             catch (Exception ex2)
             {
                 Logger.Logger.WriteLine(ex2);
-                var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTG.nome;
-                await sender.SendTextMessageAsync(e.Message.From.Id,
+                var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.nome;
+                await sender.SendTextMessageAsync(e.Message.From?.Id,
                     new Language(
                         new Dictionary<string, string>
                         {
@@ -319,9 +320,9 @@ internal static class InviteLinks
                                 ex2m
                             }
                         }),
-                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
-                result.gruppoTG = gruppoTG;
+                result.gruppoTG = gruppoTg;
                 result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                 result.ExceptionMessage = ex2m;
                 result.ExceptionObject = ex2;
@@ -330,9 +331,9 @@ internal static class InviteLinks
                 return;
             }
 
-        if (group_id == null)
+        if (groupId == null)
         {
-            result.gruppoTG = gruppoTG;
+            result.gruppoTG = gruppoTg;
             result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
             L.Add(result);
         }
@@ -341,32 +342,32 @@ internal static class InviteLinks
             NuovoLink s3 = null;
             try
             {
-                if (group_id != null)
+                if (groupId != null)
                 {
-                    gruppoTG.UpdateId(group_id.Value);
+                    gruppoTg.UpdateId(groupId.Value);
 
-                    s3 = await CreateInviteLinkAsync(group_id.Value, sender, e);
-                    if (s3 != null) gruppoTG.UpdateNewLink(s3.link);
+                    s3 = await CreateInviteLinkAsync(groupId.Value, sender, e);
+                    if (s3 != null) gruppoTg.UpdateNewLink(s3.link);
                 }
             }
             catch (Exception ex3)
             {
                 Logger.Logger.WriteLine(ex3);
-                var ex3m = "3" + "\n\n" + ex3.Message;
+                var ex3M = "3" + "\n\n" + ex3.Message;
                 await sender.SendTextMessageAsync(e.Message.From.Id,
                     new Language(
                         new Dictionary<string, string>
                         {
                             {
                                 "it",
-                                ex3m
+                                ex3M
                             }
                         }),
                     ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
-                result.gruppoTG = gruppoTG;
+                result.gruppoTG = gruppoTg;
                 result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
-                result.ExceptionMessage = ex3m;
+                result.ExceptionMessage = ex3M;
                 result.ExceptionObject = ex3;
                 result.CreateInviteLinkFallita = true;
                 L.Add(result);
@@ -376,7 +377,7 @@ internal static class InviteLinks
 
             var successoGenerazione = GetSuccessoGenerazione(s3);
 
-            result.gruppoTG = gruppoTG;
+            result.gruppoTG = gruppoTg;
             result.successoGenerazioneLink = successoGenerazione;
             L.Add(result);
         }

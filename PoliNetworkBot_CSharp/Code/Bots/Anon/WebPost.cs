@@ -150,7 +150,7 @@ internal class WebPost
         var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
                   ConfigAnon.password + "&approved=" + approved;
         var x2 = await Web.DownloadHtmlAsync(url);
-        ThreadAsync.dictionary_webpost[x.authorId.Value].approved = approved;
+        ThreadAsync.DictionaryWebpost[x.authorId.Value].approved = approved;
         ThreadAsync.WriteDict();
         return true;
     }

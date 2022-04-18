@@ -11,6 +11,6 @@ internal class BackupUtil
     internal static void BackupBeforeReboot()
     {
         MessagesStore.BackupToFile();
-        CallbackUtils.CallbackUtils.callBackDataFull.BackupToFile();
+        CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
 }

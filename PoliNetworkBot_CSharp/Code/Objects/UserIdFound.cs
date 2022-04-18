@@ -2,26 +2,26 @@
 
 internal class UserIdFound
 {
-    private readonly long? i;
-    private readonly string v;
+    private readonly long? _i;
+    private readonly string _v;
 
-    public UserIdFound(long? i)
+    private UserIdFound(long? i)
     {
-        this.i = i;
+        this._i = i;
     }
 
     public UserIdFound(long? i, string v) : this(i)
     {
-        this.v = v;
+        this._v = v;
     }
 
-    internal long? GetID()
+    internal long? GetId()
     {
-        return i;
+        return _i;
     }
 
     internal string GetError()
     {
-        return v;
+        return _v;
     }
 }

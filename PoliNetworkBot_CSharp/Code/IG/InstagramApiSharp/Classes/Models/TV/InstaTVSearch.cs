@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
 #endregion
 
@@ -23,5 +24,5 @@ public class InstaTVSearchResult
 
     public InstaUserShortFriendship User { get; set; }
 
-    public InstaTVChannel Channel { get; set; }
+    public InstaTvChannel Channel { get; set; }
 }

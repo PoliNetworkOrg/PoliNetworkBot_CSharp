@@ -64,7 +64,7 @@ internal static class RestrictUser
         bool? revokeMessage)
     {
         var targetId = await Info.GetTargetUserIdAsync(target, sender);
-        if (targetId?.GetID() == null)
+        if (targetId?.GetId() == null)
         {
             var exception2 = "";
             if (targetId != null) exception2 += "\n" + targetId.GetError();
@@ -134,7 +134,7 @@ internal static class RestrictUser
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await BanUserFromGroup(sender, targetId.GetID().Value, groupChatId, null,
+                        var success = await BanUserFromGroup(sender, targetId.GetId().Value, groupChatId, null,
                             revokeMessage);
                         if (success.IsSuccess())
                             done.Add(dr);
@@ -161,7 +161,7 @@ internal static class RestrictUser
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await UnBanUserFromGroup(sender, targetId.GetID().Value, groupChatId);
+                        var success = await UnBanUserFromGroup(sender, targetId.GetId().Value, groupChatId);
                         if (success.IsSuccess())
                             done.Add(dr);
                         else
@@ -188,7 +188,7 @@ internal static class RestrictUser
                     {
                         var groupChatId = (long)dr["id"];
                         var chatType = GetChatType(dr);
-                        var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                        var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
                             chatType, RestrictAction.MUTE);
                         if (success.IsSuccess())
                             done.Add(dr);
@@ -215,7 +215,7 @@ internal static class RestrictUser
                     {
                         var groupChatId = (long)dr["id"];
                         var chatType = GetChatType(dr);
-                        var success = await MuteUser(sender, targetId.GetID().Value, groupChatId, until,
+                        var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
                             chatType, RestrictAction.UNMUTE);
                         if (success.IsSuccess())
                             done.Add(dr);
@@ -237,9 +237,9 @@ internal static class RestrictUser
                 throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
         }
 
-        LogBanAction(targetId.GetID().Value, banTarget, sender, e.Message.From.Id, sender);
+        LogBanAction(targetId.GetId().Value, banTarget, sender, e.Message.From.Id, sender);
 
-        var targetId2 = targetId.GetID();
+        var targetId2 = targetId.GetId();
         var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
         if (targetId2 == null)
         {
@@ -379,7 +379,7 @@ internal static class RestrictUser
                 { "@whob", who_banned },
                 { "@whenb", DateTime.Now },
                 { "@target", targetId },
-                { "@btuf", StringUtil.ToSN(b) }
+                { "@btuf", StringUtil.ToSn(b) }
             };
             var done = Database.Execute(q, sender.DbConfig, dict);
 

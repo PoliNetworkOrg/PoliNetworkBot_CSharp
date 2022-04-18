@@ -8,14 +8,14 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class StringUtil
+public static class StringUtil
 {
     public static string NotNull(Language caption, string lang)
     {
         return caption == null ? "" : caption.Select(lang);
     }
 
-    internal static bool IsRoomChar(char v)
+    private static bool IsRoomChar(char v)
     {
         return v switch
         {
@@ -40,7 +40,7 @@ public class StringUtil
         };
     }
 
-    internal static char ToSN(bool? b)
+    internal static char ToSn(bool? b)
     {
         return b == null ? '?' : b.Value ? 'S' : 'N';
     }

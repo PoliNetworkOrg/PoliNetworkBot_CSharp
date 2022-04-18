@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Media;
 
 #endregion
 

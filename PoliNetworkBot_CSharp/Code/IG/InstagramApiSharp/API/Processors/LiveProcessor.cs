@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Helpers;
 
 #endregion
 
@@ -856,7 +858,7 @@ internal class LiveProcessor : ILiveProcessor
     /// <param name="broadcastId">Broadcast id to send ( <see cref="InstaBroadcast.Id" /> )</param>
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
-    public async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string text, string broadcastId,
+    private async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string text, string broadcastId,
         string[] threadIds, string[] recipients)
     {
         UserAuthValidator.Validate(_userAuthValidate);

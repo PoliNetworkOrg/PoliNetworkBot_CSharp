@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace InstagramApiSharp.Classes.Models;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Direct;
 
 public class InstaAudio
 {

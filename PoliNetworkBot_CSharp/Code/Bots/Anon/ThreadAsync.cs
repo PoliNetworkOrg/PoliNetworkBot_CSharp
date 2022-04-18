@@ -14,21 +14,21 @@ using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-internal class ThreadAsync
+internal static class ThreadAsync
 {
-    public const int timesleep = 1000 * 30;
+    private const int Timesleep = 1000 * 30;
 
-    public const string pathwebdict = "webposts.bin";
-    private static readonly Random random = new();
+    private const string Pathwebdict = "webposts.bin";
+    private static readonly Random Random = new();
 
-    public static Dictionary<long, WebPost> dictionary_webpost;
+    public static Dictionary<long, WebPost> DictionaryWebpost;
 
     private static string GenerateRandomString(int length)
     {
         var r = "";
         for (var i = 0; i < length; i++)
         {
-            var r2 = random.NextDouble() * 26;
+            var r2 = Random.NextDouble() * 26;
             var r3 = (long)r2;
             var r4 = 'A' + r3;
             var r5 = (char)r4;
@@ -56,13 +56,13 @@ internal class ThreadAsync
             ;
         }
 
-        dictionary_webpost ??= GetDictionary();
+        DictionaryWebpost ??= GetDictionary();
 
         while (true)
-            lock (random)
+            lock (Random)
             {
                 _ = IterationAsync2Async(bot, null);
-                Thread.Sleep(timesleep);
+                Thread.Sleep(Timesleep);
             }
     }
 
@@ -94,7 +94,7 @@ internal class ThreadAsync
         }
     }
 
-    public static void DoThingsAsyncBotAsync2(string data)
+    private static void DoThingsAsyncBotAsync2(string data)
     {
         ;
 
@@ -124,9 +124,9 @@ internal class ThreadAsync
 
     private static void DoThingsAsyncBotAsync3(WebPost webPost)
     {
-        dictionary_webpost ??= GetDictionary();
+        DictionaryWebpost ??= GetDictionary();
 
-        lock (dictionary_webpost)
+        lock (DictionaryWebpost)
         {
             _ = DoThingsAsyncBotAsync4Async(webPost);
         }
@@ -140,10 +140,10 @@ internal class ThreadAsync
         if (webPost.seen == 'Y')
             return;
 
-        dictionary_webpost ??= GetDictionary();
+        DictionaryWebpost ??= GetDictionary();
 
-        if (dictionary_webpost.ContainsKey(webPost.postid) &&
-            dictionary_webpost[webPost.postid].seen == 'Y') return;
+        if (DictionaryWebpost.ContainsKey(webPost.postid) &&
+            DictionaryWebpost[webPost.postid].seen == 'Y') return;
 
         ;
 
@@ -153,7 +153,7 @@ internal class ThreadAsync
 
             await webPost.PlaceInQueue();
 
-            dictionary_webpost[webPost.postid] = webPost;
+            DictionaryWebpost[webPost.postid] = webPost;
             WriteDict();
         }
         catch (Exception e)
@@ -166,7 +166,7 @@ internal class ThreadAsync
     {
         try
         {
-            FileSerialization.WriteToBinaryFile(pathwebdict, dictionary_webpost);
+            FileSerialization.WriteToBinaryFile(Pathwebdict, DictionaryWebpost);
         }
         catch
         {
@@ -179,8 +179,8 @@ internal class ThreadAsync
         var done = false;
         try
         {
-            dictionary_webpost = FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(pathwebdict);
-            if (dictionary_webpost != null)
+            DictionaryWebpost = FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(Pathwebdict);
+            if (DictionaryWebpost != null)
                 done = true;
         }
         catch
@@ -188,9 +188,9 @@ internal class ThreadAsync
             ;
         }
 
-        if (!done) dictionary_webpost = new Dictionary<long, WebPost>();
+        if (!done) DictionaryWebpost = new Dictionary<long, WebPost>();
 
         WriteDict();
-        return dictionary_webpost;
+        return DictionaryWebpost;
     }
 }
