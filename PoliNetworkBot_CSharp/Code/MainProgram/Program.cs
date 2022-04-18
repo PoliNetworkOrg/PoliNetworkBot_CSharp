@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -14,14 +22,6 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Test.IG;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -54,59 +54,59 @@ internal static class Program
             switch (item1)
             {
                 case '1': //reset everything
-                    {
-                        ResetEverything(true);
+                {
+                    ResetEverything(true);
 
-                        return;
-                    }
+                    return;
+                }
 
                 case '2': //normal mode
                 case '3': //disguised bot test
                 case '8':
                 case '9':
-                    {
-                        MainBot(item1, item2);
-                        return;
-                    }
+                {
+                    MainBot(item1, item2);
+                    return;
+                }
 
                 case '4':
-                    {
-                        ResetEverything(false);
-                        return;
-                    }
+                {
+                    ResetEverything(false);
+                    return;
+                }
 
                 case '5':
-                    {
-                        _ = await Test_IG.MainIGAsync();
-                        return;
-                    }
+                {
+                    _ = await Test_IG.MainIGAsync();
+                    return;
+                }
 
                 case '6':
-                    {
-                        NewConfig.NewConfigMethod(true, false, false, false, false);
-                        return;
-                    }
+                {
+                    NewConfig.NewConfigMethod(true, false, false, false, false);
+                    return;
+                }
                 case '7':
+                {
+                    NewConfig.NewConfigMethod(false, false, true, false, false);
+                    return;
+                }
+                case 't':
+                {
+                    try
                     {
-                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        //SpamTest.Main2();
+                        //Test_CheckLink.Test_CheckLink2();
+                        await Test_IG.MainIGAsync();
                         return;
                     }
-                case 't':
+                    catch
                     {
-                        try
-                        {
-                            //SpamTest.Main2();
-                            //Test_CheckLink.Test_CheckLink2();
-                            await Test_IG.MainIGAsync();
-                            return;
-                        }
-                        catch
-                        {
-                            ;
-                        }
-
-                        break;
+                        ;
                     }
+
+                    break;
+                }
             }
         }
     }
@@ -151,7 +151,7 @@ internal static class Program
             Console.ReadKey();
     }
 
-    private static Enums.ToExit FirstThingsToDo()
+    private static ToExit FirstThingsToDo()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -167,11 +167,8 @@ internal static class Program
 
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.WriteLine("Current TimeZone: " + currentTimeZone);
-        var allowedTextTimeZone = new List<string>() { "roma", "rome", "europe" };
-        if (!allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x)))
-        {
-            return ToExit.EXIT;
-        }
+        var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
+        if (!allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))) return ToExit.EXIT;
 
         return ToExit.STAY;
     }
@@ -440,10 +437,10 @@ internal static class Program
                     {
                         case "a":
                         case "A": //Administration
-                            {
-                                _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
-                                break;
-                            }
+                        {
+                            _ = Bots.Administration.Main.MainMethodAsync(GlobalVariables.Bots[userId.Value]);
+                            break;
+                        }
                     }
             }
 
@@ -584,17 +581,17 @@ internal static class Program
                 break;
 
             case UpdateType.Message:
-                {
-                    if (botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                            return;
+            {
+                if (botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                    if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                        return;
 
-                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    botClientWhole.OnmessageMethod2.Item1(botClientWhole.BotClient,
-                        new MessageEventArgs(update.Message));
-                    break;
-                }
+                botClientWhole.OnmessageMethod2.Item1(botClientWhole.BotClient,
+                    new MessageEventArgs(update.Message));
+                break;
+            }
             case UpdateType.InlineQuery:
                 break;
 
@@ -602,11 +599,11 @@ internal static class Program
                 break;
 
             case UpdateType.CallbackQuery:
-                {
-                    var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
-                    callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                    break;
-                }
+            {
+                var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
+                callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                break;
+            }
             case UpdateType.EditedMessage:
                 break;
 

@@ -1,8 +1,8 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 
 #endregion
 

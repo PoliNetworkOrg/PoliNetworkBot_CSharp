@@ -1,7 +1,7 @@
 ﻿#region
 
-using InstagramApiSharp.Enums;
 using System.Collections.Generic;
+using InstagramApiSharp.Enums;
 
 #endregion
 

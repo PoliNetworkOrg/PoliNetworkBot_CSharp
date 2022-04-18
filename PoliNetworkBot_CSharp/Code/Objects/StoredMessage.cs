@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Collections.Generic;
 using Telegram.Bot.Types;
 
 #endregion

@@ -37,7 +37,8 @@ public class TelegramUser
     {
         return id switch
         {
-            null => !string.IsNullOrEmpty(username) && string.Equals(usernameParam, username, StringComparison.CurrentCultureIgnoreCase),
+            null => !string.IsNullOrEmpty(username) &&
+                    string.Equals(usernameParam, username, StringComparison.CurrentCultureIgnoreCase),
             _ => id == userIdParam
         };
     }

@@ -1,13 +1,13 @@
 ﻿#region
 
+using System;
+using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System;
-using System.IO;
 
 #endregion
 
@@ -58,6 +58,7 @@ public class DbConfig
 
     public string GetConnectionString()
     {
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" + Password + "'";
+        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
+               Password + "'";
     }
 }

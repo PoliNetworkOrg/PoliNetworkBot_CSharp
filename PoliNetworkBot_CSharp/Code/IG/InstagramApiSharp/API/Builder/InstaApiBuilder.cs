@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Globalization;
+using System.Net.Http;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.SessionHandlers;
 using InstagramApiSharp.Enums;
 using InstagramApiSharp.Logger;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
-using System;
-using System.Globalization;
-using System.Net.Http;
 
 #endregion
 

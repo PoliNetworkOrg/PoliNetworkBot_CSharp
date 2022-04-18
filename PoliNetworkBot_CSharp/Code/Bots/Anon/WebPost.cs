@@ -1,5 +1,8 @@
 ﻿#region
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -7,9 +10,6 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -47,59 +47,59 @@ internal class WebPost
                 switch (r6.Name)
                 {
                     case "PostID":
-                        {
-                            postid = Convert.ToInt64(r7.Value);
-                            break;
-                        }
+                    {
+                        postid = Convert.ToInt64(r7.Value);
+                        break;
+                    }
 
                     case "Text":
-                        {
-                            text = r7.Value.ToString();
-                            break;
-                        }
+                    {
+                        text = r7.Value.ToString();
+                        break;
+                    }
 
                     case "PhotoID":
+                    {
+                        long? p = null;
+                        try
                         {
-                            long? p = null;
-                            try
-                            {
-                                p = Convert.ToInt64(r7.Value);
-                            }
-                            catch
-                            {
-                                ;
-                            }
-
-                            photoid = p;
-
-                            if (photoid <= 0) photoid = null;
-
-                            break;
+                            p = Convert.ToInt64(r7.Value);
                         }
+                        catch
+                        {
+                            ;
+                        }
+
+                        photoid = p;
+
+                        if (photoid <= 0) photoid = null;
+
+                        break;
+                    }
 
                     case "Approved":
-                        {
-                            approved = r7.Value.ToString()[0];
-                            break;
-                        }
+                    {
+                        approved = r7.Value.ToString()[0];
+                        break;
+                    }
 
                     case "Password":
-                        {
-                            password = r7.Value.ToString();
-                            break;
-                        }
+                    {
+                        password = r7.Value.ToString();
+                        break;
+                    }
 
                     case "Seen":
-                        {
-                            seen = r7.Value.ToString()[0];
-                            break;
-                        }
+                    {
+                        seen = r7.Value.ToString()[0];
+                        break;
+                    }
 
                     case "WhenSubmitted":
-                        {
-                            whensubmitted = Convert.ToDateTime(r7.Value);
-                            break;
-                        }
+                    {
+                        whensubmitted = Convert.ToDateTime(r7.Value);
+                        break;
+                    }
                 }
         }
     }
@@ -117,9 +117,9 @@ internal class WebPost
     {
         if (GlobalVariables.Bots != null)
             return (from key in GlobalVariables.Bots.Keys
-                    let m = GlobalVariables.Bots[key].GetMode()
-                    where m == BotStartMethods.Anon.Item1
-                    select GlobalVariables.Bots[key]).FirstOrDefault();
+                let m = GlobalVariables.Bots[key].GetMode()
+                where m == BotStartMethods.Anon.Item1
+                select GlobalVariables.Bots[key]).FirstOrDefault();
         try
         {
             await Program.StartBotsAsync(false, false, true);
@@ -130,9 +130,9 @@ internal class WebPost
         }
 
         return (from key in GlobalVariables.Bots?.Keys
-                let m = GlobalVariables.Bots[key].GetMode()
-                where m == BotStartMethods.Anon.Item1
-                select GlobalVariables.Bots[key]).FirstOrDefault();
+            let m = GlobalVariables.Bots[key].GetMode()
+            where m == BotStartMethods.Anon.Item1
+            select GlobalVariables.Bots[key]).FirstOrDefault();
     }
 
     internal async Task SetAsSeenAsync()

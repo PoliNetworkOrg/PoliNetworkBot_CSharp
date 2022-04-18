@@ -1,11 +1,11 @@
 ﻿#region
 
-using MySql.Data.MySqlClient;
-using PoliNetworkBot_CSharp.Code.Config;
-using PoliNetworkBot_CSharp.Code.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
@@ -34,7 +34,7 @@ public static class Database
 
     public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
     {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY);//todo metti gli args
+        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 

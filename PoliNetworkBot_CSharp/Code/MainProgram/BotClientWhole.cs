@@ -1,9 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using System;
 using System.Collections.Generic;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using Telegram.Bot;
 
 #endregion

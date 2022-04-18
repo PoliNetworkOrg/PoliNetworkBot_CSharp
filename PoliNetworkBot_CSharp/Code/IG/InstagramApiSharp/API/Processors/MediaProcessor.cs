@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -13,14 +21,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -151,7 +151,7 @@ internal class MediaProcessor : IMediaProcessor
                     try
                     {
                         var tried = false;
-                    TryLabel:
+                        TryLabel:
                         var u = await _instaApi.UserProcessor.GetUserAsync(tag.Username);
                         if (!u.Succeeded)
                         {
@@ -680,7 +680,7 @@ internal class MediaProcessor : IMediaProcessor
                             try
                             {
                                 var tried = false;
-                            TryLabel:
+                                TryLabel:
                                 var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                                 if (!u.Succeeded)
                                 {
@@ -726,35 +726,35 @@ internal class MediaProcessor : IMediaProcessor
             if (videos?.Length > 0)
             {
                 foreach (var video in videos)
-                    foreach (var t in video.UserTags)
-                    {
-                        var currentDelay = _instaApi.GetRequestDelay();
-                        _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
-                        if (t.Pk <= 0)
-                            try
-                            {
-                                var tried = false;
+                foreach (var t in video.UserTags)
+                {
+                    var currentDelay = _instaApi.GetRequestDelay();
+                    _instaApi.SetRequestDelay(RequestDelay.FromSeconds(1, 2));
+                    if (t.Pk <= 0)
+                        try
+                        {
+                            var tried = false;
                             TryLabel:
-                                var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
-                                if (!u.Succeeded)
-                                {
-                                    if (!tried)
-                                    {
-                                        tried = true;
-                                        goto TryLabel;
-                                    }
-                                }
-                                else
-                                {
-                                    t.Pk = u.Value.Pk;
-                                }
-                            }
-                            catch
+                            var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
+                            if (!u.Succeeded)
                             {
+                                if (!tried)
+                                {
+                                    tried = true;
+                                    goto TryLabel;
+                                }
                             }
+                            else
+                            {
+                                t.Pk = u.Value.Pk;
+                            }
+                        }
+                        catch
+                        {
+                        }
 
-                        _instaApi.SetRequestDelay(currentDelay);
-                    }
+                    _instaApi.SetRequestDelay(currentDelay);
+                }
 
                 foreach (var video in videos)
                 {
@@ -840,7 +840,7 @@ internal class MediaProcessor : IMediaProcessor
                         try
                         {
                             var tried = false;
-                        TryLabel:
+                            TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
@@ -867,7 +867,7 @@ internal class MediaProcessor : IMediaProcessor
                         try
                         {
                             var tried = false;
-                        TryLabel:
+                            TryLabel:
                             var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                             if (!u.Succeeded)
                             {
@@ -1002,7 +1002,7 @@ internal class MediaProcessor : IMediaProcessor
                     try
                     {
                         var tried = false;
-                    TryLabel:
+                        TryLabel:
                         var u = await _instaApi.UserProcessor.GetUserAsync(t.Username);
                         if (!u.Succeeded)
                         {
@@ -1435,9 +1435,9 @@ internal class MediaProcessor : IMediaProcessor
             {
                 var tagArr = new JArray();
                 foreach (var singleTag in from tag in video.UserTags
-                                          where tag.Pk != -1
-                                          let position = new JArray(0.0, 0.0)
-                                          select new JObject
+                         where tag.Pk != -1
+                         let position = new JArray(0.0, 0.0)
+                         select new JObject
                          {
                              { "user_id", tag.Pk },
                              { "position", position }
@@ -1578,9 +1578,9 @@ internal class MediaProcessor : IMediaProcessor
         if (!(image.UserTags?.Count > 0)) return imgData;
         var tagArr = new JArray();
         foreach (var singleTag in from tag in image.UserTags
-                                  where tag.Pk != -1
-                                  let position = new JArray(tag.X, tag.Y)
-                                  select new JObject
+                 where tag.Pk != -1
+                 let position = new JArray(tag.X, tag.Y)
+                 select new JObject
                  {
                      { "user_id", tag.Pk },
                      { "position", position }
@@ -1641,9 +1641,9 @@ internal class MediaProcessor : IMediaProcessor
         if (!(video.UserTags?.Count > 0)) return vidData;
         var tagArr = new JArray();
         foreach (var singleTag in from tag in video.UserTags
-                                  where tag.Pk != -1
-                                  let position = new JArray(0.0, 0.0)
-                                  select new JObject
+                 where tag.Pk != -1
+                 let position = new JArray(0.0, 0.0)
+                 select new JObject
                  {
                      { "user_id", tag.Pk },
                      { "position", position }

@@ -1,8 +1,8 @@
 ﻿#region
 
+using System.Collections.Generic;
 using InstagramApiSharp.Classes.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 #endregion
 

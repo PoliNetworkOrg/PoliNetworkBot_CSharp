@@ -306,13 +306,13 @@ public static class PemKeyUtils
                 break;
 
             case 0x82:
-                {
-                    var highbyte = binr.ReadByte();
-                    var lowbyte = binr.ReadByte();
-                    byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
-                    count = BitConverter.ToInt32(modint, 0);
-                    break;
-                }
+            {
+                var highbyte = binr.ReadByte();
+                var lowbyte = binr.ReadByte();
+                byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
+                count = BitConverter.ToInt32(modint, 0);
+                break;
+            }
             default:
                 count = bt; // we already have the data size
                 break;
@@ -448,7 +448,7 @@ public static class PemKeyUtils
         Array.Copy(salt, 0, data00, psbytes.Length, salt.Length); //concatenate the salt bytes
 
         // ---- do multi-hashing and contatenate results  D1, D2 ...  into keymaterial bytes ----
-        MD5 md5 = MD5.Create();
+        var md5 = MD5.Create();
         byte[] result = null;
         var hashtarget = new byte[hashlength + data00.Length]; //fixed length initial hashtarget
 
@@ -523,26 +523,26 @@ public static class PemKeyUtils
                     return password;
 
                 default:
+                {
+                    if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
                     {
-                        if (char.IsLetterOrDigit(cki.KeyChar) || char.IsSymbol(cki.KeyChar))
+                        if (password.Length < 20)
                         {
-                            if (password.Length < 20)
-                            {
-                                password.AppendChar(cki.KeyChar);
-                                Console.Write("*");
-                            }
-                            else
-                            {
-                                Console.Beep();
-                            }
+                            password.AppendChar(cki.KeyChar);
+                            Console.Write("*");
                         }
                         else
                         {
                             Console.Beep();
                         }
-
-                        break;
                     }
+                    else
+                    {
+                        Console.Beep();
+                    }
+
+                    break;
+                }
             }
         }
     }

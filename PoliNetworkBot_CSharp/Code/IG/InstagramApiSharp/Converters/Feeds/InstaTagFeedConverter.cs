@@ -1,10 +1,10 @@
 ﻿#region
 
-using InstagramApiSharp.Classes.Models;
-using InstagramApiSharp.Classes.ResponseWrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using InstagramApiSharp.Classes.Models;
+using InstagramApiSharp.Classes.ResponseWrappers;
 
 #endregion
 
@@ -23,9 +23,9 @@ internal class InstaTagFeedConverter : IObjectConverter<InstaTagFeed, InstaTagFe
         static IEnumerable<InstaMedia> ConvertMedia(IEnumerable<InstaMediaItemResponse> mediasResponse)
         {
             return (from instaUserFeedItemResponse in mediasResponse
-                    where instaUserFeedItemResponse?.Type == 0
-                    select ConvertersFabric.GetSingleMediaConverter(instaUserFeedItemResponse)
-                        .Convert()).ToList();
+                where instaUserFeedItemResponse?.Type == 0
+                select ConvertersFabric.GetSingleMediaConverter(instaUserFeedItemResponse)
+                    .Convert()).ToList();
         }
 
         feed.RankedMedias.AddRange(ConvertMedia(SourceObject.RankedItems));

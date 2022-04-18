@@ -1,5 +1,10 @@
 ﻿#region
 
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Android.DeviceInfo;
 using InstagramApiSharp.Classes.Models;
@@ -11,11 +16,6 @@ using InstagramApiSharp.Logger;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 #endregion
 

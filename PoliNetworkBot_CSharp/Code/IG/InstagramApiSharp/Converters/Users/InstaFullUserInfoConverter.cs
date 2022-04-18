@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Linq;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Helpers;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 

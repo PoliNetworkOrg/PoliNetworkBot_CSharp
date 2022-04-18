@@ -1,5 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
 using InstagramApiSharp.API;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Classes;
@@ -8,11 +13,6 @@ using InstagramApiSharp.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 
 #endregion
 

@@ -1,14 +1,14 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -113,9 +113,9 @@ public class Main
             return new List<string>();
 
         return (from DataRow dr in r.Rows
-                let dt = (DateTime)dr["when_king"]
-                where dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year
-                select dr["title"].ToString()).ToList();
+            let dt = (DateTime)dr["when_king"]
+            where dt.Day == DateTime.Now.Day && dt.Month == DateTime.Now.Month && dt.Year == DateTime.Now.Year
+            select dr["title"].ToString()).ToList();
     }
 
     private static Tuple<bool, string> CheckIfValid(string t)
@@ -248,12 +248,12 @@ public class Main
             return null;
 
         return (from DataRow dr in r.Rows
-                where dr != null
-                let id = (long)dr["king_id"]
-                where e.Message.From != null && id == e.Message.From.Id
-                let dt = (DateTime)dr["when_king"]
-                where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
-                select dr["title"].ToString()).ToList();
+            where dr != null
+            let id = (long)dr["king_id"]
+            where e.Message.From != null && id == e.Message.From.Id
+            let dt = (DateTime)dr["when_king"]
+            where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
+            select dr["title"].ToString()).ToList();
     }
 
     private static string GenerateUserStringHtml(DataRow dataRow)

@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
-using System;
 
 #endregion
 
@@ -99,11 +99,11 @@ public class MessageAllowedStatus
                 return _messageAllowedStatus;
 
             case MessageAllowedStatusEnum.PENDING or MessageAllowedStatusEnum.ALLOWED:
-                {
-                    if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
-                        return MessageAllowedStatusEnum.NOT_DEFINED;
-                    return MessageAllowedStatusEnum.ALLOWED;
-                }
+            {
+                if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
+                    return MessageAllowedStatusEnum.NOT_DEFINED;
+                return MessageAllowedStatusEnum.ALLOWED;
+            }
             default:
                 throw new ArgumentOutOfRangeException();
         }

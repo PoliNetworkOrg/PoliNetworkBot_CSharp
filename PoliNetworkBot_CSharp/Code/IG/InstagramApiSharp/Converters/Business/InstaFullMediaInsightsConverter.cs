@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
 using InstagramApiSharp.Classes.ResponseWrappers.Business;
 using InstagramApiSharp.Helpers;
-using System;
 
 #endregion
 

@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using InstagramApiSharp.Enums;
 using InstagramApiSharp.Helpers;
-using System;
-using System.Linq;
 
 #endregion
 
@@ -70,70 +70,70 @@ internal class InstaDirectThreadItemConverter : IObjectConverter<InstaDirectInbo
                 break;
 
             case InstaDirectThreadItemType.Media when SourceObject.Media != null:
-                {
-                    var converter = ConvertersFabric.GetInboxMediaConverter(SourceObject.Media);
-                    threadItem.Media = converter.Convert();
-                    break;
-                }
+            {
+                var converter = ConvertersFabric.GetInboxMediaConverter(SourceObject.Media);
+                threadItem.Media = converter.Convert();
+                break;
+            }
             case InstaDirectThreadItemType.MediaShare when SourceObject.MediaShare != null:
-                {
-                    var converter = ConvertersFabric.GetSingleMediaConverter(SourceObject.MediaShare);
-                    threadItem.MediaShare = converter.Convert();
-                    break;
-                }
+            {
+                var converter = ConvertersFabric.GetSingleMediaConverter(SourceObject.MediaShare);
+                threadItem.MediaShare = converter.Convert();
+                break;
+            }
             case InstaDirectThreadItemType.StoryShare when SourceObject.StoryShare != null:
+            {
+                threadItem.StoryShare = new InstaStoryShare
                 {
-                    threadItem.StoryShare = new InstaStoryShare
-                    {
-                        IsReelPersisted = SourceObject.StoryShare.IsReelPersisted,
-                        ReelType = SourceObject.StoryShare.ReelType,
-                        Text = SourceObject.StoryShare.Text,
-                        IsLinked = SourceObject.StoryShare.IsLinked,
-                        Message = SourceObject.StoryShare.Message,
-                        Title = SourceObject.StoryShare.Title
-                    };
-                    if (SourceObject.StoryShare.Media != null)
-                    {
-                        var converter =
-                            ConvertersFabric.GetSingleMediaConverter(SourceObject.StoryShare.Media);
-                        threadItem.StoryShare.Media = converter.Convert();
-                    }
-
-                    break;
+                    IsReelPersisted = SourceObject.StoryShare.IsReelPersisted,
+                    ReelType = SourceObject.StoryShare.ReelType,
+                    Text = SourceObject.StoryShare.Text,
+                    IsLinked = SourceObject.StoryShare.IsLinked,
+                    Message = SourceObject.StoryShare.Message,
+                    Title = SourceObject.StoryShare.Title
+                };
+                if (SourceObject.StoryShare.Media != null)
+                {
+                    var converter =
+                        ConvertersFabric.GetSingleMediaConverter(SourceObject.StoryShare.Media);
+                    threadItem.StoryShare.Media = converter.Convert();
                 }
+
+                break;
+            }
             case InstaDirectThreadItemType.Text:
                 threadItem.Text = SourceObject.Text;
                 break;
 
             case InstaDirectThreadItemType.RavenMedia when SourceObject.RavenMedia != null:
+            {
+                var converter = ConvertersFabric.GetVisualMediaConverter(SourceObject.RavenMedia);
+                threadItem.RavenMedia = converter.Convert();
+                threadItem.RavenSeenUserIds = SourceObject.RavenSeenUserIds;
+                if (!string.IsNullOrEmpty(SourceObject.RavenViewMode))
+                    threadItem.RavenViewMode =
+                        (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.RavenViewMode, true);
+
+                threadItem.RavenReplayChainCount = SourceObject.RavenReplayChainCount ?? 0;
+                threadItem.RavenSeenCount = SourceObject.RavenSeenCount;
+                if (SourceObject.RavenExpiringMediaActionSummary != null)
                 {
-                    var converter = ConvertersFabric.GetVisualMediaConverter(SourceObject.RavenMedia);
-                    threadItem.RavenMedia = converter.Convert();
-                    threadItem.RavenSeenUserIds = SourceObject.RavenSeenUserIds;
-                    if (!string.IsNullOrEmpty(SourceObject.RavenViewMode))
-                        threadItem.RavenViewMode =
-                            (InstaViewMode)Enum.Parse(typeof(InstaViewMode), SourceObject.RavenViewMode, true);
-
-                    threadItem.RavenReplayChainCount = SourceObject.RavenReplayChainCount ?? 0;
-                    threadItem.RavenSeenCount = SourceObject.RavenSeenCount;
-                    if (SourceObject.RavenExpiringMediaActionSummary != null)
+                    var ravenType = SourceObject.RavenExpiringMediaActionSummary.Type.ToLower() == "raven_delivered"
+                        ? InstaRavenType.Delivered
+                        : InstaRavenType.Opened;
+                    threadItem.RavenExpiringMediaActionSummary = new InstaRavenMediaActionSummary
                     {
-                        var ravenType = SourceObject.RavenExpiringMediaActionSummary.Type.ToLower() == "raven_delivered"
-                            ? InstaRavenType.Delivered
-                            : InstaRavenType.Opened;
-                        threadItem.RavenExpiringMediaActionSummary = new InstaRavenMediaActionSummary
-                        {
-                            Count = SourceObject.RavenExpiringMediaActionSummary.Count,
-                            Type = ravenType
-                        };
-                        if (!string.IsNullOrEmpty(SourceObject.RavenExpiringMediaActionSummary.TimeStamp))
-                            threadItem.RavenExpiringMediaActionSummary.ExpireTime =
-                                DateTimeHelper.UnixTimestampMilisecondsToDateTime(SourceObject
-                                    .RavenExpiringMediaActionSummary.TimeStamp);
-                    }
-
-                    break;
+                        Count = SourceObject.RavenExpiringMediaActionSummary.Count,
+                        Type = ravenType
+                    };
+                    if (!string.IsNullOrEmpty(SourceObject.RavenExpiringMediaActionSummary.TimeStamp))
+                        threadItem.RavenExpiringMediaActionSummary.ExpireTime =
+                            DateTimeHelper.UnixTimestampMilisecondsToDateTime(SourceObject
+                                .RavenExpiringMediaActionSummary.TimeStamp);
                 }
+
+                break;
+            }
             // VisualMedia is updated RavenMedia for v61 and newer
             case InstaDirectThreadItemType.RavenMedia when SourceObject.VisualMedia != null:
                 threadItem.VisualMedia = ConvertersFabric.GetVisualMediaContainerConverter(SourceObject.VisualMedia)
@@ -148,23 +148,23 @@ internal class InstaDirectThreadItemConverter : IObjectConverter<InstaDirectInbo
                 break;
 
             case InstaDirectThreadItemType.Profile when SourceObject.ProfileMedia != null:
-                {
-                    var converter = ConvertersFabric.GetUserShortConverter(SourceObject.ProfileMedia);
-                    threadItem.ProfileMedia = converter.Convert();
-                    if (SourceObject.ProfileMediasPreview != null && SourceObject.ProfileMediasPreview.Any())
-                        try
-                        {
-                            var previewMedias = SourceObject.ProfileMediasPreview.Select(item =>
-                                ConvertersFabric.GetSingleMediaConverter(item).Convert()).ToList();
+            {
+                var converter = ConvertersFabric.GetUserShortConverter(SourceObject.ProfileMedia);
+                threadItem.ProfileMedia = converter.Convert();
+                if (SourceObject.ProfileMediasPreview != null && SourceObject.ProfileMediasPreview.Any())
+                    try
+                    {
+                        var previewMedias = SourceObject.ProfileMediasPreview.Select(item =>
+                            ConvertersFabric.GetSingleMediaConverter(item).Convert()).ToList();
 
-                            threadItem.ProfileMediasPreview = previewMedias;
-                        }
-                        catch
-                        {
-                        }
+                        threadItem.ProfileMediasPreview = previewMedias;
+                    }
+                    catch
+                    {
+                    }
 
-                    break;
-                }
+                break;
+            }
             case InstaDirectThreadItemType.Placeholder when SourceObject.Placeholder != null:
                 threadItem.Placeholder = new InstaPlaceholder
                 {

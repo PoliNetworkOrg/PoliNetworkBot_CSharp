@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using InstagramApiSharp.Classes.Models.Business;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
 
 #endregion
 

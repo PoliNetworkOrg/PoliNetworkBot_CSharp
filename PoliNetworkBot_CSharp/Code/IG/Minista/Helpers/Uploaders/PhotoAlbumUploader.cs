@@ -1,9 +1,5 @@
 ﻿#region
 
-using Minista.Helpers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Minista.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 //using static Helper;
 
@@ -24,10 +24,6 @@ internal class PhotoAlbumUploader
     private readonly List<string> _uploaded = new();
     private readonly Dictionary<string, SinglePhotoUploader> _uploads = new();
     private InstaApi instaApi;
-
-    public PhotoAlbumUploader()
-    {
-    }
 
     private string Caption { get; set; }
 

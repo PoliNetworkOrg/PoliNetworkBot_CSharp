@@ -1,5 +1,10 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -7,11 +12,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 using Telegram.Bot.Types.Enums;
 using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 

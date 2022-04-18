@@ -1,9 +1,9 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.ResponseWrappers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
 #endregion
 

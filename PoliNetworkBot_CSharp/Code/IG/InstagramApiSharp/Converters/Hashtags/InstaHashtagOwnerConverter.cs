@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.Classes.Models.Hashtags;
 using InstagramApiSharp.Classes.ResponseWrappers;
-using System;
 
 #endregion
 

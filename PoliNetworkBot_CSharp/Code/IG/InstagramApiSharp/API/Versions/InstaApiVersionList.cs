@@ -1,8 +1,8 @@
 ﻿#region
 
-using InstagramApiSharp.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using InstagramApiSharp.Enums;
 
 #endregion
 
@@ -122,7 +122,7 @@ internal static class InstaApiVersionList
     public static InstaApiVersion GetApiVersion(InstaApiVersionType versionType)
     {
         return (from apiVer in ApiVersions()
-                where apiVer.Key == versionType
-                select apiVer.Value).FirstOrDefault();
+            where apiVer.Key == versionType
+            select apiVer.Value).FirstOrDefault();
     }
 }

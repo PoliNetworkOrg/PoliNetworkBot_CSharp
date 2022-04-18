@@ -1,12 +1,12 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 #endregion
 
@@ -49,8 +49,10 @@ public static class Keyboards
         var subdirectoryEntries = GetDir(id);
         var percorso = Program.UsersConversations[id].GetPath();
         Logger.WriteLine("User " + id + " trying to get path: " + percorso + " SubDir: "
-                         + (subdirectoryEntries != null ? subdirectoryEntries
-                             .Aggregate("", (current, s) => current + s + ";") : "null"));
+                         + (subdirectoryEntries != null
+                             ? subdirectoryEntries
+                                 .Aggregate("", (current, s) => current + s + ";")
+                             : "null"));
         var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
                 { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } }))
             .ToList();

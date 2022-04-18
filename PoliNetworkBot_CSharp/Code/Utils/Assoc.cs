@@ -1,16 +1,15 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net.Cache;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -67,8 +66,8 @@ internal static class Assoc
 
             var languageList = new Language(new Dictionary<string, string>
             {
-                {"it", "Scegli l'entità per il quale stai componendo il messaggio"},
-                {"en", "Choose the entity you are writing this message for"}
+                { "it", "Scegli l'entità per il quale stai componendo il messaggio" },
+                { "en", "Choose the entity you are writing this message for" }
             });
 
             var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
@@ -81,13 +80,13 @@ internal static class Assoc
             }
 
             var hasThisEntityAlreadyReachedItsLimit =
-                CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender, tempDisable: true);
+                CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender, true);
             if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
             {
                 var languageList4 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Spiacente! In questo periodo hai inviato troppi messaggi"},
-                    {"en", "I'm sorry! In this period you have sent too many messages"}
+                    { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
+                    { "en", "I'm sorry! In this period you have sent too many messages" }
                 });
                 await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
                     ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
@@ -96,18 +95,18 @@ internal static class Assoc
 
             var languageList2 = new Language(new Dictionary<string, string>
                 {
-                    {"it", "Data di pubblicazione?"},
-                    {"en", "Date of publication?"}
+                    { "it", "Data di pubblicazione?" },
+                    { "en", "Date of publication?" }
                 }
             );
 
             var opt1 = new Language(new Dictionary<string, string>
-                {{"it", "Metti in coda"}, {"en", "Place in queue"}});
+                { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
                 new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
-                new() {opt1, opt2}
+                new() { opt1, opt2 }
             };
 
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
@@ -135,8 +134,8 @@ internal static class Assoc
                 {
                     var lang4 = new Language(new Dictionary<string, string>
                     {
-                        {"en", "The date you choose is invalid!"},
-                        {"it", "La data che hai scelto non è valida!"}
+                        { "en", "The date you choose is invalid!" },
+                        { "it", "La data che hai scelto non è valida!" }
                     });
                     await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
                         ChatType.Private, e.Message.From.LanguageCode,
@@ -159,10 +158,10 @@ internal static class Assoc
                     break;
 
                 case SuccessQueue.INVALID_OBJECT:
-                    {
-                        await Assoc_ObjectToSendNotValid(sender, e);
-                        return false;
-                    }
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return false;
+                }
 
                 case SuccessQueue.SUCCESS:
                     break;
@@ -183,8 +182,8 @@ internal static class Assoc
 
             var lang3 = new Language(new Dictionary<string, string>
             {
-                {"en", "The message has been submitted correctly"},
-                {"it", "Il messaggio è stato inviato correttamente"}
+                { "en", "The message has been submitted correctly" },
+                { "it", "Il messaggio è stato inviato correttamente" }
             });
             await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
                 ChatType.Private, e.Message.From.LanguageCode,
@@ -452,19 +451,22 @@ internal static class Assoc
             count);
     }
 
-    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender, bool tempDisable)
+    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender,
+        bool tempDisable)
     {
         const int polinetworkEntity = 2;
 
-        return messageFromIdEntity == polinetworkEntity || tempDisable ? false : CheckIfEntityReachedItsMaxLimit2(messageFromIdEntity, sender);
+        return messageFromIdEntity == polinetworkEntity || tempDisable
+            ? false
+            : CheckIfEntityReachedItsMaxLimit2(messageFromIdEntity, sender);
     }
 
     private static bool? CheckIfEntityReachedItsMaxLimit2(long messageFromIdEntity, TelegramBotAbstract sender)
     {
-        string q = "SELECT COUNT(*) " +
-                        "FROM Messages " +
-                        "WHERE Messages.from_id_entity = " + messageFromIdEntity +
-                        " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
+        var q = "SELECT COUNT(*) " +
+                "FROM Messages " +
+                "WHERE Messages.from_id_entity = " + messageFromIdEntity +
+                " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
 
         var dt = Database.ExecuteSelect(q, sender.DbConfig);
 

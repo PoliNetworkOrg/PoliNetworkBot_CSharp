@@ -1,7 +1,7 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json;
 using Telegram.Bot.Types;
 
 #endregion

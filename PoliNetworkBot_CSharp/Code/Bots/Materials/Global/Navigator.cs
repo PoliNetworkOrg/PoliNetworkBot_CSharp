@@ -1,10 +1,10 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
-using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
+using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 
 #endregion
 
@@ -33,10 +33,10 @@ public static class Navigator
     public static bool CourseHandler(Conversation conversation, string messageText)
     {
         foreach (var course in from scuola in ScuoleCorso.Values
-                               where scuola != null
-                               from course in scuola
-                               where messageText == course
-                               select course)
+                 where scuola != null
+                 from course in scuola
+                 where messageText == course
+                 select course)
         {
             conversation.SetCourse(course);
             conversation.SetState(UserState.FOLDER);

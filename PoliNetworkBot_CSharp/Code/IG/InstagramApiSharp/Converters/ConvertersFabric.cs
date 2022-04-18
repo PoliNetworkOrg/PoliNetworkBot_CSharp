@@ -1,5 +1,7 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.Models.Business;
@@ -14,8 +16,6 @@ using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Broadcast;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Discover;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Stories;
-using System;
-using System.Collections.Generic;
 
 #endregion
 

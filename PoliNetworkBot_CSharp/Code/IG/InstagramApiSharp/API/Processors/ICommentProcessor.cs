@@ -1,9 +1,9 @@
 ﻿#region
 
+using System.Threading.Tasks;
 using InstagramApiSharp.Classes;
 using InstagramApiSharp.Classes.Models;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes;
-using System.Threading.Tasks;
 
 #endregion
 

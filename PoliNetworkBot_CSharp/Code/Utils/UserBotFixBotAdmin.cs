@@ -1,12 +1,12 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core.Network.Exceptions;
@@ -66,29 +66,29 @@ internal static class UserBotFixBotAdmin
                     return i > 0;
 
                 case TLDialogs x2:
-                    {
-                        if (x2.Chats != null)
-                            foreach (var x4 in x2.Chats)
-                            {
-                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                    telegramBotAbstract);
-                                await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
-                            }
+                {
+                    if (x2.Chats != null)
+                        foreach (var x4 in x2.Chats)
+                        {
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
+                            await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
+                        }
 
-                        break;
-                    }
+                    break;
+                }
                 case TLDialogsSlice x3:
-                    {
-                        if (x3.Chats != null)
-                            foreach (var x4 in x3.Chats)
-                            {
-                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                    telegramBotAbstract);
-                                await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
-                            }
+                {
+                    if (x3.Chats != null)
+                        foreach (var x4 in x3.Chats)
+                        {
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
+                            await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
+                        }
 
-                        break;
-                    }
+                    break;
+                }
                 default:
                     ;
                     break;
@@ -111,56 +111,56 @@ internal static class UserBotFixBotAdmin
                 return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
 
             case TLChat x5:
+            {
+                var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
+                if (r5 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
+
+                if (r5.Item2 == null) return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
+
+                WaitUntil(r5.Item2);
+                var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
+                if (r6 == null)
                 {
-                    var r5 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                    if (r5 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-
-                    if (r5.Item2 == null) return new Tuple<bool?, string, long>(r5.Item1, x5.Title, x5.Id);
-
-                    WaitUntil(r5.Item2);
-                    var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                    if (r6 == null)
-                    {
-                        ;
-
-                        return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-                    }
-
-                    if (r6.Item2 == null)
-                        return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
                     ;
-                    break;
+
+                    return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
                 }
+
+                if (r6.Item2 == null)
+                    return new Tuple<bool?, string, long>(r6.Item1, x5.Title, x5.Id);
+                ;
+                break;
+            }
             case TLChannel x6 when GlobalVariables.ExcludedChatsForBot.Contains(x6.Id):
                 return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
 
             case TLChannel x6:
+            {
+                var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
+
+                if (r2 == null)
                 {
-                    var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-
-                    if (r2 == null)
-                    {
-                        ;
-
-                        return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                    }
-
-                    if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
-
-                    WaitUntil(r2.Item2);
-                    var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-                    if (r3 == null)
-                    {
-                        ;
-
-                        return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                    }
-
-                    if (r3.Item2 == null)
-                        return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
                     ;
-                    break;
+
+                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
                 }
+
+                if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
+
+                WaitUntil(r2.Item2);
+                var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
+                if (r3 == null)
+                {
+                    ;
+
+                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
+                }
+
+                if (r3.Item2 == null)
+                    return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
+                ;
+                break;
+            }
             case TLChatForbidden chatForbidden:
                 ;
                 break;
@@ -388,13 +388,13 @@ internal static class UserBotFixBotAdmin
                     return r5.MaxId;
 
                 case TLUpdateNewChannelMessage r6:
-                    {
-                        var r7 = r6.Message;
-                        if (r7 is TLMessageService r8)
-                            return r8.Id;
-                        ;
-                        break;
-                    }
+                {
+                    var r7 = r6.Message;
+                    if (r7 is TLMessageService r8)
+                        return r8.Id;
+                    ;
+                    break;
+                }
                 default:
                     ;
                     break;

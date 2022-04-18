@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Objects;
-using System;
 
 #endregion
 

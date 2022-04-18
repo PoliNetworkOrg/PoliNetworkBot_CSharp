@@ -1,12 +1,9 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Objects.WebObject;
-using System.IO;
 using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 #endregion
 
@@ -14,8 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class Web
 {
-
-
     internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
 
     {
@@ -28,7 +23,7 @@ internal class Web
         var receiveStream = response.Content;
         try
         {
-            string s = await receiveStream.ReadAsStringAsync();
+            var s = await receiveStream.ReadAsStringAsync();
 
             return new WebReply(s, HttpStatusCode.OK);
         }

@@ -1,7 +1,7 @@
 ﻿#region
 
-using InstagramApiSharp.API;
 using System;
+using InstagramApiSharp.API;
 
 #endregion
 

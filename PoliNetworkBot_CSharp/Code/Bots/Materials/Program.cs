@@ -1,5 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
@@ -10,15 +19,6 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -318,20 +318,20 @@ public class Program
         switch (callbackdata[0]) // FORMATO: Y o N | ID PERSONA | ID MESSAGGIO (DEL DOC) | fileUniqueID
         {
             case "y":
+            {
+                var nameApprover = callbackQuery.From.FirstName;
+                if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
+
+                await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
+                    "Modification Accepted"); //Mostra un messaggio all'utente
+
+                var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                    callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
+                    ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
+
+                if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
                 {
-                    var nameApprover = callbackQuery.From.FirstName;
-                    if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
-
-                    await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
-                        "Modification Accepted"); //Mostra un messaggio all'utente
-
-                    var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                        callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
-                        ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
-
-                    if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
-                    {
-                        var dict = new Dictionary<string, string>
+                    var dict = new Dictionary<string, string>
                     {
                         {
                             "en", "Can't upload " + callbackQuery.Message.ReplyToMessage.Document.FileName +
@@ -343,37 +343,37 @@ public class Program
                         }
                     };
 
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(
-                            ChannelsForApproval.GetChannel(UsersConversations[FromId].GetCourse()), text,
-                            ChatType.Private,
-                            callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
-                    }
+                    var text = new Language(dict);
+                    await sender.SendTextMessageAsync(
+                        ChannelsForApproval.GetChannel(UsersConversations[FromId].GetCourse()), text,
+                        ChatType.Private,
+                        callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
+                }
 
-                    var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
-                    try
-                    {
-                        var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
-                        //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
-                        Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
-                        await using var fileStream = File.OpenWrite(fileNameWithPath);
-                        var tupleFileStream =
-                            await sender.DownloadFileAsync(callbackQuery?.Message?.ReplyToMessage?.Document);
-                        await tupleFileStream.Item2.CopyToAsync(fileStream);
-                        fileStream.Close();
-                        var dict = new Dictionary<string, string>
+                var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
+                try
+                {
+                    var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
+                    //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
+                    Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
+                    await using var fileStream = File.OpenWrite(fileNameWithPath);
+                    var tupleFileStream =
+                        await sender.DownloadFileAsync(callbackQuery?.Message?.ReplyToMessage?.Document);
+                    await tupleFileStream.Item2.CopyToAsync(fileStream);
+                    fileStream.Close();
+                    var dict = new Dictionary<string, string>
                     {
                         { "en", "File Saved in " + fileOnlyName + "\n" },
                         { "it", "File salvato in " + fileOnlyName + "\n" }
                     };
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                            callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
-                    }
-                    catch (Exception exception)
-                    {
-                        Logger.WriteLine(exception);
-                        var dict = new Dictionary<string, string>
+                    var text = new Language(dict);
+                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                        callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
+                }
+                catch (Exception exception)
+                {
+                    Logger.WriteLine(exception);
+                    var dict = new Dictionary<string, string>
                     {
                         {
                             "en", @"Couldn't save the file. Bot only support files up to 20 MB,
@@ -385,14 +385,14 @@ public class Program
                             "pull request su GitLab per caricarlo o chiedere a un amministratore di farlo per te."
                         }
                     };
-                        var text = new Language(dict);
-                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                            callbackQuery.From.LanguageCode,
-                            ParseMode.Html, null, null);
-                    }
-
-                    GitHandler(callbackQueryEventArgs, sender);
+                    var text = new Language(dict);
+                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                        callbackQuery.From.LanguageCode,
+                        ParseMode.Html, null, null);
                 }
+
+                GitHandler(callbackQueryEventArgs, sender);
+            }
                 break;
 
             case "n":

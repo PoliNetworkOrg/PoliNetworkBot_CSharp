@@ -1,9 +1,9 @@
 ﻿#region
 
+using System;
 using InstagramApiSharp.API.Versions;
 using InstagramApiSharp.Helpers;
 using Newtonsoft.Json;
-using System;
 
 #endregion
 
@@ -83,13 +83,13 @@ public class ApiRequestMessage
     internal string GetMessageStringForChallengeVerificationCodeSend(int Choice = 1)
     {
         return JsonConvert.SerializeObject(new
-        { choice = Choice.ToString(), _csrftoken = "ReplaceCSRF", Guid, DeviceId });
+            { choice = Choice.ToString(), _csrftoken = "ReplaceCSRF", Guid, DeviceId });
     }
 
     internal string GetChallengeVerificationCodeSend(string verify)
     {
         return JsonConvert.SerializeObject(new
-        { security_code = verify, _csrftoken = "ReplaceCSRF", Guid, DeviceId });
+            { security_code = verify, _csrftoken = "ReplaceCSRF", Guid, DeviceId });
     }
 
     internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey, out string deviceid)
