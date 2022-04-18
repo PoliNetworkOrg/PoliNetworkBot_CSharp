@@ -54,27 +54,24 @@ internal static class InviteLinks
     internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender,
         MessageEventArgs messageEventArgs)
     {
-        var successoGenerazione = SuccessoGenerazioneLink.ERRORE;
         var r = await TryGetCurrentInviteLinkAsync(chatId, sender, messageEventArgs);
-        if (string.IsNullOrEmpty(r))
-            try
-            {
-                r = await sender.ExportChatInviteLinkAsync(chatId, null);
-            }
-            catch
-            {
-                // ignored
-            }
-        else
-            successoGenerazione = SuccessoGenerazioneLink.RICICLATO;
+        if (!string.IsNullOrEmpty(r))
+        {
+            return SalvaNuovoLink(r, chatId, sender, SuccessoGenerazioneLink.RICICLATO);
+        }
 
-        if (string.IsNullOrEmpty(r))
-            return new NuovoLink(successoGenerazione);
-        successoGenerazione = SuccessoGenerazioneLink.NUOVO_LINK;
+        try
+        {
+            r = await sender.ExportChatInviteLinkAsync(chatId, null);
+        }
+        catch
+        {
+            // ignored
+        }
 
-        SalvaNuovoLink(r, chatId, sender);
-
-        return new NuovoLink(successoGenerazione, r);
+        return string.IsNullOrEmpty(r)
+            ? new NuovoLink(SuccessoGenerazioneLink.ERRORE)
+            : SalvaNuovoLink(r, chatId, sender, SuccessoGenerazioneLink.NUOVO_LINK);
     }
 
     private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender,
@@ -101,7 +98,7 @@ internal static class InviteLinks
         }
     }
 
-    private static void SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender)
+    private static NuovoLink SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender, SuccessoGenerazioneLink successoGenerazioneLink)
     {
         const string q1 = "UPDATE GroupsTelegram SET link = @link, last_update_link = @lul WHERE id = @id";
         Database.Execute(q1, sender.DbConfig, new Dictionary<string, object>
@@ -110,6 +107,8 @@ internal static class InviteLinks
             { "@lul", GetDateTimeLastUpdateLinkFormattedString(DateTime.Now) },
             { "@id", chatId }
         });
+
+        return new NuovoLink(successoGenerazioneLink, nuovoLink);
     }
 
     public static string GetDateTimeLastUpdateLinkFormattedString(DateTime? lastUpdateLinkTime)

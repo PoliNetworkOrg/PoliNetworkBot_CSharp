@@ -156,7 +156,7 @@ internal static class Groups
             }
 
             const string q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
-            var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
+            DataTable groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
                 new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
                 throw new Exception("No group found with id: " + e.Message.Chat.Id +
