@@ -9,7 +9,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using System;
 using System.Linq;
-using System.Net.Cache;
 using System.Threading.Tasks;
 
 #endregion

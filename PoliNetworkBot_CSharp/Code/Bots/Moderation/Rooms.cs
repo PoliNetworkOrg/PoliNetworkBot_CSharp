@@ -9,7 +9,6 @@ using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Cache;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 

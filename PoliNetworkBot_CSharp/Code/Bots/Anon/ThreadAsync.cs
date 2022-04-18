@@ -7,7 +7,6 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using System;
 using System.Collections.Generic;
-using System.Net.Cache;
 using System.Threading;
 using System.Threading.Tasks;
 
