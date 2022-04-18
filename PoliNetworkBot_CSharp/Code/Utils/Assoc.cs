@@ -81,7 +81,7 @@ internal static class Assoc
             }
 
             var hasThisEntityAlreadyReachedItsLimit =
-                CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender);
+                CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender, tempDisable: true);
             if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
             {
                 var languageList4 = new Language(new Dictionary<string, string>
@@ -452,17 +452,19 @@ internal static class Assoc
             count);
     }
 
-    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender)
+    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender, bool tempDisable)
     {
-        if (messageFromIdEntity == 2)
-            return false;
+        const int polinetworkEntity = 2;
 
-        return false; //todo: remove this line
+        return messageFromIdEntity == polinetworkEntity || tempDisable ? false : CheckIfEntityReachedItsMaxLimit2(messageFromIdEntity, sender);
+    }
 
+    private static bool? CheckIfEntityReachedItsMaxLimit2(long messageFromIdEntity, TelegramBotAbstract sender)
+    {
         string q = "SELECT COUNT(*) " +
-                "FROM Messages " +
-                "WHERE Messages.from_id_entity = " + messageFromIdEntity +
-                " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
+                        "FROM Messages " +
+                        "WHERE Messages.from_id_entity = " + messageFromIdEntity +
+                        " AND ((NOW() - interval 30 day) <= (Messages.sent_date)) ";
 
         var dt = Database.ExecuteSelect(q, sender.DbConfig);
 
@@ -493,7 +495,7 @@ internal static class Assoc
     public static async Task<List<string>> GetAssocList()
     {
         var url = "https://www.polimi.it/studenti-iscritti/rappresentanti-e-associazioni/";
-        var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var webReply = await Web.DownloadHtmlAsync(url);
         if (webReply == null || !webReply.IsValid()) return null;
 
         // parse the html document

@@ -12,7 +12,7 @@ public static class HashUtils
     public static string GetHashOf(string message)
     {
         var bytes = Encoding.Unicode.GetBytes(message);
-        var hash = ByteArrayToString(new MD5CryptoServiceProvider().ComputeHash(bytes));
+        var hash = ByteArrayToString(MD5.Create().ComputeHash(bytes));
         return hash;
     }
 

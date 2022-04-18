@@ -82,7 +82,7 @@ internal class ThreadAsync
             var randomstring = GenerateRandomString(30);
             urlFinal += "&random=" + randomstring;
 
-            var x = await Web.DownloadHtmlAsync(urlFinal, RequestCacheLevel.NoCacheNoStore);
+            var x = await Web.DownloadHtmlAsync(urlFinal);
             if (x == null || x.IsValid() == false) return;
 
             var data = x.GetData();

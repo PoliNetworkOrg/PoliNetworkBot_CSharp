@@ -1091,7 +1091,6 @@ public class TelegramBotAbstract
                             throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
                     }
 
-                    return false;
                 }
 
             case BotTypeApi.USER_BOT:

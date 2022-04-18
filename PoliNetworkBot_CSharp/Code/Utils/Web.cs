@@ -4,6 +4,7 @@ using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,31 +14,23 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class Web
 {
-#pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
 
-    internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress, RequestCacheLevel requestCacheLevel)
-#pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
+
+    internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
+
     {
-        var request = (HttpWebRequest)WebRequest.Create(urlAddress);
-        request.CachePolicy = new RequestCachePolicy(requestCacheLevel);
-        var response = (HttpWebResponse)request.GetResponse();
+        HttpClient httpClient = new();
+        var response = await httpClient.GetAsync(urlAddress);
 
         if (response.StatusCode != HttpStatusCode.OK)
             return new WebReply(null, response.StatusCode);
 
-        var receiveStream = response.GetResponseStream();
+        var receiveStream = response.Content;
         try
         {
-            var readStream = string.IsNullOrWhiteSpace(response.CharacterSet)
-                ? new StreamReader(receiveStream)
-                : new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+            string s = await receiveStream.ReadAsStringAsync();
 
-            var data = await readStream.ReadToEndAsync();
-
-            response.Close();
-            readStream.Close();
-
-            return new WebReply(data, HttpStatusCode.OK);
+            return new WebReply(s, HttpStatusCode.OK);
         }
         catch
         {

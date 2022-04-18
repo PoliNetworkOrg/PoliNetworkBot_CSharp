@@ -24,7 +24,7 @@ public static class PemKeyUtils
     private const string pemp8footer = "-----END PRIVATE KEY-----";
     private const string pemp8encheader = "-----BEGIN ENCRYPTED PRIVATE KEY-----";
     private const string pemp8encfooter = "-----END ENCRYPTED PRIVATE KEY-----";
-    private const bool Verbose = false;
+    private const bool Verbose = true;
 
     public static RSACryptoServiceProvider GetRsaProviderFromPemString(string pemstr)
     {
@@ -448,7 +448,7 @@ public static class PemKeyUtils
         Array.Copy(salt, 0, data00, psbytes.Length, salt.Length); //concatenate the salt bytes
 
         // ---- do multi-hashing and contatenate results  D1, D2 ...  into keymaterial bytes ----
-        MD5 md5 = new MD5CryptoServiceProvider();
+        MD5 md5 = MD5.Create();
         byte[] result = null;
         var hashtarget = new byte[hashlength + data00.Length]; //fixed length initial hashtarget
 

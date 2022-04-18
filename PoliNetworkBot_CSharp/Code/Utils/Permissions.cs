@@ -31,7 +31,7 @@ internal class Permissions
     private static async Task<bool> HeadAdminCheck(User messageFrom)
     {
         const string url = "https://polinetwork.org/en/learnmore/about_us/";
-        var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var webReply = await Web.DownloadHtmlAsync(url);
         if (webReply == null || !webReply.IsValid()) return false;
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());

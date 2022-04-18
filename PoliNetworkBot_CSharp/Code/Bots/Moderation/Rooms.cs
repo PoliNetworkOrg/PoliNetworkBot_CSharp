@@ -306,7 +306,7 @@ internal static class Rooms
                   "RicercaAvanzataAuleVO___soloPreseElettriche_default=N&spazi___model___formbean___" +
                   "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
-        var webReply = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var webReply = await Web.DownloadHtmlAsync(url);
         if (webReply == null || !webReply.IsValid()) return; //todo: notify user that download failed
 
         ;
@@ -699,7 +699,7 @@ internal static class Rooms
                   "&giorno_year=" + year +
                   "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&evn_visualizza=";
 
-        var html = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var html = await Web.DownloadHtmlAsync(url);
         if (html.IsValid() == false) return null;
 
         var doc = new HtmlDocument();

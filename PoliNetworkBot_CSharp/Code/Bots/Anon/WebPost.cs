@@ -140,7 +140,7 @@ internal class WebPost
     {
         var url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + postid + "&password=" +
                   ConfigAnon.password + "&seen=Y";
-        var x = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var x = await Web.DownloadHtmlAsync(url);
         seen = 'Y';
     }
 
@@ -150,7 +150,7 @@ internal class WebPost
         if (x.authorId == null) return false;
         var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
                   ConfigAnon.password + "&approved=" + approved;
-        var x2 = await Web.DownloadHtmlAsync(url, RequestCacheLevel.NoCacheNoStore);
+        var x2 = await Web.DownloadHtmlAsync(url);
         ThreadAsync.dictionary_webpost[x.authorId.Value].approved = approved;
         ThreadAsync.WriteDict();
         return true;
