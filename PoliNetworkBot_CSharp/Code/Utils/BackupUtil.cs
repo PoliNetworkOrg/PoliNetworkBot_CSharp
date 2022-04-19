@@ -22,6 +22,8 @@ internal class BackupUtil
         try
         {
             MutableTuple<List<string>, Dictionary<string, DataTable>> db = new(null, null);
+            db.Item1 = new List<string>();
+            db.Item2 = new Dictionary<string, DataTable>();
 
             string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
@@ -34,12 +36,10 @@ internal class BackupUtil
                     {
                         tableNames.Add(row);
                     }
-                    List<string> tableNames2 = new();
-                    tableNames2.AddRange(tableNames.Where(row => row != null && row.ItemArray != null && row.ItemArray.Length > 0 && row.ItemArray[0] != null).Select(row => row.ItemArray[0].ToString()));
 
-                    db.Item1 = tableNames2;
+                    db.Item1.AddRange(tableNames.Where(row => row != null && row.ItemArray != null && row.ItemArray.Length > 0 && row.ItemArray[0] != null).Select(row => row.ItemArray[0].ToString()));
 
-                    foreach (string tableName in tableNames2)
+                    foreach (string tableName in db.Item1)
                     {
                         if (string.IsNullOrEmpty(tableName) == false)
                         {
