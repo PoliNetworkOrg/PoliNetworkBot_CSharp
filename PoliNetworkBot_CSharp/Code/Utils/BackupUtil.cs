@@ -23,7 +23,7 @@ internal class BackupUtil
         {
             MutableTuple<List<string>, Dictionary<string, DataTable>> db = new(null, null);
 
-            string q = "SELECT table_name FROM information_schema.tables;";
+            string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
             if (r != null)
             {
