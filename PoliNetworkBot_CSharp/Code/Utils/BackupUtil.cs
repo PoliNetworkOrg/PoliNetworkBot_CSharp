@@ -1,7 +1,6 @@
 ﻿#region
 
 using PoliNetworkBot_CSharp.Code.Objects;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -23,17 +22,16 @@ internal class BackupUtil
         {
             DB_Backup db = new();
 
-
             const string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
             if (r == null)
                 return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 1");
-            
+
             try
             {
                 var tableNames = r.Rows.Cast<DataRow>().ToList();
 
-                db.tableNames.AddRange(tableNames.Where(row => row is { ItemArray: { Length: > 0 } } && row.ItemArray[0] != null).Select(row => row.ItemArray[0]?.ToString()));
+                db.tableNames.AddRange(tableNames.Where(row => row is { ItemArray.Length: > 0 } && row.ItemArray[0] != null).Select(row => row.ItemArray[0]?.ToString()));
 
                 foreach (var tableName in db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
                 {
