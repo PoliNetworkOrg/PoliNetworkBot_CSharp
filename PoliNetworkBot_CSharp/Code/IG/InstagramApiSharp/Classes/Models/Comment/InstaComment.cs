@@ -28,7 +28,7 @@ public class InstaComment : INotifyPropertyChanged
 
     public InstaContentType ContentType { get; set; }
     public InstaUserShort User { get; set; }
-    public long Pk { get; }
+    public long Pk { get; set; }
     public string Text { get; set; }
 
     public bool DidReportAsSpam { get; set; }
