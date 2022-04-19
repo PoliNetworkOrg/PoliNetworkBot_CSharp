@@ -24,44 +24,37 @@ internal class BackupUtil
             DB_Backup db = new();
 
 
-            string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
+            const string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
-            if (r != null)
+            if (r == null)
+                return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 1");
+            
+            try
             {
-                try
+                var tableNames = r.Rows.Cast<DataRow>().ToList();
+
+                db.tableNames.AddRange(tableNames.Where(row => row is { ItemArray: { Length: > 0 } } && row.ItemArray[0] != null).Select(row => row.ItemArray[0]?.ToString()));
+
+                foreach (var tableName in db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
                 {
-                    List<DataRow> tableNames = new();
-                    foreach (DataRow row in r.Rows)
+                    try
                     {
-                        tableNames.Add(row);
-                    }
-
-                    db.tableNames.AddRange(tableNames.Where(row => row != null && row.ItemArray != null && row.ItemArray.Length > 0 && row.ItemArray[0] != null).Select(row => row.ItemArray[0].ToString()));
-
-                    foreach (string tableName in db.tableNames)
-                    {
-                        if (string.IsNullOrEmpty(tableName) == false)
+                        var q2 = "SELECT * FROM " + tableName;
+                        var r2 = Utils.Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
+                        if (r2 != null)
                         {
-                            try
-                            {
-                                string q2 = "SELECT * FROM " + tableName;
-                                var r2 = Utils.Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
-                                if (r2 != null)
-                                {
-                                    db.tables[tableName] = r2;
-                                }
-                            }
-                            catch
-                            {
-                                ;
-                            }
+                            db.tables[tableName] = r2;
                         }
                     }
+                    catch
+                    {
+                        ;
+                    }
                 }
-                catch
-                {
-                    ;
-                }
+            }
+            catch
+            {
+                ;
             }
 
             return Newtonsoft.Json.JsonConvert.SerializeObject(db);
@@ -71,6 +64,6 @@ internal class BackupUtil
             ;
         }
 
-        return Newtonsoft.Json.JsonConvert.SerializeObject("Error");
+        return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 2");
     }
 }
