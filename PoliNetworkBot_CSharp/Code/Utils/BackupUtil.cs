@@ -21,9 +21,8 @@ internal class BackupUtil
     {
         try
         {
-            MutableTuple<List<string>, Dictionary<string, DataTable>> db = new(null, null);
-            db.Item1 = new List<string>();
-            db.Item2 = new Dictionary<string, DataTable>();
+            DB_Backup db = new();
+
 
             string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
@@ -37,9 +36,9 @@ internal class BackupUtil
                         tableNames.Add(row);
                     }
 
-                    db.Item1.AddRange(tableNames.Where(row => row != null && row.ItemArray != null && row.ItemArray.Length > 0 && row.ItemArray[0] != null).Select(row => row.ItemArray[0].ToString()));
+                    db.tableNames.AddRange(tableNames.Where(row => row != null && row.ItemArray != null && row.ItemArray.Length > 0 && row.ItemArray[0] != null).Select(row => row.ItemArray[0].ToString()));
 
-                    foreach (string tableName in db.Item1)
+                    foreach (string tableName in db.tableNames)
                     {
                         if (string.IsNullOrEmpty(tableName) == false)
                         {
@@ -49,7 +48,7 @@ internal class BackupUtil
                                 var r2 = Utils.Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
                                 if (r2 != null)
                                 {
-                                    db.Item2[tableName] = r2;
+                                    db.tables[tableName] = r2;
                                 }
                             }
                             catch
