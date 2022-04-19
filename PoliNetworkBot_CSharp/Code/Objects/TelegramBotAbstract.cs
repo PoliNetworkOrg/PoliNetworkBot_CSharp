@@ -1,5 +1,11 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,12 +13,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Config;
-using PoliNetworkBot_CSharp.Code.Data;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
-using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -79,9 +79,9 @@ public class TelegramBotAbstract
             switch (_isbot)
             {
                 case BotTypeApi.REAL_BOT:
-                {
-                    await _botClient.LeaveChatAsync(e.Message.Chat.Id);
-                }
+                    {
+                        await _botClient.LeaveChatAsync(e.Message.Chat.Id);
+                    }
                     break;
 
                 case BotTypeApi.USER_BOT:
@@ -113,33 +113,33 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-                try
                 {
-                    var users = new TLVector<TLAbsInputUser>();
-                    if (userId.StartsWith("@"))
+                    try
                     {
-                        var u = await UserbotPeer.GetPeerUserWithAccessHash(userId[1..], UserbotClient);
-                        TLAbsInputUser input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
-                        users.Add(input2);
+                        var users = new TLVector<TLAbsInputUser>();
+                        if (userId.StartsWith("@"))
+                        {
+                            var u = await UserbotPeer.GetPeerUserWithAccessHash(userId[1..], UserbotClient);
+                            TLAbsInputUser input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
+                            users.Add(input2);
+                        }
+                        else
+                        {
+                            users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userId)));
+                        }
+
+                        var tLInputChannel = new TLInputChannel { ChannelId = channel.Id };
+                        if (channel.AccessHash != null)
+                            tLInputChannel.AccessHash = channel.AccessHash.Value;
+
+                        var r = await UserbotClient.ChannelsInviteToChannel(tLInputChannel, users);
+                        return r;
                     }
-                    else
+                    catch (Exception e)
                     {
-                        users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userId)));
+                        Console.WriteLine(e);
                     }
-
-                    var tLInputChannel = new TLInputChannel { ChannelId = channel.Id };
-                    if (channel.AccessHash != null)
-                        tLInputChannel.AccessHash = channel.AccessHash.Value;
-
-                    var r = await UserbotClient.ChannelsInviteToChannel(tLInputChannel, users);
-                    return r;
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
@@ -157,15 +157,15 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-                var r = await UserbotClient.UpgradeGroupIntoSupergroup(chatID);
-                if (r is TLUpdates { Chats.Count: 2 } r2)
                 {
-                    var c1 = r2.Chats[1];
-                    if (c1 is TLChannel c2) return new TLChannelClass(c2);
-                    ;
+                    var r = await UserbotClient.UpgradeGroupIntoSupergroup(chatID);
+                    if (r is TLUpdates { Chats.Count: 2 } r2)
+                    {
+                        var c1 = r2.Chats[1];
+                        if (c1 is TLChannel c2) return new TLChannelClass(c2);
+                        ;
+                    }
                 }
-            }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
@@ -183,10 +183,10 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-                var r = await UserbotClient.Channels_EditDescription(channel, desc);
-                return r;
-            }
+                {
+                    var r = await UserbotClient.Channels_EditDescription(channel, desc);
+                    return r;
+                }
 
             case BotTypeApi.DISGUISED_BOT:
                 break;
@@ -203,15 +203,15 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var x = await _botClient.GetMeAsync();
-                var u1 = x.Username;
-                if (u1 != null && u1.StartsWith("@"))
-                    u1 = u1[1..];
+                {
+                    var x = await _botClient.GetMeAsync();
+                    var u1 = x.Username;
+                    if (u1 != null && u1.StartsWith("@"))
+                        u1 = u1[1..];
 
-                username = u1;
-                return username;
-            }
+                    username = u1;
+                    return username;
+                }
 
             case BotTypeApi.USER_BOT:
                 break;
@@ -229,31 +229,31 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                try
                 {
-                    return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), e);
-                }
-                catch (Exception e2)
-                {
-                    e = e2;
-                }
+                    try
+                    {
+                        return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), e);
+                    }
+                    catch (Exception e2)
+                    {
+                        e = e2;
+                    }
 
-                if (chatId <= 0) return new Tuple<Chat, Exception>(null, e);
-                await Task.Delay(100);
+                    if (chatId <= 0) return new Tuple<Chat, Exception>(null, e);
+                    await Task.Delay(100);
 
-                var chatidS = chatId.ToString();
-                chatidS = "-100" + chatidS;
-                var chatidSl = Convert.ToInt64(chatidS);
-                try
-                {
-                    return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatidSl), e);
+                    var chatidS = chatId.ToString();
+                    chatidS = "-100" + chatidS;
+                    var chatidSl = Convert.ToInt64(chatidS);
+                    try
+                    {
+                        return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatidSl), e);
+                    }
+                    catch (Exception e3)
+                    {
+                        return new Tuple<Chat, Exception>(null, e3);
+                    }
                 }
-                catch (Exception e3)
-                {
-                    return new Tuple<Chat, Exception>(null, e3);
-                }
-            }
             case BotTypeApi.USER_BOT:
                 break;
 
@@ -287,28 +287,28 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                try
                 {
-                    await _botClient.DeleteMessageAsync(chatId, (int)messageId);
-                }
-                catch
-                {
-                    return false;
-                }
+                    try
+                    {
+                        await _botClient.DeleteMessageAsync(chatId, (int)messageId);
+                    }
+                    catch
+                    {
+                        return false;
+                    }
 
-                return true;
-            }
+                    return true;
+                }
 
             case BotTypeApi.USER_BOT:
-            {
-                var peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
+                {
+                    var peer = UserbotPeer.GetPeerChannelFromIdAndType(chatId, accessHash);
 
-                var r1 = await UserbotClient.ChannelsDeleteMessageAsync(peer,
-                    new TLVector<int> { (int)messageId });
+                    var r1 = await UserbotClient.ChannelsDeleteMessageAsync(peer,
+                        new TLVector<int> { (int)messageId });
 
-                return r1 != null;
-            }
+                    return r1 != null;
+                }
             case BotTypeApi.DISGUISED_BOT:
                 break;
 
@@ -324,40 +324,40 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                try
                 {
-                    await _botClient.PromoteChatMemberAsync(chatId, userIdInput.UserId, true, true, true, true,
-                        true, true, true, true);
-                }
-                catch (Exception e)
-                {
-                    await NotifyUtil.NotifyOwners(e, this, null);
-                    return false;
-                }
+                    try
+                    {
+                        await _botClient.PromoteChatMemberAsync(chatId, userIdInput.UserId, true, true, true, true,
+                            true, true, true, true);
+                    }
+                    catch (Exception e)
+                    {
+                        await NotifyUtil.NotifyOwners(e, this, null);
+                        return false;
+                    }
 
-                return true;
-            }
+                    return true;
+                }
 
             case BotTypeApi.USER_BOT:
-            {
-                try
                 {
-                    TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
+                    try
+                    {
+                        TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
 
-                    await UserbotClient.ChannelsEditAdmin(
-                        UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
-                        userIdInput,
-                        role);
-                }
-                catch (Exception e)
-                {
-                    await NotifyUtil.NotifyOwners(e, this, null);
-                    return false;
-                }
+                        await UserbotClient.ChannelsEditAdmin(
+                            UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
+                            userIdInput,
+                            role);
+                    }
+                    catch (Exception e)
+                    {
+                        await NotifyUtil.NotifyOwners(e, this, null);
+                        return false;
+                    }
 
-                break;
-            }
+                    break;
+                }
 
             case BotTypeApi.DISGUISED_BOT:
                 break;
@@ -371,12 +371,12 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var userBot = FindFirstUserBot();
-                if (userBot == null)
-                    return new UserIdFound(null, "BotApiDoesNotAllowThat");
-                return await userBot.GetIdFromUsernameAsync(target);
-            }
+                {
+                    var userBot = FindFirstUserBot();
+                    if (userBot == null)
+                        return new UserIdFound(null, "BotApiDoesNotAllowThat");
+                    return await userBot.GetIdFromUsernameAsync(target);
+                }
 
             case BotTypeApi.USER_BOT:
                 var r = await UserbotClient.ResolveUsernameAsync(target);
@@ -424,10 +424,10 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var m = await _botClient.ForwardMessageAsync(idChatMessageTo, idChatMessageFrom, messageId);
-                return new MessageSentResult(true, m, m.Chat.Type);
-            }
+                {
+                    var m = await _botClient.ForwardMessageAsync(idChatMessageTo, idChatMessageFrom, messageId);
+                    return new MessageSentResult(true, m, m.Chat.Type);
+                }
             case BotTypeApi.USER_BOT:
                 break;
 
@@ -444,41 +444,41 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                switch (chatType)
                 {
-                    case ChatType.Supergroup:
+                    switch (chatType)
                     {
-                        if (userId != null)
-                            await _botClient.RestrictChatMemberAsync(chatId, userId.Value, permissions,
-                                untilDate);
+                        case ChatType.Supergroup:
+                            {
+                                if (userId != null)
+                                    await _botClient.RestrictChatMemberAsync(chatId, userId.Value, permissions,
+                                        untilDate);
 
-                        break;
+                                break;
+                            }
+
+                        case ChatType.Group:
+                            {
+                                Logger.WriteLine("Can't restrict a user in a group");
+                                break;
+                            }
+                        case ChatType.Private:
+                            break;
+
+                        case ChatType.Channel:
+                            break;
+
+                        case ChatType.Sender:
+                            break;
+
+                        case null:
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(chatType), chatType, null);
                     }
 
-                    case ChatType.Group:
-                    {
-                        Logger.WriteLine("Can't restrict a user in a group");
-                        break;
-                    }
-                    case ChatType.Private:
-                        break;
-
-                    case ChatType.Channel:
-                        break;
-
-                    case ChatType.Sender:
-                        break;
-
-                    case null:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(chatType), chatType, null);
+                    break;
                 }
-
-                break;
-            }
             case BotTypeApi.USER_BOT:
                 break;
 
@@ -495,12 +495,12 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var stream = new MemoryStream();
-                var f = await _botClient.GetInfoAndDownloadFileAsync(d.FileId, stream);
+                {
+                    var stream = new MemoryStream();
+                    var f = await _botClient.GetInfoAndDownloadFileAsync(d.FileId, stream);
 
-                return new Tuple<File, Stream>(f, stream);
-            }
+                    return new Tuple<File, Stream>(f, stream);
+                }
             case BotTypeApi.USER_BOT:
                 break;
 
@@ -519,10 +519,10 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                await _botClient.EditMessageTextAsync(chatId, messageId, newText);
-                return;
-            }
+                {
+                    await _botClient.EditMessageTextAsync(chatId, messageId, newText);
+                    return;
+                }
 
             case BotTypeApi.USER_BOT:
                 break;
@@ -540,10 +540,10 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                await _botClient.EditMessageReplyMarkupAsync(chatId, (int)messageId, replyMarkup);
-                return;
-            }
+                {
+                    await _botClient.EditMessageReplyMarkupAsync(chatId, (int)messageId, replyMarkup);
+                    return;
+                }
 
             case BotTypeApi.USER_BOT:
                 break;
@@ -653,105 +653,105 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var messageType = genericFile.GetMediaBotType();
-                switch (messageType)
                 {
-                    case MessageType.Unknown:
-                        break;
+                    var messageType = genericFile.GetMediaBotType();
+                    switch (messageType)
+                    {
+                        case MessageType.Unknown:
+                            break;
 
-                    case MessageType.Text:
-                        break;
+                        case MessageType.Text:
+                            break;
 
-                    case MessageType.Photo:
-                        break;
+                        case MessageType.Photo:
+                            break;
 
-                    case MessageType.Audio:
-                        break;
+                        case MessageType.Audio:
+                            break;
 
-                    case MessageType.Video:
-                        break;
+                        case MessageType.Video:
+                            break;
 
-                    case MessageType.Voice:
-                        break;
+                        case MessageType.Voice:
+                            break;
 
-                    case MessageType.Document:
-                        break;
+                        case MessageType.Document:
+                            break;
 
-                    case MessageType.Sticker:
-                        break;
+                        case MessageType.Sticker:
+                            break;
 
-                    case MessageType.Location:
-                        break;
+                        case MessageType.Location:
+                            break;
 
-                    case MessageType.Contact:
-                        break;
+                        case MessageType.Contact:
+                            break;
 
-                    case MessageType.Venue:
-                        break;
+                        case MessageType.Venue:
+                            break;
 
-                    case MessageType.Game:
-                        break;
+                        case MessageType.Game:
+                            break;
 
-                    case MessageType.VideoNote:
-                        break;
+                        case MessageType.VideoNote:
+                            break;
 
-                    case MessageType.Invoice:
-                        break;
+                        case MessageType.Invoice:
+                            break;
 
-                    case MessageType.SuccessfulPayment:
-                        break;
+                        case MessageType.SuccessfulPayment:
+                            break;
 
-                    case MessageType.WebsiteConnected:
-                        break;
+                        case MessageType.WebsiteConnected:
+                            break;
 
-                    case MessageType.ChatMembersAdded:
-                        break;
+                        case MessageType.ChatMembersAdded:
+                            break;
 
-                    case MessageType.ChatMemberLeft:
-                        break;
+                        case MessageType.ChatMemberLeft:
+                            break;
 
-                    case MessageType.ChatTitleChanged:
-                        break;
+                        case MessageType.ChatTitleChanged:
+                            break;
 
-                    case MessageType.ChatPhotoChanged:
-                        break;
+                        case MessageType.ChatPhotoChanged:
+                            break;
 
-                    case MessageType.MessagePinned:
-                        break;
+                        case MessageType.MessagePinned:
+                            break;
 
-                    case MessageType.ChatPhotoDeleted:
-                        break;
+                        case MessageType.ChatPhotoDeleted:
+                            break;
 
-                    case MessageType.GroupCreated:
-                        break;
+                        case MessageType.GroupCreated:
+                            break;
 
-                    case MessageType.SupergroupCreated:
-                        break;
+                        case MessageType.SupergroupCreated:
+                            break;
 
-                    case MessageType.ChannelCreated:
-                        break;
+                        case MessageType.ChannelCreated:
+                            break;
 
-                    case MessageType.MigratedToSupergroup:
-                        break;
+                        case MessageType.MigratedToSupergroup:
+                            break;
 
-                    case MessageType.MigratedFromGroup:
-                        break;
+                        case MessageType.MigratedFromGroup:
+                            break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
                 }
-
-                break;
-            }
             case BotTypeApi.USER_BOT:
-            {
-                var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
-                var media2 = await genericFile.GetMediaTl(UserbotClient);
+                {
+                    var peer = UserbotPeer.GetPeerFromIdAndType(chatid, chatType);
+                    var media2 = await genericFile.GetMediaTl(UserbotClient);
 
-                var r = await media2.SendMedia(peer, UserbotClient, caption, username, lang);
-                return r != null;
-            }
+                    var r = await media2.SendMedia(peer, UserbotClient, caption, username, lang);
+                    return r != null;
+                }
             case BotTypeApi.DISGUISED_BOT:
                 break;
 
@@ -771,111 +771,111 @@ public class TelegramBotAbstract
                 break;
 
             case MessageType.Text:
-            {
-                switch (_isbot)
                 {
-                    case BotTypeApi.REAL_BOT:
+                    switch (_isbot)
                     {
-                        var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
-                            ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                        return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                        case BotTypeApi.REAL_BOT:
+                            {
+                                var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                            }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
                     }
-                    case BotTypeApi.USER_BOT:
-                        break;
 
-                    case BotTypeApi.DISGUISED_BOT:
-                        break;
+                    break;
                 }
-
-                break;
-            }
             case MessageType.Photo:
-            {
-                switch (_isbot)
                 {
-                    case BotTypeApi.REAL_BOT:
+                    switch (_isbot)
                     {
-                        var m1 = await _botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message),
-                            message.Caption,
-                            ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                        return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                        case BotTypeApi.REAL_BOT:
+                            {
+                                var m1 = await _botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message),
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                            }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
                     }
-                    case BotTypeApi.USER_BOT:
-                        break;
 
-                    case BotTypeApi.DISGUISED_BOT:
-                        break;
+                    break;
                 }
-
-                break;
-            }
             case MessageType.Audio:
                 break;
 
             case MessageType.Video:
-            {
-                switch (_isbot)
                 {
-                    case BotTypeApi.REAL_BOT:
+                    switch (_isbot)
                     {
-                        if (message.Video == null) return null;
-                        var m1 = await _botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message),
-                            message.Video.Duration, message.Video.Width, message.Video.Height, null,
-                            message.Caption,
-                            ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                        return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                        case BotTypeApi.REAL_BOT:
+                            {
+                                if (message.Video == null) return null;
+                                var m1 = await _botClient.SendVideoAsync(chatIdToSend, InputOnlineFile(message),
+                                    message.Video.Duration, message.Video.Width, message.Video.Height, null,
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                            }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
                     }
-                    case BotTypeApi.USER_BOT:
-                        break;
 
-                    case BotTypeApi.DISGUISED_BOT:
-                        break;
+                    break;
                 }
-
-                break;
-            }
             case MessageType.Voice:
                 break;
 
             case MessageType.Document:
-            {
-                switch (_isbot)
                 {
-                    case BotTypeApi.REAL_BOT:
+                    switch (_isbot)
                     {
-                        var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), null,
-                            message.Caption,
-                            ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                        return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                        case BotTypeApi.REAL_BOT:
+                            {
+                                var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), null,
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                            }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
                     }
-                    case BotTypeApi.USER_BOT:
-                        break;
 
-                    case BotTypeApi.DISGUISED_BOT:
-                        break;
+                    break;
                 }
-
-                break;
-            }
             case MessageType.Sticker:
-            {
-                switch (_isbot)
                 {
-                    case BotTypeApi.REAL_BOT:
+                    switch (_isbot)
                     {
-                        var m1 = await _botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message),
-                            replyToMessageId: messageIdToReplyToLong);
-                        return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                        case BotTypeApi.REAL_BOT:
+                            {
+                                var m1 = await _botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message),
+                                    replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                            }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
                     }
-                    case BotTypeApi.USER_BOT:
-                        break;
 
-                    case BotTypeApi.DISGUISED_BOT:
-                        break;
+                    break;
                 }
-
-                break;
-            }
             case MessageType.Location:
                 break;
 
@@ -948,30 +948,30 @@ public class TelegramBotAbstract
                 break;
 
             case MessageType.Photo:
-            {
-                var idMax = FindMax(message.Photo);
-                return message.Photo != null
-                    ? idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId)
-                    : null;
-            }
+                {
+                    var idMax = FindMax(message.Photo);
+                    return message.Photo != null
+                        ? idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId)
+                        : null;
+                }
             case MessageType.Audio:
                 break;
 
             case MessageType.Video:
-            {
-                return message.Video != null ? new InputOnlineFile(message.Video.FileId) : null;
-            }
+                {
+                    return message.Video != null ? new InputOnlineFile(message.Video.FileId) : null;
+                }
             case MessageType.Voice:
                 break;
 
             case MessageType.Document:
-            {
-                return message.Document != null ? new InputOnlineFile(message.Document.FileId) : null;
-            }
+                {
+                    return message.Document != null ? new InputOnlineFile(message.Document.FileId) : null;
+                }
             case MessageType.Sticker:
-            {
-                return message.Sticker != null ? new InputOnlineFile(message.Sticker.FileId) : null;
-            }
+                {
+                    return message.Sticker != null ? new InputOnlineFile(message.Sticker.FileId) : null;
+                }
             case MessageType.Location:
                 break;
 
@@ -1058,69 +1058,69 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var inputOnlineFile = documentInput.GetOnlineFile();
-                var userId = peer.GetUserId();
-                if (userId == null)
-                    return false;
-
-                switch (textAsCaption)
                 {
-                    case TextAsCaption.AS_CAPTION:
-                    {
-                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                            text.Select(lang));
-                        return true;
-                    }
+                    var inputOnlineFile = documentInput.GetOnlineFile();
+                    var userId = peer.GetUserId();
+                    if (userId == null)
+                        return false;
 
-                    case TextAsCaption.BEFORE_FILE:
+                    switch (textAsCaption)
                     {
-                        _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
-                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
-                        return true;
-                    }
+                        case TextAsCaption.AS_CAPTION:
+                            {
+                                _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                    text.Select(lang));
+                                return true;
+                            }
 
-                    case TextAsCaption.AFTER_FILE:
-                    {
-                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
-                        _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
-                        return true;
-                    }
+                        case TextAsCaption.BEFORE_FILE:
+                            {
+                                _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
+                                _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                                return true;
+                            }
 
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                        case TextAsCaption.AFTER_FILE:
+                            {
+                                _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                                _ = await _botClient.SendTextMessageAsync(userId, text.Select(lang));
+                                return true;
+                            }
+
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                    }
                 }
-            }
 
             case BotTypeApi.USER_BOT:
                 switch (textAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
-                    {
-                        var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
-                        var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, text, username, lang);
-                        return r != null;
-                    }
+                        {
+                            var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, text, username, lang);
+                            return r != null;
+                        }
 
                     case TextAsCaption.BEFORE_FILE:
-                    {
-                        var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
-                            username,
-                            new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
-                        var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
-                        var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
-                        return r != null && r2 != null;
-                    }
+                        {
+                            var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
+                                username,
+                                new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
+                            var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
+                            return r != null && r2 != null;
+                        }
 
                     case TextAsCaption.AFTER_FILE:
-                    {
-                        var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
-                        var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
-                        var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
-                            username,
-                            new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
-                        return r != null && r2 != null;
-                    }
+                        {
+                            var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
+                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang);
+                            var r2 = await SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
+                                username,
+                                new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink);
+                            return r != null && r2 != null;
+                        }
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
@@ -1147,26 +1147,26 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
-            {
-                var c = await UserbotClient.ResolveUsernameAsync(from);
-                var c2 = c.Peer;
-                if (c2 == null)
+                {
+                    var c = await UserbotClient.ResolveUsernameAsync(from);
+                    var c2 = c.Peer;
+                    if (c2 == null)
+                        return false;
+
+                    var c5 = c.Chats[0];
+                    if (c5 is not TLChannel c6) return false;
+                    if (c2 is not TLPeerChannel) return false;
+                    try
+                    {
+                        return await UserbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
+                    }
+                    catch (Exception e2)
+                    {
+                        Logger.WriteLine(e2);
+                    }
+
                     return false;
-
-                var c5 = c.Chats[0];
-                if (c5 is not TLChannel c6) return false;
-                if (c2 is not TLPeerChannel) return false;
-                try
-                {
-                    return await UserbotClient.ChannelsUpdateUsername(c6.Id, c6.AccessHash, to);
                 }
-                catch (Exception e2)
-                {
-                    Logger.WriteLine(e2);
-                }
-
-                return false;
-            }
         }
 
         return false;
@@ -1404,12 +1404,12 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-            {
-                var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
-                    objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
+                {
+                    var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
+                        objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
 
-                return new MessageSentResult(m1 != null, m1, chatTypeToSendTo);
-            }
+                    return new MessageSentResult(m1 != null, m1, chatTypeToSendTo);
+                }
 
             case BotTypeApi.USER_BOT:
 
@@ -1495,17 +1495,17 @@ public class TelegramBotAbstract
                 }
 
             case BotTypeApi.USER_BOT:
-            {
-                var videoFile = ObjectVideo.GetTelegramUserBotInputVideo(UserbotClient);
-                if (videoFile == null)
-                    return new MessageSentResult(false, null, chatTypeToSendTo);
+                {
+                    var videoFile = ObjectVideo.GetTelegramUserBotInputVideo(UserbotClient);
+                    if (videoFile == null)
+                        return new MessageSentResult(false, null, chatTypeToSendTo);
 
-                //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
-                var media2 = ObjectVideo.GetTLabsInputMedia();
-                var m2 = await UserbotClient.Messages_SendMedia(
-                    UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
-                return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
-            }
+                    //UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, ChatType.Private), videoFile, caption
+                    var media2 = ObjectVideo.GetTLabsInputMedia();
+                    var m2 = await UserbotClient.Messages_SendMedia(
+                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), media2);
+                    return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
+                }
             case BotTypeApi.DISGUISED_BOT:
                 break;
 
@@ -1524,9 +1524,9 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-                await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
-            }
+                {
+                    await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
+                }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
@@ -1544,8 +1544,8 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-            }
+                {
+                }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
@@ -1565,8 +1565,8 @@ public class TelegramBotAbstract
                 break;
 
             case BotTypeApi.USER_BOT:
-            {
-            }
+                {
+                }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:

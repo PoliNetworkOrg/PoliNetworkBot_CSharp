@@ -1,10 +1,10 @@
 ﻿#region
 
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
