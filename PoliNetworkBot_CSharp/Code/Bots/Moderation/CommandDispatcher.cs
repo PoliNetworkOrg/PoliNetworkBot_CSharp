@@ -344,11 +344,11 @@ internal static class CommandDispatcher
                             e.Message.MessageId);
                         var messages = MessagesStore.GetAllMessages(x =>
                             x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
-                        foreach (var m2 in messages.Select(message => message.Messages.First()).Where(m2 => m2 != null))
+                        foreach (var m2 in messages.Select(message => message.message).Where(m2 => m2 != null))
                         {
                             text = new Language(new Dictionary<string, string>
                         {
-                            { "uni", m2.Text ?? m2.Caption }
+                            { "uni", m2 }
                         });
                             await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
                                 "uni", ParseMode.Html, null, e.Message.From.Username);
