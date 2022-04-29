@@ -23,7 +23,9 @@ public static class Navigator
             "Electronics",
             "Automazione",
             "Chimica",
-            "Elettrica"
+            "Elettrica",
+            "Meccanica",
+            "Energetica"
         },
         ["AUIC"] = Array.Empty<string>(),
         ["ICAT"] = Array.Empty<string>(),
