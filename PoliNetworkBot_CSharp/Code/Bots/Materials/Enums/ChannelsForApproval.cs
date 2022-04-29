@@ -28,6 +28,8 @@ internal static class ChannelsForApproval
             "automazione" => automationChannel,
             "chimica" => chimicaChannel,
             "elettrica" => electronicsChannel,
+            "energetica" => aesChannel,
+            "meccanica" => aesChannel,
             _ => throw new Exception("No such channel: " + v)
         };
     }
