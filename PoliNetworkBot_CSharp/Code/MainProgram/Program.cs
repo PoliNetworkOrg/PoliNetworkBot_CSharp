@@ -487,14 +487,22 @@ internal static class Program
         {
             _ = Database.ExecuteSelect("SELECT * FROM FilePaths", telegramBotAbstract.DbConfig);
         }
-        catch (MySqlException ex)
+        catch (Exception ex)
         {
             Logger.WriteLine(ex);
-            Database.Execute("CREATE TABLE FilePaths (" +
-                             "file_and_git VARCHAR(250)," +
-                             "location VARCHAR(250)" +
-                             ") ", telegramBotAbstract.DbConfig);
-            Logger.WriteLine("Created table FilePaths");
+            try
+            {
+                Database.Execute("CREATE TABLE FilePaths (" +
+                                 "file_and_git VARCHAR(250)," +
+                                 "location VARCHAR(250)" +
+                                 ") ", telegramBotAbstract.DbConfig);
+                Logger.WriteLine("Created table FilePaths");
+            }
+            catch (Exception)
+            {
+                Logger.WriteLine("Execution cannot continue, database not reachable.", LogSeverityLevel.EMERGENCY);
+                Environment.Exit(1);
+            }
         }
     }
 
@@ -503,7 +511,9 @@ internal static class Program
         const int MAX_WAIT = 1000 * 10; //10 seconds
         var i = 0;
         int? offset = null;
-
+        
+        Logger.WriteLine("Starting on main loop for bot: " + botClientWhole.BotInfoAbstract.onMessages);
+        
         while (true)
             try
             {
