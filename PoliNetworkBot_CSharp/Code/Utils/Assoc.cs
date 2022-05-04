@@ -672,14 +672,14 @@ internal static class Assoc
     private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
         TelegramBotAbstract sender, string permittedSpamMessage, bool splitMessage)
     {
-        var fourHours = new TimeSpan(0, 0, 30);
+        var fourHours = new TimeSpan(4, 0, 0);
 
         MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
 
         var allowedTime = MessagesStore.GetAllowedTime(message);
         if (allowedTime.HasValue)
         {
-            var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now;
+            var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now + new TimeSpan(0, 1, 0);
             _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater,
                 () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
             permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value.ToString("dd'-'MMM'-'yyyy' 'HH':'mm':'ss");
