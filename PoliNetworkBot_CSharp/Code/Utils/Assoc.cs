@@ -682,7 +682,8 @@ internal static class Assoc
             var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now;
             _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater,
                 () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
-            permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value.ToString("'ddd', 'dd'-'MMM'-'yyyy' 'HH':'mm':'ss") + ", notification in: " + allowedNotificationTimeLater.Seconds + " seconds";
+            permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value.ToString("dd'-'MMM'-'yyyy' 'HH':'mm':'ss");
+            Logger.Logger.WriteLine("Assoc, notification in: " + allowedNotificationTimeLater.Seconds + " seconds");
         }
 
         long? replyTo = null;
