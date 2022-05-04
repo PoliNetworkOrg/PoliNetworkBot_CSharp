@@ -629,7 +629,12 @@ internal static class Assoc
     {
         try
         {
-            if (!MessagesStore.MessageIsAllowed(message)) return;
+            if (!MessagesStore.MessageIsAllowed(message))
+            {
+                Logger.Logger.WriteLine("Allowed message: Message Is Allowed resulted in false");
+                return;
+            }
+
             var privateText = new Language(new Dictionary<string, string>
             {
                 { "en", "The message is allowed to be sent" },
@@ -667,7 +672,7 @@ internal static class Assoc
     private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
         TelegramBotAbstract sender, string permittedSpamMessage, bool splitMessage)
     {
-        var fourHours = new TimeSpan(4, 0, 0);
+        var fourHours = new TimeSpan(0, 0, 30);
 
         MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
 
