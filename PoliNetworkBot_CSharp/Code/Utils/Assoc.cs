@@ -145,39 +145,44 @@ internal static class Assoc
                 }
             }
 
-            const long idChatSentInto = Channels.PoliAssociazioni;
+            var idChatsSentInto = Channels.Assoc.GetChannels();
             //const long idChatSentInto = -432645805;
-            var chatTypeSendInto = ChatType.Group;
+            const ChatType chatTypeSendInto = ChatType.Group;
 
-            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
-                messageFromIdEntity, idChatSentInto, sender, chatTypeSendInto);
-
-            switch (successQueue)
+            foreach (var idChat in idChatsSentInto)
             {
-                case SuccessQueue.INVALID_ID_TO_DB:
-                    break;
 
-                case SuccessQueue.INVALID_OBJECT:
+                var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
+                messageFromIdEntity, idChat, sender, chatTypeSendInto);
+
+                switch (successQueue)
                 {
-                    await Assoc_ObjectToSendNotValid(sender, e);
-                    return false;
+                    case SuccessQueue.INVALID_ID_TO_DB:
+                        break;
+
+                    case SuccessQueue.INVALID_OBJECT:
+                    {
+                        await Assoc_ObjectToSendNotValid(sender, e);
+                        return false;
+                    }
+
+                    case SuccessQueue.SUCCESS:
+                        break;
+
+                    case SuccessQueue.DATE_INVALID:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                case SuccessQueue.SUCCESS:
-                    break;
-
-                case SuccessQueue.DATE_INVALID:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (successQueue != SuccessQueue.SUCCESS)
-            {
-                await NotifyUtil.NotifyOwners(
-                    new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
-                return false;
+                if (successQueue != SuccessQueue.SUCCESS)
+                {
+                    await NotifyUtil.NotifyOwners(
+                        new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
+                    return false;
+                }
+            
             }
 
             var lang3 = new Language(new Dictionary<string, string>
