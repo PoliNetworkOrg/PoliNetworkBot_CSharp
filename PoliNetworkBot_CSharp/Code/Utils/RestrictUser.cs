@@ -80,12 +80,13 @@ internal static class RestrictUser
                           ErrorCodes.TargetInvalidWhenBanAll + exception2
                 }
             });
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username,
-                text2,
-                ParseMode.Html,
-                e.Message.MessageId);
+            if (e.Message.From != null)
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username,
+                    text2,
+                    ParseMode.Html,
+                    e.Message.MessageId);
             return null;
         }
 
@@ -104,12 +105,13 @@ internal static class RestrictUser
                           ErrorCodes.DatatableEmptyWhenBanAll
                 }
             });
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username,
-                text3,
-                ParseMode.Html,
-                e.Message.MessageId);
+            if (e.Message.From != null)
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username,
+                    text3,
+                    ParseMode.Html,
+                    e.Message.MessageId);
             return null;
         }
 
@@ -122,7 +124,7 @@ internal static class RestrictUser
 
         var nExceptions = 0;
 
-        const int TIME_SLEEP_BETWEEN_BAN_UNBAN = 10;
+        const int timeSleepBetweenBanUnban = 10;
 
         switch (banTarget)
         {
@@ -130,7 +132,7 @@ internal static class RestrictUser
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                    Thread.Sleep(timeSleepBetweenBanUnban);
                     try
                     {
                         var groupChatId = (long)dr["id"];
@@ -157,11 +159,11 @@ internal static class RestrictUser
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                    Thread.Sleep(timeSleepBetweenBanUnban);
                     try
                     {
                         var groupChatId = (long)dr["id"];
-                        var success = await UnBanUserFromGroup(sender, targetId.GetId().Value, groupChatId);
+                        var success = await UnBanUserFromGroup(sender, targetId.GetId(), groupChatId);
                         if (success.IsSuccess())
                             done.Add(dr);
                         else
@@ -183,7 +185,7 @@ internal static class RestrictUser
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                    Thread.Sleep(timeSleepBetweenBanUnban);
                     try
                     {
                         var groupChatId = (long)dr["id"];
@@ -210,7 +212,7 @@ internal static class RestrictUser
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    Thread.Sleep(TIME_SLEEP_BETWEEN_BAN_UNBAN);
+                    Thread.Sleep(timeSleepBetweenBanUnban);
                     try
                     {
                         var groupChatId = (long)dr["id"];
@@ -262,7 +264,7 @@ internal static class RestrictUser
     {
         try
         {
-            var o1 = dr["type"].ToString().ToLower();
+            var o1 = dr["type"].ToString()?.ToLower();
             switch (o1)
             {
                 case null:
@@ -315,12 +317,14 @@ internal static class RestrictUser
                 "it", "Azione avviata: '" + target + "'"
             }
         });
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-            e.Message.From.LanguageCode,
-            e.Message.From.Username,
-            text7,
-            ParseMode.Html,
-            e.Message.MessageId);
+        
+        if (e.Message.From != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username,
+                text7,
+                ParseMode.Html,
+                e.Message.MessageId);
     }
 
     private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, ExceptionNumbered item2)
@@ -337,8 +341,8 @@ internal static class RestrictUser
         return 1;
     }
 
-    private static Tuple<bool, int> FindIfPresentSimilarException(List<ExceptionNumbered> exceptions,
-        ExceptionNumbered item2)
+    private static Tuple<bool, int> FindIfPresentSimilarException(IReadOnlyList<ExceptionNumbered> exceptions,
+        Exception item2)
     {
         for (var i = 0; i < exceptions.Count; i++)
         {
@@ -354,15 +358,15 @@ internal static class RestrictUser
         return e1.AreTheySimilar(item2);
     }
 
-    private static bool LogBanAction(long targetId, RestrictAction banned_true_unbanned_false,
-        TelegramBotAbstract bot, long who_banned, TelegramBotAbstract sender)
+    private static bool LogBanAction(long targetId, RestrictAction bannedTrueUnbannedFalse,
+        TelegramBotAbstract bot, long whoBanned, TelegramBotAbstract sender)
     {
-        if (banned_true_unbanned_false != RestrictAction.BAN &&
-            banned_true_unbanned_false != RestrictAction.UNBAN) return false;
+        if (bannedTrueUnbannedFalse != RestrictAction.BAN &&
+            bannedTrueUnbannedFalse != RestrictAction.UNBAN) return false;
 
         try
         {
-            bool? b = banned_true_unbanned_false switch
+            bool? b = bannedTrueUnbannedFalse switch
             {
                 RestrictAction.BAN => true,
                 RestrictAction.UNBAN => false,
@@ -376,7 +380,7 @@ internal static class RestrictUser
             var dict = new Dictionary<string, object>
             {
                 { "@fbi", bot.GetId() },
-                { "@whob", who_banned },
+                { "@whob", whoBanned },
                 { "@whenb", DateTime.Now },
                 { "@target", targetId },
                 { "@btuf", StringUtil.ToSn(b) }
@@ -391,7 +395,7 @@ internal static class RestrictUser
         }
     }
 
-    private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, long target,
+    private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, long? target,
         long groupChatId)
     {
         return await sender.UnBanUserFromGroup(target, groupChatId);

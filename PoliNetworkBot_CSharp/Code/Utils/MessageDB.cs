@@ -98,7 +98,7 @@ public static class MessageDb
     public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
         TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
     {
-        DataTable dt = null;
+        DataTable dt;
         const string q = "SELECT * " +
                          "FROM Messages ";
 

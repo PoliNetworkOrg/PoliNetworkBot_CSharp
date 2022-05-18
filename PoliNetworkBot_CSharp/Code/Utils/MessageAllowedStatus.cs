@@ -58,16 +58,20 @@ public class MessageAllowedStatus
         var allowedTimeTemp = DateTime.Now;
         while (!(timeSpan == null || timeSpan == TimeSpan.Zero))
         {
-            if (now.Hour < VetoLowerBound && dayInCount == 0) //only necessary in first iteration
+            switch (now.Hour)
             {
-                var diff = now - DateTime.Today.AddHours(VetoLowerBound);
-                allowedTimeTemp = allowedTimeTemp.Add(diff);
-            }
-            
-            if (now.Hour >= VetoHigherBound && dayInCount == 0) //only necessary in first iteration
-            {
-                allowedTimeTemp = DateTime.Today.AddDays(1).AddHours(VetoLowerBound);
-                dayInCount++;
+                //only necessary in first iteration
+                case < VetoLowerBound when dayInCount == 0:
+                {
+                    var diff = now - DateTime.Today.AddHours(VetoLowerBound);
+                    allowedTimeTemp = allowedTimeTemp.Add(diff);
+                    break;
+                }
+                //only necessary in first iteration
+                case >= VetoHigherBound when dayInCount == 0:
+                    allowedTimeTemp = DateTime.Today.AddDays(1).AddHours(VetoLowerBound);
+                    dayInCount++;
+                    break;
             }
 
             var remainingTime = (DateTime.Today.AddDays(dayInCount).AddHours(VetoHigherBound) - allowedTimeTemp)

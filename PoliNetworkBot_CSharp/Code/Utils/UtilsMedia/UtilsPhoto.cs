@@ -16,17 +16,17 @@ internal static class UtilsPhoto
 {
     internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
     {
-        if (photo == null || !photo.Any())
+        var photoSizes = photo.ToList();
+        if (!photoSizes.Any())
             return null;
 
         var max = -1;
         PhotoSize r = null;
-        foreach (var p in photo)
-            if (p.Height > max)
-            {
-                max = p.Height;
-                r = p;
-            }
+        foreach (var p in photoSizes.Where(p => p.Height > max))
+        {
+            max = p.Height;
+            r = p;
+        }
 
         return r;
     }

@@ -36,12 +36,12 @@ public static class Logger
             try
             {
                 var messageToBeSent = Buffer.Receive();
-                var escaped = HttpUtility.HtmlEncode(messageToBeSent.text);
+                var escaped = HttpUtility.HtmlEncode(messageToBeSent.Text);
                 var text = new Language(new Dictionary<string, string>
                 {
                     { "un", escaped }
                 });
-                await messageToBeSent.key.Value.SendTextMessageAsync(messageToBeSent.key.Key, text,
+                await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
                     messageToBeSent.ChatType, "un", ParseMode.Html,
                     null, null, null, splitMessage: true);
             }

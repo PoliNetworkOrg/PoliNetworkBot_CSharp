@@ -11,7 +11,7 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class Permissions
+internal static class Permissions
 {
     /// <summary>
     ///     Check if user has enough permissions

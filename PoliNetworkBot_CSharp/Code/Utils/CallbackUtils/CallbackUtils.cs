@@ -62,6 +62,7 @@ public static class CallbackUtils
 
             Thread.Sleep(1000 * 60 * 60 * 24); //every day
         }
+        // ReSharper disable once FunctionNeverReturns
     }
 
     private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)

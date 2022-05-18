@@ -23,11 +23,10 @@ public static class UtilsVideo
         var photoId = GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
         if (photoId != null) return photoId.Value;
 
-        var q =
-            "INSERT INTO Videos " +
-            "(file_id, file_size, height, width, unique_id, duration, mime) " +
-            " VALUES " +
-            "(@fi, @fs, @h, @w, @u, @d, @mime)";
+        const string q = "INSERT INTO Videos " +
+                         "(file_id, file_size, height, width, unique_id, duration, mime) " +
+                         " VALUES " +
+                         "(@fi, @fs, @h, @w, @u, @d, @mime)";
 
         var keyValuePairs = new Dictionary<string, object>
         {

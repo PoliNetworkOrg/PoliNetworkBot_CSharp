@@ -24,7 +24,7 @@ internal class Test_IG
     {
         Logger.WriteLine("Starting demo of InstagramApiSharp project");
 
-        string[] c = null;
+        string[] c;
         try
         {
             c = await File.ReadAllLinesAsync(Paths.IG.CREDENTIALS);

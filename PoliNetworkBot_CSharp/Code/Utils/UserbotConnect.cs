@@ -51,7 +51,7 @@ internal static class UserbotConnect
 
                 if (telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId.Value, userbot.botTypeApi.Value, userbot.onMessages);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages);
 
                 var numberToAuthenticate = userbot.NumberNumber;
                 var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
@@ -82,7 +82,7 @@ internal static class UserbotConnect
 
                 if (user != null && telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId.Value, userbot.botTypeApi.Value, userbot.onMessages);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages);
 
                 return null;
             }
@@ -98,14 +98,14 @@ internal static class UserbotConnect
                 await t.ConnectAsync();
 
                 if (t.IsUserAuthorized())
-                    return new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId.Value,
+                    return new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
                         userbot.botTypeApi.Value, userbot.onMessages);
 
                 var r = await t.AuthImportBotAuthorization(userbot.GetToken());
 
                 return r?.User != null
-                    ? new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId.Value,
-                        userbot.botTypeApi.Value, userbot.onMessages)
+                    ? new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
+                        userbot.botTypeApi, userbot.onMessages)
                     : null;
             }
         }

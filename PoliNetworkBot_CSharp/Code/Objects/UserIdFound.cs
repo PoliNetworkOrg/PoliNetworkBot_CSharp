@@ -7,12 +7,12 @@ internal class UserIdFound
 
     private UserIdFound(long? i)
     {
-        this._i = i;
+        _i = i;
     }
 
     public UserIdFound(long? i, string v) : this(i)
     {
-        this._v = v;
+        _v = v;
     }
 
     internal long? GetId()

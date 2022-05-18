@@ -40,10 +40,10 @@ internal static class Groups
 
     internal static DataTable GetGroupsByTitle(string query, int limit, TelegramBotAbstract sender)
     {
-        var q1 = "SELECT id,title,link " +
-                 "FROM GroupsTelegram " +
-                 "WHERE title LIKE @title " +
-                 "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
+        const string q1 = "SELECT id,title,link " +
+                          "FROM GroupsTelegram " +
+                          "WHERE title LIKE @title " +
+                          "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
@@ -215,9 +215,6 @@ internal static class Groups
 
         var row = groups.Rows[0];
 
-        if (row == null)
-            return GroupsFixLogUpdatedEnum.UNKNOWN;
-
         lock (GroupsInRam)
         {
             if (!GroupsInRam.ContainsKey(group.Id))
@@ -305,7 +302,7 @@ internal static class Groups
                         Language lang = new(dict);
 
                         await SendMessage.SendMessageInAGroup(
-                            telegramBotClient, e.Message.From.LanguageCode, lang, e,
+                            telegramBotClient, e.Message.From?.LanguageCode, lang, e,
                             e.Message.Chat.Id, e.Message.Chat.Type,
                             ParseMode.Html, null, true
                         );

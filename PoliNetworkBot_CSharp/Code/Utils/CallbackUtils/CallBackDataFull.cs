@@ -39,7 +39,7 @@ public class CallBackDataFull
 
     internal BigInteger GetLast()
     {
-        BigInteger r = 0;
+        BigInteger r;
         lock (this)
         {
             r = last;

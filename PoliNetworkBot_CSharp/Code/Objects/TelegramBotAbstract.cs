@@ -36,35 +36,35 @@ public class TelegramBotAbstract
     private readonly BotTypeApi _isbot;
 
     private readonly string _website;
-    private readonly string mode;
+    private readonly string _mode;
 
     public readonly TelegramClient UserbotClient;
 
     public DbConfig DbConfig;
-    private string username;
+    private string _username;
 
-    private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi botTypeApi,
+    private TelegramBotAbstract(TelegramBotClient botClient, TelegramClient userBotClient, BotTypeApi? botTypeApi,
         string website, string contactString, long? id)
     {
         UserbotClient = userBotClient;
         _botClient = botClient;
-        _isbot = botTypeApi;
+        _isbot = botTypeApi ?? BotTypeApi.UNKNOWN;
         _website = website;
         _contactString = contactString;
         _id = id;
     }
 
     public TelegramBotAbstract(TelegramBotClient botClient, string website, string contactString,
-        BotTypeApi botTypeApi, string mode) : this(botClient, null, botTypeApi, website, contactString,
+        BotTypeApi? botTypeApi, string mode) : this(botClient, null, botTypeApi, website, contactString,
         botClient.BotId)
     {
-        this.mode = mode;
+        this._mode = mode;
     }
 
-    public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long id,
-        BotTypeApi botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
+    public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long? id,
+        BotTypeApi? botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
     {
-        this.mode = mode;
+        this._mode = mode;
     }
 
     public TelegramBotAbstract(TelegramBotClient botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
@@ -99,7 +99,7 @@ public class TelegramBotAbstract
 
     internal string GetMode()
     {
-        return mode;
+        return _mode;
     }
 
     public async Task<TLAbsUpdates> AddUserIntoChannel(string userId, TLChannel channel)
@@ -197,8 +197,8 @@ public class TelegramBotAbstract
 
     internal async Task<string> GetBotUsernameAsync()
     {
-        if (!string.IsNullOrEmpty(username))
-            return username;
+        if (!string.IsNullOrEmpty(_username))
+            return _username;
 
         switch (_isbot)
         {
@@ -209,8 +209,8 @@ public class TelegramBotAbstract
                     if (u1 != null && u1.StartsWith("@"))
                         u1 = u1[1..];
 
-                    username = u1;
-                    return username;
+                    _username = u1;
+                    return _username;
                 }
 
             case BotTypeApi.USER_BOT:
@@ -603,23 +603,21 @@ public class TelegramBotAbstract
                 if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
                 var m2 = replyToMessageId ?? 0;
                 var message = text.Select(lang);
-                Message m1;
                 while (splitMessage && message.Length > 4096)
                 {
                     if (chatid != null)
-                        m1 = await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
+                        await _botClient.SendTextMessageAsync(chatid, message[..4095], parseMode,
                             replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
                     message = message[4095..];
                     Thread.Sleep(100);
                 }
 
-                if (chatid != null)
-                    m1 = await _botClient.SendTextMessageAsync(chatid, message, parseMode,
-                        replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink);
-                else
-                    return null;
-                var b1 = m1 != null;
-                return new MessageSentResult(b1, m1, chatType);
+                return chatid != null
+                    ? new MessageSentResult(true, await _botClient.SendTextMessageAsync(chatid, message, parseMode,
+                            replyMarkup: reply, replyToMessageId: (int)m2, disableWebPagePreview: disablePreviewLink),
+                        chatType)
+                    : null;
+
 
             case BotTypeApi.USER_BOT:
             case BotTypeApi.DISGUISED_BOT:
@@ -776,9 +774,15 @@ public class TelegramBotAbstract
                     {
                         case BotTypeApi.REAL_BOT:
                             {
-                                var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
-                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                if (message.Text != null)
+                                {
+                                    var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
+                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                    return new MessageSentResult(true, m1, m1.Chat.Type);
+                                }
+                                
+                                break;
+                                
                             }
                         case BotTypeApi.USER_BOT:
                             break;
@@ -798,7 +802,7 @@ public class TelegramBotAbstract
                                 var m1 = await _botClient.SendPhotoAsync(chatIdToSend, InputOnlineFile(message),
                                     message.Caption,
                                     ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
                             }
                         case BotTypeApi.USER_BOT:
                             break;
@@ -823,7 +827,7 @@ public class TelegramBotAbstract
                                     message.Video.Duration, message.Video.Width, message.Video.Height, null,
                                     message.Caption,
                                     ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
                             }
                         case BotTypeApi.USER_BOT:
                             break;
@@ -846,7 +850,7 @@ public class TelegramBotAbstract
                                 var m1 = await _botClient.SendDocumentAsync(chatIdToSend, InputOnlineFile(message), null,
                                     message.Caption,
                                     ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
                             }
                         case BotTypeApi.USER_BOT:
                             break;
@@ -865,7 +869,7 @@ public class TelegramBotAbstract
                             {
                                 var m1 = await _botClient.SendStickerAsync(chatIdToSend, InputOnlineFile(message),
                                     replyToMessageId: messageIdToReplyToLong);
-                                return new MessageSentResult(m1 != null, m1, m1.Chat.Type);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
                             }
                         case BotTypeApi.USER_BOT:
                             break;
@@ -1347,14 +1351,17 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task<SuccessWithException> UnBanUserFromGroup(long target, long groupChatId)
+    internal async Task<SuccessWithException> UnBanUserFromGroup(long? target, long groupChatId)
     {
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
                 try
                 {
-                    await _botClient.UnbanChatMemberAsync(groupChatId, target, true);
+                    if (target == null)
+                        return new SuccessWithException(false,new ArgumentNullException());
+                    
+                    await _botClient.UnbanChatMemberAsync(groupChatId, target.Value, true);
                     return new SuccessWithException(true);
                 }
                 catch (Exception e1)
@@ -1408,7 +1415,7 @@ public class TelegramBotAbstract
                     var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
                         objectPhoto.GetTelegramBotInputOnlineFile(), caption, parseMode);
 
-                    return new MessageSentResult(m1 != null, m1, chatTypeToSendTo);
+                    return new MessageSentResult(true, m1, chatTypeToSendTo);
                 }
 
             case BotTypeApi.USER_BOT:
@@ -1487,7 +1494,7 @@ public class TelegramBotAbstract
                         video: video.GetTelegramBotInputOnlineFile(), duration: video.GetDuration(),
                         height: video.GetHeight(),
                         width: video.GetWidth(), parseMode: parseMode);
-                    return new MessageSentResult(m1 != null, m1, chatTypeToSendTo);
+                    return new MessageSentResult(true, m1, chatTypeToSendTo);
                 }
                 catch
                 {
