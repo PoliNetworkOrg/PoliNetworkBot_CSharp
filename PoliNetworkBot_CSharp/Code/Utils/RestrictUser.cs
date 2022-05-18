@@ -402,10 +402,12 @@ internal static class RestrictUser
     }
 
     public static async Task<SuccessWithException> BanUserFromGroup(TelegramBotAbstract sender,
-        long target,
+        long? target,
         long groupChatId, string[] time,
         bool? revokeMessage)
     {
-        return await sender.BanUserFromGroup(target, groupChatId, time, revokeMessage);
+        return target != null
+            ? await sender.BanUserFromGroup(target.Value, groupChatId, time, revokeMessage)
+            : new SuccessWithException(false, new ArgumentNullException());
     }
 }

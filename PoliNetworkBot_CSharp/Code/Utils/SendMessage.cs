@@ -21,8 +21,8 @@ internal static class SendMessage
 {
     internal static async Task<MessageSentResult> SendMessageInPrivateOrAGroup(
         TelegramBotAbstract telegramBotClient,
-        Language text, string lang, string username, long? userId, string firstName, string lastName, long chatId,
-        ChatType chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup inlineKeyboardMarkup = null)
+        Language text, string lang, string username, long? userId, string firstName, string lastName, long? chatId,
+        ChatType? chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup inlineKeyboardMarkup = null)
     {
         MessageSentResult r = null;
         try
@@ -172,7 +172,7 @@ internal static class SendMessage
                 replyTo.Caption, messageFromIdPerson,
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
-                (long)sender.GetId(), replyTo.MessageId,
+                sender.GetId(), replyTo.MessageId,
                 typeChatSentInto, photoIdDb.Value, null, sender);
         }
         else if (replyTo.Video != null)
@@ -189,7 +189,7 @@ internal static class SendMessage
                 replyTo.Caption, messageFromIdPerson,
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
-                (long)sender.GetId(), replyTo.MessageId,
+                sender.GetId(), replyTo.MessageId,
                 typeChatSentInto, null, videoIdDb.Value, sender);
         }
         else

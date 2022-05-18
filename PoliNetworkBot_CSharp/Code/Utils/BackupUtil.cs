@@ -38,7 +38,7 @@ internal class BackupUtil
                     try
                     {
                         var q2 = "SELECT * FROM " + tableName;
-                        var r2 = Utils.Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
+                        var r2 = Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
                         if (r2 != null)
                         {
                             db.tables[tableName] = r2;

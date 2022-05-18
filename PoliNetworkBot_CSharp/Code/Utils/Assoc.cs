@@ -176,13 +176,13 @@ internal static class Assoc
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (successQueue != SuccessQueue.SUCCESS)
-                {
-                    await NotifyUtil.NotifyOwners(
-                        new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
-                    return false;
-                }
-            
+                if (successQueue == SuccessQueue.SUCCESS) 
+                    continue;
+                
+                await NotifyUtil.NotifyOwners(
+                    new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
+                return false;
+
             }
 
             var lang3 = new Language(new Dictionary<string, string>

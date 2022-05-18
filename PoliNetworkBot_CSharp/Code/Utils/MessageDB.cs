@@ -22,7 +22,7 @@ public static class MessageDb
     internal static bool AddMessage(MessageType type, string messageText,
         long messageFromIdPerson, long? messageFromIdEntity,
         long idChatSentInto, DateTime? sentDate,
-        bool hasBeenSent, long messageFromIdBot,
+        bool hasBeenSent, long? messageFromIdBot,
         int messageIdTgFrom, ChatType type_chat_sent_into,
         long? photo_id, long? video_id, TelegramBotAbstract sender)
     {

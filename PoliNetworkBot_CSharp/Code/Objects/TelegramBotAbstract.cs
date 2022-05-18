@@ -232,7 +232,7 @@ public class TelegramBotAbstract
                 {
                     try
                     {
-                        return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), e);
+                        return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), null);
                     }
                     catch (Exception e2)
                     {
