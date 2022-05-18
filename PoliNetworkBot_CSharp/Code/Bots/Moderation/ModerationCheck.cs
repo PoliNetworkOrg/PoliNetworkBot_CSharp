@@ -300,7 +300,10 @@ internal static class ModerationCheck
                 return SpamType.ALL_GOOD;
         }
 
-        if (GlobalVariables.AllowedSpam.ToList().Any(x => x.Matches(e.Message?.From)))
+        if (CheckIfIsInList(GlobalVariables.AllowedSpam, e.Message?.From) ||
+            CheckIfIsInList(GlobalVariables.Creators, e.Message?.From) ||
+            CheckIfIsInList(GlobalVariables.SubCreators, e.Message?.From) ||
+            CheckIfIsInList(GlobalVariables.Owners, e.Message?.From))
             return SpamType.ALL_GOOD;
 
         if (e.Message is { From: { }, Chat: { } })
@@ -348,6 +351,11 @@ internal static class ModerationCheck
 
         return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text, e.Message.Chat.Id, telegramBotClient),
             Blacklist.IsSpam(e.Message.Photo));
+    }
+
+    private static bool CheckIfIsInList(List<TelegramUser> a, User from)
+    {
+        return a.Any(x => x.Matches(from));
     }
 
     private static bool DetectForeignLanguage(MessageEventArgs e)
