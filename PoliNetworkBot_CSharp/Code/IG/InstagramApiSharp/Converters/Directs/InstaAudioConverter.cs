@@ -1,13 +1,13 @@
 ﻿#region
 
 using System;
-using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Direct;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Directs;
 
 internal class InstaAudioConverter : IObjectConverter<InstaAudio, InstaAudioResponse>
 {

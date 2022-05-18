@@ -560,7 +560,7 @@ public static class MessageDb
             typeOfChatSentInto = chatTypeToSendTo;
 
         if (typeOfChatSentInto == null)
-            return new MessageSentResult(false, null, chatTypeToSendTo);
+            return new MessageSentResult(false, null, null);
 
         var video = UtilsVideo.GetVideoByIdFromDb(
             videoId.Value,
@@ -601,7 +601,7 @@ public static class MessageDb
             typeOfChatSentInto = chatTypeToSendTo;
 
         if (typeOfChatSentInto == null)
-            return new MessageSentResult(false, null, chatTypeToSendTo);
+            return new MessageSentResult(false, null, null);
 
         var photo = UtilsPhoto.GetPhotoByIdFromDb(
             photoId.Value,

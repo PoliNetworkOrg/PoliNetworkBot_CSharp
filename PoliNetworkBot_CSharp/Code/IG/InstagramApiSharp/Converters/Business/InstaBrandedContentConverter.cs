@@ -2,13 +2,13 @@
 
 using System;
 using System.Linq;
-using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Business;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Business;
 
 internal class InstaBrandedContentConverter : IObjectConverter<InstaBrandedContent, InstaBrandedContentResponse>
 {

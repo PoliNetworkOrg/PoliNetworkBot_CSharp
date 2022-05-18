@@ -58,13 +58,13 @@ public class TelegramBotAbstract
         BotTypeApi? botTypeApi, string mode) : this(botClient, null, botTypeApi, website, contactString,
         botClient.BotId)
     {
-        this._mode = mode;
+        _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient userbotClient, string website, string contactString, long? id,
         BotTypeApi? botTypeApi, string mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
     {
-        this._mode = mode;
+        _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramBotClient botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null, null,

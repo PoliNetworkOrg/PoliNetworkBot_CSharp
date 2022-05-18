@@ -18,8 +18,8 @@ internal class MessageQueue
     public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType,
         ParseMode parsemode)
     {
-        this.Key = key;
-        this.Text = text;
+        Key = key;
+        Text = text;
         ChatType = chatType;
         _parsemode = parsemode;
     }

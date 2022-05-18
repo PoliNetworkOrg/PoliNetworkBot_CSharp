@@ -2,13 +2,13 @@
 
 using System;
 using System.Linq;
-using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Hashtags;
 
 #endregion
 
-namespace InstagramApiSharp.Converters.Hashtags;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Hashtags;
 
 internal class InstaHashtagMediaConverter : IObjectConverter<InstaSectionMedia, InstaSectionMediaListResponse>
 {

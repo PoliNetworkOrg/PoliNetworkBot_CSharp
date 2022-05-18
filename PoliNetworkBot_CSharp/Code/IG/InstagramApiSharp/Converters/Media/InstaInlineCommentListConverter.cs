@@ -1,13 +1,13 @@
 ﻿#region
 
 using System.Linq;
-using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Comment;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Media;
 
 internal class InstaInlineCommentListConverter
     : IObjectConverter<InstaInlineCommentList, InstaInlineCommentListResponse>

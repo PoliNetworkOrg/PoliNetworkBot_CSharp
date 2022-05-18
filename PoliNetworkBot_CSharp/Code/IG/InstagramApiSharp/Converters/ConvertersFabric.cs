@@ -24,8 +24,13 @@ using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.Web;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Feed;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.ResponseWrappers.Media;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Broadcast;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Business;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Directs;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Discover;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Hashtags;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Media;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.Stories;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.TV;
 
 #endregion
 
@@ -565,7 +570,7 @@ internal class ConvertersFabric
     public static IObjectConverter<InstaTvChannel, InstaTVChannelResponse> GetTvChannelConverter(
         InstaTVChannelResponse response)
     {
-        return new InstaTVChannelConverter { SourceObject = response };
+        return new InstaTvChannelConverter { SourceObject = response };
     }
 
     public static IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse> GetTvSelfChannelConverter(
