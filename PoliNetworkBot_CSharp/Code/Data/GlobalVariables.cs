@@ -94,7 +94,9 @@ public static class GlobalVariables
             new(5651789),
             new("raif9"),
             new("eliamaggioni"),
-            new("tlpats")
+            new("tlpats"),
+            new(349275135), //policreator
+            new(1051414781) //polinetwork
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>
