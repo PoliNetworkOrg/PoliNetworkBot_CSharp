@@ -256,11 +256,19 @@ public static class Logger
     {
         while (true)
         {
-            if (_lastTimeSentAutomaticLog == null || _lastTimeSentAutomaticLog.Value.AddDays(7) <= DateTime.Now)
+            try
             {
-                _lastTimeSentAutomaticLog = DateTime.Now;
-                AutomaticLog2();
+                if (_lastTimeSentAutomaticLog == null || _lastTimeSentAutomaticLog.Value.AddDays(7) <= DateTime.Now)
+                {
+                    _lastTimeSentAutomaticLog = DateTime.Now;
+                    AutomaticLog2();
+                }
             }
+            catch
+            {
+                ;
+            }
+
             Thread.Sleep(1000 * 60 * 60 * 24);
         }
         // ReSharper disable once FunctionNeverReturns

@@ -56,7 +56,14 @@ public class ThreadAsync
 
     private static void AutomaticLog()
     {
-        Logger.AutomaticLog();
+        try
+        {
+            Logger.AutomaticLog();
+        }
+        catch
+        {
+            ;
+        }
     }
 
     private static void DoCheckCallbackDataExpired(object obj)
