@@ -16,6 +16,9 @@ internal static class UtilsPhoto
 {
     internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
     {
+        if (photo == null)
+            return null;
+
         var photoSizes = photo.ToList();
         if (!photoSizes.Any())
             return null;
