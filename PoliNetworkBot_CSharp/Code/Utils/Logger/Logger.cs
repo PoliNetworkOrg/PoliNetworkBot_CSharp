@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Web;
@@ -247,5 +248,29 @@ public static class Logger
             }
 
         return toReturn;
+    }
+
+    private static DateTime? _lastTimeSentAutomaticLog;
+    
+    public static void AutomaticLog()
+    {
+        while (true)
+        {
+            if (_lastTimeSentAutomaticLog == null || _lastTimeSentAutomaticLog.Value.AddDays(7) <= DateTime.Now)
+            {
+                _lastTimeSentAutomaticLog = DateTime.Now;
+                AutomaticLog2();
+            }
+            Thread.Sleep(1000 * 60 * 60 * 24);
+        }
+        // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static void AutomaticLog2()
+    {
+        var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
+        if (bots == null || bots.Count == 0)
+            return;
+        Logger.PrintLog(bots.First(), new List<long> { Data.Constants.Groups.BackupGroup }, null);
     }
 }

@@ -47,8 +47,16 @@ public class ThreadAsync
         var t9 = new Thread(DoCheckCallbackDataExpired);
         t9.Start();
 
+        var t10 = new Thread(AutomaticLog);
+        t10.Start();
+
         //var t3 = new Thread(FixThings);
         //t3.Start();
+    }
+
+    private static void AutomaticLog()
+    {
+        Logger.AutomaticLog();
     }
 
     private static void DoCheckCallbackDataExpired(object obj)
