@@ -34,7 +34,7 @@ internal static class Permissions
         if (webReply == null || !webReply.IsValid()) return false;
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
-        var delegates = HtmlUtil.GetElementsByTagAndClassName(doc?.DocumentNode, "ul", "delegates", 1);
+        var delegates = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "delegates", 1);
         if (delegates.Count == 0) return false;
         var delegatesInner = HtmlUtil.GetElementsByTagAndClassName(delegates[0], "li");
         var authorizedUsernames = delegatesInner.Select(x => x.InnerHtml.Replace(" ", "")

@@ -159,9 +159,9 @@ public class Program
         }
     }
 
-    public static Object Deserialize<Object>(Stream stream) where Object : new()
+    public static TObject Deserialize<TObject>(Stream stream) where TObject : new()
     {
-        var ret = CreateInstance<Object>();
+        var ret = CreateInstance<TObject>();
         try
         {
             using (stream)
@@ -169,7 +169,7 @@ public class Program
                 // create BinaryFormatter
                 var bin = new BinaryFormatter();
                 // deserialize the collection (Employee) from file (stream)
-                ret = (Object)bin.Deserialize(stream);
+                ret = (TObject)bin.Deserialize(stream);
             }
         }
         catch (IOException ex)

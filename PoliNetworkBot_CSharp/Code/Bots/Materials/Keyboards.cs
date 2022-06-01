@@ -37,10 +37,11 @@ public static class Keyboards
         var root = Program.Config.RootDir + corso;
         var percorso = Program.UsersConversations[id].GetPath();
         if (!string.IsNullOrEmpty(percorso)) root += @"/" + percorso;
-        string[] subdirectoryEntries = System.Array.Empty<string>();
+        var subdirectoryEntries = System.Array.Empty<string>();
         if (Program.UsersConversations[id].GetState() != UserState.NEW_FOLDER)
             subdirectoryEntries = Directory.GetDirectories(root);
-        if (subdirectoryEntries != null) subdirectoryEntries = RemoveGit(subdirectoryEntries);
+        if (subdirectoryEntries != null) 
+            subdirectoryEntries = RemoveGit(subdirectoryEntries);
         return subdirectoryEntries;
     }
 

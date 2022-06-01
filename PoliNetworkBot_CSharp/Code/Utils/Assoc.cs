@@ -19,7 +19,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class Assoc
 {
-    private static async Task<long?> GetIdEntityFromPersonAsync(long id, Language question,
+    private static async Task<long?> GetIdEntityFromPersonAsync(long? id, Language question,
         TelegramBotAbstract sender, string lang, string username)
     {
         const string q =
@@ -33,7 +33,7 @@ internal static class Assoc
         var l = new Dictionary<string, long>();
         foreach (DataRow dr in r.Rows)
         {
-            var s = dr.ItemArray[1].ToString();
+            var s = dr.ItemArray[1]?.ToString();
             if (!string.IsNullOrEmpty(s)) l[s] = Convert.ToInt64(dr.ItemArray[0]);
         }
 
@@ -413,14 +413,13 @@ internal static class Assoc
         MessageEventArgs e, bool allAssoc)
     {
         Language languageList = null;
-        long? messageFromIdEntity = null;
         var conditionOnIdEntity = "";
         Dictionary<string, object> dict2 = null;
 
         if (allAssoc == false)
         {
-            messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
-                sender, e.Message.From.LanguageCode, e.Message.From.Username);
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From?.Id, null,
+                sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
 
             if (messageFromIdEntity == null)
             {
@@ -440,8 +439,8 @@ internal static class Assoc
             { "it", "Non ci sono messaggi in coda!" },
             { "en", "There are no message in the queue!" }
         });
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id, e.Message.From.LanguageCode,
-            e.Message.From.Username,
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id, e.Message.From?.LanguageCode,
+            e.Message.From?.Username,
             text, ParseMode.Html, null);
 
         return null;

@@ -576,7 +576,7 @@ internal class ConvertersFabric
     public static IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse> GetTvSelfChannelConverter(
         InstaTVSelfChannelResponse response)
     {
-        return new InstaTVSelfChannelConverter { SourceObject = response };
+        return new InstaTvSelfChannelConverter { SourceObject = response };
     }
 
     public static IObjectConverter<InstaTV, InstaTVResponse> GetTvConverter(

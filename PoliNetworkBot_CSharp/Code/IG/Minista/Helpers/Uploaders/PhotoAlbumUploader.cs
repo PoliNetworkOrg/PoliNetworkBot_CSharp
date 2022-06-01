@@ -23,7 +23,7 @@ internal class PhotoAlbumUploader
 {
     private readonly List<string> _uploaded = new();
     private readonly Dictionary<string, SinglePhotoUploader> _uploads = new();
-    private InstaApi instaApi;
+    private InstaApi _instaApi;
 
     private string Caption { get; set; }
 
@@ -37,7 +37,7 @@ internal class PhotoAlbumUploader
     public async Task SetFiles(IEnumerable<StorageFile> files, string caption, InstaApi instaApi)
     {
         Caption = caption;
-        this.instaApi = instaApi;
+        _instaApi = instaApi;
 
         if (!string.IsNullOrEmpty(Caption))
             Caption = Caption.Replace("\r", "");

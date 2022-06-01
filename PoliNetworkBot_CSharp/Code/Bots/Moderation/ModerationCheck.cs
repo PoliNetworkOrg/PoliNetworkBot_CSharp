@@ -71,10 +71,9 @@ internal static class ModerationCheck
             InsertGroup(sender, e);
         }
 
-        var r2 = await CheckIfToExit(sender, e, null);
-        var list2 = r2.Item3;
+        var (item1, item2, list2, item4) = await CheckIfToExit(sender, e, null);
         list2.Insert(0, 12);
-        return new Tuple<ToExit, ChatMember[], List<int>, string>(r2.Item1, r2.Item2, list2, r2.Item4);
+        return new Tuple<ToExit, ChatMember[], List<int>, string>(item1, item2, list2, item4);
     }
 
     internal static async Task<List<long>> CheckIfNotAuthorizedBotHasBeenAdded(MessageEventArgs e,

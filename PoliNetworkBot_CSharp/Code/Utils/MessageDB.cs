@@ -98,11 +98,10 @@ public static class MessageDb
     public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
         TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs)
     {
-        DataTable dt;
         const string q = "SELECT * " +
                          "FROM Messages ";
 
-        dt = Database.ExecuteSelect(q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig);
+        var dt = Database.ExecuteSelect(q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
             return false;
 

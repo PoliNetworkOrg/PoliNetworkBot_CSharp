@@ -279,6 +279,6 @@ public static class Logger
         var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
         if (bots == null || bots.Count == 0)
             return;
-        Logger.PrintLog(bots.First(), new List<long> { Data.Constants.Groups.BackupGroup }, null);
+        PrintLog(bots.First(), new List<long> { Data.Constants.Groups.BackupGroup }, null);
     }
 }

@@ -327,7 +327,7 @@ internal static class RestrictUser
                 e.Message.MessageId);
     }
 
-    private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, ExceptionNumbered item2)
+    private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
     {
         if (item2 == null)
             return 0;

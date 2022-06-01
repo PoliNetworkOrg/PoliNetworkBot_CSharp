@@ -1,6 +1,5 @@
 ﻿#region
 
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
@@ -111,15 +110,16 @@ internal static class Program
         }
     }
 
-    private static Tuple<char, bool> MainGetMenuChoice2(string[] args)
+    private static Tuple<char, bool> MainGetMenuChoice2(IReadOnlyList<string> args)
     {
-        if (args == null || args.Length == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
+        if (args == null || args.Count == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
 
         var i = 0;
         foreach (var arg in args)
         {
             Console.WriteLine("Arg [" + i + "]:");
             Console.WriteLine(arg);
+            i++;
         }
 
         return string.IsNullOrEmpty(args[0])

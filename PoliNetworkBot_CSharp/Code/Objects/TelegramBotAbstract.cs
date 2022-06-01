@@ -225,11 +225,11 @@ public class TelegramBotAbstract
 
     internal async Task<Tuple<Chat, Exception>> GetChat(long chatId)
     {
-        Exception e = null;
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
                 {
+                    Exception e = null;
                     try
                     {
                         return new Tuple<Chat, Exception>(await _botClient.GetChatAsync(chatId), null);

@@ -2,15 +2,15 @@
 
 using System;
 using System.Linq;
-using InstagramApiSharp.Classes.Models;
 using InstagramApiSharp.Classes.ResponseWrappers;
+using InstagramApiSharp.Converters;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Models.TV;
 
 #endregion
 
-namespace InstagramApiSharp.Converters;
+namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Converters.TV;
 
-internal class InstaTVSelfChannelConverter : IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse>
+internal class InstaTvSelfChannelConverter : IObjectConverter<InstaTvSelfChannel, InstaTVSelfChannelResponse>
 {
     public InstaTVSelfChannelResponse SourceObject { get; set; }
 

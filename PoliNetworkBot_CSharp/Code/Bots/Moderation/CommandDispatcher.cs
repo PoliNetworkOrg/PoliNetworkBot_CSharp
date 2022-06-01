@@ -1239,33 +1239,31 @@ internal static class CommandDispatcher
 
     private static async Task<MessageSentResult> TestTime(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        if (e.Message.From != null)
+        if (e.Message.From == null) 
+            return null;
+        
+        var (dateTimeSchedule, exception, s) = await AskUser.AskDateAsync(e.Message.From.Id,
+            e.Message.Text,
+            e.Message.From.LanguageCode, sender, e.Message.From.Username);
+
+        if (exception != null)
         {
-            var (dateTimeSchedule, exception, s) = await AskUser.AskDateAsync(e.Message.From.Id,
-                e.Message.Text,
-                e.Message.From.LanguageCode, sender, e.Message.From.Username);
+            await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
 
-            if (exception != null)
-            {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
-
-                return null;
-            }
-
-            var sentDate2 = dateTimeSchedule.GetDate();
-
-            var dict = new Dictionary<string, string>
-            {
-                { "en", DateTimeClass.DateTimeToItalianFormat(sentDate2) }
-            };
-            var text = new Language(dict);
-            return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username,
-                text, ParseMode.Html, e.Message.MessageId);
-            
+            return null;
         }
 
-        return null;
+        var sentDate2 = dateTimeSchedule.GetDate();
+
+        var dict = new Dictionary<string, string>
+        {
+            { "en", DateTimeClass.DateTimeToItalianFormat(sentDate2) }
+        };
+        var text = new Language(dict);
+        return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+            e.Message.From.LanguageCode, e.Message.From.Username,
+            text, ParseMode.Html, e.Message.MessageId);
+
     }
 
     private static async Task<MessageSentResult> Rules(TelegramBotAbstract sender, MessageEventArgs e)
