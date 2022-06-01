@@ -359,6 +359,7 @@ public class Program
                     await using var fileStream = File.OpenWrite(fileNameWithPath);
                     var tupleFileStream =
                         await sender.DownloadFileAsync(callbackQuery?.Message?.ReplyToMessage?.Document);
+                    tupleFileStream.Item2.Seek(0, SeekOrigin.Begin);
                     await tupleFileStream.Item2.CopyToAsync(fileStream);
                     fileStream.Close();
                     var dict = new Dictionary<string, string>
