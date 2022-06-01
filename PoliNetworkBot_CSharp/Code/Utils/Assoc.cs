@@ -412,7 +412,6 @@ internal static class Assoc
     private static async Task<DataRowCollection> GetMessagesInQueueAsync(TelegramBotAbstract sender,
         MessageEventArgs e, bool allAssoc)
     {
-        Language languageList = null;
         var conditionOnIdEntity = "";
         Dictionary<string, object> dict2 = null;
 
