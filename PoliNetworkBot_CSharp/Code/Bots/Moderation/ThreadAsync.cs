@@ -57,11 +57,11 @@ public class ThreadAsync
         //t3.Start();
     }
 
-    private static void CheckRamSize()
+    private static async void CheckRamSize()
     {
         try
         {
-            Utils.RamSize.CheckRamSizeThread();
+            await Utils.RamSize.CheckRamSizeThread();
         }
         catch
         {

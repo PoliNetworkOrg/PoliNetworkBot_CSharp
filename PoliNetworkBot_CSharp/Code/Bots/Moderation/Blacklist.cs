@@ -230,8 +230,10 @@ internal static class Blacklist
     internal static SpamType IsSpam(IEnumerable<PhotoSize> photo)
     {
         var biggerphoto = UtilsPhoto.GetLargest(photo);
-        return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD;
+        
+        // ReSharper disable once ConditionalTernaryEqualBranch
+        return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD;        //todo: analizzare la foto con un ocr
 
-        //todo: analizzare la foto con un ocr
+
     }
 }

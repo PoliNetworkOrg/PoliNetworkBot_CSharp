@@ -20,9 +20,9 @@ internal class UploadOperation
 
     public UploadOperation(Uri instaUri, BackgroundUploader backgroundUploader, InstaApi instaApi)
     {
-        this._instaUri = instaUri;
-        this._backgroundUploader = backgroundUploader;
-        this._instaApi = instaApi;
+        _instaUri = instaUri;
+        _backgroundUploader = backgroundUploader;
+        _instaApi = instaApi;
     }
 
     internal async Task StartAsync()

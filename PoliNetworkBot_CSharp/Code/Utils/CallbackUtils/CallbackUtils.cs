@@ -157,6 +157,7 @@ public static class CallbackUtils
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 CallBackDataFull = new CallBackDataFull();
             }
         }

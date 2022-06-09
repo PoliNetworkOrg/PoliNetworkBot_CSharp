@@ -658,7 +658,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     Get top live status.
     /// </summary>
     /// <param name="broadcastIds">Broadcast ids</param>
-    public async Task<IResult<InstaBroadcastTopLiveStatusList>> GetTopLiveStatusAsync(params string[] broadcastIds)
+    public async Task<IResult<InstaBroadcastTopLiveStatusList>> GetTopLiveStatusAsync(params object[] broadcastIds)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         if (broadcastIds == null)

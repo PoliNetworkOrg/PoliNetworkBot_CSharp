@@ -270,7 +270,7 @@ public class InstaApi
             else
             {
                 var obj = JsonConvert.DeserializeObject<InstaCheckEmailRegistration>(json);
-                return obj.ErrorType switch
+                return obj?.ErrorType switch
                 {
                     "fail" => Result.UnExpectedResponse<InstaCheckEmailRegistration>(response, json),
                     "email_is_taken" => Result.Fail("Email is taken.", (InstaCheckEmailRegistration)null),
@@ -403,7 +403,7 @@ public class InstaApi
             {
                 var o = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
 
-                return Result.UnExpectedResponse<bool>(response, o.Message?.Errors?[0], json);
+                return Result.UnExpectedResponse<bool>(response, o?.Message?.Errors?[0], json);
             }
 
             _signUpPhoneNumberInfo = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
@@ -502,6 +502,12 @@ public class InstaApi
                 _guidReg = Guid.NewGuid().ToString();
             }
 
+            if (HttpRequestProcessor.Client
+                    .BaseAddress == null)
+            {
+                return Result.Fail("HttpRequestProcessor.Client.BaseAddress == null", (InstaRegistrationSuggestionResponse)null);
+            }
+
             var cookies =
                 HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
                     .BaseAddress);
@@ -536,7 +542,7 @@ public class InstaApi
             {
                 var o = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
 
-                return Result.Fail(o.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
+                return Result.Fail(o?.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
             }
 
             var obj = JsonConvert.DeserializeObject<InstaRegistrationSuggestionResponse>(json);
@@ -615,15 +621,15 @@ public class InstaApi
             {
                 var o = JsonConvert.DeserializeObject<InstaAccountCreationResponse>(json);
 
-                return Result.Fail(o.Errors?.Username?[0], (InstaAccountCreation)null);
+                return Result.Fail(o?.Errors?.Username?[0], (InstaAccountCreation)null);
             }
 
             var r = JsonConvert.DeserializeObject<InstaAccountCreationResponse>(json);
-            if (r.ErrorType == "username_is_taken")
+            if (r?.ErrorType == "username_is_taken")
                 return Result.Fail(r.Errors?.Username?[0], (InstaAccountCreation)null);
 
             var obj = JsonConvert.DeserializeObject<InstaAccountCreation>(json);
-            if (obj.AccountCreated && obj.CreatedUser != null)
+            if (obj?.AccountCreated ?? false && obj.CreatedUser != null)
                 ValidateUserAsync(obj.CreatedUser, csrftoken, true, password);
             return Result.Success(obj);
         }
@@ -672,7 +678,7 @@ public class InstaApi
             {
                 var o = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
 
-                return Result.Fail(o.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
+                return Result.Fail(o?.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
             }
 
             var obj = JsonConvert.DeserializeObject<InstaRegistrationSuggestionResponse>(json);
@@ -711,6 +717,12 @@ public class InstaApi
 
             var firstResponse = await HttpRequestProcessor.GetAsync(HttpRequestProcessor.Client.BaseAddress);
             await firstResponse.Content.ReadAsStringAsync();
+            if (HttpRequestProcessor.Client
+                    .BaseAddress == null)
+            {
+                return Result.Fail("HttpRequestProcessor.Client.BaseAddress == null", (InstaAccountCreation)null);
+            }
+
             var cookies =
                 HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
                     .BaseAddress);
@@ -774,7 +786,7 @@ public class InstaApi
             //{"account_created": false, "errors": {"email": ["Another account is using iranramtin73jokar@live.com."], "username": ["This username isn't available. Please try another."]}, "allow_contacts_sync": true, "status": "ok", "error_type": "email_is_taken, username_is_taken"}
             //{"message": "feedback_required", "spam": true, "feedback_title": "Signup Error", "feedback_message": "Sorry! There\u2019s a problem signing you up right now. Please try again later. We restrict certain content and actions to protect our community. Tell us if you think we made a mistake.", "feedback_url": "repute/report_problem/instagram_signup/", "feedback_appeal_label": "Report problem", "feedback_ignore_label": "OK", "feedback_action": "report_problem", "status": "fail", "error_type": "signup_block"}
 
-            if (obj.AccountCreated && obj.CreatedUser != null)
+            if ((obj?.AccountCreated ?? false) && obj.CreatedUser != null)
                 ValidateUserAsync(obj.CreatedUser, csrftoken, true, password);
 
             return Result.Success(obj);
@@ -811,6 +823,12 @@ public class InstaApi
             var _guidReg = Guid.NewGuid().ToString();
             var firstResponse = await HttpRequestProcessor.GetAsync(HttpRequestProcessor.Client.BaseAddress);
             await firstResponse.Content.ReadAsStringAsync();
+
+            if (HttpRequestProcessor.Client
+                    .BaseAddress == null)
+            {
+                return null;
+            }
 
             var cookies =
                 HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
@@ -985,6 +1003,8 @@ public class InstaApi
             ReloginLabel:
             //if (isNewLogin)
             //    await GetToken();
+            if (HttpRequestProcessor.Client
+                    .BaseAddress == null) return Result.Success(InstaLoginResult.Success);
             var cookies =
                 HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
                     .BaseAddress);
@@ -998,8 +1018,8 @@ public class InstaApi
             {
                 if (string.IsNullOrEmpty(User.PublicKey))
                     await SendRequestsBeforeLoginAsync();
-                var encruptedPassword = this.GetEncryptedPassword(User.Password);
-                HttpRequestProcessor.RequestMessage.EncPassword = encruptedPassword;
+                var encryptedPassword = this.GetEncryptedPassword(User.Password);
+                HttpRequestProcessor.RequestMessage.EncPassword = encryptedPassword;
             }
 
             signature = isNewLogin
@@ -1064,7 +1084,7 @@ public class InstaApi
             }
 
             var loginInfo = JsonConvert.DeserializeObject<InstaLoginResponse>(json);
-            User.UserName = loginInfo.User?.UserName;
+            User.UserName = loginInfo?.User?.UserName;
             IsUserAuthenticated = loginInfo.User != null;
             if (loginInfo.User != null)
                 HttpRequestProcessor.RequestMessage.Username = loginInfo.User.UserName;
@@ -1073,13 +1093,16 @@ public class InstaApi
             User.RankToken = $"{User.LoggedInUser.Pk}_{HttpRequestProcessor.RequestMessage.PhoneId}";
             if (string.IsNullOrEmpty(User.CsrfToken))
             {
-                cookies =
-                    HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
-                        .BaseAddress);
+                if (HttpRequestProcessor.Client
+                        .BaseAddress != null)
+                    cookies =
+                        HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
+                            .BaseAddress);
                 User.CsrfToken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
             }
 
             await AfterLoginAsync(response).ConfigureAwait(false);
+
             return Result.Success(InstaLoginResult.Success);
         }
         catch (HttpRequestException httpException)
