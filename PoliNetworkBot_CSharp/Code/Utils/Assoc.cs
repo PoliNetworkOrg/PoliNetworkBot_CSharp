@@ -70,8 +70,8 @@ internal static class Assoc
                 { "en", "Choose the entity you are writing this message for" }
             });
 
-            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From.Id, languageList,
-                sender, e.Message.From.LanguageCode, e.Message.From.Username);
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From?.Id, languageList,
+                sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
 
             if (messageFromIdEntity == null)
             {
@@ -88,8 +88,8 @@ internal static class Assoc
                     { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
                     { "en", "I'm sorry! In this period you have sent too many messages" }
                 });
-                await sender.SendTextMessageAsync(e.Message.From.Id, languageList4, ChatType.Private, default,
-                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+                await sender.SendTextMessageAsync(e.Message.From?.Id, languageList4, ChatType.Private, default,
+                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
                 return false;
             }
 
@@ -109,19 +109,19 @@ internal static class Assoc
                 new() { opt1, opt2 }
             };
 
-            var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From.Id,
-                languageList2, sender, e.Message.From.LanguageCode, options, e.Message.From.Username);
+            var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
+                languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
             Tuple<DateTimeSchedule, Exception, string> sentDate;
-            if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From.LanguageCode))
+            if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
             {
                 sentDate = new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(null, false), null,
                     null);
             }
             else
             {
-                sentDate = await AskUser.AskDateAsync(e.Message.From.Id, e.Message.Text,
-                    e.Message.From.LanguageCode, sender, e.Message.From.Username);
+                sentDate = await AskUser.AskDateAsync(e.Message.From?.Id, e.Message.Text,
+                    e.Message.From?.LanguageCode, sender, e.Message.From?.Username);
 
                 if (sentDate.Item2 != null)
                 {
@@ -137,10 +137,10 @@ internal static class Assoc
                         { "en", "The date you choose is invalid!" },
                         { "it", "La data che hai scelto non è valida!" }
                     });
-                    await sender.SendTextMessageAsync(e.Message.From.Id, lang4,
-                        ChatType.Private, e.Message.From.LanguageCode,
+                    await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
+                        ChatType.Private, e.Message.From?.LanguageCode,
                         ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        e.Message.From.Username);
+                        e.Message.From?.Username);
                     return false;
                 }
             }
@@ -152,7 +152,7 @@ internal static class Assoc
             foreach (var idChat in idChatsSentInto)
             {
 
-                var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From.Id,
+                var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From?.Id,
                 messageFromIdEntity, idChat, sender, chatTypeSendInto);
 
                 switch (successQueue)
@@ -190,10 +190,10 @@ internal static class Assoc
                 { "en", "The message has been submitted correctly" },
                 { "it", "Il messaggio è stato inviato correttamente" }
             });
-            await sender.SendTextMessageAsync(e.Message.From.Id, lang3,
-                ChatType.Private, e.Message.From.LanguageCode,
+            await sender.SendTextMessageAsync(e.Message.From?.Id, lang3,
+                ChatType.Private, e.Message.From?.LanguageCode,
                 ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                e.Message.From.Username);
+                e.Message.From?.Username);
             return true;
         }
         catch (Exception ex)
@@ -225,11 +225,11 @@ internal static class Assoc
             { "en", "You have to attach something! (A photo, for example)" },
             { "it", "Devi allegare qualcosa! (Una foto, ad esempio)" }
         });
-        await sender.SendTextMessageAsync(e.Message.From.Id,
+        await sender.SendTextMessageAsync(e.Message.From?.Id,
             lang2,
-            ChatType.Private, e.Message.From.LanguageCode,
+            ChatType.Private, e.Message.From?.LanguageCode,
             ParseMode.Html,
-            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
+            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
     }
 
     internal static async Task<bool> Assoc_Publish(TelegramBotAbstract sender, MessageEventArgs e)
@@ -284,8 +284,8 @@ internal static class Assoc
             })
         };
         options.Insert(0, options2);
-        var r1 = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, sender,
-            e.Message.From.LanguageCode, options, e.Message.From.Username);
+        var r1 = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, sender,
+            e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
         long? index = null;
         try
@@ -313,8 +313,8 @@ internal static class Assoc
                 { "it", "Messaggio [" + v + "] eliminato con successo" },
                 { "en", "Message [" + v + "] deleted successfully" }
             });
-            await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text1,
-                e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.From?.Id, text1,
+                e.Message.Chat.Type, e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
                 null, true);
         }
         else
@@ -324,8 +324,8 @@ internal static class Assoc
                 { "it", "Messaggio [" + v + "] non eliminato, errore" },
                 { "en", "Message [" + v + "] not deleted, error" }
             });
-            await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text2,
-                e.Message.Chat.Type, e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.From?.Id, text2,
+                e.Message.Chat.Type, e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
                 null, true);
         }
 
@@ -450,7 +450,7 @@ internal static class Assoc
     {
         if (m == null) return new MessageSentResult(false, null, null);
 
-        return await MessageDb.SendMessageFromDataRow(m, e.Message.From.Id, ChatType.Private, extraInfo, sender,
+        return await MessageDb.SendMessageFromDataRow(m, e.Message.From?.Id, ChatType.Private, extraInfo, sender,
             count);
     }
 
@@ -533,8 +533,8 @@ internal static class Assoc
                 { "en", "Type the message you want to allow" },
                 { "it", "Scrivi il messaggio che vuoi approvare" }
             });
-            message = await AskUser.AskAsync(e.Message.From.Id, question, sender, e.Message.From.LanguageCode,
-                e.Message.From.Username, true);
+            message = await AskUser.AskAsync(e.Message.From?.Id, question, sender, e.Message.From?.LanguageCode,
+                e.Message.From?.Username, true);
         }
         else
         {
@@ -547,17 +547,17 @@ internal static class Assoc
             { "en", "In which groups do you want to allow it?" },
             { "it", "In quale gruppo le vuoi approvare?" }
         });
-        var groups = await AskUser.AskAsync(e.Message.From.Id, groupsQuestion, sender, e.Message.From.LanguageCode,
-            e.Message.From.Username, true);
+        var groups = await AskUser.AskAsync(e.Message.From?.Id, groupsQuestion, sender, e.Message.From?.LanguageCode,
+            e.Message.From?.Username, true);
 
         var typeQuestion = new Language(new Dictionary<string, string>
         {
             { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
             { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
         });
-        var messageType = await AskUser.AskAsync(e.Message.From.Id, typeQuestion, sender,
-            e.Message.From.LanguageCode,
-            e.Message.From.Username, true);
+        var messageType = await AskUser.AskAsync(e.Message.From?.Id, typeQuestion, sender,
+            e.Message.From?.LanguageCode,
+            e.Message.From?.Username, true);
 
         var assocList = await GetAssocList();
         var assocQuestion = new Language(new Dictionary<string, string>
@@ -647,8 +647,8 @@ internal static class Assoc
             await sender.SendTextMessageAsync(
                 eventArgs?.Message?.From?.Id,
                 privateText, ChatType.Private,
-                eventArgs.Message.From.LanguageCode, ParseMode.Html, null, null,
-                eventArgs.Message.MessageId);
+                eventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
+                eventArgs?.Message?.MessageId);
         }
         catch (Exception ex)
         {

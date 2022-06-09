@@ -1,60 +1,53 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Minista.Helpers;
+using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 
 #endregion
 
-namespace Minista.Helpers;
+namespace PoliNetworkBot_CSharp.Code.IG.Minista.Helpers.Uploaders;
 
 internal class UploadOperation
 {
-    private readonly BackgroundUploader backgroundUploader;
-    private readonly StorageFile file;
-    private readonly InstaApi instaApi;
-    private readonly Uri instaUri;
-    internal string Guid = null;
+    private readonly BackgroundUploader _backgroundUploader;
+    private readonly InstaApi _instaApi;
+    private readonly Uri _instaUri;
 
-    public UploadOperation(Uri instaUri, StorageFile file, BackgroundUploader backgroundUploader, InstaApi instaApi)
+
+    public UploadOperation(Uri instaUri, BackgroundUploader backgroundUploader, InstaApi instaApi)
     {
-        this.instaUri = instaUri;
-        this.file = file;
-        this.backgroundUploader = backgroundUploader;
-        this.instaApi = instaApi;
+        this._instaUri = instaUri;
+        this._backgroundUploader = backgroundUploader;
+        this._instaApi = instaApi;
     }
 
     internal async Task StartAsync()
     {
-        ;
-
         try
         {
-            ;
-            var client = instaApi.HttpClient;
+            var client = _instaApi.HttpClient;
 
-            var c = ToDictionary(backgroundUploader.list);
+            var c = ToDictionary(_backgroundUploader.list);
             var content = new FormUrlEncodedContent(c);
 
-            var response = await client.PostAsync(instaUri, content);
+            var response = await client.PostAsync(_instaUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             Console.WriteLine(responseString);
-            ;
 
-            var request = instaApi.HttpHelper.GetDefaultRequest(instaUri, instaApi._deviceInfo, c);
-            var response2 = await instaApi.HttpRequestProcessor.SendAsync(request);
+            var request = _instaApi.HttpHelper.GetDefaultRequest(_instaUri, _instaApi._deviceInfo, c);
+            var response2 = await _instaApi.HttpRequestProcessor.SendAsync(request);
             var json = await response2.Content.ReadAsStringAsync();
-            ;
+            Console.WriteLine(json);
         }
         catch
         {
-            ;
+            // ignored
         }
-
-        ;
     }
 
     private static Dictionary<string, string> ToDictionary(List<Tuple<string, string>> list)

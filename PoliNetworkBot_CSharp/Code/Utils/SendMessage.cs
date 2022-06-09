@@ -148,7 +148,7 @@ internal static class SendMessage
     }
 
     public static SuccessQueue PlaceMessageInQueue(Message replyTo, DateTimeSchedule sentDate,
-        long messageFromIdPerson, long? messageFromIdEntity,
+        long? messageFromIdPerson, long? messageFromIdEntity,
         long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
     {
         if (sentDate == null)
@@ -156,6 +156,9 @@ internal static class SendMessage
 
         if (replyTo == null)
             return SuccessQueue.INVALID_OBJECT;
+        
+        if (messageFromIdPerson == null)
+            return SuccessQueue.INVALID_MESSAGE_FROM_ID_PERSON;
 
         var d1 = sentDate.IsInvalid();
         if (d1) return SuccessQueue.DATE_INVALID;
@@ -168,8 +171,9 @@ internal static class SendMessage
             if (photoIdDb == null)
                 return SuccessQueue.INVALID_ID_TO_DB;
 
+      
             MessageDb.AddMessage(MessageType.Photo,
-                replyTo.Caption, messageFromIdPerson,
+                replyTo.Caption, messageFromIdPerson.Value,
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
                 sender.GetId(), replyTo.MessageId,
@@ -177,7 +181,6 @@ internal static class SendMessage
         }
         else if (replyTo.Video != null)
         {
-            ;
             var video = replyTo.Video;
 
             var videoMax = UtilsVideo.GetLargest(video);
@@ -186,7 +189,7 @@ internal static class SendMessage
                 return SuccessQueue.INVALID_ID_TO_DB;
 
             MessageDb.AddMessage(MessageType.Video,
-                replyTo.Caption, messageFromIdPerson,
+                replyTo.Caption, messageFromIdPerson.Value,
                 messageFromIdEntity,
                 idChatSentInto, sentDate.GetDate(), false,
                 sender.GetId(), replyTo.MessageId,

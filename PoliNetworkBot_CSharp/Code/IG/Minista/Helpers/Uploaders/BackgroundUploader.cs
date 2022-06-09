@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
+using PoliNetworkBot_CSharp.Code.IG.Minista.Helpers.Uploaders;
 
 #endregion
 
@@ -19,6 +20,6 @@ internal class BackgroundUploader
 
     internal UploadOperation CreateUpload(Uri instaUri, StorageFile file, InstaApi instaApi)
     {
-        return new UploadOperation(instaUri, file, this, instaApi);
+        return new UploadOperation(instaUri, this, instaApi);
     }
 }

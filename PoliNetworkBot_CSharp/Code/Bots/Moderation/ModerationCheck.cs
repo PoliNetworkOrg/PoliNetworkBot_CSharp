@@ -146,7 +146,7 @@ internal static class ModerationCheck
             {
                 var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e);
                 ints.Insert(0, 10);
-                return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, v?.ToString());
+                return new Tuple<ToExit, ChatMember[], List<int>, string>(toExit, chatMembers, ints, v.ToString());
             }
         }
     }
@@ -172,7 +172,7 @@ internal static class ModerationCheck
             if (messageEventArgs is { Message.Chat.Title: { } })
                 name = messageEventArgs.Message.Chat.Title;
 
-            Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat?.Id + ", name:" + name +
+            Logger.WriteLine("Changed group with ID: " + messageEventArgs.Message?.Chat.Id + ", name:" + name +
                              " to valid");
         }
         catch (Exception e)
@@ -271,19 +271,8 @@ internal static class ModerationCheck
         long? userId,
         string lastName, string language, long? messageId)
     {
-        var username = false;
-        var name = false;
-
-        if (string.IsNullOrEmpty(fromUsername))
-        {
-            if (userId != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId.Value))
-                username = false;
-            else
-                username = true;
-        }
-
-        if (fromFirstName.Length < 2)
-            name = true;
+        var username = string.IsNullOrEmpty(fromUsername) && (userId == null || !GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId.Value));
+        var name = fromFirstName.Length < 2;
 
         return new UsernameAndNameCheckResult(username, name, language,
             fromUsername, userId, fromFirstName, lastName, messageId);
@@ -336,9 +325,9 @@ internal static class ModerationCheck
             }
         }
 
-        if (string.IsNullOrEmpty(e.Message.Text))
-            return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Caption, e.Message.Chat.Id, telegramBotClient),
-                Blacklist.IsSpam(e.Message.Photo));
+        if (string.IsNullOrEmpty(e.Message?.Text))
+            return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message?.Caption, e.Message?.Chat.Id, telegramBotClient),
+                Blacklist.IsSpam(e.Message?.Photo));
 
         if (e.Message.Text.StartsWith("/"))
             return SpamType.ALL_GOOD;
@@ -352,7 +341,7 @@ internal static class ModerationCheck
             Blacklist.IsSpam(e.Message.Photo));
     }
 
-    private static bool CheckIfIsInList(List<TelegramUser> a, User from)
+    private static bool CheckIfIsInList(IEnumerable<TelegramUser> a, User from)
     {
         return a.Any(x => x.Matches(from));
     }
@@ -375,7 +364,7 @@ internal static class ModerationCheck
     private static async Task SendUsernameWarning(TelegramBotAbstract telegramBotClient,
         bool username, bool name, string lang, string usernameOfUser,
         long chatId, long? userId, long? messageId, ChatType messageChatType,
-        string firstName, string lastName, User[] newChatMembers, MessageEventArgs messageEventArgs)
+        string firstName, string lastName, IReadOnlyCollection<User> newChatMembers, MessageEventArgs messageEventArgs)
     {
         var s1I = username switch
         {
@@ -452,7 +441,7 @@ internal static class ModerationCheck
                     }
                     default:
                     {
-                        var e4 = "Attempted to add a message to be deleted in queue\n" + r2?.GetType() + " " + r2;
+                        var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
                         var e3 = new Exception(e4);
                         await NotifyUtil.NotifyOwners(e3, telegramBotClient, messageEventArgs);
                         break;
@@ -460,7 +449,7 @@ internal static class ModerationCheck
                 }
         }
 
-        if (newChatMembers == null || newChatMembers.Length == 0)
+        if (newChatMembers == null || newChatMembers.Count == 0)
             await RestrictUser.Mute(60 * 5, telegramBotClient, chatId, userId, messageChatType,
                 RestrictAction.MUTE);
 
