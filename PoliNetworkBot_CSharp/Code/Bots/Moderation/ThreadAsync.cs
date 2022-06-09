@@ -50,8 +50,23 @@ public class ThreadAsync
         var t10 = new Thread(AutomaticLog);
         t10.Start();
 
+        var t11 = new Thread(CheckRamSize);
+        t11.Start();
+
         //var t3 = new Thread(FixThings);
         //t3.Start();
+    }
+
+    private static void CheckRamSize()
+    {
+        try
+        {
+            Utils.RamSize.CheckRamSizeThread();
+        }
+        catch
+        {
+            ;
+        }
     }
 
     private static void AutomaticLog()

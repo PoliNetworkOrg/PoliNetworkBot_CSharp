@@ -7,10 +7,10 @@ using PoliNetworkBot_CSharp.Code.Data;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class Owners
+internal static class Owners
 {
-    internal static bool CheckIfOwner(long id)
+    internal static bool CheckIfOwner(long? id)
     {
-        return GlobalVariables.Owners.Any(x => x.id == id);
+        return id != null && GlobalVariables.Owners.Any(x => x.id == id);
     }
 }

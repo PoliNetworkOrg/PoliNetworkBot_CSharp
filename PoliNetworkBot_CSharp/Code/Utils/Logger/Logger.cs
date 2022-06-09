@@ -119,7 +119,7 @@ public static class Logger
             {
                 throw new Exception("No REAL_BOT to send Log");
             }
-            PrintLog(bots[0], new List<long> { Data.Constants.Groups.BackupGroup }, null);
+            PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
         }
         catch (Exception e)
         {
@@ -134,12 +134,15 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static async Task Subscribe(long fromId, TelegramBotAbstract telegramBotAbstract,
+    public static async Task Subscribe(long? fromId, TelegramBotAbstract telegramBotAbstract,
         MessageEventArgs messageEventArgs)
     {
+        if (fromId == null)
+            return;
+        
         try
         {
-            Subscribers.TryAdd(fromId, telegramBotAbstract);
+            Subscribers.TryAdd(fromId.Value, telegramBotAbstract);
         }
         catch (Exception e)
         {
@@ -147,11 +150,14 @@ public static class Logger
         }
     }
 
-    public static void Unsubscribe(long fromId)
+    public static void Unsubscribe(long? fromId)
     {
+        if (fromId == null)
+            return;
+        
         try
         {
-            Subscribers.Remove(fromId);
+            Subscribers.Remove(fromId.Value);
         }
         catch (Exception e)
         {
@@ -159,7 +165,7 @@ public static class Logger
         }
     }
 
-    public static void PrintLog(TelegramBotAbstract sender, List<long> sendTo, MessageEventArgs messageEventArgs)
+    public static void PrintLog(TelegramBotAbstract sender, List<long?> sendTo, MessageEventArgs messageEventArgs)
     {
         lock (PrintLogLock)
         {
@@ -192,7 +198,7 @@ public static class Logger
         }
     }
 
-    private static void PrintLog2(List<long> sendTo, TelegramBotAbstract sender, string path)
+    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract sender, string path)
     {
         string file;
         lock (LogFileLock)
@@ -226,7 +232,7 @@ public static class Logger
         }
     }
 
-    private static void EmptyLog(TelegramBotAbstract sender, List<long> sendTo)
+    private static void EmptyLog(TelegramBotAbstract sender, List<long?> sendTo)
     {
         var text = new Language(new Dictionary<string, string>
         {
@@ -289,7 +295,7 @@ public static class Logger
             }
             catch
             {
-                ;
+                // ignored
             }
 
             Thread.Sleep(1000 * 60 * 60 * 24);
@@ -302,6 +308,6 @@ public static class Logger
         var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
         if (bots == null || bots.Count == 0)
             return;
-        PrintLog(bots.First(), new List<long> { Data.Constants.Groups.BackupGroup }, null);
+        PrintLog(bots.First(), new List<long?> { Data.Constants.Groups.BackupGroup }, null);
     }
 }

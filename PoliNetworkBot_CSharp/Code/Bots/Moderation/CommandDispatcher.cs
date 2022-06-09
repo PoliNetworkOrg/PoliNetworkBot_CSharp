@@ -33,9 +33,9 @@ internal static class CommandDispatcher
 {
     public static async Task CommandDispatcherMethod(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        var cmdLines = e.Message.Text.Split(' ');
-        var cmd = cmdLines[0].Trim();
-        if (cmd.Contains('@'))
+        var cmdLines = e.Message.Text?.Split(' ');
+        var cmd = cmdLines?[0].Trim();
+        if (cmd?.Contains('@') ?? false)
         {
             var cmd2 = cmd.Split("@");
             var botUsername = await sender.GetBotUsernameAsync();
@@ -210,7 +210,7 @@ internal static class CommandDispatcher
                     }
 
                     if (GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username,
+                        _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                             false);
                     else
                         await DefaultCommand(sender, e);
@@ -261,7 +261,7 @@ internal static class CommandDispatcher
 
             case "/sendmessageinchannel":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
                         if (e.Message.ReplyToMessage == null || cmdLines.Length != 2)
@@ -284,11 +284,11 @@ internal static class CommandDispatcher
             case "/getGroups":
                 {
                     if ((GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message.From)) ||
-                         Owners.CheckIfOwner(e.Message.From.Id))
+                         Owners.CheckIfOwner(e.Message.From?.Id))
                         && e.Message.Chat.Type == ChatType.Private)
                     {
                         string username = null;
-                        if (!string.IsNullOrEmpty(e.Message.From.Username))
+                        if (!string.IsNullOrEmpty(e.Message.From?.Username))
                             username = e.Message.From.Username;
 
                         _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode,
@@ -317,7 +317,7 @@ internal static class CommandDispatcher
 
             case "/allowmessageowner":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
                         await AllowMessageOwnerAsync(e, sender);
@@ -504,10 +504,10 @@ internal static class CommandDispatcher
                 }
             case "/subscribe_log":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
-                        await Logger.Subscribe(e.Message.From.Id, sender, e);
+                        await Logger.Subscribe(e.Message.From?.Id, sender, e);
 
                         return;
                     }
@@ -518,10 +518,10 @@ internal static class CommandDispatcher
                 }
             case "/unsubscribe_log":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
-                        Logger.Unsubscribe(e.Message.From.Id);
+                        Logger.Unsubscribe(e.Message.From?.Id);
 
                         return;
                     }
@@ -532,10 +532,10 @@ internal static class CommandDispatcher
                 }
             case "/getlog":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private)
                     {
-                        Logger.PrintLog(sender, new List<long> { e.Message.From.Id, Groups.BackupGroup }, e);
+                        Logger.PrintLog(sender, new List<long?> { e.Message.From?.Id, Groups.BackupGroup }, e);
 
                         return;
                     }
@@ -546,7 +546,7 @@ internal static class CommandDispatcher
                 }
             case "/getmessagesent":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id)
+                    if (Owners.CheckIfOwner(e.Message.From?.Id)
                         && e.Message.Chat.Type == ChatType.Private && e.Message.ReplyToMessage != null)
                     {
                         await MessagesStore.SendMessageDetailsAsync(sender, e);
@@ -587,7 +587,7 @@ internal static class CommandDispatcher
 
             case "/assoc_publish":
                 {
-                    if (Owners.CheckIfOwner(e.Message.From.Id))
+                    if (Owners.CheckIfOwner(e.Message.From?.Id))
                         _ = await Assoc.Assoc_Publish(sender, e);
                     else
                         _ = await DefaultCommand(sender, e);
@@ -742,7 +742,7 @@ internal static class CommandDispatcher
             var indexTitle = groups.Columns.IndexOf("title");
             var indexLink = groups.Columns.IndexOf("link");
             var buttons = (from DataRow row in groups.Rows
-                           where !string.IsNullOrEmpty(row?[indexLink]?.ToString()) &&
+                           where !string.IsNullOrEmpty(row?[indexLink].ToString()) &&
                                  !string.IsNullOrEmpty(row?[indexTitle]?.ToString())
                            select new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
                            { Url = row[indexLink].ToString() }).ToList();
@@ -1552,8 +1552,8 @@ internal static class CommandDispatcher
             }
         });
         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From.LanguageCode,
-            e.Message.From.Username, text2,
+            e.Message.From?.LanguageCode,
+            e.Message.From?.Username, text2,
             ParseMode.Html,
             null);
 
