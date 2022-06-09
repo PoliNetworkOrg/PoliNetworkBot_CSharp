@@ -149,12 +149,19 @@ public static class CallbackUtils
     {
         try
         {
-            CallBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
-                File.ReadAllText(Paths.Data.CallbackData)) ?? new CallBackDataFull();
+            try
+            {
+                CallBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
+                    File.ReadAllText(Paths.Data.CallbackData));
+                Logger.Logger.WriteLine("Callbackdata file is empty");
+            }
+            catch (Exception ex)
+            {
+                CallBackDataFull = new CallBackDataFull();
+            }
         }
         catch (Exception ex)
         {
-            CallBackDataFull = new CallBackDataFull();
             Logger.Logger.WriteLine(ex);
         }
     }

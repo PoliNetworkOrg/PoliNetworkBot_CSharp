@@ -83,6 +83,7 @@ public static class Logger
             if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
 
             if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
+            
             lock (LogFileLock)
             {
                 File.AppendAllLinesAsync(DataLogPath, new[]
@@ -99,11 +100,33 @@ public static class Logger
                         ChatType.Group,
                         ParseMode.Html)
                 );
+            _ = SendLogIfOversize();
         }
         catch (Exception e)
         {
             CriticalError(e, log);
         }
+    }
+
+    private static Task SendLogIfOversize()
+    {
+        var size = new FileInfo(DataLogPath).Length;
+        if (!(size > 50e6)) return Task.CompletedTask;
+        try
+        {
+            var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
+            if (bots.Count < 1)
+            {
+                throw new Exception("No REAL_BOT to send Log");
+            }
+            PrintLog(bots[0], new List<long> { Data.Constants.Groups.BackupGroup }, null);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        return Task.CompletedTask;
     }
 
     private static string GetTime()
