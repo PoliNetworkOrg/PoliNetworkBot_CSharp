@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -46,7 +47,7 @@ public static class MessagesStore
     /// <param name="timeLater">Allow at a later time starting from now.</param>
     /// <returns></returns>
     public static bool AddMessage(string message,
-        MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED,
+        MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,
         TimeSpan? timeLater = null)
     {
         if (message == null)
@@ -88,7 +89,12 @@ public static class MessagesStore
         foreach (var message in Store.Keys)
         {
             Store.TryGetValue(message, out var storedMessage);
-            if (storedMessage != null && !storedMessage.IsOutdated()) continue;
+            if (storedMessage == null)
+                continue;
+            
+            if (!storedMessage.IsOutdated())
+                continue;
+            
             lock (Store)
             {
                 Store.Remove(message);
@@ -143,7 +149,7 @@ public static class MessagesStore
                     lastSeenTime: DateTime.Now,
                     howManyTimesWeSawIt: 1,
                     message: message.Text,
-                    allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED
+                    allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
                 );
             }
         }
@@ -165,7 +171,7 @@ public static class MessagesStore
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return SpamType.UNDEFINED;
@@ -179,7 +185,7 @@ public static class MessagesStore
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;

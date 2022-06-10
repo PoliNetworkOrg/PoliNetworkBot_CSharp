@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -38,7 +40,8 @@ public class MessageAllowedStatus
                 allowedTime = CalculateTimeSpan(timeSpan);
                 break;
 
-            case MessageAllowedStatusEnum.NOT_DEFINED:
+            case MessageAllowedStatusEnum.NOT_DEFINED_ERROR:
+            case MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
                 allowedTime = null;
                 return;
 
@@ -105,13 +108,13 @@ public class MessageAllowedStatus
     {
         switch (_messageAllowedStatus)
         {
-            case MessageAllowedStatusEnum.NOT_ALLOWED or MessageAllowedStatusEnum.NOT_DEFINED:
+            case MessageAllowedStatusEnum.NOT_ALLOWED or MessageAllowedStatusEnum.NOT_DEFINED_ERROR or MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
                 return _messageAllowedStatus;
 
             case MessageAllowedStatusEnum.PENDING or MessageAllowedStatusEnum.ALLOWED:
             {
                 if (allowedTime == null || allowedTime > DateTime.Now || allowedTime.Value.AddHours(24) < DateTime.Now)
-                    return MessageAllowedStatusEnum.NOT_DEFINED;
+                    return MessageAllowedStatusEnum.NOT_DEFINED_ERROR;
                 return MessageAllowedStatusEnum.ALLOWED;
             }
             default:
@@ -128,7 +131,7 @@ public class MessageAllowedStatus
     public void RemoveMessage(bool andFlagAsSpam)
     {
         _messageAllowedStatus =
-            andFlagAsSpam ? MessageAllowedStatusEnum.NOT_ALLOWED : MessageAllowedStatusEnum.NOT_DEFINED;
+            andFlagAsSpam ? MessageAllowedStatusEnum.NOT_ALLOWED : MessageAllowedStatusEnum.NOT_DEFINED_ERROR;
     }
 
     public DateTime RemovalTime()
@@ -139,5 +142,18 @@ public class MessageAllowedStatus
     public DateTime? GetAllowedTime()
     {
         return allowedTime;
+    }
+
+    public bool? isAllowed()
+    {
+        return _messageAllowedStatus switch
+        {
+            MessageAllowedStatusEnum.ALLOWED => true,
+            MessageAllowedStatusEnum.NOT_ALLOWED => false,
+            MessageAllowedStatusEnum.PENDING => null,
+            MessageAllowedStatusEnum.NOT_DEFINED_ERROR => null,
+            MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT => false,
+            _ => null
+        };
     }
 }

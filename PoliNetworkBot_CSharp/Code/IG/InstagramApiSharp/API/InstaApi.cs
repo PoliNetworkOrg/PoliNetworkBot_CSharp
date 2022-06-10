@@ -629,7 +629,7 @@ public class InstaApi
                 return Result.Fail(r.Errors?.Username?[0], (InstaAccountCreation)null);
 
             var obj = JsonConvert.DeserializeObject<InstaAccountCreation>(json);
-            if (obj?.AccountCreated ?? false && obj.CreatedUser != null)
+            if ((obj?.AccountCreated ?? false) && obj.CreatedUser != null)
                 ValidateUserAsync(obj.CreatedUser, csrftoken, true, password);
             return Result.Success(obj);
         }
@@ -649,40 +649,44 @@ public class InstaApi
     {
         try
         {
-            var cookies =
-                HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
-                    .BaseAddress);
-            var csrftoken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
-            User.CsrfToken = csrftoken;
-            var postData = new Dictionary<string, string>
+            if (HttpRequestProcessor.Client
+                    .BaseAddress != null)
             {
-                { "fb_connected", "false" },
-                { "seen_steps", "[]" },
-                { "phone_id", _phoneIdReg },
-                { "fb_installed", "false" },
-                { "locale", "en_US" },
-                { "timezone_offset", "16200" },
-                { "network_type", "WIFI-UNKNOWN" },
-                { "_csrftoken", csrftoken },
-                { "guid", _guidReg },
-                { "is_ci", "false" },
-                { "android_id", _deviceIdReg },
-                { "reg_flow_taken", "phone" },
-                { "tos_accepted", "false" }
-            };
-            var instaUri = UriCreator.GetOnboardingStepsUri();
-            var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
-            var response = await HttpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                var o = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
+                var cookies =
+                    HttpRequestProcessor.HttpHandler.CookieContainer.GetCookies(HttpRequestProcessor.Client
+                        .BaseAddress);
+                var csrftoken = cookies[InstaApiConstants.CSRFTOKEN]?.Value ?? string.Empty;
+                User.CsrfToken = csrftoken;
+                var postData = new Dictionary<string, string>
+                {
+                    { "fb_connected", "false" },
+                    { "seen_steps", "[]" },
+                    { "phone_id", _phoneIdReg },
+                    { "fb_installed", "false" },
+                    { "locale", "en_US" },
+                    { "timezone_offset", "16200" },
+                    { "network_type", "WIFI-UNKNOWN" },
+                    { "_csrftoken", csrftoken },
+                    { "guid", _guidReg },
+                    { "is_ci", "false" },
+                    { "android_id", _deviceIdReg },
+                    { "reg_flow_taken", "phone" },
+                    { "tos_accepted", "false" }
+                };
+                var instaUri = UriCreator.GetOnboardingStepsUri();
+                var request = HttpHelper.GetSignedRequest(instaUri, _deviceInfo, postData);
+                var response = await HttpRequestProcessor.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    var o = JsonConvert.DeserializeObject<InstaAccountRegistrationPhoneNumber>(json);
 
-                return Result.Fail(o?.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
+                    return Result.Fail(o?.Message?.Errors?[0], (InstaRegistrationSuggestionResponse)null);
+                }
+
+                var obj = JsonConvert.DeserializeObject<InstaRegistrationSuggestionResponse>(json);
+                return Result.Success(obj);
             }
-
-            var obj = JsonConvert.DeserializeObject<InstaRegistrationSuggestionResponse>(json);
-            return Result.Success(obj);
         }
         catch (HttpRequestException httpException)
         {
@@ -695,6 +699,8 @@ public class InstaApi
             _logger?.LogException(exception);
             return Result.Fail<InstaRegistrationSuggestionResponse>(exception);
         }
+
+        return null;
     }
 
     /// <summary>

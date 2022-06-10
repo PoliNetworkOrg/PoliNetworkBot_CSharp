@@ -27,7 +27,7 @@ public class StoredMessage
     public List<Message> Messages = new();
 
     public StoredMessage(string message, int howManyTimesWeSawIt = 0,
-        MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED,
+        MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,
         TimeSpan? timeLater = null, DateTime? lastSeenTime = null)
     {
         HowManyTimesWeSawIt = howManyTimesWeSawIt;
@@ -49,7 +49,9 @@ public class StoredMessage
 
             case MessageAllowedStatusEnum.PENDING:
                 throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
-            case MessageAllowedStatusEnum.NOT_DEFINED:
+            
+            case MessageAllowedStatusEnum.NOT_DEFINED_ERROR:
+            case MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
                 break;
         }
 
@@ -72,7 +74,10 @@ public class StoredMessage
 
     internal bool IsOutdated()
     {
-        return AllowedStatus.RemovalTime() < DateTime.Now;
+        if (AllowedStatus.isAllowed() ?? true)
+            return AllowedStatus.RemovalTime() < DateTime.Now;
+
+        return LastSeenTime != null && LastSeenTime.Value.AddHours(2) < DateTime.Now;
     }
 
     internal string ToJson()
