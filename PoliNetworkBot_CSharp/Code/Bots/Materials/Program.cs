@@ -230,9 +230,11 @@ public class Program
                 logMessage += "Git diff: " + diff + "\n";
 
                 ModifiedFilesInGitFolder.Remove(GetGit(directory));
-
-                var commit = @"git commit -m '[Bot] files changed:  " + diff +
-                             @"' --author=""PoliBot <polinetwork2@gmail.com>""";
+                
+                diff = diff.Replace("\"", "'");
+                
+                var commit = "git commit -m \"[Bot] files changed:  " + diff +
+                             "\" --author=\"PoliBot <polinetwork2@gmail.com>\"";
 
                 logMessage += "Commit results: " + DoScript(powershell, commit, true) + "\n";
 
@@ -270,12 +272,12 @@ public class Program
 
     private static object GetRoot(string directory)
     {
-        return directory.Split("/").GetValue(1);
+        return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).GetValue(1);
     }
 
     private static string GetGit(string directory)
     {
-        return directory.Split("/").ToList()[3];
+        return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[3];
     }
 
     public static async void BotOnCallbackQueryReceived(object sender1,
@@ -350,7 +352,7 @@ public class Program
                         callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
                 }
 
-                var fileOnlyName = fileNameWithPath[Config.RootDir.Length..];
+                var fileOnlyRelativePath = fileNameWithPath[Config.RootDir.Length..];
                 try
                 {
                     var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
@@ -364,12 +366,24 @@ public class Program
                     fileStream.Close();
                     var dict = new Dictionary<string, string>
                     {
-                        { "en", "File Saved in " + fileOnlyName + "\n" },
-                        { "it", "File salvato in " + fileOnlyName + "\n" }
+                        { "en", "File Saved in " + fileOnlyRelativePath + "\n" },
+                        { "it", "File salvato in " + fileOnlyRelativePath + "\n" }
                     };
                     var text = new Language(dict);
                     await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
                         callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
+
+                    var gitDir = GetGit(fileNameWithPath);
+                    ModifiedFilesInGitFolder.TryGetValue(gitDir, out var filesInGit);
+                    filesInGit ??= new List<string>();
+                    var tempSplit = fileOnlyRelativePath.Split(Convert.ToChar("/"), Convert.ToChar("\\"));
+                    var fileOnlyName = tempSplit[^1];
+                    filesInGit.Add(fileOnlyName);
+                    if (!ModifiedFilesInGitFolder.TryAdd(gitDir, filesInGit))
+                    {
+                        ModifiedFilesInGitFolder.Remove(gitDir);
+                        ModifiedFilesInGitFolder.Add(gitDir, filesInGit);
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -516,15 +530,6 @@ public class Program
                 fileAlreadyPresent = true;
             else
                 throw new Exception("Fatal error while handling path dictionary");
-        }
-
-        ModifiedFilesInGitFolder.TryGetValue(GetGit(file), out var filesInGit);
-        filesInGit ??= new List<string>();
-        filesInGit.Add(e.Message.Document.FileName);
-        if (!ModifiedFilesInGitFolder.TryAdd(GetGit(file), filesInGit))
-        {
-            ModifiedFilesInGitFolder.Remove(GetGit(file));
-            ModifiedFilesInGitFolder.Add(GetGit(file), filesInGit);
         }
 
         var inlineKeyboardButton = new List<InlineKeyboardButton>
