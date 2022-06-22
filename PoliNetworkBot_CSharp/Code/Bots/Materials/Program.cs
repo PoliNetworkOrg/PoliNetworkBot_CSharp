@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -232,7 +233,7 @@ public class Program
                 ModifiedFilesInGitFolder.Remove(GetGit(directory));
                 
                 diff = diff.Replace("\"", "'");
-                
+
                 var commit = "git commit -m \"[Bot] files changed:  " + diff +
                              "\" --author=\"PoliBot <polinetwork2@gmail.com>\"";
 
@@ -310,6 +311,9 @@ public class Program
         var FromId = long.Parse(callbackdata[1]);
         if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
             throw new Exception("Errore nel dizionario dei Path!");
+        
+        RemoveInvalidFilePathCharacters(fileNameWithPath, "");
+        
         if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
         {
             await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
@@ -851,5 +855,12 @@ public class Program
     {
         return CommandDispatcher.DoScript(powershell, script, debug)
             .Aggregate("", (current, s) => current + s + separator);
+    }
+    
+    public static string RemoveInvalidFilePathCharacters(string filename, string replaceChar)
+    {
+        string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+        Regex r = new Regex($"[{Regex.Escape(regexSearch)}]");
+        return r.Replace(filename, replaceChar);
     }
 }
