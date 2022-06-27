@@ -312,7 +312,7 @@ public class Program
         if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
             throw new Exception("Errore nel dizionario dei Path!");
         
-        RemoveInvalidFilePathCharacters(fileNameWithPath, "");
+        fileNameWithPath = RemoveInvalidFilePathCharacters(fileNameWithPath, "");
         
         if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
         {
@@ -332,7 +332,7 @@ public class Program
                     "Modification Accepted"); //Mostra un messaggio all'utente
 
                 var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                    callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover,
+                    callbackQuery.Message.MessageId, "<b>MERGED</b> by " + nameApprover + "\nIn " + fileNameWithPath,
                     ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
 
                 if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
