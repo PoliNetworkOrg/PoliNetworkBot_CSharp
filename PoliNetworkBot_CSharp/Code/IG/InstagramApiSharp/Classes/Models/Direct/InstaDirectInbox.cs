@@ -14,7 +14,7 @@ public class InstaDirectInbox
 
     public long UnseenCount { get; set; }
 
-    public string OldestCursor { get; set; }
+    public string? OldestCursor { get; set; }
 
     public bool BlendedInboxEnabled { get; set; }
 

@@ -91,5 +91,5 @@ public interface IFeedProcessor
     ///     <see cref="InstaTopicalExploreFeed" />
     /// </returns>
     Task<IResult<InstaTopicalExploreFeed>> GetTopicalExploreFeedAsync(PaginationParameters paginationParameters,
-        string clusterId = null);
+        string? clusterId = null);
 }

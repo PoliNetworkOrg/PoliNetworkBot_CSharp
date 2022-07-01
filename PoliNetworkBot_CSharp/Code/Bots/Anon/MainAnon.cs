@@ -19,22 +19,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
 internal static class MainAnon
 {
-    internal static void MainMethod(object sender, MessageEventArgs e)
+    internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
-        var t = new Thread(() => _ = MainMethod2(sender, e));
+        var t = new Thread(() =>
+        {
+            if (sender != null) _ = MainMethod2(sender, e);
+        });
         t.Start();
     }
 
-    private static async Task MainMethod2(object sender, MessageEventArgs e)
+    private static async Task MainMethod2(object sender, MessageEventArgs? e)
     {
         ;
 
-        if (e.Message == null)
+        if (e?.Message == null)
             return;
 
         if (e.Message.Chat.Type != ChatType.Private) return;
 
-        TelegramBotClient telegramBotClient = null;
+        TelegramBotClient? telegramBotClient = null;
         if (sender is TelegramBotClient t2)
             telegramBotClient = t2;
         else
@@ -75,27 +78,32 @@ internal static class MainAnon
         ;
     }
 
-    private static async Task DetectMessageAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
+    private static async Task DetectMessageAsync(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e)
     {
         ;
 
-        var botId = telegramBotAbstract.GetId();
+        if (telegramBotAbstract != null)
+        {
+            var botId = telegramBotAbstract.GetId();
 
-        if (AskUser.UserAnswers.ContainsUser(e.Message.From?.Id, botId))
-            if (AskUser.UserAnswers.GetState(e.Message.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
-            {
-                AskUser.UserAnswers.RecordAnswer(e.Message.From?.Id, botId, e.Message.Text);
-                return;
-            }
+            if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
+                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+                {
+                    var text = e?.Message?.Text;
+                    if (text != null)
+                        AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId, text);
+                    return;
+                }
+        }
 
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string, string?>
         {
             { "it", "Vuoi postare questo messaggio?" },
             { "en", "Do you want to post this message?" }
         });
 
-        var l1 = new Language(new Dictionary<string, string> { { "it", "Si" } });
-        var l2 = new Language(new Dictionary<string, string> { { "it", "No" } });
+        var l1 = new Language(new Dictionary<string, string?> { { "it", "Si" } });
+        var l2 = new Language(new Dictionary<string, string?> { { "it", "No" } });
         var options = new List<List<Language>>
         {
             new()
@@ -104,28 +112,33 @@ internal static class MainAnon
             }
         };
 
-        var r = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, question, telegramBotAbstract,
-            e.Message.From.LanguageCode, options, e.Message.From.Username, true, e.Message.MessageId);
-        if (l1.Matches(r))
+        var m1 = e?.Message;
+        if (m1 != null)
         {
-            //yes
-            await AskIdentityForMessageToSend2(telegramBotAbstract, e);
-            return;
+            var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+                e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username, true, m1.MessageId);
+            if (l1.Matches(r))
+            {
+                //yes
+                await AskIdentityForMessageToSend2(telegramBotAbstract, e);
+                return;
+            }
         }
 
-        var l3 = new Language(new Dictionary<string, string>
+        var l3 = new Language(new Dictionary<string, string?>
         {
             { "it", "Va bene. Se ti serve aiuto usa /help" },
             { "en", "Ok. If you need any help, use /help" }
         });
-        await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l3, ChatType.Private,
-            e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username);
+        if (telegramBotAbstract != null)
+            await telegramBotAbstract.SendTextMessageAsync(e?.Message?.From?.Id, l3, ChatType.Private,
+                e?.Message?.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
     }
 
-    private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs e)
+    private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? e)
     {
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string, string?>
         {
             {
                 "it",
@@ -134,8 +147,8 @@ internal static class MainAnon
             }
         });
 
-        var l1 = new Language(new Dictionary<string, string> { { "it", "Anonimo" } });
-        var l2 = new Language(new Dictionary<string, string> { { "it", "Pseudonimo" } });
+        var l1 = new Language(new Dictionary<string, string?> { { "it", "Anonimo" } });
+        var l2 = new Language(new Dictionary<string, string?> { { "it", "Pseudonimo" } });
 
         var options = new List<List<Language>>
         {
@@ -145,24 +158,28 @@ internal static class MainAnon
             }
         };
 
-        var r = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, telegramBotAbstract,
-            e.Message.From?.LanguageCode, options,
-            e.Message.From?.Username, true, e.Message.MessageId);
-
-        if (l1.Matches(r))
+        var m1 = e?.Message;
+        if (m1 != null)
         {
-            await AskForMessageToReplyTo(telegramBotAbstract, e, 0);
+            var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+                e?.Message?.From?.LanguageCode, options,
+                e?.Message?.From?.Username, true, m1.MessageId);
 
-            return;
+            if (l1.Matches(r))
+            {
+                await AskForMessageToReplyTo(telegramBotAbstract, e, 0);
+
+                return;
+            }
         }
 
         await AskIdentityForMessageToSend(telegramBotAbstract, e);
     }
 
-    private static async Task AskForMessageToReplyTo(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e,
+    private static async Task AskForMessageToReplyTo(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e,
         long identity)
     {
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string, string?>
         {
             {
                 "it",
@@ -170,8 +187,9 @@ internal static class MainAnon
             }
         });
 
-        var r = await AskUser.AskYesNo(e.Message.From?.Id, question, false, telegramBotAbstract,
-            e.Message.From?.LanguageCode, e.Message.From?.Username);
+        var m1 = e?.Message;
+        var r = m1 != null && await AskUser.AskYesNo(m1.From?.Id, question, false, telegramBotAbstract,
+            m1.From?.LanguageCode, m1.From?.Username);
 
         if (r == false)
         {
@@ -182,34 +200,37 @@ internal static class MainAnon
         await AskForMessageToReplyTo2(telegramBotAbstract, e, identity);
     }
 
-    private static async Task AskForMessageToReplyTo2(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e,
+    private static async Task AskForMessageToReplyTo2(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e,
         long identity)
     {
         //ask link
 
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string, string?>
         {
             { "it", "Inserisci il link del messaggio a cui vuoi rispondere" }
         });
-        var r = await AskUser.AskAsync(e.Message.From?.Id, question, telegramBotAbstract,
-            e.Message.From?.LanguageCode, e.Message.From?.Username);
-        var tuple = GetMessageReply(r);
-        if (r == null)
+        var r = await AskUser.AskAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+            e?.Message?.From?.LanguageCode, e?.Message?.From?.Username);
+        if (r != null)
         {
-            var l2 = new Language(new Dictionary<string, string>
+            var tuple = GetMessageReply(r);
+            if (r == null)
             {
+                var l2 = new Language(new Dictionary<string, string?>
                 {
-                    "it",
-                    "Errore, non siamo riusciti a comprendere il link che hai inviato\n" +
-                    "Operazione annullata."
-                }
-            });
-        }
+                    {
+                        "it",
+                        "Errore, non siamo riusciti a comprendere il link che hai inviato\n" +
+                        "Operazione annullata."
+                    }
+                });
+            }
 
-        await PlaceMessageInQueue(telegramBotAbstract, new MessaggeAnonToSendInQueue(e), identity, tuple.Item1);
+            await PlaceMessageInQueue(telegramBotAbstract, new MessaggeAnonToSendInQueue(e), identity, tuple?.Item1);
+        }
     }
 
-    private static Tuple<int?, ResultQueueEnum?> GetMessageReply(string r)
+    private static Tuple<int?, ResultQueueEnum?>? GetMessageReply(string r)
     {
         if (string.IsNullOrEmpty(r)) return null;
 
@@ -249,10 +270,10 @@ internal static class MainAnon
         return null;
     }
 
-    private static async Task AskIdentityForMessageToSend(TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs e)
+    private static async Task AskIdentityForMessageToSend(TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? e)
     {
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string, string?>
         {
             {
                 "it",
@@ -266,7 +287,7 @@ internal static class MainAnon
 
         var l2 = new List<Language>();
         for (var i = 1; i <= 8; i++)
-            l2.Add(new Language(new Dictionary<string, string>
+            l2.Add(new Language(new Dictionary<string, string?>
             {
                 { "it", i.ToString() }
             }));
@@ -275,24 +296,29 @@ internal static class MainAnon
 
         ;
 
-        var r = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id, question, telegramBotAbstract,
-            e.Message.From?.LanguageCode, options, e.Message.From?.Username,
-            true, e.Message.MessageId);
-
-        var chosen = GetIdentityFromReply(r);
-        if (chosen == null)
+        var m1 = e?.Message;
+        if (m1!= null)
         {
-            var l3 = new Language(new Dictionary<string, string>
-            {
-                { "it", "L'identità non è stata riconosciuta. Operazione annullata" }
-            });
-            await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, l3,
-                ChatType.Private, e.Message.From.LanguageCode,
-                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
-            return;
-        }
+            var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+                e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username,
+                true, m1.MessageId);
 
-        await AskForMessageToReplyTo(telegramBotAbstract, e, chosen.Value);
+            var chosen = GetIdentityFromReply(r);
+            if (chosen == null)
+            {
+                var l3 = new Language(new Dictionary<string, string?>
+                {
+                    { "it", "L'identità non è stata riconosciuta. Operazione annullata" }
+                });
+                if (telegramBotAbstract != null)
+                    await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, l3,
+                        ChatType.Private, m1.From?.LanguageCode,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username);
+                return;
+            }
+
+            await AskForMessageToReplyTo(telegramBotAbstract, e, chosen.Value);
+        }
     }
 
     private static async Task CallbackMethod2Async(CallbackGenericData cb)
@@ -307,10 +333,11 @@ internal static class MainAnon
             var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
             var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-            if (dataAnon.CallBackQueryFromTelegram.Message != null)
-                await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
-                    dataAnon.CallBackQueryFromTelegram.Message.MessageId,
-                    "Hai scelto [" + dataAnon.GetResultEnum() + "]");
+            if (dataAnon.CallBackQueryFromTelegram != null && dataAnon.CallBackQueryFromTelegram.Message != null)
+                if (dataAnon.Bot != null)
+                    await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
+                        dataAnon.CallBackQueryFromTelegram.Message.MessageId,
+                        "Hai scelto [" + dataAnon.GetResultEnum() + "]");
         }
         catch (Exception e1)
         {
@@ -342,14 +369,15 @@ internal static class MainAnon
 
                 if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                 {
-                    var t1 = new Language(new Dictionary<string, string>
+                    var t1 = new Language(new Dictionary<string, string?>
                     {
                         { "it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                     });
-                    await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
-                        dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        dataAnon.username,
-                        dataAnon.messageIdUser);
+                    if (telegramBotAbstract != null)
+                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                            dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            dataAnon.username,
+                            dataAnon.messageIdUser);
                 }
                 else
                 {
@@ -378,14 +406,15 @@ internal static class MainAnon
 
                 if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                 {
-                    var t1 = new Language(new Dictionary<string, string>
+                    var t1 = new Language(new Dictionary<string, string?>
                     {
                         { "it", "Il tuo post è stato messo nella zona uncensored! " + link }
                     });
-                    await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
-                        dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        dataAnon.username,
-                        dataAnon.messageIdUser);
+                    if (telegramBotAbstract != null)
+                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                            dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            dataAnon.username,
+                            dataAnon.messageIdUser);
                 }
                 else
                 {
@@ -402,14 +431,15 @@ internal static class MainAnon
 
                 if (dataAnon.from_telegram != null && dataAnon.from_telegram.Value)
                 {
-                    var t1 = new Language(new Dictionary<string, string>
+                    var t1 = new Language(new Dictionary<string, string?>
                     {
                         { "it", "Il tuo post è stato rifiutato!" }
                     });
-                    await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
-                        dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        dataAnon.username,
-                        dataAnon.messageIdUser);
+                    if (telegramBotAbstract != null)
+                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.authorId.Value, t1, ChatType.Private,
+                            dataAnon.langUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            dataAnon.username,
+                            dataAnon.messageIdUser);
                 }
                 else
                 {
@@ -426,35 +456,43 @@ internal static class MainAnon
         }
     }
 
-    private static async Task<MessageSentResult> SendMessageToChannel(TelegramBotAbstract telegramBotAbstract,
+    private static async Task<MessageSentResult?> SendMessageToChannel(TelegramBotAbstract? telegramBotAbstract,
         CallbackQueryEventArgs e, CallBackDataAnon x)
     {
-        var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
+        if (e.CallbackQuery != null)
+        {
+            var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
 
-        ;
+            ;
 
-        //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
-        var r = await telegramBotAbstract.ForwardMessageAnonAsync(
-            x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
-                ? ConfigAnon.WhereToPublishAnonMain
-                : ConfigAnon.WhereToPublishAnonUncensored,
-            r2, x.messageIdReplyTo);
+            //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+            if (telegramBotAbstract != null)
+            {
+                var r = await telegramBotAbstract.ForwardMessageAnonAsync(
+                    x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
+                        ? ConfigAnon.WhereToPublishAnonMain
+                        : ConfigAnon.WhereToPublishAnonUncensored,
+                    r2, x.messageIdReplyTo);
 
-        return r;
+                return r;
+            }
+        }
+
+        return null;
     }
 
-    public static async Task<bool> PlaceMessageInQueue(TelegramBotAbstract telegramBotAbstract,
+    public static async Task<bool> PlaceMessageInQueue(TelegramBotAbstract? telegramBotAbstract,
         MessaggeAnonToSendInQueue e, long identity, int? messageIdReplyTo)
     {
         ;
 
         long? m3 = null;
-        MessageSentResult x = null;
-        MessageSentResult m2 = null;
+        MessageSentResult? x = null;
+        MessageSentResult? m2 = null;
 
         try
         {
-            var l4 = new Language(new Dictionary<string, string>
+            var l4 = new Language(new Dictionary<string, string?>
             {
                 { "it", "Il tuo messaggio è stato correttamente messo in coda. Attendi risposta" }
             });
@@ -462,8 +500,11 @@ internal static class MainAnon
             ;
 
             if (e.FromTelegram())
-                x = await telegramBotAbstract.ForwardMessageAnonAsync(ConfigAnon.ModAnonCheckGroup, e.GetMessage(),
-                    null);
+            {
+                if (telegramBotAbstract != null)
+                    x = await telegramBotAbstract.ForwardMessageAnonAsync(ConfigAnon.ModAnonCheckGroup, e.GetMessage(),
+                        null);
+            }
             else
                 x = await e.SendMessageInQueueAsync(telegramBotAbstract);
 
@@ -471,7 +512,7 @@ internal static class MainAnon
 
             if (x == null && e.FromTelegram())
             {
-                var l6 = new Language(new Dictionary<string, string>
+                var l6 = new Language(new Dictionary<string, string?>
                 {
                     {
                         "it", "Non siamo riusciti a mettere il messaggio in coda!\n" +
@@ -480,17 +521,23 @@ internal static class MainAnon
                     }
                 });
 
-                await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l6, ChatType.Private,
-                    e.GetLanguageCode(), ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                    e.GetUsername());
+                if (telegramBotAbstract != null)
+                    await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l6, ChatType.Private,
+                        e.GetLanguageCode(), ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        e.GetUsername());
 
                 return false;
             }
 
             if (e.FromTelegram())
-                m2 = await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
-                    ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
-                    e.GetMessage().MessageId);
+                if (telegramBotAbstract != null)
+                {
+                    var m5 = e.GetMessage();
+                    if (m5 != null)
+                        m2 = await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
+                            ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
+                            m5.MessageId);
+                }
 
             m3 = m2?.GetMessageID();
         }
@@ -501,7 +548,7 @@ internal static class MainAnon
 
         ;
 
-        var language = new Language(new Dictionary<string, string>
+        var language = new Language(new Dictionary<string, string?>
         {
             { "it", "Approvare? Identità [" + identity + "]" }
         });
@@ -512,24 +559,31 @@ internal static class MainAnon
             new CallbackOption("Sì, uncensored", 1, ResultQueueEnum.GO_TO_UNCENSORED),
             new CallbackOption("No, elimina", 2, ResultQueueEnum.DELETE)
         };
-        CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
+
+        var m6 = e.GetMessage();
+        if (m6 != null)
         {
-            identity = identity,
-            authorId = e.GetFromUserId(),
-            langUser = e.GetLanguageCode(),
-            username = e.GetUsername(),
-            from_telegram = true,
-            messageIdUser = e.GetMessage().MessageId,
-            messageIdReplyTo = messageIdReplyTo
-        };
+            CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
+            {
+                identity = identity,
+                authorId = e.GetFromUserId(),
+                langUser = e.GetLanguageCode(),
+                username = e.GetUsername(),
+                from_telegram = true,
+                messageIdUser = m6.MessageId,
+                messageIdReplyTo = messageIdReplyTo
+            };
 
-        var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
-            language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
+            var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
+                language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
 
-        return m4 != null;
+            return m4 != null;
+        }
+
+        return false;
     }
 
-    private static long? GetIdentityFromReply(string r)
+    private static long? GetIdentityFromReply(string? r)
     {
         if (string.IsNullOrEmpty(r))
             return null;
@@ -552,9 +606,9 @@ internal static class MainAnon
         return null;
     }
 
-    private static async Task HelpMessageAsync(TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
+    private static async Task HelpMessageAsync(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e)
     {
-        var text = new Language(new Dictionary<string, string>
+        var text = new Language(new Dictionary<string, string?>
         {
             {
                 "it", "Scrivi il messaggio che vuoi inviare, il bot ti chiederà il resto.\n" +
@@ -565,14 +619,18 @@ internal static class MainAnon
                       "Se dovesse esserci qualsiasi problema, scriveteci alla pagina Facebook di PoliNetwork"
             }
         });
-        await telegramBotAbstract.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-            e.Message.From.LanguageCode, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-            e.Message.From.Username);
+
+        var m1 = e?.Message;
+        if (telegramBotAbstract != null)
+            if (m1 != null)
+                await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, text, ChatType.Private,
+                    m1.From?.LanguageCode, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    m1.From?.Username);
     }
 
-    private static async Task StartMessageAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    private static async Task StartMessageAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        var text = new Language(new Dictionary<string, string>
+        var text = new Language(new Dictionary<string, string?>
         {
             {
                 "it", "Ciao! 👋\n\n" +
@@ -580,7 +638,10 @@ internal static class MainAnon
                       "Visita anche il nostro sito https://polinetwork.github.io"
             }
         });
-        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-            e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username);
+
+        var m1 = e?.Message;
+        if (sender != null)
+            await sender.SendTextMessageAsync(m1?.From?.Id, text, ChatType.Private,
+                e?.Message?.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
     }
 }

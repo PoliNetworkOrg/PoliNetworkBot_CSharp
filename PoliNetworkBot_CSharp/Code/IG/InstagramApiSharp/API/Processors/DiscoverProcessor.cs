@@ -27,16 +27,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class DiscoverProcessor : IDiscoverProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public DiscoverProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public DiscoverProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -287,7 +287,7 @@ internal class DiscoverProcessor : IDiscoverProcessor
 
             var jsonContacts = JsonConvert.SerializeObject(instaContacts);
 
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "contacts", jsonContacts }
             };

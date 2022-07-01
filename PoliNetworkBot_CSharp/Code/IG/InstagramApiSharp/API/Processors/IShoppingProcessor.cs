@@ -22,7 +22,7 @@ public interface IShoppingProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string username,
+    Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string? username,
         PaginationParameters paginationParameters);
 
     /// <summary>

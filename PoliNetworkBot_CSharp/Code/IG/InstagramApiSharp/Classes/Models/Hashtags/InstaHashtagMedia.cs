@@ -15,7 +15,7 @@ public class InstaSectionMedia
 
     public bool MoreAvailable { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     public int NextPage { get; set; }
 

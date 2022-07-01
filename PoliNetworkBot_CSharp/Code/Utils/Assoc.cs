@@ -20,17 +20,17 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 internal static class Assoc
 {
     private static async Task<long?> GetIdEntityFromPersonAsync(long? id, Language question,
-        TelegramBotAbstract sender, string lang, string username)
+        TelegramBotAbstract? sender, string? lang, string? username)
     {
-        const string q =
+        const string? q =
             "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
         var r = Database.ExecuteSelect(q, sender.DbConfig,
-            new Dictionary<string, object> { { "@idp", id } });
+            new Dictionary<string, object?> { { "@idp", id } });
         if (r == null || r.Rows.Count == 0) return null;
 
         if (r.Rows.Count == 1) return Convert.ToInt64(r.Rows[0].ItemArray[0]);
 
-        var l = new Dictionary<string, long>();
+        var l = new Dictionary<string?, long>();
         foreach (DataRow dr in r.Rows)
         {
             var s = dr.ItemArray[1]?.ToString();
@@ -39,7 +39,7 @@ internal static class Assoc
 
         var l3 = l.Keys.Select(
             l2 => new Language(
-                new Dictionary<string, string>
+                new Dictionary<string?, string>
                 {
                     { "en", l2 }
                 })
@@ -52,7 +52,7 @@ internal static class Assoc
         return l[r2];
     }
 
-    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         try
         {
@@ -64,7 +64,7 @@ internal static class Assoc
                 return false;
             }
 
-            var languageList = new Language(new Dictionary<string, string>
+            var languageList = new Language(new Dictionary<string?, string>
             {
                 { "it", "Scegli l'entità per il quale stai componendo il messaggio" },
                 { "en", "Choose the entity you are writing this message for" }
@@ -83,7 +83,7 @@ internal static class Assoc
                 CheckIfEntityReachedItsMaxLimit(messageFromIdEntity.Value, sender, true);
             if (hasThisEntityAlreadyReachedItsLimit != null && hasThisEntityAlreadyReachedItsLimit.Value)
             {
-                var languageList4 = new Language(new Dictionary<string, string>
+                var languageList4 = new Language(new Dictionary<string?, string>
                 {
                     { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
                     { "en", "I'm sorry! In this period you have sent too many messages" }
@@ -93,17 +93,16 @@ internal static class Assoc
                 return false;
             }
 
-            var languageList2 = new Language(new Dictionary<string, string>
+            var languageList2 = new Language(new Dictionary<string?, string>
                 {
                     { "it", "Data di pubblicazione?" },
                     { "en", "Date of publication?" }
                 }
             );
 
-            var opt1 = new Language(new Dictionary<string, string>
-                { { "it", "Metti in coda" }, { "en", "Place in queue" } });
+            var opt1 = new Language(new Dictionary<string?, string> { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
-                new Dictionary<string, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
+                new Dictionary<string?, string> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
             {
                 new() { opt1, opt2 }
@@ -112,10 +111,10 @@ internal static class Assoc
             var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
                 languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
-            Tuple<DateTimeSchedule, Exception, string> sentDate;
+            Tuple<DateTimeSchedule, Exception?, string?> sentDate;
             if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
             {
-                sentDate = new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(null, false), null,
+                sentDate = new Tuple<DateTimeSchedule, Exception?, string?>(new DateTimeSchedule(null, false), null,
                     null);
             }
             else
@@ -132,7 +131,7 @@ internal static class Assoc
                 var sdt = sentDate.Item1.GetDate();
                 if (CheckIfDateTimeIsValid(sdt) == false)
                 {
-                    var lang4 = new Language(new Dictionary<string, string>
+                    var lang4 = new Language(new Dictionary<string?, string>
                     {
                         { "en", "The date you choose is invalid!" },
                         { "it", "La data che hai scelto non è valida!" }
@@ -185,7 +184,7 @@ internal static class Assoc
 
             }
 
-            var lang3 = new Language(new Dictionary<string, string>
+            var lang3 = new Language(new Dictionary<string?, string>
             {
                 { "en", "The message has been submitted correctly" },
                 { "it", "Il messaggio è stato inviato correttamente" }
@@ -196,7 +195,7 @@ internal static class Assoc
                 e.Message.From?.Username);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             await NotifyUtil.NotifyOwners(ex, sender, e);
             return false;
@@ -218,9 +217,9 @@ internal static class Assoc
                sdt.Value.Day >= DateTime.Now.Day;
     }
 
-    private static async Task Assoc_ObjectToSendNotValid(TelegramBotAbstract sender, MessageEventArgs e)
+    private static async Task Assoc_ObjectToSendNotValid(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        var lang2 = new Language(new Dictionary<string, string>
+        var lang2 = new Language(new Dictionary<string?, string>
         {
             { "en", "You have to attach something! (A photo, for example)" },
             { "it", "Devi allegare qualcosa! (Una foto, ad esempio)" }
@@ -232,20 +231,20 @@ internal static class Assoc
             new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
     }
 
-    internal static async Task<bool> Assoc_Publish(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<bool> Assoc_Publish(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         try
         {
             return await MessageDb.CheckMessagesToSend(true, sender, e);
         }
-        catch (Exception e1)
+        catch (Exception? e1)
         {
             await NotifyUtil.NotifyOwners(e1, sender, e);
             return false;
         }
     }
 
-    internal static async Task<bool> Assoc_Delete(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<bool> Assoc_Delete(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var messages = await GetMessagesInQueueAsync(sender, e, false);
 
@@ -261,7 +260,7 @@ internal static class Assoc
             count++;
         }
 
-        var dict = new Dictionary<string, string>
+        var dict = new Dictionary<string?, string>
         {
             { "it", "Quale vuoi rimuovere dalla coda?" },
             { "en", "Which one do you want to remove from queue?" }
@@ -269,7 +268,7 @@ internal static class Assoc
         var question = new Language(dict);
         var list = new List<Language>();
         for (var i = 0; i < count; i++)
-            list.Add(new Language(new Dictionary<string, string>
+            list.Add(new Language(new Dictionary<string?, string>
             {
                 { "en", i.ToString() }
             }));
@@ -277,7 +276,7 @@ internal static class Assoc
         var options = KeyboardMarkup.ArrayToMatrixString(list);
         var options2 = new List<Language>
         {
-            new(new Dictionary<string, string>
+            new(new Dictionary<string?, string>
             {
                 { "it", "Annulla" },
                 { "en", "Cancel" }
@@ -303,12 +302,12 @@ internal static class Assoc
     }
 
     private static async Task<bool> DeleteMessageFromQueueAsync(DataRowCollection messages, long v,
-        TelegramBotAbstract telegramBotAbstract, MessageEventArgs e)
+        TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e)
     {
         var r = DeleteMessageFromQueueSingle(messages, v, telegramBotAbstract);
         if (r)
         {
-            var text1 = new Language(new Dictionary<string, string>
+            var text1 = new Language(new Dictionary<string?, string>
             {
                 { "it", "Messaggio [" + v + "] eliminato con successo" },
                 { "en", "Message [" + v + "] deleted successfully" }
@@ -319,7 +318,7 @@ internal static class Assoc
         }
         else
         {
-            var text2 = new Language(new Dictionary<string, string>
+            var text2 = new Language(new Dictionary<string?, string>
             {
                 { "it", "Messaggio [" + v + "] non eliminato, errore" },
                 { "en", "Message [" + v + "] not deleted, error" }
@@ -332,9 +331,9 @@ internal static class Assoc
         return r;
     }
 
-    private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v, TelegramBotAbstract sender)
+    private static bool DeleteMessageFromQueueSingle(DataRowCollection messages, long v, TelegramBotAbstract? sender)
     {
-        const string q = "DELETE FROM Messages WHERE ID = @id";
+        const string? q = "DELETE FROM Messages WHERE ID = @id";
         DataRow dr = null;
 
         try
@@ -351,7 +350,7 @@ internal static class Assoc
 
         var id = Convert.ToInt64(dr["id"]);
 
-        var args = new Dictionary<string, object>
+        var args = new Dictionary<string, object?>
         {
             { "@id", id }
         };
@@ -360,7 +359,7 @@ internal static class Assoc
         return true;
     }
 
-    internal static string GetNameOfEntityFromItsId(long value, TelegramBotAbstract sender)
+    internal static string GetNameOfEntityFromItsId(long value, TelegramBotAbstract? sender)
     {
         var q = "SELECT name FROM Entities WHERE id = " + value;
         var r = Database.ExecuteSelect(q, sender.DbConfig);
@@ -370,14 +369,14 @@ internal static class Assoc
         return r.Rows[0].ItemArray[0]?.ToString();
     }
 
-    internal static async Task<bool> Assoc_ReadAll(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<bool> Assoc_ReadAll(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         return await Assoc_Read(sender, e, true);
     }
 
-    private static async Task EntityNotFoundAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    private static async Task EntityNotFoundAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        var languageList3 = new Language(new Dictionary<string, string>
+        var languageList3 = new Language(new Dictionary<string?, string>
         {
             {
                 "en",
@@ -392,7 +391,7 @@ internal static class Assoc
             ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
     }
 
-    internal static async Task<bool> Assoc_Read(TelegramBotAbstract sender, MessageEventArgs e, bool allAssoc)
+    internal static async Task<bool> Assoc_Read(TelegramBotAbstract? sender, MessageEventArgs? e, bool allAssoc)
     {
         var messages = await GetMessagesInQueueAsync(sender, e, allAssoc);
 
@@ -409,11 +408,11 @@ internal static class Assoc
         return true;
     }
 
-    private static async Task<DataRowCollection> GetMessagesInQueueAsync(TelegramBotAbstract sender,
-        MessageEventArgs e, bool allAssoc)
+    private static async Task<DataRowCollection> GetMessagesInQueueAsync(TelegramBotAbstract? sender,
+        MessageEventArgs? e, bool allAssoc)
     {
         var conditionOnIdEntity = "";
-        Dictionary<string, object> dict2 = null;
+        Dictionary<string, object?> dict2 = null;
 
         if (allAssoc == false)
         {
@@ -427,13 +426,13 @@ internal static class Assoc
             }
 
             conditionOnIdEntity = "from_id_entity = @id AND";
-            dict2 = new Dictionary<string, object> { { "@id", messageFromIdEntity.Value } };
+            dict2 = new Dictionary<string, object?> { { "@id", messageFromIdEntity.Value } };
         }
 
         var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
         var r = Database.ExecuteSelect(q, sender.DbConfig, dict2);
         if (r != null && r.Rows.Count != 0) return r.Rows;
-        var text = new Language(new Dictionary<string, string>
+        var text = new Language(new Dictionary<string?, string>
         {
             { "it", "Non ci sono messaggi in coda!" },
             { "en", "There are no message in the queue!" }
@@ -445,8 +444,8 @@ internal static class Assoc
         return null;
     }
 
-    private static async Task<MessageSentResult> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract sender,
-        MessageEventArgs e, bool extraInfo, int count)
+    private static async Task<MessageSentResult?> SendMessageAssocToUserAsync(DataRow m, TelegramBotAbstract? sender,
+        MessageEventArgs? e, bool extraInfo, int count)
     {
         if (m == null) return new MessageSentResult(false, null, null);
 
@@ -454,7 +453,7 @@ internal static class Assoc
             count);
     }
 
-    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract sender,
+    private static bool? CheckIfEntityReachedItsMaxLimit(long messageFromIdEntity, TelegramBotAbstract? sender,
         bool tempDisable)
     {
         const int polinetworkEntity = 2;
@@ -464,7 +463,7 @@ internal static class Assoc
             : CheckIfEntityReachedItsMaxLimit2(messageFromIdEntity, sender);
     }
 
-    private static bool? CheckIfEntityReachedItsMaxLimit2(long messageFromIdEntity, TelegramBotAbstract sender)
+    private static bool? CheckIfEntityReachedItsMaxLimit2(long messageFromIdEntity, TelegramBotAbstract? sender)
     {
         var q = "SELECT COUNT(*) " +
                 "FROM Messages " +
@@ -520,15 +519,15 @@ internal static class Assoc
     /// </summary>
     /// <param name="e"></param>
     /// <param name="sender"></param>
-    public static async Task AllowMessage(MessageEventArgs e, TelegramBotAbstract sender)
+    public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        string message;
+        string? message;
 
         if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
             string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
         {
             // the command is being called without a reply, ask for the message:
-            var question = new Language(new Dictionary<string, string>
+            var question = new Language(new Dictionary<string?, string>
             {
                 { "en", "Type the message you want to allow" },
                 { "it", "Scrivi il messaggio che vuoi approvare" }
@@ -542,7 +541,7 @@ internal static class Assoc
             message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption;
         }
 
-        var groupsQuestion = new Language(new Dictionary<string, string>
+        var groupsQuestion = new Language(new Dictionary<string?, string>
         {
             { "en", "In which groups do you want to allow it?" },
             { "it", "In quale gruppo le vuoi approvare?" }
@@ -550,7 +549,7 @@ internal static class Assoc
         var groups = await AskUser.AskAsync(e.Message.From?.Id, groupsQuestion, sender, e.Message.From?.LanguageCode,
             e.Message.From?.Username, true);
 
-        var typeQuestion = new Language(new Dictionary<string, string>
+        var typeQuestion = new Language(new Dictionary<string?, string>
         {
             { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
             { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
@@ -560,7 +559,7 @@ internal static class Assoc
             e.Message.From?.Username, true);
 
         var assocList = await GetAssocList();
-        var assocQuestion = new Language(new Dictionary<string, string>
+        var assocQuestion = new Language(new Dictionary<string?, string>
         {
             { "en", "For what association? Select Departmental Club if it's an approved departmental club" },
             {
@@ -569,7 +568,7 @@ internal static class Assoc
             }
         });
 
-        var depClub = new Language(new Dictionary<string, string>
+        var depClub = new Language(new Dictionary<string?, string>
         {
             { "en", "Departmental Club" },
             { "it", "Club Dipartimentale" }
@@ -577,7 +576,7 @@ internal static class Assoc
 
         var assocAndClub = assocList.Select(a =>
             new Language(
-                new Dictionary<string, string>
+                new Dictionary<string?, string>
                 {
                     { "uni", a }
                 })
@@ -594,7 +593,7 @@ internal static class Assoc
 
         if (assocOrClub is "Departmental Club" or "Club Dipartimentale")
         {
-            depClub = new Language(new Dictionary<string, string>
+            depClub = new Language(new Dictionary<string?, string>
             {
                 { "en", "What is the name of the departimental club?" },
                 { "it", "Qual è il nome del club dipartimentale?" }
@@ -607,7 +606,7 @@ internal static class Assoc
         var permittedSpamMessage =
             await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
 
-        var privateConfirmationMessage = new Language(new Dictionary<string, string>
+        var privateConfirmationMessage = new Language(new Dictionary<string?, string?>
         {
             { "uni", permittedSpamMessage }
         });
@@ -627,7 +626,7 @@ internal static class Assoc
         await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
     }
 
-    private static async void NotifyMessageIsAllowed(MessageEventArgs eventArgs, TelegramBotAbstract sender,
+    private static async void NotifyMessageIsAllowed(MessageEventArgs? eventArgs, TelegramBotAbstract? sender,
         string message)
     {
         try
@@ -638,7 +637,7 @@ internal static class Assoc
                 return;
             }
 
-            var privateText = new Language(new Dictionary<string, string>
+            var privateText = new Language(new Dictionary<string?, string>
             {
                 { "en", "The message is allowed to be sent" },
                 { "it", "Il messaggio è approvato per l'invio" }
@@ -650,13 +649,13 @@ internal static class Assoc
                 eventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
                 eventArgs?.Message?.MessageId);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 
-    private static async void RemoveVetoButton(CallbackAssocVetoData assocVetoData, TelegramBotAbstract sender)
+    private static async void RemoveVetoButton(CallbackAssocVetoData assocVetoData, TelegramBotAbstract? sender)
     {
         try
         {
@@ -666,14 +665,14 @@ internal static class Assoc
                     int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
                     assocVetoData.MessageWithMetadata, ParseMode.Html);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
     }
 
-    private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs messageEventArgs,
-        TelegramBotAbstract sender, string permittedSpamMessage, bool splitMessage)
+    private static async Task HandleVetoAnd4HoursAsync(string message, MessageEventArgs? messageEventArgs,
+        TelegramBotAbstract? sender, string? permittedSpamMessage, bool splitMessage)
     {
         var fourHours = new TimeSpan(4, 0, 0);
 
@@ -694,7 +693,7 @@ internal static class Assoc
         if (splitMessage)
         {
             var m = await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
-                new Dictionary<string, string>
+                new Dictionary<string?, string>
                 {
                     { "en", message }
                 }), ChatType.Group, "en", ParseMode.Html, null, null);
@@ -702,7 +701,7 @@ internal static class Assoc
         }
 
         var councilMessage = new Language(
-            new Dictionary<string, string>
+            new Dictionary<string?, string?>
             {
                 { "uni", permittedSpamMessage }
             });
@@ -766,7 +765,7 @@ internal static class Assoc
 
                     assocVetoData.OnCallback();
 
-                    var privateText = new Language(new Dictionary<string, string>
+                    var privateText = new Language(new Dictionary<string?, string>
                     {
                         { "en", "The message has received a veto" },
                         { "it", "Il messaggio ha ricevuto un veto" }
@@ -778,14 +777,14 @@ internal static class Assoc
                         assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
                         assocVetoData.MessageEventArgs?.Message?.MessageId);
                 }
-                catch (Exception exc)
+                catch (Exception? exc)
                 {
                     await NotifyUtil.NotifyOwners(exc, assocVetoData.Bot);
                     await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
                         assocVetoData.Bot);
                 }
             }
-            catch (Exception e)
+            catch (Exception? e)
             {
                 await NotifyUtil.NotifyOwners(e, callbackGenericData.Bot);
             }

@@ -81,7 +81,7 @@ public class ThreadAsync
         }
     }
 
-    private static void DoCheckCallbackDataExpired(object obj)
+    private static void DoCheckCallbackDataExpired(object? obj)
     {
         CallbackUtils.DoCheckCallbackDataExpired();
     }
@@ -97,13 +97,13 @@ public class ThreadAsync
             Thread t = new(() => UpdateGroups2(bots[0], null));
             t.Start();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
     }
 
-    private static void UpdateGroups2(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
+    private static void UpdateGroups2(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
     {
         if (bot == null)
         {
@@ -126,13 +126,13 @@ public class ThreadAsync
                 Thread.Sleep(1000 * 3600 * 59);
             }
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             Logger.WriteLine(e);
         }
     }
 
-    private static void SayYouRestarted(object obj)
+    private static void SayYouRestarted(object? obj)
     {
         try
         {
@@ -140,10 +140,15 @@ public class ThreadAsync
             if (bots == null || bots.Count == 0)
                 return;
 
-            Thread t = new(() => SayYouRestarted2(bots[0]));
+            var bot2 = bots[0];
+            Thread t = new(() =>
+            {
+                if (bot2 != null) 
+                    SayYouRestarted2(bot2);
+            });
             t.Start();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
@@ -156,14 +161,14 @@ public class ThreadAsync
 
         try
         {
-            Language text = new(new Dictionary<string, string>
+            Language text = new(new Dictionary<string, string?>
             {
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
             _ = telegramBotAbstract.SendTextMessageAsync(Groups.BackupGroup, text, ChatType.Supergroup, "en",
                 ParseMode.Html, null, null);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
@@ -185,14 +190,14 @@ public class ThreadAsync
             Thread t = new(() => DoBackupAndMessageStore2Async(bots[0], null));
             t.Start();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
     }
 
-    private static async void DoBackupAndMessageStore2Async(TelegramBotAbstract bot,
-        MessageEventArgs messageEventArgs)
+    private static async void DoBackupAndMessageStore2Async(TelegramBotAbstract? bot,
+        MessageEventArgs? messageEventArgs)
     {
         if (bot == null)
             return;
@@ -205,7 +210,7 @@ public class ThreadAsync
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             await NotifyUtil.NotifyOwners(e, bot, messageEventArgs);
         }
@@ -217,7 +222,7 @@ public class ThreadAsync
         {
             CheckAllowedMessageExpiration();
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
@@ -237,24 +242,26 @@ public class ThreadAsync
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    private static TelegramBotAbstract GetFirstBot()
+    private static TelegramBotAbstract? GetFirstBot()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
-        foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
-            switch (bot2.GetBotType())
-            {
-                case BotTypeApi.REAL_BOT:
-                    return bot2;
+        if (GlobalVariables.Bots != null)
+            foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
+                if (bot2 != null)
+                    switch (bot2.GetBotType())
+                    {
+                        case BotTypeApi.REAL_BOT:
+                            return bot2;
 
-                case BotTypeApi.USER_BOT:
-                    break;
+                        case BotTypeApi.USER_BOT:
+                            break;
 
-                case BotTypeApi.DISGUISED_BOT:
-                    break;
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
 
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
 
         return null;
     }
@@ -267,7 +274,7 @@ public class ThreadAsync
             {
                 await MessageDb.CheckMessageToDelete(null);
             }
-            catch (Exception e)
+            catch (Exception? e)
             {
                 _ = NotifyUtil.NotifyOwners(e, GetFirstBot(), null);
             }
@@ -291,7 +298,7 @@ public class ThreadAsync
             {
                 await MessageDb.CheckMessagesToSend(false, BotUtil.GetFirstModerationRealBot(), null);
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.WriteLine(ex);
             }

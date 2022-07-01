@@ -13,7 +13,7 @@ public class InstaCommentShort : INotifyPropertyChanged
     private bool _haslikedcm;
     public InstaContentType ContentType { get; set; }
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public long Pk { get; set; }
 

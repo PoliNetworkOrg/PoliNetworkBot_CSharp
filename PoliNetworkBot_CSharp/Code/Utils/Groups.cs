@@ -22,14 +22,14 @@ internal static class Groups
 {
     private static readonly Dictionary<long, InfoChat> GroupsInRam = new();
 
-    public static async Task<DataTable> GetGroupsAndFixNames(TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+    public static async Task<DataTable?> GetGroupsAndFixNames(TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
     {
         await FixAllGroupsName(telegramBotAbstract, messageEventArgs);
         return GetAllGroups(telegramBotAbstract);
     }
 
-    internal static DataTable GetAllGroups(TelegramBotAbstract sender, bool onlyValids = false)
+    internal static DataTable? GetAllGroups(TelegramBotAbstract? sender, bool onlyValids = false)
     {
         var q1 = onlyValids
             ? "SELECT * FROM GroupsTelegram WHERE ( valid = 'Y' or valid = 1 )"
@@ -38,21 +38,21 @@ internal static class Groups
         return Database.ExecuteSelect(q1, sender.DbConfig);
     }
 
-    internal static DataTable GetGroupsByTitle(string query, int limit, TelegramBotAbstract sender)
+    internal static DataTable? GetGroupsByTitle(string query, int limit, TelegramBotAbstract? sender)
     {
-        const string q1 = "SELECT id,title,link " +
-                          "FROM GroupsTelegram " +
-                          "WHERE title LIKE @title " +
-                          "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
+        const string? q1 = "SELECT id,title,link " +
+                           "FROM GroupsTelegram " +
+                           "WHERE title LIKE @title " +
+                           "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
         return Database.ExecuteSelect(q1, sender.DbConfig,
-            new Dictionary<string, object> { { "@title", query2 }, { "@limit", limit } });
+            new Dictionary<string, object?> { { "@title", query2 }, { "@limit", limit } });
     }
 
-    internal static async Task<SuccessWithException> CheckIfAdminAsync(long userId, string username, long chatId,
-        TelegramBotAbstract telegramBotAbstract)
+    internal static async Task<SuccessWithException?> CheckIfAdminAsync(long userId, string? username, long chatId,
+        TelegramBotAbstract? telegramBotAbstract)
     {
         if (GlobalVariables.Creators.ToList().Any(x => x.Matches(userId, username)))
             return new SuccessWithException(true);
@@ -60,14 +60,14 @@ internal static class Groups
         return await telegramBotAbstract.IsAdminAsync(userId, chatId);
     }
 
-    public static async Task FixAllGroupsName(TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+    public static async Task FixAllGroupsName(TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
     {
         try
         {
             Logger.Logger.WriteLine("Starting fix of groups name");
             ;
-            const string q1 = "SELECT * FROM GroupsTelegram";
+            const string? q1 = "SELECT * FROM GroupsTelegram";
             var groups = Database.ExecuteSelect(q1, telegramBotAbstract.DbConfig);
             var indexTitle = groups.Columns.IndexOf("title");
             var indexId = groups.Columns.IndexOf("id");
@@ -79,7 +79,7 @@ internal static class Groups
                 try
                 {
                     await Task.Delay(300);
-                    Tuple<Chat, Exception> newTitleWithException = null;
+                    Tuple<Chat?, Exception?>? newTitleWithException = null;
                     var e = 0;
                     while ((newTitleWithException == null || newTitleWithException.Item2 is ApiRequestException)
                            && e < 3)
@@ -102,13 +102,13 @@ internal static class Groups
 
             GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
         }
     }
 
-    internal static void CheckForGroupUpdate(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+    internal static void CheckForGroupUpdate(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         try
         {
@@ -122,27 +122,27 @@ internal static class Groups
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             _ = NotifyUtil.NotifyOwners(ex, telegramBotClient, e);
         }
     }
 
-    private static async Task CheckIfInviteIsWorking(MessageEventArgs e, TelegramBotAbstract telegramBotClient)
+    private static async Task CheckIfInviteIsWorking(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
         try
         {
             if (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null)
                 return;
-            InfoChat infoChat;
-            bool? getDone;
+            InfoChat? infoChat;
+            bool? getDone= null;
 
             lock (GroupsInRam)
             {
                 getDone = GroupsInRam.TryGetValue(e.Message.Chat.Id, out infoChat);
             }
 
-            if (infoChat != null && getDone.Value)
+            if (infoChat != null && getDone != null && getDone.Value)
             {
                 if (infoChat.IsInhibited()) return;
             }
@@ -155,9 +155,9 @@ internal static class Groups
                 }
             }
 
-            const string q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
+            const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
             var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
-                new Dictionary<string, object> { { "@id", e.Message.Chat.Id } });
+                new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } });
             if (groups.Rows.Count == 0)
                 throw new Exception("No group found with id: " + e.Message.Chat.Id +
                                     " while running CheckForGroupTitleUpdateAsync");
@@ -179,13 +179,13 @@ internal static class Groups
 
             infoChat.UpdateTimeOfLastLinkCheck();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             _ = NotifyUtil.NotifyOwners(ex, telegramBotClient, e);
         }
     }
 
-    private static GroupsFixLogUpdatedEnum CheckForGroupUpdateAsync2(Chat group, TelegramBotAbstract sender)
+    private static GroupsFixLogUpdatedEnum CheckForGroupUpdateAsync2(Chat group, TelegramBotAbstract? sender)
     {
         InfoChat telegramGroup;
         bool? groupInRamGetDone;
@@ -206,9 +206,9 @@ internal static class Groups
             return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title, sender);
         }
 
-        const string q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
+        const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
         var groups = Database.ExecuteSelect(q1, sender.DbConfig,
-            new Dictionary<string, object> { { "@id", group.Id } });
+            new Dictionary<string, object?> { { "@id", group.Id } });
         if (groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
                                 " while running CheckForGroupTitleUpdateAsync");
@@ -233,7 +233,7 @@ internal static class Groups
 
     private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate(long indexIdInTable,
         string oldTitle,
-        Tuple<Chat, Exception> newTitleWithException, TelegramBotAbstract sender)
+        Tuple<Chat?, Exception?>? newTitleWithException, TelegramBotAbstract? sender)
     {
         var newTitle = newTitleWithException?.Item1?.Title;
         if (string.IsNullOrEmpty(oldTitle) && string.IsNullOrEmpty(newTitle))
@@ -262,11 +262,11 @@ internal static class Groups
     }
 
     private static GroupsFixLogUpdatedEnum GroupCheckAndUpdate2(long id, string newTitle, string oldTitle,
-        TelegramBotAbstract sender)
+        TelegramBotAbstract? sender)
     {
-        const string q = "UPDATE GroupsTelegram SET title = @title WHERE id = @id";
+        const string? q = "UPDATE GroupsTelegram SET title = @title WHERE id = @id";
 
-        var d = new Dictionary<string, object>
+        var d = new Dictionary<string, object?>
         {
             { "@title", newTitle },
             { "@id", id }
@@ -276,8 +276,8 @@ internal static class Groups
         return GroupsFixLogUpdatedEnum.NEW_NAME;
     }
 
-    internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract telegramBotClient,
-        MessageEventArgs e)
+    internal static async Task SendMessageExitingAndThenExit(TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? e)
     {
         try
         {
@@ -288,7 +288,7 @@ internal static class Groups
                 {
                     try
                     {
-                        Dictionary<string, string> dict = new()
+                        Dictionary<string?, string> dict = new()
                         {
                             {
                                 "it",
@@ -299,7 +299,7 @@ internal static class Groups
                                 "The bot is not authorized in this group. Contact the PoliNetwork administrators."
                             }
                         };
-                        Language lang = new(dict);
+                        Language? lang = new(dict);
 
                         await SendMessage.SendMessageInAGroup(
                             telegramBotClient, e.Message.From?.LanguageCode, lang, e,

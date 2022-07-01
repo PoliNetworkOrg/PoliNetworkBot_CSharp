@@ -10,13 +10,13 @@ namespace InstagramApiSharp.Helpers;
 
 public static class HttpUtility
 {
-    public static Dictionary<string, string> ParseQueryString(Uri uri)
+    public static Dictionary<string, string?> ParseQueryString(Uri uri)
     {
         if (uri == null)
             throw new ArgumentNullException(nameof(uri));
 
         if (uri.Query.Length == 0)
-            return new Dictionary<string, string>();
+            return new Dictionary<string, string?>();
 
         return uri.Query.TrimStart('?')
             .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)

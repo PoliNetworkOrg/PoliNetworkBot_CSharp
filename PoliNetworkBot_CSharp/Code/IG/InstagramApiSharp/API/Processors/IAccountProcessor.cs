@@ -27,20 +27,20 @@ public interface IAccountProcessor
     ///     here)
     /// </param>
     /// <returns>Return true if the password is changed</returns>
-    Task<IResult<bool>> ChangePasswordAsync(string oldPassword, string newPassword);
+    Task<IResult<bool>?> ChangePasswordAsync(string? oldPassword, string? newPassword);
 
     /// <summary>
     ///     Change profile picture(only jpg and jpeg formats).
     /// </summary>
     /// <param name="pictureBytes">Picture(JPG,JPEG) bytes</param>
-    Task<IResult<InstaUserEdit>> ChangeProfilePictureAsync(byte[] pictureBytes);
+    Task<IResult<InstaUserEdit?>?> ChangeProfilePictureAsync(byte[] pictureBytes);
 
     /// <summary>
     ///     Change profile picture(only jpg and jpeg formats).
     /// </summary>
     /// <param name="progress">Progress action</param>
     /// <param name="pictureBytes">Picture(JPG,JPEG) bytes</param>
-    Task<IResult<InstaUserEdit>> ChangeProfilePictureAsync(Action<InstaUploaderProgress> progress,
+    Task<IResult<InstaUserEdit?>?> ChangeProfilePictureAsync(Action<InstaUploaderProgress>? progress,
         byte[] pictureBytes);
 
     /// <summary>
@@ -53,8 +53,8 @@ public interface IAccountProcessor
     /// <param name="phone">Phone number (leave null if you don't want to change it)</param>
     /// <param name="gender">Gender type (leave null if you don't want to change it)</param>
     /// <param name="newUsername">New username (optional) (leave null if you don't want to change it)</param>
-    Task<IResult<InstaUserEdit>> EditProfileAsync(string name, string biography, string url, string email,
-        string phone, InstaGenderType? gender, string newUsername = null);
+    Task<IResult<InstaUserEdit?>?> EditProfileAsync(string? name, string? biography, string? url, string? email,
+        string? phone, InstaGenderType? gender, string? newUsername = null);
 
     /// <summary>
     ///     Get request for download backup account data.
@@ -67,46 +67,46 @@ public interface IAccountProcessor
     /// </summary>
     /// <param name="email">Email</param>
     /// <param name="password">Password (only for facebook logins)</param>
-    Task<IResult<InstaRequestDownloadData>> GetRequestForDownloadAccountDataAsync(string email, string password);
+    Task<IResult<InstaRequestDownloadData?>?> GetRequestForDownloadAccountDataAsync(string email, string? password);
 
     /// <summary>
     ///     Get request for edit profile.
     /// </summary>
-    Task<IResult<InstaUserEdit>> GetRequestForEditProfileAsync();
+    Task<IResult<InstaUserEdit?>?> GetRequestForEditProfileAsync();
 
     /// <summary>
     ///     Remove profile picture.
     /// </summary>
-    Task<IResult<InstaUserEdit>> RemoveProfilePictureAsync();
+    Task<IResult<InstaUserEdit?>?> RemoveProfilePictureAsync();
 
     /// <summary>
     ///     Set current account private
     /// </summary>
-    Task<IResult<InstaUserShort>> SetAccountPrivateAsync();
+    Task<IResult<InstaUserShort?>?> SetAccountPrivateAsync();
 
     /// <summary>
     ///     Set current account public
     /// </summary>
-    Task<IResult<InstaUserShort>> SetAccountPublicAsync();
+    Task<IResult<InstaUserShort?>?> SetAccountPublicAsync();
 
     /// <summary>
     ///     Set biography (support hashtags and user mentions)
     /// </summary>
     /// <param name="bio">Biography text, hashtags or user mentions</param>
-    Task<IResult<InstaBiography>> SetBiographyAsync(string bio);
+    Task<IResult<InstaBiography?>?> SetBiographyAsync(string bio);
 
     /// <summary>
     ///     Set name and phone number.
     /// </summary>
     /// <param name="name">Name</param>
     /// <param name="phoneNumber">Phone number</param>
-    Task<IResult<bool>> SetNameAndPhoneNumberAsync(string name, string phoneNumber = "");
+    Task<IResult<bool>?> SetNameAndPhoneNumberAsync(string name, string phoneNumber = "");
 
     /// <summary>
     ///     Upload nametag image
     /// </summary>
     /// <param name="nametagImage">Nametag image</param>
-    Task<IResult<InstaMedia>> UploadNametagAsync(InstaImage nametagImage);
+    Task<IResult<InstaMedia?>?> UploadNametagAsync(InstaImage nametagImage);
 
     #endregion Edit profile
 
@@ -116,24 +116,24 @@ public interface IAccountProcessor
     ///     Allow story message replies.
     /// </summary>
     /// <param name="repliesType">Reply typo</param>
-    Task<IResult<bool>> AllowStoryMessageRepliesAsync(InstaMessageRepliesType repliesType);
+    Task<IResult<bool>?> AllowStoryMessageRepliesAsync(InstaMessageRepliesType repliesType);
 
     /// <summary>
     ///     Allow story sharing.
     /// </summary>
     /// <param name="allow">Allow or disallow story sharing</param>
-    Task<IResult<bool>> AllowStorySharingAsync(bool allow = true);
+    Task<IResult<bool>?> AllowStorySharingAsync(bool allow = true);
 
     /// <summary>
     ///     Check username availablity.
     /// </summary>
     /// <param name="desiredUsername">Desired username</param>
-    Task<IResult<InstaAccountCheck>> CheckUsernameAsync(string desiredUsername);
+    Task<IResult<InstaAccountCheck?>?> CheckUsernameAsync(string desiredUsername);
 
     /// <summary>
     ///     Disable Save story to archive.
     /// </summary>
-    Task<IResult<bool>> DisableSaveStoryToArchiveAsync();
+    Task<IResult<bool>?> DisableSaveStoryToArchiveAsync();
 
     /// <summary>
     ///     Disable Save story to gallery.
@@ -143,7 +143,7 @@ public interface IAccountProcessor
     /// <summary>
     ///     Enable Save story to archive.
     /// </summary>
-    Task<IResult<bool>> EnableSaveStoryToArchiveAsync();
+    Task<IResult<bool>?> EnableSaveStoryToArchiveAsync();
 
     /// <summary>
     ///     Enable Save story to gallery.
@@ -154,7 +154,7 @@ public interface IAccountProcessor
     /// <summary>
     ///     Get story settings.
     /// </summary>
-    Task<IResult<InstaStorySettings>> GetStorySettingsAsync();
+    Task<IResult<InstaStorySettings?>?> GetStorySettingsAsync();
 
     #endregion Story settings
 
@@ -169,7 +169,7 @@ public interface IAccountProcessor
     /// <summary>
     ///     Get Security settings (two factor authentication and backup codes).
     /// </summary>
-    Task<IResult<InstaAccountSecuritySettings>> GetSecuritySettingsInfoAsync();
+    Task<IResult<InstaAccountSecuritySettings?>?> GetSecuritySettingsInfoAsync();
 
     /// <summary>
     ///     Regenerate two factor backup codes
@@ -179,13 +179,13 @@ public interface IAccountProcessor
     /// <summary>
     ///     Send confirm email.
     /// </summary>
-    Task<IResult<InstaAccountConfirmEmail>> SendConfirmEmailAsync();
+    Task<IResult<InstaAccountConfirmEmail?>?> SendConfirmEmailAsync();
 
     /// <summary>
     ///     Send sms code.
     /// </summary>
     /// <param name="phoneNumber">Phone number</param>
-    Task<IResult<InstaAccountSendSms>> SendSmsCodeAsync(string phoneNumber);
+    Task<IResult<InstaAccountSendSms?>?> SendSmsCodeAsync(string phoneNumber);
 
     /// <summary>
     ///     Verify email by verification url
@@ -211,7 +211,7 @@ public interface IAccountProcessor
     /// </summary>
     /// <param name="phoneNumber">Phone number (ex: +9891234...)</param>
     /// <param name="verificationCode">Verification code</param>
-    Task<IResult<InstaAccountVerifySms>> VerifySmsCodeAsync(string phoneNumber, string verificationCode);
+    Task<IResult<InstaAccountVerifySms?>?> VerifySmsCodeAsync(string phoneNumber, string verificationCode);
 
     #endregion two factor authentication enable/disable
 

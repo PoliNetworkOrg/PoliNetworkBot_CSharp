@@ -28,9 +28,9 @@ public class InstaUserEdit
 
     [JsonProperty("pk")] public long Pk { get; set; }
 
-    [JsonProperty("username")] public string Username { get; set; }
+    [JsonProperty("username")] public string? Username { get; set; }
 
-    [JsonProperty("full_name")] public string FullName { get; set; }
+    [JsonProperty("full_name")] public string? FullName { get; set; }
 
     [JsonProperty("has_anonymous_profile_picture")]
     public bool HasAnonymousProfilePicture { get; set; }
@@ -46,9 +46,9 @@ public class InstaUserEdit
     [JsonProperty("allowed_commenter_type")]
     public string AllowedCommenterType { get; set; }
 
-    [JsonProperty("biography")] public string Biography { get; set; }
+    [JsonProperty("biography")] public string? Biography { get; set; }
 
-    [JsonProperty("external_url")] public string ExternalUrl { get; set; }
+    [JsonProperty("external_url")] public string? ExternalUrl { get; set; }
 
     [JsonProperty("external_lynx_url")] public string ExternalLynxUrl { get; set; }
 
@@ -56,13 +56,13 @@ public class InstaUserEdit
 
     [JsonProperty("birthday")] public object Birthday { get; set; }
 
-    [JsonProperty("phone_number")] public string PhoneNumber { get; set; }
+    [JsonProperty("phone_number")] public string? PhoneNumber { get; set; }
 
     [JsonProperty("country_code")] public int CountryCode { get; set; }
 
     [JsonProperty("national_number")] public long NationalNumber { get; set; }
 
-    [JsonProperty("email")] public string Email { get; set; }
+    [JsonProperty("email")] public string? Email { get; set; }
 
     [JsonProperty("can_link_entities_in_bio")]
     public bool CanLinkEntitiesInBio { get; set; }

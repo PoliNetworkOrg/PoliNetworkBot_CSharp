@@ -11,5 +11,5 @@ public class InstaExploreFeedResponse : BaseLoadableResponse
 {
     [JsonIgnore] public InstaExploreItemsResponse Items { get; set; } = new();
 
-    [JsonProperty("max_id")] public string MaxId { get; set; }
+    [JsonProperty("max_id")] public string? MaxId { get; set; }
 }

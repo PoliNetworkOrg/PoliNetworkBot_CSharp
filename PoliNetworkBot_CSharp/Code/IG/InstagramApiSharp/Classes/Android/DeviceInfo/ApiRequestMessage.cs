@@ -11,12 +11,12 @@ namespace InstagramApiSharp.Classes.Android.DeviceInfo;
 
 internal class ApiRequestChallengeMessage : ApiRequestMessage
 {
-    [JsonProperty("_csrftoken")] public string CsrtToken { get; set; }
+    [JsonProperty("_csrftoken")] public string? CsrtToken { get; set; }
 }
 
 public class ApiRequestMessage
 {
-    private string _phoneId;
+    private string? _phoneId;
 
     [JsonProperty("jazoest")] public string Jazoest { get; set; }
 
@@ -25,7 +25,7 @@ public class ApiRequestMessage
         "[{\"country_code\":\"1\",\"source\":[\"default\"]},{\"country_code\":\"1\",\"source\":[\"uig_via_phone_id\"]}]";
 
     [JsonProperty("phone_id")]
-    public string PhoneId
+    public string? PhoneId
     {
         get => _phoneId;
         set
@@ -35,22 +35,22 @@ public class ApiRequestMessage
         }
     }
 
-    [JsonProperty("username")] public string Username { get; set; }
+    [JsonProperty("username")] public string? Username { get; set; }
 
     [JsonProperty("adid")] public string AdId { get; set; }
 
     [JsonProperty("guid")] public Guid Guid { get; set; }
 
-    [JsonProperty("device_id")] public string DeviceId { get; set; }
+    [JsonProperty("device_id")] public string? DeviceId { get; set; }
 
     [JsonProperty("_uuid")] public string Uuid => Guid.ToString();
 
     [JsonProperty("google_tokens")] public string GoogleTokens { get; set; } = "[]";
 
     [JsonIgnore /*JsonProperty("password")*/]
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
-    [JsonProperty("enc_password")] public string EncPassword { get; set; }
+    [JsonProperty("enc_password")] public string? EncPassword { get; set; }
 
     [JsonProperty("login_attempt_count")] public string LoginAttemptCount { get; set; } = "1";
 
@@ -62,7 +62,7 @@ public class ApiRequestMessage
         return json;
     }
 
-    internal string GetChallengeMessageString(string csrfToken)
+    internal string GetChallengeMessageString(string? csrfToken)
     {
         var api = new ApiRequestChallengeMessage
         {
@@ -92,7 +92,7 @@ public class ApiRequestMessage
             { security_code = verify, _csrftoken = "ReplaceCSRF", Guid, DeviceId });
     }
 
-    internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey, out string deviceid)
+    internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey, out string? deviceid)
     {
         if (string.IsNullOrEmpty(signatureKey))
             signatureKey = apiVersion.SignatureKey;
@@ -102,8 +102,8 @@ public class ApiRequestMessage
         return res;
     }
 
-    internal string GenerateChallengeSignature(InstaApiVersion apiVersion, string signatureKey, string csrfToken,
-        out string deviceid)
+    internal string GenerateChallengeSignature(InstaApiVersion apiVersion, string signatureKey, string? csrfToken,
+        out string? deviceid)
     {
         if (string.IsNullOrEmpty(signatureKey))
             signatureKey = apiVersion.SignatureKey;
@@ -132,12 +132,12 @@ public class ApiRequestMessage
         return Guid.Empty == Guid;
     }
 
-    internal static string GenerateDeviceId()
+    internal static string? GenerateDeviceId()
     {
         return GenerateDeviceIdFromGuid(Guid.NewGuid());
     }
 
-    internal static string GenerateUploadId()
+    internal static string? GenerateUploadId()
     {
         var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
         var uploadId = (long)timeSpan.TotalSeconds;
@@ -150,7 +150,7 @@ public class ApiRequestMessage
     //    var uploadId = total + rnd.Next(11111, 99999).ToString("D5");
     //    return uploadId;
     //}
-    internal static string GenerateRandomUploadId()
+    internal static string? GenerateRandomUploadId()
     {
         return DateTime.UtcNow.ToUnixTimeMiliSeconds().ToString();
     }
@@ -166,7 +166,7 @@ public class ApiRequestMessage
         return requestMessage;
     }
 
-    public static string GenerateDeviceIdFromGuid(Guid guid)
+    public static string? GenerateDeviceIdFromGuid(Guid guid)
     {
         var hashedGuid = CryptoHelper.CalculateMd5(guid.ToString());
         return $"android-{hashedGuid[..16]}";

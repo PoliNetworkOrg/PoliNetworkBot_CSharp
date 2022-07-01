@@ -22,12 +22,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 public static class CallbackUtils
 {
     private const string SEPARATOR = "-";
-    public static CallBackDataFull CallBackDataFull = new();
+    public static CallBackDataFull? CallBackDataFull = new();
 
-    public static async Task<MessageSentResult> SendMessageWithCallbackQueryAsync(
+    public static async Task<MessageSentResult?> SendMessageWithCallbackQueryAsync(
         CallbackGenericData callbackGenericData,
         long chatToSendTo,
-        Language text, TelegramBotAbstract telegramBotAbstract, ChatType chatType, string lang, string username,
+        Language text, TelegramBotAbstract? telegramBotAbstract, ChatType chatType, string? lang, string? username,
         bool splitMessage, long? replyToMessageId = null)
     {
         callbackGenericData.Bot = telegramBotAbstract;
@@ -36,15 +36,20 @@ public static class CallbackUtils
         var newLast = GetLast();
         var key = GetKeyFromNumber(newLast);
         callbackGenericData.Id = key;
-        CallBackDataFull.Add(key, callbackGenericData);
+        CallBackDataFull?.Add(key, callbackGenericData);
 
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
-        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
-            ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
-            replyToMessageId: replyToMessageId);
-        callbackGenericData.MessageSent = messageSent;
+        if (telegramBotAbstract != null)
+        {
+            var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
+                ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
+                replyToMessageId: replyToMessageId);
+            callbackGenericData.MessageSent = messageSent;
 
-        return messageSent;
+            return messageSent;
+        }
+
+        return null;
     }
 
     internal static void DoCheckCallbackDataExpired()
@@ -53,7 +58,7 @@ public static class CallbackUtils
         {
             try
             {
-                CallBackDataFull.ChechCallbackDataExpired();
+                CallBackDataFull?.ChechCallbackDataExpired();
             }
             catch
             {
@@ -65,7 +70,7 @@ public static class CallbackUtils
         // ReSharper disable once FunctionNeverReturns
     }
 
-    private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string key)
+    private static ReplyMarkupObject? GetReplyMarkupObject(CallbackGenericData callbackGenericData, string? key)
     {
         var x2 = callbackGenericData.Options.Select((option, i1) => new List<InlineKeyboardButton>
             { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
@@ -74,15 +79,21 @@ public static class CallbackUtils
         return new ReplyMarkupObject(inlineKeyboardMarkup);
     }
 
-    private static string GetKeyFromNumber(BigInteger newLast)
+    private static string? GetKeyFromNumber(BigInteger? newLast)
     {
-        var r = newLast.ToString("X");
-        return r;
+        if (newLast != null)
+        {
+            var r = newLast.Value.ToString("X");
+            return r;
+        }
+
+        return null;
     }
 
-    private static BigInteger GetLast()
+    private static BigInteger? GetLast()
     {
-        return CallBackDataFull.GetLast();
+        if (CallBackDataFull != null) return CallBackDataFull.GetLast();
+        return null;
     }
 
 #pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
@@ -95,7 +106,7 @@ public static class CallbackUtils
             var t = new Thread(() => _ = CallbackMethodHandle(sender, e));
             t.Start();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex);
         }
@@ -106,7 +117,7 @@ public static class CallbackUtils
     private static async Task<bool> CallbackMethodHandle(object? sender, CallbackQueryEventArgs callbackQueryEventArgs)
 #pragma warning restore CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.
     {
-        TelegramBotAbstract telegramBotClient = null;
+        TelegramBotAbstract? telegramBotClient = null;
 
         try
         {
@@ -117,7 +128,7 @@ public static class CallbackUtils
 
             await CallbackMethodRun(telegramBotClient, callbackQueryEventArgs);
         }
-        catch (Exception exc)
+        catch (Exception? exc)
         {
             await NotifyUtil.NotifyOwners(exc, telegramBotClient);
         }
@@ -125,21 +136,24 @@ public static class CallbackUtils
         return false;
     }
 
-    private static async Task CallbackMethodRun(TelegramBotAbstract telegramBotClientBot,
+    private static async Task CallbackMethodRun(TelegramBotAbstract? telegramBotClientBot,
         CallbackQueryEventArgs callbackQueryEventArgs)
     {
         try
         {
-            var data = callbackQueryEventArgs.CallbackQuery.Data;
-            if (string.IsNullOrEmpty(data) == false)
+            if (callbackQueryEventArgs.CallbackQuery != null)
             {
-                var datas = data.Split(SEPARATOR);
-                var key = datas[0];
-                var answer = Convert.ToInt32(datas[1]);
-                CallBackDataFull.UpdateAndRun(callbackQueryEventArgs, answer, key);
+                var data = callbackQueryEventArgs.CallbackQuery.Data;
+                if (string.IsNullOrEmpty(data) == false)
+                {
+                    string?[] datas = data.Split(SEPARATOR);
+                    var key = datas[0];
+                    var answer = Convert.ToInt32(datas[1]);
+                    CallBackDataFull?.UpdateAndRun(callbackQueryEventArgs, answer, key);
+                }
             }
         }
-        catch (Exception exception)
+        catch (Exception? exception)
         {
             await NotifyUtil.NotifyOwners(exception, telegramBotClientBot);
         }
@@ -161,7 +175,7 @@ public static class CallbackUtils
                 CallBackDataFull = new CallBackDataFull();
             }
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex);
         }

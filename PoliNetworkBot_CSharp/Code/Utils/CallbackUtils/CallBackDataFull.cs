@@ -20,9 +20,10 @@ public class CallBackDataFull
     public Dictionary<string, CallbackGenericData> callbackDatas = new();
     public BigInteger last = 0;
 
-    internal void Add(string key, CallbackGenericData callbackGenericData)
+    internal void Add(string? key, CallbackGenericData callbackGenericData)
     {
-        callbackDatas.Add(key, callbackGenericData);
+        if (key != null)
+            callbackDatas.Add(key, callbackGenericData);
     }
 
     internal void BackupToFile()
@@ -49,20 +50,25 @@ public class CallBackDataFull
         return r;
     }
 
-    internal void UpdateAndRun(CallbackQueryEventArgs callbackQueryEventArgs, int answer, string key)
+    internal void UpdateAndRun(CallbackQueryEventArgs callbackQueryEventArgs, int answer, string? key)
     {
-        callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
-        callbackDatas[key].SelectedAnswer = answer;
-        callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+        if (key != null)
+        {
+            callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
+            callbackDatas[key].SelectedAnswer = answer;
+            callbackDatas[key].RunAfterSelection(callbackDatas[key]);
+        }
     }
 
     internal void ChechCallbackDataExpired()
     {
-        List<string> toRemove = new();
+        List<string?> toRemove = new();
         toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));
         lock (this)
         {
-            foreach (var v in toRemove) callbackDatas.Remove(v);
+            foreach (var v in toRemove)
+                if (v != null)
+                    callbackDatas.Remove(v);
         }
     }
 }

@@ -10,7 +10,7 @@ internal class InstaLoginBaseResponse
 {
     #region Challenge
 
-    [JsonProperty("challenge")] public InstaChallengeLoginInfo Challenge { get; set; }
+    [JsonProperty("challenge")] public InstaChallengeLoginInfo? Challenge { get; set; }
 
     #endregion
 
@@ -34,7 +34,7 @@ internal class InstaLoginBaseResponse
 
     [JsonProperty("two_factor_required")] public bool TwoFactorRequired { get; set; }
 
-    [JsonProperty("two_factor_info")] public InstaTwoFactorLoginInfo TwoFactorLoginInfo { get; set; }
+    [JsonProperty("two_factor_info")] public InstaTwoFactorLoginInfo? TwoFactorLoginInfo { get; set; }
 
     #endregion
 }

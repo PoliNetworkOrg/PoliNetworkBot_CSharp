@@ -20,7 +20,7 @@ public class GruppoTG_Update
     }
 
     public string ExceptionMessage { get; internal set; }
-    public Exception ExceptionObject { get; internal set; }
+    public Exception? ExceptionObject { get; internal set; }
     public bool? Query1Fallita { get; internal set; }
     public bool? Query2Fallita { get; internal set; }
     public bool? CreateInviteLinkFallita { get; internal set; }

@@ -9,37 +9,37 @@ namespace PoliNetworkBot_CSharp.Code.Data;
 
 public class TelegramUser
 {
-    public readonly long? id;
-    private readonly string username;
+    public readonly long? Id;
+    private readonly string? _username;
 
-    public TelegramUser(string v)
+    public TelegramUser(string? v)
     {
-        username = v;
+        _username = v;
     }
 
     public TelegramUser(long v)
     {
-        id = v;
+        Id = v;
     }
 
-    public TelegramUser(long v1, string v2)
+    public TelegramUser(long v1, string? v2)
     {
-        id = v1;
-        username = v2;
+        Id = v1;
+        _username = v2;
     }
 
-    internal bool Matches(User from)
+    internal bool Matches(User? from)
     {
         return from != null && Matches(from.Id, from.Username);
     }
 
-    internal bool Matches(long userIdParam, string usernameParam)
+    internal bool Matches(long userIdParam, string? usernameParam)
     {
-        return id switch
+        return Id switch
         {
-            null => !string.IsNullOrEmpty(username) &&
-                    string.Equals(usernameParam, username, StringComparison.CurrentCultureIgnoreCase),
-            _ => id == userIdParam
+            null => !string.IsNullOrEmpty(_username) &&
+                    string.Equals(usernameParam, _username, StringComparison.CurrentCultureIgnoreCase),
+            _ => Id == userIdParam
         };
     }
 }

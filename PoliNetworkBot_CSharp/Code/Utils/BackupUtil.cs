@@ -16,13 +16,13 @@ internal class BackupUtil
         CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
 
-    internal static string GetDB_AsJson(TelegramBotAbstract telegramBotAbstract)
+    internal static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
     {
         try
         {
             DB_Backup db = new();
 
-            const string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
+            const string? q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
             var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
             if (r == null)
                 return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 1");

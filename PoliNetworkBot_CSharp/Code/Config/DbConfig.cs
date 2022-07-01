@@ -17,11 +17,11 @@ namespace PoliNetworkBot_CSharp.Code.Config;
 [JsonObject(MemberSerialization.Fields)]
 public class DbConfig
 {
-    public string Database;
-    public string Host;
-    public string Password;
+    public string? Database;
+    public string? Host;
+    public string? Password;
     public int Port;
-    public string User;
+    public string? User;
 
     public static void InitializeDbConfig()
     {
@@ -32,7 +32,7 @@ public class DbConfig
                 var text = File.ReadAllText(Paths.Info.DbConfig);
                 GlobalVariables.DbConfig = JsonConvert.DeserializeObject<DbConfig>(text);
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.WriteLine(ex);
             }

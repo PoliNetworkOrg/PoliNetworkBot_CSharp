@@ -82,7 +82,7 @@ public interface IHashtagProcessor
     ///     List of hashtags
     /// </returns>
     Task<IResult<InstaHashtagSearch>> SearchHashtagAsync(string query, IEnumerable<long> excludeList = null,
-        string rankToken = null);
+        string? rankToken = null);
 
     /// <summary>
     ///     Unfollow a hashtag

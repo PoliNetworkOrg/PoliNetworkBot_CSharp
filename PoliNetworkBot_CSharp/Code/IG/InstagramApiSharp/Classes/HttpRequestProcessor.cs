@@ -12,10 +12,10 @@ namespace InstagramApiSharp.Classes;
 
 internal class HttpRequestProcessor : IHttpRequestProcessor
 {
-    private readonly IInstaLogger _logger;
+    private readonly IInstaLogger? _logger;
 
-    public HttpRequestProcessor(IRequestDelay delay, HttpClient httpClient, HttpClientHandler httpHandler,
-        ApiRequestMessage requestMessage, IInstaLogger logger)
+    public HttpRequestProcessor(IRequestDelay delay, HttpClient? httpClient, HttpClientHandler httpHandler,
+        ApiRequestMessage? requestMessage, IInstaLogger? logger)
     {
         Delay = delay;
         Client = httpClient;
@@ -27,8 +27,8 @@ internal class HttpRequestProcessor : IHttpRequestProcessor
     public IRequestDelay Delay { get; set; }
 
     public HttpClientHandler HttpHandler { get; set; }
-    public ApiRequestMessage RequestMessage { get; }
-    public HttpClient Client { get; set; }
+    public ApiRequestMessage? RequestMessage { get; }
+    public HttpClient? Client { get; set; }
 
     public void SetHttpClientHandler(HttpClientHandler handler)
     {
@@ -36,7 +36,7 @@ internal class HttpRequestProcessor : IHttpRequestProcessor
         Client = new HttpClient(handler);
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage)
+    public async Task<HttpResponseMessage?> SendAsync(HttpRequestMessage requestMessage)
     {
         Client.DefaultRequestHeaders.ConnectionClose = false;
         requestMessage.Headers.Add("Connection", "Keep-Alive");
@@ -48,7 +48,7 @@ internal class HttpRequestProcessor : IHttpRequestProcessor
         return response;
     }
 
-    public async Task<HttpResponseMessage> GetAsync(Uri requestUri)
+    public async Task<HttpResponseMessage?> GetAsync(Uri requestUri)
     {
         Client.DefaultRequestHeaders.ConnectionClose = false;
         _logger?.LogRequest(requestUri);
@@ -59,7 +59,7 @@ internal class HttpRequestProcessor : IHttpRequestProcessor
         return response;
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage,
+    public async Task<HttpResponseMessage?> SendAsync(HttpRequestMessage requestMessage,
         HttpCompletionOption completionOption)
     {
         Client.DefaultRequestHeaders.ConnectionClose = false;
@@ -100,7 +100,7 @@ internal class HttpRequestProcessor : IHttpRequestProcessor
         _logger?.LogRequest(request);
     }
 
-    private void LogHttpResponse(HttpResponseMessage request)
+    private void LogHttpResponse(HttpResponseMessage? request)
     {
         _logger?.LogResponse(request);
     }

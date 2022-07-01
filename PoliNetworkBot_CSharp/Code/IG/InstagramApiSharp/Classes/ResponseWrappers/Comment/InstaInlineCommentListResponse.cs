@@ -19,7 +19,7 @@ public class InstaInlineCommentListResponse : BaseStatusResponse
     public bool HasMoreHeadChildComments { get; set; }
 
     [JsonProperty("next_max_child_cursor")]
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     [JsonProperty("next_in_child_cursor")] public string NextMinId { get; set; }
 

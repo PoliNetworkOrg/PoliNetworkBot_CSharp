@@ -21,7 +21,7 @@ internal static class ThreadAsync
     private const string Pathwebdict = "webposts.bin";
     private static readonly Random Random = new();
 
-    public static Dictionary<long, WebPost> DictionaryWebpost;
+    public static Dictionary<long, WebPost>? DictionaryWebpost;
 
     private static string GenerateRandomString(int length)
     {
@@ -38,7 +38,7 @@ internal static class ThreadAsync
         return r;
     }
 
-    internal static async void DoThingsAsyncBotAsync(object obj)
+    internal static async void DoThingsAsyncBotAsync(object? obj)
     {
         var bot = await WebPost.GetAnonBotAsync();
         if (bot == null)
@@ -66,12 +66,12 @@ internal static class ThreadAsync
             }
     }
 
-    private static async Task IterationAsync2Async(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
+    private static async Task IterationAsync2Async(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
     {
         await IterationAsync(bot, messageEventArgs);
     }
 
-    private static async Task IterationAsync(TelegramBotAbstract bot, MessageEventArgs messageEventArgs)
+    private static async Task IterationAsync(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
     {
         try
         {
@@ -88,33 +88,40 @@ internal static class ThreadAsync
 
             DoThingsAsyncBotAsync2(data);
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             await ExceptionNumbered.SendExceptionAsync(e, bot, messageEventArgs);
         }
     }
 
-    private static void DoThingsAsyncBotAsync2(string data)
+    private static void DoThingsAsyncBotAsync2(string? data)
     {
         ;
 
         try
         {
-            var result = JsonConvert.DeserializeObject<object>(data);
-            ;
-
-            if (result is not JArray r2) return;
-            ;
-            foreach (var r3 in r2)
+            JArray? r2 = null;
+            if (data != null)
             {
+                var result = JsonConvert.DeserializeObject<object>(data);
                 ;
 
-                if (r3 is not JObject r4) continue;
-                ;
-
-                var webPost = new WebPost(r4);
-                DoThingsAsyncBotAsync3(webPost);
+                if (result is not JArray) return;
+                r2 = (JArray?)result;
             }
+
+            ;
+            if (r2 != null)
+                foreach (var r3 in r2)
+                {
+                    ;
+
+                    if (r3 is not JObject r4) continue;
+                    ;
+
+                    var webPost = new WebPost(r4);
+                    DoThingsAsyncBotAsync3(webPost);
+                }
         }
         catch
         {
@@ -126,10 +133,11 @@ internal static class ThreadAsync
     {
         DictionaryWebpost ??= GetDictionary();
 
-        lock (DictionaryWebpost)
-        {
-            _ = DoThingsAsyncBotAsync4Async(webPost);
-        }
+        if (DictionaryWebpost != null)
+            lock (DictionaryWebpost)
+            {
+                _ = DoThingsAsyncBotAsync4Async(webPost);
+            }
     }
 
     private static async Task DoThingsAsyncBotAsync4Async(WebPost webPost)
@@ -142,8 +150,7 @@ internal static class ThreadAsync
 
         DictionaryWebpost ??= GetDictionary();
 
-        if (DictionaryWebpost.ContainsKey(webPost.postid) &&
-            DictionaryWebpost[webPost.postid].seen == 'Y') return;
+        if (DictionaryWebpost != null && DictionaryWebpost.ContainsKey(webPost.postid) && DictionaryWebpost[webPost.postid].seen == 'Y') return;
 
         ;
 
@@ -153,10 +160,10 @@ internal static class ThreadAsync
 
             await webPost.PlaceInQueue();
 
-            DictionaryWebpost[webPost.postid] = webPost;
+            if (DictionaryWebpost != null) DictionaryWebpost[webPost.postid] = webPost;
             WriteDict();
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             Logger.WriteLine(e);
         }
@@ -174,7 +181,7 @@ internal static class ThreadAsync
         }
     }
 
-    private static Dictionary<long, WebPost> GetDictionary()
+    private static Dictionary<long, WebPost>? GetDictionary()
     {
         var done = false;
         try

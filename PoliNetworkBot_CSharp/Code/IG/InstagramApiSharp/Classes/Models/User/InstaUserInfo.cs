@@ -11,7 +11,7 @@ public class InstaUserInfo
 {
     public long Pk { get; set; }
 
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
     public string FullName { get; set; }
 

@@ -12,7 +12,7 @@ public class InstaPlaceList
 
     public bool HasMore { get; set; }
 
-    public string RankToken { get; set; }
+    public string? RankToken { get; set; }
 
     internal string Status { get; set; }
 

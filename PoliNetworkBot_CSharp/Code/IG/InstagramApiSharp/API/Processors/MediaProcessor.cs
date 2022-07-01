@@ -33,16 +33,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class MediaProcessor : IMediaProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public MediaProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public MediaProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -59,7 +59,7 @@ internal class MediaProcessor : IMediaProcessor
     /// </summary>
     /// <param name="mediaId">Media id (<see cref="InstaMedia.InstaIdentifier" />)</param>
     /// <returns>Return true if the media is archived</returns>
-    public async Task<IResult<bool>> ArchiveMediaAsync(string mediaId)
+    public async Task<IResult<bool>> ArchiveMediaAsync(string? mediaId)
     {
         return await LikeUnlikeArchiveUnArchiveMediaInternal(mediaId, UriCreator.GetArchiveMediaUri(mediaId));
     }
@@ -118,8 +118,8 @@ internal class MediaProcessor : IMediaProcessor
     /// </param>
     /// <param name="userTags">User tags => Optional</param>
     /// <returns>Return true if everything is ok</returns>
-    public async Task<IResult<InstaMedia>> EditMediaAsync(string mediaId, string caption,
-        InstaLocationShort location = null, InstaUserTagUpload[] userTags = null)
+    public async Task<IResult<InstaMedia>> EditMediaAsync(string mediaId, string? caption,
+        InstaLocationShort? location = null, InstaUserTagUpload[] userTags = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -498,7 +498,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Like media (photo or video)
     /// </summary>
     /// <param name="mediaId">Media id</param>
-    public async Task<IResult<bool>> LikeMediaAsync(string mediaId)
+    public async Task<IResult<bool>> LikeMediaAsync(string? mediaId)
     {
         return await LikeUnlikeArchiveUnArchiveMediaInternal(mediaId, UriCreator.GetLikeMediaUri(mediaId));
     }
@@ -513,7 +513,7 @@ internal class MediaProcessor : IMediaProcessor
         try
         {
             var instaUri = UriCreator.GetReportMediaUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "media_id", mediaId },
                 { "reason", "1" },
@@ -552,7 +552,7 @@ internal class MediaProcessor : IMediaProcessor
         try
         {
             var instaUri = UriCreator.GetSaveMediaUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -582,7 +582,7 @@ internal class MediaProcessor : IMediaProcessor
     /// </summary>
     /// <param name="mediaId">Media id (<see cref="InstaMedia.InstaIdentifier" />)</param>
     /// <returns>Return true if the media is unarchived</returns>
-    public async Task<IResult<bool>> UnArchiveMediaAsync(string mediaId)
+    public async Task<IResult<bool>> UnArchiveMediaAsync(string? mediaId)
     {
         return await LikeUnlikeArchiveUnArchiveMediaInternal(mediaId, UriCreator.GetUnArchiveMediaUri(mediaId));
     }
@@ -591,7 +591,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Remove like from media (photo or video)
     /// </summary>
     /// <param name="mediaId">Media id</param>
-    public async Task<IResult<bool>> UnLikeMediaAsync(string mediaId)
+    public async Task<IResult<bool>> UnLikeMediaAsync(string? mediaId)
     {
         return await LikeUnlikeArchiveUnArchiveMediaInternal(mediaId, UriCreator.GetUnLikeMediaUri(mediaId));
     }
@@ -606,7 +606,7 @@ internal class MediaProcessor : IMediaProcessor
         try
         {
             var instaUri = UriCreator.GetUnSaveMediaUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -641,7 +641,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
     public async Task<IResult<InstaMedia>> UploadAlbumAsync(InstaImageUpload[] images, InstaVideoUpload[] videos,
-        string caption, InstaLocationShort location = null)
+        string? caption, InstaLocationShort? location = null)
     {
         return await UploadAlbumAsync(null, images, videos, caption, location);
     }
@@ -657,7 +657,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
     public async Task<IResult<InstaMedia>> UploadAlbumAsync(Action<InstaUploaderProgress> progress,
-        InstaImageUpload[] images, InstaVideoUpload[] videos, string caption, InstaLocationShort location = null)
+        InstaImageUpload[] images, InstaVideoUpload[] videos, string? caption, InstaLocationShort? location = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var upProgress = new InstaUploaderProgress
@@ -669,7 +669,7 @@ internal class MediaProcessor : IMediaProcessor
         {
             upProgress.Name = "Album upload";
             progress?.Invoke(upProgress);
-            var imagesUploadIds = new Dictionary<string, InstaImageUpload>();
+            var imagesUploadIds = new Dictionary<string?, InstaImageUpload>();
             var index = 1;
             if (images?.Length > 0)
             {
@@ -723,7 +723,7 @@ internal class MediaProcessor : IMediaProcessor
                 }
             }
 
-            var videosDic = new Dictionary<string, InstaVideoUpload>();
+            var videosDic = new Dictionary<string?, InstaVideoUpload>();
             var vidIndex = 1;
             if (videos?.Length > 0)
             {
@@ -800,8 +800,8 @@ internal class MediaProcessor : IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
-    public async Task<IResult<InstaMedia>> UploadAlbumAsync(InstaAlbumUpload[] album, string caption,
-        InstaLocationShort location = null)
+    public async Task<IResult<InstaMedia>> UploadAlbumAsync(InstaAlbumUpload[] album, string? caption,
+        InstaLocationShort? location = null)
     {
         return await UploadAlbumAsync(null, album, caption, location);
     }
@@ -816,7 +816,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
     public async Task<IResult<InstaMedia>> UploadAlbumAsync(Action<InstaUploaderProgress> progress,
-        InstaAlbumUpload[] album, string caption, InstaLocationShort location = null)
+        InstaAlbumUpload[] album, string? caption, InstaLocationShort? location = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var upProgress = new InstaUploaderProgress
@@ -828,7 +828,7 @@ internal class MediaProcessor : IMediaProcessor
         {
             upProgress.Name = "Album upload";
             progress?.Invoke(upProgress);
-            var uploadIds = new Dictionary<string, InstaAlbumUpload>();
+            var uploadIds = new Dictionary<string?, InstaAlbumUpload>();
             var index = 1;
 
             foreach (var al in album)
@@ -940,8 +940,8 @@ internal class MediaProcessor : IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
-    public async Task<IResult<InstaMedia>> UploadPhotoAsync(InstaImageUpload image, string caption,
-        InstaLocationShort location = null)
+    public async Task<IResult<InstaMedia>> UploadPhotoAsync(InstaImageUpload image, string? caption,
+        InstaLocationShort? location = null)
     {
         return await UploadPhotoAsync(null, image, caption, location);
     }
@@ -955,9 +955,9 @@ internal class MediaProcessor : IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
-    public async Task<IResult<InstaMedia>> UploadPhotoAsync(Action<InstaUploaderProgress> progress,
-        InstaImageUpload image, string caption,
-        InstaLocationShort location = null)
+    public async Task<IResult<InstaMedia>> UploadPhotoAsync(Action<InstaUploaderProgress>? progress,
+        InstaImageUpload image, string? caption,
+        InstaLocationShort? location = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         return await _instaApi.HelperProcessor.SendMediaPhotoAsync(progress, image, caption, location);
@@ -971,8 +971,8 @@ internal class MediaProcessor : IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
-    public async Task<IResult<InstaMedia>> UploadVideoAsync(InstaVideoUpload video, string caption,
-        InstaLocationShort location = null)
+    public async Task<IResult<InstaMedia>> UploadVideoAsync(InstaVideoUpload video, string? caption,
+        InstaLocationShort? location = null)
     {
         return await UploadVideoAsync(null, video, caption, location);
     }
@@ -987,7 +987,7 @@ internal class MediaProcessor : IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="LocationProcessor.SearchLocationAsync" />
     /// </param>
     public async Task<IResult<InstaMedia>> UploadVideoAsync(Action<InstaUploaderProgress> progress,
-        InstaVideoUpload video, string caption, InstaLocationShort location = null)
+        InstaVideoUpload video, string? caption, InstaLocationShort? location = null)
     {
         var upProgress = new InstaUploaderProgress
         {
@@ -1068,8 +1068,8 @@ internal class MediaProcessor : IMediaProcessor
         }
     }
 
-    private async Task<IResult<string>> UploadSinglePhoto(Action<InstaUploaderProgress> progress,
-        InstaImageUpload image, InstaUploaderProgress upProgress, string uploadId = null, bool album = true)
+    private async Task<IResult<string?>> UploadSinglePhoto(Action<InstaUploaderProgress> progress,
+        InstaImageUpload image, InstaUploaderProgress upProgress, string? uploadId = null, bool album = true)
     {
         if (string.IsNullOrEmpty(uploadId))
             uploadId = ApiRequestMessage.GenerateUploadId();
@@ -1120,7 +1120,7 @@ internal class MediaProcessor : IMediaProcessor
         return Result.Fail<string>("NO UPLOAD ID");
     }
 
-    private async Task<IResult<string>> UploadSingleVideo(Action<InstaUploaderProgress> progress,
+    private async Task<IResult<string?>> UploadSingleVideo(Action<InstaUploaderProgress> progress,
         InstaVideoUpload video, InstaUploaderProgress upProgress, bool album = true)
     {
         var uploadId = ApiRequestMessage.GenerateRandomUploadId();
@@ -1131,9 +1131,9 @@ internal class MediaProcessor : IMediaProcessor
         var videoUri = UriCreator.GetStoryUploadVideoUri(uploadId, videoHashCode);
         var retryContext = HelperProcessor.GetRetryContext();
         HttpRequestMessage request = null;
-        HttpResponseMessage response = null;
+        HttpResponseMessage? response = null;
         string videoUploadParams = null;
-        string json = null;
+        string? json = null;
 
         var videoUploadParamsObj = new JObject
         {
@@ -1196,8 +1196,8 @@ internal class MediaProcessor : IMediaProcessor
     }
 
     private async Task<IResult<InstaMedia>> ConfigureAlbumAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, Dictionary<string, InstaAlbumUpload> album, string caption,
-        InstaLocationShort location)
+        InstaUploaderProgress upProgress, Dictionary<string?, InstaAlbumUpload> album, string? caption,
+        InstaLocationShort? location)
     {
         try
         {
@@ -1292,8 +1292,8 @@ internal class MediaProcessor : IMediaProcessor
     }
 
     private async Task<IResult<InstaMedia>> ConfigureAlbumAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, Dictionary<string, InstaImageUpload> imagesUploadIds,
-        Dictionary<string, InstaVideoUpload> videos, string caption, InstaLocationShort location)
+        InstaUploaderProgress upProgress, Dictionary<string?, InstaImageUpload> imagesUploadIds,
+        Dictionary<string?, InstaVideoUpload> videos, string? caption, InstaLocationShort? location)
     {
         try
         {
@@ -1383,8 +1383,8 @@ internal class MediaProcessor : IMediaProcessor
     }
 
     private async Task<IResult<InstaMedia>> ConfigureVideoAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, InstaVideoUpload video, string uploadId, string caption,
-        InstaLocationShort location)
+        InstaUploaderProgress upProgress, InstaVideoUpload video, string? uploadId, string? caption,
+        InstaLocationShort? location)
     {
         try
         {
@@ -1494,12 +1494,12 @@ internal class MediaProcessor : IMediaProcessor
         }
     }
 
-    private async Task<IResult<bool>> LikeUnlikeArchiveUnArchiveMediaInternal(string mediaId, Uri instaUri)
+    private async Task<IResult<bool>> LikeUnlikeArchiveUnArchiveMediaInternal(string? mediaId, Uri instaUri)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -1526,7 +1526,7 @@ internal class MediaProcessor : IMediaProcessor
         }
     }
 
-    private async Task<IResult<InstaMediaListResponse>> GetArchivedMedia(string nextMaxId)
+    private async Task<IResult<InstaMediaListResponse>> GetArchivedMedia(string? nextMaxId)
     {
         var mediaList = new InstaMediaList();
         try
@@ -1552,7 +1552,7 @@ internal class MediaProcessor : IMediaProcessor
         }
     }
 
-    private JObject GetImageConfigure(string uploadId, InstaImageUpload image)
+    private JObject GetImageConfigure(string? uploadId, InstaImageUpload image)
     {
         var imgData = new JObject
         {
@@ -1598,7 +1598,7 @@ internal class MediaProcessor : IMediaProcessor
         return imgData;
     }
 
-    private JObject GetVideoConfigure(string uploadId, InstaVideoUpload video)
+    private JObject GetVideoConfigure(string? uploadId, InstaVideoUpload video)
     {
         var vidData = new JObject
         {

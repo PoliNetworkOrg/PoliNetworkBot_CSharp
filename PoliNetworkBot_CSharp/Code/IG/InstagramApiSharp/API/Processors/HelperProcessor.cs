@@ -37,7 +37,7 @@ internal class HelperProcessor
     /// <param name="isDisappearingVideo">Disappearing video</param>
     public async Task<IResult<bool>> SendVideoAsync(Action<InstaUploaderProgress> progress, bool isDirectVideo,
         bool isDisappearingVideo, string caption,
-        InstaViewMode viewMode, InstaStoryType storyType, string recipients, string threadId,
+        InstaViewMode viewMode, InstaStoryType storyType, string? recipients, string? threadId,
         InstaVideoUpload video, Uri uri = null, InstaStoryUploadOptions uploadOptions = null)
     {
         var upProgress = new InstaUploaderProgress
@@ -55,9 +55,9 @@ internal class HelperProcessor
             var videoUri = UriCreator.GetStoryUploadVideoUri(uploadId, videoHashCode);
             var retryContext = GetRetryContext();
             HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
+            HttpResponseMessage? response = null;
             string videoUploadParams = null;
-            string json = null;
+            string? json = null;
             upProgress.UploadId = uploadId;
             progress?.Invoke(upProgress);
             var videoUploadParamsObj = new JObject();
@@ -253,9 +253,9 @@ internal class HelperProcessor
     }
 
     private async Task<IResult<bool>> ConfigureVideo(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, string uploadId, bool isDirectVideo, bool isDisappearingVideo,
+        InstaUploaderProgress upProgress, string? uploadId, bool isDirectVideo, bool isDisappearingVideo,
         string caption,
-        InstaViewMode viewMode, InstaStoryType storyType, string recipients, string threadId, Uri uri,
+        InstaViewMode viewMode, InstaStoryType storyType, string? recipients, string? threadId, Uri uri,
         InstaStoryUploadOptions uploadOptions = null)
     {
         try
@@ -268,7 +268,7 @@ internal class HelperProcessor
 
             if (isDirectVideo)
             {
-                var data = new Dictionary<string, string>
+                var data = new Dictionary<string, string?>
                 {
                     { "action", "send_item" },
                     { "client_context", clientContext },
@@ -517,7 +517,7 @@ internal class HelperProcessor
 
     public async Task<IResult<bool>> SendPhotoAsync(Action<InstaUploaderProgress> progress, bool isDirectPhoto,
         bool isDisappearingPhoto, string caption, InstaViewMode viewMode, InstaStoryType storyType,
-        string recipients, string threadId, InstaImage image)
+        string recipients, string? threadId, InstaImage image)
     {
         var upProgress = new InstaUploaderProgress
         {
@@ -533,8 +533,8 @@ internal class HelperProcessor
             var waterfallId = Guid.NewGuid().ToString();
             var retryContext = GetRetryContext();
             HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
-            string json = null;
+            HttpResponseMessage? response = null;
+            string? json = null;
             upProgress.UploadId = uploadId;
             progress?.Invoke(upProgress);
             var photoUploadParamsObj = new JObject
@@ -628,8 +628,8 @@ internal class HelperProcessor
     }
 
     private async Task<IResult<bool>> ConfigurePhoto(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, string uploadId, bool isDirectPhoto, bool isDisappearingPhoto,
-        string caption, InstaViewMode viewMode, InstaStoryType storyType, string recipients, string threadId)
+        InstaUploaderProgress upProgress, string? uploadId, bool isDirectPhoto, bool isDisappearingPhoto,
+        string caption, InstaViewMode viewMode, InstaStoryType storyType, string recipients, string? threadId)
     {
         try
         {
@@ -779,8 +779,8 @@ internal class HelperProcessor
         }
     }
 
-    public async Task<IResult<InstaMedia>> SendMediaPhotoAsync(Action<InstaUploaderProgress> progress,
-        InstaImageUpload image, string caption, InstaLocationShort location, bool configureAsNameTag = false)
+    public async Task<IResult<InstaMedia>> SendMediaPhotoAsync(Action<InstaUploaderProgress>? progress,
+        InstaImageUpload image, string? caption, InstaLocationShort? location, bool configureAsNameTag = false)
     {
         var upProgress = new InstaUploaderProgress
         {
@@ -822,8 +822,8 @@ internal class HelperProcessor
             var waterfallId = Guid.NewGuid().ToString();
             var retryContext = GetRetryContext();
             HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
-            string json = null;
+            HttpResponseMessage? response = null;
+            string? json = null;
             upProgress.UploadId = uploadId;
             progress?.Invoke(upProgress);
             var photoUploadParamsObj = new JObject
@@ -903,8 +903,8 @@ internal class HelperProcessor
         }
     }
 
-    private async Task<IResult<InstaMedia>> ConfigureMediaPhotoAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, string uploadId, string caption, InstaLocationShort location,
+    private async Task<IResult<InstaMedia>> ConfigureMediaPhotoAsync(Action<InstaUploaderProgress>? progress,
+        InstaUploaderProgress upProgress, string? uploadId, string? caption, InstaLocationShort? location,
         List<InstaUserTagUpload> userTags = null)
     {
         try
@@ -1019,8 +1019,8 @@ internal class HelperProcessor
     }
 
     private async Task<IResult<InstaMedia>> ConfigureMediaPhotoAsNametagAsync(
-        Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, string uploadId)
+        Action<InstaUploaderProgress>? progress,
+        InstaUploaderProgress upProgress, string? uploadId)
     {
         try
         {
@@ -1074,8 +1074,8 @@ internal class HelperProcessor
         }
     }
 
-    public async Task<IResult<string>> UploadSinglePhoto(Action<InstaUploaderProgress> progress,
-        InstaImageUpload image, InstaUploaderProgress upProgress, string uploadId = null)
+    public async Task<IResult<string?>> UploadSinglePhoto(Action<InstaUploaderProgress>? progress,
+        InstaImageUpload image, InstaUploaderProgress upProgress, string? uploadId = null)
     {
         if (string.IsNullOrEmpty(uploadId))
             uploadId = ApiRequestMessage.GenerateUploadId();
@@ -1146,9 +1146,9 @@ internal class HelperProcessor
             var videoUri = UriCreator.GetStoryUploadVideoUri(uploadId, videoHashCode);
             var retryContext = GetRetryContext();
             HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
+            HttpResponseMessage? response = null;
             string videoUploadParams = null;
-            string json = null;
+            string? json = null;
             upProgress.UploadId = uploadId;
             progress?.Invoke(upProgress);
             var videoUploadParamsObj = new JObject
@@ -1298,7 +1298,7 @@ internal class HelperProcessor
     }
 
     private async Task<IResult<InstaMedia>> ConfigureIGTVVideo(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, string uploadId, string title, string caption)
+        InstaUploaderProgress upProgress, string? uploadId, string title, string caption)
     {
         try
         {
@@ -1387,16 +1387,16 @@ internal class HelperProcessor
 
     #region Properties and constructor
 
-    private readonly AndroidDevice _deviceInfo;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly AndroidDevice? _deviceInfo;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
     private readonly InstaApi _instaApi;
     private readonly HttpHelper _httpHelper;
 
-    public HelperProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public HelperProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;

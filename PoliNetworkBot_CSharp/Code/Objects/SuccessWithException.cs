@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class SuccessWithException
 {
-    private readonly List<Exception> ex;
+    private readonly List<Exception?>? ex;
     private readonly bool success;
 
     public SuccessWithException(bool v)
@@ -17,13 +17,13 @@ public class SuccessWithException
         success = v;
     }
 
-    public SuccessWithException(bool v, Exception e2)
+    public SuccessWithException(bool v, Exception? e2)
     {
         success = v;
-        ex = new List<Exception> { e2 };
+        ex = new List<Exception?> { e2 };
     }
 
-    public SuccessWithException(bool v, List<Exception> e2)
+    public SuccessWithException(bool v, List<Exception?>? e2)
     {
         success = v;
         ex = e2;
@@ -34,7 +34,7 @@ public class SuccessWithException
         return success;
     }
 
-    internal List<Exception> GetExceptions()
+    internal List<Exception?>? GetExceptions()
     {
         return ex;
     }
@@ -44,10 +44,15 @@ public class SuccessWithException
         return ex is { Count: > 0 };
     }
 
-    internal ExceptionNumbered GetFirstException()
+    internal ExceptionNumbered? GetFirstException()
     {
         if (!ContainsExceptions()) return null;
-        var ex2 = ex[0];
-        return new ExceptionNumbered(ex2);
+        if (ex != null)
+        {
+            var ex2 = ex[0];
+            return new ExceptionNumbered(ex2);
+        }
+
+        return null;
     }
 }

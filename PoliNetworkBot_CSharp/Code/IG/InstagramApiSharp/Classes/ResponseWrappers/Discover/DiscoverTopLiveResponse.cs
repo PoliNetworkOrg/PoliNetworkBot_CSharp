@@ -18,7 +18,7 @@ public class InstaDiscoverTopLiveResponse
     [JsonProperty("auto_load_more_enabled")]
     public bool AutoLoadMoreEnabled { get; set; }
 
-    [JsonProperty("next_max_id")] public string NextMaxId { get; set; }
+    [JsonProperty("next_max_id")] public string? NextMaxId { get; set; }
 
     [JsonProperty("status")] public string Status { get; set; }
 }

@@ -36,7 +36,7 @@ public class InstaHighlightFeed
 
     public InstaHighlightCoverMedia CoverMedia { get; set; }
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public int RankedPosition { get; set; }
 

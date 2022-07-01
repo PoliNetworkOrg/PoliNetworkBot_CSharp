@@ -12,5 +12,5 @@ public abstract class GenericFile
 {
     public abstract MessageType? GetMediaBotType();
 
-    public abstract Task<TlFileToSend> GetMediaTl(TelegramClient client);
+    public abstract Task<TlFileToSend?> GetMediaTl(TelegramClient? client);
 }

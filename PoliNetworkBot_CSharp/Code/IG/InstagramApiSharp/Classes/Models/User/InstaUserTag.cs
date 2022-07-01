@@ -8,5 +8,5 @@ public class InstaUserTag
 
     public string TimeInVideo { get; set; }
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 }

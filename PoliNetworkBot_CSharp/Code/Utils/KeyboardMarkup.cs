@@ -11,8 +11,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class KeyboardMarkup
 {
-    public static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>> options,
-        string lang)
+    public static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>>? options,
+        string? lang)
     {
         return options.Select(o => o.Select(
             o2 =>

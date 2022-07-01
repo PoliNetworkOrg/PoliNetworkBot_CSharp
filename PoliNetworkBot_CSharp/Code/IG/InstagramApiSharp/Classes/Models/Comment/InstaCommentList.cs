@@ -21,7 +21,7 @@ public class InstaCommentList
 
     public List<InstaComment> Comments { get; set; } = new();
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     public int CommentsCount { get; set; }
 

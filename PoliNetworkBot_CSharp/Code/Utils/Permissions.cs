@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -18,7 +19,7 @@ internal static class Permissions
     /// </summary>
     /// <returns> true if is allowed, false otherwise</returns>
     /// <exception cref="NotImplementedException"></exception>
-    internal static bool CheckPermissions(Permission permission, User messageFrom)
+    internal static bool CheckPermissions(Permission permission, User? messageFrom)
     {
         return permission switch
         {
@@ -27,7 +28,7 @@ internal static class Permissions
         };
     }
 
-    private static async Task<bool> HeadAdminCheck(User messageFrom)
+    private static async Task<bool> HeadAdminCheck(User? messageFrom)
     {
         const string url = "https://polinetwork.org/en/learnmore/about_us/";
         var webReply = await Web.DownloadHtmlAsync(url);

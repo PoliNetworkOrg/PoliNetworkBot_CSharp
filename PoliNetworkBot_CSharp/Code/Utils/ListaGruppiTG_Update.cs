@@ -68,7 +68,7 @@ internal class ListaGruppiTG_Update
                         ChatType.Private, "it", ParseMode.Default, null, e.Message.From.Username);
                     */
             }
-            catch (Exception ex2)
+            catch (Exception? ex2)
             {
                 Logger.Logger.WriteLine(ex2);
             }
@@ -78,7 +78,7 @@ internal class ListaGruppiTG_Update
         return st;
     }
 
-    private static string StringNotNullFromBool(bool? query2Fallita)
+    private static string? StringNotNullFromBool(bool? query2Fallita)
     {
         if (query2Fallita == null) return StringNotNull(null);
 
@@ -90,7 +90,7 @@ internal class ListaGruppiTG_Update
         return permanentId == null ? "null" : permanentId.Value.ToString();
     }
 
-    private static string StringNotNull(string idLink)
+    private static string? StringNotNull(string? idLink)
     {
         if (idLink == null)
             return "[null]";

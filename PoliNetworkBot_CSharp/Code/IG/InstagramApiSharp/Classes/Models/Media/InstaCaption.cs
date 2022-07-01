@@ -13,7 +13,7 @@ public class InstaCaption
 
     public DateTime CreatedAt { get; set; }
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public string Text { get; set; }
 

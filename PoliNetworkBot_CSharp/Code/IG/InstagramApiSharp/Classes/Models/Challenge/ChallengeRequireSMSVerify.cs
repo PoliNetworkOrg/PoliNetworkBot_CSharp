@@ -18,7 +18,7 @@ public class InstaChallengeRequireSMSVerify
 
     [JsonProperty("status")] internal string Status { get; set; }
 
-    [JsonProperty("message")] public string Message { get; set; }
+    [JsonProperty("message")] public string? Message { get; set; }
 }
 
 public class ChallengeRequireStepDataSMSVerify

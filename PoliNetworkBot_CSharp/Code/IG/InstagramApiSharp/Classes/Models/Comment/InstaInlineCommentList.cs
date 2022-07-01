@@ -14,7 +14,7 @@ public class InstaInlineCommentList
 
     public bool HasMoreHeadChildComments { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     public string NextMinId { get; set; }
 

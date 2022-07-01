@@ -44,7 +44,7 @@ public class InstaFullUserInfoUserFeed
 
 public class InstaFullUserInfoUserStoryReel
 {
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public List<InstaStoryItem> Items { get; set; } = new();
 

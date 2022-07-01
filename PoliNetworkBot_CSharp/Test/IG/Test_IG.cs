@@ -76,15 +76,15 @@ internal class Test_IG
             return true;
 
         var challenge = await x.GetChallengeRequireVerifyMethodAsync();
-        if (challenge.Succeeded)
+        if (challenge != null && challenge.Succeeded)
         {
-            if (challenge.Value.SubmitPhoneRequired)
+            if (challenge.Value != null && challenge.Value.SubmitPhoneRequired)
             {
                 ;
             }
             else
             {
-                if (challenge.Value.StepData != null)
+                if (challenge.Value?.StepData != null)
                 {
                     if (!string.IsNullOrEmpty(challenge.Value.StepData.PhoneNumber))
                     {
@@ -117,7 +117,7 @@ internal class Test_IG
         var album = new PhotoAlbumUploader();
         var file = await StorageFile.GetFileFromPathAsync("test.jpg");
         StorageFile[] files = { file };
-        string caption = null;
+        string? caption = null;
         await album.SetFiles(files, caption, x);
         ;
     }

@@ -21,9 +21,9 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class InviteLinks
 {
-    internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<int> FillMissingLinksIntoDB_Async(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        const string q1 = "SELECT id FROM GroupsTelegram WHERE link IS NULL OR link = ''";
+        const string? q1 = "SELECT id FROM GroupsTelegram WHERE link IS NULL OR link = ''";
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
 
         var n = 0;
@@ -51,8 +51,8 @@ internal static class InviteLinks
         return n;
     }
 
-    internal static async Task<NuovoLink> CreateInviteLinkAsync(long chatId, TelegramBotAbstract sender,
-        MessageEventArgs messageEventArgs)
+    internal static async Task<NuovoLink?> CreateInviteLinkAsync(long chatId, TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs)
     {
         var r = await TryGetCurrentInviteLinkAsync(chatId, sender, messageEventArgs);
         if (!string.IsNullOrEmpty(r)) return SalvaNuovoLink(r, chatId, sender, SuccessoGenerazioneLink.RICICLATO);
@@ -71,8 +71,8 @@ internal static class InviteLinks
             : SalvaNuovoLink(r, chatId, sender, SuccessoGenerazioneLink.NUOVO_LINK);
     }
 
-    private static async Task<string> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract sender,
-        MessageEventArgs messageEventArgs)
+    private static async Task<string?> TryGetCurrentInviteLinkAsync(long chatId, TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs)
     {
         Chat chat = null;
         try
@@ -81,7 +81,7 @@ internal static class InviteLinks
             chat = (await sender.GetChat(chatId))?.Item1;
             return chat?.InviteLink;
         }
-        catch (Exception ex1)
+        catch (Exception? ex1)
         {
             Logger.Logger.WriteLine(ex1);
             var ex3M = "5" +
@@ -95,11 +95,11 @@ internal static class InviteLinks
         }
     }
 
-    private static NuovoLink SalvaNuovoLink(string nuovoLink, long chatId, TelegramBotAbstract sender,
+    private static NuovoLink? SalvaNuovoLink(string? nuovoLink, long chatId, TelegramBotAbstract? sender,
         SuccessoGenerazioneLink successoGenerazioneLink)
     {
-        const string q1 = "UPDATE GroupsTelegram SET link = @link, last_update_link = @lul WHERE id = @id";
-        Database.Execute(q1, sender.DbConfig, new Dictionary<string, object>
+        const string? q1 = "UPDATE GroupsTelegram SET link = @link, last_update_link = @lul WHERE id = @id";
+        Database.Execute(q1, sender.DbConfig, new Dictionary<string, object?>
         {
             { "@link", nuovoLink },
             { "@lul", GetDateTimeLastUpdateLinkFormattedString(DateTime.Now) },
@@ -109,12 +109,12 @@ internal static class InviteLinks
         return new NuovoLink(successoGenerazioneLink, nuovoLink);
     }
 
-    public static string GetDateTimeLastUpdateLinkFormattedString(DateTime? lastUpdateLinkTime)
+    public static string? GetDateTimeLastUpdateLinkFormattedString(DateTime? lastUpdateLinkTime)
     {
         return lastUpdateLinkTime?.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
-    internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         try
         {
@@ -175,13 +175,13 @@ internal static class InviteLinks
                 {
                     await UpdateLinksFromJson2Async(gruppoTg, sender, e, l);
                 }
-                catch (Exception ex)
+                catch (Exception? ex)
                 {
                     Logger.Logger.WriteLine(ex);
                     var ex4M = "4" + "\n\n" + ex.Message;
                     await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(
-                            new Dictionary<string, string>
+                            new Dictionary<string?, string>
                             {
                                 {
                                     "it",
@@ -201,7 +201,7 @@ internal static class InviteLinks
 
             await sender.SendTextMessageAsync(e.Message.From.Id,
                 new Language(
-                    new Dictionary<string, string>
+                    new Dictionary<string?, string>
                     {
                         {
                             "it",
@@ -212,7 +212,7 @@ internal static class InviteLinks
 
             var st = l.GetStringList();
 
-            var dict = new Dictionary<string, string>
+            var dict = new Dictionary<string?, string>
             {
                 { "it", "Gruppi con link rigenerati" }
             };
@@ -222,14 +222,14 @@ internal static class InviteLinks
                 new Language(dict),
                 TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex);
         }
     }
 
-    private static async Task UpdateLinksFromJson2Async(GruppoTG gruppoTg, TelegramBotAbstract sender,
-        MessageEventArgs e, ListaGruppiTG_Update L)
+    private static async Task UpdateLinksFromJson2Async(GruppoTG gruppoTg, TelegramBotAbstract? sender,
+        MessageEventArgs? e, ListaGruppiTG_Update L)
     {
         var result = new GruppoTG_Update(null, SuccessoGenerazioneLink.ERRORE);
 
@@ -261,14 +261,14 @@ internal static class InviteLinks
                     }
                 }
             }
-            catch (Exception ex1)
+            catch (Exception? ex1)
             {
                 Logger.Logger.WriteLine(ex1);
                 var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.idLink + "\n\n" +
                            gruppoTg.nome + "\n\n" + gruppoTg.newLink + "\n\n" + gruppoTg.permanentId;
                 await sender.SendTextMessageAsync(e.Message.From?.Id,
                     new Language(
-                        new Dictionary<string, string>
+                        new Dictionary<string?, string>
                         {
                             {
                                 "it",
@@ -286,7 +286,7 @@ internal static class InviteLinks
                 return;
             }
 
-        const string sql2 = "SELECT id FROM GroupsTelegram WHERE GroupsTelegram.title LIKE '%' || @nome || '%'";
+        const string? sql2 = "SELECT id FROM GroupsTelegram WHERE GroupsTelegram.title LIKE '%' || @nome || '%'";
 
         if (groupId == null)
             try
@@ -294,7 +294,7 @@ internal static class InviteLinks
                 if (!string.IsNullOrEmpty(gruppoTg.nome))
                 {
                     var r1 = Database.ExecuteSelect(sql2, sender.DbConfig,
-                        new Dictionary<string, object> { { "@nome", gruppoTg.nome } });
+                        new Dictionary<string, object?> { { "@nome", gruppoTg.nome } });
                     if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                     {
                         var r2 = r1.Rows[0];
@@ -307,13 +307,13 @@ internal static class InviteLinks
                     }
                 }
             }
-            catch (Exception ex2)
+            catch (Exception? ex2)
             {
                 Logger.Logger.WriteLine(ex2);
                 var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.nome;
                 await sender.SendTextMessageAsync(e.Message.From?.Id,
                     new Language(
-                        new Dictionary<string, string>
+                        new Dictionary<string?, string>
                         {
                             {
                                 "it",
@@ -339,7 +339,7 @@ internal static class InviteLinks
         }
         else
         {
-            NuovoLink s3 = null;
+            NuovoLink? s3 = null;
             try
             {
                 if (groupId != null)
@@ -350,13 +350,13 @@ internal static class InviteLinks
                     if (s3 != null) gruppoTg.UpdateNewLink(s3.link);
                 }
             }
-            catch (Exception ex3)
+            catch (Exception? ex3)
             {
                 Logger.Logger.WriteLine(ex3);
                 var ex3M = "3" + "\n\n" + ex3.Message;
                 await sender.SendTextMessageAsync(e.Message.From.Id,
                     new Language(
-                        new Dictionary<string, string>
+                        new Dictionary<string?, string>
                         {
                             {
                                 "it",
@@ -383,7 +383,7 @@ internal static class InviteLinks
         }
     }
 
-    private static SuccessoGenerazioneLink GetSuccessoGenerazione(NuovoLink s3)
+    private static SuccessoGenerazioneLink GetSuccessoGenerazione(NuovoLink? s3)
     {
         return s3?.isNuovo ?? SuccessoGenerazioneLink.ERRORE;
     }

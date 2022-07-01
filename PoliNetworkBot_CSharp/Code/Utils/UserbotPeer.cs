@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class UserbotPeer
 {
-    internal static TLAbsInputPeer GetPeerFromIdAndType(long chatid, ChatType? chatType)
+    internal static TLAbsInputPeer? GetPeerFromIdAndType(long chatid, ChatType? chatType)
     {
         if (chatType == null) return new TLInputPeerChat { ChatId = (int)chatid };
 
@@ -23,21 +23,24 @@ internal static class UserbotPeer
         };
     }
 
-    internal static TLAbsInputChannel GetPeerChannelFromIdAndType(long? chatid, long? accessHash)
+    internal static TLAbsInputChannel? GetPeerChannelFromIdAndType(long? chatid, long? accessHash)
     {
         try
         {
-            return accessHash != null
-                ? new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value }
-                : new TLInputChannel { ChannelId = (int)chatid };
+            if (chatid != null)
+                return accessHash != null
+                    ? new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value }
+                    : new TLInputChannel { ChannelId = (int)chatid };
         }
         catch
         {
             return null;
         }
+
+        return null;
     }
 
-    internal static TLAbsInputUser GetPeerUserFromdId(long userId)
+    internal static TLAbsInputUser? GetPeerUserFromdId(long userId)
     {
         try
         {
@@ -49,16 +52,20 @@ internal static class UserbotPeer
         }
     }
 
-    public static async Task<TLInputPeerUser> GetPeerUserWithAccessHash(string username,
-        TelegramClient telegramClient)
+    public static async Task<TLInputPeerUser?> GetPeerUserWithAccessHash(string? username,
+        TelegramClient? telegramClient)
     {
-        var r = await telegramClient.ResolveUsernameAsync(username);
+        TLUser? user2 = null;
+        if (telegramClient != null)
+        {
+            var r = await telegramClient.ResolveUsernameAsync(username);
 
-        var user = r?.Users?[0];
-        if (user is not TLUser user2)
-            return null;
+            var user = r?.Users?[0];
+            if (user is not TLUser)
+                return null;
+        }
 
-        return user2.AccessHash != null
+        return user2 != null && user2.AccessHash != null
             ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
             : null;
     }

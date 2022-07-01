@@ -25,16 +25,16 @@ namespace InstagramApiSharp.API.Processors;
 
 internal class WebProcessor : IWebProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public WebProcessor(AndroidDevice deviceInfo, UserSessionData user, IHttpRequestProcessor httpRequestProcessor,
-        IInstaLogger logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
+    public WebProcessor(AndroidDevice? deviceInfo, UserSessionData? user, IHttpRequestProcessor? httpRequestProcessor,
+        IInstaLogger? logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
         HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -104,7 +104,7 @@ internal class WebProcessor : IWebProcessor
                 return ConvertersFabric.GetWebTextDataListConverter(settingsPageResponse).Convert();
             }
 
-            Uri CreateUri(string cursor = null)
+            Uri CreateUri(string? cursor = null)
             {
                 return WebUriCreator.GetCurrentFollowRequestsUri(cursor);
             }
@@ -218,7 +218,7 @@ internal class WebProcessor : IWebProcessor
                 return ConvertersFabric.GetWebDataConverter(settingsPageResponse).Convert();
             }
 
-            Uri CreateUri(string cursor = null)
+            Uri CreateUri(string? cursor = null)
             {
                 return type switch
                 {

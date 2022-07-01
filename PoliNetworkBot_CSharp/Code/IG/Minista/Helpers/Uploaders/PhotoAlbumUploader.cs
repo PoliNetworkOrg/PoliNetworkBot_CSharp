@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using InstagramApiSharp.Classes;
+using InstagramApiSharp.Classes.Android.DeviceInfo;
 using Minista.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,7 +27,7 @@ internal class PhotoAlbumUploader
     private readonly Dictionary<string, SinglePhotoUploader> _uploads = new();
     private InstaApi _instaApi;
 
-    private string Caption { get; set; }
+    private string? Caption { get; set; }
 
     private static string GenerateUploadId()
     {
@@ -34,7 +36,7 @@ internal class PhotoAlbumUploader
         return uploadId.ToString();
     }
 
-    public async Task SetFiles(IEnumerable<StorageFile> files, string caption, InstaApi instaApi)
+    public async Task SetFiles(IEnumerable<StorageFile> files, string? caption, InstaApi instaApi)
     {
         Caption = caption;
         _instaApi = instaApi;

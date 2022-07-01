@@ -10,7 +10,7 @@ public class InstaStoryMentionUpload
     public double Height { get; set; } = 0.21962096;
     public double Rotation { get; set; } = 0.0;
 
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
     internal long Pk { get; set; } = -1;
 }

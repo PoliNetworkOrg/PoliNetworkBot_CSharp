@@ -26,7 +26,7 @@ public interface ICommentProcessor
     /// </summary>
     /// <param name="mediaId">Media id</param>
     /// <param name="text">Comment text</param>
-    Task<IResult<InstaComment>> CommentMediaAsync(string mediaId, string text);
+    Task<IResult<InstaComment>> CommentMediaAsync(string mediaId, string? text);
 
     /// <summary>
     ///     Delete media comment
@@ -95,14 +95,14 @@ public interface ICommentProcessor
     /// <param name="mediaId">Media id</param>
     /// <param name="targetCommentId">Target comment id</param>
     /// <param name="text">Comment text</param>
-    Task<IResult<InstaComment>> ReplyCommentMediaAsync(string mediaId, string targetCommentId, string text);
+    Task<IResult<InstaComment>> ReplyCommentMediaAsync(string mediaId, string? targetCommentId, string? text);
 
     /// <summary>
     ///     Report media comment
     /// </summary>
     /// <param name="mediaId">Media id</param>
     /// <param name="commentId">Comment id</param>
-    Task<IResult<bool>> ReportCommentAsync(string mediaId, string commentId);
+    Task<IResult<bool>> ReportCommentAsync(string mediaId, string? commentId);
 
     /// <summary>
     ///     Unblock an user from commenting to medias

@@ -22,10 +22,10 @@ internal static class NotifyUtil
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="messageEventArgs"></param>
-    internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract sender,
-        MessageEventArgs messageEventArgs)
+    internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs)
     {
-        var title = messageEventArgs.Message.Chat.Title;
+        var title = messageEventArgs?.Message?.Chat.Title;
         if (messageEventArgs is { Message: { } })
         {
             var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
@@ -55,8 +55,8 @@ internal static class NotifyUtil
             message += "\n\n";
             message += "Message tag: #" + hashText;
 
-            const string langCode = "it";
-            var text2 = new Language(new Dictionary<string, string>
+            const string? langCode = "it";
+            var text2 = new Language(new Dictionary<string, string?>
             {
                 { "it", message }
             });
@@ -69,8 +69,8 @@ internal static class NotifyUtil
     }
 
     internal static async Task NotifyOwners(ExceptionNumbered exception,
-        TelegramBotAbstract sender, MessageEventArgs messageEventArgs, int loopNumber = 0, string extrainfo = null,
-        string langCode = DefaultLang,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string? extrainfo = null,
+        string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
         if (sender == null)
@@ -141,7 +141,7 @@ internal static class NotifyUtil
             message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
         }
 
-        var text = new Language(new Dictionary<string, string>
+        var text = new Language(new Dictionary<string, string?>
         {
             { "it", "Eccezione! " + message3 },
             { "en", "Exception! " + message3 }
@@ -150,43 +150,48 @@ internal static class NotifyUtil
         var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
     }
 
-    internal static Task NotifyOwners(string v, TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+    internal static Task NotifyOwners(string v, TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
     {
-        return NotifyOwners3(new Language(new Dictionary<string, string> { { "it", v } }), telegramBotAbstract,
+        return NotifyOwners3(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
             null, 0, null, messageEventArgs);
     }
 
-    private static async Task<MessageSentResult> NotifyOwners3(Language text2, TelegramBotAbstract sender,
-        long? replyToMessageId, int v, string langCode, MessageEventArgs messageEventArgs)
+    private static async Task<MessageSentResult?> NotifyOwners3(Language text2, TelegramBotAbstract? sender,
+        long? replyToMessageId, int v, string? langCode, MessageEventArgs? messageEventArgs)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
-        var text = new Language(new Dictionary<string, string>
+        if (langCode != null)
         {
-            { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) }
-        });
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) }
+            });
 
-        return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
-            Data.Constants.Groups.GroupException,
-            ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
+            return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
+                Data.Constants.Groups.GroupException,
+                ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
+        }
+
+        return null;
     }
 
-    internal static async Task NotifyOwners(Exception e, TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs, int loopNumber = 0)
+    internal static async Task NotifyOwners(Exception? e, TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs, int loopNumber = 0)
     {
         await NotifyOwners(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
         Logger.Logger.WriteLine(e);
     }
 
-    private static async Task<MessageSentResult> NotifyOwners2Async(Language text, TelegramBotAbstract sender,
-        int v, string langCode, long? replyto, MessageEventArgs messageEventArgs)
+    private static async Task<MessageSentResult?> NotifyOwners2Async(Language text, TelegramBotAbstract? sender,
+        int v, string? langCode, long? replyto, MessageEventArgs? messageEventArgs)
     {
         return await NotifyOwners3(text, sender, replyto, v, langCode, messageEventArgs);
     }
 
-    internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long> r1, string extraInfo,
-        TelegramBotAbstract sender)
+    internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
+        TelegramBotAbstract? sender)
     {
         if (r1?.Item1 == null)
             return;
@@ -206,13 +211,13 @@ internal static class NotifyUtil
     }
 
     internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,
-        TelegramBotAbstract sender, MessageEventArgs messageEventArgs, string v, string langCode,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string v, string? langCode,
         long? replyToMessageId = null)
     {
-        MessageSentResult m = null;
+        MessageSentResult? m = null;
         try
         {
-            var text = new Language(new Dictionary<string, string>
+            var text = new Language(new Dictionary<string, string?>
             {
                 { "en", v }
             });
@@ -226,7 +231,7 @@ internal static class NotifyUtil
         var (exceptionNumbereds, item2) = exceptions;
         try
         {
-            var text = new Language(new Dictionary<string, string>
+            var text = new Language(new Dictionary<string, string?>
             {
                 { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
             });
@@ -256,7 +261,7 @@ internal static class NotifyUtil
 
         try
         {
-            var text2 = new Language(new Dictionary<string, string>
+            var text2 = new Language(new Dictionary<string, string?>
             {
                 { "en", "---End---" }
             });
@@ -273,10 +278,10 @@ internal static class NotifyUtil
         }
     }
 
-    public static async void NotifyOwnersBanAction(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
-        RestrictAction restrictAction, Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long> done,
-        string finalTarget,
-        string reason)
+    public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
+        RestrictAction restrictAction, Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done,
+        string? finalTarget,
+        string? reason)
     {
         try
         {
@@ -297,11 +302,11 @@ internal static class NotifyUtil
                 message += "-----";
                 message += "\n";
                 var (banUnbanAllResult, exceptionNumbereds, item3) = done;
-                message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3).Select("it");
+                message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
                 ;
 
-                const string langCode = "it";
-                var text2 = new Language(new Dictionary<string, string>
+                const string? langCode = "it";
+                var text2 = new Language(new Dictionary<string, string?>
                 {
                     { "it", message }
                 });
@@ -312,14 +317,14 @@ internal static class NotifyUtil
                     ParseMode.Html, null, true);
             }
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             Logger.Logger.WriteLine(e);
         }
     }
 
-    public static async void NotifyOwnersBanAction(TelegramBotAbstract sender, MessageEventArgs messageEventArgs,
-        long? target, string username)
+    public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
+        long? target, string? username)
     {
         try
         {
@@ -337,8 +342,8 @@ internal static class NotifyUtil
                            "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
                            messageEventArgs.Message.From?.Id + "</a>" + "]";
 
-                const string langCode = "it";
-                var text2 = new Language(new Dictionary<string, string>
+                const string? langCode = "it";
+                var text2 = new Language(new Dictionary<string, string?>
                 {
                     { "it", message }
                 });
@@ -349,13 +354,13 @@ internal static class NotifyUtil
                     ParseMode.Html, null, true);
             }
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             Logger.Logger.WriteLine(e);
         }
     }
 
-    public static async Task NotifyOwners(Exception exception, TelegramBotAbstract telegramBotAbstract,
+    public static async Task NotifyOwners(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
         int loopNumber = 0)
     {
         await NotifyOwners(new ExceptionNumbered(exception), telegramBotAbstract, null, loopNumber);
@@ -372,14 +377,14 @@ internal static class NotifyUtil
     /// <param name="messageType"></param>
     /// <param name="assoc"></param>
     /// <returns>Language with his language code</returns>
-    public static async Task<string> NotifyAllowedMessage(TelegramBotAbstract sender,
-        MessageEventArgs messageEventArgs,
-        string text, string groups, string messageType, string assoc)
+    public static async Task<string?> NotifyAllowedMessage(TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs,
+        string? text, string? groups, string? messageType, string? assoc)
     {
         var message = CreatePermittedSpamMessage(messageEventArgs, text, groups, messageType, assoc);
 
-        const string langCode = "en";
-        var text2 = new Language(new Dictionary<string, string>
+        const string? langCode = "en";
+        var text2 = new Language(new Dictionary<string, string?>
         {
             { "en", message }
         });
@@ -393,19 +398,19 @@ internal static class NotifyUtil
         return message;
     }
 
-    public static string CreatePermittedSpamMessage(MessageEventArgs messageEventArgs,
-        string text, string groups, string messageType, string assoc)
+    public static string? CreatePermittedSpamMessage(MessageEventArgs? messageEventArgs,
+        string? text, string? groups, string? messageType, string? assoc)
     {
         var hashAssoc = HashUtils.GetHashOf(assoc)[..8];
         var hashText = HashUtils.GetHashOf(text)[..20];
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";
-        message += "Allowed by: " + (messageEventArgs.Message.From?.Username != null
+        message += "Allowed by: " + (messageEventArgs?.Message?.From?.Username != null
                        ? "@" + messageEventArgs.Message.From?.Username
                        : "Unknown") + " [" +
-                   "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
-                   messageEventArgs.Message.From?.Id + "</a>" + "]";
+                   "<a href=\"tg://user?id=" + messageEventArgs?.Message?.From?.Id + "\">" +
+                   messageEventArgs?.Message?.From?.Id + "</a>" + "]";
         message += "\n\n";
         message += "Association: " + assoc;
         message += " #" + hashAssoc;

@@ -75,7 +75,7 @@ public interface ILocationProcessor
     /// <returns>
     ///     List of locations (short format)
     /// </returns>
-    Task<IResult<InstaLocationShortList>> SearchLocationAsync(double latitude, double longitude, string query);
+    Task<IResult<InstaLocationShortList>> SearchLocationAsync(double latitude, double longitude, string? query);
 
     /// <summary>
     ///     Search user by location
@@ -85,7 +85,7 @@ public interface ILocationProcessor
     /// <param name="desireUsername">Desire username</param>
     /// <param name="count">Maximum user count</param>
     Task<IResult<InstaUserSearchLocation>> SearchUserByLocationAsync(double latitude, double longitude,
-        string desireUsername, int count = 50);
+        string? desireUsername, int count = 50);
 
     /// <summary>
     ///     Search places in facebook

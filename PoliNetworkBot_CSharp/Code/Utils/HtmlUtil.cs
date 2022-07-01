@@ -11,13 +11,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class HtmlUtil
 {
-    internal static List<HtmlNode> GetElementsByTagAndClassName(HtmlNode doc, string tag = "",
+    internal static List<HtmlNode?>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
         string className = "", long? limit = null)
     {
         if (doc == null)
             return null;
 
-        var lst = new List<HtmlNode>();
+        var lst = new List<HtmlNode?>();
         var empty_tag = string.IsNullOrEmpty(tag);
         var empty_cn = string.IsNullOrEmpty(className);
         if (empty_tag && empty_cn) return null;
@@ -25,7 +25,7 @@ internal class HtmlUtil
         if (limit is <= 0)
             return null;
 
-        var result = new List<HtmlNode>();
+        var result = new List<HtmlNode?>();
 
         if (empty_tag && limit == null)
         {

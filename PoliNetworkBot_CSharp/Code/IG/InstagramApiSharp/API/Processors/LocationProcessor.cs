@@ -29,16 +29,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class LocationProcessor : ILocationProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public LocationProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public LocationProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -171,14 +171,14 @@ internal class LocationProcessor : ILocationProcessor
     ///     List of locations (short format)
     /// </returns>
     public async Task<IResult<InstaLocationShortList>> SearchLocationAsync(double latitude, double longitude,
-        string query)
+        string? query)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var uri = UriCreator.GetLocationSearchUri();
 
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -224,7 +224,7 @@ internal class LocationProcessor : ILocationProcessor
     /// <param name="desireUsername">Desire username</param>
     /// <param name="count">Maximum user count</param>
     public async Task<IResult<InstaUserSearchLocation>> SearchUserByLocationAsync(double latitude, double longitude,
-        string desireUsername, int count = 50)
+        string? desireUsername, int count = 50)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -232,7 +232,7 @@ internal class LocationProcessor : ILocationProcessor
             var uri = UriCreator.GetUserSearchByLocationUri();
             if (count <= 0)
                 count = 30;
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "timezone_offset", InstaApiConstants.TIMEZONE_OFFSET.ToString() },
                 { "lat", latitude.ToString(CultureInfo.InvariantCulture) },
@@ -451,14 +451,14 @@ internal class LocationProcessor : ILocationProcessor
 
     private async Task<IResult<InstaSectionMediaListResponse>> GetSectionMedia(InstaSectionType sectionType,
         long locationId,
-        string maxId = null,
+        string? maxId = null,
         int? page = null,
         List<long> nextMediaIds = null)
     {
         try
         {
             var instaUri = UriCreator.GetLocationSectionUri(locationId.ToString());
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "rank_token", _deviceInfo.DeviceGuid.ToString() },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },

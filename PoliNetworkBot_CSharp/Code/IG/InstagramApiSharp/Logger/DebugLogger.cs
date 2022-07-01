@@ -39,7 +39,7 @@ public class DebugLogger : IInstaLogger
         Write($"Request: {uri}");
     }
 
-    public void LogResponse(HttpResponseMessage response)
+    public void LogResponse(HttpResponseMessage? response)
     {
         if (_logLevel < LogLevel.Response) return;
         Write(
@@ -59,7 +59,7 @@ public class DebugLogger : IInstaLogger
 #endif
     }
 
-    public void LogInfo(string info)
+    public void LogInfo(string? info)
     {
         if (_logLevel < LogLevel.Info) return;
         Write($"Info:{Environment.NewLine}{info}");

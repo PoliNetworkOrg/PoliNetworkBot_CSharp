@@ -13,7 +13,7 @@ public class InstaStoryPollVotersList
 
     public List<InstaStoryVoterItem> Voters { get; set; } = new();
 
-    public string MaxId { get; set; }
+    public string? MaxId { get; set; }
 
     public bool MoreAvailable { get; set; }
 

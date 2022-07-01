@@ -16,7 +16,7 @@ public class InstaSectionMediaListResponse
 
     [JsonProperty("more_available")] public bool MoreAvailable { get; set; }
 
-    [JsonProperty("next_max_id")] public string NextMaxId { get; set; }
+    [JsonProperty("next_max_id")] public string? NextMaxId { get; set; }
 
     [JsonProperty("next_page")] public int? NextPage { get; set; }
 

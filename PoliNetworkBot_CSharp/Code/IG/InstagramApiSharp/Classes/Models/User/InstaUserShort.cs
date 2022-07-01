@@ -15,7 +15,7 @@ public class InstaUserShort
     public string ProfilePicture { get; set; }
     public string ProfilePicUrl { get; set; }
     public string ProfilePictureId { get; set; } = "unknown";
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
     public string FullName { get; set; }
 
     public static InstaUserShort Empty => new() { FullName = string.Empty, UserName = string.Empty };

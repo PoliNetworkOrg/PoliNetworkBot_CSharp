@@ -15,8 +15,8 @@ internal static class AskUser
 {
     public static readonly DictionaryUserAnswer UserAnswers = new();
 
-    internal static async Task<string> AskAsync(long? idUser, Language question,
-        TelegramBotAbstract sender, string lang, string username, bool sendMessageConfirmationChoice = false)
+    internal static async Task<string?> AskAsync(long? idUser, Language question,
+        TelegramBotAbstract? sender, string? lang, string? username, bool sendMessageConfirmationChoice = false)
     {
         var botId = sender.GetId();
 
@@ -30,8 +30,8 @@ internal static class AskUser
         return result;
     }
 
-    private static async Task<string> WaitForAnswer(long? idUser, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract telegramBotAbstract, string lang, string username)
+    private static async Task<string?> WaitForAnswer(long? idUser, bool sendMessageConfirmationChoice,
+        TelegramBotAbstract? telegramBotAbstract, string? lang, string? username)
     {
         if (idUser == null)
             return null;
@@ -54,9 +54,9 @@ internal static class AskUser
         return null;
     }
 
-    internal static async Task<string> AskBetweenRangeAsync(long? idUser, Language question,
-        TelegramBotAbstract sender, string lang, IEnumerable<List<Language>> options,
-        string username,
+    internal static async Task<string?> AskBetweenRangeAsync(long? idUser, Language question,
+        TelegramBotAbstract? sender, string? lang, IEnumerable<List<Language>>? options,
+        string? username,
         bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
     {
         var botId = sender.GetId();
@@ -81,15 +81,15 @@ internal static class AskUser
         return result;
     }
 
-    internal static async Task<string> GetSedeAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<string> GetSedeAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var options = new List<List<Language>>
         {
-            new() { new Language(new Dictionary<string, string> { { "en", "Milano Leonardo" } }) },
-            new() { new Language(new Dictionary<string, string> { { "en", "Milano Bovisa" } }) },
-            new() { new Language(new Dictionary<string, string> { { "en", "Como" } }) }
+            new() { new Language(new Dictionary<string?, string> { { "en", "Milano Leonardo" } }) },
+            new() { new Language(new Dictionary<string?, string> { { "en", "Milano Bovisa" } }) },
+            new() { new Language(new Dictionary<string?, string> { { "en", "Como" } }) }
         };
-        var question = new Language(new Dictionary<string, string>
+        var question = new Language(new Dictionary<string?, string>
         {
             { "it", "In che sede?" },
             { "en", "In which territorial pole?" }
@@ -115,14 +115,14 @@ internal static class AskUser
     }
 
     internal static async Task<bool> AskYesNo(long? id, Language question, bool defaultBool,
-        TelegramBotAbstract sender, string lang, string username)
+        TelegramBotAbstract? sender, string? lang, string? username)
     {
-        var l1 = new Language(new Dictionary<string, string>
+        var l1 = new Language(new Dictionary<string?, string>
         {
             { "it", "Si" },
             { "en", "Yes" }
         });
-        var l2 = new Language(new Dictionary<string, string>
+        var l2 = new Language(new Dictionary<string?, string>
         {
             { "it", "No" },
             { "en", "No" }
@@ -143,17 +143,17 @@ internal static class AskUser
         return !l2.Matches(r) && defaultBool;
     }
 
-    internal static async Task<DateTime?> AskHours(long? id, Language question, TelegramBotAbstract sender,
-        string languageCode, string username)
+    internal static async Task<DateTime?> AskHours(long? id, Language question, TelegramBotAbstract? sender,
+        string? languageCode, string? username)
     {
         var s = await AskAsync(id, question, sender, languageCode, username);
         return DateTimeClass.GetHours(s);
     }
 
-    internal static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDateAsync(long? id, string text,
-        string lang,
-        TelegramBotAbstract sender,
-        string username)
+    internal static async Task<Tuple<DateTimeSchedule, Exception?, string?>> AskDateAsync(long? id, string text,
+        string? lang,
+        TelegramBotAbstract? sender,
+        string? username)
     {
         if (string.IsNullOrEmpty(text))
             return await AskDate2Async(id, lang, sender, username);
@@ -166,7 +166,7 @@ internal static class AskUser
             case "ora":
             case "now":
             {
-                return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(DateTime.Now, true),
+                return new Tuple<DateTimeSchedule, Exception?, string?>(new DateTimeSchedule(DateTime.Now, true),
                     null, s[1]);
             }
         }
@@ -174,11 +174,11 @@ internal static class AskUser
         return await AskDate2Async(id, lang, sender, username);
     }
 
-    private static async Task<Tuple<DateTimeSchedule, Exception, string>> AskDate2Async(long? id, string lang,
-        TelegramBotAbstract sender,
-        string username)
+    private static async Task<Tuple<DateTimeSchedule, Exception?, string?>> AskDate2Async(long? id, string? lang,
+        TelegramBotAbstract? sender,
+        string? username)
     {
-        var lang2 = new Language(new Dictionary<string, string>
+        var lang2 = new Language(new Dictionary<string?, string>
         {
             { "it", "Inserisci una data (puoi scrivere anche 'fra un'ora')" },
             { "en", "Insert a date (you can also write 'in an hour')" }
@@ -189,14 +189,14 @@ internal static class AskUser
         {
             var (dateTime, exception) = DateTimeClass.GetDateTimeFromString(reply);
             if (exception != null)
-                return new Tuple<DateTimeSchedule, Exception, string>(null, exception, reply);
+                return new Tuple<DateTimeSchedule, Exception?, string?>(null, exception, reply);
 
-            return new Tuple<DateTimeSchedule, Exception, string>(new DateTimeSchedule(dateTime, true),
+            return new Tuple<DateTimeSchedule, Exception?, string?>(new DateTimeSchedule(dateTime, true),
                 null, reply);
         }
         catch (Exception e1)
         {
-            return new Tuple<DateTimeSchedule, Exception, string>(null, e1, reply);
+            return new Tuple<DateTimeSchedule, Exception?, string?>(null, e1, reply);
         }
     }
 }

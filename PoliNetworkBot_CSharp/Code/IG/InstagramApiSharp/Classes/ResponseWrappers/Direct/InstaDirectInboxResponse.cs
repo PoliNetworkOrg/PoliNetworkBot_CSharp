@@ -17,7 +17,7 @@ public class InstaDirectInboxResponse
 
     [JsonProperty("threads")] public List<InstaDirectInboxThreadResponse> Threads { get; set; }
 
-    [JsonProperty("oldest_cursor")] public string OldestCursor { get; set; }
+    [JsonProperty("oldest_cursor")] public string? OldestCursor { get; set; }
 
     [JsonProperty("blended_inbox_enabled")]
     public bool BlendedInboxEnabled { get; set; }

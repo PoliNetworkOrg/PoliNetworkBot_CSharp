@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class Database
 {
-    public static int Execute(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
+    public static int Execute(string? query, DbConfig? dbConfig, Dictionary<string, object?> args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
@@ -32,7 +32,7 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable ExecuteSelect(string query, DbConfig dbConfig, Dictionary<string, object> args = null)
+    public static DataTable? ExecuteSelect(string? query, DbConfig? dbConfig, Dictionary<string, object?> args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
@@ -65,7 +65,7 @@ public static class Database
         if (connection.State != ConnectionState.Open) connection.Open();
     }
 
-    internal static object GetFirstValueFromDataTable(DataTable dt)
+    internal static object GetFirstValueFromDataTable(DataTable? dt)
     {
         if (dt == null)
             return null;

@@ -17,14 +17,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class RestrictUser
 {
-    internal static async Task Mute(int time, TelegramBotAbstract telegramBotClient, long chatId, long? userId,
+    internal static async Task Mute(int time, TelegramBotAbstract? telegramBotClient, long chatId, long? userId,
         ChatType chatType, RestrictAction restrictAction)
     {
         var untilDate = DateTime.Now.AddSeconds(time);
         await Mute2Async(untilDate, telegramBotClient, chatId, userId, chatType, restrictAction);
     }
 
-    private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract telegramBotClient, long chatId,
+    private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract? telegramBotClient, long chatId,
         long? userId, ChatType? chatType, RestrictAction restrictAction)
     {
         var permissions = restrictAction switch
@@ -55,12 +55,13 @@ internal static class RestrictUser
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
 
-        await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
+        if (telegramBotClient != null)
+            await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
     }
 
-    internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>> BanAllAsync(
-        TelegramBotAbstract sender, MessageEventArgs e,
-        string target, RestrictAction banTarget, DateTime? until,
+    internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>?> BanAllAsync(
+        TelegramBotAbstract? sender, MessageEventArgs? e,
+        string? target, RestrictAction banTarget, DateTime? until,
         bool? revokeMessage)
     {
         var targetId = await Info.GetTargetUserIdAsync(target, sender);
@@ -69,7 +70,7 @@ internal static class RestrictUser
             var exception2 = "";
             if (targetId != null) exception2 += "\n" + targetId.GetError();
 
-            var text2 = new Language(new Dictionary<string, string>
+            var text2 = new Language(new Dictionary<string, string?>
             {
                 {
                     "en", "We were not able to BanAll the target '" + target + "', error code " +
@@ -80,7 +81,7 @@ internal static class RestrictUser
                           ErrorCodes.TargetInvalidWhenBanAll + exception2
                 }
             });
-            if (e.Message.From != null)
+            if (e != null && e.Message != null && e != null && e.Message.From != null)
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
@@ -90,174 +91,188 @@ internal static class RestrictUser
             return null;
         }
 
-        const string q1 = "SELECT id, type FROM GroupsTelegram";
-        var dt = Database.ExecuteSelect(q1, sender.DbConfig);
-        if (dt == null || dt.Rows.Count == 0)
+        const string? q1 = "SELECT id, type FROM GroupsTelegram";
+        if (sender != null)
         {
-            var text3 = new Language(new Dictionary<string, string>
+            var dt = Database.ExecuteSelect(q1, sender.DbConfig);
+            if (dt == null || dt.Rows.Count == 0)
             {
+                var text3 = new Language(new Dictionary<string, string?>
                 {
-                    "en", "We were not able to BanAll the target '" + target + "', error code " +
-                          ErrorCodes.DatatableEmptyWhenBanAll
-                },
-                {
-                    "it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
-                          ErrorCodes.DatatableEmptyWhenBanAll
-                }
-            });
-            if (e.Message.From != null)
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username,
-                    text3,
-                    ParseMode.Html,
-                    e.Message.MessageId);
-            return null;
-        }
-
-        await AlertActionStartedAsync(sender, target, e);
-
-        var done = new List<DataRow>();
-        var failed = new List<DataRow>();
-
-        var exceptions = new List<ExceptionNumbered>();
-
-        var nExceptions = 0;
-
-        const int timeSleepBetweenBanUnban = 10;
-
-        switch (banTarget)
-        {
-            case RestrictAction.BAN:
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    Thread.Sleep(timeSleepBetweenBanUnban);
-                    try
                     {
-                        var groupChatId = (long)dr["id"];
-                        var success = await BanUserFromGroup(sender, targetId.GetId().Value, groupChatId, null,
-                            revokeMessage);
-                        if (success.IsSuccess())
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
-
-                        if (success.ContainsExceptions())
-                            nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                    }
-                    catch
+                        "en", "We were not able to BanAll the target '" + target + "', error code " +
+                              ErrorCodes.DatatableEmptyWhenBanAll
+                    },
                     {
-                        ;
+                        "it", "Non siamo riusciti a bannareAll il target '" + target + "', error code " +
+                              ErrorCodes.DatatableEmptyWhenBanAll
                     }
-                }
-
-                break;
+                });
+                if (e != null && e.Message != null && e != null && e.Message.From != null)
+                    await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                        e.Message.From.LanguageCode,
+                        e.Message.From.Username,
+                        text3,
+                        ParseMode.Html,
+                        e.Message.MessageId);
+                return null;
             }
 
-            case RestrictAction.UNBAN:
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    Thread.Sleep(timeSleepBetweenBanUnban);
-                    try
-                    {
-                        var groupChatId = (long)dr["id"];
-                        var success = await UnBanUserFromGroup(sender, targetId.GetId(), groupChatId);
-                        if (success.IsSuccess())
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
+            await AlertActionStartedAsync(sender, target, e);
 
-                        if (success.ContainsExceptions())
-                            nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
-                    }
-                    catch
+            var done = new List<DataRow>();
+            var failed = new List<DataRow>();
+
+            var exceptions = new List<ExceptionNumbered>();
+
+            var nExceptions = 0;
+
+            const int timeSleepBetweenBanUnban = 10;
+
+            switch (banTarget)
+            {
+                case RestrictAction.BAN:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        ;
+                        Thread.Sleep(timeSleepBetweenBanUnban);
+                        try
+                        {
+                            var groupChatId = (long)dr["id"];
+                            var success = await BanUserFromGroup(sender, targetId.GetId().Value, groupChatId, null,
+                                revokeMessage);
+                            if (success != null && success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
+
+                            if (success != null && success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
+                        }
                     }
+
+                    break;
                 }
 
-                break;
-            }
-
-            case RestrictAction.MUTE:
-            {
-                foreach (DataRow dr in dt.Rows)
+                case RestrictAction.UNBAN:
                 {
-                    Thread.Sleep(timeSleepBetweenBanUnban);
-                    try
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        var groupChatId = (long)dr["id"];
-                        var chatType = GetChatType(dr);
-                        var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
-                            chatType, RestrictAction.MUTE);
-                        if (success.IsSuccess())
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
+                        Thread.Sleep(timeSleepBetweenBanUnban);
+                        try
+                        {
+                            var groupChatId = (long)dr["id"];
+                            var success = await UnBanUserFromGroup(sender, targetId.GetId(), groupChatId);
+                            if (success != null && success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                        if (success.ContainsExceptions())
-                            nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                            if (success != null && success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
+                        }
                     }
-                    catch
-                    {
-                        ;
-                    }
+
+                    break;
                 }
 
-                break;
-            }
-            case RestrictAction.UNMUTE:
-            {
-                foreach (DataRow dr in dt.Rows)
+                case RestrictAction.MUTE:
                 {
-                    Thread.Sleep(timeSleepBetweenBanUnban);
-                    try
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        var groupChatId = (long)dr["id"];
-                        var chatType = GetChatType(dr);
-                        var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
-                            chatType, RestrictAction.UNMUTE);
-                        if (success.IsSuccess())
-                            done.Add(dr);
-                        else
-                            failed.Add(dr);
+                        Thread.Sleep(timeSleepBetweenBanUnban);
+                        try
+                        {
+                            var groupChatId = (long)dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
+                                chatType, RestrictAction.MUTE);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
 
-                        if (success.ContainsExceptions())
-                            nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
+                        }
                     }
-                    catch
+
+                    break;
+                }
+                case RestrictAction.UNMUTE:
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        ;
+                        Thread.Sleep(timeSleepBetweenBanUnban);
+                        try
+                        {
+                            var groupChatId = (long)dr["id"];
+                            var chatType = GetChatType(dr);
+                            var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
+                                chatType, RestrictAction.UNMUTE);
+                            if (success.IsSuccess())
+                                done.Add(dr);
+                            else
+                                failed.Add(dr);
+
+                            if (success.ContainsExceptions())
+                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
+                }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
+            }
+
+            if (e != null)
+            {
+                if (e.Message != null)
+                {
+                    if (e.Message.From != null)
+                    {
+                        LogBanAction(targetId.GetId().Value, banTarget, sender, e.Message.From.Id, sender);
+
+                        var targetId2 = targetId.GetId();
+                        var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
+                        if (targetId2 == null)
+                        {
+                            await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
+                                e.Message.From.LanguageCode);
+                        }
+                        else
+                        {
+                            var link2 = "tg://user?id=" + targetId2.Value;
+                            await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
+                                "Ban/Unban All of [<a href='" + link2 + "'>" + targetId2.Value + "</a>]",
+                                e.Message.From.LanguageCode);
+                        }
                     }
                 }
             }
-                break;
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
+            var r5 = new BanUnbanAllResult(done, failed);
+            return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>(r5, exceptions, nExceptions);
         }
 
-        LogBanAction(targetId.GetId().Value, banTarget, sender, e.Message.From.Id, sender);
-
-        var targetId2 = targetId.GetId();
-        var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
-        if (targetId2 == null)
-        {
-            await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
-                e.Message.From.LanguageCode);
-        }
-        else
-        {
-            var link2 = "tg://user?id=" + targetId2.Value;
-            await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
-                "Ban/Unban All of [<a href='" + link2 + "'>" + targetId2.Value + "</a>]",
-                e.Message.From.LanguageCode);
-        }
-
-        var r5 = new BanUnbanAllResult(done, failed);
-        return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>(r5, exceptions, nExceptions);
+        return null;
     }
 
     private static ChatType? GetChatType(DataRow dr)
@@ -291,14 +306,14 @@ internal static class RestrictUser
         return null;
     }
 
-    private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract sender,
+    private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract? sender,
         long value, long groupChatId, DateTime? until, ChatType? chatType, RestrictAction restrictAction)
     {
         try
         {
             await Mute2Async(until, sender, groupChatId, value, chatType, restrictAction);
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             return new SuccessWithException(false, ex);
         }
@@ -306,9 +321,9 @@ internal static class RestrictUser
         return new SuccessWithException(true);
     }
 
-    private static async Task AlertActionStartedAsync(TelegramBotAbstract sender, string target, MessageEventArgs e)
+    private static async Task AlertActionStartedAsync(TelegramBotAbstract? sender, string? target, MessageEventArgs? e)
     {
-        var text7 = new Language(new Dictionary<string, string>
+        var text7 = new Language(new Dictionary<string, string?>
         {
             {
                 "en", "Action started: '" + target + "'"
@@ -318,7 +333,7 @@ internal static class RestrictUser
             }
         });
         
-        if (e.Message.From != null)
+        if (e != null && e.Message != null && e != null && e.Message.From != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username,
@@ -327,7 +342,7 @@ internal static class RestrictUser
                 e.Message.MessageId);
     }
 
-    private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception item2)
+    private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception? item2)
     {
         if (item2 == null)
             return 0;
@@ -342,7 +357,7 @@ internal static class RestrictUser
     }
 
     private static Tuple<bool, int> FindIfPresentSimilarException(IReadOnlyList<ExceptionNumbered> exceptions,
-        Exception item2)
+        Exception? item2)
     {
         for (var i = 0; i < exceptions.Count; i++)
         {
@@ -353,13 +368,13 @@ internal static class RestrictUser
         return new Tuple<bool, int>(false, -1);
     }
 
-    private static bool AreTheySimilar(ExceptionNumbered e1, Exception item2)
+    private static bool AreTheySimilar(ExceptionNumbered e1, Exception? item2)
     {
         return e1.AreTheySimilar(item2);
     }
 
     private static bool LogBanAction(long targetId, RestrictAction bannedTrueUnbannedFalse,
-        TelegramBotAbstract bot, long whoBanned, TelegramBotAbstract sender)
+        TelegramBotAbstract? bot, long whoBanned, TelegramBotAbstract? sender)
     {
         if (bannedTrueUnbannedFalse != RestrictAction.BAN &&
             bannedTrueUnbannedFalse != RestrictAction.UNBAN) return false;
@@ -373,41 +388,52 @@ internal static class RestrictUser
                 _ => null
             };
 
-            const string q =
+            const string? q =
                 "INSERT INTO Banned (from_bot_id, who_banned, when_banned, target, banned_true_unbanned_false) " +
                 " VALUES (@fbi, @whob, @whenb, @target, @btuf)";
 
-            var dict = new Dictionary<string, object>
+            if (bot != null)
             {
-                { "@fbi", bot.GetId() },
-                { "@whob", whoBanned },
-                { "@whenb", DateTime.Now },
-                { "@target", targetId },
-                { "@btuf", StringUtil.ToSn(b) }
-            };
-            var done = Database.Execute(q, sender.DbConfig, dict);
+                var dict = new Dictionary<string, object?>
+                {
+                    { "@fbi", bot.GetId() },
+                    { "@whob", whoBanned },
+                    { "@whenb", DateTime.Now },
+                    { "@target", targetId },
+                    { "@btuf", StringUtil.ToSn(b) }
+                };
+                if (sender != null)
+                {
+                    var done = Database.Execute(q, sender.DbConfig, dict);
 
-            return done > 0;
+                    return done > 0;
+                }
+            }
         }
         catch
         {
             return false;
         }
+
+        return false;
     }
 
-    private static async Task<SuccessWithException> UnBanUserFromGroup(TelegramBotAbstract sender, long? target,
+    private static async Task<SuccessWithException?> UnBanUserFromGroup(TelegramBotAbstract? sender, long? target,
         long groupChatId)
     {
-        return await sender.UnBanUserFromGroup(target, groupChatId);
+        if (sender != null) return await sender.UnBanUserFromGroup(target, groupChatId);
+        return null;
     }
 
-    public static async Task<SuccessWithException> BanUserFromGroup(TelegramBotAbstract sender,
+    public static async Task<SuccessWithException?> BanUserFromGroup(TelegramBotAbstract? sender,
         long? target,
-        long groupChatId, string[] time,
+        long groupChatId, string?[]? time,
         bool? revokeMessage)
     {
-        return target != null
-            ? await sender.BanUserFromGroup(target.Value, groupChatId, time, revokeMessage)
-            : new SuccessWithException(false, new ArgumentNullException());
+        if (sender != null)
+            return target != null
+                ? await sender.BanUserFromGroup(target.Value, groupChatId, time, revokeMessage)
+                : new SuccessWithException(false, new ArgumentNullException());
+        return null;
     }
 }

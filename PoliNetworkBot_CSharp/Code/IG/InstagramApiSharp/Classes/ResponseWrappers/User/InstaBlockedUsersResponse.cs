@@ -16,5 +16,5 @@ public class InstaBlockedUsersResponse : InstaDefault
 
     [JsonProperty("page_size")] public int? PageSize { get; set; }
 
-    [JsonProperty("max_id")] public string MaxId { get; set; }
+    [JsonProperty("max_id")] public string? MaxId { get; set; }
 }

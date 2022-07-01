@@ -58,7 +58,7 @@ public class InstaWebDataListResponse
 
     [JsonProperty("data")] public List<InstaWebDataItemResponse> Data { get; set; } = new();
 
-    [JsonProperty("cursor")] public string Cursor { get; set; }
+    [JsonProperty("cursor")] public string? Cursor { get; set; }
 }
 
 public class InstaWebDataItemResponse

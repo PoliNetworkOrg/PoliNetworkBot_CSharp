@@ -16,7 +16,7 @@ public class PaginationParameters
     }
 
     public string RankToken { get; set; } = string.Empty;
-    public string NextMaxId { get; set; } = string.Empty;
+    public string? NextMaxId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Only works for Comments!

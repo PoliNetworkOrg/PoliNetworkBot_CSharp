@@ -14,5 +14,5 @@ public class InstaCollections
 
     public List<InstaCollectionItem> Items { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 }

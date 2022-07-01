@@ -11,7 +11,7 @@ namespace InstagramApiSharp.Helpers;
 
 internal static class ErrorHandlingHelper
 {
-    internal static BadStatusResponse GetBadStatusFromJsonString(string json)
+    internal static BadStatusResponse GetBadStatusFromJsonString(string? json)
     {
         var badStatus = new BadStatusResponse();
         try

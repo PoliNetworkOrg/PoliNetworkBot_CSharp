@@ -31,16 +31,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class HashtagProcessor : IHashtagProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public HashtagProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public HashtagProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -384,7 +384,7 @@ internal class HashtagProcessor : IHashtagProcessor
     ///     List of hashtags
     /// </returns>
     public async Task<IResult<InstaHashtagSearch>> SearchHashtagAsync(string query, IEnumerable<long> excludeList,
-        string rankToken)
+        string? rankToken)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var RequestHeaderFieldsTooLarge = (HttpStatusCode)431;
@@ -468,14 +468,14 @@ internal class HashtagProcessor : IHashtagProcessor
     }
 
     private async Task<IResult<InstaSectionMediaListResponse>> GetHashtagSection(string tagname,
-        string rankToken = null,
-        string maxId = null, bool recent = false)
+        string? rankToken = null,
+        string? maxId = null, bool recent = false)
     {
         try
         {
             var instaUri = UriCreator.GetHashtagSectionUri(tagname);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },

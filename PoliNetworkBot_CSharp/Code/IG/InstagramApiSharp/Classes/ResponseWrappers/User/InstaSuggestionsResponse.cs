@@ -10,7 +10,7 @@ public class InstaSuggestionUserContainerResponse
 {
     [JsonProperty("more_available")] public bool MoreAvailable { get; set; }
 
-    [JsonProperty("max_id")] public string MaxId { get; set; }
+    [JsonProperty("max_id")] public string? MaxId { get; set; }
 
     [JsonProperty("suggested_users")] public InstaSuggestionResponse SuggestedUsers { get; set; } = new();
 

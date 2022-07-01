@@ -104,7 +104,7 @@ public class InstaStoryItem
 
     public List<InstaStoryFeedMedia> StoryFeedMedia { get; set; } = new();
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public double VideoDuration { get; set; }
 
@@ -122,9 +122,9 @@ public class InstaStoryItem
 
     public List<InstaStorySliderVoterInfoItem> StorySliderVoters { get; set; } = new();
 
-    public List<InstaUserShort> Viewers { get; set; } = new();
+    public List<InstaUserShort?> Viewers { get; set; } = new();
 
-    public List<InstaUserShort> Likers { get; set; } = new();
+    public List<InstaUserShort?> Likers { get; set; } = new();
 
     public List<InstaComment> PreviewComments { get; set; } = new();
 

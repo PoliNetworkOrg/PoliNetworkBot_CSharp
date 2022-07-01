@@ -12,5 +12,5 @@ public class InstaBlockedUsers : InstaDefault
 
     public int? PageSize { get; set; }
 
-    public string MaxId { get; set; }
+    public string? MaxId { get; set; }
 }

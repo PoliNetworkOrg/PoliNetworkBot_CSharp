@@ -14,7 +14,7 @@ public class InstaStoryQuestionResponder
 
     public long Id { get; set; }
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public DateTime Time { get; set; }
 }

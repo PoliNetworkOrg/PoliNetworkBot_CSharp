@@ -24,7 +24,7 @@ public class StoredMessage
     internal DateTime InsertedTime;
     internal DateTime? LastSeenTime;
     internal string message;
-    public List<Message> Messages = new();
+    public List<Message?> Messages = new();
 
     public StoredMessage(string message, int howManyTimesWeSawIt = 0,
         MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,

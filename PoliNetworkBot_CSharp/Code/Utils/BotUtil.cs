@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class BotUtil
 {
-    internal static TelegramBotAbstract GetFirstModerationRealBot(TelegramBotAbstract telegramBotAbstract = null)
+    internal static TelegramBotAbstract? GetFirstModerationRealBot(TelegramBotAbstract? telegramBotAbstract = null)
     {
         if (telegramBotAbstract != null)
             return telegramBotAbstract;
@@ -43,7 +43,7 @@ internal class BotUtil
         return null;
     }
 
-    public static List<TelegramBotAbstract> GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
+    public static List<TelegramBotAbstract?> GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
     {
         return (from x in GlobalVariables.Bots.Keys
             select GlobalVariables.Bots[x]

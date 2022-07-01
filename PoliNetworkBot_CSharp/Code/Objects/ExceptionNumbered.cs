@@ -13,7 +13,7 @@ public class ExceptionNumbered : Exception
     private const int default_v = 1;
     private int v;
 
-    public ExceptionNumbered(Exception item1, int v = default_v) : base(item1.Message, item1)
+    public ExceptionNumbered(Exception? item1, int v = default_v) : base(item1?.Message, item1)
     {
         this.v = v;
     }
@@ -33,9 +33,9 @@ public class ExceptionNumbered : Exception
         return this;
     }
 
-    internal bool AreTheySimilar(Exception item2)
+    internal bool AreTheySimilar(Exception? item2)
     {
-        return Message == item2.Message;
+        return Message == item2?.Message;
     }
 
     internal int GetNumberOfTimes()
@@ -43,8 +43,8 @@ public class ExceptionNumbered : Exception
         return v;
     }
 
-    internal static async Task<bool> SendExceptionAsync(Exception e, TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+    internal static async Task<bool> SendExceptionAsync(Exception? e, TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
     {
         if (telegramBotAbstract == null)
             return false;

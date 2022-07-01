@@ -14,12 +14,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 public class CallbackAssocVetoData : CallbackGenericData
 {
     public readonly string Message;
-    public readonly MessageEventArgs MessageEventArgs;
-    public readonly string MessageWithMetadata;
+    public readonly MessageEventArgs? MessageEventArgs;
+    public readonly string? MessageWithMetadata;
     public bool Modified;
 
     public CallbackAssocVetoData(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection,
-        string message, MessageEventArgs messageEventArgs, string messageWithMetadata) : base(options,
+        string message, MessageEventArgs? messageEventArgs, string? messageWithMetadata) : base(options,
         runAfterSelection)
     {
         MessageWithMetadata = messageWithMetadata;

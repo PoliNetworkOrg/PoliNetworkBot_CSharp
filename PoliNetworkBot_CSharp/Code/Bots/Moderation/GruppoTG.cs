@@ -11,17 +11,17 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 public class GruppoTG
 {
     private readonly DateTime? LastUpdateInviteLinkTimeDateTime;
-    private readonly string LastUpdateInviteLinkTimeString;
-    public readonly string nome;
-    public readonly List<string> oldLinks;
-    public string idLink;
-    public string newLink;
+    private readonly string? LastUpdateInviteLinkTimeString;
+    public readonly string? nome;
+    public readonly List<string?> oldLinks;
+    public string? idLink;
+    public string? newLink;
     public long? permanentId;
 
     public GruppoTG(JToken idLink, JToken nome, JToken id, JToken LastUpdateInviteLinkTime)
     {
         this.idLink = idLink.ToString();
-        oldLinks = new List<string> { this.idLink };
+        oldLinks = new List<string?> { this.idLink };
         this.nome = nome.ToString();
 
         try
@@ -79,7 +79,7 @@ public class GruppoTG
         permanentId = value;
     }
 
-    internal void UpdateNewLink(string link)
+    internal void UpdateNewLink(string? link)
     {
         newLink = link;
     }

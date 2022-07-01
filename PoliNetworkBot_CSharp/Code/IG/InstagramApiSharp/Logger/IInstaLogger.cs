@@ -13,9 +13,9 @@ public interface IInstaLogger
 
     void LogRequest(Uri uri);
 
-    void LogResponse(HttpResponseMessage response);
+    void LogResponse(HttpResponseMessage? response);
 
     void LogException(Exception exception);
 
-    void LogInfo(string info);
+    void LogInfo(string? info);
 }

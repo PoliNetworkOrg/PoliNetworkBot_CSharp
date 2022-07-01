@@ -10,7 +10,7 @@ public class InstaRecipients
 {
     public List<InstaRankedRecipientThread> Threads { get; set; } = new();
 
-    public List<InstaUserShort> Users { get; set; } = new();
+    public List<InstaUserShort?> Users { get; set; } = new();
 
     public long ExpiresIn { get; set; }
 

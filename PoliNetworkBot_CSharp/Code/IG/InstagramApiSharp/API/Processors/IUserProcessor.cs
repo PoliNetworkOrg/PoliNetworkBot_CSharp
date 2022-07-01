@@ -161,7 +161,7 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaUser" />
     /// </returns>
-    Task<IResult<InstaUser>> GetUserAsync(string username);
+    Task<IResult<InstaUser>> GetUserAsync(string? username);
 
     /// <summary>
     ///     Get user from a nametag image
@@ -178,8 +178,8 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaUserShortList" />
     /// </returns>
-    Task<IResult<InstaUserShortList>> GetUserFollowersAsync(string username,
-        PaginationParameters paginationParameters, string searchQuery = "", bool mutualsfirst = false);
+    Task<IResult<InstaUserShortList>> GetUserFollowersAsync(string? username,
+        PaginationParameters paginationParameters, string? searchQuery = "", bool mutualsfirst = false);
 
     /// <summary>
     ///     Get followers list by user id(pk) asynchronously
@@ -191,7 +191,7 @@ public interface IUserProcessor
     ///     <see cref="InstaUserShortList" />
     /// </returns>
     Task<IResult<InstaUserShortList>> GetUserFollowersByIdAsync(long userId,
-        PaginationParameters paginationParameters, string searchQuery = "", bool mutualsfirst = false);
+        PaginationParameters paginationParameters, string? searchQuery = "", bool mutualsfirst = false);
 
     /// <summary>
     ///     Get following list by username asynchronously
@@ -202,8 +202,8 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaUserShortList" />
     /// </returns>
-    Task<IResult<InstaUserShortList>> GetUserFollowingAsync(string username,
-        PaginationParameters paginationParameters, string searchQuery = "");
+    Task<IResult<InstaUserShortList>> GetUserFollowingAsync(string? username,
+        PaginationParameters paginationParameters, string? searchQuery = "");
 
     /// <summary>
     ///     Get following list by user id(pk) asynchronously
@@ -215,7 +215,7 @@ public interface IUserProcessor
     ///     <see cref="InstaUserShortList" />
     /// </returns>
     Task<IResult<InstaUserShortList>> GetUserFollowingByIdAsync(long userId,
-        PaginationParameters paginationParameters, string searchQuery = "");
+        PaginationParameters paginationParameters, string? searchQuery = "");
 
     /// <summary>
     ///     Gets the user extended information (followers count, following count, bio, etc) by user identifier.
@@ -239,7 +239,7 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    Task<IResult<InstaMediaList>> GetUserMediaAsync(string username, PaginationParameters paginationParameters);
+    Task<IResult<InstaMediaList>> GetUserMediaAsync(string? username, PaginationParameters paginationParameters);
 
     /// <summary>
     ///     Get all user media by user id (pk) asynchronously
@@ -259,7 +259,7 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string username,
+    Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string? username,
         PaginationParameters paginationParameters);
 
     /// <summary>
@@ -271,7 +271,7 @@ public interface IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    Task<IResult<InstaMediaList>> GetUserTagsAsync(string username, PaginationParameters paginationParameters);
+    Task<IResult<InstaMediaList>> GetUserTagsAsync(string? username, PaginationParameters paginationParameters);
 
     /// <summary>
     ///     Get user tags by username asynchronously

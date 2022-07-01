@@ -98,7 +98,7 @@ internal class CryptoHelper
         return newBytes;
     }
 
-    public static string GetCommentBreadCrumbEncoded(string text)
+    public static string GetCommentBreadCrumbEncoded(string? text)
     {
         const string key = InstaApiConstants.COMMENT_BREADCRUMB_KEY;
 

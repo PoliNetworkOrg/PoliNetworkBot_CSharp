@@ -217,7 +217,7 @@ public interface IStoryProcessor
     /// <param name="storyMediaId">Media id (get it from <see cref="InstaMedia.InstaIdentifier" />)</param>
     /// <param name="userId">Story owner user pk (get it from <see cref="InstaMedia.User.Pk" />)</param>
     /// <param name="text">Text to send</param>
-    Task<IResult<bool>> ReplyToStoryAsync(string storyMediaId, long userId, string text);
+    Task<IResult<bool>> ReplyToStoryAsync(string? storyMediaId, long userId, string? text);
 
     /// <summary>
     ///     UnFollow countdown story

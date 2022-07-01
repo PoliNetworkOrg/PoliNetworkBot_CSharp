@@ -15,7 +15,7 @@ public class InstaDirectInboxThread
 
     public string Title { get; set; }
 
-    public string OldestCursor { get; set; }
+    public string? OldestCursor { get; set; }
 
     public DateTime LastActivity { get; set; }
 
@@ -27,7 +27,7 @@ public class InstaDirectInboxThread
 
     public bool HasOlder { get; set; }
 
-    public InstaUserShort Inviter { get; set; }
+    public InstaUserShort? Inviter { get; set; }
 
     public bool Named { get; set; }
 

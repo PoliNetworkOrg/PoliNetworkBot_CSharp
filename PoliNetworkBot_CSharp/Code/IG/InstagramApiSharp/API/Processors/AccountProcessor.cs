@@ -36,7 +36,7 @@ internal class AccountProcessor : IAccountProcessor
     //NOT COMPLETE
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    private async Task<IResult<object>> GetCommentFilterAsync()
+    private async Task<IResult<object?>?> GetCommentFilterAsync()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -46,11 +46,15 @@ internal class AccountProcessor : IAccountProcessor
             Debug.WriteLine(instaUri.ToString());
 
             var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
-            var response = await _httpRequestProcessor.SendAsync(request);
+            if (_httpRequestProcessor != null)
+            {
+                var response = await _httpRequestProcessor.SendAsync(request);
 
-            var json = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine(response.StatusCode);
-            Debug.WriteLine(json);
+                var json = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine(response.StatusCode);
+                Debug.WriteLine(json);
+            }
+
             //if (response.StatusCode != HttpStatusCode.OK)
             //    return Result.UnExpectedResponse<object>(response, json);
             //{"config_value": 0, "status": "ok"}
@@ -72,16 +76,16 @@ internal class AccountProcessor : IAccountProcessor
 
     #region Properties and constructor
 
-    private readonly AndroidDevice _deviceInfo;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly AndroidDevice? _deviceInfo;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
     private readonly InstaApi _instaApi;
     private readonly HttpHelper _httpHelper;
 
-    public AccountProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public AccountProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -100,37 +104,49 @@ internal class AccountProcessor : IAccountProcessor
     /// <summary>
     ///     Set current account private
     /// </summary>
-    public async Task<IResult<InstaUserShort>> SetAccountPrivateAsync()
+    public async Task<IResult<InstaUserShort?>?> SetAccountPrivateAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetUriSetAccountPrivate();
-            var fields = new Dictionary<string, string>
+            if (_user != null)
             {
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_csrftoken", _user.CsrfToken }
-            };
-            var hash = CryptoHelper.CalculateHash(_httpHelper._apiVersion.SignatureKey,
-                JsonConvert.SerializeObject(fields));
-            var payload = JsonConvert.SerializeObject(fields);
-            var signature = $"{hash}.{Uri.EscapeDataString(payload)}";
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
-            request.Content = new FormUrlEncodedContent(fields);
-            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
-            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
-                InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaUserShort>(response, json);
-            var userInfoUpdated =
-                JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
-            if (userInfoUpdated.Pk < 1)
-                return Result.Fail<InstaUserShort>("Pk is null or empty");
-            var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
-            return Result.Success(converter.Convert());
+                if (_user.LoggedInUser != null)
+                {
+                    var fields = new Dictionary<string, string?>
+                    {
+                        { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() },
+                        { "_csrftoken", _user.CsrfToken }
+                    };
+                    var hash = CryptoHelper.CalculateHash(_httpHelper._apiVersion.SignatureKey,
+                        JsonConvert.SerializeObject(fields));
+                    var payload = JsonConvert.SerializeObject(fields);
+                    var signature = $"{hash}.{Uri.EscapeDataString(payload)}";
+                    var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
+                    request.Content = new FormUrlEncodedContent(fields);
+                    request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
+                    request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
+                        InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<InstaUserShort>(response, json);
+                        var userInfoUpdated =
+                            JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
+                        if (userInfoUpdated != null && userInfoUpdated.Pk < 1)
+                            return Result.Fail<InstaUserShort>("Pk is null or empty");
+                        if (userInfoUpdated != null)
+                        {
+                            var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
+                            return Result.Success(converter.Convert());
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -142,42 +158,53 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserShort>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Set current account public
     /// </summary>
-    public async Task<IResult<InstaUserShort>> SetAccountPublicAsync()
+    public async Task<IResult<InstaUserShort?>?> SetAccountPublicAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetUriSetAccountPublic();
-            var fields = new Dictionary<string, string>
+            if (_user != null)
             {
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_csrftoken", _user.CsrfToken }
-            };
-            var hash = CryptoHelper.CalculateHash(_httpHelper._apiVersion.SignatureKey,
-                JsonConvert.SerializeObject(fields));
-            var payload = JsonConvert.SerializeObject(fields);
-            var signature = $"{hash}.{Uri.EscapeDataString(payload)}";
-            var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
-            request.Content = new FormUrlEncodedContent(fields);
-            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
-            request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
-                InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaUserShort>(response, json);
-            var userInfoUpdated =
-                JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
-            if (userInfoUpdated.Pk < 1)
-                return Result.Fail<InstaUserShort>("Pk is incorrect");
-            var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
-            return Result.Success(converter.Convert());
+                var fields = new Dictionary<string, string?>
+                {
+                    { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                    { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                    { "_csrftoken", _user.CsrfToken }
+                };
+                var hash = CryptoHelper.CalculateHash(_httpHelper._apiVersion.SignatureKey,
+                    JsonConvert.SerializeObject(fields));
+                var payload = JsonConvert.SerializeObject(fields);
+                var signature = $"{hash}.{Uri.EscapeDataString(payload)}";
+                var request = _httpHelper.GetDefaultRequest(HttpMethod.Post, instaUri, _deviceInfo);
+                request.Content = new FormUrlEncodedContent(fields);
+                request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE, signature);
+                request.Options.TryAdd(InstaApiConstants.HEADER_IG_SIGNATURE_KEY_VERSION,
+                    InstaApiConstants.IG_SIGNATURE_KEY_VERSION);
+                if (_httpRequestProcessor != null)
+                {
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return Result.UnExpectedResponse<InstaUserShort>(response, json);
+                    var userInfoUpdated =
+                        JsonConvert.DeserializeObject<InstaUserShortResponse>(json, new InstaUserShortDataConverter());
+                    if (userInfoUpdated != null && userInfoUpdated.Pk < 1)
+                        return Result.Fail<InstaUserShort>("Pk is incorrect");
+                    if (userInfoUpdated != null)
+                    {
+                        var converter = ConvertersFabric.GetUserShortConverter(userInfoUpdated);
+                        return Result.Success(converter.Convert());
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -189,6 +216,8 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserShort>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -200,7 +229,7 @@ internal class AccountProcessor : IAccountProcessor
     ///     here)
     /// </param>
     /// <returns>Return true if the password is changed</returns>
-    public async Task<IResult<bool>> ChangePasswordAsync(string oldPassword, string newPassword)
+    public async Task<IResult<bool>?> ChangePasswordAsync(string? oldPassword, string? newPassword)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         if (oldPassword == newPassword)
@@ -211,7 +240,7 @@ internal class AccountProcessor : IAccountProcessor
             var changePasswordUri = UriCreator.GetChangePasswordUri();
             var time = DateTime.UtcNow.ToUnixTime();
 
-            string GetPassword(string pass)
+            string? GetPassword(string? pass)
             {
                 return _instaApi.GetEncryptedPassword(pass, time);
             }
@@ -220,25 +249,34 @@ internal class AccountProcessor : IAccountProcessor
             var enc2 = GetPassword(newPassword);
             var enc3 = GetPassword(newPassword);
 
-            var data = new JObject
+            if (_user != null)
             {
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk },
-                { "_csrftoken", _user.CsrfToken },
-                { "old_password", enc1 },
-                { "new_password1", enc2 },
-                { "new_password2", enc3 }
-            };
+                if (_user.LoggedInUser != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk },
+                        { "_csrftoken", _user.CsrfToken },
+                        { "old_password", enc1 },
+                        { "new_password1", enc2 },
+                        { "new_password2", enc3 }
+                    };
 
-            var request = _httpHelper.GetSignedRequest(changePasswordUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode == HttpStatusCode.OK)
-                return Result.Success(true);
-            var error = JsonConvert.DeserializeObject<BadStatusErrorsResponse>(json);
-            var errors = "";
-            error.Message.Errors.ForEach(errorContent => errors += errorContent + "\n");
-            return Result.Fail(errors, false);
+                    var request = _httpHelper.GetSignedRequest(changePasswordUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode == HttpStatusCode.OK)
+                            return Result.Success(true);
+                        var error = JsonConvert.DeserializeObject<BadStatusErrorsResponse>(json);
+                        var errors = "";
+                        error?.Message.Errors.ForEach(errorContent => errors += errorContent + "\n");
+                        return Result.Fail(errors, false);
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -249,6 +287,8 @@ internal class AccountProcessor : IAccountProcessor
         {
             return Result.Fail(exception, false);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -261,55 +301,75 @@ internal class AccountProcessor : IAccountProcessor
     /// <param name="phone">Phone number (leave null if you don't want to change it)</param>
     /// <param name="gender">Gender type (leave null if you don't want to change it)</param>
     /// <param name="newUsername">New username (optional) (leave null if you don't want to change it)</param>
-    public async Task<IResult<InstaUserEdit>> EditProfileAsync(string name, string biography, string url,
-        string email, string phone, InstaGenderType? gender, string newUsername = null)
+    public async Task<IResult<InstaUserEdit?>?> EditProfileAsync(string? name, string? biography, string? url,
+        string? email, string? phone, InstaGenderType? gender, string? newUsername = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var editRequest = await GetRequestForEditProfileAsync();
-            if (!editRequest.Succeeded)
-                return Result.Fail("Edit request returns badrequest", (InstaUserEdit)null);
-            var user = editRequest.Value.Username;
+            if (editRequest != null && !editRequest.Succeeded)
+            {
+                InstaUserEdit? c1 = (InstaUserEdit?)null;
+                return Result.Fail("Edit request returns badrequest",c1);
+            }
 
-            if (string.IsNullOrEmpty(newUsername))
-                newUsername = user;
+            if (editRequest != null)
+            {
+                var user = editRequest.Value?.Username;
 
-            name ??= editRequest.Value.FullName;
+                if (string.IsNullOrEmpty(newUsername))
+                    newUsername = user;
 
-            biography ??= editRequest.Value.Biography;
 
-            url ??= editRequest.Value.ExternalUrl;
+                name ??= editRequest.Value?.FullName;
 
-            email ??= editRequest.Value.Email;
+                biography ??= editRequest.Value?.Biography;
 
-            phone ??= editRequest.Value.PhoneNumber;
+                url ??= editRequest.Value?.ExternalUrl;
 
-            gender ??= editRequest.Value.Gender;
+                email ??= editRequest.Value?.Email;
+
+                phone ??= editRequest.Value?.PhoneNumber;
+
+                gender ??= editRequest.Value?.Gender;
+            }
 
             var instaUri = UriCreator.GetEditProfileUri();
 
-            var data = new JObject
+            if (_user != null)
             {
-                { "external_url", url },
-                { "gender", ((int)gender).ToString() },
-                { "phone_number", phone },
-                { "_csrftoken", _user.CsrfToken },
-                { "username", newUsername },
-                { "first_name", name },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "biography", biography },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "email", email }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaUserEdit>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
+                if (_user.LoggedInUser != null)
+                {
+                    if (_deviceInfo != null)
+                    {
+                        var data = new JObject
+                        {
+                            { "external_url", url },
+                            { "gender", ((int?)gender).ToString() },
+                            { "phone_number", phone },
+                            { "_csrftoken", _user.CsrfToken },
+                            { "username", newUsername },
+                            { "first_name", name },
+                            { "_uid", _user.LoggedInUser.Pk.ToString() },
+                            { "biography", biography },
+                            { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                            { "email", email }
+                        };
+                        var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                        if (_httpRequestProcessor != null)
+                        {
+                            var response = await _httpRequestProcessor.SendAsync(request);
+                            var json = await response.Content.ReadAsStringAsync();
+                            if (response.StatusCode != HttpStatusCode.OK)
+                                return Result.UnExpectedResponse<InstaUserEdit>(response, json);
+                            var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
 
-            return Result.Success(obj.User);
+                            return Result.Success(obj?.User);
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -321,37 +381,48 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserEdit>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Set biography (support hashtags and user mentions)
     /// </summary>
     /// <param name="bio">Biography text, hashtags or user mentions</param>
-    public async Task<IResult<InstaBiography>> SetBiographyAsync(string bio)
+    public async Task<IResult<InstaBiography?>?> SetBiographyAsync(string bio)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var editRequest = await GetRequestForEditProfileAsync();
-            if (!editRequest.Succeeded)
-                return Result.Fail("Edit request returns badrequest.\r\nPlease try again.", (InstaBiography)null);
+            if (editRequest != null && !editRequest.Succeeded)
+            {
+                var r1 = (InstaBiography?)null;
+                return Result.Fail("Edit request returns badrequest.\r\nPlease try again.",r1);
+            }
 
             var instaUri = UriCreator.GetSetBiographyUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "raw_text", bio }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaBiography>(response, json);
+                var data = new JObject
+                {
+                    { "_csrftoken", _user.CsrfToken },
+                    { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                    { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                    { "raw_text", bio }
+                };
+                var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                if (_httpRequestProcessor != null)
+                {
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return Result.UnExpectedResponse<InstaBiography>(response, json);
 
-            var obj = JsonConvert.DeserializeObject<InstaBiography>(json);
-            return Result.Success(obj);
+                    var obj = JsonConvert.DeserializeObject<InstaBiography>(json);
+                    return Result.Success(obj);
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -364,24 +435,29 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaBiography>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Get request for edit profile.
     /// </summary>
-    public async Task<IResult<InstaUserEdit>> GetRequestForEditProfileAsync()
+    public async Task<IResult<InstaUserEdit?>?> GetRequestForEditProfileAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetRequestForEditProfileUri();
             var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaUserEdit>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
-            return Result.Success(obj.User);
+            if (_httpRequestProcessor != null)
+            {
+                var response = await _httpRequestProcessor.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return Result.UnExpectedResponse<InstaUserEdit>(response, json);
+                var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
+                if (obj != null) return Result.Success(obj.User);
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -393,6 +469,8 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserEdit>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -400,7 +478,7 @@ internal class AccountProcessor : IAccountProcessor
     /// </summary>
     /// <param name="name">Name</param>
     /// <param name="phoneNumber">Phone number</param>
-    public async Task<IResult<bool>> SetNameAndPhoneNumberAsync(string name, string phoneNumber = "")
+    public async Task<IResult<bool>?> SetNameAndPhoneNumberAsync(string name, string phoneNumber = "")
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -408,19 +486,22 @@ internal class AccountProcessor : IAccountProcessor
             var instaUri = UriCreator.GetProfileSetPhoneAndNameUri();
             var data = new JObject
             {
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_csrftoken", _user.CsrfToken },
+                { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                { "_uid", _user?.LoggedInUser?.Pk.ToString() },
+                { "_csrftoken", _user?.CsrfToken },
                 { "first_name", name },
                 { "phone_number", phoneNumber }
             };
             var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaDefaultResponse>(json);
-            return Result.Success(obj.Status.ToLower() == "ok");
+            if (_httpRequestProcessor != null)
+            {
+                var response = await _httpRequestProcessor.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return Result.UnExpectedResponse<bool>(response, json);
+                var obj = JsonConvert.DeserializeObject<InstaDefaultResponse>(json);
+                return Result.Success(obj?.Status.ToLower() == "ok");
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -433,31 +514,42 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Remove profile picture.
     /// </summary>
-    public async Task<IResult<InstaUserEdit>> RemoveProfilePictureAsync()
+    public async Task<IResult<InstaUserEdit?>?> RemoveProfilePictureAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetRemoveProfilePictureUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_csrftoken", _user.CsrfToken }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaUserEdit>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
+                if (_deviceInfo != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                        { "_csrftoken", _user.CsrfToken }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<InstaUserEdit>(response, json);
+                        var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
 
-            return Result.Success(obj.User);
+                        if (obj != null) return Result.Success(obj.User);
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -470,13 +562,15 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserEdit>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Change profile picture(only jpg and jpeg formats).
     /// </summary>
     /// <param name="pictureBytes">Picture(JPG,JPEG) bytes</param>
-    public async Task<IResult<InstaUserEdit>> ChangeProfilePictureAsync(byte[] pictureBytes)
+    public async Task<IResult<InstaUserEdit?>?> ChangeProfilePictureAsync(byte[] pictureBytes)
     {
         return await ChangeProfilePictureAsync(null, pictureBytes);
     }
@@ -486,7 +580,7 @@ internal class AccountProcessor : IAccountProcessor
     /// </summary>
     /// <param name="progress">Progress action</param>
     /// <param name="pictureBytes">Picture(JPG,JPEG) bytes</param>
-    public async Task<IResult<InstaUserEdit>> ChangeProfilePictureAsync(Action<InstaUploaderProgress> progress,
+    public async Task<IResult<InstaUserEdit?>?> ChangeProfilePictureAsync(Action<InstaUploaderProgress>? progress,
         byte[] pictureBytes)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -506,28 +600,37 @@ internal class AccountProcessor : IAccountProcessor
             var uploader = await _instaApi.HelperProcessor.UploadSinglePhoto(progress,
                 new InstaImageUpload { ImageBytes = pictureBytes }, upProgress, uploadId);
 
-            var data = new Dictionary<string, string>
+            if (_deviceInfo != null)
             {
-                { "upload_id", uploadId },
-                { "_csrftoken", _user.CsrfToken },
-                { "use_fbuploader", "true" },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() }
-            };
+                if (_user != null)
+                {
+                    var data = new Dictionary<string, string?>
+                    {
+                        { "upload_id", uploadId },
+                        { "_csrftoken", _user.CsrfToken },
+                        { "use_fbuploader", "true" },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() }
+                    };
 
-            var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                upProgress.UploadState = InstaUploadState.Error;
-                progress?.Invoke(upProgress);
-                return Result.UnExpectedResponse<InstaUserEdit>(response, json);
+                    var request = _httpHelper.GetDefaultRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                        {
+                            upProgress.UploadState = InstaUploadState.Error;
+                            progress?.Invoke(upProgress);
+                            return Result.UnExpectedResponse<InstaUserEdit>(response, json);
+                        }
+
+                        var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
+                        upProgress.UploadState = InstaUploadState.Completed;
+                        progress?.Invoke(upProgress);
+                        if (obj != null) return Result.Success(obj.User);
+                    }
+                }
             }
-
-            var obj = JsonConvert.DeserializeObject<InstaUserEditContainer>(json);
-            upProgress.UploadState = InstaUploadState.Completed;
-            progress?.Invoke(upProgress);
-            return Result.Success(obj.User);
         }
         catch (HttpRequestException httpException)
         {
@@ -541,6 +644,8 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaUserEdit>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -557,29 +662,35 @@ internal class AccountProcessor : IAccountProcessor
     /// </summary>
     /// <param name="email">Email</param>
     /// <param name="password">Password (only for facebook logins)</param>
-    public async Task<IResult<InstaRequestDownloadData>> GetRequestForDownloadAccountDataAsync(string email,
-        string password)
+    public async Task<IResult<InstaRequestDownloadData?>?> GetRequestForDownloadAccountDataAsync(string email,
+        string? password)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             if (string.IsNullOrEmpty(password))
-                password = _user.Password;
+                password = _user?.Password;
 
             var instaUri = UriCreator.GetRequestForDownloadDataUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "email", email },
-                { "password", password }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            var obj = JsonConvert.DeserializeObject<InstaRequestDownloadData>(json);
-            return Result.Success(obj);
+                var data = new JObject
+                {
+                    { "_csrftoken", _user.CsrfToken },
+                    { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                    { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                    { "email", email },
+                    { "password", password }
+                };
+                var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                if (_httpRequestProcessor != null)
+                {
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var obj = JsonConvert.DeserializeObject<InstaRequestDownloadData>(json);
+                    return Result.Success(obj);
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -592,13 +703,15 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaRequestDownloadData>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Upload nametag image
     /// </summary>
     /// <param name="nametagImage">Nametag image</param>
-    public async Task<IResult<InstaMedia>> UploadNametagAsync(InstaImage nametagImage)
+    public async Task<IResult<InstaMedia?>?> UploadNametagAsync(InstaImage nametagImage)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         return await _instaApi.HelperProcessor.SendMediaPhotoAsync(null, nametagImage.ConvertToImageUpload(), null,
@@ -613,19 +726,22 @@ internal class AccountProcessor : IAccountProcessor
     /// <summary>
     ///     Get story settings.
     /// </summary>
-    public async Task<IResult<InstaStorySettings>> GetStorySettingsAsync()
+    public async Task<IResult<InstaStorySettings?>?> GetStorySettingsAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetStorySettingsUri();
             var request = _httpHelper.GetDefaultRequest(HttpMethod.Get, instaUri, _deviceInfo);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaStorySettings>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaStorySettings>(json);
-            return Result.Success(obj);
+            if (_httpRequestProcessor != null)
+            {
+                var response = await _httpRequestProcessor.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return Result.UnExpectedResponse<InstaStorySettings>(response, json);
+                var obj = JsonConvert.DeserializeObject<InstaStorySettings>(json);
+                return Result.Success(obj);
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -648,20 +764,32 @@ internal class AccountProcessor : IAccountProcessor
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "save_to_camera_roll", 1.ToString() }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-            return Result.Success(obj.Status.ToLower() == "ok");
+                if (_deviceInfo != null)
+                {
+                    if (_user.LoggedInUser != null)
+                    {
+                        var data = new JObject
+                        {
+                            { "_csrftoken", _user.CsrfToken },
+                            { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                            { "_uid", _user.LoggedInUser.Pk.ToString() },
+                            { "save_to_camera_roll", 1.ToString() }
+                        };
+                        var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                        if (_httpRequestProcessor != null)
+                        {
+                            var response = await _httpRequestProcessor.SendAsync(request);
+                            var json = await response.Content.ReadAsStringAsync();
+                            if (response.StatusCode != HttpStatusCode.OK)
+                                return Result.UnExpectedResponse<bool>(response, json);
+                            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
+                            return Result.Success(obj != null && obj.Status.ToLower() == "ok");
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -684,20 +812,32 @@ internal class AccountProcessor : IAccountProcessor
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "save_to_camera_roll", 0.ToString() }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-            return Result.Success(obj.Status.ToLower() == "ok");
+                if (_user.LoggedInUser != null)
+                {
+                    if (_deviceInfo != null)
+                    {
+                        var data = new JObject
+                        {
+                            { "_csrftoken", _user.CsrfToken },
+                            { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                            { "_uid", _user.LoggedInUser.Pk.ToString() },
+                            { "save_to_camera_roll", 0.ToString() }
+                        };
+                        var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                        if (_httpRequestProcessor != null)
+                        {
+                            var response = await _httpRequestProcessor.SendAsync(request);
+                            var json = await response.Content.ReadAsStringAsync();
+                            if (response.StatusCode != HttpStatusCode.OK)
+                                return Result.UnExpectedResponse<bool>(response, json);
+                            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
+                            return Result.Success(obj != null && obj.Status.ToLower() == "ok");
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -714,28 +854,40 @@ internal class AccountProcessor : IAccountProcessor
     /// <summary>
     ///     Enable Save story to archive.
     /// </summary>
-    public async Task<IResult<bool>> EnableSaveStoryToArchiveAsync()
+    public async Task<IResult<bool>?> EnableSaveStoryToArchiveAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
 
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "reel_auto_archive", "on" }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
+                if (_deviceInfo != null)
+                {
+                    if (_user.LoggedInUser != null)
+                    {
+                        var data = new JObject
+                        {
+                            { "_csrftoken", _user.CsrfToken },
+                            { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                            { "_uid", _user.LoggedInUser.Pk.ToString() },
+                            { "reel_auto_archive", "on" }
+                        };
+                        var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                        if (_httpRequestProcessor != null)
+                        {
+                            var response = await _httpRequestProcessor.SendAsync(request);
+                            var json = await response.Content.ReadAsStringAsync();
+                            if (response.StatusCode != HttpStatusCode.OK)
+                                return Result.UnExpectedResponse<bool>(response, json);
 
-            var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-            return Result.Success(obj.ReelAutoArchive.ToLower() == "on");
+                            var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
+                            return Result.Success(obj != null && obj.ReelAutoArchive.ToLower() == "on");
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -747,32 +899,43 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Disable Save story to archive.
     /// </summary>
-    public async Task<IResult<bool>> DisableSaveStoryToArchiveAsync()
+    public async Task<IResult<bool>?> DisableSaveStoryToArchiveAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "check_pending_archive", "1" },
-                { "reel_auto_archive", "off" }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-            return Result.Success(obj.ReelAutoArchive.ToLower() == "off");
+                if (_deviceInfo != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                        { "check_pending_archive", "1" },
+                        { "reel_auto_archive", "off" }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<bool>(response, json);
+                        var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
+                        return Result.Success(obj != null && obj.ReelAutoArchive.ToLower() == "off");
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -784,32 +947,43 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Allow story sharing.
     /// </summary>
     /// <param name="allow">Allow or disallow story sharing</param>
-    public async Task<IResult<bool>> AllowStorySharingAsync(bool allow = true)
+    public async Task<IResult<bool>?> AllowStorySharingAsync(bool allow = true)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
-            var data = new JObject
+            if (_user?.LoggedInUser != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "allow_story_reshare", allow ? "1" : "0" }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-            return Result.Success(obj.Status.ToLower() == "off");
+                if (_deviceInfo != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() },
+                        { "allow_story_reshare", allow ? "1" : "0" }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<bool>(response, json);
+                        var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
+                        return Result.Success(obj != null && obj.Status.ToLower() == "off");
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -821,40 +995,53 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Allow story message replies.
     /// </summary>
     /// <param name="repliesType">Reply typo</param>
-    public async Task<IResult<bool>> AllowStoryMessageRepliesAsync(InstaMessageRepliesType repliesType)
+    public async Task<IResult<bool>?> AllowStoryMessageRepliesAsync(InstaMessageRepliesType repliesType)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetSetReelSettingsUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "message_prefs", repliesType.ToString().ToLower() }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
+                if (_deviceInfo != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser?.Pk.ToString() },
+                        { "message_prefs", repliesType.ToString().ToLower() }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
 
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<bool>(response, json);
 
-            var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
-            return obj.MessagePrefs.ToLower() switch
-            {
-                "anyone" when repliesType == InstaMessageRepliesType.Everyone => Result.Success(true),
-                "following" when repliesType == InstaMessageRepliesType.Following => Result.Success(true),
-                "off" when repliesType == InstaMessageRepliesType.Off => Result.Success(true),
-                _ => Result.Success(false)
-            };
+                        var obj = JsonConvert.DeserializeObject<InstaAccountArchiveStory>(json);
+                        if (obj != null)
+                            return obj.MessagePrefs.ToLower() switch
+                            {
+                                "anyone" when repliesType == InstaMessageRepliesType.Everyone => Result.Success(true),
+                                "following" when repliesType == InstaMessageRepliesType.Following => Result.Success(
+                                    true),
+                                "off" when repliesType == InstaMessageRepliesType.Off => Result.Success(true),
+                                _ => Result.Success(false)
+                            };
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -866,31 +1053,42 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
     ///     Check username availablity. (for logged in user)
     /// </summary>
     /// <param name="desiredUsername">Desired username</param>
-    public async Task<IResult<InstaAccountCheck>> CheckUsernameAsync(string desiredUsername)
+    public async Task<IResult<InstaAccountCheck?>?> CheckUsernameAsync(string desiredUsername)
     {
         try
         {
             var instaUri = UriCreator.GetCheckUsernameUri();
-            var data = new JObject
+            if (_user != null && _user.LoggedInUser != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "username", desiredUsername }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaAccountCheck>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountCheck>(json);
-            return Result.Success(obj);
+                if (_deviceInfo != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() },
+                        { "username", desiredUsername }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<InstaAccountCheck>(response, json);
+                        var obj = JsonConvert.DeserializeObject<InstaAccountCheck>(json);
+                        return Result.Success(obj);
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -911,25 +1109,37 @@ internal class AccountProcessor : IAccountProcessor
     /// <summary>
     ///     Get Security settings (two factor authentication and backup codes).
     /// </summary>
-    public async Task<IResult<InstaAccountSecuritySettings>> GetSecuritySettingsInfoAsync()
+    public async Task<IResult<InstaAccountSecuritySettings?>?> GetSecuritySettingsInfoAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetAccountSecurityInfoUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaAccountSecuritySettings>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountSecuritySettings>(json);
-            return Result.Success(obj);
+                if (_deviceInfo != null)
+                {
+                    if (_user.LoggedInUser != null)
+                    {
+                        var data = new JObject
+                        {
+                            { "_csrftoken", _user.CsrfToken },
+                            { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                            { "_uid", _user.LoggedInUser.Pk.ToString() }
+                        };
+                        var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                        if (_httpRequestProcessor != null)
+                        {
+                            var response = await _httpRequestProcessor.SendAsync(request);
+                            var json = await response.Content.ReadAsStringAsync();
+                            if (response.StatusCode != HttpStatusCode.OK)
+                                return Result.UnExpectedResponse<InstaAccountSecuritySettings>(response, json);
+                            var obj = JsonConvert.DeserializeObject<InstaAccountSecuritySettings>(json);
+                            return Result.Success(obj);
+                        }
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -941,6 +1151,8 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<InstaAccountSecuritySettings>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -952,19 +1164,25 @@ internal class AccountProcessor : IAccountProcessor
         try
         {
             var instaUri = UriCreator.GetDisableSmsTwoFactorUri();
-            var data = new JObject
+            if (_deviceInfo != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<bool>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
-            return Result.Success(obj.Status.ToLower() == "ok");
+                if (_user != null && _user.LoggedInUser != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return Result.UnExpectedResponse<bool>(response, json);
+                    var obj = JsonConvert.DeserializeObject<InstaDefault>(json);
+                    return Result.Success(obj != null && obj.Status.ToLower() == "ok");
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -976,6 +1194,8 @@ internal class AccountProcessor : IAccountProcessor
             _logger?.LogException(exception);
             return Result.Fail<bool>(exception);
         }
+
+        return null;
     }
 
     /// <summary>
@@ -988,21 +1208,30 @@ internal class AccountProcessor : IAccountProcessor
         try
         {
             var instaUri = UriCreator.GetSendTwoFactorEnableSmsUri();
-            var data = new JObject
+            if (_user != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "device_id", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "phone_number", phoneNumber }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaAccountTwoFactorSms>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountTwoFactorSms>(json);
-            return Result.Success(obj);
+                if (_user.LoggedInUser != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "device_id", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() },
+                        { "phone_number", phoneNumber }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    if (_httpRequestProcessor != null)
+                    {
+                        var response = await _httpRequestProcessor.SendAsync(request);
+                        var json = await response.Content.ReadAsStringAsync();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return Result.UnExpectedResponse<InstaAccountTwoFactorSms>(response, json);
+                        var obj = JsonConvert.DeserializeObject<InstaAccountTwoFactorSms>(json);
+                        return Result.Success(obj);
+                    }
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -1060,26 +1289,32 @@ internal class AccountProcessor : IAccountProcessor
     /// <summary>
     ///     Send confirm email.
     /// </summary>
-    public async Task<IResult<InstaAccountConfirmEmail>> SendConfirmEmailAsync()
+    public async Task<IResult<InstaAccountConfirmEmail?>?> SendConfirmEmailAsync()
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetAccountSendConfirmEmailUri();
-            var data = new JObject
+            if (_deviceInfo != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "send_source", "edit_profile" }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaAccountConfirmEmail>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountConfirmEmail>(json);
-            return Result.Success(obj);
+                if (_user != null)
+                {
+                    var data = new JObject
+                    {
+                        { "_csrftoken", _user.CsrfToken },
+                        { "_uuid", _deviceInfo.DeviceGuid.ToString() },
+                        { "_uid", _user.LoggedInUser.Pk.ToString() },
+                        { "send_source", "edit_profile" }
+                    };
+                    var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return Result.UnExpectedResponse<InstaAccountConfirmEmail>(response, json);
+                    var obj = JsonConvert.DeserializeObject<InstaAccountConfirmEmail>(json);
+                    return Result.Success(obj);
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -1097,27 +1332,33 @@ internal class AccountProcessor : IAccountProcessor
     ///     Send sms code.
     /// </summary>
     /// <param name="phoneNumber">Phone number</param>
-    public async Task<IResult<InstaAccountSendSms>> SendSmsCodeAsync(string phoneNumber)
+    public async Task<IResult<InstaAccountSendSms?>?> SendSmsCodeAsync(string phoneNumber)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetAccountSendSmsCodeUri();
-            var data = new JObject
+            if (_user?.LoggedInUser != null)
             {
-                { "_csrftoken", _user.CsrfToken },
-                { "_uuid", _deviceInfo.DeviceGuid.ToString() },
-                { "device_id", _deviceInfo.DeviceGuid.ToString() },
-                { "_uid", _user.LoggedInUser.Pk.ToString() },
-                { "phone_number", phoneNumber }
-            };
-            var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
-            var response = await _httpRequestProcessor.SendAsync(request);
-            var json = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode != HttpStatusCode.OK)
-                return Result.UnExpectedResponse<InstaAccountSendSms>(response, json);
-            var obj = JsonConvert.DeserializeObject<InstaAccountSendSms>(json);
-            return Result.Success(obj);
+                var data = new JObject
+                {
+                    { "_csrftoken", _user.CsrfToken },
+                    { "_uuid", _deviceInfo?.DeviceGuid.ToString() },
+                    { "device_id", _deviceInfo?.DeviceGuid.ToString() },
+                    { "_uid", _user.LoggedInUser.Pk.ToString() },
+                    { "phone_number", phoneNumber }
+                };
+                var request = _httpHelper.GetSignedRequest(instaUri, _deviceInfo, data);
+                if (_httpRequestProcessor != null)
+                {
+                    var response = await _httpRequestProcessor.SendAsync(request);
+                    var json = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        return Result.UnExpectedResponse<InstaAccountSendSms>(response, json);
+                    var obj = JsonConvert.DeserializeObject<InstaAccountSendSms>(json);
+                    return Result.Success(obj);
+                }
+            }
         }
         catch (HttpRequestException httpException)
         {
@@ -1177,7 +1418,7 @@ internal class AccountProcessor : IAccountProcessor
     /// </summary>
     /// <param name="phoneNumber">Phone number (ex: +9891234...)</param>
     /// <param name="verificationCode">Verification code</param>
-    public async Task<IResult<InstaAccountVerifySms>> VerifySmsCodeAsync(string phoneNumber,
+    public async Task<IResult<InstaAccountVerifySms?>?> VerifySmsCodeAsync(string phoneNumber,
         string verificationCode)
     {
         UserAuthValidator.Validate(_userAuthValidate);

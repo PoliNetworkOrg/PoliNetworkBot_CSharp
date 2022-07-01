@@ -259,7 +259,7 @@ internal class BusinessProcessor : IBusinessProcessor
             {
                 { "0", "-1" }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "query_id", "425892567746558" },
                 { "locale", InstaApiConstants.ACCEPT_LANGUAGE.Replace("-", "_") },
@@ -314,7 +314,7 @@ internal class BusinessProcessor : IBusinessProcessor
             {
                 { "query_params", queryParamsData }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "access_token", "undefined" },
                 { "fb_api_caller_class", "RelayModern" },
@@ -431,7 +431,7 @@ internal class BusinessProcessor : IBusinessProcessor
                 { "audienceTab", true },
                 { "contentTab", true }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "access_token", "undefined" },
                 { "fb_api_caller_class", "RelayModern" },
@@ -478,7 +478,7 @@ internal class BusinessProcessor : IBusinessProcessor
             {
                 { "0", categoryId }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "query_id", "425892567746558" },
                 { "locale", InstaApiConstants.ACCEPT_LANGUAGE.Replace("-", "_") },
@@ -531,7 +531,7 @@ internal class BusinessProcessor : IBusinessProcessor
             {
                 { "0", zero }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "query_id", "706774002864790" },
                 { "locale", InstaApiConstants.ACCEPT_LANGUAGE.Replace("-", "_") },
@@ -680,7 +680,7 @@ internal class BusinessProcessor : IBusinessProcessor
             {
                 { "0", cityOrTown }
             };
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "query_id", "1860980127555904" },
                 { "locale", InstaApiConstants.ACCEPT_LANGUAGE.Replace("-", "_") },
@@ -943,16 +943,16 @@ internal class BusinessProcessor : IBusinessProcessor
 
     #region Properties and constructor
 
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public BusinessProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public BusinessProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -979,7 +979,7 @@ internal class BusinessProcessor : IBusinessProcessor
         {
             var instaUri = UriCreator.GetStarThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "thread_label", "1" },
                 { "_csrftoken", _user.CsrfToken },
@@ -1020,7 +1020,7 @@ internal class BusinessProcessor : IBusinessProcessor
         {
             var instaUri = UriCreator.GetUnStarThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }

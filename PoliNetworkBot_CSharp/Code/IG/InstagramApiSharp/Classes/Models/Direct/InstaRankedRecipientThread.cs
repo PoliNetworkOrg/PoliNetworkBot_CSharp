@@ -20,7 +20,7 @@ public class InstaRankedRecipientThread
 
     public string ThreadType { get; set; }
 
-    public List<InstaUserShort> Users { get; set; } = new();
+    public List<InstaUserShort?> Users { get; set; } = new();
 
     public long ViewerId { get; set; }
 }

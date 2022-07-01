@@ -12,7 +12,7 @@ public class InstaProductInfo
 
     public List<InstaProduct> OtherProducts { get; set; } = new();
 
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public InstaProductMediaList MoreFromBusiness { get; set; }
 }

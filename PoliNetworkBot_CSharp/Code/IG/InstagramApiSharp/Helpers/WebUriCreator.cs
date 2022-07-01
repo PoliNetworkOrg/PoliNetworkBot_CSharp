@@ -16,7 +16,7 @@ internal class WebUriCreator
         return instaUri;
     }
 
-    public static Uri GetCurrentFollowRequestsUri(string cursor = null)
+    public static Uri GetCurrentFollowRequestsUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebCurrentFollowRequests,
                 out var instaUri))
@@ -28,7 +28,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerBiographyTextsUri(string cursor = null)
+    public static Uri GetFormerBiographyTextsUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerBioTexts,
                 out var instaUri))
@@ -40,7 +40,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerBiographyLinksUri(string cursor = null)
+    public static Uri GetFormerBiographyLinksUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerBioLinks,
                 out var instaUri))
@@ -52,7 +52,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerUsernamesUri(string cursor = null)
+    public static Uri GetFormerUsernamesUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerUsernames,
                 out var instaUri))
@@ -64,7 +64,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerFullNamesUri(string cursor = null)
+    public static Uri GetFormerFullNamesUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerFullNames,
                 out var instaUri))
@@ -76,7 +76,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerPhoneNumbersUri(string cursor = null)
+    public static Uri GetFormerPhoneNumbersUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerPhones,
                 out var instaUri))
@@ -88,7 +88,7 @@ internal class WebUriCreator
         return new UriBuilder(instaUri) { Query = query }.Uri;
     }
 
-    public static Uri GetFormerEmailsUri(string cursor = null)
+    public static Uri GetFormerEmailsUri(string? cursor = null)
     {
         if (!Uri.TryCreate(InstaApiConstants.InstagramWebUri, InstaApiConstants.WebFormerEmails,
                 out var instaUri))

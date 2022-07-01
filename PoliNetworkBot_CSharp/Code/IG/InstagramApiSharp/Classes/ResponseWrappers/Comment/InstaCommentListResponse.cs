@@ -12,7 +12,7 @@ public class InstaCommentListResponse : BaseStatusResponse
 {
     [JsonProperty("comment_count")] public int CommentsCount { get; set; }
 
-    [JsonProperty("next_max_id")] public string NextMaxId { get; set; }
+    [JsonProperty("next_max_id")] public string? NextMaxId { get; set; }
 
     [JsonProperty("comment_likes_enabled")]
     public bool LikesEnabled { get; set; }

@@ -30,16 +30,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class CommentProcessor : ICommentProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public CommentProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public CommentProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -65,14 +65,14 @@ internal class CommentProcessor : ICommentProcessor
     /// </summary>
     /// <param name="mediaId">Media id</param>
     /// <param name="text">Comment text</param>
-    public async Task<IResult<InstaComment>> CommentMediaAsync(string mediaId, string text)
+    public async Task<IResult<InstaComment>> CommentMediaAsync(string mediaId, string? text)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetPostCommetUri(mediaId);
             var breadcrumb = CryptoHelper.GetCommentBreadCrumbEncoded(text);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "user_breadcrumb", breadcrumb },
                 { "idempotence_token", Guid.NewGuid().ToString() },
@@ -117,7 +117,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetDeleteCommentUri(mediaId, commentId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -154,7 +154,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetDeleteMultipleCommentsUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -191,7 +191,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetDisableMediaCommetsUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -228,7 +228,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetAllowMediaCommetsUri(mediaId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -483,7 +483,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetLikeCommentUri(commentId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -516,15 +516,15 @@ internal class CommentProcessor : ICommentProcessor
     /// <param name="mediaId">Media id</param>
     /// <param name="targetCommentId">Target comment id</param>
     /// <param name="text">Comment text</param>
-    public async Task<IResult<InstaComment>> ReplyCommentMediaAsync(string mediaId, string targetCommentId,
-        string text)
+    public async Task<IResult<InstaComment>> ReplyCommentMediaAsync(string mediaId, string? targetCommentId,
+        string? text)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetPostCommetUri(mediaId);
             var breadcrumb = CryptoHelper.GetCommentBreadCrumbEncoded(text);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "user_breadcrumb", breadcrumb },
                 { "idempotence_token", Guid.NewGuid().ToString() },
@@ -564,13 +564,13 @@ internal class CommentProcessor : ICommentProcessor
     /// </summary>
     /// <param name="mediaId">Media id</param>
     /// <param name="commentId">Comment id</param>
-    public async Task<IResult<bool>> ReportCommentAsync(string mediaId, string commentId)
+    public async Task<IResult<bool>> ReportCommentAsync(string mediaId, string? commentId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetReportCommetUri(mediaId, commentId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "media_id", mediaId },
                 { "comment_id", commentId },
@@ -618,7 +618,7 @@ internal class CommentProcessor : ICommentProcessor
         try
         {
             var instaUri = UriCreator.GetUnLikeCommentUri(commentId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -683,7 +683,7 @@ internal class CommentProcessor : ICommentProcessor
     }
 
     private async Task<IResult<InstaCommentListResponse>> GetCommentListWithMaxIdAsync(string mediaId,
-        string nextMaxId, string nextMinId)
+        string? nextMaxId, string nextMinId)
     {
         try
         {
@@ -714,7 +714,7 @@ internal class CommentProcessor : ICommentProcessor
 
     private async Task<IResult<InstaInlineCommentListResponse>> GetInlineCommentListWithMaxIdAsync(string mediaId,
         string targetCommandId,
-        string nextMaxId, string nextMinId)
+        string? nextMaxId, string nextMinId)
     {
         try
         {

@@ -31,17 +31,17 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class MessagingProcessor : IMessagingProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public MessagingProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor,
-        IInstaLogger logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
+    public MessagingProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor,
+        IInstaLogger? logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
         HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -69,7 +69,7 @@ internal class MessagingProcessor : IMessagingProcessor
 
             var instaUri = UriCreator.GetAddUserToDirectThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "use_unified_inbox", "true" },
                 { "user_ids", $"[{userIds.EncodeList()}]" },
@@ -112,7 +112,7 @@ internal class MessagingProcessor : IMessagingProcessor
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -177,7 +177,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetHideDirectThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
@@ -217,7 +217,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetDeleteDirectMessageUri(threadId, itemId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -574,7 +574,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetLeaveThreadUri(threadId);
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -607,14 +607,14 @@ internal class MessagingProcessor : IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Item id (message id)</param>
-    public async Task<IResult<bool>> LikeThreadMessageAsync(string threadId, string itemId)
+    public async Task<IResult<bool>> LikeThreadMessageAsync(string threadId, string? itemId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetLikeUnlikeDirectMessageUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "item_type", "reaction" },
                 { "reaction_type", "like" },
@@ -655,14 +655,14 @@ internal class MessagingProcessor : IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Message id (item id)</param>
-    public async Task<IResult<bool>> MarkDirectThreadAsSeenAsync(string threadId, string itemId)
+    public async Task<IResult<bool>> MarkDirectThreadAsSeenAsync(string threadId, string? itemId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetDirectThreadSeenUri(threadId, itemId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "thread_id", threadId },
                 { "action", "mark_seen" },
@@ -705,7 +705,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetMuteDirectThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -796,7 +796,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="hashtag">Hashtag to send</param>
     /// <param name="threadIds">Thread ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    public async Task<IResult<bool>> SendDirectHashtagAsync(string text, string hashtag, params string[] threadIds)
+    public async Task<IResult<bool>> SendDirectHashtagAsync(string? text, string hashtag, params string[] threadIds)
     {
         return await SendDirectHashtagAsync(text, hashtag, threadIds, null);
     }
@@ -809,7 +809,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    public async Task<IResult<bool>> SendDirectHashtagToRecipientsAsync(string text, string hashtag,
+    public async Task<IResult<bool>> SendDirectHashtagToRecipientsAsync(string? text, string hashtag,
         params string[] recipients)
     {
         return await SendDirectHashtagAsync(text, hashtag, null, recipients);
@@ -823,7 +823,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    public async Task<IResult<bool>> SendDirectHashtagAsync(string text, string hashtag, string[] threadIds,
+    public async Task<IResult<bool>> SendDirectHashtagAsync(string? text, string hashtag, string[] threadIds,
         string[] recipients)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -831,7 +831,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetSendDirectHashtagUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "text", text ?? string.Empty },
                 { "hashtag", hashtag },
@@ -871,7 +871,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="text">Text to send</param>
     /// <param name="link">Link to send</param>
     /// <param name="threadIds">Thread ids</param>
-    public async Task<IResult<bool>> SendDirectLinkAsync(string text, string link, params string[] threadIds)
+    public async Task<IResult<bool>> SendDirectLinkAsync(string? text, string link, params string[] threadIds)
     {
         return await SendDirectLinkAsync(text, link, threadIds, null);
     }
@@ -882,7 +882,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="text">Text to send</param>
     /// <param name="link">Link to send</param>
     /// <param name="recipients">Recipients ids</param>
-    public async Task<IResult<bool>> SendDirectLinkToRecipientsAsync(string text, string link,
+    public async Task<IResult<bool>> SendDirectLinkToRecipientsAsync(string? text, string link,
         params string[] recipients)
     {
         return await SendDirectLinkAsync(text, link, null, recipients);
@@ -895,7 +895,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="link">Link to send</param>
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
-    public async Task<IResult<bool>> SendDirectLinkAsync(string text, string link, string[] threadIds,
+    public async Task<IResult<bool>> SendDirectLinkAsync(string? text, string link, string[] threadIds,
         string[] recipients)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -903,7 +903,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetSendDirectLinkUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "link_text", text ?? string.Empty },
                 { "link_urls", $"[{new[] { link }.EncodeList()}]" },
@@ -949,7 +949,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetSendDirectLocationUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "venue_id", externalId },
                 { "action", "send_item" },
@@ -1046,7 +1046,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetSendDirectProfileUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "profile_user_id", userIdToSend.ToString() },
                 { "action", "send_item" },
@@ -1090,7 +1090,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetSendDirectProfileUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "profile_user_id", userIdToSend.ToString() },
                 { "action", "send_item" },
@@ -1176,7 +1176,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// </summary>
     /// <param name="video">Video to upload (no need to set thumbnail)</param>
     /// <param name="threadId">Thread id</param>
-    public async Task<IResult<bool>> SendDirectVideoAsync(InstaVideoUpload video, string threadId)
+    public async Task<IResult<bool>> SendDirectVideoAsync(InstaVideoUpload video, string? threadId)
     {
         return await SendDirectVideoAsync(null, video, threadId);
     }
@@ -1188,7 +1188,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="video">Video to upload (no need to set thumbnail)</param>
     /// <param name="threadId">Thread id</param>
     public async Task<IResult<bool>> SendDirectVideoAsync(Action<InstaUploaderProgress> progress,
-        InstaVideoUpload video, string threadId)
+        InstaVideoUpload video, string? threadId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         return await _instaApi.HelperProcessor.SendVideoAsync(progress, true, false, "", InstaViewMode.Replayable,
@@ -1228,7 +1228,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="mediaType">Media type</param>
     /// <param name="text">Text to send</param>
     /// <param name="threadIds">Thread ids</param>
-    public async Task<IResult<bool>> ShareMediaToThreadAsync(string mediaId, InstaMediaType mediaType, string text,
+    public async Task<IResult<bool>> ShareMediaToThreadAsync(string? mediaId, InstaMediaType mediaType, string? text,
         params string[] threadIds)
     {
         try
@@ -1257,7 +1257,7 @@ internal class MessagingProcessor : IMessagingProcessor
     /// <param name="mediaType">Media type</param>
     /// <param name="text">Text to send</param>
     /// <param name="userIds">User ids (pk)</param>
-    public async Task<IResult<bool>> ShareMediaToUserAsync(string mediaId, InstaMediaType mediaType, string text,
+    public async Task<IResult<bool>> ShareMediaToUserAsync(string? mediaId, InstaMediaType mediaType, string? text,
         params long[] userIds)
     {
         try
@@ -1328,14 +1328,14 @@ internal class MessagingProcessor : IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Item id (message id)</param>
-    public async Task<IResult<bool>> UnLikeThreadMessageAsync(string threadId, string itemId)
+    public async Task<IResult<bool>> UnLikeThreadMessageAsync(string threadId, string? itemId)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetLikeUnlikeDirectMessageUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "item_type", "reaction" },
                 { "reaction_type", "like" },
@@ -1382,7 +1382,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetUnMuteDirectThreadUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -1415,14 +1415,14 @@ internal class MessagingProcessor : IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="title">New title</param>
-    public async Task<IResult<bool>> UpdateDirectThreadTitleAsync(string threadId, string title)
+    public async Task<IResult<bool>> UpdateDirectThreadTitleAsync(string threadId, string? title)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetDirectThreadUpdateTitleUri(threadId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
@@ -1462,7 +1462,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetDirectThreadBroadcastLikeUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "action", "send_item" },
                 { "_csrftoken", _user.CsrfToken },
@@ -1493,7 +1493,7 @@ internal class MessagingProcessor : IMessagingProcessor
         }
     }
 
-    private async Task<IResult<bool>> ShareMedia(string mediaId, InstaMediaType mediaType, string text,
+    private async Task<IResult<bool>> ShareMedia(string? mediaId, InstaMediaType mediaType, string? text,
         string[] threadIds, long[] userIds)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -1501,7 +1501,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetMediaShareUri(mediaType);
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "action", "send_item" },
                 { "client_context", clientContext },
@@ -1546,7 +1546,7 @@ internal class MessagingProcessor : IMessagingProcessor
         {
             var instaUri = UriCreator.GetDeclineAllPendingDirectRequestsUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() }
@@ -1662,7 +1662,7 @@ internal class MessagingProcessor : IMessagingProcessor
         }
     }
 
-    private async Task<IResult<InstaDirectInboxContainerResponse>> GetDirectInbox(string maxId = null)
+    private async Task<IResult<InstaDirectInboxContainerResponse>> GetDirectInbox(string? maxId = null)
     {
         try
         {
@@ -1690,7 +1690,7 @@ internal class MessagingProcessor : IMessagingProcessor
     }
 
     private async Task<IResult<InstaDirectInboxThreadResponse>> GetDirectInboxThread(string threadId,
-        string maxId = null)
+        string? maxId = null)
     {
         try
         {
@@ -1718,7 +1718,7 @@ internal class MessagingProcessor : IMessagingProcessor
         }
     }
 
-    private async Task<IResult<InstaDirectInboxContainerResponse>> GetPendingDirect(string maxId = null)
+    private async Task<IResult<InstaDirectInboxContainerResponse>> GetPendingDirect(string? maxId = null)
     {
         try
         {

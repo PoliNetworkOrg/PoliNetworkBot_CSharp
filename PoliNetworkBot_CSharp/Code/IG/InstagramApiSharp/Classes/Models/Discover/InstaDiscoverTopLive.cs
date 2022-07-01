@@ -16,5 +16,5 @@ public class InstaDiscoverTopLive
 
     public bool AutoLoadMoreEnabled { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 }

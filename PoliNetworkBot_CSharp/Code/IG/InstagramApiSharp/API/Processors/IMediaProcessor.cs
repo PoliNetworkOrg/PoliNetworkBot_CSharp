@@ -20,7 +20,7 @@ public interface IMediaProcessor
     /// </summary>
     /// <param name="mediaId">Media id (<see cref="InstaMedia.InstaIdentifier" />)</param>
     /// <returns>Return true if the media is archived</returns>
-    Task<IResult<bool>> ArchiveMediaAsync(string mediaId);
+    Task<IResult<bool>> ArchiveMediaAsync(string? mediaId);
 
     /// <summary>
     ///     Delete a media (photo, video or album)
@@ -40,7 +40,7 @@ public interface IMediaProcessor
     /// </param>
     /// <param name="userTags">User tags => Optional</param>
     /// <returns>Return true if everything is ok</returns>
-    Task<IResult<InstaMedia>> EditMediaAsync(string mediaId, string caption, InstaLocationShort location = null,
+    Task<IResult<InstaMedia>> EditMediaAsync(string mediaId, string? caption, InstaLocationShort? location = null,
         InstaUserTagUpload[] userTags = null);
 
     /// <summary>
@@ -100,7 +100,7 @@ public interface IMediaProcessor
     ///     Like media (photo or video)
     /// </summary>
     /// <param name="mediaId">Media id</param>
-    Task<IResult<bool>> LikeMediaAsync(string mediaId);
+    Task<IResult<bool>> LikeMediaAsync(string? mediaId);
 
     /// <summary>
     ///     Report media
@@ -120,13 +120,13 @@ public interface IMediaProcessor
     ///     </summary>
     ///     <param name="mediaId">Media id (<see cref="InstaMedia.InstaIdentifier" />)</param>
     ///     <returns>Return true if the media is unarchived</returns>
-    Task<IResult<bool>> UnArchiveMediaAsync(string mediaId);
+    Task<IResult<bool>> UnArchiveMediaAsync(string? mediaId);
 
     /// <summary>
     ///     Remove like from media (photo or video)
     /// </summary>
     /// <param name="mediaId">Media id</param>
-    Task<IResult<bool>> UnLikeMediaAsync(string mediaId);
+    Task<IResult<bool>> UnLikeMediaAsync(string? mediaId);
 
     /// <summary>
     ///     Unsave media
@@ -143,8 +143,8 @@ public interface IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
-    Task<IResult<InstaMedia>> UploadAlbumAsync(InstaImageUpload[] images, InstaVideoUpload[] videos, string caption,
-        InstaLocationShort location = null);
+    Task<IResult<InstaMedia>> UploadAlbumAsync(InstaImageUpload[] images, InstaVideoUpload[] videos, string? caption,
+        InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload album (videos and photos) with progress
@@ -157,7 +157,7 @@ public interface IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
     Task<IResult<InstaMedia>> UploadAlbumAsync(Action<InstaUploaderProgress> progress, InstaImageUpload[] images,
-        InstaVideoUpload[] videos, string caption, InstaLocationShort location = null);
+        InstaVideoUpload[] videos, string? caption, InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload album (videos and photos)
@@ -167,8 +167,8 @@ public interface IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
-    Task<IResult<InstaMedia>> UploadAlbumAsync(InstaAlbumUpload[] album, string caption,
-        InstaLocationShort location = null);
+    Task<IResult<InstaMedia>> UploadAlbumAsync(InstaAlbumUpload[] album, string? caption,
+        InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload album (videos and photos) with progress
@@ -180,7 +180,7 @@ public interface IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
     Task<IResult<InstaMedia>> UploadAlbumAsync(Action<InstaUploaderProgress> progress, InstaAlbumUpload[] album,
-        string caption, InstaLocationShort location = null);
+        string? caption, InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload photo [Supports user tags]
@@ -191,8 +191,8 @@ public interface IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
     /// <param name="userTags">User tags => Optional</param>
-    Task<IResult<InstaMedia>> UploadPhotoAsync(InstaImageUpload image, string caption,
-        InstaLocationShort location = null);
+    Task<IResult<InstaMedia>> UploadPhotoAsync(InstaImageUpload image, string? caption,
+        InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload photo with progress [Supports user tags]
@@ -204,8 +204,8 @@ public interface IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
     /// <param name="userTags">User tags => Optional</param>
-    Task<IResult<InstaMedia>> UploadPhotoAsync(Action<InstaUploaderProgress> progress, InstaImageUpload image,
-        string caption, InstaLocationShort location = null);
+    Task<IResult<InstaMedia>> UploadPhotoAsync(Action<InstaUploaderProgress>? progress, InstaImageUpload image,
+        string? caption, InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload video [Supports user tags]
@@ -215,8 +215,8 @@ public interface IMediaProcessor
     /// <param name="location">
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
-    Task<IResult<InstaMedia>> UploadVideoAsync(InstaVideoUpload video, string caption,
-        InstaLocationShort location = null);
+    Task<IResult<InstaMedia>> UploadVideoAsync(InstaVideoUpload video, string? caption,
+        InstaLocationShort? location = null);
 
     /// <summary>
     ///     Upload video with progress [Supports user tags]
@@ -228,5 +228,5 @@ public interface IMediaProcessor
     ///     Location => Optional (get it from <seealso cref="ILocationProcessor.SearchLocationAsync" />
     /// </param>
     Task<IResult<InstaMedia>> UploadVideoAsync(Action<InstaUploaderProgress> progress, InstaVideoUpload video,
-        string caption, InstaLocationShort location = null);
+        string? caption, InstaLocationShort? location = null);
 }

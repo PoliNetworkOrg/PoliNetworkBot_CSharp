@@ -9,7 +9,7 @@ namespace InstagramApiSharp.Classes.ResponseWrappers;
 
 public class InstaReelStoryMediaViewersResponse
 {
-    [JsonProperty("next_max_id")] public string NextMaxId { get; set; }
+    [JsonProperty("next_max_id")] public string? NextMaxId { get; set; }
 
     [JsonProperty("screenshotter_user_ids")]
     public object[] ScreenshotterUserIds { get; set; }

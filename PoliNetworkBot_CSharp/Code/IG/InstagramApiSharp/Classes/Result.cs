@@ -42,7 +42,7 @@ public static class Result
         return new Result<T>(true, resValue, new ResultInfo(ResponseType.OK, "No errors detected"));
     }
 
-    public static IResult<T> Success<T>(string successMsg, T resValue)
+    public static IResult<T> Success<T>(string? successMsg, T resValue)
     {
         return new Result<T>(true, resValue, new ResultInfo(ResponseType.OK, successMsg));
     }
@@ -52,12 +52,12 @@ public static class Result
         return new Result<T>(false, default, new ResultInfo(exception));
     }
 
-    public static IResult<T> Fail<T>(string errMsg)
+    public static IResult<T> Fail<T>(string? errMsg)
     {
         return new Result<T>(false, default, new ResultInfo(errMsg));
     }
 
-    public static IResult<T> Fail<T>(string errMsg, T resValue)
+    public static IResult<T> Fail<T>(string? errMsg, T resValue)
     {
         return new Result<T>(false, resValue, new ResultInfo(errMsg));
     }
@@ -77,12 +77,12 @@ public static class Result
         return new Result<T>(false, resValue, info);
     }
 
-    public static IResult<T> Fail<T>(string errMsg, ResponseType responseType, T resValue)
+    public static IResult<T> Fail<T>(string? errMsg, ResponseType responseType, T resValue)
     {
         return new Result<T>(false, resValue, new ResultInfo(responseType, errMsg));
     }
 
-    public static IResult<T> UnExpectedResponse<T>(HttpResponseMessage response, string json)
+    public static IResult<T> UnExpectedResponse<T>(HttpResponseMessage? response, string? json)
     {
         if (string.IsNullOrEmpty(json))
         {
@@ -103,7 +103,7 @@ public static class Result
         }
     }
 
-    public static IResult<T> UnExpectedResponse<T>(HttpResponseMessage response, string message, string json)
+    public static IResult<T> UnExpectedResponse<T>(HttpResponseMessage? response, string? message, string? json)
     {
         if (string.IsNullOrEmpty(json))
         {

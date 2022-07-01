@@ -2,7 +2,7 @@
 
 public class InstaUser : InstaUserShort
 {
-    public InstaUser(InstaUserShort instaUserShort)
+    public InstaUser(InstaUserShort? instaUserShort)
     {
         Pk = instaUserShort.Pk;
         UserName = instaUserShort.UserName;

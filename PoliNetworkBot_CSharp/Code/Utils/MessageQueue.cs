@@ -13,9 +13,9 @@ internal class MessageQueue
     public readonly ChatType ChatType;
     private readonly ParseMode _parsemode;
     public readonly string Text;
-    public KeyValuePair<long, TelegramBotAbstract> Key;
+    public KeyValuePair<long, TelegramBotAbstract?> Key;
 
-    public MessageQueue(KeyValuePair<long, TelegramBotAbstract> key, string text, ChatType chatType,
+    public MessageQueue(KeyValuePair<long, TelegramBotAbstract?> key, string text, ChatType chatType,
         ParseMode parsemode)
     {
         Key = key;

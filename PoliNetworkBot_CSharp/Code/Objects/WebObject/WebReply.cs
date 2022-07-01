@@ -8,10 +8,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 internal class WebReply
 {
-    private readonly string data;
+    private readonly string? data;
     private readonly HttpStatusCode statusCode;
 
-    public WebReply(string data, HttpStatusCode statusCode)
+    public WebReply(string? data, HttpStatusCode statusCode)
     {
         this.data = data;
         this.statusCode = statusCode;
@@ -208,7 +208,7 @@ internal class WebReply
         return false;
     }
 
-    internal string GetData()
+    internal string? GetData()
     {
         return data;
     }

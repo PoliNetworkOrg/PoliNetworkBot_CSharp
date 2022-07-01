@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types;
@@ -18,17 +19,17 @@ public static class UtilsVideo
         return replyToVideo;
     }
 
-    public static long? AddVideoToDb(Video video, TelegramBotAbstract sender)
+    public static long? AddVideoToDb(Video video, TelegramBotAbstract? sender)
     {
         var photoId = GetVideoId_From_FileId_OR_UniqueFileId(video.FileId, video.FileUniqueId, sender);
         if (photoId != null) return photoId.Value;
 
-        const string q = "INSERT INTO Videos " +
-                         "(file_id, file_size, height, width, unique_id, duration, mime) " +
-                         " VALUES " +
-                         "(@fi, @fs, @h, @w, @u, @d, @mime)";
+        const string? q = "INSERT INTO Videos " +
+                          "(file_id, file_size, height, width, unique_id, duration, mime) " +
+                          " VALUES " +
+                          "(@fi, @fs, @h, @w, @u, @d, @mime)";
 
-        var keyValuePairs = new Dictionary<string, object>
+        var keyValuePairs = new Dictionary<string, object?>
         {
             { "@fi", video.FileId },
             { "@fs", video.FileSize },
@@ -46,16 +47,16 @@ public static class UtilsVideo
     }
 
     private static long? GetVideoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId,
-        TelegramBotAbstract sender)
+        TelegramBotAbstract? sender)
     {
         var a = GetVideoId_From_FileId(fileId, sender);
         return a ?? GetVideoId_From_UniqueFileId(fileUniqueId, sender);
     }
 
-    private static long? GetVideoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract sender)
+    private static long? GetVideoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract? sender)
     {
-        const string q2 = "SELECT id_video FROM Videos WHERE unique_id = @fi";
-        var keyValuePairs2 = new Dictionary<string, object>
+        const string? q2 = "SELECT id_video FROM Videos WHERE unique_id = @fi";
+        var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileUniqueId }
         };
@@ -75,10 +76,10 @@ public static class UtilsVideo
         }
     }
 
-    private static long? GetVideoId_From_FileId(string fileId, TelegramBotAbstract sender)
+    private static long? GetVideoId_From_FileId(string fileId, TelegramBotAbstract? sender)
     {
-        const string q2 = "SELECT id_video FROM Videos WHERE file_id = @fi";
-        var keyValuePairs2 = new Dictionary<string, object>
+        const string? q2 = "SELECT id_video FROM Videos WHERE file_id = @fi";
+        var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileId }
         };
@@ -99,7 +100,7 @@ public static class UtilsVideo
     }
 
     public static ObjectVideo GetVideoByIdFromDb(long videoId, long? messageIdFrom,
-        in long chatIdFromIdPerson, ChatType chatType, TelegramBotAbstract sender)
+        in long chatIdFromIdPerson, ChatType chatType, TelegramBotAbstract? sender)
     {
         var q = "SELECT * FROM Videos WHERE id_video = " + videoId;
         var dt = Database.ExecuteSelect(q, sender.DbConfig);

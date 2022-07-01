@@ -33,16 +33,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class UserProcessor : IUserProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public UserProcessor(AndroidDevice deviceInfo, UserSessionData user, IHttpRequestProcessor httpRequestProcessor,
-        IInstaLogger logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
+    public UserProcessor(AndroidDevice? deviceInfo, UserSessionData? user, IHttpRequestProcessor? httpRequestProcessor,
+        IInstaLogger? logger, UserAuthValidate userAuthValidate, InstaApi instaApi,
         HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -66,7 +66,7 @@ internal class UserProcessor : IUserProcessor
         try
         {
             var instaUri = UriCreator.GetAcceptFriendshipUri(userId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "user_id", userId.ToString() },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
@@ -349,7 +349,7 @@ internal class UserProcessor : IUserProcessor
 
             var userUri = UriCreator.GetFriendshipShowManyUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "user_ids", string.Join(",", userIds) },
@@ -553,7 +553,7 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaUser" />
     /// </returns>
-    public async Task<IResult<InstaUser>> GetUserAsync(string username)
+    public async Task<IResult<InstaUser>> GetUserAsync(string? username)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -666,8 +666,8 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaUserShortList" />
     /// </returns>
-    public async Task<IResult<InstaUserShortList>> GetUserFollowersAsync(string username,
-        PaginationParameters paginationParameters, string searchQuery, bool mutualsfirst = false)
+    public async Task<IResult<InstaUserShortList>> GetUserFollowersAsync(string? username,
+        PaginationParameters paginationParameters, string? searchQuery, bool mutualsfirst = false)
     {
         try
         {
@@ -704,7 +704,7 @@ internal class UserProcessor : IUserProcessor
     ///     <see cref="InstaUserShortList" />
     /// </returns>
     public async Task<IResult<InstaUserShortList>> GetUserFollowersByIdAsync(long userId,
-        PaginationParameters paginationParameters, string searchQuery, bool mutualsfirst = false)
+        PaginationParameters paginationParameters, string? searchQuery, bool mutualsfirst = false)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var followers = new InstaUserShortList();
@@ -764,8 +764,8 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaUserShortList" />
     /// </returns>
-    public async Task<IResult<InstaUserShortList>> GetUserFollowingAsync(string username,
-        PaginationParameters paginationParameters, string searchQuery)
+    public async Task<IResult<InstaUserShortList>> GetUserFollowingAsync(string? username,
+        PaginationParameters paginationParameters, string? searchQuery)
     {
         try
         {
@@ -801,7 +801,7 @@ internal class UserProcessor : IUserProcessor
     ///     <see cref="InstaUserShortList" />
     /// </returns>
     public async Task<IResult<InstaUserShortList>> GetUserFollowingByIdAsync(long userId,
-        PaginationParameters paginationParameters, string searchQuery)
+        PaginationParameters paginationParameters, string? searchQuery)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var following = new InstaUserShortList();
@@ -908,7 +908,7 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    public async Task<IResult<InstaMediaList>> GetUserMediaAsync(string username,
+    public async Task<IResult<InstaMediaList>> GetUserMediaAsync(string? username,
         PaginationParameters paginationParameters)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -989,7 +989,7 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    public async Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string username,
+    public async Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string? username,
         PaginationParameters paginationParameters)
     {
         return await _instaApi.ShoppingProcessor.GetUserShoppableMediaAsync(username, paginationParameters);
@@ -1004,7 +1004,7 @@ internal class UserProcessor : IUserProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    public async Task<IResult<InstaMediaList>> GetUserTagsAsync(string username,
+    public async Task<IResult<InstaMediaList>> GetUserTagsAsync(string? username,
         PaginationParameters paginationParameters)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -1095,7 +1095,7 @@ internal class UserProcessor : IUserProcessor
         try
         {
             var instaUri = UriCreator.GetDenyFriendshipUri(userId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "user_id", userId.ToString() },
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
@@ -1205,7 +1205,7 @@ internal class UserProcessor : IUserProcessor
         try
         {
             var instaUri = UriCreator.GetReportUserUri(userId);
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "user_id", userId.ToString() },
                 { "source_name", "profile" },
@@ -1448,7 +1448,7 @@ internal class UserProcessor : IUserProcessor
     {
         try
         {
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -1483,7 +1483,7 @@ internal class UserProcessor : IUserProcessor
     {
         try
         {
-            var fields = new Dictionary<string, string>
+            var fields = new Dictionary<string, string?>
             {
                 { "_uuid", _deviceInfo.DeviceGuid.ToString() },
                 { "_uid", _user.LoggedInUser.Pk.ToString() },
@@ -1514,7 +1514,7 @@ internal class UserProcessor : IUserProcessor
         }
     }
 
-    private async Task<IResult<InstaRecentActivityResponse>> GetFollowingActivityWithMaxIdAsync(string maxId)
+    private async Task<IResult<InstaRecentActivityResponse>> GetFollowingActivityWithMaxIdAsync(string? maxId)
     {
         try
         {
@@ -1589,7 +1589,7 @@ internal class UserProcessor : IUserProcessor
         }
     }
 
-    private async Task<IResult<InstaBlockedUsersResponse>> GetBlockedUsers(string maxId)
+    private async Task<IResult<InstaBlockedUsersResponse>> GetBlockedUsers(string? maxId)
     {
         try
         {
@@ -1623,7 +1623,7 @@ internal class UserProcessor : IUserProcessor
         {
             var instaUri = UriCreator.GetDiscoverPeopleUri();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "phone_id", _deviceInfo.PhoneGuid.ToString() },
                 { "module", "discover_people" },

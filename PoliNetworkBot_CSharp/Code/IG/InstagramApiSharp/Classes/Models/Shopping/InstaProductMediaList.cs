@@ -18,5 +18,5 @@ public class InstaProductMediaList
 
     public bool AutoLoadMoreEnabled { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 }

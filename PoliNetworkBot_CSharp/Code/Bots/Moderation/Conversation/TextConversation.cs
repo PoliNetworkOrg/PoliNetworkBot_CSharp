@@ -13,33 +13,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 
 internal static class TextConversation
 {
-    internal static async Task DetectMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+    internal static async Task DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        switch (e.Message.Chat.Type)
-        {
-            case ChatType.Private:
-            {
-                await PrivateMessage(telegramBotClient, e);
-                break;
-            }
-            case ChatType.Channel:
-                break;
+        if (e != null)
+            if (e.Message != null)
+                switch (e.Message.Chat.Type)
+                {
+                    case ChatType.Private:
+                    {
+                        await PrivateMessage(telegramBotClient, e);
+                        break;
+                    }
+                    case ChatType.Channel:
+                        break;
 
-            case ChatType.Group:
-            case ChatType.Supergroup:
-            {
-                await MessageInGroup(telegramBotClient, e);
-                break;
-            }
-            case ChatType.Sender:
-                break;
+                    case ChatType.Group:
+                    case ChatType.Supergroup:
+                    {
+                        await MessageInGroup(telegramBotClient, e);
+                        break;
+                    }
+                    case ChatType.Sender:
+                        break;
 
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
     }
 
-    private static async Task MessageInGroup(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+    private static async Task MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (e?.Message == null)
             return;
@@ -56,20 +58,23 @@ internal static class TextConversation
             await AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
     }
 
-    private static async Task PrivateMessage(TelegramBotAbstract telegramBotClient, MessageEventArgs e)
+    private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        var botId = telegramBotClient.GetId();
+        if (telegramBotClient != null)
+        {
+            var botId = telegramBotClient.GetId();
 
-        if (AskUser.UserAnswers.ContainsUser(e.Message.From?.Id, botId))
-            if (AskUser.UserAnswers.GetState(e.Message.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
-            {
-                AskUser.UserAnswers.RecordAnswer(e.Message.From?.Id, botId, e.Message.Text ?? e.Message.Caption);
-                return;
-            }
+            if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
+                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+                {
+                    AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId, e?.Message?.Text ?? e?.Message?.Caption);
+                    return;
+                }
+        }
 
-        if (string.IsNullOrEmpty(e.Message.Text)) return;
+        if (string.IsNullOrEmpty(e?.Message?.Text)) return;
 
-        var text2 = new Language(new Dictionary<string, string>
+        var text2 = new Language(new Dictionary<string, string?>
         {
             {
                 "en",

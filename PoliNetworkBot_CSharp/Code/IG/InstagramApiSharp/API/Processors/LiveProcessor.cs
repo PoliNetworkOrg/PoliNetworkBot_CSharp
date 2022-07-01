@@ -31,16 +31,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class LiveProcessor : ILiveProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public LiveProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public LiveProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -95,7 +95,7 @@ internal class LiveProcessor : ILiveProcessor
     /// </summary>
     /// <param name="broadcastId">Broadcast id</param>
     /// <param name="commentText">Comment text</param>
-    public async Task<IResult<InstaComment>> CommentAsync(string broadcastId, string commentText)
+    public async Task<IResult<InstaComment>> CommentAsync(string broadcastId, string? commentText)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
@@ -845,7 +845,7 @@ internal class LiveProcessor : ILiveProcessor
     /// <param name="text">Text to send</param>
     /// <param name="broadcastId">Broadcast id to send ( <see cref="InstaBroadcast.Id" /> )</param>
     /// <param name="threadIds">Thread ids</param>
-    public async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string text, string broadcastId,
+    public async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string? text, string broadcastId,
         params string[] threadIds)
     {
         return await ShareLiveToDirectThreadAsync(text, broadcastId, threadIds, null);
@@ -858,7 +858,7 @@ internal class LiveProcessor : ILiveProcessor
     /// <param name="broadcastId">Broadcast id to send ( <see cref="InstaBroadcast.Id" /> )</param>
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
-    private async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string text, string broadcastId,
+    private async Task<IResult<bool>> ShareLiveToDirectThreadAsync(string? text, string broadcastId,
         string[] threadIds, string[] recipients)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -866,7 +866,7 @@ internal class LiveProcessor : ILiveProcessor
         {
             var instaUri = UriCreator.GetShareLiveToDirectUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "text", text ?? string.Empty },
                 { "broadcast_id", broadcastId },
@@ -905,7 +905,7 @@ internal class LiveProcessor : ILiveProcessor
     /// <param name="text">Text to send</param>
     /// <param name="broadcastId">Broadcast id to send ( <see cref="InstaBroadcast.Id" /> )</param>
     /// <param name="recipients">Recipients ids</param>
-    public async Task<IResult<bool>> ShareLiveToDirectRecipientAsync(string text, string broadcastId,
+    public async Task<IResult<bool>> ShareLiveToDirectRecipientAsync(string? text, string broadcastId,
         params string[] recipients)
     {
         return await ShareLiveToDirectThreadAsync(text, broadcastId, null, recipients);
@@ -954,7 +954,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     NOT COMPLETE
     /// </summary>
     /// <returns></returns>
-    public async Task<IResult<object>> GetPostLiveCommentsAsync(string broadcastId, int startingOffset = 0,
+    public async Task<IResult<object?>> GetPostLiveCommentsAsync(string broadcastId, int startingOffset = 0,
         string encodingTag = "instagram_dash_remuxed")
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -986,7 +986,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     NOT COMPLETE
     /// </summary>
     /// <returns></returns>
-    public async Task<IResult<object>> GetPostLiveLikesAsync(string broadcastId, int startingOffset = 0,
+    public async Task<IResult<object?>> GetPostLiveLikesAsync(string broadcastId, int startingOffset = 0,
         string encodingTag = "instagram_dash_remuxed")
     {
         try
@@ -1045,7 +1045,7 @@ internal class LiveProcessor : ILiveProcessor
     ///     NOT COMPLETE
     /// </summary>
     /// <returns></returns>
-    public async Task<IResult<object>> SeenBroadcastAsync(string broadcastId, string pk)
+    public async Task<IResult<object?>> SeenBroadcastAsync(string broadcastId, string pk)
     {
         try
         {
@@ -1085,7 +1085,7 @@ internal class LiveProcessor : ILiveProcessor
         }
     }
 
-    private async Task<IResult<InstaDiscoverTopLiveResponse>> GetDiscoverTopLive(string maxId)
+    private async Task<IResult<InstaDiscoverTopLiveResponse>> GetDiscoverTopLive(string? maxId)
     {
         try
         {

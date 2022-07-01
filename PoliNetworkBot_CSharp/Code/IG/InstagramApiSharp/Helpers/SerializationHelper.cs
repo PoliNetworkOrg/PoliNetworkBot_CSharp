@@ -14,7 +14,7 @@ namespace InstagramApiSharp.Helpers
 {
     internal class SerializationHelper
     {
-        public static Stream SerializeToStream(object o)
+        public static Stream SerializeToStream(object? o)
         {
             var stream = new MemoryStream();
 #if !WINDOWS_UWP
@@ -41,7 +41,7 @@ namespace InstagramApiSharp.Helpers
 #endif
         }
 
-        public static string SerializeToString(object o)
+        public static string SerializeToString(object? o)
         {
             return JsonConvert.SerializeObject(o);
         }

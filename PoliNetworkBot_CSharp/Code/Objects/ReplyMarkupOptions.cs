@@ -22,7 +22,7 @@ public class ReplyMarkupOptions
         return _list;
     }
 
-    public TLVector<TLKeyboardButtonRow> GetMatrixTlKeyboardButton()
+    public TLVector<TLKeyboardButtonRow>? GetMatrixTlKeyboardButton()
     {
         if (_list == null)
             return null;

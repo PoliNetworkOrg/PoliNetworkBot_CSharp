@@ -20,7 +20,7 @@ public static class GroupsFixLog
     private static int _countFixed;
     private static int _countIgnored;
 
-    public static void SendLog(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
+    public static void SendLog(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs,
         GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
     {
         var message = "Groups Fix Log:";
@@ -64,7 +64,7 @@ public static class GroupsFixLog
         _countIgnored = 0;
     }
 
-    private static string HandleNewTitleNull(Dictionary<long, KeyValuePair<string, Exception>> newNull)
+    private static string? HandleNewTitleNull(Dictionary<long, KeyValuePair<string, Exception>> newNull)
     {
         var toReturn = "";
         var exceptionTypes = new List<Type>();

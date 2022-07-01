@@ -19,7 +19,7 @@ public class InstaTopicalExploreFeedResponse : BaseLoadableResponse
 
     [JsonIgnore] public List<InstaTVChannelResponse> TvChannels { get; set; } = new();
 
-    [JsonProperty("max_id")] public string MaxId { get; set; }
+    [JsonProperty("max_id")] public string? MaxId { get; set; }
 
     [JsonProperty("has_shopping_channel_content")]
     public bool? HasShoppingChannelContent { get; set; }

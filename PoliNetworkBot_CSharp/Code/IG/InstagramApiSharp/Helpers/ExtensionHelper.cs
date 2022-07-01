@@ -32,7 +32,7 @@ internal static class ExtensionHelper
     private static readonly SecureRandom secureRandom = new();
     private static readonly Random Rnd = new();
 
-    public static void SetCsrfTokenIfAvailable(this UserSessionData data, HttpResponseMessage response,
+    public static void SetCsrfTokenIfAvailable(this UserSessionData data, HttpResponseMessage? response,
         IHttpRequestProcessor _httpRequestProcessor, bool dontCheck = false)
     {
         if (!response.IsSuccessStatusCode) return;
@@ -47,7 +47,7 @@ internal static class ExtensionHelper
             data.CsrfToken = csrfToken;
     }
 
-    public static string GenerateUserAgent(this AndroidDevice deviceInfo, InstaApiVersion apiVersion)
+    public static string GenerateUserAgent(this AndroidDevice? deviceInfo, InstaApiVersion apiVersion)
     {
         if (deviceInfo == null)
             return InstaApiConstants.USER_AGENT_DEFAULT;
@@ -65,7 +65,7 @@ internal static class ExtensionHelper
         return string.IsNullOrEmpty(content);
     }
 
-    public static bool IsNotEmpty(this string content)
+    public static bool IsNotEmpty(this string? content)
     {
         return !string.IsNullOrEmpty(content);
     }
@@ -80,7 +80,7 @@ internal static class ExtensionHelper
         return EncodeList(listOfValues.ToList(), appendQuotation);
     }
 
-    public static string EncodeList(this string[] listOfValues, bool appendQuotation = true)
+    public static string? EncodeList(this string[] listOfValues, bool appendQuotation = true)
     {
         if (!appendQuotation)
             return string.Join(",", listOfValues);
@@ -117,19 +117,19 @@ internal static class ExtensionHelper
         return string.Join(",", list);
     }
 
-    public static string EncodeUri(this string data)
+    public static string? EncodeUri(this string? data)
     {
         return WebUtility.UrlEncode(data);
     }
 
-    public static string GenerateJazoest(string guid)
+    public static string GenerateJazoest(string? guid)
     {
         var chars = guid.ToCharArray();
         var ix = chars.Aggregate(0, (current, ch) => current + ch);
         return "2" + ix;
     }
 
-    public static string GetEncryptedPassword(this InstaApi api, string password, long? providedTime = null)
+    public static string? GetEncryptedPassword(this InstaApi api, string? password, long? providedTime = null)
     {
         var pubKey = api.GetLoggedUser().PublicKey;
         var pubKeyId = api.GetLoggedUser().PublicKeyId;
@@ -173,7 +173,7 @@ internal static class ExtensionHelper
         return $"#PWD_INSTAGRAM:4:{time}:{payload}";
     }
 
-    public static string GetJson(this InstaLocationShort location)
+    public static string GetJson(this InstaLocationShort? location)
     {
         if (location == null)
             return null;
@@ -223,7 +223,7 @@ internal static class ExtensionHelper
         return new string(chars.ToArray());
     }
 
-    public static string GenerateSnNonce(string emailOrPhoneNumber)
+    public static string? GenerateSnNonce(string? emailOrPhoneNumber)
     {
         var b = new byte[24];
         Rnd.NextBytes(b);

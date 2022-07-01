@@ -24,11 +24,11 @@ public class HttpHelper
 {
     private static readonly CultureInfo EnglishCulture = new("en-us");
     private readonly InstaApi _instaApi;
-    private readonly IHttpRequestProcessor HttpRequestProcessor;
+    private readonly IHttpRequestProcessor? HttpRequestProcessor;
     private readonly Random Rnd = new();
     public InstaApiVersion _apiVersion;
 
-    internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor httpRequestProcessor,
+    internal HttpHelper(InstaApiVersion apiVersionType, IHttpRequestProcessor? httpRequestProcessor,
         InstaApi instaApi)
     {
         _apiVersion = apiVersionType;
@@ -38,7 +38,7 @@ public class HttpHelper
 
     private bool IsNewerApis => _instaApi.InstaApiVersionType > InstaApiVersionType.Version126;
 
-    public HttpRequestMessage GetDefaultRequest(HttpMethod method, Uri uri, AndroidDevice deviceInfo)
+    public HttpRequestMessage GetDefaultRequest(HttpMethod method, Uri uri, AndroidDevice? deviceInfo)
     {
         var currentCulture = GetCurrentCulture();
 #if !NET452
@@ -162,8 +162,8 @@ public class HttpHelper
         return request;
     }
 
-    public HttpRequestMessage GetDefaultRequest(Uri uri, AndroidDevice deviceInfo,
-        Dictionary<string, string> data)
+    public HttpRequestMessage GetDefaultRequest(Uri uri, AndroidDevice? deviceInfo,
+        Dictionary<string, string?> data)
     {
         var request = GetDefaultRequest(HttpMethod.Post, uri, deviceInfo);
 
@@ -178,7 +178,7 @@ public class HttpHelper
     /// <summary>
     ///     This is only for https://instagram.com site
     /// </summary>
-    public HttpRequestMessage GetWebRequest(Uri uri, AndroidDevice deviceInfo)
+    public HttpRequestMessage GetWebRequest(Uri uri, AndroidDevice? deviceInfo)
     {
         var request = GetDefaultRequest(HttpMethod.Get, uri, deviceInfo);
         request.Headers.Remove(InstaApiConstants.HEADER_USER_AGENT);
@@ -187,8 +187,8 @@ public class HttpHelper
     }
 
     public HttpRequestMessage GetSignedRequest(Uri uri,
-        AndroidDevice deviceInfo,
-        Dictionary<string, string> data)
+        AndroidDevice? deviceInfo,
+        Dictionary<string, string?> data)
     {
         var payload = JsonConvert.SerializeObject(data, Formatting.None,
             new JsonSerializerSettings
@@ -219,7 +219,7 @@ public class HttpHelper
     }
 
     public HttpRequestMessage GetSignedRequest(Uri uri,
-        AndroidDevice deviceInfo,
+        AndroidDevice? deviceInfo,
         JObject data)
     {
         var payload = JsonConvert.SerializeObject(data, Formatting.None,

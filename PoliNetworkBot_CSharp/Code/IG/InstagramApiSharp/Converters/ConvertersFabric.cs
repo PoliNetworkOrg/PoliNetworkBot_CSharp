@@ -42,7 +42,7 @@ internal class ConvertersFabric
 
     public static ConvertersFabric Instance => LazyInstance.Value;
 
-    public static IObjectConverter<InstaUserShort, InstaUserShortResponse> GetUserShortConverter(
+    public static IObjectConverter<InstaUserShort?, InstaUserShortResponse> GetUserShortConverter(
         InstaUserShortResponse instaresponse)
     {
         return new InstaUserShortConverter { SourceObject = instaresponse };

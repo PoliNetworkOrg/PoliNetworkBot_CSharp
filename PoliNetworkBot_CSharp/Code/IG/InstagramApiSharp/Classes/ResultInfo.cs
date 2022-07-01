@@ -10,7 +10,7 @@ namespace InstagramApiSharp.Classes;
 
 public class ResultInfo
 {
-    public ResultInfo(string message)
+    public ResultInfo(string? message)
     {
         Message = message;
         HandleMessages(message);
@@ -32,7 +32,7 @@ public class ResultInfo
         HandleMessages(Message);
     }
 
-    public ResultInfo(ResponseType responseType, string errorMessage)
+    public ResultInfo(ResponseType responseType, string? errorMessage)
     {
         ResponseType = responseType;
         Message = errorMessage;
@@ -71,7 +71,7 @@ public class ResultInfo
 
     public Exception Exception { get; }
 
-    public string Message { get; }
+    public string? Message { get; }
 
     public ResponseType ResponseType { get; }
 
@@ -83,7 +83,7 @@ public class ResultInfo
 
     public InstaChallengeLoginInfo Challenge { get; internal set; }
 
-    public void HandleMessages(string errorMessage)
+    public void HandleMessages(string? errorMessage)
     {
         if (string.IsNullOrEmpty(errorMessage)) return;
         if (errorMessage.Contains("task was canceled"))

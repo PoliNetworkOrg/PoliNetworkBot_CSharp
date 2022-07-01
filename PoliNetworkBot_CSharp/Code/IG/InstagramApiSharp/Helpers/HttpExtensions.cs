@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -8,7 +9,7 @@ namespace InstagramApiSharp.Helpers;
 
 public static class HttpExtensions
 {
-    public static Uri AddQueryParameter(this Uri uri, string name, string value, bool dontCheck = false)
+    public static Uri AddQueryParameter(this Uri uri, string name, string? value, bool dontCheck = false)
     {
         if (!dontCheck)
             if (value is null or "" or "[]")
@@ -30,7 +31,7 @@ public static class HttpExtensions
         return ub.Uri;
     }
 
-    public static Uri AddQueryParameterIfNotEmpty(this Uri uri, string name, string value)
+    public static Uri AddQueryParameterIfNotEmpty(this Uri uri, string name, string? value)
     {
         if (string.IsNullOrEmpty(value) || value == "[]") return uri;
 

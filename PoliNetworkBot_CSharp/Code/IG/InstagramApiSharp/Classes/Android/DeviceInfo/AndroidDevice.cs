@@ -22,7 +22,7 @@ public class AndroidDevice
     public string AndroidBoardName { get; set; }
     public string AndroidBootloader { get; set; }
     public string DeviceBrand { get; set; }
-    public string DeviceId { get; set; }
+    public string? DeviceId { get; set; }
     public string DeviceModel { get; set; }
     public string DeviceModelBoot { get; set; }
     public string DeviceModelIdentifier { get; set; }

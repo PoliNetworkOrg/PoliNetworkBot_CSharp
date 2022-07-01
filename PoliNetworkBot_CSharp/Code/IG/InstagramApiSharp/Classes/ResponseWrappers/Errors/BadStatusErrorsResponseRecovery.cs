@@ -20,5 +20,5 @@ public class MessageErrorsResponsePhone
 
 public class MessageErrorsResponseRecoveryEmail : BaseStatusResponse
 {
-    [JsonProperty("message")] public string Message { get; set; }
+    [JsonProperty("message")] public string? Message { get; set; }
 }

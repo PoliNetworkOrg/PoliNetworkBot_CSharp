@@ -3,14 +3,14 @@
 internal class UserIdFound
 {
     private readonly long? _i;
-    private readonly string _v;
+    private readonly string? _v;
 
     private UserIdFound(long? i)
     {
         _i = i;
     }
 
-    public UserIdFound(long? i, string v) : this(i)
+    public UserIdFound(long? i, string? v) : this(i)
     {
         _v = v;
     }
@@ -20,7 +20,7 @@ internal class UserIdFound
         return _i;
     }
 
-    internal string GetError()
+    internal string? GetError()
     {
         return _v;
     }

@@ -10,8 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.Classes.Android.Device
 
 internal class ApiTwoFactorRequestMessage
 {
-    internal ApiTwoFactorRequestMessage(string verificationCode, string username, string deviceId,
-        string twoFactorIdentifier)
+    internal ApiTwoFactorRequestMessage(string verificationCode, string? username, string? deviceId,
+        string? twoFactorIdentifier)
     {
         VerificationCode = verificationCode;
         Username = username;
@@ -20,9 +20,9 @@ internal class ApiTwoFactorRequestMessage
     }
 
     public string VerificationCode { get; set; }
-    public string Username { get; set; }
-    public string DeviceId { get; set; }
-    public string TwoFactorIdentifier { get; set; }
+    public string? Username { get; set; }
+    public string? DeviceId { get; set; }
+    public string? TwoFactorIdentifier { get; set; }
 
     internal string GenerateSignature(InstaApiVersion apiVersion, string signatureKey)
     {

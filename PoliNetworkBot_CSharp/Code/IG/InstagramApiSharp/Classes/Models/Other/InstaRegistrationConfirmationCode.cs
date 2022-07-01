@@ -9,5 +9,5 @@ namespace InstagramApiSharp.Classes;
 
 public class InstaRegistrationConfirmationCode : InstaDefaultResponse
 {
-    [JsonProperty("signup_code")] public string SignupCode { get; set; }
+    [JsonProperty("signup_code")] public string? SignupCode { get; set; }
 }

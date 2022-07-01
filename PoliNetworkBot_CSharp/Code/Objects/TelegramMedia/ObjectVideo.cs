@@ -19,7 +19,7 @@ public class ObjectVideo : GenericMedia
     private readonly long? _messageIdFrom;
     private readonly string _uniqueId;
 
-    public ObjectVideo(int idVideoDb, string fileId, int fileSize, int height, int width,
+    public ObjectVideo(int idVideoDb, string? fileId, int fileSize, int height, int width,
         string uniqueId, long? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
     {
         _idVideoDb = idVideoDb;
@@ -54,7 +54,7 @@ public class ObjectVideo : GenericMedia
         return _width;
     }
 
-    public static TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient userbotClient)
+    public static TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient? userbotClient)
     {
         throw new NotImplementedException();
     }

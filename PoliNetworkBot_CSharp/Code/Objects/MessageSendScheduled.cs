@@ -14,7 +14,7 @@ internal class MessageSendScheduled : MessageSentResult
     public readonly ScheduleMessageSentResult ScheduleMessageSentResult;
 
     public MessageSendScheduled(ScheduleMessageSentResult scheduleMessageSentResult,
-        object message, ChatType? chatType, Tuple<bool?, int, string> r1)
+        object? message, ChatType? chatType, Tuple<bool?, int, string> r1)
         : base(scheduleMessageSentResult == ScheduleMessageSentResult.SUCCESS, message, chatType)
     {
         ScheduleMessageSentResult = scheduleMessageSentResult;

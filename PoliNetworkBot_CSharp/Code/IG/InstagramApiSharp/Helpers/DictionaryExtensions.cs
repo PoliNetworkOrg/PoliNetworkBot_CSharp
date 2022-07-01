@@ -11,7 +11,7 @@ namespace InstagramApiSharp.Helpers;
 
 internal static class DictionaryExtensions
 {
-    public static string AsQueryString(this Dictionary<string, string> parameters)
+    public static string AsQueryString(this Dictionary<string, string?> parameters)
     {
         if (!parameters.Any())
             return "";

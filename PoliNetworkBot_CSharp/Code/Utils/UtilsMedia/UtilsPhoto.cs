@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -14,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 
 internal static class UtilsPhoto
 {
-    internal static PhotoSize GetLargest(IEnumerable<PhotoSize> photo)
+    internal static PhotoSize GetLargest(IEnumerable<PhotoSize>? photo)
     {
         if (photo == null)
             return null;
@@ -34,14 +35,14 @@ internal static class UtilsPhoto
         return r;
     }
 
-    internal static long? AddPhotoToDb(PhotoSize photoLarge, TelegramBotAbstract sender)
+    internal static long? AddPhotoToDb(PhotoSize photoLarge, TelegramBotAbstract? sender)
     {
         var photoId = GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
         if (photoId != null) return photoId.Value;
 
-        const string q =
+        const string? q =
             "INSERT INTO Photos (file_id, file_size, height, width, unique_id) VALUES (@fi, @fs, @h, @w, @u)";
-        var keyValuePairs = new Dictionary<string, object>
+        var keyValuePairs = new Dictionary<string, object?>
         {
             { "@fi", photoLarge.FileId },
             { "@fs", photoLarge.FileSize },
@@ -57,16 +58,16 @@ internal static class UtilsPhoto
     }
 
     private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId,
-        TelegramBotAbstract sender)
+        TelegramBotAbstract? sender)
     {
         var a = GetPhotoId_From_FileId(fileId, sender);
         return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract sender)
+    private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract? sender)
     {
-        const string q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
-        var keyValuePairs2 = new Dictionary<string, object>
+        const string? q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
+        var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileUniqueId }
         };
@@ -86,10 +87,10 @@ internal static class UtilsPhoto
         }
     }
 
-    private static long? GetPhotoId_From_FileId(string fileId, TelegramBotAbstract sender)
+    private static long? GetPhotoId_From_FileId(string fileId, TelegramBotAbstract? sender)
     {
-        const string q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
-        var keyValuePairs2 = new Dictionary<string, object>
+        const string? q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
+        var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileId }
         };
@@ -110,7 +111,7 @@ internal static class UtilsPhoto
     }
 
     public static ObjectPhoto GetPhotoByIdFromDb(long photoIdFromFb, long? messageIdFrom, long chatId,
-        ChatType chatType, TelegramBotAbstract sender)
+        ChatType chatType, TelegramBotAbstract? sender)
     {
         var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;
         var dt = Database.ExecuteSelect(q, sender.DbConfig);

@@ -32,16 +32,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class FeedProcessor : IFeedProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public FeedProcessor(AndroidDevice deviceInfo, UserSessionData user, IHttpRequestProcessor httpRequestProcessor,
-        IInstaLogger logger, UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
+    public FeedProcessor(AndroidDevice? deviceInfo, UserSessionData? user, IHttpRequestProcessor? httpRequestProcessor,
+        IInstaLogger? logger, UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
         _user = user;
@@ -424,7 +424,7 @@ internal class FeedProcessor : IFeedProcessor
     ///     <see cref="InstaTopicalExploreFeed" />
     /// </returns>
     public async Task<IResult<InstaTopicalExploreFeed>> GetTopicalExploreFeedAsync(
-        PaginationParameters paginationParameters, string clusterId = null)
+        PaginationParameters paginationParameters, string? clusterId = null)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         var topicalExploreFeed = new InstaTopicalExploreFeed();
@@ -488,7 +488,7 @@ internal class FeedProcessor : IFeedProcessor
         }
     }
 
-    private async Task<IResult<InstaRecentActivityResponse>> GetFollowingActivityWithMaxIdAsync(string maxId)
+    private async Task<IResult<InstaRecentActivityResponse>> GetFollowingActivityWithMaxIdAsync(string? maxId)
     {
         try
         {
@@ -598,7 +598,7 @@ internal class FeedProcessor : IFeedProcessor
         {
             var userFeedUri = UriCreator.GetUserFeedUri(paginationParameters?.NextMaxId);
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "is_prefetch", "0" },
                 { "_csrftoken", _user.CsrfToken },
@@ -724,7 +724,7 @@ internal class FeedProcessor : IFeedProcessor
     }
 
     private async Task<IResult<InstaTopicalExploreFeedResponse>> GetTopicalExploreFeed(
-        PaginationParameters paginationParameters, string clusterId)
+        PaginationParameters paginationParameters, string? clusterId)
     {
         try
         {

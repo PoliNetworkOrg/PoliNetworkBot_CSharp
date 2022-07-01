@@ -14,7 +14,7 @@ public class InstaPlaceListResponse
 
     [JsonProperty("has_more")] public bool? HasMore { get; set; }
 
-    [JsonProperty("rank_token")] public string RankToken { get; set; }
+    [JsonProperty("rank_token")] public string? RankToken { get; set; }
 
     [JsonProperty("status")] internal string Status { get; set; }
 

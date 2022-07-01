@@ -19,7 +19,7 @@ public class InstaStoryPollVotersListResponse
 
     [JsonProperty("voters")] public List<InstaStoryVoterItemResponse> Voters { get; set; } = new();
 
-    [JsonProperty("max_id")] public string MaxId { get; set; }
+    [JsonProperty("max_id")] public string? MaxId { get; set; }
 
     [JsonProperty("more_available")] public bool MoreAvailable { get; set; }
 

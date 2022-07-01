@@ -11,11 +11,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 public class MessageSentResult
 {
     private readonly ChatType? chatType;
-    private readonly object message;
+    private readonly object? message;
     private readonly bool success;
     private long? messageId;
 
-    public MessageSentResult(bool success, object message, ChatType? chatType)
+    public MessageSentResult(bool success, object? message, ChatType? chatType)
     {
         this.success = success;
         this.message = message;
@@ -41,7 +41,7 @@ public class MessageSentResult
         }
     }
 
-    internal object GetMessage()
+    internal object? GetMessage()
     {
         return message;
     }

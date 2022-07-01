@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class DateTimeClass
 {
-    internal static DateTime? GetUntilDate(string[] time)
+    internal static DateTime? GetUntilDate(string?[]? time)
     {
         if (time == null)
             return null;
@@ -39,7 +39,7 @@ internal static class DateTimeClass
         return DateTime.Now.AddSeconds(timeSecondsElapsed);
     }
 
-    private static long? GetHowManySeconds(string v)
+    private static long? GetHowManySeconds(string? v)
     {
         if (string.IsNullOrEmpty(v))
             return null;
@@ -123,7 +123,7 @@ internal static class DateTimeClass
         return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
     }
 
-    public static Tuple<DateTime?, Exception> GetDateTimeFromString(string reply)
+    public static Tuple<DateTime?, Exception> GetDateTimeFromString(string? reply)
     {
         if (string.IsNullOrEmpty(reply))
             return null;
@@ -274,7 +274,7 @@ internal static class DateTimeClass
         return null;
     }
 
-    internal static DateTime? GetHours(string s)
+    internal static DateTime? GetHours(string? s)
     {
         var dt = GetDateTimeFromString(s);
         ;
@@ -295,7 +295,7 @@ internal static class DateTimeClass
                dt.Value.Millisecond.ToString().PadLeft(3, '0');
     }
 
-    private static Tuple<DateTime?, Exception> GetDateTimeFromString2(string reply)
+    private static Tuple<DateTime?, Exception> GetDateTimeFromString2(string? reply)
     {
         //entro "reply"
         if (string.IsNullOrEmpty(reply))
@@ -350,7 +350,7 @@ internal static class DateTimeClass
         return i == null ? null : new Tuple<DateTime?, Exception>(DateTime.Now.AddSeconds(i.Value), null);
     }
 
-    internal static ValueWithException<DateTime?> GetFromString(string v)
+    internal static ValueWithException<DateTime?>? GetFromString(string? v)
     {
         try
         {
@@ -385,7 +385,7 @@ internal static class DateTimeClass
                 return new ValueWithException<DateTime?>(d1, null);
             }
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             return new ValueWithException<DateTime?>(null, ex);
         }

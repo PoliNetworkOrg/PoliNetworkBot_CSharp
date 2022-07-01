@@ -18,14 +18,14 @@ public class InstaApiBuilder
 {
     private InstaApiVersionType? _apiVersionType;
     private IRequestDelay _delay = RequestDelay.Empty();
-    private AndroidDevice _device;
-    private HttpClient _httpClient;
+    private AndroidDevice? _device;
+    private HttpClient? _httpClient;
     private HttpClientHandler _httpHandler = new();
-    private IHttpRequestProcessor _httpRequestProcessor;
-    private IInstaLogger _logger;
-    private ApiRequestMessage _requestMessage;
-    private ISessionHandler _sessionHandler;
-    private UserSessionData _user;
+    private IHttpRequestProcessor? _httpRequestProcessor;
+    private IInstaLogger? _logger;
+    private ApiRequestMessage? _requestMessage;
+    private ISessionHandler? _sessionHandler;
+    private UserSessionData? _user;
 
     private InstaApiBuilder()
     {
@@ -49,19 +49,20 @@ public class InstaApiBuilder
         if (_requestMessage == null)
         {
             _device ??= AndroidDeviceGenerator.GetRandomAndroidDevice();
-            _requestMessage = new ApiRequestMessage
-            {
-                PhoneId = _device.PhoneGuid.ToString(),
-                Guid = _device.DeviceGuid,
-                Password = _user?.Password,
-                Username = _user?.UserName,
-                DeviceId = ApiRequestMessage.GenerateDeviceId(),
-                AdId = _device.AdId.ToString()
-            };
+            if (_device != null)
+                _requestMessage = new ApiRequestMessage
+                {
+                    PhoneId = _device.PhoneGuid.ToString(),
+                    Guid = _device.DeviceGuid,
+                    Password = _user?.Password,
+                    Username = _user?.UserName,
+                    DeviceId = ApiRequestMessage.GenerateDeviceId(),
+                    AdId = _device.AdId.ToString()
+                };
         }
 
-        if (string.IsNullOrEmpty(_requestMessage.Password)) _requestMessage.Password = _user?.Password;
-        if (string.IsNullOrEmpty(_requestMessage.Username)) _requestMessage.Username = _user?.UserName;
+        if (_requestMessage != null && string.IsNullOrEmpty(_requestMessage.Password)) _requestMessage.Password = _user?.Password;
+        if (_requestMessage != null && string.IsNullOrEmpty(_requestMessage.Username)) _requestMessage.Username = _user?.UserName;
 
         try
         {
@@ -92,7 +93,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder UseLogger(IInstaLogger logger)
+    public InstaApiBuilder UseLogger(IInstaLogger? logger)
     {
         _logger = logger;
         return this;
@@ -105,7 +106,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder UseHttpClient(HttpClient httpClient)
+    public InstaApiBuilder UseHttpClient(HttpClient? httpClient)
     {
         _httpClient = httpClient;
         return this;
@@ -131,7 +132,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder SetUser(UserSessionData user)
+    public InstaApiBuilder SetUser(UserSessionData? user)
     {
         _user = user;
         return this;
@@ -147,7 +148,7 @@ public class InstaApiBuilder
     /// <remarks>
     ///     Please, do not use if you don't know what you are doing
     /// </remarks>
-    public InstaApiBuilder SetApiRequestMessage(ApiRequestMessage requestMessage)
+    public InstaApiBuilder SetApiRequestMessage(ApiRequestMessage? requestMessage)
     {
         _requestMessage = requestMessage;
         return this;
@@ -175,7 +176,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder SetDevice(AndroidDevice androidDevice)
+    public InstaApiBuilder SetDevice(AndroidDevice? androidDevice)
     {
         _device = androidDevice;
         return this;
@@ -201,7 +202,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder SetSessionHandler(ISessionHandler sessionHandler)
+    public InstaApiBuilder SetSessionHandler(ISessionHandler? sessionHandler)
     {
         _sessionHandler = sessionHandler;
         return this;
@@ -214,7 +215,7 @@ public class InstaApiBuilder
     /// <returns>
     ///     API Builder
     /// </returns>
-    public InstaApiBuilder SetHttpRequestProcessor(IHttpRequestProcessor httpRequestProcessor)
+    public InstaApiBuilder SetHttpRequestProcessor(IHttpRequestProcessor? httpRequestProcessor)
     {
         _httpRequestProcessor = httpRequestProcessor;
         return this;

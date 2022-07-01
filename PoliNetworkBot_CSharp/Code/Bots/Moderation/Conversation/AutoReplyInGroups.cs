@@ -45,14 +45,14 @@ public static class AutoReplyInGroups
         return x.Select(i => ExcludedGroups[i]).All(j => id != j);
     }
 
-    internal static async Task MessageInGroup2Async(TelegramBotAbstract telegramBotClient, MessageEventArgs e,
+    internal static async Task MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        if (CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
+        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
             if (text.Contains("piano studi") || text.Contains("piano di studi") ||
                 text.Contains("piano degli studi"))
             {
-                var text2 = new Language(new Dictionary<string, string>
+                var text2 = new Language(new Dictionary<string, string?>
                 {
                     {
                         "it",
@@ -78,11 +78,11 @@ public static class AutoReplyInGroups
                     true);
             }
 
-        if (CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
+        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
             if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") ||
                 text.ToLower().Contains("representative"))
             {
-                var text2 = new Language(new Dictionary<string, string>
+                var text2 = new Language(new Dictionary<string, string?>
                 {
                     {
                         "it",
@@ -108,11 +108,11 @@ public static class AutoReplyInGroups
                     true);
             }
 
-        if (CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
+        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
             if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") ||
                 text.Contains("dsu"))
             {
-                var text2 = new Language(new Dictionary<string, string>
+                var text2 = new Language(new Dictionary<string, string?>
                 {
                     {
                         "it",
@@ -141,7 +141,7 @@ public static class AutoReplyInGroups
         if (text.Contains("esiste un gruppo"))
         {
             var text2 = new Language(
-                new Dictionary<string, string>
+                new Dictionary<string, string?>
                 {
                     {
                         "it",
@@ -157,21 +157,26 @@ public static class AutoReplyInGroups
                     }
                 }
             );
-            await SendMessage.SendMessageInAGroup(telegramBotClient,
-                e.Message.From?.LanguageCode,
-                text2,
-                e,
-                e.Message.Chat.Id,
-                e.Message.Chat.Type,
-                ParseMode.Html,
-                e.Message.MessageId,
-                true);
+            if (e != null)
+            {
+                var message = e!.Message;
+                if (message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e?.Message?.From?.LanguageCode,
+                        text2,
+                        e,
+                        message.Chat.Id,
+                        message.Chat.Type,
+                        ParseMode.Html,
+                        message.MessageId,
+                        true);
+            }
         }
 
         if (text.Contains("graduatorie") && (text.Contains("qualcuno") || text.Contains("punteggi")))
         {
             var text2 = new Language(
-                new Dictionary<string, string>
+                new Dictionary<string, string?>
                 {
                     {
                         "it",
@@ -187,22 +192,27 @@ public static class AutoReplyInGroups
                     }
                 }
             );
-            await SendMessage.SendMessageInAGroup(telegramBotClient,
-                e.Message.From?.LanguageCode,
-                text2,
-                e,
-                e.Message.Chat.Id,
-                e.Message.Chat.Type,
-                ParseMode.Html,
-                e.Message.MessageId,
-                true);
+            if (e != null)
+            {
+                var message = e.Message;
+                if (message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e?.Message?.From?.LanguageCode,
+                        text2,
+                        e,
+                        message.Chat.Id,
+                        message.Chat.Type,
+                        ParseMode.Html,
+                        message.MessageId,
+                        true);
+            }
         }
 
         if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
             if (text.Contains("whatsapp") && text.Contains("grupp"))
             {
                 var text2 = new Language(
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         {
                             "it",
@@ -218,15 +228,23 @@ public static class AutoReplyInGroups
                         }
                     }
                 );
-                await SendMessage.SendMessageInAGroup(telegramBotClient,
-                    e.Message.From?.LanguageCode,
-                    text2,
-                    e,
-                    e.Message.Chat.Id,
-                    e.Message.Chat.Type,
-                    ParseMode.Html,
-                    e.Message.MessageId,
-                    true);
+
+
+                if (e != null)
+                {
+                    var message = e.Message;
+                    if (message != null)
+                        if (message != null)
+                            await SendMessage.SendMessageInAGroup(telegramBotClient,
+                                message?.From?.LanguageCode,
+                                text2,
+                                e,
+                                message!.Chat.Id,
+                                message.Chat.Type,
+                                ParseMode.Html,
+                                message.MessageId,
+                                true);
+                }
             }
     }
 }

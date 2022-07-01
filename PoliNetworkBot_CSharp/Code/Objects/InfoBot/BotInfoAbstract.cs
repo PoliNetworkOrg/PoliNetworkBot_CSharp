@@ -18,22 +18,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 public class BotInfoAbstract
 {
     public bool? acceptedMessages;
-    public string apiHash;
+    public string? apiHash;
     public long? apiId;
     public BotProgramTypeEnum? botProgramType;
     public BotTypeApi? botTypeApi;
-    public string contactString;
-    public DbConfig DbConfig;
-    public string method;
-    public string NumberCountry;
-    public string NumberNumber;
-    public string onMessages;
-    public string passwordToAuthenticate;
-    public string SessionUserId;
-    public string token;
+    public string? contactString;
+    public DbConfig? DbConfig;
+    public string? method;
+    public string? NumberCountry;
+    public string? NumberNumber;
+    public string? onMessages;
+    public string? passwordToAuthenticate;
+    public string? SessionUserId;
+    public string? token;
     public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
-    public string website;
+    public string? website;
 
     internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
     {
@@ -46,26 +46,26 @@ public class BotInfoAbstract
                     : null;
     }
 
-    internal string GetToken()
+    internal string? GetToken()
     {
         return token;
     }
 
-    internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
+    internal Tuple<EventHandler<MessageEventArgs?>?, string?> GetOnMessage()
     {
         TrySetBotType();
         try
         {
             var s = onMessages;
             var r1 = BotStartMethods.GetMethodFromString(s);
-            return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
+            return new Tuple<EventHandler<MessageEventArgs?>?, string?>(r1, s);
         }
         catch
         {
             ;
         }
 
-        return new Tuple<EventHandler<MessageEventArgs>, string>(null, null);
+        return new Tuple<EventHandler<MessageEventArgs?>?, string?>(null, null);
     }
 
     private void TrySetBotType()
@@ -89,7 +89,7 @@ public class BotInfoAbstract
         return acceptedMessages;
     }
 
-    internal string GetWebsite()
+    internal string? GetWebsite()
     {
         try
         {
@@ -101,7 +101,7 @@ public class BotInfoAbstract
         }
     }
 
-    internal string GetContactString()
+    internal string? GetContactString()
     {
         try
         {

@@ -21,7 +21,7 @@ public class InstaUserLookup
     /// <summary>
     ///     Note: This always is null except when <see cref="LookupSourceType" /> is Username
     /// </summary>
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public bool HasValidPhone { get; set; }
 

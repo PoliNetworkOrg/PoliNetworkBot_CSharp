@@ -11,11 +11,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class DictionaryUserAnswer
 {
-    private readonly Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>> d;
+    private readonly Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>> d;
 
     public DictionaryUserAnswer()
     {
-        d = new Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>>();
+        d = new Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>>();
     }
 
     internal void Reset(long? idUser, long? botId)
@@ -24,18 +24,19 @@ public class DictionaryUserAnswer
             return;
 
         if (!d.ContainsKey(idUser.Value))
-            d[idUser.Value] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
+            d[idUser.Value] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>();
 
-        d[idUser.Value] ??= new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string>>>();
+        d[idUser.Value] ??= new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>();
         if (botId == null) return;
         if (!d[idUser.Value].ContainsKey(botId.Value))
-            d[idUser.Value][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+            d[idUser.Value][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string?>?>();
 
-        d[idUser.Value][botId.Value] ??= new Couple<AnswerTelegram, TaskCompletionSource<string>>();
+        d[idUser.Value][botId.Value] ??= new Couple<AnswerTelegram, TaskCompletionSource<string?>?>();
 
         d[idUser.Value][botId.Value].Item1 = null;
         d[idUser.Value][botId.Value].Item1 = new AnswerTelegram();
-        d[idUser.Value][botId.Value].Item1.Reset();
+        var answerTelegram = d[idUser.Value][botId.Value].Item1;
+        if (answerTelegram != null) answerTelegram.Reset();
     }
 
     internal void Delete(long? idUser, long? botId)
@@ -47,59 +48,71 @@ public class DictionaryUserAnswer
 
     internal void SetAnswerProcessed(long idUser, long? botId, bool v)
     {
-        if (botId != null) d[idUser][botId.Value].Item1.SetAnswerProcessed(v);
+        if (botId != null)
+        {
+            var answerTelegram = d[idUser][botId.Value].Item1;
+            if (answerTelegram != null)
+                answerTelegram.SetAnswerProcessed(v);
+        }
     }
 
     internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract telegramBotAbstract, string lang, string username)
+        TelegramBotAbstract? telegramBotAbstract, string? lang, string? username)
     {
         if (botId == null) return;
 
-        d[idUser][botId.Value].Item1.WorkCompleted += async result =>
-        {
-            var crashed = true;
-            try
+        var answerTelegram = d[idUser][botId.Value].Item1;
+        if (answerTelegram != null)
+            answerTelegram.WorkCompleted += async result =>
             {
-                if (d[idUser][botId.Value].Item1.GetState() == AnswerTelegram.State.ANSWERED &&
-                    d[idUser][botId.Value].Item1.GetAlreadyProcessedAnswer() == false)
+                var crashed = true;
+                try
                 {
-                    if (sendMessageConfirmationChoice)
+                    if (answerTelegram.GetState() == AnswerTelegram.State.ANSWERED &&
+                        answerTelegram.GetAlreadyProcessedAnswer() == false)
                     {
-                        var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                        var languageReply = new Language(new Dictionary<string, string>
+                        if (sendMessageConfirmationChoice)
                         {
-                            { "en", "You chose [" + result + "]" },
-                            { "it", "Hai scelto [" + result + "]" }
-                        });
-                        await telegramBotAbstract.SendTextMessageAsync(idUser,
-                            languageReply,
-                            ChatType.Private, lang, ParseMode.Html, replyMarkup, username);
+                            var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
+                            var languageReply = new Language(new Dictionary<string, string?>
+                            {
+                                { "en", "You chose [" + result + "]" },
+                                { "it", "Hai scelto [" + result + "]" }
+                            });
+                            if (telegramBotAbstract != null)
+                                await telegramBotAbstract.SendTextMessageAsync(idUser,
+                                    languageReply,
+                                    ChatType.Private, lang, ParseMode.Html, replyMarkup, username);
+                        }
+
+                        ;
+
+                        answerTelegram.SetAnswerProcessed(true);
+
+                        if (result != null)
+                        {
+                            var resultstring = result.ToString();
+                            crashed = false;
+                            var taskCompletionSource = d[idUser][botId.Value].Item2;
+                            var done = taskCompletionSource != null && taskCompletionSource.TrySetResult(resultstring);
+                        }
+
+                        ;
                     }
-
-                    ;
-
-                    d[idUser][botId.Value].Item1.SetAnswerProcessed(true);
-
-                    var resultstring = result.ToString();
-                    crashed = false;
-                    var done = d[idUser][botId.Value].Item2.TrySetResult(resultstring);
-
+                }
+                catch
+                {
                     ;
                 }
-            }
-            catch
-            {
-                ;
-            }
 
-            if (crashed) d[idUser][botId.Value].Item2.TrySetResult("");
-        };
+                if (crashed) d[idUser][botId.Value].Item2?.TrySetResult("");
+            };
     }
 
-    internal TaskCompletionSource<string> GetNewTcs(long idUser, long? botId)
+    internal TaskCompletionSource<string?>? GetNewTcs(long idUser, long? botId)
     {
         if (botId == null) return null;
-        d[idUser][botId.Value].Item2 = new TaskCompletionSource<string>();
+        d[idUser][botId.Value].Item2 = new TaskCompletionSource<string?>();
         return d[idUser][botId.Value].Item2;
     }
 
@@ -115,13 +128,19 @@ public class DictionaryUserAnswer
         if (botId == null || userId == null) return null;
         if (d[userId.Value][botId.Value] == null) return null;
         if (d[userId.Value][botId.Value].Item1 != null)
-            return d[userId.Value][botId.Value].Item1.GetState();
+        {
+            var answerTelegram = d[userId.Value][botId.Value].Item1;
+            if (answerTelegram != null)
+                return answerTelegram.GetState();
+        }
+
         return null;
     }
 
-    internal void RecordAnswer(long? userId, long? botId, string text)
+    internal void RecordAnswer(long? userId, long? botId, string? text)
     {
         if (botId == null || userId == null) return;
-        d[userId.Value][botId.Value].Item1.RecordAnswer(text);
+        var answerTelegram = d[userId.Value][botId.Value].Item1;
+        if (answerTelegram != null) answerTelegram.RecordAnswer(text);
     }
 }

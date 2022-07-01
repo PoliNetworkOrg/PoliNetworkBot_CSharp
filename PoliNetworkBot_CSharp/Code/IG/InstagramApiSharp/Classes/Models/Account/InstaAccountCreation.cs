@@ -24,5 +24,5 @@ internal class InstaAccountCreationResponse : InstaAccountCreation
 
 public class InstaAccountCreationErrors
 {
-    [JsonProperty("username")] public string[] Username { get; set; }
+    [JsonProperty("username")] public string?[] Username { get; set; }
 }

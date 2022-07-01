@@ -40,7 +40,7 @@ internal class InstaCommentConverter
         };
         if (SourceObject.OtherPreviewUsers != null && SourceObject.OtherPreviewUsers.Any())
         {
-            comment.OtherPreviewUsers ??= new List<InstaUserShort>();
+            comment.OtherPreviewUsers ??= new List<InstaUserShort?>();
             foreach (var user in SourceObject.OtherPreviewUsers)
                 comment.OtherPreviewUsers.Add(ConvertersFabric.GetUserShortConverter(user).Convert());
         }

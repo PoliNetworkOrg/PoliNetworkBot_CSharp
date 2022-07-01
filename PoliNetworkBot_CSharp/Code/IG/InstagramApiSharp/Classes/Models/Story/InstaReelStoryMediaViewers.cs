@@ -8,7 +8,7 @@ namespace InstagramApiSharp.Classes.Models;
 
 public class InstaReelStoryMediaViewers
 {
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     public int TotalScreenshotCount { get; set; }
 
@@ -18,5 +18,5 @@ public class InstaReelStoryMediaViewers
 
     public int UserCount { get; set; }
 
-    public List<InstaUserShort> Users { get; set; } = new();
+    public List<InstaUserShort?> Users { get; set; } = new();
 }

@@ -14,13 +14,13 @@ public class InstaTopicalExploreFeed
 
     public InstaMediaList Medias { get; set; } = new();
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 
     public List<InstaTvChannel> TvChannels { get; set; } = new();
 
     public InstaChannel Channel { get; set; } = new();
 
-    public string MaxId { get; set; }
+    public string? MaxId { get; set; }
 
     public string RankToken { get; set; }
 

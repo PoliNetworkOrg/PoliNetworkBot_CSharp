@@ -22,7 +22,7 @@ public class ObjectPhoto : GenericMedia
     private readonly long? _messageIdFrom;
     private readonly string _uniqueId;
 
-    public ObjectPhoto(int idPhotoDb, string fileId, int fileSize, int height, int width,
+    public ObjectPhoto(int idPhotoDb, string? fileId, int fileSize, int height, int width,
         string uniqueId, long? messageIdFrom, long chatId, ChatType chatType)
     {
         _idPhotoDb = idPhotoDb;
@@ -36,21 +36,25 @@ public class ObjectPhoto : GenericMedia
         _chatType = chatType;
     }
 
-    public async Task<Tuple<TLAbsInputFile, string>> GetTelegramUserBotInputPhoto(TelegramClient userbot)
+    public async Task<Tuple<TLAbsInputFile, string>?> GetTelegramUserBotInputPhoto(TelegramClient? userbot)
     {
         if (_messageIdFrom == null)
             return null;
-
+        TLMessagesSlice? tlMessagesSlice = null;
         var filename = "photo" + _uniqueId;
         var peer = UserbotPeer.GetPeerFromIdAndType(_chatId, _chatType);
         const int offsetDate = 0;
-        var r = await userbot.GetHistoryAsync(peer, (int)_messageIdFrom.Value,
-            offsetDate, 0, 1);
+        if (userbot != null)
+        {
+            var r = await userbot.GetHistoryAsync(peer, (int)_messageIdFrom.Value,
+                offsetDate, 0, 1);
 
-        if (r is not TLMessagesSlice tlMessagesSlice) return null;
+            if (r is not TLMessagesSlice ) return null;
+            tlMessagesSlice = (TLMessagesSlice)r;
+        }
 
-        if (tlMessagesSlice.Messages.Count != 1) return null;
-        var t = tlMessagesSlice.Messages[0];
+        if (tlMessagesSlice != null && tlMessagesSlice.Messages.Count != 1) return null;
+        var t = tlMessagesSlice?.Messages[0];
         if (t is not TLMessage t2)
             return null;
 
@@ -73,9 +77,9 @@ public class ObjectPhoto : GenericMedia
         };
     }
 
-    private static TLAbsPhotoSize BestPhoto(IEnumerable<TLAbsPhotoSize> t6)
+    private static TLAbsPhotoSize? BestPhoto(IEnumerable<TLAbsPhotoSize?> t6)
     {
-        TLAbsPhotoSize r = null;
+        TLAbsPhotoSize? r = null;
         var max = -1;
         foreach (var t7 in t6)
             switch (t7)

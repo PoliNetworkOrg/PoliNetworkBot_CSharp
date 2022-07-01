@@ -41,12 +41,12 @@ internal class RegistrationService
     /// <summary>
     ///     Waterfall id for registration
     /// </summary>
-    public string RegistrationWaterfallId { get; set; }
+    public string? RegistrationWaterfallId { get; set; }
 
     /// <summary>
     ///     Signup code from Registration via Email
     /// </summary>
-    public string ForceSignupCode { get; set; }
+    public string? ForceSignupCode { get; set; }
 
     /// <summary>
     ///     Birthday for age consent
@@ -56,23 +56,23 @@ internal class RegistrationService
     /// <summary>
     ///     Check Email Registration response
     /// </summary>
-    public InstaCheckEmailRegistration InstaCheckEmailRegistration { get; set; }
+    public InstaCheckEmailRegistration? InstaCheckEmailRegistration { get; set; }
 
     /// <summary>
     ///     Sms verification code
     /// </summary>
-    public string SmsVerificationCode { get; set; }
+    public string? SmsVerificationCode { get; set; }
 
     /// <summary>
     ///     Registration phone number response
     /// </summary>
-    public InstaAccountRegistrationPhoneNumberNew AccountRegistrationPhoneNumber { get; set; }
+    public InstaAccountRegistrationPhoneNumberNew? AccountRegistrationPhoneNumber { get; set; }
 
     #endregion Properties
 
     #region Fields and constructor
 
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly IHttpRequestProcessor _httpRequestProcessor;
     private readonly IInstaLogger _logger;
     private readonly UserSessionData _user;
@@ -82,7 +82,7 @@ internal class RegistrationService
     private readonly InstaApi _instaApi;
     private readonly HttpHelper _httpHelper;
 
-    public RegistrationService(AndroidDevice deviceInfo, UserSessionData user,
+    public RegistrationService(AndroidDevice? deviceInfo, UserSessionData user,
         IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
@@ -103,10 +103,10 @@ internal class RegistrationService
 
     private void ValidateUser(InstaUserShortResponse user)
     {
-        _user.LoggedInUser = ConvertersFabric.GetUserShortConverter(user)?.Convert();
+        _user.LoggedInUser = ConvertersFabric.GetUserShortConverter(user)?.Convert() ;
     }
 
-    private async Task<IResult<bool>> GetResultAsync(Uri instaUri, Dictionary<string, string> data = null,
+    private async Task<IResult<bool>> GetResultAsync(Uri instaUri, Dictionary<string, string?> data = null,
         bool signedRequest = false, bool setCsrfToken = false)
     {
         try
@@ -173,7 +173,7 @@ internal class RegistrationService
     /// </summary>
     public async Task<IResult<bool>> GetFirstContactPointPrefillAsync()
     {
-        var data = new Dictionary<string, string>
+        var data = new Dictionary<string, string?>
         {
             { "phone_id", _deviceInfo.PhoneGuid.ToString() },
             { "_csrftoken", _user.CsrfToken },
@@ -260,13 +260,13 @@ internal class RegistrationService
     ///     Check email availablity
     /// </summary>
     /// <param name="email">Email</param>
-    public async Task<IResult<InstaCheckEmailRegistration>> CheckEmailAsync(string email)
+    public async Task<IResult<InstaCheckEmailRegistration>> CheckEmailAsync(string? email)
     {
         try
         {
             RegistrationWaterfallId ??= Guid.NewGuid().ToString();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "android_device_id", _deviceInfo.DeviceId },
                 { "login_nonce_map", "{}" },
@@ -364,9 +364,9 @@ internal class RegistrationService
     ///     Send registration verify email
     /// </summary>
     /// <param name="email">Email</param>
-    public async Task<IResult<bool>> SendRegistrationVerifyEmailAsync(string email)
+    public async Task<IResult<bool>> SendRegistrationVerifyEmailAsync(string? email)
     {
-        var data = new Dictionary<string, string>
+        var data = new Dictionary<string, string?>
         {
             { "phone_id", _deviceInfo.PhoneGuid.ToString() },
             { "_csrftoken", _user.CsrfToken },
@@ -386,11 +386,11 @@ internal class RegistrationService
     /// <param name="email">Email</param>
     /// <param name="verificationCode">Verification code from email</param>
     public async Task<IResult<InstaRegistrationConfirmationCode>> CheckRegistrationConfirmationCodeAsync(
-        string email, string verificationCode)
+        string? email, string? verificationCode)
     {
         try
         {
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "code", verificationCode },
@@ -441,12 +441,12 @@ internal class RegistrationService
     ///     <para>Required for email registration!</para>
     ///     Optional for phone registration!
     /// </param>
-    public async Task<IResult<InstaRegistrationSuggestionResponse>> GetUsernameSuggestionsAsync(string name,
-        string email = null)
+    public async Task<IResult<InstaRegistrationSuggestionResponse>> GetUsernameSuggestionsAsync(string? name,
+        string? email = null)
     {
         try
         {
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "phone_id", _deviceInfo.PhoneGuid.ToString() },
                 { "_csrftoken", _user.CsrfToken },
@@ -496,7 +496,7 @@ internal class RegistrationService
         try
         {
             Birthday = birthday ?? GenerateRandomBirthday();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "_csrftoken", _user.CsrfToken },
                 { "day", Birthday.Day.ToString() },
@@ -537,7 +537,7 @@ internal class RegistrationService
         {
             RegistrationWaterfallId = Guid.NewGuid().ToString();
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 {
                     "is_secondary_account_creation",
@@ -657,15 +657,15 @@ internal class RegistrationService
     ///     <see cref="IRegistrationService.CheckRegistrationConfirmationCodeAsync" /> => Optional
     /// </param>
     /// <param name="birthday">Birthday => Optional</param>
-    public async Task<IResult<InstaAccountCreation>> CreateNewAccountWithEmailAsync(string email, string username,
-        string password, string firstName = "", string signUpCode = null, DateTime? birthday = null)
+    public async Task<IResult<InstaAccountCreation>> CreateNewAccountWithEmailAsync(string? email, string? username,
+        string? password, string firstName = "", string? signUpCode = null, DateTime? birthday = null)
     {
         try
         {
             Birthday = birthday ?? GenerateRandomBirthday();
 
-            var encryptedPassword = _instaApi.GetEncryptedPassword(password);
-            var data = new Dictionary<string, string>
+            string? encryptedPassword = _instaApi.GetEncryptedPassword(password);
+            var data = new Dictionary<string, string?>
             {
                 { "is_secondary_account_creation", "true" },
                 { "jazoest", ExtensionHelper.GenerateJazoest(_deviceInfo.PhoneGuid.ToString()) },
@@ -845,9 +845,9 @@ internal class RegistrationService
     ///     Check phone number
     /// </summary>
     /// <param name="phoneNumber">Phone number</param>
-    public async Task<IResult<bool>> CheckPhoneNumberAsync(string phoneNumber)
+    public async Task<IResult<bool>> CheckPhoneNumberAsync(string? phoneNumber)
     {
-        var data = new Dictionary<string, string>
+        var data = new Dictionary<string, string?>
         {
             { "phone_id", _deviceInfo.PhoneGuid.ToString() },
             { "login_nonce_map", "{}" },
@@ -864,9 +864,9 @@ internal class RegistrationService
     ///     Send singup sms code
     /// </summary>
     /// <param name="phoneNumber">Phone number</param>
-    public async Task<IResult<bool>> SendSignUpSmsCodeAsync(string phoneNumber)
+    public async Task<IResult<bool>> SendSignUpSmsCodeAsync(string? phoneNumber)
     {
-        var data = new Dictionary<string, string>
+        var data = new Dictionary<string, string?>
         {
             { "phone_id", _deviceInfo.PhoneGuid.ToString() },
             { "phone_number", phoneNumber },
@@ -884,13 +884,13 @@ internal class RegistrationService
     /// </summary>
     /// <param name="phoneNumber">Phone number</param>
     /// <param name="verificationCode">Verification code</param>
-    public async Task<IResult<InstaPhoneNumberRegistration>> VerifySignUpSmsCodeAsync(string phoneNumber,
-        string verificationCode)
+    public async Task<IResult<InstaPhoneNumberRegistration>> VerifySignUpSmsCodeAsync(string? phoneNumber,
+        string? verificationCode)
     {
         try
         {
             SmsVerificationCode = verificationCode ?? SmsVerificationCode;
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "verification_code", verificationCode },
                 { "phone_number", phoneNumber },
@@ -958,14 +958,14 @@ internal class RegistrationService
     /// <param name="firstName">First name</param>
     /// <param name="verificationCode">Verification code from sms</param>
     /// <param name="birthday">Birthday => Optional</param>
-    public async Task<IResult<InstaAccountCreation>> CreateNewAccountWithPhoneNumberAsync(string phoneNumber,
-        string username, string password, string firstName, string verificationCode, DateTime? birthday = null)
+    public async Task<IResult<InstaAccountCreation>> CreateNewAccountWithPhoneNumberAsync(string? phoneNumber,
+        string? username, string? password, string? firstName, string? verificationCode, DateTime? birthday = null)
     {
         try
         {
             Birthday = birthday ?? GenerateRandomBirthday();
-            var encryptedPassword = _instaApi.GetEncryptedPassword(password);
-            var postData = new Dictionary<string, string>
+            string? encryptedPassword = _instaApi.GetEncryptedPassword(password);
+            var postData = new Dictionary<string, string?>
             {
                 { "is_secondary_account_creation", "false" },
                 { "jazoest", ExtensionHelper.GenerateJazoest(_deviceInfo.PhoneGuid.ToString()) },

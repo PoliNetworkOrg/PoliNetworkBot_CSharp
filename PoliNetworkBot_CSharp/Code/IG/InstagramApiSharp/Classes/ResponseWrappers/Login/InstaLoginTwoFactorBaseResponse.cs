@@ -12,5 +12,5 @@ internal class InstaLoginTwoFactorBaseResponse
 
     [JsonProperty("error_type")] public string ErrorType { get; set; }
 
-    [JsonProperty("challenge")] public InstaChallengeLoginInfo Challenge { get; set; }
+    [JsonProperty("challenge")] public InstaChallengeLoginInfo? Challenge { get; set; }
 }

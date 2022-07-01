@@ -37,7 +37,7 @@ internal class ShoppingProcessor : IShoppingProcessor
     /// <returns>
     ///     <see cref="InstaMediaList" />
     /// </returns>
-    public async Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string username,
+    public async Task<IResult<InstaMediaList>> GetUserShoppableMediaAsync(string? username,
         PaginationParameters paginationParameters)
     {
         UserAuthValidator.Validate(_userAuthValidate);
@@ -110,7 +110,7 @@ internal class ShoppingProcessor : IShoppingProcessor
                 { "sources", null }
             };
 
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "access_token", "undefined" },
                 { "fb_api_caller_class", "RelayModern" },
@@ -227,16 +227,16 @@ internal class ShoppingProcessor : IShoppingProcessor
 
     #region Properties and constructor
 
-    private readonly AndroidDevice _deviceInfo;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly AndroidDevice? _deviceInfo;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
     private readonly InstaApi _instaApi;
     private readonly HttpHelper _httpHelper;
 
-    public ShoppingProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public ShoppingProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;

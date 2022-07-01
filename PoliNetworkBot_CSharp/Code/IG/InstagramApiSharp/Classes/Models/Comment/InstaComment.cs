@@ -27,7 +27,7 @@ public class InstaComment : INotifyPropertyChanged
     public DateTime CreatedAt { get; set; }
 
     public InstaContentType ContentType { get; set; }
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
     public long Pk { get; set; }
     public string Text { get; set; }
 
@@ -54,7 +54,7 @@ public class InstaComment : INotifyPropertyChanged
     //public string NextMaxChildCursor { get; set; }
     public List<InstaCommentShort> PreviewChildComments { get; set; } = new();
 
-    public List<InstaUserShort> OtherPreviewUsers { get; set; } = new();
+    public List<InstaUserShort?> OtherPreviewUsers { get; set; } = new();
 
     public event PropertyChangedEventHandler PropertyChanged;
 

@@ -46,7 +46,7 @@ public class InstaDirectInboxItem
 
     public InstaActionLog ActionLog { get; set; }
 
-    public InstaUserShort ProfileMedia { get; set; }
+    public InstaUserShort? ProfileMedia { get; set; }
 
     public List<InstaMedia> ProfileMediasPreview { get; set; }
 

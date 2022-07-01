@@ -9,7 +9,7 @@ namespace InstagramApiSharp.Classes.ResponseWrappers;
 
 public class InstaUserShortResponse : BaseStatusResponse
 {
-    [JsonProperty("username")] public string UserName { get; set; }
+    [JsonProperty("username")] public string? UserName { get; set; }
 
     [JsonProperty("profile_pic_url")] public string ProfilePicture { get; set; }
 

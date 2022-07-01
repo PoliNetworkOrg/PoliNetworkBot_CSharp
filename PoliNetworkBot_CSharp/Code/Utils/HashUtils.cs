@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class HashUtils
 {
-    public static string GetHashOf(string message)
+    public static string GetHashOf(string? message)
     {
         var bytes = Encoding.Unicode.GetBytes(message);
         var hash = ByteArrayToString(MD5.Create().ComputeHash(bytes));

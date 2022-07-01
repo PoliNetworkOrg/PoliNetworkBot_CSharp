@@ -12,5 +12,5 @@ public class InstaCollectionItem
 
     public InstaCoverMedia CoverMedia { get; set; }
 
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 }

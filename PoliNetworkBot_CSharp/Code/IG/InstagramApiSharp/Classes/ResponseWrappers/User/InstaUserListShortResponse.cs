@@ -16,5 +16,5 @@ public class InstaUserListShortResponse : BaseStatusResponse
 
     [JsonProperty("page_size")] public int PageSize { get; set; }
 
-    [JsonProperty("next_max_id")] public string NextMaxId { get; set; }
+    [JsonProperty("next_max_id")] public string? NextMaxId { get; set; }
 }

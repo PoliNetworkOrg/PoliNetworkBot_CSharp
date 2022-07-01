@@ -548,9 +548,9 @@ public class AndroidDeviceGenerator
     };
 
     private static readonly Random Rnd = new();
-    private static AndroidDevice LastDevice;
+    private static AndroidDevice? LastDevice;
 
-    public static AndroidDevice GetRandomAndroidDevice()
+    public static AndroidDevice? GetRandomAndroidDevice()
     {
         TryLabel:
         var randomDeviceIndex = Rnd.Next(0, DevicesNames.Count);

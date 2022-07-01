@@ -15,5 +15,5 @@ public class InstaFeed : IInstaBaseList
     public List<InstaStory> Stories { get; set; } = new();
 
     public List<InstaSuggestionItem> SuggestedUserItems { get; set; } = new();
-    public string NextMaxId { get; set; }
+    public string? NextMaxId { get; set; }
 }

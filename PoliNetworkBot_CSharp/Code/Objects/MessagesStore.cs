@@ -23,18 +23,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public static class MessagesStore
 {
-    private static Dictionary<string, StoredMessage> Store;
+    private static Dictionary<string, StoredMessage?>? Store;
 
     public static void InitializeMessageStore()
     {
         try
         {
-            Store = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage>>(
-                File.ReadAllText(Paths.Data.MessageStore)) ?? new Dictionary<string, StoredMessage>();
+            Dictionary<string, StoredMessage?>? x = JsonConvert.DeserializeObject<Dictionary<string, StoredMessage?>>(
+                File.ReadAllText(Paths.Data.MessageStore));
+            Store = x ?? new Dictionary<string, StoredMessage?>();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
-            Store = new Dictionary<string, StoredMessage>();
+            Store = new Dictionary<string, StoredMessage?>();
             Logger.WriteLine(ex);
         }
     }
@@ -56,18 +57,19 @@ public static class MessagesStore
         if (string.IsNullOrEmpty(message))
             return false;
 
-        if (Store.ContainsKey(message))
+        if (Store != null && Store.ContainsKey(message))
             Store.Remove(message);
 
         if (timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING
             || timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING)
             throw new Exception("TimeLater and status mismatch");
 
-        lock (Store)
-        {
-            Store.Add(message,
-                new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
-        }
+        if (Store != null)
+            lock (Store)
+            {
+                Store.Add(message,
+                    new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
+            }
 
         return true;
     }
@@ -84,43 +86,50 @@ public static class MessagesStore
 
     public static void CheckTimestamp()
     {
-        if (Store.Count == 0)
+        if (Store != null && Store.Count == 0)
             return;
-        foreach (var message in Store.Keys)
-        {
-            Store.TryGetValue(message, out var storedMessage);
-            if (storedMessage == null)
-                continue;
-            
-            if (!storedMessage.IsOutdated())
-                continue;
-            
-            lock (Store)
+        if (Store != null)
+            foreach (var message in Store.Keys)
             {
-                Store.Remove(message);
+                Store.TryGetValue(message, out var storedMessage);
+                if (storedMessage == null)
+                    continue;
+
+                if (!storedMessage.IsOutdated())
+                    continue;
+
+                lock (Store)
+                {
+                    Store.Remove(message);
+                }
             }
-        }
     }
 
     public static void RemoveMessage(string text)
     {
-        if (!Store.ContainsKey(text)) return;
-        lock (Store)
-        {
-            Store.Remove(text);
-        }
+        if (Store != null && !Store.ContainsKey(text)) return;
+        if (Store != null)
+            lock (Store)
+            {
+                Store.Remove(text);
+            }
     }
 
-    public static List<StoredMessage> GetAllMessages(Func<StoredMessage, bool> filter = null)
+    public static List<StoredMessage?>? GetAllMessages(Func<StoredMessage?, bool>? filter = null)
     {
-        var r = Store.Values.ToList();
-        if (filter != null)
-            r = r.Where(filter).ToList();
+        if (Store != null)
+        {
+            List<StoredMessage?> r = Store.Values.ToList();
+            if (filter != null)
+                r = r.Where(filter).ToList();
 
-        return r;
+            return r;
+        }
+
+        return null;
     }
 
-    internal static SpamType StoreAndCheck(Message message)
+    internal static SpamType StoreAndCheck(Message? message)
     {
         if (message == null)
             return SpamType.UNDEFINED;
@@ -130,58 +139,79 @@ public static class MessagesStore
         return !string.IsNullOrEmpty(message.Caption) ? StoreAndCheck2(message, message.Caption) : SpamType.UNDEFINED;
     }
 
-    private static SpamType StoreAndCheck2(Message message, string text)
+    private static SpamType StoreAndCheck2(Message? message, string? text)
     {
-        if (string.IsNullOrEmpty(text) || message.From == null)
+        if (message != null && (string.IsNullOrEmpty(text) || message.From == null))
             return SpamType.UNDEFINED;
 
-        if (Store.ContainsKey(text))
+        if (Store != null)
         {
-            Store[text].LastSeenTime = DateTime.Now;
-            Store[text].HowManyTimesWeSawIt++;
-        }
-        else
-        {
-            lock (Store)
+            if (text != null)
             {
-                Store[text] = new StoredMessage
-                (
-                    lastSeenTime: DateTime.Now,
-                    howManyTimesWeSawIt: 1,
-                    message: message.Text,
-                    allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
-                );
+                var storedMessage = Store[text];
+                if (text != null && Store != null && Store.ContainsKey(text))
+                {
+                    if (storedMessage != null)
+                    {
+                        storedMessage.LastSeenTime = DateTime.Now;
+                        storedMessage.HowManyTimesWeSawIt++;
+                    }
+                }
+                else
+                {
+                    if (Store != null)
+                        lock (Store)
+                        {
+                            if (text != null)
+                                if (message != null)
+                                    if (message.Text != null)
+                                        Store[text] = new StoredMessage
+                                        (
+                                            lastSeenTime: DateTime.Now,
+                                            howManyTimesWeSawIt: 1,
+                                            message: message.Text,
+                                            allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
+                                        );
+                        }
+                }
+
+                try
+                {
+                    if (Store != null)
+                        if (storedMessage != null)
+                            lock (storedMessage)
+                            {
+                                if (message != null && message.From != null && message != null && !storedMessage.FromUserId.Contains(message.From.Id))
+                                    storedMessage.FromUserId.Add(message.From.Id);
+
+                                if (message != null && !storedMessage.GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
+                                    storedMessage.GroupsIdItHasBeenSentInto.Add(message.Chat.Id);
+
+                                storedMessage.Messages.Add(message);
+
+                                return Store.Count == 0 ? SpamType.UNDEFINED : storedMessage.IsSpam();
+                            }
+                }
+                catch
+                {
+                    // ignored
+                }
             }
-        }
-
-        try
-        {
-            lock (Store[text])
-            {
-                if (!Store[text].FromUserId.Contains(message.From.Id))
-                    Store[text].FromUserId.Add(message.From.Id);
-
-                if (!Store[text].GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
-                    Store[text].GroupsIdItHasBeenSentInto.Add(message.Chat.Id);
-
-                Store[text].Messages.Add(message);
-
-                return Store.Count == 0 ? SpamType.UNDEFINED : Store[text].IsSpam();
-            }
-        }
-        catch
-        {
-            // ignored
         }
 
         return SpamType.UNDEFINED;
     }
 
-    internal static List<Message> GetMessages(string text)
+    internal static List<Message?>? GetMessages(string text)
     {
         try
         {
-            return Store[text].Messages;
+            if (Store != null)
+            {
+                var messages = Store[text]?.Messages;
+                if (messages != null)
+                    return messages;
+            }
         }
         catch
         {
@@ -191,14 +221,14 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
             return;
 
-        if (!Store.ContainsKey(e.Message.ReplyToMessage.Text))
+        if (Store != null && !Store.ContainsKey(e.Message.ReplyToMessage.Text))
         {
-            Language language1 = new(new Dictionary<string, string>
+            Language language1 = new(new Dictionary<string, string?>
             {
                 {
                     "it", "Non è stato trovato nessun messaggio"
@@ -207,28 +237,36 @@ public static class MessagesStore
                     "en", "There are no messages"
                 }
             });
-            await sender.SendTextMessageAsync(e.Message.From?.Id, language1, ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username);
+            if (sender != null)
+                await sender.SendTextMessageAsync(e.Message.From?.Id, language1, ChatType.Private,
+                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username);
             return;
         }
 
-        var storedMessage = Store[e.Message.ReplyToMessage.Text];
-        var json = storedMessage.ToJson();
-        Language language2 = new(new Dictionary<string, string>
+        if (Store != null)
         {
+            var storedMessage = Store[e.Message.ReplyToMessage.Text];
+            var json = storedMessage?.ToJson();
+            Language? language2 = new(new Dictionary<string, string?>
             {
-                "en", "Messages"
-            },
-            {
-                "it", "Messaggi"
-            }
-        });
+                {
+                    "en", "Messages"
+                },
+                {
+                    "it", "Messaggi"
+                }
+            });
 
-        var stream = UtilsFileText.GenerateStreamFromString(json);
-        var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
-        PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
-        await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
-            e.Message.From?.LanguageCode, null, true);
+            if (json != null)
+            {
+                var stream = UtilsFileText.GenerateStreamFromString(json);
+                var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
+                PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
+                if (sender != null)
+                    await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
+                        e.Message.From?.LanguageCode, null, true);
+            }
+        }
     }
 
     /// <summary>
@@ -238,9 +276,17 @@ public static class MessagesStore
     /// <returns>true if the veto was on time, false otherwise</returns>
     public static bool VetoMessage(string message)
     {
-        var allowedTime = Store[message].AllowedStatus.GetAllowedTime();
-        if (allowedTime != null && allowedTime.Value < DateTime.Now) return false;
-        Store[message].RemoveMessage(true);
+        if (Store != null)
+        {
+            var storedMessage = Store![message];
+            if (storedMessage != null)
+            {
+                var allowedTime = storedMessage.AllowedStatus.GetAllowedTime();
+                if (allowedTime != null && allowedTime.Value < DateTime.Now) return false;
+            }
+        }
+
+        if (Store != null) Store[message]?.RemoveMessage(true);
         return true;
     }
 
@@ -250,7 +296,13 @@ public static class MessagesStore
     /// <returns>True if message is Allowed to be sent</returns>
     public static bool MessageIsAllowed(string message)
     {
-        return Store[message].AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
+        if (Store != null)
+        {
+            var storedMessage = Store[message];
+            return storedMessage != null && Store != null && storedMessage.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
+        }
+
+        return false;
     }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
@@ -258,19 +310,29 @@ public static class MessagesStore
     private static void DisallowMessage(string message)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
-        Store[message].RemoveMessage(false);
+        if (Store != null)
+        {
+            var storedMessage = Store[message];
+            if (storedMessage != null) 
+                storedMessage.RemoveMessage(false);
+        }
     }
 
-    public static void AllowMessageOwner(string text)
+    public static void AllowMessageOwner(string? text)
     {
         if (string.IsNullOrEmpty(text)) return;
         AllowMessage(text);
-        Store[text].ForceAllowMessage();
+        if (Store != null)
+        {
+            var storedMessage = Store[text];
+            if (storedMessage != null) storedMessage.ForceAllowMessage();
+        }
     }
 
     public static bool CanBeVetoed(string message)
     {
-        return Store[message].InsertedTime.AddHours(48) >= DateTime.Now;
+        var storedMessage = Store?[message];
+        return storedMessage != null && Store != null && storedMessage.InsertedTime.AddHours(48) >= DateTime.Now;
     }
 
     internal static void BackupToFile()
@@ -279,7 +341,7 @@ public static class MessagesStore
         {
             File.WriteAllText(Paths.Data.MessageStore, JsonConvert.SerializeObject(Store));
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.WriteLine(ex, LogSeverityLevel.CRITICAL);
         }
@@ -287,6 +349,12 @@ public static class MessagesStore
 
     public static DateTime? GetAllowedTime(string message)
     {
-        return Store[message].AllowedStatus.GetAllowedTime();
+        if (Store != null)
+        {
+            var storedMessage = Store[message];
+            if (storedMessage != null) return storedMessage.AllowedStatus.GetAllowedTime();
+        }
+
+        return null;
     }
 }

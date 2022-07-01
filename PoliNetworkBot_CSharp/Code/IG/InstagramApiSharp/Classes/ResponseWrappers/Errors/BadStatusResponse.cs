@@ -9,7 +9,7 @@ namespace InstagramApiSharp.Classes.ResponseWrappers;
 
 public class BadStatusResponse : BaseStatusResponse
 {
-    [JsonProperty("message")] public string Message { get; set; }
+    [JsonProperty("message")] public string? Message { get; set; }
 
     [JsonProperty("error_type")] public string ErrorType { get; set; }
 

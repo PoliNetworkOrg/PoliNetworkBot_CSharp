@@ -8,7 +8,7 @@ namespace InstagramApiSharp.Classes.Models;
 
 public class InstaSuggestionItem
 {
-    public InstaUserShort User { get; set; }
+    public InstaUserShort? User { get; set; }
 
     public string Algorithm { get; set; }
 

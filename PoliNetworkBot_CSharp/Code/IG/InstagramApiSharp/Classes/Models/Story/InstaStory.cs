@@ -17,7 +17,7 @@ public class InstaStory
 
     public InstaUserShortFriendshipFull User { get; set; }
 
-    public InstaUserShort Owner { get; set; }
+    public InstaUserShort? Owner { get; set; }
 
     public string SourceToken { get; set; }
 

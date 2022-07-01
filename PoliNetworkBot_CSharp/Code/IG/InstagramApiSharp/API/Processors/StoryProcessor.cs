@@ -33,16 +33,16 @@ namespace InstagramApiSharp.API.Processors;
 /// </summary>
 internal class StoryProcessor : IStoryProcessor
 {
-    private readonly AndroidDevice _deviceInfo;
+    private readonly AndroidDevice? _deviceInfo;
     private readonly HttpHelper _httpHelper;
-    private readonly IHttpRequestProcessor _httpRequestProcessor;
+    private readonly IHttpRequestProcessor? _httpRequestProcessor;
     private readonly InstaApi _instaApi;
-    private readonly IInstaLogger _logger;
-    private readonly UserSessionData _user;
+    private readonly IInstaLogger? _logger;
+    private readonly UserSessionData? _user;
     private readonly UserAuthValidate _userAuthValidate;
 
-    public StoryProcessor(AndroidDevice deviceInfo, UserSessionData user,
-        IHttpRequestProcessor httpRequestProcessor, IInstaLogger logger,
+    public StoryProcessor(AndroidDevice? deviceInfo, UserSessionData? user,
+        IHttpRequestProcessor? httpRequestProcessor, IInstaLogger? logger,
         UserAuthValidate userAuthValidate, InstaApi instaApi, HttpHelper httpHelper)
     {
         _deviceInfo = deviceInfo;
@@ -897,14 +897,14 @@ internal class StoryProcessor : IStoryProcessor
     /// <param name="storyMediaId">Media id (get it from <see cref="InstaMedia.InstaIdentifier" />)</param>
     /// <param name="userId">Story owner user pk (get it from <see cref="InstaMedia.User.Pk" />)</param>
     /// <param name="text">Text to send</param>
-    public async Task<IResult<bool>> ReplyToStoryAsync(string storyMediaId, long userId, string text)
+    public async Task<IResult<bool>> ReplyToStoryAsync(string? storyMediaId, long userId, string? text)
     {
         UserAuthValidator.Validate(_userAuthValidate);
         try
         {
             var instaUri = UriCreator.GetBroadcastReelShareUri();
             var clientContext = Guid.NewGuid().ToString();
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, string?>
             {
                 { "recipient_users", $"[[{userId}]]" },
                 { "action", "send_item" },
@@ -1672,7 +1672,7 @@ internal class StoryProcessor : IStoryProcessor
     /// <param name="caption">Caption</param>
     /// <param name="uri">Uri to add</param>
     private async Task<IResult<InstaStoryMedia>> ConfigureStoryPhotoAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, InstaImage image, string uploadId,
+        InstaUploaderProgress upProgress, InstaImage image, string? uploadId,
         string caption, Uri uri, InstaStoryUploadOptions uploadOptions = null)
     {
         try
@@ -1837,7 +1837,7 @@ internal class StoryProcessor : IStoryProcessor
     /// <param name="caption">Caption</param>
     /// <param name="uri">Uri to add</param>
     private async Task<IResult<InstaStoryMedia>> ConfigureStoryVideoAsync(Action<InstaUploaderProgress> progress,
-        InstaUploaderProgress upProgress, InstaVideoUpload video, string uploadId,
+        InstaUploaderProgress upProgress, InstaVideoUpload video, string? uploadId,
         string caption, Uri uri, InstaStoryUploadOptions uploadOptions = null)
     {
         try
@@ -2016,7 +2016,7 @@ internal class StoryProcessor : IStoryProcessor
     }
 
     private async Task<IResult<InstaReelStoryMediaViewersResponse>> GetStoryMediaViewers(string storyMediaId,
-        string maxId)
+        string? maxId)
     {
         try
         {
@@ -2046,7 +2046,7 @@ internal class StoryProcessor : IStoryProcessor
     }
 
     private async Task<IResult<InstaStoryPollVotersListResponse>> GetStoryPollVoters(string storyMediaId,
-        string pollId, string maxId)
+        string pollId, string? maxId)
     {
         try
         {

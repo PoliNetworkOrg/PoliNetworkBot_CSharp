@@ -25,7 +25,7 @@ internal class InstaAccountRegistrationPhoneNumber
 
 internal class InstaAccountRegistrationPhoneNumberMessage
 {
-    [JsonProperty("errors")] public string[] Errors { get; set; }
+    [JsonProperty("errors")] public string?[] Errors { get; set; }
 }
 
 internal class InstaAccountRegistrationPhoneNumberVerifySms
@@ -43,5 +43,5 @@ internal class InstaAccountRegistrationPhoneNumberVerifySms
 
 internal class InstaAccountRegistrationVerifyPhoneNumberErrors
 {
-    [JsonProperty("nonce")] public string[] Nonce { get; set; }
+    [JsonProperty("nonce")] public string?[] Nonce { get; set; }
 }

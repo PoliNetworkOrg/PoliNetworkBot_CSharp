@@ -125,14 +125,14 @@ public interface IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Item id (message id)</param>
-    Task<IResult<bool>> LikeThreadMessageAsync(string threadId, string itemId);
+    Task<IResult<bool>> LikeThreadMessageAsync(string threadId, string? itemId);
 
     /// <summary>
     ///     Mark direct message as seen
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Message id (item id)</param>
-    Task<IResult<bool>> MarkDirectThreadAsSeenAsync(string threadId, string itemId);
+    Task<IResult<bool>> MarkDirectThreadAsSeenAsync(string threadId, string? itemId);
 
     /// <summary>
     ///     Mute direct thread
@@ -188,7 +188,7 @@ public interface IMessagingProcessor
     /// <param name="hashtag">Hashtag to send</param>
     /// <param name="threadIds">Thread ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    Task<IResult<bool>> SendDirectHashtagAsync(string text, string hashtag, params string[] threadIds);
+    Task<IResult<bool>> SendDirectHashtagAsync(string? text, string hashtag, params string[] threadIds);
 
     /// <summary>
     ///     Send hashtag to direct thread
@@ -198,7 +198,7 @@ public interface IMessagingProcessor
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    Task<IResult<bool>> SendDirectHashtagAsync(string text, string hashtag, string[] threadIds,
+    Task<IResult<bool>> SendDirectHashtagAsync(string? text, string hashtag, string[] threadIds,
         string[] recipients);
 
     /// <summary>
@@ -208,7 +208,7 @@ public interface IMessagingProcessor
     /// <param name="hashtag">Hashtag to send</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if hashtag sent</returns>
-    Task<IResult<bool>> SendDirectHashtagToRecipientsAsync(string text, string hashtag, params string[] recipients);
+    Task<IResult<bool>> SendDirectHashtagToRecipientsAsync(string? text, string hashtag, params string[] recipients);
 
     /// <summary>
     ///     Send link address to direct thread
@@ -217,7 +217,7 @@ public interface IMessagingProcessor
     /// <param name="link">Link to send (only one link will approved)</param>
     /// <param name="threadIds">Thread ids</param>
     /// <returns>Returns True if link sent</returns>
-    Task<IResult<bool>> SendDirectLinkAsync(string text, string link, params string[] threadIds);
+    Task<IResult<bool>> SendDirectLinkAsync(string? text, string link, params string[] threadIds);
 
     /// <summary>
     ///     Send link address to direct thread
@@ -227,7 +227,7 @@ public interface IMessagingProcessor
     /// <param name="threadIds">Thread ids</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if link sent</returns>
-    Task<IResult<bool>> SendDirectLinkAsync(string text, string link, string[] threadIds, string[] recipients);
+    Task<IResult<bool>> SendDirectLinkAsync(string? text, string link, string[] threadIds, string[] recipients);
 
     /// <summary>
     ///     Send link address to direct thread
@@ -236,7 +236,7 @@ public interface IMessagingProcessor
     /// <param name="link">Link to send (only one link will approved)</param>
     /// <param name="recipients">Recipients ids</param>
     /// <returns>Returns True if link sent</returns>
-    Task<IResult<bool>> SendDirectLinkToRecipientsAsync(string text, string link, params string[] recipients);
+    Task<IResult<bool>> SendDirectLinkToRecipientsAsync(string? text, string link, params string[] recipients);
 
     /// <summary>
     ///     Send location to direct thread
@@ -312,7 +312,7 @@ public interface IMessagingProcessor
     /// </summary>
     /// <param name="video">Video to upload (no need to set thumbnail)</param>
     /// <param name="threadId">Thread id</param>
-    Task<IResult<bool>> SendDirectVideoAsync(InstaVideoUpload video, string threadId);
+    Task<IResult<bool>> SendDirectVideoAsync(InstaVideoUpload video, string? threadId);
 
     /// <summary>
     ///     Send video to direct thread (single) with progress
@@ -321,7 +321,7 @@ public interface IMessagingProcessor
     /// <param name="video">Video to upload (no need to set thumbnail)</param>
     /// <param name="threadId">Thread id</param>
     Task<IResult<bool>> SendDirectVideoAsync(Action<InstaUploaderProgress> progress, InstaVideoUpload video,
-        string threadId);
+        string? threadId);
 
     /// <summary>
     ///     Send video to multiple recipients (multiple user)
@@ -346,7 +346,7 @@ public interface IMessagingProcessor
     /// <param name="mediaType">Media type</param>
     /// <param name="text">Text to send</param>
     /// <param name="threadIds">Thread ids</param>
-    Task<IResult<bool>> ShareMediaToThreadAsync(string mediaId, InstaMediaType mediaType, string text,
+    Task<IResult<bool>> ShareMediaToThreadAsync(string? mediaId, InstaMediaType mediaType, string? text,
         params string[] threadIds);
 
     /// <summary>
@@ -356,7 +356,7 @@ public interface IMessagingProcessor
     /// <param name="mediaType">Media type</param>
     /// <param name="text">Text to send</param>
     /// <param name="userIds">User ids (pk)</param>
-    Task<IResult<bool>> ShareMediaToUserAsync(string mediaId, InstaMediaType mediaType, string text,
+    Task<IResult<bool>> ShareMediaToUserAsync(string? mediaId, InstaMediaType mediaType, string? text,
         params long[] userIds);
 
     [Obsolete("ShareUserAsync is deprecated. Use SendDirectProfileAsync instead.")]
@@ -372,7 +372,7 @@ public interface IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="itemId">Item id (message id)</param>
-    Task<IResult<bool>> UnLikeThreadMessageAsync(string threadId, string itemId);
+    Task<IResult<bool>> UnLikeThreadMessageAsync(string threadId, string? itemId);
 
     /// <summary>
     ///     Unmute direct thread
@@ -385,7 +385,7 @@ public interface IMessagingProcessor
     /// </summary>
     /// <param name="threadId">Thread id</param>
     /// <param name="title">New title</param>
-    Task<IResult<bool>> UpdateDirectThreadTitleAsync(string threadId, string title);
+    Task<IResult<bool>> UpdateDirectThreadTitleAsync(string threadId, string? title);
 
     /// <summary>
     ///     Send a like to the conversation

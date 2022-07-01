@@ -50,9 +50,9 @@ internal class UploadOperation
         }
     }
 
-    private static Dictionary<string, string> ToDictionary(List<Tuple<string, string>> list)
+    private static Dictionary<string, string?> ToDictionary(List<Tuple<string, string>> list)
     {
-        Dictionary<string, string> r = new();
+        Dictionary<string, string?> r = new();
         foreach (var (item1, item2) in list) r[item1] = item2;
 
         return r;

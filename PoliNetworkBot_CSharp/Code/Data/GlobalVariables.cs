@@ -14,24 +14,24 @@ namespace PoliNetworkBot_CSharp.Code.Data;
 
 public static class GlobalVariables
 {
-    public static Dictionary<long, TelegramBotAbstract> Bots;
-    public static List<TelegramUser> Creators;
-    public static List<TelegramUser> SubCreators;
-    public static List<TelegramUser> AllowedBanAll;
-    public static List<TelegramUser> AllowedMuteAll;
-    public static List<long> AllowedNoUsernameFromThisUserId;
-    public static List<TelegramUser> Owners;
-    public static List<TelegramUser> AllowedSpam;
-    public static List<MessageToDelete> MessagesToDelete;
-    public static List<WordToBeFirst> wordToBeFirsts;
-    public static List<long> ExcludedChatsForBot;
-    public static List<long> NoUsernameCheckInThisChats;
-    public static List<string> AllowedTags;
+    public static Dictionary<long, TelegramBotAbstract?>? Bots;
+    public static List<TelegramUser>? Creators;
+    public static List<TelegramUser>? SubCreators;
+    public static List<TelegramUser>? AllowedBanAll;
+    public static List<TelegramUser>? AllowedMuteAll;
+    public static List<long>? AllowedNoUsernameFromThisUserId;
+    public static List<TelegramUser>? Owners;
+    public static List<TelegramUser>? AllowedSpam;
+    public static List<MessageToDelete>? MessagesToDelete;
+    public static List<WordToBeFirst>? wordToBeFirsts;
+    public static List<long>? ExcludedChatsForBot;
+    public static List<long>? NoUsernameCheckInThisChats;
+    public static List<string>? AllowedTags;
 
     private static bool alreadyLoaded;
 
-    public static DbConfig DbConfig { get; set; }
-    public static MySqlConnection DbConnection { get; set; }
+    public static DbConfig? DbConfig { get; set; }
+    public static MySqlConnection? DbConnection { get; set; }
 
     internal static void LoadToRam()
     {
@@ -155,6 +155,6 @@ public static class GlobalVariables
 
     internal static bool IsOwner(long id)
     {
-        return Owners.Any(x => x.id == id);
+        return Owners != null && Owners.Any(x => x.Id == id);
     }
 }

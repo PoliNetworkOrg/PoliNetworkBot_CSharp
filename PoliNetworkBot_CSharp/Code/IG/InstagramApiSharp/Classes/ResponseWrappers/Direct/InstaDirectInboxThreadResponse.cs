@@ -17,7 +17,7 @@ public class InstaDirectInboxThreadResponse : BaseStatusResponse
 
     [JsonProperty("thread_title")] public string Title { get; set; }
 
-    [JsonProperty("oldest_cursor")] public string OldestCursor { get; set; }
+    [JsonProperty("oldest_cursor")] public string? OldestCursor { get; set; }
 
     [JsonProperty("last_activity_at")] public string LastActivity { get; set; }
 
