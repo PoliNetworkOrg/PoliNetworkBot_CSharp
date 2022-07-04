@@ -317,8 +317,6 @@ public class Program
         if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
             throw new Exception("Errore nel dizionario dei Path!");
         
-        fileNameWithPath = RemoveInvalidFilePathCharacters(fileNameWithPath, "");
-        
         if (!UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
         {
             await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
@@ -862,10 +860,4 @@ public class Program
             .Aggregate("", (current, s) => current + s + separator);
     }
     
-    public static string RemoveInvalidFilePathCharacters(string filename, string replaceChar)
-    {
-        string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-        Regex r = new Regex($"[{Regex.Escape(regexSearch)}]");
-        return r.Replace(filename, replaceChar);
-    }
 }
