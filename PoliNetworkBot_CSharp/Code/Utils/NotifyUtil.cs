@@ -303,23 +303,23 @@ internal static class NotifyUtil
                 message += "\n";
                 message += "-----";
                 message += "\n";
-                if (done != null)
-                {
-                    var (banUnbanAllResult, exceptionNumbereds, item3) = done;
-                    message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
-                    ;
+                if (done == null)
+                    return;
 
-                    const string? langCode = "it";
-                    var text2 = new Language(new Dictionary<string, string?>
-                    {
-                        { "it", message }
-                    });
-                    Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                    await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                        Data.Constants.Groups.BanNotificationGroup,
-                        ChatType.Group,
-                        ParseMode.Html, null, true);
-                }
+                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
+                ;
+
+                const string? langCode = "it";
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    { "it", message }
+                });
+                Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                    Data.Constants.Groups.BanNotificationGroup,
+                    ChatType.Group,
+                    ParseMode.Html, null, true);
             }
         }
         catch (Exception? e)

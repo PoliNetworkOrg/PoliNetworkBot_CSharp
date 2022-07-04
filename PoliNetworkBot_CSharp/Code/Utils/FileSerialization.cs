@@ -109,8 +109,8 @@ public static class FileSerialization
     internal static void SerializeFile<T>(T objectToWrite, ref Stream? stream)
     {
         var binaryFormatter = new BinaryFormatter();
-        if (stream != null)
-            if (objectToWrite != null)
-                binaryFormatter.Serialize(stream, objectToWrite);
+        if (stream == null) return;
+        if (objectToWrite != null)
+            binaryFormatter.Serialize(stream, objectToWrite);
     }
 }

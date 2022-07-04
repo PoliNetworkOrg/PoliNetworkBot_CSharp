@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -36,7 +37,7 @@ public class DictionaryUserAnswer
         d[idUser.Value][botId.Value].Item1 = null;
         d[idUser.Value][botId.Value].Item1 = new AnswerTelegram();
         var answerTelegram = d[idUser.Value][botId.Value].Item1;
-        if (answerTelegram != null) answerTelegram.Reset();
+        answerTelegram?.Reset();
     }
 
     internal void Delete(long? idUser, long? botId)
@@ -48,12 +49,9 @@ public class DictionaryUserAnswer
 
     internal void SetAnswerProcessed(long idUser, long? botId, bool v)
     {
-        if (botId != null)
-        {
-            var answerTelegram = d[idUser][botId.Value].Item1;
-            if (answerTelegram != null)
-                answerTelegram.SetAnswerProcessed(v);
-        }
+        if (botId == null) return;
+        var answerTelegram = d[idUser][botId.Value].Item1;
+        answerTelegram?.SetAnswerProcessed(v);
     }
 
     internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
@@ -63,50 +61,58 @@ public class DictionaryUserAnswer
 
         var answerTelegram = d[idUser][botId.Value].Item1;
         if (answerTelegram != null)
+            // ReSharper disable once AsyncVoidLambda
             answerTelegram.WorkCompleted += async result =>
+                await OnAnswerTelegramWorkCompleted(answerTelegram, sendMessageConfirmationChoice,
+                    telegramBotAbstract, result, idUser, lang, username, botId);
+    }
+
+
+    private async Task OnAnswerTelegramWorkCompleted(AnswerTelegram? answerTelegram, bool sendMessageConfirmationChoice,
+        TelegramBotAbstract? telegramBotAbstract, object? result, long idUser,
+        string? lang, string? username, long? botId)
+    {
+        var crashed = true;
+        try
+        {
+            if (answerTelegram != null && answerTelegram.GetState() == AnswerTelegram.State.ANSWERED &&
+                answerTelegram.GetAlreadyProcessedAnswer() == false)
             {
-                var crashed = true;
-                try
+                if (sendMessageConfirmationChoice)
                 {
-                    if (answerTelegram.GetState() == AnswerTelegram.State.ANSWERED &&
-                        answerTelegram.GetAlreadyProcessedAnswer() == false)
+                    var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
+                    var languageReply = new Language(new Dictionary<string, string?>
+                        { { "en", "You chose [" + result + "]" }, { "it", "Hai scelto [" + result + "]" } });
+                    if (telegramBotAbstract != null)
+                        await telegramBotAbstract.SendTextMessageAsync(idUser, languageReply, ChatType.Private, lang,
+                            ParseMode.Html, replyMarkup, username);
+                }
+
+                answerTelegram.SetAnswerProcessed(true);
+
+                if (result != null)
+                {
+                    var resultstring = result.ToString();
+                    crashed = false;
+                    if (botId != null)
                     {
-                        if (sendMessageConfirmationChoice)
-                        {
-                            var replyMarkup = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
-                            var languageReply = new Language(new Dictionary<string, string?>
-                            {
-                                { "en", "You chose [" + result + "]" },
-                                { "it", "Hai scelto [" + result + "]" }
-                            });
-                            if (telegramBotAbstract != null)
-                                await telegramBotAbstract.SendTextMessageAsync(idUser,
-                                    languageReply,
-                                    ChatType.Private, lang, ParseMode.Html, replyMarkup, username);
-                        }
-
-                        ;
-
-                        answerTelegram.SetAnswerProcessed(true);
-
-                        if (result != null)
-                        {
-                            var resultstring = result.ToString();
-                            crashed = false;
-                            var taskCompletionSource = d[idUser][botId.Value].Item2;
-                            var done = taskCompletionSource != null && taskCompletionSource.TrySetResult(resultstring);
-                        }
-
-                        ;
+                        var taskCompletionSource = d[idUser][botId.Value].Item2;
+                        var done = taskCompletionSource != null && taskCompletionSource.TrySetResult(resultstring);
+                        Console.WriteLine("Task" + idUser + " " + botId.Value + " " + done);
                     }
                 }
-                catch
-                {
-                    ;
-                }
 
-                if (crashed) d[idUser][botId.Value].Item2?.TrySetResult("");
-            };
+                ;
+            }
+        }
+        catch
+        {
+            ;
+        }
+
+        if (crashed)
+            if (botId != null)
+                d[idUser][botId.Value].Item2?.TrySetResult("");
     }
 
     internal TaskCompletionSource<string?>? GetNewTcs(long idUser, long? botId)
@@ -127,20 +133,15 @@ public class DictionaryUserAnswer
     {
         if (botId == null || userId == null) return null;
         if (d[userId.Value][botId.Value] == null) return null;
-        if (d[userId.Value][botId.Value].Item1 != null)
-        {
-            var answerTelegram = d[userId.Value][botId.Value].Item1;
-            if (answerTelegram != null)
-                return answerTelegram.GetState();
-        }
-
-        return null;
+        if (d[userId.Value][botId.Value].Item1 == null) return null;
+        var answerTelegram = d[userId.Value][botId.Value].Item1;
+        return answerTelegram?.GetState();
     }
 
     internal void RecordAnswer(long? userId, long? botId, string? text)
     {
         if (botId == null || userId == null) return;
         var answerTelegram = d[userId.Value][botId.Value].Item1;
-        if (answerTelegram != null) answerTelegram.RecordAnswer(text);
+        answerTelegram?.RecordAnswer(text);
     }
 }

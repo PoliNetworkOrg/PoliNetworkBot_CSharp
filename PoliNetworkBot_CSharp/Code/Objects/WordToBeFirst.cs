@@ -38,7 +38,7 @@ public class WordToBeFirst
             : new Tuple<bool, string>(false, word);
     }
 
-    internal bool IsTaken(List<string?> taken)
+    internal bool IsTaken(IEnumerable<string?> taken)
     {
         return taken.Any(r => r == word);
     }

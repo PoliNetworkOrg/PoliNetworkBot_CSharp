@@ -18,21 +18,17 @@ internal static class AskUser
     internal static async Task<string?> AskAsync(long? idUser, Language question,
         TelegramBotAbstract? sender, string? lang, string? username, bool sendMessageConfirmationChoice = false)
     {
-        if (sender != null)
-        {
-            var botId = sender.GetId();
+        if (sender == null) return null;
+        var botId = sender.GetId();
 
-            UserAnswers.Reset(idUser, botId);
+        UserAnswers.Reset(idUser, botId);
 
-            await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
-                replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
+        await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
+            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
 
-            var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-            UserAnswers.Delete(idUser, botId);
-            return result;
-        }
-
-        return null;
+        var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
+        UserAnswers.Delete(idUser, botId);
+        return result;
     }
 
     private static async Task<string?> WaitForAnswer(long? idUser, bool sendMessageConfirmationChoice,
@@ -68,35 +64,31 @@ internal static class AskUser
         string? username,
         bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
     {
-        if (sender != null)
+        if (sender == null) return null;
+        var botId = sender.GetId();
+
+        UserAnswers.Reset(idUser, botId);
+
+        var list = KeyboardMarkup.OptionsStringToKeyboard(options, lang);
+        if (list != null)
         {
-            var botId = sender.GetId();
+            var replyMarkupObject = new ReplyMarkupObject(
+                new ReplyMarkupOptions(
+                    list
+                )
+            );
 
-            UserAnswers.Reset(idUser, botId);
-
-            var list = KeyboardMarkup.OptionsStringToKeyboard(options, lang);
-            if (list != null)
-            {
-                var replyMarkupObject = new ReplyMarkupObject(
-                    new ReplyMarkupOptions(
-                        list
-                    )
-                );
-
-                var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
-                    parseMode: ParseMode.Html, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
-                    replyToMessageId: messageIdToReplyTo);
-            }
-
-            ;
-
-            var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-            ;
-            UserAnswers.Delete(idUser, botId);
-            return result;
+            var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
+                parseMode: ParseMode.Html, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
+                replyToMessageId: messageIdToReplyTo);
         }
 
-        return null;
+        ;
+
+        var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
+        ;
+        UserAnswers.Delete(idUser, botId);
+        return result;
     }
 
     internal static async Task<string?> GetSedeAsync(TelegramBotAbstract? sender, MessageEventArgs? e)

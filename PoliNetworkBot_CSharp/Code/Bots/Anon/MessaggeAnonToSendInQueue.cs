@@ -71,13 +71,9 @@ internal class MessaggeAnonToSendInQueue
         {
             { "en", e2?.text }
         });
-        if (telegramBotAbstract != null)
-        {
-            var m1 = await telegramBotAbstract.SendTextMessageAsync(ConfigAnon.ModAnonCheckGroup, text,
-                ChatType.Group, "en", ParseMode.Html, null, null);
-            return m1;
-        }
-
-        return null;
+        if (telegramBotAbstract == null) return null;
+        var m1 = await telegramBotAbstract.SendTextMessageAsync(ConfigAnon.ModAnonCheckGroup, text,
+            ChatType.Group, "en", ParseMode.Html, null, null);
+        return m1;
     }
 }

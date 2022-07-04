@@ -25,81 +25,81 @@ internal static class UserBotFixBotAdmin
     {
         const int limit = 20;
         var i = 0;
-        if (telegramBotAbstract != null)
+        if (telegramBotAbstract == null)
+            return false;
+
+        TLAbsInputPeer? u =
+            await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract.UserbotClient);
+        if (u == null)
+            return false;
+
+        _idOfChatsWeKnowAreOk = new Dictionary<long, bool>();
+
+        while (true)
         {
-            TLAbsInputPeer? u =
-                await UserbotPeer.GetPeerUserWithAccessHash("polinetwork3bot", telegramBotAbstract.UserbotClient);
-            if (u == null)
-                return false;
-
-            _idOfChatsWeKnowAreOk = new Dictionary<long, bool>();
-
-            while (true)
+            TLAbsDialogs? x = null;
+            FloodException? floodException1 = null;
+            try
             {
-                TLAbsDialogs? x = null;
-                FloodException? floodException1 = null;
+                if (telegramBotAbstract.UserbotClient != null)
+                    x = await telegramBotAbstract.UserbotClient.GetUserDialogsAsync(limit: limit, offsetId: i);
+            }
+            catch (FloodException? floodException)
+            {
+                floodException1 = floodException;
+            }
+
+            if (x == null && floodException1 != null)
+            {
+                var untilWhen = GetUntilWhenWeCanMakeRequests(floodException1);
+                WaitUntil(untilWhen);
+
                 try
                 {
                     if (telegramBotAbstract.UserbotClient != null)
                         x = await telegramBotAbstract.UserbotClient.GetUserDialogsAsync(limit: limit, offsetId: i);
                 }
-                catch (FloodException? floodException)
+                catch (Exception? e7)
                 {
-                    floodException1 = floodException;
+                    Logger.Logger.WriteLine(e7);
                 }
-
-                if (x == null && floodException1 != null)
-                {
-                    var untilWhen = GetUntilWhenWeCanMakeRequests(floodException1);
-                    WaitUntil(untilWhen);
-
-                    try
-                    {
-                        if (telegramBotAbstract.UserbotClient != null)
-                            x = await telegramBotAbstract.UserbotClient.GetUserDialogsAsync(limit: limit, offsetId: i);
-                    }
-                    catch (Exception? e7)
-                    {
-                        Logger.Logger.WriteLine(e7);
-                    }
-                }
-
-                switch (x)
-                {
-                    case null:
-                        return i > 0;
-
-                    case TLDialogs x2:
-                    {
-                        if (x2.Chats != null)
-                            foreach (var x4 in x2.Chats)
-                            {
-                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                    telegramBotAbstract);
-                                await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
-                            }
-
-                        break;
-                    }
-                    case TLDialogsSlice x3:
-                    {
-                        if (x3.Chats != null)
-                            foreach (var x4 in x3.Chats)
-                            {
-                                var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
-                                    telegramBotAbstract);
-                                await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
-                            }
-
-                        break;
-                    }
-                    default:
-                        ;
-                        break;
-                }
-
-                i += limit;
             }
+
+            switch (x)
+            {
+                case null:
+                    return i > 0;
+
+                case TLDialogs x2:
+                {
+                    if (x2.Chats != null)
+                        foreach (var x4 in x2.Chats)
+                        {
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
+                            await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
+                        }
+
+                    break;
+                }
+                case TLDialogsSlice x3:
+                {
+                    if (x3.Chats != null)
+                        foreach (var x4 in x3.Chats)
+                        {
+                            var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
+                                telegramBotAbstract);
+                            await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
+                        }
+
+                    break;
+                }
+                default:
+                    ;
+                    break;
+            }
+
+            i += limit;
         }
 
         return false;
@@ -228,9 +228,8 @@ internal static class UserBotFixBotAdmin
         TLChatFull? x = null;
         try
         {
-            if (telegramBotAbstract != null)
-                if (telegramBotAbstract.UserbotClient != null)
-                    x = await telegramBotAbstract.UserbotClient.getFullChat(channel);
+            if (telegramBotAbstract?.UserbotClient != null)
+                x = await telegramBotAbstract.UserbotClient.getFullChat(channel);
         }
         catch (Exception e)
         {
@@ -246,9 +245,9 @@ internal static class UserBotFixBotAdmin
         }
 
         var isOurBotPresent = CheckIfOurBotIsPresent(x);
-        if (isOurBotPresent)
-            if (_idOfChatsWeKnowAreOk != null)
-                _idOfChatsWeKnowAreOk[x5.ChannelId] = true;
+        if (!isOurBotPresent) return new Tuple<bool?, DateTime?>(isOurBotPresent, null);
+        if (_idOfChatsWeKnowAreOk != null)
+            _idOfChatsWeKnowAreOk[x5.ChannelId] = true;
 
         return new Tuple<bool?, DateTime?>(isOurBotPresent, null);
     }
@@ -278,7 +277,7 @@ internal static class UserBotFixBotAdmin
         if (r4.returnobject != null)
             return r4.returnobject;
 
-        if (r4.r2 != null && r4.r2.Item1 == null)
+        if (r4.r2 is { Item1: null })
         {
             var m = "\n";
             m += "We can't make our bot admin in this group:\n";
@@ -351,9 +350,8 @@ internal static class UserBotFixBotAdmin
                         TLAbsInputChannel x7 = accessHash == null
                             ? new TLInputChannel { ChannelId = id }
                             : new TLInputChannel { AccessHash = accessHash.Value, ChannelId = id };
-                        if (telegramBotAbstract != null)
-                            if (telegramBotAbstract.UserbotClient != null)
-                                await telegramBotAbstract.UserbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
+                        if (telegramBotAbstract?.UserbotClient != null)
+                            await telegramBotAbstract.UserbotClient.ChannelsDeleteMessageAsync(x7, messageToDelete);
                     }
                     catch
                     {
@@ -488,9 +486,8 @@ internal static class UserBotFixBotAdmin
         TLAbsUpdates? r = null;
         try
         {
-            if (telegramBotAbstract != null)
-                if (telegramBotAbstract.UserbotClient != null)
-                    r = await telegramBotAbstract.UserbotClient.ChannelsInviteToChannel(channel, users);
+            if (telegramBotAbstract?.UserbotClient != null)
+                r = await telegramBotAbstract.UserbotClient.ChannelsInviteToChannel(channel, users);
         }
         catch (Exception e)
         {
@@ -542,7 +539,7 @@ internal static class UserBotFixBotAdmin
         if (r4.returnobject != null)
             return r4.returnobject.Value;
 
-        if (r4.r2 != null && r4.r2.Item1 == null)
+        if (r4.r2 is { Item1: null })
         {
             var m = "\n";
             m += "We can't make our bot admin in this group:\n";
@@ -676,9 +673,8 @@ internal static class UserBotFixBotAdmin
         TLChatFull? x = null;
         try
         {
-            if (telegramBotAbstract != null)
-                if (telegramBotAbstract.UserbotClient != null)
-                    x = await telegramBotAbstract.UserbotClient.Messages_getFullChat(x5.Id);
+            if (telegramBotAbstract?.UserbotClient != null)
+                x = await telegramBotAbstract.UserbotClient.Messages_getFullChat(x5.Id);
         }
         catch (Exception e)
         {
@@ -693,9 +689,7 @@ internal static class UserBotFixBotAdmin
         ;
 
         var r = CheckIfOurBotIsPresent(x);
-        if (r)
-            if (_idOfChatsWeKnowAreOk != null)
-                _idOfChatsWeKnowAreOk[x5.Id] = true;
+        if (r && _idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
         return new Tuple<bool?, DateTime?>(r, null);
     }

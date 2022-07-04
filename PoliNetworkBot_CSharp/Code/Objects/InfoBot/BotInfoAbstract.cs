@@ -42,9 +42,7 @@ public class BotInfoAbstract
             return CallbackUtils.CallbackMethodStart;
         if (onMessages == BotStartMethods.Moderation.Item1)
             return CallbackUtils.CallbackMethodStart;
-        if (onMessages == BotStartMethods.Material.Item1)
-            return Program.BotOnCallbackQueryReceived;
-        return null;
+        return onMessages == BotStartMethods.Material.Item1 ? Program.BotOnCallbackQueryReceived : null;
     }
 
     internal string? GetToken()

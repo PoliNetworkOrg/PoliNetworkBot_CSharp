@@ -37,33 +37,29 @@ public static class Database
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        if (dbConfig != null)
+        if (dbConfig == null) return null;
+        var connection = new MySqlConnection(dbConfig.GetConnectionString());
+
+        var cmd = new MySqlCommand(query, connection);
+
+        if (args != null)
+            foreach (var (key, value) in args)
+                cmd.Parameters.AddWithValue(key, value);
+
+        OpenConnection(connection);
+
+        var adapter = new MySqlDataAdapter
         {
-            var connection = new MySqlConnection(dbConfig.GetConnectionString());
+            SelectCommand = cmd
+        };
 
-            var cmd = new MySqlCommand(query, connection);
+        var ret = new DataSet();
 
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
+        adapter.Fill(ret);
 
-            OpenConnection(connection);
+        adapter.Dispose();
 
-            var adapter = new MySqlDataAdapter
-            {
-                SelectCommand = cmd
-            };
-
-            var ret = new DataSet();
-
-            adapter.Fill(ret);
-
-            adapter.Dispose();
-
-            return ret.Tables[0];
-        }
-
-        return null;
+        return ret.Tables[0];
     }
 
     private static void OpenConnection(IDbConnection connection)

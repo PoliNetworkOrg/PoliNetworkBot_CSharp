@@ -30,19 +30,15 @@ public static class StringUtil
         if (nodeToFindTextInto == null)
             return null;
 
-        if (textToFind != null)
+        if (textToFind == null) return null;
+        var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind, StringComparison.Ordinal);
+        return j switch
         {
-            var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind, StringComparison.Ordinal);
-            return j switch
-            {
-                < 0 => false,
-                0 => IsRoomChar(nodeToFindTextInto.InnerHtml[textToFind.Length]) == false,
-                _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
-                     IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
-            };
-        }
-
-        return null;
+            < 0 => false,
+            0 => IsRoomChar(nodeToFindTextInto.InnerHtml[textToFind.Length]) == false,
+            _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
+                 IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
+        };
     }
 
     internal static char ToSn(bool? b)

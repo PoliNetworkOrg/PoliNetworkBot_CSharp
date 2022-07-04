@@ -56,14 +56,16 @@ internal static class UserbotPeer
         TelegramClient? telegramClient)
     {
         TLUser? user2 = null;
-        if (telegramClient != null)
-        {
-            var r = await telegramClient.ResolveUsernameAsync(username);
+        if (telegramClient == null)
+            return user2 is { AccessHash: { } }
+                ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
+                : null;
 
-            var user = r?.Users?[0];
-            if (user is not TLUser)
-                return null;
-        }
+        var r = await telegramClient.ResolveUsernameAsync(username);
+
+        var user = r?.Users?[0];
+        if (user is not TLUser)
+            return null;
 
         return user2 is { AccessHash: { } }
             ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }

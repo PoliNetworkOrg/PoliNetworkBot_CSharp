@@ -92,7 +92,7 @@ public class ReplyMarkupObject
                 }
 
                 var tLKeyboardButtonRow = new TLKeyboardButtonRow { Buttons = buttons };
-                if (r2 != null) r2.Add(tLKeyboardButtonRow);
+                r2?.Add(tLKeyboardButtonRow);
             }
 
         var r = new TLReplyInlineMarkup { Rows = r2 };

@@ -66,28 +66,27 @@ public class TlFileToSend
     private async Task<TLAbsUpdates?> SendMedia2(TLAbsInputPeer? peer, TelegramClient? telegramClient,
         Language? caption, string? lang)
     {
-        if (_tlInputFile != null)
-            try
-            {
-                var caption2 = StringUtil.NotNull(caption, lang);
+        if (_tlInputFile == null)
+            return _tlAbsInputMedia == null ? null :
+                telegramClient != null ? await telegramClient.Messages_SendMedia(peer, _tlAbsInputMedia) : null;
+        try
+        {
+            var caption2 = StringUtil.NotNull(caption, lang);
 
-                if (telegramClient != null)
-                {
-                    var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2, mimeType,
-                        attributes);
-                    return r;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return null;
-            }
-
-        if (_tlAbsInputMedia != null)
             if (telegramClient != null)
-                return await telegramClient.Messages_SendMedia(peer, _tlAbsInputMedia);
+            {
+                var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2, mimeType,
+                    attributes);
+                return r;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
 
-        return null;
+        return _tlAbsInputMedia == null ? null :
+            telegramClient != null ? await telegramClient.Messages_SendMedia(peer, _tlAbsInputMedia) : null;
     }
 }

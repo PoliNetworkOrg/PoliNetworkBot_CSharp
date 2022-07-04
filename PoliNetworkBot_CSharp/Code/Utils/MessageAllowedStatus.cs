@@ -91,8 +91,7 @@ public class MessageAllowedStatus
             {
                 allowedTimeTemp = allowedTimeTemp.Add(remainingTime)
                     .Add(new TimeSpan(24 - VetoHigherBound + VetoLowerBound, 0, 0));
-                if (timeSpan != null)
-                    timeSpan = timeSpan - remainingTime;
+                timeSpan = timeSpan.Value - remainingTime;
                 dayInCount++;
             }
         }

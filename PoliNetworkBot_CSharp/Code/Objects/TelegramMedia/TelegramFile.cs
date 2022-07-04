@@ -40,23 +40,19 @@ public class TelegramFile : GenericFile
 
     public override async Task<TlFileToSend?> GetMediaTl(TelegramClient? client)
     {
-        if (_stream != null)
+        if (_stream == null) return null;
+        _stream.Seek(0, SeekOrigin.Begin);
+        var streamReader = new StreamReader(_stream);
+        var r = await client.UploadFile(_fileName, streamReader);
+
+        var attributes = new TLVector<TLAbsDocumentAttribute>();
+        TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename { FileName = _fileName };
+        attributes.Add(att1);
+        return r switch
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            var streamReader = new StreamReader(_stream);
-            var r = await client.UploadFile(_fileName, streamReader);
-
-            var attributes = new TLVector<TLAbsDocumentAttribute>();
-            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename { FileName = _fileName };
-            attributes.Add(att1);
-            return r switch
-            {
-                null => null,
-                TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
-                _ => null
-            };
-        }
-
-        return null;
+            null => null,
+            TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
+            _ => null
+        };
     }
 }

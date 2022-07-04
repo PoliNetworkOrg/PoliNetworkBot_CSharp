@@ -219,15 +219,13 @@ public class TelegramBotAbstract
         {
             case BotTypeApi.REAL_BOT:
             {
-                if (_botClient != null)
-                {
-                    var x = await _botClient.GetMeAsync();
-                    var u1 = x.Username;
-                    if (u1 != null && u1.StartsWith("@"))
-                        u1 = u1[1..];
+                if (_botClient == null) return _username;
+                var x = await _botClient.GetMeAsync();
+                var u1 = x.Username;
+                if (u1 != null && u1.StartsWith("@"))
+                    u1 = u1[1..];
 
-                    _username = u1;
-                }
+                _username = u1;
 
                 return _username;
             }
@@ -434,23 +432,23 @@ public class TelegramBotAbstract
 
     private static TelegramBotAbstract? FindFirstUserBot()
     {
-        if (GlobalVariables.Bots != null)
-            foreach (var bot in GlobalVariables.Bots.Keys.Select(b => GlobalVariables.Bots[b]))
-                if (bot != null)
-                    switch (bot._isbot)
-                    {
-                        case BotTypeApi.REAL_BOT:
-                            break;
+        if (GlobalVariables.Bots == null) return null;
+        foreach (var bot in GlobalVariables.Bots.Keys.Select(b => GlobalVariables.Bots[b]))
+            if (bot != null)
+                switch (bot._isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                        break;
 
-                        case BotTypeApi.USER_BOT:
-                            return bot;
+                    case BotTypeApi.USER_BOT:
+                        return bot;
 
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
         return null;
     }
@@ -827,319 +825,319 @@ public class TelegramBotAbstract
     internal async Task<MessageSentResult?> ForwardMessageAnonAsync(long chatIdToSend, Message? message,
         int? messageIdToReplyToLong)
     {
-        if (message != null)
-            switch (message.Type)
+        if (message == null) return null;
+        switch (message.Type)
+        {
+            case MessageType.Unknown:
+                break;
+
+            case MessageType.Text:
             {
-                case MessageType.Unknown:
-                    break;
-
-                case MessageType.Text:
+                switch (_isbot)
                 {
-                    switch (_isbot)
+                    case BotTypeApi.REAL_BOT:
                     {
-                        case BotTypeApi.REAL_BOT:
-                        {
-                            if (message.Text != null)
-                                if (_botClient != null)
-                                {
-                                    var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                    return new MessageSentResult(true, m1, m1.Chat.Type);
-                                }
-
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
-                    }
-
-                    break;
-                }
-                case MessageType.Photo:
-                {
-                    switch (_isbot)
-                    {
-                        case BotTypeApi.REAL_BOT:
-                        {
+                        if (message.Text != null)
                             if (_botClient != null)
                             {
-                                var p1 = InputOnlineFile(message);
-                                if (p1 != null)
-                                {
-                                    var m1 = await _botClient.SendPhotoAsync(chatIdToSend, p1,
-                                        message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                    return new MessageSentResult(true, m1, m1.Chat.Type);
-                                }
+                                var m1 = await _botClient.SendTextMessageAsync(chatIdToSend, message.Text,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
                             }
 
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
+                        break;
                     }
+                    case BotTypeApi.USER_BOT:
+                        break;
 
-                    break;
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
                 }
-                case MessageType.Audio:
-                    break;
 
-                case MessageType.Video:
-                {
-                    switch (_isbot)
-                    {
-                        case BotTypeApi.REAL_BOT:
-                        {
-                            if (message.Video == null) return null;
-                            if (_botClient != null)
-                            {
-                                var v1 = InputOnlineFile(message);
-                                if (v1 != null)
-                                {
-                                    var m1 = await _botClient.SendVideoAsync(chatIdToSend, v1,
-                                        message.Video.Duration, message.Video.Width, message.Video.Height, null,
-                                        message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                    return new MessageSentResult(true, m1, m1.Chat.Type);
-                                }
-                            }
-
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
-                    }
-
-                    break;
-                }
-                case MessageType.Voice:
-                    break;
-
-                case MessageType.Document:
-                {
-                    switch (_isbot)
-                    {
-                        case BotTypeApi.REAL_BOT:
-                        {
-                            if (_botClient != null)
-                            {
-                                var d1 = InputOnlineFile(message);
-                                if (d1 != null)
-                                {
-                                    var m1 = await _botClient.SendDocumentAsync(chatIdToSend, d1, null,
-                                        message.Caption,
-                                        ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
-                                    return new MessageSentResult(true, m1, m1.Chat.Type);
-                                }
-                            }
-
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
-                    }
-
-                    break;
-                }
-                case MessageType.Sticker:
-                {
-                    switch (_isbot)
-                    {
-                        case BotTypeApi.REAL_BOT:
-                        {
-                            if (_botClient != null)
-                            {
-                                var s1 = InputOnlineFile(message);
-                                if (s1 != null)
-                                {
-                                    var m1 = await _botClient.SendStickerAsync(chatIdToSend, s1,
-                                        replyToMessageId: messageIdToReplyToLong);
-                                    return new MessageSentResult(true, m1, m1.Chat.Type);
-                                }
-                            }
-
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
-                    }
-
-                    break;
-                }
-                case MessageType.Location:
-                    break;
-
-                case MessageType.Contact:
-                    break;
-
-                case MessageType.Venue:
-                    break;
-
-                case MessageType.Game:
-                    break;
-
-                case MessageType.VideoNote:
-                    break;
-
-                case MessageType.Invoice:
-                    break;
-
-                case MessageType.SuccessfulPayment:
-                    break;
-
-                case MessageType.WebsiteConnected:
-                    break;
-
-                case MessageType.ChatMembersAdded:
-                    break;
-
-                case MessageType.ChatMemberLeft:
-                    break;
-
-                case MessageType.ChatTitleChanged:
-                    break;
-
-                case MessageType.ChatPhotoChanged:
-                    break;
-
-                case MessageType.MessagePinned:
-                    break;
-
-                case MessageType.ChatPhotoDeleted:
-                    break;
-
-                case MessageType.GroupCreated:
-                    break;
-
-                case MessageType.SupergroupCreated:
-                    break;
-
-                case MessageType.ChannelCreated:
-                    break;
-
-                case MessageType.MigratedToSupergroup:
-                    break;
-
-                case MessageType.MigratedFromGroup:
-                    break;
+                break;
             }
+            case MessageType.Photo:
+            {
+                switch (_isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                    {
+                        if (_botClient != null)
+                        {
+                            var p1 = InputOnlineFile(message);
+                            if (p1 != null)
+                            {
+                                var m1 = await _botClient.SendPhotoAsync(chatIdToSend, p1,
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
+                            }
+                        }
+
+                        break;
+                    }
+                    case BotTypeApi.USER_BOT:
+                        break;
+
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
+
+                break;
+            }
+            case MessageType.Audio:
+                break;
+
+            case MessageType.Video:
+            {
+                switch (_isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                    {
+                        if (message.Video == null) return null;
+                        if (_botClient != null)
+                        {
+                            var v1 = InputOnlineFile(message);
+                            if (v1 != null)
+                            {
+                                var m1 = await _botClient.SendVideoAsync(chatIdToSend, v1,
+                                    message.Video.Duration, message.Video.Width, message.Video.Height, null,
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
+                            }
+                        }
+
+                        break;
+                    }
+                    case BotTypeApi.USER_BOT:
+                        break;
+
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
+
+                break;
+            }
+            case MessageType.Voice:
+                break;
+
+            case MessageType.Document:
+            {
+                switch (_isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                    {
+                        if (_botClient != null)
+                        {
+                            var d1 = InputOnlineFile(message);
+                            if (d1 != null)
+                            {
+                                var m1 = await _botClient.SendDocumentAsync(chatIdToSend, d1, null,
+                                    message.Caption,
+                                    ParseMode.Html, replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
+                            }
+                        }
+
+                        break;
+                    }
+                    case BotTypeApi.USER_BOT:
+                        break;
+
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
+
+                break;
+            }
+            case MessageType.Sticker:
+            {
+                switch (_isbot)
+                {
+                    case BotTypeApi.REAL_BOT:
+                    {
+                        if (_botClient != null)
+                        {
+                            var s1 = InputOnlineFile(message);
+                            if (s1 != null)
+                            {
+                                var m1 = await _botClient.SendStickerAsync(chatIdToSend, s1,
+                                    replyToMessageId: messageIdToReplyToLong);
+                                return new MessageSentResult(true, m1, m1.Chat.Type);
+                            }
+                        }
+
+                        break;
+                    }
+                    case BotTypeApi.USER_BOT:
+                        break;
+
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
+                }
+
+                break;
+            }
+            case MessageType.Location:
+                break;
+
+            case MessageType.Contact:
+                break;
+
+            case MessageType.Venue:
+                break;
+
+            case MessageType.Game:
+                break;
+
+            case MessageType.VideoNote:
+                break;
+
+            case MessageType.Invoice:
+                break;
+
+            case MessageType.SuccessfulPayment:
+                break;
+
+            case MessageType.WebsiteConnected:
+                break;
+
+            case MessageType.ChatMembersAdded:
+                break;
+
+            case MessageType.ChatMemberLeft:
+                break;
+
+            case MessageType.ChatTitleChanged:
+                break;
+
+            case MessageType.ChatPhotoChanged:
+                break;
+
+            case MessageType.MessagePinned:
+                break;
+
+            case MessageType.ChatPhotoDeleted:
+                break;
+
+            case MessageType.GroupCreated:
+                break;
+
+            case MessageType.SupergroupCreated:
+                break;
+
+            case MessageType.ChannelCreated:
+                break;
+
+            case MessageType.MigratedToSupergroup:
+                break;
+
+            case MessageType.MigratedFromGroup:
+                break;
+        }
 
         return null;
     }
 
     private static InputOnlineFile? InputOnlineFile(Message? message)
     {
-        if (message != null)
-            switch (message.Type)
+        if (message == null) return null;
+        switch (message.Type)
+        {
+            case MessageType.Unknown:
+                break;
+
+            case MessageType.Text:
+                break;
+
+            case MessageType.Photo:
             {
-                case MessageType.Unknown:
-                    break;
-
-                case MessageType.Text:
-                    break;
-
-                case MessageType.Photo:
+                if (message.Photo != null)
                 {
-                    if (message.Photo != null)
-                    {
-                        var idMax = FindMax(message.Photo);
-                        return message.Photo != null
-                            ? idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId)
-                            : null;
-                    }
-
-                    break;
+                    var idMax = FindMax(message.Photo);
+                    return message.Photo != null
+                        ? idMax == null ? null : new InputOnlineFile(message.Photo[idMax.Value].FileId)
+                        : null;
                 }
-                case MessageType.Audio:
-                    break;
 
-                case MessageType.Video:
-                {
-                    return message.Video != null ? new InputOnlineFile(message.Video.FileId) : null;
-                }
-                case MessageType.Voice:
-                    break;
-
-                case MessageType.Document:
-                {
-                    return message.Document != null ? new InputOnlineFile(message.Document.FileId) : null;
-                }
-                case MessageType.Sticker:
-                {
-                    return message.Sticker != null ? new InputOnlineFile(message.Sticker.FileId) : null;
-                }
-                case MessageType.Location:
-                    break;
-
-                case MessageType.Contact:
-                    break;
-
-                case MessageType.Venue:
-                    break;
-
-                case MessageType.Game:
-                    break;
-
-                case MessageType.VideoNote:
-                    break;
-
-                case MessageType.Invoice:
-                    break;
-
-                case MessageType.SuccessfulPayment:
-                    break;
-
-                case MessageType.WebsiteConnected:
-                    break;
-
-                case MessageType.ChatMembersAdded:
-                    break;
-
-                case MessageType.ChatMemberLeft:
-                    break;
-
-                case MessageType.ChatTitleChanged:
-                    break;
-
-                case MessageType.ChatPhotoChanged:
-                    break;
-
-                case MessageType.MessagePinned:
-                    break;
-
-                case MessageType.ChatPhotoDeleted:
-                    break;
-
-                case MessageType.GroupCreated:
-                    break;
-
-                case MessageType.SupergroupCreated:
-                    break;
-
-                case MessageType.ChannelCreated:
-                    break;
-
-                case MessageType.MigratedToSupergroup:
-                    break;
-
-                case MessageType.MigratedFromGroup:
-                    break;
+                break;
             }
+            case MessageType.Audio:
+                break;
+
+            case MessageType.Video:
+            {
+                return message.Video != null ? new InputOnlineFile(message.Video.FileId) : null;
+            }
+            case MessageType.Voice:
+                break;
+
+            case MessageType.Document:
+            {
+                return message.Document != null ? new InputOnlineFile(message.Document.FileId) : null;
+            }
+            case MessageType.Sticker:
+            {
+                return message.Sticker != null ? new InputOnlineFile(message.Sticker.FileId) : null;
+            }
+            case MessageType.Location:
+                break;
+
+            case MessageType.Contact:
+                break;
+
+            case MessageType.Venue:
+                break;
+
+            case MessageType.Game:
+                break;
+
+            case MessageType.VideoNote:
+                break;
+
+            case MessageType.Invoice:
+                break;
+
+            case MessageType.SuccessfulPayment:
+                break;
+
+            case MessageType.WebsiteConnected:
+                break;
+
+            case MessageType.ChatMembersAdded:
+                break;
+
+            case MessageType.ChatMemberLeft:
+                break;
+
+            case MessageType.ChatTitleChanged:
+                break;
+
+            case MessageType.ChatPhotoChanged:
+                break;
+
+            case MessageType.MessagePinned:
+                break;
+
+            case MessageType.ChatPhotoDeleted:
+                break;
+
+            case MessageType.GroupCreated:
+                break;
+
+            case MessageType.SupergroupCreated:
+                break;
+
+            case MessageType.ChannelCreated:
+                break;
+
+            case MessageType.MigratedToSupergroup:
+                break;
+
+            case MessageType.MigratedFromGroup:
+                break;
+        }
 
         return null;
     }
@@ -1179,11 +1177,11 @@ public class TelegramBotAbstract
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
-                        if (_botClient != null)
-                            if (text != null)
-                                if (inputOnlineFile != null)
-                                    _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                        text.Select(lang));
+                        if (_botClient == null) return true;
+                        if (text == null) return true;
+                        if (inputOnlineFile != null)
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                text.Select(lang));
                         return true;
                     }
 
@@ -1204,13 +1202,11 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.AFTER_FILE:
                     {
-                        if (_botClient != null)
-                        {
-                            if (inputOnlineFile != null)
-                                _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
-                            var t1 = text?.Select(lang);
-                            if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1);
-                        }
+                        if (_botClient == null) return true;
+                        if (inputOnlineFile != null)
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                        var t1 = text?.Select(lang);
+                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1);
 
                         return true;
                     }
@@ -1386,11 +1382,9 @@ public class TelegramBotAbstract
                 break;
             case BotTypeApi.USER_BOT:
                 var channel = new TLChannel { AccessHash = accessHash, Id = (int)Convert.ToInt64(chatId) };
-                if (UserbotClient != null)
-                {
-                    var invite = await UserbotClient.ChannelsGetInviteLink(channel);
-                    if (invite is TLChatInviteExported c1) return c1.Link;
-                }
+                if (UserbotClient == null) return null;
+                var invite = await UserbotClient.ChannelsGetInviteLink(channel);
+                if (invite is TLChatInviteExported c1) return c1.Link;
 
                 return null;
 

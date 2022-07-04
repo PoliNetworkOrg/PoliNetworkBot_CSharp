@@ -11,14 +11,10 @@ public static class HashUtils
 {
     public static string? GetHashOf(string? message)
     {
-        if (message != null)
-        {
-            var bytes = Encoding.Unicode.GetBytes(message);
-            var hash = ByteArrayToString(MD5.Create().ComputeHash(bytes));
-            return hash;
-        }
-
-        return null;
+        if (message == null) return null;
+        var bytes = Encoding.Unicode.GetBytes(message);
+        var hash = ByteArrayToString(MD5.Create().ComputeHash(bytes));
+        return hash;
     }
 
     private static string? ByteArrayToString(byte[] arrInput)

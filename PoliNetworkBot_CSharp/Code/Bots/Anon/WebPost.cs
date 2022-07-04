@@ -177,7 +177,6 @@ internal class WebPost
     private static char? Approved(CallBackDataAnon x)
     {
         var s = CallBackDataAnon.ResultToString(x.GetResultEnum());
-        if (s != null) return s[0];
-        return null;
+        return s?[0];
     }
 }

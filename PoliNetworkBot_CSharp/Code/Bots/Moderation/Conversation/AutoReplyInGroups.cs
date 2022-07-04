@@ -192,20 +192,17 @@ public static class AutoReplyInGroups
                     }
                 }
             );
-            if (e != null)
-            {
-                var message = e.Message;
-                if (message != null)
-                    await SendMessage.SendMessageInAGroup(telegramBotClient,
-                        e?.Message?.From?.LanguageCode,
-                        text2,
-                        e,
-                        message.Chat.Id,
-                        message.Chat.Type,
-                        ParseMode.Html,
-                        message.MessageId,
-                        true);
-            }
+            var message = e?.Message;
+            if (message != null)
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e?.Message?.From?.LanguageCode,
+                    text2,
+                    e,
+                    message.Chat.Id,
+                    message.Chat.Type,
+                    ParseMode.Html,
+                    message.MessageId,
+                    true);
         }
 
         if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
@@ -230,21 +227,17 @@ public static class AutoReplyInGroups
                 );
 
 
-                if (e != null)
-                {
-                    var message = e.Message;
-                    if (message != null)
-                        if (message != null)
-                            await SendMessage.SendMessageInAGroup(telegramBotClient,
-                                message?.From?.LanguageCode,
-                                text2,
-                                e,
-                                message!.Chat.Id,
-                                message.Chat.Type,
-                                ParseMode.Html,
-                                message.MessageId,
-                                true);
-                }
+                var message = e?.Message;
+                if (message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        message?.From?.LanguageCode,
+                        text2,
+                        e,
+                        message!.Chat.Id,
+                        message.Chat.Type,
+                        ParseMode.Html,
+                        message.MessageId,
+                        true);
             }
     }
 }

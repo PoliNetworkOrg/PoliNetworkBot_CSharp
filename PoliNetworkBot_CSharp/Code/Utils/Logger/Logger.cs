@@ -119,7 +119,7 @@ public static class Logger
         try
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
-            if (bots != null && bots.Count < 1) throw new Exception("No REAL_BOT to send Log");
+            if (bots is { Count: < 1 }) throw new Exception("No REAL_BOT to send Log");
 
             if (bots != null) PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
         }

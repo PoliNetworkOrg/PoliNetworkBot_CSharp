@@ -47,7 +47,7 @@ internal static class Main
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
             var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
-            if (toExit != null && toExit.Item1 == ToExit.EXIT)
+            if (toExit is { Item1: ToExit.EXIT })
             {
                 var itemToPrint = MemberListToString(toExit.Item2);
                 var itemToPrint2 = ListIntToString(toExit.Item3);

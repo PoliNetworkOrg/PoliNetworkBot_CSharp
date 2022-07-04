@@ -11,38 +11,38 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class BotUtil
+internal static class BotUtil
 {
     internal static TelegramBotAbstract? GetFirstModerationRealBot(TelegramBotAbstract? telegramBotAbstract = null)
     {
         if (telegramBotAbstract != null)
             return telegramBotAbstract;
 
-        if (GlobalVariables.Bots != null)
-            foreach (var x in GlobalVariables.Bots.Keys)
+        if (GlobalVariables.Bots == null) return null;
+        foreach (var x in GlobalVariables.Bots.Keys)
+        {
+            var bot = GlobalVariables.Bots[x];
+            if (bot != null)
             {
-                var bot = GlobalVariables.Bots[x];
-                if (bot != null)
+                var botType = bot.GetBotType();
+                switch (botType)
                 {
-                    var botType = bot.GetBotType();
-                    switch (botType)
+                    case BotTypeApi.REAL_BOT:
                     {
-                        case BotTypeApi.REAL_BOT:
-                        {
-                            var botMode = bot.GetMode();
-                            if (botMode == BotStartMethods.Moderation.Item1)
-                                return bot;
+                        var botMode = bot.GetMode();
+                        if (botMode == BotStartMethods.Moderation.Item1)
+                            return bot;
 
-                            break;
-                        }
-                        case BotTypeApi.USER_BOT:
-                            break;
-
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
+                        break;
                     }
+                    case BotTypeApi.USER_BOT:
+                        break;
+
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
                 }
             }
+        }
 
         return null;
     }

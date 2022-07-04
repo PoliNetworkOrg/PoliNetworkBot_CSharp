@@ -35,7 +35,7 @@ public class AnswerTelegram
 
         _currentState = State.ANSWERED;
         if (_answeredProcessed) return;
-        if (WorkCompleted != null) WorkCompleted.Invoke(text);
+        WorkCompleted?.Invoke(text);
         _answeredProcessed = true;
     }
 

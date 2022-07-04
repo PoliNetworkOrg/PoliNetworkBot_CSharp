@@ -245,23 +245,23 @@ public class ThreadAsync
     private static TelegramBotAbstract? GetFirstBot()
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
-        if (GlobalVariables.Bots != null)
-            foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
-                if (bot2 != null)
-                    switch (bot2.GetBotType())
-                    {
-                        case BotTypeApi.REAL_BOT:
-                            return bot2;
+        if (GlobalVariables.Bots == null) return null;
+        foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
+            if (bot2 != null)
+                switch (bot2.GetBotType())
+                {
+                    case BotTypeApi.REAL_BOT:
+                        return bot2;
 
-                        case BotTypeApi.USER_BOT:
-                            break;
+                    case BotTypeApi.USER_BOT:
+                        break;
 
-                        case BotTypeApi.DISGUISED_BOT:
-                            break;
+                    case BotTypeApi.DISGUISED_BOT:
+                        break;
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
         return null;
     }

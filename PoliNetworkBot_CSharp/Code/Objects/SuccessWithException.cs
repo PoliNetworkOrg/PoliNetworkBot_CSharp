@@ -47,12 +47,8 @@ public class SuccessWithException
     internal ExceptionNumbered? GetFirstException()
     {
         if (!ContainsExceptions()) return null;
-        if (ex != null)
-        {
-            var ex2 = ex[0];
-            return new ExceptionNumbered(ex2);
-        }
-
-        return null;
+        if (ex == null) return null;
+        var ex2 = ex[0];
+        return new ExceptionNumbered(ex2);
     }
 }

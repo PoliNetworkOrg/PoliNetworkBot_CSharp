@@ -10,8 +10,8 @@ public static class Channels
 {
     public static class Assoc
     {
-        public const long PoliAssociazioni = -1001314601927;
-        public const long AssociazioniPolimi = -1001776530133;
+        private const long PoliAssociazioni = -1001314601927;
+        private const long AssociazioniPolimi = -1001776530133;
 
         public static IEnumerable<long> GetChannels()
         {

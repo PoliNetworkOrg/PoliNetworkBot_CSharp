@@ -15,30 +15,29 @@ internal static class TextConversation
 {
     internal static async Task DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        if (e != null)
-            if (e.Message != null)
-                switch (e.Message.Chat.Type)
+        if (e?.Message != null)
+            switch (e.Message.Chat.Type)
+            {
+                case ChatType.Private:
                 {
-                    case ChatType.Private:
-                    {
-                        await PrivateMessage(telegramBotClient, e);
-                        break;
-                    }
-                    case ChatType.Channel:
-                        break;
-
-                    case ChatType.Group:
-                    case ChatType.Supergroup:
-                    {
-                        await MessageInGroup(telegramBotClient, e);
-                        break;
-                    }
-                    case ChatType.Sender:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    await PrivateMessage(telegramBotClient, e);
+                    break;
                 }
+                case ChatType.Channel:
+                    break;
+
+                case ChatType.Group:
+                case ChatType.Supergroup:
+                {
+                    await MessageInGroup(telegramBotClient, e);
+                    break;
+                }
+                case ChatType.Sender:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
     }
 
     private static async Task MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)

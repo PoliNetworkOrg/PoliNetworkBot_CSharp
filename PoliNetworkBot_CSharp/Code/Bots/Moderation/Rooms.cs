@@ -201,14 +201,10 @@ internal static class Rooms
     /// </summary>
     private static int? GetShiftSlotFromTime(DateTime? time)
     {
-        if (time != null)
-        {
-            var shiftSlot = (time.Value.Hour - 8) * 4;
-            shiftSlot += time.Value.Minute / 15;
-            return shiftSlot;
-        }
-
-        return null;
+        if (time == null) return null;
+        var shiftSlot = (time.Value.Hour - 8) * 4;
+        shiftSlot += time.Value.Minute / 15;
+        return shiftSlot;
     }
 
     /// <summary>
@@ -343,7 +339,7 @@ internal static class Rooms
 
         ;
 
-        if (t5 != null && t5.Count < 3) return; //todo: send to the user "room not found"
+        if (t5 is { Count: < 3 }) return; //todo: send to the user "room not found"
 
         var t6 = t5?[2];
 
@@ -351,7 +347,7 @@ internal static class Rooms
 
         var t7 = HtmlUtil.GetElementsByTagAndClassName(t6, "a");
 
-        if (t7 != null && t7.Count < 1) return; //todo: send to the user "room not found"
+        if (t7 is { Count: < 1 }) return; //todo: send to the user "room not found"
 
         ;
 
@@ -681,27 +677,16 @@ internal static class Rooms
             "Scegli un giorno", "it", sender,
             e?.Message?.From?.Username);
 
-        if (tuple != null)
-        {
-            var exception = tuple.Item2;
-            if (exception != null)
-                return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(new ExceptionNumbered(exception), null);
-        }
+        var exception = tuple?.Item2;
+        if (exception != null)
+            return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(new ExceptionNumbered(exception), null);
 
-        if (tuple != null)
-        {
-            var dateTimeSchedule = tuple.Item1;
-            if (dateTimeSchedule != null)
-            {
-                var d2 = dateTimeSchedule.GetDate();
-                if (d2 == null) return null;
+        var dateTimeSchedule = tuple?.Item1;
+        var d2 = dateTimeSchedule?.GetDate();
+        if (d2 == null) return null;
 
-                var d = await GetDailySituationOnDate(sender, e, d2.Value);
-                return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(null, d);
-            }
-        }
-
-        return null;
+        var d = await GetDailySituationOnDate(sender, e, d2.Value);
+        return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(null, d);
     }
 
     /// <summary>
@@ -777,16 +762,16 @@ internal static class Rooms
 
     private static long? FindRoom(HtmlNode? table, string? roomName)
     {
-        if (table != null)
-            for (var i = 0; i < table.ChildNodes.Count; i++)
-            {
-                var child = table.ChildNodes[i];
+        if (table == null) return null;
+        for (var i = 0; i < table.ChildNodes.Count; i++)
+        {
+            var child = table.ChildNodes[i];
 
-                if (child.ChildNodes == null || !child.GetClasses().Contains("normalRow")) continue;
-                if (child.ChildNodes
-                    .Select(child2 => StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2))
-                    .Any(found => found != null && found.Value)) return i;
-            }
+            if (child.ChildNodes == null || !child.GetClasses().Contains("normalRow")) continue;
+            if (child.ChildNodes
+                .Select(child2 => StringUtil.CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(roomName, child2))
+                .Any(found => found != null && found.Value)) return i;
+        }
 
         return null;
     }

@@ -250,7 +250,7 @@ public static class MessageDb
             {
             }
 
-            if (r != null && r.Item1 != null)
+            if (r is { Item1: { } })
                 return r.Item1.Value;
         }
         catch

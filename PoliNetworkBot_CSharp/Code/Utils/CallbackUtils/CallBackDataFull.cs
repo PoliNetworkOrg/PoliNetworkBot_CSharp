@@ -52,15 +52,13 @@ public class CallBackDataFull
 
     internal void UpdateAndRun(CallbackQueryEventArgs callbackQueryEventArgs, int answer, string? key)
     {
-        if (key != null)
-        {
-            callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
-            callbackDatas[key].SelectedAnswer = answer;
-            callbackDatas[key].RunAfterSelection(callbackDatas[key]);
-        }
+        if (key == null) return;
+        callbackDatas[key].CallBackQueryFromTelegram = callbackQueryEventArgs.CallbackQuery;
+        callbackDatas[key].SelectedAnswer = answer;
+        callbackDatas[key].RunAfterSelection(callbackDatas[key]);
     }
 
-    internal void ChechCallbackDataExpired()
+    internal void CheckCallbackDataExpired()
     {
         List<string?> toRemove = new();
         toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));

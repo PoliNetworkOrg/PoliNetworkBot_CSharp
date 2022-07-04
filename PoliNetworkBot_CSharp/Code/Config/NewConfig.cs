@@ -187,26 +187,24 @@ public static class NewConfig
         {
             var s = File.ReadAllText("../../../Old/data/groups.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            if (r != null)
-            {
-                var r2 = r.Children();
-                foreach (var r3 in r2)
-                    if (r3 is JProperty { Name: "Gruppi" } r4)
+            if (r == null) return;
+            var r2 = r.Children();
+            foreach (var r3 in r2)
+                if (r3 is JProperty { Name: "Gruppi" } r4)
+                {
+                    var r5 = r4.Children();
+                    foreach (var r6 in r5)
                     {
-                        var r5 = r4.Children();
-                        foreach (var r6 in r5)
-                        {
-                            var r7 = r6.Children();
-                            foreach (var r8 in r7)
-                                if (r8 is JObject r9)
-                                {
-                                    var r10 = r9.Children();
+                        var r7 = r6.Children();
+                        foreach (var r8 in r7)
+                            if (r8 is JObject r9)
+                            {
+                                var r10 = r9.Children();
 
-                                    AddGroupToDb(r10, botIdWhoInsertedThem);
-                                }
-                        }
+                                AddGroupToDb(r10, botIdWhoInsertedThem);
+                            }
                     }
-            }
+                }
         }
         catch (FileNotFoundException e)
         {
@@ -403,25 +401,23 @@ public static class NewConfig
         return null;
     }
 
-    private static void FillAssoc(DbConfig? DbConfig)
+    private static void FillAssoc(DbConfig? dbConfig)
     {
         try
         {
             //read assoc from polinetwork python config file and fill db
             var s = File.ReadAllText("../../../Old/config/assoc.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            if (r != null)
-            {
-                var r2 = r.Children();
-                foreach (var r3 in r2)
-                    if (r3 is JProperty r4)
-                    {
-                        var name = r4.Name;
-                        var r5 = r4.Value;
-                        var users = GetUsersFromAssocJson(r5);
-                        AddAssocToDb(name, users, DbConfig);
-                    }
-            }
+            if (r == null) return;
+            var r2 = r.Children();
+            foreach (var r3 in r2)
+                if (r3 is JProperty r4)
+                {
+                    var name = r4.Name;
+                    var r5 = r4.Value;
+                    var users = GetUsersFromAssocJson(r5);
+                    AddAssocToDb(name, users, dbConfig);
+                }
         }
         catch (FileNotFoundException e)
         {

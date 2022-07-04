@@ -39,17 +39,13 @@ public static class CallbackUtils
         CallBackDataFull?.Add(key, callbackGenericData);
 
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
-        if (telegramBotAbstract != null)
-        {
-            var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
-                ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
-                replyToMessageId: replyToMessageId);
-            callbackGenericData.MessageSent = messageSent;
+        if (telegramBotAbstract == null) return null;
+        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
+            ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
+            replyToMessageId: replyToMessageId);
+        callbackGenericData.MessageSent = messageSent;
 
-            return messageSent;
-        }
-
-        return null;
+        return messageSent;
     }
 
     internal static void DoCheckCallbackDataExpired()
@@ -58,7 +54,7 @@ public static class CallbackUtils
         {
             try
             {
-                CallBackDataFull?.ChechCallbackDataExpired();
+                CallBackDataFull?.CheckCallbackDataExpired();
             }
             catch
             {
@@ -81,19 +77,13 @@ public static class CallbackUtils
 
     private static string? GetKeyFromNumber(BigInteger? newLast)
     {
-        if (newLast != null)
-        {
-            var r = newLast.Value.ToString("X");
-            return r;
-        }
-
-        return null;
+        var r = newLast?.ToString("X");
+        return r;
     }
 
     private static BigInteger? GetLast()
     {
-        if (CallBackDataFull != null) return CallBackDataFull.GetLast();
-        return null;
+        return CallBackDataFull?.GetLast();
     }
 
 #pragma warning disable CS8632 // L'annotazione per i tipi riferimento nullable deve essere usata solo nel codice in un contesto di annotations '#nullable'.

@@ -334,7 +334,7 @@ internal static class MainAnon
             var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
             var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-            if (dataAnon.CallBackQueryFromTelegram != null && dataAnon.CallBackQueryFromTelegram.Message != null)
+            if (dataAnon.CallBackQueryFromTelegram is { Message: { } })
                 if (dataAnon.Bot != null)
                     await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
                         dataAnon.CallBackQueryFromTelegram.Message.MessageId,
@@ -345,8 +345,6 @@ internal static class MainAnon
             ;
             Logger.WriteLine(e1.Message);
         }
-
-        ;
 
         switch (dataAnon.GetResultEnum())
         {
@@ -460,26 +458,20 @@ internal static class MainAnon
     private static async Task<MessageSentResult?> SendMessageToChannel(TelegramBotAbstract? telegramBotAbstract,
         CallbackQueryEventArgs e, CallBackDataAnon x)
     {
-        if (e.CallbackQuery != null)
-        {
-            var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
+        if (e.CallbackQuery == null) return null;
+        var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
 
-            ;
+        ;
 
-            //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
-            if (telegramBotAbstract != null)
-            {
-                var r = await telegramBotAbstract.ForwardMessageAnonAsync(
-                    x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
-                        ? ConfigAnon.WhereToPublishAnonMain
-                        : ConfigAnon.WhereToPublishAnonUncensored,
-                    r2, x.messageIdReplyTo);
+        //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
+        if (telegramBotAbstract == null) return null;
+        var r = await telegramBotAbstract.ForwardMessageAnonAsync(
+            x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
+                ? ConfigAnon.WhereToPublishAnonMain
+                : ConfigAnon.WhereToPublishAnonUncensored,
+            r2, x.messageIdReplyTo);
 
-                return r;
-            }
-        }
-
-        return null;
+        return r;
     }
 
     public static async Task<bool> PlaceMessageInQueue(TelegramBotAbstract? telegramBotAbstract,
@@ -487,7 +479,6 @@ internal static class MainAnon
     {
         ;
 
-        long? m3 = null;
         MessageSentResult? x = null;
         MessageSentResult? m2 = null;
 
@@ -541,8 +532,6 @@ internal static class MainAnon
                             ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
                             m5.MessageId);
                 }
-
-            m3 = m2?.GetMessageID();
         }
         catch (Exception e1)
         {
@@ -564,27 +553,25 @@ internal static class MainAnon
         };
 
         var m6 = e.GetMessage();
-        if (m6 != null)
+        if (m6 == null)
+            return false;
+
+        CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
         {
-            CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
-            {
-                identity = identity,
-                authorId = e.GetFromUserId(),
-                langUser = e.GetLanguageCode(),
-                username = e.GetUsername(),
-                from_telegram = true,
-                messageIdUser = m6.MessageId,
-                messageIdReplyTo = messageIdReplyTo
-            };
+            identity = identity,
+            authorId = e.GetFromUserId(),
+            langUser = e.GetLanguageCode(),
+            username = e.GetUsername(),
+            from_telegram = true,
+            messageIdUser = m6.MessageId,
+            messageIdReplyTo = messageIdReplyTo
+        };
 
-            var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
-                ConfigAnon.ModAnonCheckGroup,
-                language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
+        var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
+            ConfigAnon.ModAnonCheckGroup,
+            language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
 
-            return m4 != null;
-        }
-
-        return false;
+        return m4 != null;
     }
 
     private static long? GetIdentityFromReply(string? r)

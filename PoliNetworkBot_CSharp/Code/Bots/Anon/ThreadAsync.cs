@@ -111,17 +111,17 @@ internal static class ThreadAsync
             }
 
             ;
-            if (r2 != null)
-                foreach (var r3 in r2)
-                {
-                    ;
+            if (r2 == null) return;
+            foreach (var r3 in r2)
+            {
+                ;
 
-                    if (r3 is not JObject r4) continue;
-                    ;
+                if (r3 is not JObject r4) continue;
+                ;
 
-                    var webPost = new WebPost(r4);
-                    DoThingsAsyncBotAsync3(webPost);
-                }
+                var webPost = new WebPost(r4);
+                DoThingsAsyncBotAsync3(webPost);
+            }
         }
         catch
         {
@@ -133,11 +133,11 @@ internal static class ThreadAsync
     {
         DictionaryWebpost ??= GetDictionary();
 
-        if (DictionaryWebpost != null)
-            lock (DictionaryWebpost)
-            {
-                _ = DoThingsAsyncBotAsync4Async(webPost);
-            }
+        if (DictionaryWebpost == null) return;
+        lock (DictionaryWebpost)
+        {
+            _ = DoThingsAsyncBotAsync4Async(webPost);
+        }
     }
 
     private static async Task DoThingsAsyncBotAsync4Async(WebPost webPost)

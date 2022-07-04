@@ -33,24 +33,22 @@ internal static class InviteLinks
         foreach (DataRow dr in dt.Rows)
         {
             var x1 = dr.ItemArray[0];
-            if (x1 != null)
-            {
-                var success = await CreateInviteLinkAsync((long)x1, sender, e);
-                if (success != null)
-                    switch (success.isNuovo)
-                    {
-                        case SuccessoGenerazioneLink.NUOVO_LINK:
-                        case SuccessoGenerazioneLink.RICICLATO:
-                            n++;
-                            break;
+            if (x1 == null) continue;
+            var success = await CreateInviteLinkAsync((long)x1, sender, e);
+            if (success != null)
+                switch (success.isNuovo)
+                {
+                    case SuccessoGenerazioneLink.NUOVO_LINK:
+                    case SuccessoGenerazioneLink.RICICLATO:
+                        n++;
+                        break;
 
-                        case SuccessoGenerazioneLink.ERRORE:
-                            break;
+                    case SuccessoGenerazioneLink.ERRORE:
+                        break;
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-            }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
         }
 
         return n;
@@ -161,13 +159,11 @@ internal static class InviteLinks
                                 try
                                 {
                                     var jObject = (JObject)x;
-                                    if (jObject != null)
-                                    {
-                                        var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
-                                            jObject["permanentId"],
-                                            jObject["LastUpdateInviteLinkTime"]);
-                                        gruppoTGs.Add(gruppoTg);
-                                    }
+                                    if (jObject == null) continue;
+                                    var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
+                                        jObject["permanentId"],
+                                        jObject["LastUpdateInviteLinkTime"]);
+                                    gruppoTGs.Add(gruppoTg);
                                 }
                                 catch
                                 {
@@ -289,18 +285,17 @@ internal static class InviteLinks
                     var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.idLink + "\n\n" +
                                gruppoTg.nome + "\n\n" + gruppoTg.newLink + "\n\n" + gruppoTg.permanentId;
                     if (sender != null)
-                        if (e != null)
-                            if (e.Message != null)
-                                await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                    new Language(
-                                        new Dictionary<string, string?>
+                        if (e?.Message != null)
+                            await sender.SendTextMessageAsync(e.Message.From?.Id,
+                                new Language(
+                                    new Dictionary<string, string?>
+                                    {
                                         {
-                                            {
-                                                "it",
-                                                ex1m
-                                            }
-                                        }),
-                                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                            "it",
+                                            ex1m
+                                        }
+                                    }),
+                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
                     result.gruppoTG = gruppoTg;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -335,24 +330,23 @@ internal static class InviteLinks
                 catch (Exception? ex2)
                 {
                     Logger.Logger.WriteLine(ex2);
-                    var ex2m = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.nome;
+                    var ex2M = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.nome;
                     if (sender != null)
-                        if (e != null)
-                            if (e.Message != null)
-                                await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                    new Language(
-                                        new Dictionary<string, string?>
+                        if (e?.Message != null)
+                            await sender.SendTextMessageAsync(e.Message.From?.Id,
+                                new Language(
+                                    new Dictionary<string, string?>
+                                    {
                                         {
-                                            {
-                                                "it",
-                                                ex2m
-                                            }
-                                        }),
-                                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                            "it",
+                                            ex2M
+                                        }
+                                    }),
+                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
                     result.gruppoTG = gruppoTg;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
-                    result.ExceptionMessage = ex2m;
+                    result.ExceptionMessage = ex2M;
                     result.ExceptionObject = ex2;
                     L.Add(result);
 
@@ -383,19 +377,17 @@ internal static class InviteLinks
                     Logger.Logger.WriteLine(ex3);
                     var ex3M = "3" + "\n\n" + ex3.Message;
                     if (sender != null)
-                        if (e != null)
-                            if (e.Message != null)
-                                if (e.Message.From != null)
-                                    await sender.SendTextMessageAsync(e.Message.From.Id,
-                                        new Language(
-                                            new Dictionary<string, string?>
-                                            {
-                                                {
-                                                    "it",
-                                                    ex3M
-                                                }
-                                            }),
-                                        ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                        if (e?.Message?.From != null)
+                            await sender.SendTextMessageAsync(e.Message.From.Id,
+                                new Language(
+                                    new Dictionary<string, string?>
+                                    {
+                                        {
+                                            "it",
+                                            ex3M
+                                        }
+                                    }),
+                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
                     result.gruppoTG = gruppoTg;
                     result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;

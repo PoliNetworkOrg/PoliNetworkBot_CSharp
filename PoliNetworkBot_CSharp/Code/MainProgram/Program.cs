@@ -272,8 +272,7 @@ internal static class Program
             ;
         }
 
-        if (_userBotsInfos != null && _userBotsInfos.bots != null && _userBotsInfos != null &&
-            _userBotsInfos.bots.Count != 0)
+        if (_userBotsInfos is { bots: { } } && _userBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -323,7 +322,7 @@ internal static class Program
             Logger.WriteLine(ex);
         }
 
-        if (_botInfos != null && _botInfos.bots != null && _botInfos != null && _botInfos.bots.Count != 0)
+        if (_botInfos is { bots: { } } && _botInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -563,13 +562,13 @@ internal static class Program
                     }
                 }
 
-                if (updates != null && updates.Count > 0)
+                if (updates is { Count: > 0 })
                 {
                     i = 0;
 
                     var updates2 = updates.OrderBy(o => o.Id).ToList();
 
-                    foreach (var update in updates2.Where(update => update != null))
+                    foreach (var update in updates2)
                     {
                         try
                         {

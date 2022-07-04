@@ -28,12 +28,8 @@ public class GenericMedia : GenericFile
 
     public InputOnlineFile? GetTelegramBotInputOnlineFile()
     {
-        if (_fileId != null)
-        {
-            var r = new InputOnlineFile(_fileId);
-            return r;
-        }
-
-        return null;
+        if (_fileId == null) return null;
+        var r = new InputOnlineFile(_fileId);
+        return r;
     }
 }
