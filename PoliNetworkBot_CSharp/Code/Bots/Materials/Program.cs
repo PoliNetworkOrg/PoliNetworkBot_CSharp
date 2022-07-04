@@ -280,6 +280,11 @@ public class Program
     {
         return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[3];
     }
+    
+    private static string GetChan(string directory)
+    {
+        return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[2];
+    }
 
     public static async void BotOnCallbackQueryReceived(object sender1,
         CallbackQueryEventArgs callbackQueryEventArgs)
@@ -351,9 +356,9 @@ public class Program
 
                     var text = new Language(dict);
                     await sender.SendTextMessageAsync(
-                        ChannelsForApproval.GetChannel(UsersConversations[FromId].GetCourse()), text,
+                        ChannelsForApproval.GetChannel(GetChan(fileNameWithPath)), text,
                         ChatType.Private,
-                        callbackQuery.Message.From.LanguageCode, ParseMode.Html, null, null);
+                        callbackQuery?.Message?.From?.LanguageCode, ParseMode.Html, null, null);
                 }
 
                 var fileOnlyRelativePath = fileNameWithPath[Config.RootDir.Length..];
