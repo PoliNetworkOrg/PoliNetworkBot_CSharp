@@ -262,7 +262,7 @@ internal static class ModerationCheck
         {
             if (e.Message != null)
             {
-                var idChat = e.Message.Chat.Id;
+                var idChat = e?.Message?.Chat?.Id;
                 if (idChat != null)
                 {
                     if (telegramBotClient != null)
@@ -319,9 +319,12 @@ internal static class ModerationCheck
 
     private static List<UsernameAndNameCheckResult>? CheckUsername(MessageEventArgs? e)
     {
-        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && GlobalVariables.NoUsernameCheckInThisChats.Contains(e.Message.Chat.Id)) return null;
+        Message? message1 = e?.Message;
+        long? id = message1?.Chat.Id;
+        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && id !=null && GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
 
-        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(e.Message.From.Id))
+        User? from = message1?.From;
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } && from !=null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
             return null;
 
         if (e != null)
@@ -336,13 +339,14 @@ internal static class ModerationCheck
                         userId: e?.Message?.From?.Id, messageId: message.MessageId)
                 };
 
-                if (e?.Message?.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
+                User[]? newChatMembers = message1?.NewChatMembers;
+                if (e?.Message?.NewChatMembers == null || (newChatMembers == null || newChatMembers.Length == 0))
                     return r;
 
-                r.AddRange(from user in e.Message.NewChatMembers
-                    where user.Id != r[0].GetUserId()
+                r.AddRange(from user in newChatMembers
+                           where user.Id != r[0].GetUserId()
                     select CheckUsername2(user.Username, user.FirstName, user.Id,
-                        user.LastName, user.LanguageCode, e.Message.MessageId));
+                        user.LastName, user.LanguageCode, message1?.MessageId));
 
                 return r;
             }
@@ -364,11 +368,12 @@ internal static class ModerationCheck
 
     public static async Task<SpamType?> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
+        User? from1 = e?.Message?.From;
         switch (e?.Message)
         {
             case { Chat.Type: ChatType.Private }:
             case { From: { }, Chat: { } }
-                when e != null && (e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id):
+                when e != null && ((from1 != null && from1.Id == 777000) || (from1 !=null && from1.Id == e.Message.Chat.Id)):
                 return SpamType.ALL_GOOD;
         }
 

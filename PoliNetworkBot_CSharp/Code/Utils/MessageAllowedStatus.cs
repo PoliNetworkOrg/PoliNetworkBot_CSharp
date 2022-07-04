@@ -91,7 +91,8 @@ public class MessageAllowedStatus
             {
                 allowedTimeTemp = allowedTimeTemp.Add(remainingTime)
                     .Add(new TimeSpan(24 - VetoHigherBound + VetoLowerBound, 0, 0));
-                timeSpan -= remainingTime;
+                if (timeSpan !=null)
+                    timeSpan =  timeSpan - remainingTime;
                 dayInCount++;
             }
         }
@@ -144,7 +145,7 @@ public class MessageAllowedStatus
         return allowedTime;
     }
 
-    public bool? isAllowed()
+    public bool? IsAllowed()
     {
         return _messageAllowedStatus switch
         {

@@ -128,11 +128,13 @@ internal class WebPost
 
     public static async Task<TelegramBotAbstract?> GetAnonBotAsync()
     {
-        if (GlobalVariables.Bots != null)
-            return (from key in GlobalVariables.Bots.Keys
-                    let m = GlobalVariables.Bots[key].GetMode()
+        System.Collections.Generic.Dictionary<long, TelegramBotAbstract?>? bots = GlobalVariables.Bots;
+        if (bots != null)
+            return (from key in bots.Keys
+                    let telegramBotAbstract = bots[key]
+                    let m = telegramBotAbstract.GetMode()
                     where m == BotStartMethods.Anon.Item1
-                    select GlobalVariables.Bots[key]).FirstOrDefault();
+                    select bots[key]).FirstOrDefault();
         try
         {
             await Program.StartBotsAsync(false, false, true);
@@ -142,10 +144,13 @@ internal class WebPost
             ;
         }
 
-        return (from key in GlobalVariables.Bots?.Keys
-                let m = GlobalVariables.Bots[key].GetMode()
+        if (bots!=null)
+        return (from key in bots.Keys
+                let telegramBotAbstract = bots[key]
+                let m = telegramBotAbstract.GetMode()
                 where m == BotStartMethods.Anon.Item1
-                select GlobalVariables.Bots[key]).FirstOrDefault();
+                select telegramBotAbstract).FirstOrDefault();
+        return null;
     }
 
     internal async Task SetAsSeenAsync()

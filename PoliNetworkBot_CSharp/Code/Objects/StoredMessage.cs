@@ -73,7 +73,7 @@ public class StoredMessage
 
     internal bool IsOutdated()
     {
-        if (AllowedStatus.isAllowed() ?? true)
+        if (AllowedStatus.IsAllowed() ?? true)
             return AllowedStatus.RemovalTime() < DateTime.Now;
 
         return LastSeenTime != null && LastSeenTime.Value.AddHours(2) < DateTime.Now;

@@ -315,7 +315,7 @@ public class Program
         return null;
     }
 
-    public static async void BotOnCallbackQueryReceived(object sender1,
+    public static async void BotOnCallbackQueryReceived(object? sender1,
         CallbackQueryEventArgs callbackQueryEventArgs)
     {
         TelegramBotClient? sender2 = null;
@@ -1078,7 +1078,7 @@ public class Program
     public static string? RemoveInvalidFilePathCharacters(string? filename, string replaceChar)
     {
         string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-        Regex r = new Regex($"[{Regex.Escape(regexSearch)}]");
+        Regex r = new($"[{Regex.Escape(regexSearch)}]");
         if (filename != null) return r.Replace(filename, replaceChar);
         return null;
     }

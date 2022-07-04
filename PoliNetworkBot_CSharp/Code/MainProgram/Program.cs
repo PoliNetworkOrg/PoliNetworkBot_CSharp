@@ -625,7 +625,7 @@ internal static class Program
             case UpdateType.CallbackQuery:
                 {
                     var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
-                    if (update.CallbackQuery != null)
+                    if (update.CallbackQuery != null && callback != null)
                         callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                     break;
                 }

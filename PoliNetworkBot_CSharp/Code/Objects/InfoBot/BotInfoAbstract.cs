@@ -36,15 +36,16 @@ public class BotInfoAbstract
     public long? userId;
     public string? website;
 
-    internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
+    internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()
     {
-        return onMessages == BotStartMethods.Anon.Item1
-            ? CallbackUtils.CallbackMethodStart
-            : onMessages == BotStartMethods.Moderation.Item1
-                ? CallbackUtils.CallbackMethodStart
-                : onMessages == BotStartMethods.Material.Item1
-                    ? Program.BotOnCallbackQueryReceived
-                    : null;
+        if (onMessages == BotStartMethods.Anon.Item1)
+            return CallbackUtils.CallbackMethodStart;
+        else if (onMessages == BotStartMethods.Moderation.Item1)
+            return CallbackUtils.CallbackMethodStart;
+        else if (onMessages == BotStartMethods.Material.Item1)
+            return Program.BotOnCallbackQueryReceived;
+        return null;
+          
     }
 
     internal string? GetToken()

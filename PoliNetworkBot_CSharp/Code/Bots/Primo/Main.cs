@@ -294,10 +294,11 @@ public class Main
         if (r == null || e == null)
             return null;
 
+        Telegram.Bot.Types.Message? message = e.Message;
         return (from DataRow dr in r.Rows
             where dr != null
             let id = (long)dr["king_id"]
-            where e.Message.From != null && id == e.Message.From.Id
+            where message !=null && message.From != null && id == message.From.Id
             let dt = (DateTime)dr["when_king"]
             where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
             select dr["title"].ToString()).ToList();
