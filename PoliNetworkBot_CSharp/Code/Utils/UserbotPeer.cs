@@ -65,7 +65,7 @@ internal static class UserbotPeer
                 return null;
         }
 
-        return user2 != null && user2.AccessHash != null
+        return user2 is { AccessHash: { } }
             ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
             : null;
     }

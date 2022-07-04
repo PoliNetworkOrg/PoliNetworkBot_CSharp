@@ -66,7 +66,7 @@ public class CallBackDataFull
         toRemove.AddRange(callbackDatas.Where(v => v.Value.IsExpired()).Select(v => v.Key));
         lock (this)
         {
-            foreach (var v in toRemove)
+            foreach (var v in toRemove.Where(v => v != null))
                 if (v != null)
                     callbackDatas.Remove(v);
         }

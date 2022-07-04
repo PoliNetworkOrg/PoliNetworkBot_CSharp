@@ -67,12 +67,13 @@ internal static class Main
             var notAuthorizedBotHasBeenAddedBool =
                 await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
             if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
-                foreach (var bot in notAuthorizedBotHasBeenAddedBool)
-                    if (e != null)
-                        if (e.Message != null)
-                            await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
+                foreach (var bot in notAuthorizedBotHasBeenAddedBool.Where(bot => e != null).Where(bot => e?.Message != null))
+                {
+                    if (e?.Message != null)
+                        await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
+                }
 
-            //todo: send messagge "Bots not allowed here!"
+            //todo: send message "Bots not allowed here!"
 
             if (BanMessageDetected(e, telegramBotClient))
             {

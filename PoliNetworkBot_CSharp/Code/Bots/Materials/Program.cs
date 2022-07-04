@@ -297,14 +297,12 @@ public class Program
 
     private static string? GetGit(string? directory)
     {
-        if (directory != null) return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[3];
-        return null;
+        return directory?.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[3];
     }
     
     private static string? GetChan(string? directory)
     {
-        if (directory != null) return directory.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[2];
-        return null;
+        return directory?.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[2];
     }
 
     public static async void BotOnCallbackQueryReceived(object? sender1,

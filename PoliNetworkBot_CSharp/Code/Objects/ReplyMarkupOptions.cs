@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 
@@ -32,9 +33,8 @@ public class ReplyMarkupOptions
         {
             var buttons = new TLVector<TLAbsKeyboardButton>();
 
-            foreach (var v2 in v1)
-                if (v2 != null)
-                    buttons.Add(new TLKeyboardButton { Text = v2.Text });
+            foreach (var v2 in v1.Where(v2 => v2 != null))
+                buttons.Add(new TLKeyboardButton { Text = v2?.Text });
 
             var row = new TLKeyboardButtonRow { Buttons = buttons };
             r.Add(row);

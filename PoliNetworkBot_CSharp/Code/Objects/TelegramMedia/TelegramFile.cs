@@ -30,8 +30,7 @@ public class TelegramFile : GenericFile
     internal InputOnlineFile? GetOnlineFile()
     {
         _stream?.Seek(0, SeekOrigin.Begin);
-        if (_stream != null) return new InputOnlineFile(_stream, _fileName);
-        return null;
+        return _stream != null ? new InputOnlineFile(_stream, _fileName) : null;
     }
 
     public override MessageType? GetMediaBotType()

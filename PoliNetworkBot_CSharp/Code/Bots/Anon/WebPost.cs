@@ -128,7 +128,7 @@ internal class WebPost
 
     public static async Task<TelegramBotAbstract?> GetAnonBotAsync()
     {
-        System.Collections.Generic.Dictionary<long, TelegramBotAbstract?>? bots = GlobalVariables.Bots;
+        var bots = GlobalVariables.Bots;
         if (bots != null)
             return (from key in bots.Keys
                     let telegramBotAbstract = bots[key]
@@ -145,7 +145,7 @@ internal class WebPost
         }
 
         if (bots!=null)
-        return (from key in bots.Keys
+            return (from key in bots.Keys
                 let telegramBotAbstract = bots[key]
                 let m = telegramBotAbstract.GetMode()
                 where m == BotStartMethods.Anon.Item1

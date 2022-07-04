@@ -426,9 +426,7 @@ internal static class UserBotFixBotAdmin
         try
         {
             TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
-            if (telegramBotAbstract != null)
-                if (telegramBotAbstract.UserbotClient != null)
-                    r2 = await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role);
+            if (telegramBotAbstract is { UserbotClient: { } }) r2 = await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role);
         }
         catch (Exception e2)
         {
@@ -437,15 +435,14 @@ internal static class UserBotFixBotAdmin
             try
             {
                 TLAbsChannelParticipantRole role2 = new TLChannelRoleModerator();
-                if (telegramBotAbstract != null)
-                    if (telegramBotAbstract.UserbotClient != null)
-                        await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role2);
+                if (telegramBotAbstract?.UserbotClient != null)
+                    await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role2);
             }
             catch (Exception e3)
             {
                 try
                 {
-                    var r3 = telegramBotAbstract != null && telegramBotAbstract.UserbotClient != null && telegramBotAbstract != null && await telegramBotAbstract.UserbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
+                    var r3 = telegramBotAbstract is { UserbotClient: { } } && await telegramBotAbstract.UserbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
                         true);
                     if (r3 == false) return new Tuple<TLAbsUpdates?, Exception?>(null, e3);
                 }

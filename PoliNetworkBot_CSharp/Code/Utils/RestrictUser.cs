@@ -340,7 +340,7 @@ internal static class RestrictUser
             }
         });
         
-        if (e != null && e.Message != null && e != null && e.Message.From != null)
+        if (e is { Message.From: { } })
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username,

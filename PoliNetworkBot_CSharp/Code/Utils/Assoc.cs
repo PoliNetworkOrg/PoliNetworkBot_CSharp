@@ -49,8 +49,7 @@ internal static class Assoc
         var r2 = await AskUser.AskBetweenRangeAsync(id, question, sender, lang,
             options, username);
 
-        if (r2 != null) return l[r2];
-        return null;
+        return r2 != null ? l[r2] : null;
     }
 
     public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
