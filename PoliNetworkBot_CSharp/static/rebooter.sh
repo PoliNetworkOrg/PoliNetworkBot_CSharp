@@ -2,7 +2,7 @@ echo "killing bot"
 screen -XS bot_runner quit
 echo "Pulling changes"
 cd /home/ubuntu/bot/PoliNetworkBot_CSharp/
-git pull --allow-unrelated-histories -f -X theirs --no-edit
+git pull --allow-unrelated-histories -f -X theirs --no-edit --rebase
 echo "rebooting bot"
 cd /home/ubuntu/bot/PoliNetworkBot_CSharp/
 sleep  1
