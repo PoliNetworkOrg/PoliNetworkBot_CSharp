@@ -17,7 +17,7 @@ internal static class TimeUtils
             await Task.Delay(time);
             task.Invoke();
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }

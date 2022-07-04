@@ -51,12 +51,12 @@ public class MessageToDelete
         return DateTime.Now > timeToDelete;
     }
 
-    internal async Task<bool> Delete(MessageEventArgs e2)
+    internal async Task<bool> Delete(MessageEventArgs? e2)
     {
-        if (GlobalVariables.Bots.ContainsKey(botId) == false)
+        if (GlobalVariables.Bots != null && GlobalVariables.Bots.ContainsKey(botId) == false)
             return false;
 
-        var bot = GlobalVariables.Bots[botId];
+        var bot = GlobalVariables.Bots?[botId];
         if (bot == null)
             return false;
 
@@ -64,7 +64,7 @@ public class MessageToDelete
         {
             return await bot.DeleteMessageAsync(chatId, messageId, accessHash);
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             await NotifyUtil.NotifyOwners(e, bot, e2);
         }

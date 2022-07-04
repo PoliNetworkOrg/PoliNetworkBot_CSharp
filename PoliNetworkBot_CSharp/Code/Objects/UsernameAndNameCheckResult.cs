@@ -2,17 +2,17 @@
 
 public class UsernameAndNameCheckResult
 {
-    private readonly string _firstName;
-    private readonly string _language;
-    private readonly string _lastName;
+    private readonly string? _firstName;
+    private readonly string? _language;
+    private readonly string? _lastName;
     private readonly long? _userId;
-    private readonly string _usernameString;
+    private readonly string? _usernameString;
     private readonly long? messageId;
     public readonly bool Name;
     public readonly bool UsernameBool;
 
-    public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string language,
-        string usernameString, long? userId, string firstName, string lastName, long? messageId)
+    public UsernameAndNameCheckResult(in bool usernameBool, in bool name, string? language,
+        string? usernameString, long? userId, string? firstName, string? lastName, long? messageId)
     {
         UsernameBool = usernameBool;
         Name = name;
@@ -24,12 +24,12 @@ public class UsernameAndNameCheckResult
         this.messageId = messageId;
     }
 
-    public string GetLanguage()
+    public string? GetLanguage()
     {
         return _language;
     }
 
-    public string GetUsername()
+    public string? GetUsername()
     {
         return _usernameString;
     }
@@ -39,12 +39,12 @@ public class UsernameAndNameCheckResult
         return _userId;
     }
 
-    public string GetFirstName()
+    public string? GetFirstName()
     {
         return _firstName;
     }
 
-    public string GetLastName()
+    public string? GetLastName()
     {
         return _lastName;
     }

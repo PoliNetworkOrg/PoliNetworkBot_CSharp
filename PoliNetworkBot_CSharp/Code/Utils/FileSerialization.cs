@@ -25,28 +25,28 @@ public static class FileSerialization
     ///     If false the file will be overwritten if it already exists. If true the contents will be appended
     ///     to the file.
     /// </param>
-    public static Tuple<bool, Exception> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
+    public static Tuple<bool, Exception?> WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
     {
-        Stream stream = null;
+        Stream? stream = null;
         try
         {
             stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
             SerializeFile(objectToWrite, ref stream);
-            stream.Close();
-            return new Tuple<bool, Exception>(true, null);
+            stream?.Close();
+            return new Tuple<bool, Exception?>(true, null);
         }
         catch (Exception e)
         {
             try
             {
-                stream.Close();
+                stream?.Close();
             }
             catch
             {
                 ;
             }
 
-            return new Tuple<bool, Exception>(false, e);
+            return new Tuple<bool, Exception?>(false, e);
         }
     }
 
@@ -56,9 +56,9 @@ public static class FileSerialization
     /// <typeparam name="T">The type of object to read from the binary file.</typeparam>
     /// <param name="filePath">The file path to read the object instance from.</param>
     /// <returns>Returns a new instance of the object read from the binary file.</returns>
-    public static T ReadFromBinaryFile<T>(string filePath)
+    public static T? ReadFromBinaryFile<T>(string filePath)
     {
-        Stream stream = null;
+        Stream? stream = null;
         try
         {
             stream = File.Open(filePath, FileMode.Open);
@@ -95,7 +95,7 @@ public static class FileSerialization
         {
             try
             {
-                stream.Close();
+                stream?.Close();
             }
             catch
             {
@@ -106,9 +106,11 @@ public static class FileSerialization
         }
     }
 
-    internal static void SerializeFile<T>(T objectToWrite, ref Stream stream)
+    internal static void SerializeFile<T>(T objectToWrite, ref Stream? stream)
     {
         var binaryFormatter = new BinaryFormatter();
-        binaryFormatter.Serialize(stream, objectToWrite);
+        if (stream != null)
+            if (objectToWrite != null)
+                binaryFormatter.Serialize(stream, objectToWrite);
     }
 }

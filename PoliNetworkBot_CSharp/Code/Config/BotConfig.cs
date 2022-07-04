@@ -13,5 +13,5 @@ namespace PoliNetworkBot_CSharp.Code.Config;
 [JsonObject(MemberSerialization.Fields)]
 internal class BotConfig
 {
-    public List<BotInfoAbstract> bots;
+    public List<BotInfoAbstract>? bots;
 }

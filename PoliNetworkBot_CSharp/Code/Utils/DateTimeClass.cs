@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class DateTimeClass
 {
-    internal static DateTime? GetUntilDate(string[] time)
+    internal static DateTime? GetUntilDate(string?[]? time)
     {
         if (time == null)
             return null;
@@ -39,7 +39,7 @@ internal static class DateTimeClass
         return DateTime.Now.AddSeconds(timeSecondsElapsed);
     }
 
-    private static long? GetHowManySeconds(string v)
+    private static long? GetHowManySeconds(string? v)
     {
         if (string.IsNullOrEmpty(v))
             return null;
@@ -123,7 +123,7 @@ internal static class DateTimeClass
         return $"{dt:s}" + ":" + dt.Millisecond.ToString().PadLeft(3, '0');
     }
 
-    public static Tuple<DateTime?, Exception> GetDateTimeFromString(string reply)
+    public static Tuple<DateTime?, Exception?>? GetDateTimeFromString(string? reply)
     {
         if (string.IsNullOrEmpty(reply))
             return null;
@@ -133,13 +133,13 @@ internal static class DateTimeClass
         switch (reply)
         {
             case "now" or "ora" or "oggi" or "today":
-                return new Tuple<DateTime?, Exception>(DateTime.Now, null);
+                return new Tuple<DateTime?, Exception?>(DateTime.Now, null);
 
             case "domani" or "tomorrow":
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
+                return new Tuple<DateTime?, Exception?>(DateTime.Now.AddDays(1), null);
 
             case "dopodomani" or "in two days" or "in 2 days":
-                return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(2), null);
+                return new Tuple<DateTime?, Exception?>(DateTime.Now.AddDays(2), null);
         }
 
         if (reply.StartsWith("in a"))
@@ -187,7 +187,7 @@ internal static class DateTimeClass
                                     (int)Convert.ToInt64(s3[1]),
                                     (int)seconds);
 
-                                return new Tuple<DateTime?, Exception>(d1, null);
+                                return new Tuple<DateTime?, Exception?>(d1, null);
                             }
                             catch
                             {
@@ -233,16 +233,16 @@ internal static class DateTimeClass
                         (int)Convert.ToInt64(orario2[1]),
                         0);
 
-                    return new Tuple<DateTime?, Exception>(d3, null);
+                    return new Tuple<DateTime?, Exception?>(d3, null);
                 }
                 catch (Exception e2)
                 {
-                    return new Tuple<DateTime?, Exception>(null, e2);
+                    return new Tuple<DateTime?, Exception?>(null, e2);
                 }
 
             {
                 var x = reply.Split('-');
-                return new Tuple<DateTime?, Exception>(
+                return new Tuple<DateTime?, Exception?>(
                     new DateTime(
                         (int)Convert.ToInt64(x[0]),
                         (int)Convert.ToInt64(x[1]),
@@ -255,7 +255,7 @@ internal static class DateTimeClass
         {
             var s2 = reply.Split(":");
             var dt = new DateTime(2000, 1, 1, Convert.ToInt32(s2[0]), Convert.ToInt32(s2[1]), 0);
-            return new Tuple<DateTime?, Exception>(dt, null);
+            return new Tuple<DateTime?, Exception?>(dt, null);
         }
         else
         {
@@ -274,14 +274,14 @@ internal static class DateTimeClass
         return null;
     }
 
-    internal static DateTime? GetHours(string s)
+    internal static DateTime? GetHours(string? s)
     {
         var dt = GetDateTimeFromString(s);
         ;
-        return dt.Item1;
+        return dt?.Item1;
     }
 
-    internal static string DateTimeToItalianFormat(DateTime? dt)
+    internal static string? DateTimeToItalianFormat(DateTime? dt)
     {
         if (dt == null)
             return null;
@@ -295,7 +295,7 @@ internal static class DateTimeClass
                dt.Value.Millisecond.ToString().PadLeft(3, '0');
     }
 
-    private static Tuple<DateTime?, Exception> GetDateTimeFromString2(string reply)
+    private static Tuple<DateTime?, Exception?>? GetDateTimeFromString2(string? reply)
     {
         //entro "reply"
         if (string.IsNullOrEmpty(reply))
@@ -310,7 +310,7 @@ internal static class DateTimeClass
             case "1 hour":
             case "1 ora":
                 {
-                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddHours(1), null);
+                    return new Tuple<DateTime?, Exception?>(DateTime.Now.AddHours(1), null);
                 }
 
             case "un mese":
@@ -318,7 +318,7 @@ internal static class DateTimeClass
             case "1 mese":
             case "1 month":
                 {
-                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddMonths(1), null);
+                    return new Tuple<DateTime?, Exception?>(DateTime.Now.AddMonths(1), null);
                 }
 
             case "giorno":
@@ -327,7 +327,7 @@ internal static class DateTimeClass
             case "1 giorno":
             case "1 day":
                 {
-                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddDays(1), null);
+                    return new Tuple<DateTime?, Exception?>(DateTime.Now.AddDays(1), null);
                 }
 
             case "anno":
@@ -336,7 +336,7 @@ internal static class DateTimeClass
             case "1 anno":
             case "1 year":
                 {
-                    return new Tuple<DateTime?, Exception>(DateTime.Now.AddYears(1), null);
+                    return new Tuple<DateTime?, Exception?>(DateTime.Now.AddYears(1), null);
                 }
         }
 
@@ -347,14 +347,14 @@ internal static class DateTimeClass
         if (reply.Contains('-')) return GetDateTimeFromString(reply);
 
         var i = GetHowManySeconds(reply);
-        return i == null ? null : new Tuple<DateTime?, Exception>(DateTime.Now.AddSeconds(i.Value), null);
+        return i == null ? null : new Tuple<DateTime?, Exception?>(DateTime.Now.AddSeconds(i.Value), null);
     }
 
-    internal static ValueWithException<DateTime?> GetFromString(string v)
+    internal static ValueWithException<DateTime?>? GetFromString(string? v)
     {
         try
         {
-            if (v.Contains(' '))
+            if (v != null && v.Contains(' '))
             {
                 var v2 = v.Split(' ');
                 //v2[0] data, v2[1] ora
@@ -377,7 +377,7 @@ internal static class DateTimeClass
                     }
                 }
             }
-            else if (v.Contains('-'))
+            else if (v != null && v.Contains('-'))
             {
                 var data = v.Split('-');
                 var d1 = new DateTime((int)Convert.ToInt64(data[0]), (int)Convert.ToInt64(data[1]),
@@ -385,7 +385,7 @@ internal static class DateTimeClass
                 return new ValueWithException<DateTime?>(d1, null);
             }
         }
-        catch (Exception ex)
+        catch (Exception? ex)
         {
             return new ValueWithException<DateTime?>(null, ex);
         }

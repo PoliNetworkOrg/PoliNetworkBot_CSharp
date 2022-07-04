@@ -23,10 +23,10 @@ public class StoredMessage
     internal int HowManyTimesWeSawIt;
     internal DateTime InsertedTime;
     internal DateTime? LastSeenTime;
-    internal string message;
-    public List<Message> Messages = new();
+    internal string? message;
+    public List<Message?> Messages = new();
 
-    public StoredMessage(string message, int howManyTimesWeSawIt = 0,
+    public StoredMessage(string? message, int howManyTimesWeSawIt = 0,
         MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,
         TimeSpan? timeLater = null, DateTime? lastSeenTime = null)
     {
@@ -55,8 +55,7 @@ public class StoredMessage
                 break;
         }
 
-        return GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
-               (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
+        return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 && (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
             ? IsSpam2()
             : SpamType.UNDEFINED;
     }
@@ -74,7 +73,7 @@ public class StoredMessage
 
     internal bool IsOutdated()
     {
-        if (AllowedStatus.isAllowed() ?? true)
+        if (AllowedStatus.IsAllowed() ?? true)
             return AllowedStatus.RemovalTime() < DateTime.Now;
 
         return LastSeenTime != null && LastSeenTime.Value.AddHours(2) < DateTime.Now;

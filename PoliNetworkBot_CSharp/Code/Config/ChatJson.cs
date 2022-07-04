@@ -2,12 +2,12 @@
 
 internal class ChatJson
 {
-    public readonly string invite_link;
-    public readonly string title;
-    public readonly string type;
+    public readonly string? invite_link;
+    public readonly string? title;
+    public readonly string? type;
     public long? id;
 
-    public ChatJson(long? id, string type, string title, string invite_link)
+    public ChatJson(long? id, string? type, string? title, string? invite_link)
     {
         this.id = id;
         this.type = type;

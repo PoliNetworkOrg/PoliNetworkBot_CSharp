@@ -19,19 +19,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class SendMessage
 {
-    internal static async Task<MessageSentResult> SendMessageInPrivateOrAGroup(
-        TelegramBotAbstract telegramBotClient,
-        Language text, string lang, string username, long? userId, string firstName, string lastName, long? chatId,
-        ChatType? chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup inlineKeyboardMarkup = null)
+    internal static async Task<MessageSentResult?> SendMessageInPrivateOrAGroup(
+        TelegramBotAbstract? telegramBotClient,
+        Language text, string? lang, string? username, long? userId, string? firstName, string? lastName, long? chatId,
+        ChatType? chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
-        MessageSentResult r = null;
+        MessageSentResult? r = null;
         try
         {
-            r = await telegramBotClient.SendTextMessageAsync(userId,
-                text, ChatType.Private, parseMode: parseMode,
-                lang: lang, username: username,
-                replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup));
-            if (r.IsSuccess()) return r;
+            if (telegramBotClient != null)
+                r = await telegramBotClient.SendTextMessageAsync(userId,
+                    text, ChatType.Private, parseMode: parseMode,
+                    lang: lang, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup));
+            if (r != null && r.IsSuccess()) return r;
         }
         catch
         {
@@ -41,48 +42,53 @@ internal static class SendMessage
         if (!(r == null || r.IsSuccess() == false)) return r;
 
         var messageTo = GetMessageTo(firstName, lastName, userId);
-        var text3 = new Language(new Dictionary<string, string>
+        var text3 = new Language(new Dictionary<string, string?>
         {
             { "en", "[Message for " + messageTo + "]\n\n" + text.Select("en") },
             { "it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it") }
         });
 
-        return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
-            lang, parseMode, new ReplyMarkupObject(inlineKeyboardMarkup), username);
+        if (telegramBotClient != null)
+            return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
+                lang, parseMode, new ReplyMarkupObject(inlineKeyboardMarkup), username);
+        return null;
     }
 
-    private static string GetMessageTo(string firstname, string lastname, long? messageFromUserId)
+    private static string GetMessageTo(string? firstname, string? lastname, long? messageFromUserId)
     {
         var name = firstname + " " + lastname;
         name = name.Trim();
         return "<a href=\"tg://user?id=" + messageFromUserId + "\">" + name + "</a>";
     }
 
-    internal static async Task<MessageSentResult> SendMessageInPrivate(TelegramBotAbstract telegramBotClient,
-        long? userIdToSendTo, string langCode, string usernameToSendTo,
-        Language text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup inlineKeyboardMarkup = null)
+    internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
+        long? userIdToSendTo, string? langCode, string? usernameToSendTo,
+        Language? text, ParseMode parseMode, long? messageIdToReplyTo,
+        InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         try
         {
-            return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
-                ChatType.Private, parseMode: parseMode,
-                lang: langCode, username: usernameToSendTo,
-                replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
-                replyToMessageId: messageIdToReplyTo);
+            if (telegramBotClient != null)
+                return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
+                    ChatType.Private, parseMode: parseMode,
+                    lang: langCode, username: usernameToSendTo,
+                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
+                    replyToMessageId: messageIdToReplyTo);
         }
         catch
         {
             return new MessageSentResult(false, null, ChatType.Private);
         }
+
+        return null;
     }
 
-    internal static async Task<MessageSentResult> SendMessageInAGroup(TelegramBotAbstract telegramBotClient,
-        string lang, Language text, MessageEventArgs messageEventArgs,
+    internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
+        string? lang, Language? text, MessageEventArgs? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-        bool disablePreviewLink, int i = 0, InlineKeyboardMarkup inlineKeyboardMarkup = null)
+        bool disablePreviewLink, int i = 0, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
-        MessageSentResult r1 = null;
+        MessageSentResult? r1 = null;
 
         if (telegramBotClient == null) return null;
 
@@ -102,7 +108,7 @@ internal static class SendMessage
                 disablePreviewLink: disablePreviewLink,
                 splitMessage: true);
         }
-        catch (Exception e1)
+        catch (Exception? e1)
         {
             await NotifyUtil.NotifyOwners(e1, telegramBotClient, messageEventArgs, i + 1);
         }
@@ -111,21 +117,23 @@ internal static class SendMessage
     }
 
     internal static async Task<bool> SendFileAsync(TelegramFile file, PeerAbstract peer,
-        Language text, TextAsCaption textAsCaption, TelegramBotAbstract telegramBotAbstract,
-        string username, string lang, long? replyToMessageId, bool disablePreviewLink)
+        Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink)
     {
-        return await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang,
+        return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang,
             replyToMessageId, disablePreviewLink);
     }
 
-    public static async Task<TLAbsUpdates> SendMessageUserBot(TelegramClient userbotClient,
-        TLAbsInputPeer peer, Language text, string username, TLAbsReplyMarkup tlAbsReplyMarkup, string lang,
+    public static async Task<TLAbsUpdates?> SendMessageUserBot(TelegramClient? userbotClient,
+        TLAbsInputPeer? peer, Language? text, string? username, TLAbsReplyMarkup? tlAbsReplyMarkup, string? lang,
         long? replyToMessageId, bool disablePreviewLink)
     {
-        TLAbsUpdates r2;
+        TLAbsUpdates? r2 = null;
         try
         {
-            r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
+            if (userbotClient != null)
+                if (text != null)
+                    r2 = await userbotClient.SendMessageAsync(peer, text.Select(lang), replyMarkup: tlAbsReplyMarkup);
         }
         catch
         {
@@ -135,8 +143,9 @@ internal static class SendMessage
 
             try
             {
-                r2 = await userbotClient.SendMessageAsync(peerBetter, text.Select(lang),
-                    replyMarkup: tlAbsReplyMarkup);
+                if (userbotClient != null)
+                    r2 = await userbotClient.SendMessageAsync(peerBetter, text?.Select(lang),
+                        replyMarkup: tlAbsReplyMarkup);
             }
             catch
             {
@@ -147,9 +156,9 @@ internal static class SendMessage
         return r2;
     }
 
-    public static SuccessQueue PlaceMessageInQueue(Message replyTo, DateTimeSchedule sentDate,
+    public static SuccessQueue PlaceMessageInQueue(Message? replyTo, DateTimeSchedule? sentDate,
         long? messageFromIdPerson, long? messageFromIdEntity,
-        long idChatSentInto, TelegramBotAbstract sender, ChatType typeChatSentInto)
+        long? idChatSentInto, TelegramBotAbstract? sender, ChatType? typeChatSentInto)
     {
         if (sentDate == null)
             return SuccessQueue.DATE_INVALID;
@@ -171,13 +180,14 @@ internal static class SendMessage
             if (photoIdDb == null)
                 return SuccessQueue.INVALID_ID_TO_DB;
 
-      
-            MessageDb.AddMessage(MessageType.Photo,
-                replyTo.Caption, messageFromIdPerson.Value,
-                messageFromIdEntity,
-                idChatSentInto, sentDate.GetDate(), false,
-                sender.GetId(), replyTo.MessageId,
-                typeChatSentInto, photoIdDb.Value, null, sender);
+
+            if (sender != null)
+                MessageDb.AddMessage(MessageType.Photo,
+                    replyTo.Caption, messageFromIdPerson.Value,
+                    messageFromIdEntity,
+                    idChatSentInto, sentDate.GetDate(), false,
+                    sender.GetId(), replyTo.MessageId,
+                    typeChatSentInto, photoIdDb.Value, null, sender);
         }
         else if (replyTo.Video != null)
         {
@@ -188,12 +198,13 @@ internal static class SendMessage
             if (videoIdDb == null)
                 return SuccessQueue.INVALID_ID_TO_DB;
 
-            MessageDb.AddMessage(MessageType.Video,
-                replyTo.Caption, messageFromIdPerson.Value,
-                messageFromIdEntity,
-                idChatSentInto, sentDate.GetDate(), false,
-                sender.GetId(), replyTo.MessageId,
-                typeChatSentInto, null, videoIdDb.Value, sender);
+            if (sender != null)
+                MessageDb.AddMessage(MessageType.Video,
+                    replyTo.Caption, messageFromIdPerson.Value,
+                    messageFromIdEntity,
+                    idChatSentInto, sentDate.GetDate(), false,
+                    sender.GetId(), replyTo.MessageId,
+                    typeChatSentInto, null, videoIdDb.Value, sender);
         }
         else
         {

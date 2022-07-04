@@ -11,6 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [JsonObject(MemberSerialization.Fields)]
 public class Config
 {
-    public string Password;
-    public string RootDir;
+    public string? Password;
+    public string? RootDir;
 }

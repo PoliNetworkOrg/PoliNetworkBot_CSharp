@@ -3,6 +3,8 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +23,6 @@
 
     <ItemGroup>
         <None Include="..\.editorconfig" Link=".editorconfig" />
-        <None Include="Code\IG\InstagramApiSharp\InstagramApiSharp.csproj" />
     </ItemGroup>
 
     <ItemGroup>

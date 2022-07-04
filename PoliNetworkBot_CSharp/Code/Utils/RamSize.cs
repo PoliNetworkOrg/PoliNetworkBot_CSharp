@@ -26,12 +26,12 @@ public static class RamSize
                 Logger.Logger.WriteLine(message);
                 await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
                     new Language(
-                        new Dictionary<string, string>()
+                        new Dictionary<string, string?>()
                         {
                             { "en", message }
                         }), null, Data.Constants.Groups.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
             }

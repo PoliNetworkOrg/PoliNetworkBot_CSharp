@@ -12,13 +12,13 @@ internal class ValueWithException<T>
     private readonly SuccessWithException SuccessWithException;
     private readonly T value;
 
-    public ValueWithException(T d2, Exception p)
+    public ValueWithException(T d2, Exception? p)
     {
         SuccessWithException = new SuccessWithException(d2 != null && p == null, p);
         value = d2;
     }
 
-    internal List<Exception> GetExceptions()
+    internal List<Exception?>? GetExceptions()
     {
         return SuccessWithException.GetExceptions();
     }

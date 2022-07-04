@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class StringUtil
 {
-    public static string NotNull(Language caption, string lang)
+    public static string? NotNull(Language? caption, string? lang)
     {
         return caption == null ? "" : caption.Select(lang);
     }
@@ -24,20 +24,25 @@ public static class StringUtil
         };
     }
 
-    internal static bool? CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string textToFind,
-        HtmlNode nodeToFindTextInto)
+    internal static bool? CheckIfTheStringIsTheSameAndValidRoomNameInsideAText(string? textToFind,
+        HtmlNode? nodeToFindTextInto)
     {
         if (nodeToFindTextInto == null)
             return null;
 
-        var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind, StringComparison.Ordinal);
-        return j switch
+        if (textToFind != null)
         {
-            < 0 => false,
-            0 => IsRoomChar(nodeToFindTextInto.InnerHtml[textToFind.Length]) == false,
-            _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
-                 IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
-        };
+            var j = nodeToFindTextInto.InnerHtml.IndexOf(textToFind, StringComparison.Ordinal);
+            return j switch
+            {
+                < 0 => false,
+                0 => IsRoomChar(nodeToFindTextInto.InnerHtml[textToFind.Length]) == false,
+                _ => IsRoomChar(nodeToFindTextInto.InnerHtml[j - 1]) == false &&
+                     IsRoomChar(nodeToFindTextInto.InnerHtml[j + textToFind.Length]) == false
+            };
+        }
+
+        return null;
     }
 
     internal static char ToSn(bool? b)

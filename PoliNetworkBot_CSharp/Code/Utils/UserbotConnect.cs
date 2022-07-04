@@ -16,15 +16,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class UserbotConnect
 {
-    internal static async Task<TelegramBotAbstract> ConnectAsync(BotInfoAbstract userbot)
+    internal static async Task<TelegramBotAbstract?> ConnectAsync(BotInfoAbstract userbot)
     {
         switch (userbot.botTypeApi)
         {
             case BotTypeApi.REAL_BOT:
             {
-                TelegramBotClient telegramBotClient = new(userbot.token);
-                return new TelegramBotAbstract(telegramBotClient, userbot.website, userbot.contactString,
-                    userbot.botTypeApi.Value, userbot.onMessages);
+                if (userbot.token != null)
+                {
+                    TelegramBotClient? telegramBotClient = new(userbot.token);
+                    return new TelegramBotAbstract(telegramBotClient, userbot.website, userbot.contactString,
+                        userbot.botTypeApi.Value, userbot.onMessages);
+                }
+
+                break;
             }
 
             case BotTypeApi.USER_BOT:
@@ -33,7 +38,7 @@ internal static class UserbotConnect
                 if (apiId == null)
                     return null;
 
-                TelegramClient telegramClient = null;
+                TelegramClient? telegramClient = null;
                 try
                 {
                     telegramClient = new TelegramClient((int)apiId.Value, userbot.apiHash,

@@ -16,12 +16,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
-    internal static SpamType IsSpam(string text, long? groupId, TelegramBotAbstract telegramBotAbstract)
+    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
 
-        List<string> words = new() { text };
+        List<string?> words = new() { text };
         List<string> splitBy = new() { " ", "\"", "'" };
         words = splitBy.Aggregate(words, SplitTextBy);
 
@@ -29,8 +29,8 @@ internal static class Blacklist
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId);
-        var words2 = words.ToList().Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
-        if (words2.Any(word => CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
+        var words2 = words.ToList().Select(x => x?.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
+        if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
         return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
@@ -38,75 +38,76 @@ internal static class Blacklist
             : CheckForFormatMistakes(text, groupId);
     }
 
-    private static List<string> SplitTextBy(List<string> vs, string v)
+    private static List<string?> SplitTextBy(List<string?>? vs, string v)
     {
         if (vs == null)
-            return null;
+            return new List<string?>();
 
-        List<string> r = new();
-        foreach (var words in vs.Select(vs2 => vs2.Split(v).ToList()))
-            r.AddRange(words);
+        List<string?> r = new();
+        foreach (var words in vs.Select(vs2 => vs2?.Split(v).ToList()))
+            if (words != null)
+                r.AddRange(words);
 
         return r;
     }
 
-    private static SpamType CheckForFormatMistakes(string text, long? groupId)
+    private static SpamType CheckForFormatMistakes(string? text, long? groupId)
     {
         if (groupId == null)
             return SpamType.ALL_GOOD;
         var specialGroups = new List<long> { -1001175999519, -1001495422899, -1001164044303 };
         if (specialGroups.All(group => groupId != group))
             return SpamType.ALL_GOOD;
-        var textLower = text.ToLower();
+        var textLower = text?.ToLower();
         if (groupId == specialGroups[0])
-            return textLower.Contains("#cerco") || textLower.Contains("#offro") ||
-                   textLower.Contains("#searching") ||
-                   textLower.Contains("#offering")
+            return textLower != null && (textLower.Contains("#cerco") || textLower.Contains("#offro") ||
+                                         textLower.Contains("#searching") ||
+                                         textLower.Contains("#offering"))
                 ? SpamType.ALL_GOOD
                 : SpamType.FORMAT_INCORRECT;
         if (groupId == specialGroups[1])
-            return textLower.Contains("#richiesta") || textLower.Contains("#offerta")
+            return textLower != null && (textLower.Contains("#richiesta") || textLower.Contains("#offerta"))
                 ? SpamType.ALL_GOOD
                 : SpamType.FORMAT_INCORRECT;
         if (groupId == specialGroups[2])
-            return textLower.Contains("#cerco") || textLower.Contains("#vendo")
+            return textLower != null && (textLower.Contains("#cerco") || textLower.Contains("#vendo"))
                 ? SpamType.ALL_GOOD
                 : SpamType.FORMAT_INCORRECT;
         return SpamType.ALL_GOOD;
     }
 
-    private static SpamType CheckNotAllowedWords(string text, long? groupId)
+    private static SpamType CheckNotAllowedWords(string? text, long? groupId)
     {
-        text = text.ToLower();
+        text = text?.ToLower();
 
-        var s = text.Split(' ');
-        foreach (var s2 in s)
-        {
-            var s3 = RemoveUselessCharacters(s2);
+        var s = text?.Split(' ');
+        if (s != null)
+            foreach (var s2 in s)
+            {
+                var s3 = RemoveUselessCharacters(s2);
 
-            if (!string.IsNullOrEmpty(s3))
-                switch (s3)
-                {
-                    case "porcodio":
-                    case "dioporco":
-                    case "diocane":
-                    case "negro":
-                    case "negri":
-                    case "negra":
-                    case "negre":
-                        return SpamType.NOT_ALLOWED_WORDS;
-                }
-        }
+                if (!string.IsNullOrEmpty(s3))
+                    switch (s3)
+                    {
+                        case "porcodio":
+                        case "dioporco":
+                        case "diocane":
+                        case "negro":
+                        case "negri":
+                        case "negra":
+                        case "negre":
+                            return SpamType.NOT_ALLOWED_WORDS;
+                    }
+            }
 
         var specialGroups = new List<long> { -1001361547847, -452591994, -1001320704409 };
-        if (groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
-            (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
+        if (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) && (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
             return SpamType.NOT_ALLOWED_WORDS;
 
         return SpamType.ALL_GOOD;
     }
 
-    private static string RemoveUselessCharacters(string s3)
+    private static string? RemoveUselessCharacters(string s3)
     {
         return string.IsNullOrEmpty(s3)
             ? null
@@ -114,7 +115,7 @@ internal static class Blacklist
                 .Aggregate("", (current, c) => current + c);
     }
 
-    private static SpamType CheckSpamLink(string text, long? groupId, TelegramBotAbstract bot)
+    private static SpamType CheckSpamLink(string text, long? groupId, TelegramBotAbstract? bot)
     {
         return groupId switch
         {
@@ -124,7 +125,7 @@ internal static class Blacklist
         };
     }
 
-    private static SpamType CheckSpamLink_DefaultGroup(string text, TelegramBotAbstract bot)
+    private static SpamType CheckSpamLink_DefaultGroup(string text, TelegramBotAbstract? bot)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -194,9 +195,9 @@ internal static class Blacklist
         return null;
     }
 
-    private static bool? CheckIfIsOurTgLink(string text, TelegramBotAbstract botAbstract)
+    private static bool? CheckIfIsOurTgLink(string text, TelegramBotAbstract? botAbstract)
     {
-        const string q1 = "SELECT id FROM GroupsTelegram WHERE link = @link";
+        const string? q1 = "SELECT id FROM GroupsTelegram WHERE link = @link";
         var link = GetTelegramLink(text);
 
         if (string.IsNullOrEmpty(link))
@@ -204,10 +205,10 @@ internal static class Blacklist
 
         link = link.Trim();
 
-        DataTable dt = null;
+        DataTable? dt = null;
         try
         {
-            dt = Database.ExecuteSelect(q1, botAbstract.DbConfig, new Dictionary<string, object> { { "@link", link } });
+            dt = Database.ExecuteSelect(q1, botAbstract?.DbConfig, new Dictionary<string, object?> { { "@link", link } });
         }
         catch
         {
@@ -221,13 +222,13 @@ internal static class Blacklist
         return !string.IsNullOrEmpty(s);
     }
 
-    private static string GetTelegramLink(string text)
+    private static string? GetTelegramLink(string text)
     {
         var s = text.Contains(' ') ? text.Split(' ') : new[] { text };
         return s.FirstOrDefault(s2 => s2.ToLower().Contains("t.me/"));
     }
 
-    internal static SpamType IsSpam(IEnumerable<PhotoSize> photo)
+    internal static SpamType IsSpam(IEnumerable<PhotoSize>? photo)
     {
         var biggerphoto = UtilsPhoto.GetLargest(photo);
         

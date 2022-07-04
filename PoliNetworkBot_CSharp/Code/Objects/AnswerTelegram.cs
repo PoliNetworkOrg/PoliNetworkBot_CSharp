@@ -17,7 +17,7 @@ public class AnswerTelegram
     private bool _answeredProcessed;
 
     private State _currentState;
-    internal Action<object> WorkCompleted;
+    internal Action<object?>? WorkCompleted;
 
     public AnswerTelegram()
     {
@@ -29,13 +29,13 @@ public class AnswerTelegram
         return _currentState;
     }
 
-    internal void RecordAnswer(string text)
+    internal void RecordAnswer(string? text)
     {
         if (_currentState != State.WAITING_FOR_ANSWER) return;
 
         _currentState = State.ANSWERED;
         if (_answeredProcessed) return;
-        WorkCompleted.Invoke(text);
+        if (WorkCompleted != null) WorkCompleted.Invoke(text);
         _answeredProcessed = true;
     }
 

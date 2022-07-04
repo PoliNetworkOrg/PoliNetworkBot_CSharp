@@ -9,15 +9,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 
 internal class UtilsFileText
 {
-    internal static TelegramFile GenerateFileFromString(string data, string fileName, string caption,
-        string mimeType)
+    internal static TelegramFile GenerateFileFromString(string data, string fileName, string? caption,
+        string? mimeType)
     {
         var stream = GenerateStreamFromString(data);
         var telegramFile = new TelegramFile(stream, fileName, caption, mimeType);
         return telegramFile;
     }
 
-    public static Stream GenerateStreamFromString(string s)
+    public static Stream? GenerateStreamFromString(string s)
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);

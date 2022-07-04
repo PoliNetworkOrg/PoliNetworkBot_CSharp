@@ -11,6 +11,6 @@ internal static class LeaveChat
 {
     internal static async Task ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        await sender.LeaveChatAsync(e.Message.Chat.Id);
+        if (e.Message != null) await sender.LeaveChatAsync(e.Message.Chat.Id);
     }
 }

@@ -85,14 +85,14 @@ public static class NewConfig
 
     private static void CleanDb()
     {
-        const string s = "SELECT name FROM sqlite_master WHERE type='table'";
+        const string? s = "SELECT name FROM sqlite_master WHERE type='table'";
         var r1 = Database.ExecuteSelect(s, GlobalVariables.DbConfig);
         if (r1 == null)
             return;
 
         foreach (DataRow dr in r1.Rows)
         {
-            var name = dr.ItemArray[0].ToString();
+            var name = dr.ItemArray[0]?.ToString();
             if (name != null && name.StartsWith("sqlite_"))
             {
                 ;
@@ -187,23 +187,26 @@ public static class NewConfig
         {
             var s = File.ReadAllText("../../../Old/data/groups.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            var r2 = r.Children();
-            foreach (var r3 in r2)
-                if (r3 is JProperty { Name: "Gruppi" } r4)
-                {
-                    var r5 = r4.Children();
-                    foreach (var r6 in r5)
+            if (r != null)
+            {
+                var r2 = r.Children();
+                foreach (var r3 in r2)
+                    if (r3 is JProperty { Name: "Gruppi" } r4)
                     {
-                        var r7 = r6.Children();
-                        foreach (var r8 in r7)
-                            if (r8 is JObject r9)
-                            {
-                                var r10 = r9.Children();
+                        var r5 = r4.Children();
+                        foreach (var r6 in r5)
+                        {
+                            var r7 = r6.Children();
+                            foreach (var r8 in r7)
+                                if (r8 is JObject r9)
+                                {
+                                    var r10 = r9.Children();
 
-                                AddGroupToDb(r10, botIdWhoInsertedThem);
-                            }
+                                    AddGroupToDb(r10, botIdWhoInsertedThem);
+                                }
+                        }
                     }
-                }
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -221,7 +224,7 @@ public static class NewConfig
     {
         ;
 
-        ChatJson chat = null;
+        ChatJson? chat = null;
         DateTime? lastUpdateLinkTime = null;
         bool? we_are_admin = null;
 
@@ -240,10 +243,15 @@ public static class NewConfig
                 case "LastUpdateInviteLinkTime":
                 {
                     var d1 = GetLastUpdateLinkTimeFromJson(r3);
-                    if (d1.HasValue())
+                    if (d1 != null && d1.HasValue())
                         lastUpdateLinkTime = d1.GetValue();
                     else
-                        exceptions.AddRange(d1.GetExceptions());
+                    {
+                        var e2 = d1?.GetExceptions();
+                        if (e2 != null) 
+                            exceptions.AddRange(e2!);
+                    }
+
                     break;
                 }
                 case "we_are_admin":
@@ -256,24 +264,25 @@ public static class NewConfig
         return new Tuple<bool, List<Exception>>(d2, exceptions);
     }
 
-    private static bool AddGroupToDb2(ChatJson chat, DateTime? lastUpdateLinkTime, bool? we_are_admin,
+    private static bool AddGroupToDb2(ChatJson? chat, DateTime? lastUpdateLinkTime, bool? we_are_admin,
         int botIdWhoInsertedThem)
     {
         try
         {
-            const string q1 = "INSERT INTO GroupsTelegram (id, bot_id, type, title, link, last_update_link, valid) " +
-                              " VALUES " +
-                              " (@id, @botid, @type, @title, @link, @lul, @valid)";
-            Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object>
-            {
-                { "@id", chat.id },
-                { "@botid", botIdWhoInsertedThem },
-                { "@type", chat.type },
-                { "@title", chat.title },
-                { "@link", chat.invite_link },
-                { "@lul", InviteLinks.GetDateTimeLastUpdateLinkFormattedString(lastUpdateLinkTime) },
-                { "@valid", we_are_admin }
-            });
+            const string? q1 = "INSERT INTO GroupsTelegram (id, bot_id, type, title, link, last_update_link, valid) " +
+                               " VALUES " +
+                               " (@id, @botid, @type, @title, @link, @lul, @valid)";
+            if (chat != null)
+                Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                {
+                    { "@id", chat.id },
+                    { "@botid", botIdWhoInsertedThem },
+                    { "@type", chat.type },
+                    { "@title", chat.title },
+                    { "@link", chat.invite_link },
+                    { "@lul", InviteLinks.GetDateTimeLastUpdateLinkFormattedString(lastUpdateLinkTime) },
+                    { "@valid", we_are_admin }
+                });
         }
         catch
         {
@@ -293,10 +302,10 @@ public static class NewConfig
         if (r5.Value == null)
             return null;
 
-        return r5.Value.ToString().ToLower() == "true";
+        return r5.Value.ToString()?.ToLower() == "true";
     }
 
-    private static ValueWithException<DateTime?> GetLastUpdateLinkTimeFromJson(JProperty r3)
+    private static ValueWithException<DateTime?>? GetLastUpdateLinkTimeFromJson(JProperty r3)
     {
         ;
         var r4 = r3.First;
@@ -306,17 +315,17 @@ public static class NewConfig
         return r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
     }
 
-    private static ChatJson GetChatFromJson(JProperty r3)
+    private static ChatJson? GetChatFromJson(JProperty r3)
     {
         ;
         var r4 = r3.Children();
         ;
-        var r5 = r4.Children();
+        IJEnumerable<JToken> r5 = r4.Children();
 
         long? id = null;
-        string type = null;
-        string title = null;
-        string invite_link = null;
+        string? type = null;
+        string? title = null;
+        string? invite_link = null;
 
         foreach (var r6 in r5)
         {
@@ -352,7 +361,7 @@ public static class NewConfig
         return new ChatJson(id, type, title, invite_link);
     }
 
-    private static string GetInviteLinkFromJson(JProperty r7)
+    private static string? GetInviteLinkFromJson(JProperty r7)
     {
         var r8 = r7.First;
         ;
@@ -361,14 +370,14 @@ public static class NewConfig
         return null;
     }
 
-    private static string GetTitleFromJson(JProperty r7)
+    private static string? GetTitleFromJson(JProperty r7)
     {
         var r8 = r7.First;
         ;
         return r8 is not JValue r9 ? null : r9.Value?.ToString();
     }
 
-    private static string GetTypeFromJson(JProperty r7)
+    private static string? GetTypeFromJson(JProperty r7)
     {
         var r8 = r7.First;
         ;
@@ -392,22 +401,25 @@ public static class NewConfig
         return null;
     }
 
-    private static void FillAssoc(DbConfig DbConfig)
+    private static void FillAssoc(DbConfig? DbConfig)
     {
         try
         {
             //read assoc from polinetwork python config file and fill db
             var s = File.ReadAllText("../../../Old/config/assoc.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            var r2 = r.Children();
-            foreach (var r3 in r2)
-                if (r3 is JProperty r4)
-                {
-                    var name = r4.Name;
-                    var r5 = r4.Value;
-                    var users = GetUsersFromAssocJson(r5);
-                    AddAssocToDb(name, users, DbConfig);
-                }
+            if (r != null)
+            {
+                var r2 = r.Children();
+                foreach (var r3 in r2)
+                    if (r3 is JProperty r4)
+                    {
+                        var name = r4.Name;
+                        var r5 = r4.Value;
+                        var users = GetUsersFromAssocJson(r5);
+                        AddAssocToDb(name, users, DbConfig);
+                    }
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -421,16 +433,16 @@ public static class NewConfig
         }
     }
 
-    private static bool AddAssocToDb(string name, IReadOnlyCollection<long> users, DbConfig DbConfig)
+    private static bool AddAssocToDb(string? name, IReadOnlyCollection<long>? users, DbConfig? DbConfig)
     {
-        const string q1 = "INSERT INTO Entities (Name) VALUES (@name)";
-        _ = Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object> { { "@name", name } });
+        const string? q1 = "INSERT INTO Entities (Name) VALUES (@name)";
+        _ = Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?> { { "@name", name } });
 
         Tables.FixIdTable("Entities", "id", "name", DbConfig);
 
-        const string q2 = "SELECT id FROM Entities WHERE Name = @name";
+        const string? q2 = "SELECT id FROM Entities WHERE Name = @name";
         var r2 = Database.ExecuteSelect(q2, GlobalVariables.DbConfig,
-            new Dictionary<string, object> { { "@name", name } });
+            new Dictionary<string, object?> { { "@name", name } });
 
         var r3 = Database.GetFirstValueFromDataTable(r2);
         long? r4 = null;
@@ -454,15 +466,15 @@ public static class NewConfig
 
         foreach (var u in users)
         {
-            const string q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
+            const string? q3 = "INSERT INTO PeopleInEntities (id_entity, id_person) VALUES (@ide, @idp)";
             _ = Database.Execute(q3, GlobalVariables.DbConfig,
-                new Dictionary<string, object> { { "@ide", r4.Value }, { "@idp", u } });
+                new Dictionary<string, object?> { { "@ide", r4.Value }, { "@idp", u } });
         }
 
         return true;
     }
 
-    private static List<long> GetUsersFromAssocJson(JToken r1)
+    private static List<long>? GetUsersFromAssocJson(JToken r1)
     {
         var r2 = r1.Children();
         foreach (var r3 in r2)

@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class Tables
 {
-    public static void FixIdTable(string tableName, string columnIdName, string uniqueColumn, DbConfig DbConfig)
+    public static void FixIdTable(string tableName, string columnIdName, string uniqueColumn, DbConfig? DbConfig)
     {
         var r4 = GetMaxId(tableName, columnIdName, DbConfig);
         var q2 = "SELECT * FROM " + tableName + " WHERE " + columnIdName + " IS NULL";
@@ -29,7 +29,7 @@ internal static class Tables
         }
     }
 
-    internal static long GetMaxId(string tableName, string columnIdName, DbConfig DbConfig)
+    internal static long GetMaxId(string tableName, string columnIdName, DbConfig? DbConfig)
     {
         var q = "SELECT MAX(" + columnIdName + ") FROM " + tableName;
         var r = Database.ExecuteSelect(q, DbConfig);

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
@@ -18,54 +19,55 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 public class BotInfoAbstract
 {
     public bool? acceptedMessages;
-    public string apiHash;
+    public string? apiHash;
     public long? apiId;
     public BotProgramTypeEnum? botProgramType;
     public BotTypeApi? botTypeApi;
-    public string contactString;
-    public DbConfig DbConfig;
-    public string method;
-    public string NumberCountry;
-    public string NumberNumber;
-    public string onMessages;
-    public string passwordToAuthenticate;
-    public string SessionUserId;
-    public string token;
+    public string? contactString;
+    public DbConfig? DbConfig;
+    public string? method;
+    public string? NumberCountry;
+    public string? NumberNumber;
+    public string? onMessages;
+    public string? passwordToAuthenticate;
+    public string? SessionUserId;
+    public string? token;
     public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
-    public string website;
+    public string? website;
 
-    internal EventHandler<CallbackQueryEventArgs> GetCallbackEvent()
+    internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()
     {
-        return onMessages == BotStartMethods.Anon.Item1
-            ? CallbackUtils.CallbackMethodStart
-            : onMessages == BotStartMethods.Moderation.Item1
-                ? CallbackUtils.CallbackMethodStart
-                : onMessages == BotStartMethods.Material.Item1
-                    ? Program.BotOnCallbackQueryReceived
-                    : null;
+        if (onMessages == BotStartMethods.Anon.Item1)
+            return CallbackUtils.CallbackMethodStart;
+        else if (onMessages == BotStartMethods.Moderation.Item1)
+            return CallbackUtils.CallbackMethodStart;
+        else if (onMessages == BotStartMethods.Material.Item1)
+            return Program.BotOnCallbackQueryReceived;
+        return null;
+          
     }
 
-    internal string GetToken()
+    internal string? GetToken()
     {
         return token;
     }
 
-    internal Tuple<EventHandler<MessageEventArgs>, string> GetOnMessage()
+    internal Tuple<ActionMessageEvent?, string?> GetOnMessage()
     {
         TrySetBotType();
         try
         {
             var s = onMessages;
             var r1 = BotStartMethods.GetMethodFromString(s);
-            return new Tuple<EventHandler<MessageEventArgs>, string>(r1, s);
+            return new Tuple<ActionMessageEvent?, string?>(r1, s);
         }
         catch
         {
             ;
         }
 
-        return new Tuple<EventHandler<MessageEventArgs>, string>(null, null);
+        return new Tuple<ActionMessageEvent?, string?>(null, null);
     }
 
     private void TrySetBotType()
@@ -89,7 +91,7 @@ public class BotInfoAbstract
         return acceptedMessages;
     }
 
-    internal string GetWebsite()
+    internal string? GetWebsite()
     {
         try
         {
@@ -101,7 +103,7 @@ public class BotInfoAbstract
         }
     }
 
-    internal string GetContactString()
+    internal string? GetContactString()
     {
         try
         {

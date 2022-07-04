@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class WordToBeFirst
 {
-    private readonly List<string> similarWords;
+    private readonly List<string>? similarWords;
     private readonly string word;
 
     public WordToBeFirst(string word)
@@ -18,7 +18,7 @@ public class WordToBeFirst
         this.word = word;
     }
 
-    public WordToBeFirst(string word, List<string> similarWords) : this(word)
+    public WordToBeFirst(string word, List<string>? similarWords) : this(word)
     {
         this.similarWords = similarWords;
     }
@@ -38,7 +38,7 @@ public class WordToBeFirst
             : new Tuple<bool, string>(false, word);
     }
 
-    internal bool IsTaken(IEnumerable<string> taken)
+    internal bool IsTaken(List<string?> taken)
     {
         return taken.Any(r => r == word);
     }

@@ -14,13 +14,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Logger;
 public static class GroupsFixLog
 {
     private static List<string> _bothNull = new();
-    private static Dictionary<long, KeyValuePair<string, Exception>> _newNull = new();
+    private static Dictionary<long, KeyValuePair<string?, Exception?>> _newNull = new();
     private static List<string> _nameChange = new();
     private static List<string> _oldNull = new();
     private static int _countFixed;
     private static int _countIgnored;
 
-    public static void SendLog(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
+    public static void SendLog(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs,
         GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
     {
         var message = "Groups Fix Log:";
@@ -57,26 +57,31 @@ public static class GroupsFixLog
     private static void Reset()
     {
         _bothNull = new List<string>();
-        _newNull = new Dictionary<long, KeyValuePair<string, Exception>>();
+        _newNull = new Dictionary<long, KeyValuePair<string?, Exception?>>();
         _oldNull = new List<string>();
         _nameChange = new List<string>();
         _countFixed = 0;
         _countIgnored = 0;
     }
 
-    private static string HandleNewTitleNull(Dictionary<long, KeyValuePair<string, Exception>> newNull)
+    private static string? HandleNewTitleNull(Dictionary<long, KeyValuePair<string?, Exception?>> newNull)
     {
         var toReturn = "";
         var exceptionTypes = new List<Type>();
         foreach (var exception in newNull.Values.ToList()
-                     .Where(exception => !exceptionTypes.Contains(exception.Value.GetType())))
-            exceptionTypes.Add(exception.Value.GetType());
+                     .Where(exception => exception.Value != null && !exceptionTypes.Contains(exception.Value.GetType())))
+            if (exception.Value != null)
+                exceptionTypes.Add(exception.Value.GetType());
 
         foreach (var exceptionType in exceptionTypes)
         {
             toReturn += "#" + exceptionType + ":\n";
             toReturn += "[GroupId , oldTitle]\n";
-            toReturn = newNull.Where(group => newNull[group.Key].Value.GetType() == exceptionType)
+            toReturn = newNull.Where(group =>
+                {
+                    var exception = newNull[group.Key].Value;
+                    return exception != null && exception.GetType() == exceptionType;
+                })
                 .Aggregate(toReturn,
                     (current, group) => current + group.Key + " , " + group.Value.Key + "\n");
         }
@@ -95,9 +100,9 @@ public static class GroupsFixLog
         _bothNull.Add(tableRowId.ToString());
     }
 
-    public static void NewNull(long id, string oldTitle, Exception exception)
+    public static void NewNull(long id, string? oldTitle, Exception? exception)
     {
-        _newNull.TryAdd(id, new KeyValuePair<string, Exception>(oldTitle, exception));
+        _newNull.TryAdd(id, new KeyValuePair<string?, Exception?>(oldTitle, exception));
     }
 
     public static void OldNull(string newTitle)
@@ -105,7 +110,7 @@ public static class GroupsFixLog
         _oldNull.Add(newTitle ?? "[NULL VALUE]");
     }
 
-    public static void NameChange(string oldTitle, string newTitle)
+    public static void NameChange(string? oldTitle, string? newTitle)
     {
         _nameChange.Add(oldTitle + " [->] " + newTitle);
         _countFixed++;

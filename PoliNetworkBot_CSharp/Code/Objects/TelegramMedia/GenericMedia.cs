@@ -12,7 +12,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 public class GenericMedia : GenericFile
 {
-    internal string _fileId;
+    internal string? _fileId;
     internal int _height;
     internal int _width;
 
@@ -21,14 +21,19 @@ public class GenericMedia : GenericFile
         throw new NotImplementedException();
     }
 
-    public override Task<TlFileToSend> GetMediaTl(TelegramClient client)
+    public override Task<TlFileToSend?> GetMediaTl(TelegramClient? client)
     {
         throw new NotImplementedException();
     }
 
-    public InputOnlineFile GetTelegramBotInputOnlineFile()
+    public InputOnlineFile? GetTelegramBotInputOnlineFile()
     {
-        var r = new InputOnlineFile(_fileId);
-        return r;
+        if (_fileId != null)
+        {
+            var r = new InputOnlineFile(_fileId);
+            return r;
+        }
+
+        return null;
     }
 }

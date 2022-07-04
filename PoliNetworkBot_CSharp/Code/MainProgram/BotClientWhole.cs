@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using Telegram.Bot;
 
@@ -12,13 +12,13 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram;
 
 public class BotClientWhole
 {
-    public readonly TelegramBotClient BotClient;
+    public readonly TelegramBotClient? BotClient;
     public readonly BotInfoAbstract BotInfoAbstract;
-    public readonly Tuple<EventHandler<MessageEventArgs>, string> OnmessageMethod2;
+    public readonly Tuple<ActionMessageEvent?, string?> OnmessageMethod2;
     public readonly Dictionary<long, long> UpdatesMessageLastId;
 
-    public BotClientWhole(TelegramBotClient botClient, BotInfoAbstract bot1,
-        Tuple<EventHandler<MessageEventArgs>, string> onmessageMethod2)
+    public BotClientWhole(TelegramBotClient? botClient, BotInfoAbstract bot1,
+        Tuple<ActionMessageEvent?, string?> onmessageMethod2)
     {
         BotClient = botClient;
         BotInfoAbstract = bot1;

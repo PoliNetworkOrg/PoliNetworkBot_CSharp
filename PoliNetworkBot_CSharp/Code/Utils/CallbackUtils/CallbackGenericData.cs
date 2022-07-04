@@ -14,11 +14,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 [JsonObject(MemberSerialization.Fields)]
 public class CallbackGenericData
 {
-    internal TelegramBotAbstract Bot;
-    internal CallbackQuery CallBackQueryFromTelegram;
-    public string Id;
+    internal TelegramBotAbstract? Bot;
+    internal CallbackQuery? CallBackQueryFromTelegram;
+    public string? Id;
     internal DateTime? InsertedTime;
-    internal MessageSentResult MessageSent;
+    internal MessageSentResult? MessageSent;
     public List<CallbackOption> Options;
     public Action<CallbackGenericData> RunAfterSelection;
     internal int SelectedAnswer;

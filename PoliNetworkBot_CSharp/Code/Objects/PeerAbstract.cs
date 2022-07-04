@@ -14,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 internal class PeerAbstract
 {
     public readonly long? Id;
-    public readonly TLAbsInputPeer Peer;
+    public readonly TLAbsInputPeer? Peer;
     public readonly ChatType Type;
 
     public PeerAbstract(long? id, ChatType type)
@@ -52,7 +52,7 @@ internal class PeerAbstract
         return Id;
     }
 
-    internal TLAbsInputPeer GetPeer()
+    internal TLAbsInputPeer? GetPeer()
     {
         return Peer;
     }

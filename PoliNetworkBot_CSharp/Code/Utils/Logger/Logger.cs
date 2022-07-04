@@ -25,7 +25,7 @@ public static class Logger
 {
     private const string DataLogPath = Paths.Data.Log;
     private const string LogSeparator = "#@#LOG ENTRY#@#";
-    private static readonly Dictionary<long, TelegramBotAbstract> Subscribers = new();
+    private static readonly Dictionary<long, TelegramBotAbstract?> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
     private static readonly object LogFileLock = new();
 
@@ -38,13 +38,14 @@ public static class Logger
             {
                 var messageToBeSent = Buffer.Receive();
                 var escaped = HttpUtility.HtmlEncode(messageToBeSent.Text);
-                var text = new Language(new Dictionary<string, string>
+                var text = new Language(new Dictionary<string, string?>
                 {
                     { "un", escaped }
                 });
-                await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
-                    messageToBeSent.ChatType, "un", ParseMode.Html,
-                    null, null, null, splitMessage: true);
+                if (messageToBeSent.Key.Value != null)
+                    await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
+                        messageToBeSent.ChatType, "un", ParseMode.Html,
+                        null, null, null, splitMessage: true);
             }
             catch (Exception e)
             {
@@ -52,7 +53,7 @@ public static class Logger
             }
     }
 
-    private static void CriticalError(Exception e, object log)
+    private static void CriticalError(Exception e, object? log)
     {
         try
         {
@@ -72,7 +73,7 @@ public static class Logger
         }
     }
 
-    public static void WriteLine(object log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
+    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
@@ -94,12 +95,13 @@ public static class Logger
             }
 
             foreach (var subscriber in Subscribers)
-                Buffer.Post(
-                    new MessageQueue(subscriber,
-                        log1,
-                        ChatType.Group,
-                        ParseMode.Html)
-                );
+                if (log1 != null)
+                    Buffer.Post(
+                        new MessageQueue(subscriber,
+                            log1,
+                            ChatType.Group,
+                            ParseMode.Html)
+                    );
             _ = SendLogIfOversize();
         }
         catch (Exception e)
@@ -115,11 +117,12 @@ public static class Logger
         try
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
-            if (bots.Count < 1)
+            if (bots != null && bots.Count < 1)
             {
                 throw new Exception("No REAL_BOT to send Log");
             }
-            PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
+
+            if (bots != null) PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
         }
         catch (Exception e)
         {
@@ -134,8 +137,8 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static async Task Subscribe(long? fromId, TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+    public static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
     {
         if (fromId == null)
             return;
@@ -144,7 +147,7 @@ public static class Logger
         {
             Subscribers.TryAdd(fromId.Value, telegramBotAbstract);
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
         }
@@ -165,7 +168,7 @@ public static class Logger
         }
     }
 
-    public static void PrintLog(TelegramBotAbstract sender, List<long?> sendTo, MessageEventArgs messageEventArgs)
+    public static void PrintLog(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs)
     {
         lock (PrintLogLock)
         {
@@ -173,7 +176,7 @@ public static class Logger
             {
                 const string path = Paths.Data.Log;
 
-                List<string> text = null;
+                List<string>? text = null;
                 try
                 {
                     lock (LogFileLock)
@@ -181,7 +184,7 @@ public static class Logger
                         text = File.ReadAllLines(path).ToList();
                     }
                 }
-                catch (Exception e)
+                catch (Exception? e)
                 {
                     WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
@@ -191,14 +194,14 @@ public static class Logger
                 else
                     PrintLog2(sendTo, sender, path);
             }
-            catch (Exception e)
+            catch (Exception? e)
             {
                 NotifyUtil.NotifyOwners(e, sender, messageEventArgs).Wait();
             }
         }
     }
 
-    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract sender, string path)
+    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path)
     {
         string file;
         lock (LogFileLock)
@@ -209,7 +212,7 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
         var encoding = Encoding.UTF8;
 
-        var text2 = new Language(new Dictionary<string, string>
+        var text2 = new Language(new Dictionary<string, string?>
         {
             { "it", "LOG:" }
         });
@@ -232,9 +235,9 @@ public static class Logger
         }
     }
 
-    private static void EmptyLog(TelegramBotAbstract sender, List<long?> sendTo)
+    private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo)
     {
-        var text = new Language(new Dictionary<string, string>
+        var text = new Language(new Dictionary<string, string?>
         {
             { "en", "No log available." }
         });

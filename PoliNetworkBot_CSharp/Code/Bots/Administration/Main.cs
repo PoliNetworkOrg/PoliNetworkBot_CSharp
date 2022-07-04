@@ -17,12 +17,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Administration;
 
 internal class Main
 {
-    internal static async Task MainMethodAsync(TelegramBotAbstract telegramBotAbstract)
+    internal static async Task MainMethodAsync(TelegramBotAbstract? telegramBotAbstract)
     {
         try
         {
             ;
-            var links = new List<string>();
+            var links = new List<string?>();
             var groupsRaw = await File.ReadAllTextAsync(@"C:\Users\eliam\Documents\groups.csv");
             var groups = Regex.Split(groupsRaw, "\r\n|\r|\n");
             //using StreamWriter groupsFile = new StreamWriter(@"C:\Users\eliam\Documents\WriteLines.txt", append: true);
@@ -42,8 +42,8 @@ internal class Main
         }
     }
 
-    private static async Task MainMethodAsync2Async(string group, TelegramBotAbstract telegramBotAbstract,
-        List<string> links)
+    private static async Task MainMethodAsync2Async(string group, TelegramBotAbstract? telegramBotAbstract,
+        List<string?> links)
     {
         var toBeDone = true;
         while (toBeDone)
@@ -58,56 +58,60 @@ internal class Main
                         await sw.WriteLineAsync(group + " FAILED");
                     }
 
-                    const string desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
+                    const string? desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
 
                     var members = new List<long>(); //ID members to insert
                     long? chatID = null;
                     while (chatID == null)
-                        chatID = await telegramBotAbstract.CreateGroup(group, desc, members);
+                        if (telegramBotAbstract != null)
+                            chatID = await telegramBotAbstract.CreateGroup(group, desc, members);
                     Thread.Sleep(1 * 1000 * 10);
-                    var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
-                    if (channel == null)
-                        return;
-                    //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
-                    Thread.Sleep(1 * 1000 * 10);
-                    await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel.channel);
-
-                    var admins = new List<TLInputUser>();
-
-                    var adminTags = new List<string>
-                        { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
-                    foreach (var admin in adminTags)
+                    if (telegramBotAbstract != null)
                     {
+                        var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
+                        if (channel == null)
+                            return;
+                        //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
                         Thread.Sleep(1 * 1000 * 10);
-                        TLAbsInputPeer u =
-                            await UserbotPeer.GetPeerUserWithAccessHash(admin,
-                                telegramBotAbstract.UserbotClient);
-                        if (u is not TLInputPeerUser u2) continue;
-                        var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
-                        admins.Add(user1);
-                    }
+                        await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel.channel);
 
-                    foreach (var admin in admins)
-                    {
+                        var admins = new List<TLInputUser>();
+
+                        var adminTags = new List<string?> { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
+                        foreach (var admin in adminTags)
+                        {
+                            Thread.Sleep(1 * 1000 * 10);
+                            TLAbsInputPeer? u =
+                                await UserbotPeer.GetPeerUserWithAccessHash(admin,
+                                    telegramBotAbstract.UserbotClient);
+                            if (u is not TLInputPeerUser u2) continue;
+                            var user1 = new TLInputUser { AccessHash = u2.AccessHash, UserId = u2.UserId };
+                            admins.Add(user1);
+                        }
+
+                        foreach (var admin in admins)
+                        {
+                            Thread.Sleep(1 * 1000 * 10);
+                            await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id,
+                                channel.channel.AccessHash);
+                        }
+
                         Thread.Sleep(1 * 1000 * 10);
-                        await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id,
+                        var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.channel.Id,
                             channel.channel.AccessHash);
+                        links.Add(link);
+                        await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
+                        {
+                            await sw.WriteLineAsync(group + " $ " + link);
+                        }
+
+                        Logger.WriteLine("added: " + group + " $ " + link);
                     }
 
-                    Thread.Sleep(1 * 1000 * 10);
-                    var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.channel.Id,
-                        channel.channel.AccessHash);
-                    links.Add(link);
-                    await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
-                    {
-                        await sw.WriteLineAsync(group + " $ " + link);
-                    }
-
-                    Logger.WriteLine("added: " + group + " $ " + link);
                     Thread.Sleep(5 * 1000 * 60);
                     toBeDone = false;
                 }
-                catch (Exception e)
+                catch (Exception? e)
                 {
                     Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
                     await NotifyUtil.NotifyOwners(e, telegramBotAbstract, null);

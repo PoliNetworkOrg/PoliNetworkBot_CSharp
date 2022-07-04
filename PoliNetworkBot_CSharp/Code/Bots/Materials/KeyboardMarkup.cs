@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials;
 
 internal static class KeyboardMarkup
 {
-    internal static List<List<string>> ArrayToMatrixString(List<string> list)
+    internal static List<List<string>>? ArrayToMatrixString(List<string>? list)
     {
         if (list == null || list.Count == 0)
             return null;

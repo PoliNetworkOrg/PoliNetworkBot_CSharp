@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public class MessageEventArgs
 {
-    public Message Message;
+    public Message? Message;
 
-    public MessageEventArgs(Message message)
+    public MessageEventArgs(Message? message)
     {
         Message = message;
     }

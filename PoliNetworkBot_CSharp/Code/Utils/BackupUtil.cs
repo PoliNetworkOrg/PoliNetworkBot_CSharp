@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
 using System.Data;
 using System.Linq;
@@ -13,46 +14,59 @@ internal class BackupUtil
     internal static void BackupBeforeReboot()
     {
         MessagesStore.BackupToFile();
-        CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
+        if (CallbackUtils.CallbackUtils.CallBackDataFull != null)
+            CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
 
-    internal static string GetDB_AsJson(TelegramBotAbstract telegramBotAbstract)
+    internal static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
     {
         try
         {
             DB_Backup db = new();
 
-            const string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
-            var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
-            if (r == null)
-                return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 1");
-
-            try
+            const string? q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
+            if (telegramBotAbstract != null)
             {
-                var tableNames = r.Rows.Cast<DataRow>().ToList();
+                var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
+                if (r == null)
+                    return Newtonsoft.Json.JsonConvert.SerializeObject("ERROR 1");
 
-                db.tableNames.AddRange(tableNames.Where(row => row is { ItemArray.Length: > 0 } && row.ItemArray[0] != null).Select(row => row.ItemArray[0]?.ToString()));
-
-                foreach (var tableName in db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
+                try
                 {
-                    try
-                    {
-                        var q2 = "SELECT * FROM " + tableName;
-                        var r2 = Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
-                        if (r2 != null)
+                    var tableNames = r.Rows.Cast<DataRow>().ToList();
+
+                    var c1 = tableNames.Where(row => row is { ItemArray.Length: > 0 } && row.ItemArray[0] != null)
+                        .Select(row =>
                         {
-                            db.tables[tableName] = r2;
+                            var argItem = row.ItemArray[0];
+                            return argItem != null ? argItem.ToString() : "";
+                        });
+                    
+                    foreach (var c3 in c1)
+                        if (!string.IsNullOrEmpty(c3))
+                            db.tableNames.Add(c3);
+
+                    foreach (var tableName in db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
+                    {
+                        try
+                        {
+                            var q2 = "SELECT * FROM " + tableName;
+                            var r2 = Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
+                            if (r2 != null)
+                            {
+                                db.tables[tableName] = r2;
+                            }
+                        }
+                        catch
+                        {
+                            ;
                         }
                     }
-                    catch
-                    {
-                        ;
-                    }
                 }
-            }
-            catch
-            {
-                ;
+                catch
+                {
+                    ;
+                }
             }
 
             return Newtonsoft.Json.JsonConvert.SerializeObject(db);

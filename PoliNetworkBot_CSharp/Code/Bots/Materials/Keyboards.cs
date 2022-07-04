@@ -14,13 +14,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials;
 
 public static class Keyboards
 {
-    internal static IEnumerable<List<Language>> GetKeyboardCorsi(string scuola)
+    internal static IEnumerable<List<Language>>? GetKeyboardCorsi(string? scuola)
     {
         var options2 = new List<Language>();
-        if (Navigator.ScuoleCorso[scuola] != null)
+        if (scuola != null && Navigator.ScuoleCorso[scuola] != null)
             options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso =>
-                new Language(new Dictionary<string, string> { { "it", corso }, { "en", corso } })));
-        options2.Add(new Language(new Dictionary<string, string>
+                new Language(new Dictionary<string, string?> { { "it", corso }, { "en", corso } })));
+        options2.Add(new Language(new Dictionary<string, string?>
         {
             { "it", "🔙 Indietro" },
             { "en", "🔙 Back" }
@@ -28,7 +28,7 @@ public static class Keyboards
         return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
     }
 
-    internal static string[] GetDir(long id)
+    internal static string[]? GetDir(long id)
     {
         var corso = Program.UsersConversations[id].GetCourse();
         if (string.IsNullOrEmpty(corso))
@@ -45,7 +45,7 @@ public static class Keyboards
         return subdirectoryEntries;
     }
 
-    internal static List<List<Language>> GetPathsKeyboard(long id)
+    internal static List<List<Language>>? GetPathsKeyboard(long id)
     {
         var subdirectoryEntries = GetDir(id);
         var percorso = Program.UsersConversations[id].GetPath();
@@ -54,35 +54,39 @@ public static class Keyboards
                              ? subdirectoryEntries
                                  .Aggregate("", (current, s) => current + s + ";")
                              : "null"));
-        var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string>
-                { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } }))
-            .ToList();
-        if (percorso == null)
+        if (subdirectoryEntries != null)
         {
-            options2.Add(new Language(new Dictionary<string, string>
+            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string?> { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } }))
+                .ToList();
+            if (percorso == null)
             {
-                { "it", "🔙 back" },
-                { "en", "🔙 back" }
+                options2.Add(new Language(new Dictionary<string, string?>
+                {
+                    { "it", "🔙 back" },
+                    { "en", "🔙 back" }
+                }));
+                return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+            }
+
+            options2.Add(new Language(new Dictionary<string, string?>
+            {
+                { "it", "🔙 Indietro" },
+                { "en", "🔙 Back" }
+            }));
+            options2.Add(new Language(new Dictionary<string, string?>
+            {
+                { "it", "🆗 Cartella Corrente" },
+                { "en", "🆗 Current Folder" }
+            }));
+            options2.Add(new Language(new Dictionary<string, string?>
+            {
+                { "it", "🆕 Nuova Cartella" },
+                { "en", "🆕 New Folder" }
             }));
             return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
         }
 
-        options2.Add(new Language(new Dictionary<string, string>
-        {
-            { "it", "🔙 Indietro" },
-            { "en", "🔙 Back" }
-        }));
-        options2.Add(new Language(new Dictionary<string, string>
-        {
-            { "it", "🆗 Cartella Corrente" },
-            { "en", "🆗 Current Folder" }
-        }));
-        options2.Add(new Language(new Dictionary<string, string>
-        {
-            { "it", "🆕 Nuova Cartella" },
-            { "en", "🆕 New Folder" }
-        }));
-        return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+        return null;
     }
 
     private static string[] RemoveGit(IEnumerable<string> subdirectoryEntries)
@@ -98,10 +102,10 @@ public static class Keyboards
         return listadir.ToArray();
     }
 
-    internal static IEnumerable<List<Language>> GetKeyboardSchools()
+    internal static IEnumerable<List<Language>>? GetKeyboardSchools()
     {
         var options2 = Navigator.ScuoleCorso.Keys
-            .Select(v => new Language(new Dictionary<string, string> { { "it", v }, { "en", v } })).ToList();
+            .Select(v => new Language(new Dictionary<string, string?> { { "it", v }, { "en", v } })).ToList();
         //r.Add(new List<InlineKeyboardButton> { new(text: v ) });
         return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
     }
