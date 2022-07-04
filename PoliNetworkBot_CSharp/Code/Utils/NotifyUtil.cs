@@ -162,13 +162,12 @@ internal static class NotifyUtil
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
-        Language text = GetNotifyText(langCode, text2);
-        
-    
-            return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
-                Data.Constants.Groups.GroupException,
-                ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
+        var text = GetNotifyText(langCode, text2);
 
+
+        return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
+            Data.Constants.Groups.GroupException,
+            ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
     }
 
     private static Language GetNotifyText(string? langCode, Language text2)
