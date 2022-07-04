@@ -34,8 +34,10 @@ internal class CallBackDataAnon : CallbackGenericData
         };
     }
 
-    internal ResultQueueEnum GetResultEnum()
+    internal ResultQueueEnum? GetResultEnum()
     {
-        return (ResultQueueEnum)Options[SelectedAnswer].value;
+        var callbackOption = Options[SelectedAnswer];
+        var callbackOptionValue = callbackOption.value;
+        return (ResultQueueEnum?)callbackOptionValue;
     }
 }

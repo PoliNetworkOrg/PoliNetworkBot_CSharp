@@ -17,9 +17,9 @@ public class TelegramFile : GenericFile
     private readonly string? _caption;
     private readonly string _fileName;
     private readonly string? _mimeType;
-    private readonly Stream _stream;
+    private readonly Stream? _stream;
 
-    public TelegramFile(Stream stream, string fileName, string? caption, string? mimeType)
+    public TelegramFile(Stream? stream, string fileName, string? caption, string? mimeType)
     {
         _stream = stream;
         _fileName = fileName;
@@ -27,10 +27,11 @@ public class TelegramFile : GenericFile
         _mimeType = mimeType;
     }
 
-    internal InputOnlineFile GetOnlineFile()
+    internal InputOnlineFile? GetOnlineFile()
     {
-        _stream.Seek(0, SeekOrigin.Begin);
-        return new InputOnlineFile(_stream, _fileName);
+        _stream?.Seek(0, SeekOrigin.Begin);
+        if (_stream != null) return new InputOnlineFile(_stream, _fileName);
+        return null;
     }
 
     public override MessageType? GetMediaBotType()
@@ -40,18 +41,23 @@ public class TelegramFile : GenericFile
 
     public override async Task<TlFileToSend?> GetMediaTl(TelegramClient? client)
     {
-        _stream.Seek(0, SeekOrigin.Begin);
-        var streamReader = new StreamReader(_stream);
-        var r = await client.UploadFile(_fileName, streamReader);
-
-        var attributes = new TLVector<TLAbsDocumentAttribute>();
-        TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename { FileName = _fileName };
-        attributes.Add(att1);
-        return r switch
+        if (_stream != null)
         {
-            null => null,
-            TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
-            _ => null
-        };
+            _stream.Seek(0, SeekOrigin.Begin);
+            var streamReader = new StreamReader(_stream);
+            var r = await client.UploadFile(_fileName, streamReader);
+
+            var attributes = new TLVector<TLAbsDocumentAttribute>();
+            TLAbsDocumentAttribute att1 = new TLDocumentAttributeFilename { FileName = _fileName };
+            attributes.Add(att1);
+            return r switch
+            {
+                null => null,
+                TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
+                _ => null
+            };
+        }
+
+        return null;
     }
 }

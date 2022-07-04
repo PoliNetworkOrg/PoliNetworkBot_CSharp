@@ -36,25 +36,31 @@ internal static class Permissions
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
         var delegates = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "delegates", 1);
-        if (delegates.Count == 0) return false;
-        var delegatesInner = HtmlUtil.GetElementsByTagAndClassName(delegates[0], "li");
-        var authorizedUsernames = delegatesInner.Select(x => x.InnerHtml.Replace(" ", "")
-                .Replace("\r", "")
-                .Replace("\n", "")
-                .Split(@"https://t.me/")[1]
-                .Split(@""">")[0])
-            .ToList();
-        var headAdmins = HtmlUtil.GetElementsByTagAndClassName(doc?.DocumentNode, "ul", "headadmins", 1);
-        if (headAdmins.Count == 0) return false;
-        var headAdminsInner = HtmlUtil.GetElementsByTagAndClassName(headAdmins[0], "li");
-        authorizedUsernames.AddRange(headAdminsInner.Select(x => x.InnerHtml.Replace(" ", "")
-                .Replace("\r", "")
-                .Replace("\n", "")
-                .Split(@"https://t.me/")[1]
-                .Split(@""">")[0])
-            .ToList());
-        return messageFrom.Username != null && authorizedUsernames.Any(username =>
-            string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
+        if (delegates != null && delegates.Count == 0) return false;
+        var delegatesInner = HtmlUtil.GetElementsByTagAndClassName(delegates?[0], "li");
+        if (delegatesInner != null)
+        {
+            var authorizedUsernames = delegatesInner.Select(x => x?.InnerHtml.Replace(" ", "")
+                    .Replace("\r", "")
+                    .Replace("\n", "")
+                    .Split(@"https://t.me/")[1]
+                    .Split(@""">")[0])
+                .ToList();
+            var headAdmins = HtmlUtil.GetElementsByTagAndClassName(doc?.DocumentNode, "ul", "headadmins", 1);
+            if (headAdmins != null && headAdmins.Count == 0) return false;
+            var headAdminsInner = HtmlUtil.GetElementsByTagAndClassName(headAdmins?[0], "li");
+            if (headAdminsInner != null)
+                authorizedUsernames.AddRange(headAdminsInner.Select(x => x?.InnerHtml.Replace(" ", "")
+                        .Replace("\r", "")
+                        .Replace("\n", "")
+                        .Split(@"https://t.me/")[1]
+                        .Split(@""">")[0])
+                    .ToList());
+            return messageFrom?.Username != null && authorizedUsernames.Any(username =>
+                string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        return false;
     }
 
     /*

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
@@ -51,21 +52,21 @@ public class BotInfoAbstract
         return token;
     }
 
-    internal Tuple<EventHandler<MessageEventArgs?>?, string?> GetOnMessage()
+    internal Tuple<ActionMessageEvent?, string?> GetOnMessage()
     {
         TrySetBotType();
         try
         {
             var s = onMessages;
             var r1 = BotStartMethods.GetMethodFromString(s);
-            return new Tuple<EventHandler<MessageEventArgs?>?, string?>(r1, s);
+            return new Tuple<ActionMessageEvent?, string?>(r1, s);
         }
         catch
         {
             ;
         }
 
-        return new Tuple<EventHandler<MessageEventArgs?>?, string?>(null, null);
+        return new Tuple<ActionMessageEvent?, string?>(null, null);
     }
 
     private void TrySetBotType()

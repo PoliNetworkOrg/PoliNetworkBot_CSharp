@@ -45,11 +45,20 @@ public class ReplyMarkupObject
             {
                 ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
                 ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
-                ReplyMarkupEnum.CHOICE => new ReplyKeyboardMarkup(_list.GetMatrixKeyboardButton())
-                    { OneTimeKeyboard = true },
+                ReplyMarkupEnum.CHOICE => KeyboardMarkupMethod(),
                 ReplyMarkupEnum.INLINE => _inlineKeyboardMarkup,
                 _ => throw new ArgumentOutOfRangeException()
             };
+        return null;
+    }
+
+    private IReplyMarkup? KeyboardMarkupMethod()
+    {
+        var matrixKeyboardButton = _list?.GetMatrixKeyboardButton();
+        if (matrixKeyboardButton != null)
+            return new ReplyKeyboardMarkup(matrixKeyboardButton!)
+                { OneTimeKeyboard = true };
+
         return null;
     }
 

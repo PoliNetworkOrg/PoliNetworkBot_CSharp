@@ -426,151 +426,158 @@ internal static class Rooms
     private static async Task OccupanciesOfTheDayAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         // Ask the user fot the date (which we'll need later)
-        var (dateTimeSchedule, exception, item3) = await AskUser.AskDateAsync(e?.Message?.From?.Id,
+        var tuple1 = await AskUser.AskDateAsync(e?.Message?.From?.Id,
             "Scegli un giorno", "it", sender,
             e?.Message?.From?.Username);
-
-        if (exception != null) throw exception;
-        var d2 = dateTimeSchedule.GetDate();
-        if (d2 == null)
+        if (tuple1 != null)
         {
-            var text2 = new Language(new Dictionary<string, string?>
+            var dateTimeSchedule = tuple1.Item1;
+            var exception = tuple1.Item2;
+            if (exception != null) throw exception;
+            if (dateTimeSchedule != null)
             {
-                { "it", "La data inserita non è valida!" },
-                { "en", "This date is not valid!" }
-            });
-            await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-                e?.Message?.From?.LanguageCode,
-                e?.Message?.From?.Username,
-                text2,
-                ParseMode.Html, null);
-            return;
-        }
+                var d2 = dateTimeSchedule.GetDate();
+                if (d2 == null)
+                {
+                    var text2 = new Language(new Dictionary<string, string?>
+                    {
+                        { "it", "La data inserita non è valida!" },
+                        { "en", "This date is not valid!" }
+                    });
+                    await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+                        e?.Message?.From?.LanguageCode,
+                        e?.Message?.From?.Username,
+                        text2,
+                        ParseMode.Html, null);
+                    return;
+                }
 
-        ;
+                ;
 
-        // retrieves the table for the day
-        var t3 = await GetDailySituationOnDate(sender, e, d2.Value);
-        if (t3 == null)
-        {
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", "Errore nella consultazione del sito del polimi!" },
-                { "en", "Error while getting polimi website!" }
-            });
-            await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-                e?.Message?.From?.LanguageCode,
-                e?.Message?.From?.Username,
-                text2,
-                ParseMode.Html, null);
-            return;
-        }
+                // retrieves the table for the day
+                var t3 = await GetDailySituationOnDate(sender, e, d2.Value);
+                if (t3 == null)
+                {
+                    var text2 = new Language(new Dictionary<string, string?>
+                    {
+                        { "it", "Errore nella consultazione del sito del polimi!" },
+                        { "en", "Error while getting polimi website!" }
+                    });
+                    await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+                        e?.Message?.From?.LanguageCode,
+                        e?.Message?.From?.Username,
+                        text2,
+                        ParseMode.Html, null);
+                    return;
+                }
 
-        // finds within the table, the row for a specific room
-        var question = new Language(new Dictionary<string, string?>
-        {
-            { "en", "Which room? (example: 3.0.1)" },
-            { "it", "Quale aula? (esempio 3.0.1)" }
-        });
-        var roomName = await AskUser.AskAsync(e?.Message?.From?.Id, question, sender,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, true);
-        var t4 = GetRoomTitleAndHours(t3[0], roomName);
+                // finds within the table, the row for a specific room
+                var question = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "Which room? (example: 3.0.1)" },
+                    { "it", "Quale aula? (esempio 3.0.1)" }
+                });
+                var roomName = await AskUser.AskAsync(e?.Message?.From?.Id, question, sender,
+                    e?.Message?.From?.LanguageCode,
+                    e?.Message?.From?.Username, true);
+                var t4 = GetRoomTitleAndHours(t3[0], roomName);
 
-        if (t4 == null || t4.Count == 0)
-        {
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", "Aula non trovata!" },
-                { "en", "Room not found!" }
-            });
-            await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-                e?.Message?.From?.LanguageCode,
-                e?.Message?.From?.Username,
-                text2,
-                ParseMode.Html, null);
-            return;
-        }
+                if (t4 == null || t4.Count == 0)
+                {
+                    var text2 = new Language(new Dictionary<string, string?>
+                    {
+                        { "it", "Aula non trovata!" },
+                        { "en", "Room not found!" }
+                    });
+                    await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+                        e?.Message?.From?.LanguageCode,
+                        e?.Message?.From?.Username,
+                        text2,
+                        ParseMode.Html, null);
+                    return;
+                }
 
-        var occupationRow = t4[3];
-        var slot = GetShiftSlotFromTime(d2.Value);
+                var occupationRow = t4[3];
+                var slot = GetShiftSlotFromTime(d2.Value);
 
-        // Compose the message to send, start with room name and date:
-        var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value:dd/MM/yyyy}</b>";
-        var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value:dd/MM/yyyy}</b>";
+                // Compose the message to send, start with room name and date:
+                var text = $"L'aula <b>{roomName}</b> il <b>{d2.Value:dd/MM/yyyy}</b>";
+                var textEng = $"The room <b>{roomName}</b> on <b>{d2.Value:dd/MM/yyyy}</b>";
 
 #pragma warning disable CS8794 // L'input corrisponde sempre al criterio specificato.
-        if (d2.Value.Hour is >= 8 or < 20)
-        {
-            // if we are in a period between open hours, say more specific things
-            // add time (time is not important if we just consider the whole day)
-            text += $" alle <b>{d2.Value:HH:mm}</b> ";
-            textEng += $" at <b>{d2.Value:HH:mm}</b> ";
+                if (d2.Value.Hour is >= 8 or < 20)
+                {
+                    // if we are in a period between open hours, say more specific things
+                    // add time (time is not important if we just consider the whole day)
+                    text += $" alle <b>{d2.Value:HH:mm}</b> ";
+                    textEng += $" at <b>{d2.Value:HH:mm}</b> ";
 
-            // say if it's free or not
-            var isFree = IsRoomFree(occupationRow, slot, slot + 1);
-            text += $" è <b>{(isFree ? "libera" : "occupata")}</b>";
-            textEng += $" is <b>{(isFree ? "free" : "occupied")}</b>";
+                    // say if it's free or not
+                    var isFree = IsRoomFree(occupationRow, slot, slot + 1);
+                    text += $" è <b>{(isFree ? "libera" : "occupata")}</b>";
+                    textEng += $" is <b>{(isFree ? "free" : "occupied")}</b>";
 
-            // and add until when if the information is available
-            var nextTransition = GetFirstSlotTransition(occupationRow, slot);
+                    // and add until when if the information is available
+                    var nextTransition = GetFirstSlotTransition(occupationRow, slot);
 
-            if (!string.IsNullOrEmpty(nextTransition))
-            {
-                text += $"\ne lo rimarrà fino alle {nextTransition}";
-                textEng += $"\nand will be until {nextTransition}";
-            }
+                    if (!string.IsNullOrEmpty(nextTransition))
+                    {
+                        text += $"\ne lo rimarrà fino alle {nextTransition}";
+                        textEng += $"\nand will be until {nextTransition}";
+                    }
 
-            text += "\n\nQuest'aula";
-            textEng += "\n\nThis room";
-        }
+                    text += "\n\nQuest'aula";
+                    textEng += "\n\nThis room";
+                }
 #pragma warning restore CS8794 // L'input corrisponde sempre al criterio specificato.
 
-        // add a list with all the free slots
-        var freeSlots = GetFreeTimeSlots(occupationRow);
-        text += " è libera nelle seguenti fasce orarie:\n";
-        textEng += " is free in the following time slots:\n";
+                // add a list with all the free slots
+                var freeSlots = GetFreeTimeSlots(occupationRow);
+                text += " è libera nelle seguenti fasce orarie:\n";
+                textEng += " is free in the following time slots:\n";
 
-        foreach (var (item1, item2) in freeSlots)
-        {
-            text += $"• Dalle <b>{item1}</b> alle <b>{item2}</b>\n";
-            textEng += $"• From <b>{item1}</b> to <b>{item2}</b>\n";
+                foreach (var (item1, item2) in freeSlots)
+                {
+                    text += $"• Dalle <b>{item1}</b> alle <b>{item2}</b>\n";
+                    textEng += $"• From <b>{item1}</b> to <b>{item2}</b>\n";
+                }
+
+                text += "\nQua sotto trovi la tabella completa delle occupazioni dell'aula per questa giornata";
+                textEng += "\nBelow you'll find the complete table with all occupations of this room for this day";
+
+                var message = new Language(new Dictionary<string, string?>
+                {
+                    { "it", text },
+                    { "en", textEng }
+                });
+
+                await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+                    e?.Message?.From?.LanguageCode,
+                    e?.Message?.From?.Username,
+                    message,
+                    ParseMode.Html, null);
+
+                // send the table as an html document for further info
+                var htmlresult = t4.Aggregate(
+                    "<html><head><style>td {border: #333 1px solid;} td.slot {background: #cce6ff;}</style></head><body><table>",
+                    (current, t5) => current + t5.OuterHtml);
+                htmlresult += "</table></body></html>";
+
+                var peer = new PeerAbstract(e?.Message?.From?.Id, ChatType.Private);
+                message = new Language(new Dictionary<string, string?>
+                {
+                    { "en", roomName }
+                });
+                var document = UtilsFileText.GenerateFileFromString(htmlresult, roomName + ".html",
+                    roomName, "text/html");
+
+                if (sender != null)
+                    await sender.SendFileAsync(document,
+                        peer, message,
+                        TextAsCaption.AS_CAPTION,
+                        e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, null, true);
+            }
         }
-
-        text += "\nQua sotto trovi la tabella completa delle occupazioni dell'aula per questa giornata";
-        textEng += "\nBelow you'll find the complete table with all occupations of this room for this day";
-
-        var message = new Language(new Dictionary<string, string?>
-        {
-            { "it", text },
-            { "en", textEng }
-        });
-
-        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username,
-            message,
-            ParseMode.Html, null);
-
-        // send the table as an html document for further info
-        var htmlresult = t4.Aggregate(
-            "<html><head><style>td {border: #333 1px solid;} td.slot {background: #cce6ff;}</style></head><body><table>",
-            (current, t5) => current + t5.OuterHtml);
-        htmlresult += "</table></body></html>";
-
-        var peer = new PeerAbstract(e?.Message?.From?.Id, ChatType.Private);
-        message = new Language(new Dictionary<string, string?>
-        {
-            { "en", roomName }
-        });
-        var document = UtilsFileText.GenerateFileFromString(htmlresult, roomName + ".html",
-            roomName, "text/html");
-
-        if (sender != null)
-            await sender.SendFileAsync(document,
-                peer, message,
-                TextAsCaption.AS_CAPTION,
-                e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, null, true);
     }
 
     /// <summary>
@@ -670,18 +677,31 @@ internal static class Rooms
     private static async Task<Tuple<ExceptionNumbered?, List<HtmlNode?>?>?> GetDailySituationAsync(
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        var (dateTimeSchedule, exception, item3) = await AskUser.AskDateAsync(e?.Message?.From?.Id,
+        var tuple = await AskUser.AskDateAsync(e?.Message?.From?.Id,
             "Scegli un giorno", "it", sender,
             e?.Message?.From?.Username);
 
-        if (exception != null)
-            return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(new ExceptionNumbered(exception), null);
+        if (tuple != null)
+        {
+            var exception = tuple.Item2;
+            if (exception != null)
+                return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(new ExceptionNumbered(exception), null);
+        }
 
-        var d2 = dateTimeSchedule.GetDate();
-        if (d2 == null) return null;
+        if (tuple != null)
+        {
+            var dateTimeSchedule = tuple.Item1;
+            if (dateTimeSchedule != null)
+            {
+                var d2 = dateTimeSchedule.GetDate();
+                if (d2 == null) return null;
 
-        var d = await GetDailySituationOnDate(sender, e, d2.Value);
-        return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(null, d);
+                var d = await GetDailySituationOnDate(sender, e, d2.Value);
+                return new Tuple<ExceptionNumbered?, List<HtmlNode?>?>(null, d);
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

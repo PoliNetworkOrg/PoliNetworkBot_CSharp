@@ -13,10 +13,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class Database
 {
-    public static int Execute(string? query, DbConfig? dbConfig, Dictionary<string, object?> args = null)
+    public static int Execute(string? query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
+        if (dbConfig == null) return 0;
         var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
         var cmd = new MySqlCommand(query, connection);
@@ -30,34 +31,40 @@ public static class Database
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
         return numberOfRowsAffected;
+
     }
 
-    public static DataTable? ExecuteSelect(string? query, DbConfig? dbConfig, Dictionary<string, object?> args = null)
+    public static DataTable? ExecuteSelect(string? query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        var connection = new MySqlConnection(dbConfig.GetConnectionString());
-
-        var cmd = new MySqlCommand(query, connection);
-
-        if (args != null)
-            foreach (var (key, value) in args)
-                cmd.Parameters.AddWithValue(key, value);
-
-        OpenConnection(connection);
-
-        var adapter = new MySqlDataAdapter
+        if (dbConfig != null)
         {
-            SelectCommand = cmd
-        };
+            var connection = new MySqlConnection(dbConfig.GetConnectionString());
 
-        var ret = new DataSet();
+            var cmd = new MySqlCommand(query, connection);
 
-        adapter.Fill(ret);
+            if (args != null)
+                foreach (var (key, value) in args)
+                    cmd.Parameters.AddWithValue(key, value);
 
-        adapter.Dispose();
+            OpenConnection(connection);
 
-        return ret.Tables[0];
+            var adapter = new MySqlDataAdapter
+            {
+                SelectCommand = cmd
+            };
+
+            var ret = new DataSet();
+
+            adapter.Fill(ret);
+
+            adapter.Dispose();
+
+            return ret.Tables[0];
+        }
+
+        return null;
     }
 
     private static void OpenConnection(IDbConnection connection)
@@ -65,7 +72,7 @@ public static class Database
         if (connection.State != ConnectionState.Open) connection.Open();
     }
 
-    internal static object GetFirstValueFromDataTable(DataTable? dt)
+    internal static object? GetFirstValueFromDataTable(DataTable? dt)
     {
         if (dt == null)
             return null;

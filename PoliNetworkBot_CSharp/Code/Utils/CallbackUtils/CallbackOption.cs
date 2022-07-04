@@ -13,9 +13,9 @@ public class CallbackOption
 {
     public string displayed;
     internal int id;
-    public object value;
+    public object? value;
 
-    public CallbackOption(string display, int id, object value)
+    public CallbackOption(string display, int id, object? value)
     {
         displayed = display;
         this.id = id;

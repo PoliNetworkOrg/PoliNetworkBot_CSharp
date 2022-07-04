@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -17,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class MessageDb
 {
-    private static readonly Dictionary<long, string> MessageTypesInRam = new();
+    private static readonly Dictionary<long, string?> MessageTypesInRam = new();
 
     internal static bool AddMessage(MessageType type, string? messageText,
         long messageFromIdPerson, long? messageFromIdEntity,
@@ -36,10 +37,10 @@ public static class MessageDb
         var typeI = GetMessageTypeByName(type, sender);
         if (typeI == null) return false;
 
-        var id = Tables.GetMaxId("Messages", "id", sender.DbConfig);
+        var id = Tables.GetMaxId("Messages", "id", sender?.DbConfig);
         id++;
 
-        Database.Execute(q, sender.DbConfig, new Dictionary<string, object?>
+        Database.Execute(q, sender?.DbConfig, new Dictionary<string, object?>
         {
             { "@id", id },
             { "@fip", messageFromIdPerson },
@@ -67,7 +68,7 @@ public static class MessageDb
 
             const string? q1 = "SELECT id FROM MessageTypes WHERE name = @name";
             var keyValuePairs = new Dictionary<string, object?> { { "@name", type.ToString() } };
-            var r1 = Database.ExecuteSelect(q1, sender.DbConfig, keyValuePairs);
+            var r1 = Database.ExecuteSelect(q1, sender?.DbConfig, keyValuePairs);
             var r2 = Database.GetFirstValueFromDataTable(r1);
             if (r1 == null || r1.Rows.Count == 0 || r2 == null)
             {
@@ -91,8 +92,8 @@ public static class MessageDb
     {
         const string? q = "INSERT INTO MessageTypes (name) VALUES (@name)";
         var keyValuePairs = new Dictionary<string, object?> { { "@name", type.ToString() } };
-        Database.Execute(q, bot.DbConfig, keyValuePairs);
-        Tables.FixIdTable("MessageTypes", "id", "name", bot.DbConfig);
+        Database.Execute(q, bot?.DbConfig, keyValuePairs);
+        Tables.FixIdTable("MessageTypes", "id", "name", bot?.DbConfig);
     }
 
     public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
@@ -141,7 +142,7 @@ public static class MessageDb
         return true;
     }
 
-    private static TelegramBotAbstract? FindBotIfNeeded(MessageSendScheduled r1,
+    private static TelegramBotAbstract? FindBotIfNeeded(MessageSendScheduled? r1,
         TelegramBotAbstract? telegramBotAbstract)
     {
         if (telegramBotAbstract != null)
@@ -198,7 +199,7 @@ public static class MessageDb
         bool schedule, TelegramBotAbstract? botToReportException, MessageEventArgs? messageEventArgs)
     {
         bool? hasBeenSent = null;
-        Tuple<bool?, int, string> r1 = null;
+        Tuple<bool?, int, string>? r1 = null;
         try
         {
             r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract, messageEventArgs);
@@ -231,11 +232,11 @@ public static class MessageDb
         }
 
         var done = await SendMessageFromDataRow(dr, null, null, false, telegramBotAbstract, 0);
-        if (done.IsSuccess() == false)
+        if (done != null && done.IsSuccess() == false)
             return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
         var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
-        Database.Execute(q2, telegramBotAbstract.DbConfig);
+        Database.Execute(q2, telegramBotAbstract?.DbConfig);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
     }
@@ -250,7 +251,7 @@ public static class MessageDb
             {
             }
 
-            if (r.Item1 != null) 
+            if (r != null && r.Item1 != null) 
                 return r.Item1.Value;
         }
         catch
@@ -261,7 +262,7 @@ public static class MessageDb
         return null;
     }
 
-    private static async Task<Tuple<bool?, int, string>> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
+    private static async Task<Tuple<bool?, int, string>?> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
         try
@@ -378,24 +379,26 @@ public static class MessageDb
 
         if (from_id_person != null) text1 += "✍ " + from_id_person + "\n";
 
-        var dict = new Dictionary<string?, string>
+        var dict = new Dictionary<string, string?>
         {
             { "en", text1 }
         };
         var text2 = new Language(dict);
-        return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
-            ParseMode.Html,
-            null, null, r1.GetMessageID(), true);
+        if (telegramBotAbstract != null)
+            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
+                ParseMode.Html,
+                null, null, r1.GetMessageID(), true);
+        return null;
     }
 
     private static async Task<MessageSentResult?> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, TelegramBotAbstract? sender)
     {
         var botId = Convert.ToInt64(dr["from_id_bot"]);
-        if (!GlobalVariables.Bots.ContainsKey(botId))
+        if (GlobalVariables.Bots != null && !GlobalVariables.Bots.ContainsKey(botId))
             return new MessageSentResult(false, null, chatTypeToSendTo);
 
-        var botClass = GlobalVariables.Bots[botId];
+        var botClass = GlobalVariables.Bots?[botId];
 
         var typeI = Convert.ToInt64(dr["type"]);
         var typeT = GetMessageTypeClassById(typeI, sender);
@@ -514,16 +517,17 @@ public static class MessageDb
         //non serve perché le assoc mandano solo immagini
     }
 
-    private static string GetMessageTypeNameById(in long typeI, TelegramBotAbstract? sender)
+    private static string? GetMessageTypeNameById(in long typeI, TelegramBotAbstract? sender)
     {
         if (MessageTypesInRam.ContainsKey(typeI))
             return MessageTypesInRam[typeI];
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
-        var dt = Database.ExecuteSelect(q, sender.DbConfig);
+        var dt = Database.ExecuteSelect(q, sender?.DbConfig);
         if (dt == null || dt.Rows.Count == 0) return null;
 
-        var value = Database.GetFirstValueFromDataTable(dt).ToString();
+        var firstValueFromDataTable = Database.GetFirstValueFromDataTable(dt);
+        var value = firstValueFromDataTable?.ToString();
         if (string.IsNullOrEmpty(value)) return null;
 
         MessageTypesInRam[typeI] = value;
@@ -567,8 +571,10 @@ public static class MessageDb
             chatIdFromIdPerson,
             ChatType.Private, botClass);
 
-        return await botClass.SendVideoAsync(chatIdToSendTo, video,
-            caption, parseMode, typeOfChatSentInto.Value);
+        if (botClass != null)
+            return await botClass.SendVideoAsync(chatIdToSendTo, video,
+                caption, parseMode, typeOfChatSentInto.Value);
+        return null;
     }
 
     private static async Task<MessageSentResult?> SendPhotoFromDataRow(DataRow dr, TelegramBotAbstract? botClass,
@@ -608,8 +614,10 @@ public static class MessageDb
             chatIdFromIdPerson,
             ChatType.Private, botClass);
 
-        return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-            caption, parseMode, typeOfChatSentInto.Value);
+        if (botClass != null)
+            return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
+                caption, parseMode, typeOfChatSentInto.Value);
+        return null;
     }
 
     internal static async Task CheckMessageToDelete(MessageEventArgs? messageEventArgs)

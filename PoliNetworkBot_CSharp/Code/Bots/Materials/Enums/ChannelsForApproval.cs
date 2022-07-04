@@ -16,21 +16,23 @@ internal static class ChannelsForApproval
     private static readonly long automationChannel = -1001541302296;
     private static readonly long chimicaChannel = -1001510001243;
 
-    internal static long GetChannel(string v)
+    internal static long? GetChannel(string? v)
     {
-        return v.ToLower() switch
-        {
-            "matnano" => matNanoChannel,
-            "info" => infoChannel,
-            "mobilitymd" => mobilityMDChannel,
-            "aes" => aesChannel,
-            "electronics" => electronicsChannel,
-            "automazione" => automationChannel,
-            "chimica" => chimicaChannel,
-            "elettrica" => electronicsChannel,
-            "energetica" => aesChannel,
-            "meccanica" => aesChannel,
-            _ => throw new Exception("No such channel: " + v)
-        };
+        if (v != null)
+            return v.ToLower() switch
+            {
+                "matnano" => matNanoChannel,
+                "info" => infoChannel,
+                "mobilitymd" => mobilityMDChannel,
+                "aes" => aesChannel,
+                "electronics" => electronicsChannel,
+                "automazione" => automationChannel,
+                "chimica" => chimicaChannel,
+                "elettrica" => electronicsChannel,
+                "energetica" => aesChannel,
+                "meccanica" => aesChannel,
+                _ => throw new Exception("No such channel: " + v)
+            };
+        return null;
     }
 }

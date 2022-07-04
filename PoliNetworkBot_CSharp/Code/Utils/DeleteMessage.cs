@@ -15,12 +15,14 @@ internal static class DeleteMessage
     internal static async Task DeleteIfMessageIsNotInPrivate(TelegramBotAbstract? telegramBotClient,
         Message? e)
     {
-        if (e.Chat.Type == ChatType.Private)
+        if (e != null && e.Chat.Type == ChatType.Private)
             return;
 
         try
         {
-            await telegramBotClient.DeleteMessageAsync(e.Chat.Id, e.MessageId, null);
+            if (telegramBotClient != null)
+                if (e != null)
+                    await telegramBotClient.DeleteMessageAsync(e.Chat.Id, e.MessageId, null);
         }
         catch
         {

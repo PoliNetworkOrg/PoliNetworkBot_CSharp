@@ -15,19 +15,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 
 internal static class UtilsPhoto
 {
-    internal static PhotoSize GetLargest(IEnumerable<PhotoSize>? photo)
+    internal static PhotoSize? GetLargest(IEnumerable<PhotoSize?>? photo)
     {
         if (photo == null)
             return null;
 
-        var photoSizes = photo.ToList();
+        List<PhotoSize?> photoSizes = photo.ToList();
         if (!photoSizes.Any())
             return null;
 
         var max = -1;
-        PhotoSize r = null;
-        foreach (var p in photoSizes.Where(p => p.Height > max))
+        PhotoSize? r = null;
+        foreach (var p in photoSizes.Where(p => p != null && p.Height > max))
         {
+            if (p == null) continue;
             max = p.Height;
             r = p;
         }
@@ -51,27 +52,27 @@ internal static class UtilsPhoto
             { "@u", photoLarge.FileUniqueId }
         };
 
-        Database.Execute(q, sender.DbConfig, keyValuePairs);
-        Tables.FixIdTable("Photos", "id_photo", "file_id", sender.DbConfig);
+        Database.Execute(q, sender?.DbConfig, keyValuePairs);
+        Tables.FixIdTable("Photos", "id_photo", "file_id", sender?.DbConfig);
 
         return GetPhotoId_From_FileId_OR_UniqueFileId(photoLarge.FileId, photoLarge.FileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string fileId, string fileUniqueId,
+    private static long? GetPhotoId_From_FileId_OR_UniqueFileId(string? fileId, string? fileUniqueId,
         TelegramBotAbstract? sender)
     {
         var a = GetPhotoId_From_FileId(fileId, sender);
         return a ?? GetPhotoId_From_UniqueFileId(fileUniqueId, sender);
     }
 
-    private static long? GetPhotoId_From_UniqueFileId(string fileUniqueId, TelegramBotAbstract? sender)
+    private static long? GetPhotoId_From_UniqueFileId(string? fileUniqueId, TelegramBotAbstract? sender)
     {
         const string? q2 = "SELECT id_photo FROM Photos WHERE unique_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileUniqueId }
         };
-        var r1 = Database.ExecuteSelect(q2, sender.DbConfig, keyValuePairs2);
+        var r1 = Database.ExecuteSelect(q2, sender?.DbConfig, keyValuePairs2);
         var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -87,14 +88,14 @@ internal static class UtilsPhoto
         }
     }
 
-    private static long? GetPhotoId_From_FileId(string fileId, TelegramBotAbstract? sender)
+    private static long? GetPhotoId_From_FileId(string? fileId, TelegramBotAbstract? sender)
     {
         const string? q2 = "SELECT id_photo FROM Photos WHERE file_id = @fi";
         var keyValuePairs2 = new Dictionary<string, object?>
         {
             { "@fi", fileId }
         };
-        var r1 = Database.ExecuteSelect(q2, sender.DbConfig, keyValuePairs2);
+        var r1 = Database.ExecuteSelect(q2, sender?.DbConfig, keyValuePairs2);
         var r2 = Database.GetFirstValueFromDataTable(r1);
 
         if (r2 == null)
@@ -110,19 +111,20 @@ internal static class UtilsPhoto
         }
     }
 
-    public static ObjectPhoto GetPhotoByIdFromDb(long photoIdFromFb, long? messageIdFrom, long chatId,
+    public static ObjectPhoto? GetPhotoByIdFromDb(long photoIdFromFb, long? messageIdFrom, long chatId,
         ChatType chatType, TelegramBotAbstract? sender)
     {
         var q = "SELECT * FROM Photos WHERE id_photo = " + photoIdFromFb;
-        var dt = Database.ExecuteSelect(q, sender.DbConfig);
+        var dt = Database.ExecuteSelect(q, sender?.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
             return null;
 
         var dr = dt.Rows[0];
 
+        var uniqueId = dr["unique_id"].ToString();
         return new ObjectPhoto((int)Convert.ToInt64(dr["id_photo"]), dr["file_id"].ToString(),
             (int)Convert.ToInt64(dr["file_size"]), (int)Convert.ToInt64(dr["height"]),
-            (int)Convert.ToInt64(dr["width"]), dr["unique_id"].ToString(),
+            (int)Convert.ToInt64(dr["width"]), uniqueId,
             messageIdFrom, chatId, chatType);
     }
 }

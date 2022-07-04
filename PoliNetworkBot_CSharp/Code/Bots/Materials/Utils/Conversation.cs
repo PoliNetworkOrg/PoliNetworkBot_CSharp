@@ -11,9 +11,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [Serializable]
 public class Conversation
 {
-    private string course;
-    private string path;
-    private string school;
+    private string? course;
+    private string? path;
+    private string? school;
 
     private UserState? state;
 
@@ -32,27 +32,27 @@ public class Conversation
         return state;
     }
 
-    internal void SetCourse(string courseToSet)
+    internal void SetCourse(string? courseToSet)
     {
         course = courseToSet;
     }
 
-    internal void SetSchool(string schoolToSet)
+    internal void SetSchool(string? schoolToSet)
     {
         school = schoolToSet;
     }
 
-    internal string GetSchool()
+    internal string? GetSchool()
     {
         return school;
     }
 
-    internal string GetCourse()
+    internal string? GetCourse()
     {
         return course;
     }
 
-    internal void PathDroppedOneLevel(string droppedTo)
+    internal void PathDroppedOneLevel(string? droppedTo)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -68,13 +68,13 @@ public class Conversation
         path = null;
     }
 
-    internal string GetPath()
+    internal string? GetPath()
     {
         return path;
     }
 
-    internal string GetGit()
+    internal string? GetGit()
     {
-        return GetPath().Split(@"/").First();
+        return GetPath()?.Split(@"/").First();
     }
 }

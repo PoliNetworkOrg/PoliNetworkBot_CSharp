@@ -109,7 +109,7 @@ internal static class ModerationCheck
 
         var userThatAddedBots = e.Message.From.Id;
         var isAdmin = await telegramBotClient.IsAdminAsync(userThatAddedBots, e.Message.Chat.Id);
-        return isAdmin.IsSuccess() ? null : notAuthorizedBot;
+        return isAdmin != null && isAdmin.IsSuccess() ? null : notAuthorizedBot;
     }
 
     private static async Task<Tuple<ToExit?, ChatMember[]?, List<int>?, string?>?> CheckIfToExit(
@@ -196,7 +196,7 @@ internal static class ModerationCheck
         try
         {
             const string? q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
-            const string valid = "Y";
+            const string? valid = "Y";
             if (messageEventArgs != null)
             {
                 if (messageEventArgs.Message != null)
@@ -321,7 +321,7 @@ internal static class ModerationCheck
     {
         if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && GlobalVariables.NoUsernameCheckInThisChats.Contains(e.Message.Chat.Id)) return null;
 
-        if (GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(e.Message.From.Id))
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(e.Message.From.Id))
             return null;
 
         if (e != null)
@@ -368,7 +368,7 @@ internal static class ModerationCheck
         {
             case { Chat.Type: ChatType.Private }:
             case { From: { }, Chat: { } }
-                when e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id:
+                when e != null && (e.Message.From.Id == 777000 || e.Message.From.Id == e.Message.Chat.Id):
                 return SpamType.ALL_GOOD;
         }
 
@@ -386,8 +386,9 @@ internal static class ModerationCheck
             {
                 case SpamType.SPAM_LINK:
                 {
-                    await DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(e.Message.Text),
-                        telegramBotClient);
+                    if (e.Message.Text != null)
+                        await DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(e.Message.Text),
+                            telegramBotClient);
                     return SpamType.SPAM_LINK;
                 }
                 case SpamType.NOT_ALLOWED_WORDS:

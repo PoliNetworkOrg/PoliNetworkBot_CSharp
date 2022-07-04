@@ -208,10 +208,15 @@ public class Program
                 var callbackQuery = e.CallbackQuery;
                 if (callbackQuery != null)
                 {
-                    var callbackdata = callbackQuery.Data?.Split("|");
+                    string?[]? callbackdata = callbackQuery.Data?.Split("|");
                     if (callbackdata != null)
                     {
-                        var fromId = long.Parse(callbackdata[1]);
+                        var s1 = callbackdata[1];
+                        if (s1 != null)
+                        {
+                            var fromId = long.Parse(s1);
+                        }
+
                         //if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
                         //    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
                         if (!FilePaths.TryGetValue(callbackdata[2], sender, out var directory))
@@ -338,185 +343,192 @@ public class Program
         var callbackQuery = callbackQueryEventArgs.CallbackQuery;
         if (callbackQuery != null)
         {
-            var callbackdata = callbackQuery.Data?.Split("|");
+            string?[]? callbackdata = callbackQuery.Data?.Split("|");
             if (callbackdata != null)
             {
-                var FromId = long.Parse(callbackdata[1]);
-                if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
-                    throw new Exception("Errore nel dizionario dei Path!");
-
-                fileNameWithPath = RemoveInvalidFilePathCharacters(fileNameWithPath, "");
-
-                if (callbackQueryEventArgs.CallbackQuery != null && callbackQueryEventArgs.CallbackQuery.Message != null && !UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
+                var s = callbackdata[1];
+                if (s != null)
                 {
-                    if (sender != null)
-                        await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
-                            "Modification Denied! You need to be admin of this channel");
-                    return;
-                }
+                    var FromId = long.Parse(s);
+                    if (!FilePaths.TryGetValue(callbackdata[2], sender, out var fileNameWithPath))
+                        throw new Exception("Errore nel dizionario dei Path!");
 
-                switch (callbackdata[0]) // FORMATO: Y o N | ID PERSONA | ID MESSAGGIO (DEL DOC) | fileUniqueID
-                {
-                    case "y":
+                    fileNameWithPath = RemoveInvalidFilePathCharacters(fileNameWithPath, "");
+
+                    if (callbackQueryEventArgs.CallbackQuery != null && callbackQueryEventArgs.CallbackQuery.Message != null && !UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
                     {
-                        var nameApprover = callbackQuery.From.FirstName;
-                        if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
-
                         if (sender != null)
-                        {
                             await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
-                                "Modification Accepted"); //Mostra un messaggio all'utente
+                                "Modification Denied! You need to be admin of this channel");
+                        return;
+                    }
 
-                            if (callbackQuery.Message != null)
-                            {
-                                var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                                    callbackQuery.Message.MessageId,
-                                    "<b>MERGED</b> by " + nameApprover + "\nIn " + fileNameWithPath,
-                                    ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
-                            }
+                    switch (callbackdata[0]) // FORMATO: Y o N | ID PERSONA | ID MESSAGGIO (DEL DOC) | fileUniqueID
+                    {
+                        case "y":
+                        {
+                            var nameApprover = callbackQuery.From.FirstName;
+                            if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
 
-                            if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
+                            if (sender != null)
                             {
-                                var dict = new Dictionary<string, string?>
+                                await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
+                                    "Modification Accepted"); //Mostra un messaggio all'utente
+
+                                if (callbackQuery.Message != null)
                                 {
+                                    var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                                        callbackQuery.Message.MessageId,
+                                        "<b>MERGED</b> by " + nameApprover + "\nIn " + fileNameWithPath,
+                                        ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
+                                }
+
+                                if (callbackQuery?.Message?.ReplyToMessage?.Document?.FileSize > 20000000)
+                                {
+                                    var dict = new Dictionary<string, string?>
                                     {
-                                        "en", "Can't upload " + callbackQuery.Message.ReplyToMessage.Document.FileName +
-                                              ". file size exceeds maximum allowed size. You can upload it manually from GitLab."
-                                    },
+                                        {
+                                            "en", "Can't upload " + callbackQuery.Message.ReplyToMessage.Document.FileName +
+                                                  ". file size exceeds maximum allowed size. You can upload it manually from GitLab."
+                                        },
+                                        {
+                                            "it", "Il file " + callbackQuery.Message.ReplyToMessage.Document.FileName +
+                                                  " supera il peso massimo consentito. Puoi caricarlo a mano da GitLab."
+                                        }
+                                    };
+
+                                    var text = new Language(dict);
+                                    await sender.SendTextMessageAsync(
+                                        ChannelsForApproval.GetChannel(UsersConversations[FromId].GetCourse()), text,
+                                        ChatType.Private,
+                                        callbackQuery.Message.From?.LanguageCode, ParseMode.Html, null, null);
+                                }
+
+                                if (Config.RootDir != null)
+                                {
+                                    var fileOnlyRelativePath = fileNameWithPath?[Config.RootDir.Length..];
+                                    try
                                     {
-                                        "it", "Il file " + callbackQuery.Message.ReplyToMessage.Document.FileName +
-                                              " supera il peso massimo consentito. Puoi caricarlo a mano da GitLab."
+                                        if (fileNameWithPath != null)
+                                        {
+                                            var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
+                                            //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
+                                            Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
+                                        }
+
+                                        if (fileNameWithPath != null)
+                                        {
+                                            await using var fileStream = File.OpenWrite(fileNameWithPath);
+                                            var document = callbackQuery?.Message?.ReplyToMessage?.Document;
+                                            if (document != null)
+                                            {
+                                                var tupleFileStream =
+                                                    await sender.DownloadFileAsync(document);
+                                                tupleFileStream?.Item2.Seek(0, SeekOrigin.Begin);
+                                                if (tupleFileStream != null)
+                                                    await tupleFileStream.Item2.CopyToAsync(fileStream);
+                                            }
+
+                                            fileStream.Close();
+                                        }
+
+                                        var dict = new Dictionary<string, string?>
+                                        {
+                                            { "en", "File Saved in " + fileOnlyRelativePath + "\n" },
+                                            { "it", "File salvato in " + fileOnlyRelativePath + "\n" }
+                                        };
+                                        var text = new Language(dict);
+                                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                            callbackQuery?.From.LanguageCode, ParseMode.Html, null, null);
+
+                                        var gitDir = GetGit(fileNameWithPath);
+                                        if (gitDir != null)
+                                        {
+                                            ModifiedFilesInGitFolder.TryGetValue(gitDir, out var filesInGit);
+                                            filesInGit ??= new List<string>();
+                                            var tempSplit = fileOnlyRelativePath?.Split(Convert.ToChar("/"), Convert.ToChar("\\"));
+                                            var fileOnlyName = tempSplit?[^1];
+                                            if (fileOnlyName != null) filesInGit.Add(fileOnlyName);
+                                            if (!ModifiedFilesInGitFolder.TryAdd(gitDir, filesInGit))
+                                            {
+                                                ModifiedFilesInGitFolder.Remove(gitDir);
+                                                ModifiedFilesInGitFolder.Add(gitDir, filesInGit);
+                                            }
+                                        }
                                     }
-                                };
+                                    catch (Exception? exception)
+                                    {
+                                        Logger.WriteLine(exception);
+                                        var dict = new Dictionary<string, string?>
+                                        {
+                                            {
+                                                "en", @"Couldn't save the file. Bot only support files up to 20 MB,
+                                    although you can open a Pull Request on GitLab to upload it or ask an Admin to do it. "
+                                            },
+                                            {
+                                                "it",
+                                                "Impossibile salvare il file. Il bot supporta solo file fino a 20 MB, puoi aprire una " +
+                                                "pull request su GitLab per caricarlo o chiedere a un amministratore di farlo per te."
+                                            }
+                                        };
+                                        var text = new Language(dict);
+                                        await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                            callbackQuery?.From.LanguageCode,
+                                            ParseMode.Html, null, null);
+                                    }
+                                }
 
-                                var text = new Language(dict);
-                                await sender.SendTextMessageAsync(
-                                    ChannelsForApproval.GetChannel(UsersConversations[FromId].GetCourse()), text,
-                                    ChatType.Private,
-                                    callbackQuery.Message.From?.LanguageCode, ParseMode.Html, null, null);
+                                GitHandler(callbackQueryEventArgs, sender);
                             }
+                        }
+                            break;
 
-                            var fileOnlyRelativePath = fileNameWithPath?[Config.RootDir.Length..];
+                        case "n":
                             try
                             {
-                                if (fileNameWithPath != null)
+                                var nameApprover = callbackQuery.From.FirstName;
+                                if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
+                                var fileOnlyName = callbackQuery.Message?.ReplyToMessage?.Document?.FileName;
+                                if (sender != null)
                                 {
-                                    var endOfPath = fileNameWithPath.Split(@"/").Last().Split(@"/").Last().Length;
-                                    //string a = fileName.ToCharArray().Take(fileName.Length - endOfPath).ToString();
-                                    Directory.CreateDirectory(fileNameWithPath[..^endOfPath]);
-                                }
+                                    await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
+                                        "Modification Denied");
+                                    if (callbackQuery.Message != null)
+                                        await sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                                            callbackQuery.Message.MessageId,
+                                            "<b>DENIED</b> by " + nameApprover,
+                                            ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
 
-                                if (fileNameWithPath != null)
-                                {
-                                    await using var fileStream = File.OpenWrite(fileNameWithPath);
-                                    var document = callbackQuery?.Message?.ReplyToMessage?.Document;
-                                    if (document != null)
+                                    var dict = new Dictionary<string, string?>
                                     {
-                                        var tupleFileStream =
-                                            await sender.DownloadFileAsync(document);
-                                        tupleFileStream?.Item2.Seek(0, SeekOrigin.Begin);
-                                        if (tupleFileStream != null)
-                                            await tupleFileStream.Item2.CopyToAsync(fileStream);
-                                    }
-
-                                    fileStream.Close();
-                                }
-
-                                var dict = new Dictionary<string, string?>
-                                {
-                                    { "en", "File Saved in " + fileOnlyRelativePath + "\n" },
-                                    { "it", "File salvato in " + fileOnlyRelativePath + "\n" }
-                                };
-                                var text = new Language(dict);
-                                await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                    callbackQuery?.From.LanguageCode, ParseMode.Html, null, null);
-
-                                var gitDir = GetGit(fileNameWithPath);
-                                if (gitDir != null)
-                                {
-                                    ModifiedFilesInGitFolder.TryGetValue(gitDir, out var filesInGit);
-                                    filesInGit ??= new List<string>();
-                                    var tempSplit = fileOnlyRelativePath?.Split(Convert.ToChar("/"), Convert.ToChar("\\"));
-                                    var fileOnlyName = tempSplit?[^1];
-                                    if (fileOnlyName != null) filesInGit.Add(fileOnlyName);
-                                    if (!ModifiedFilesInGitFolder.TryAdd(gitDir, filesInGit))
-                                    {
-                                        ModifiedFilesInGitFolder.Remove(gitDir);
-                                        ModifiedFilesInGitFolder.Add(gitDir, filesInGit);
-                                    }
+                                        { "en", "The file: " + fileOnlyName + " was rejected by an admin" },
+                                        { "it", "Il file: " + fileOnlyName + " è stato rifiutato da un admin" }
+                                    };
+                                    var text = new Language(dict);
+                                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                        callbackQuery.From.LanguageCode,
+                                        ParseMode.Html, null, null);
                                 }
                             }
                             catch (Exception? exception)
                             {
-                                Logger.WriteLine(exception);
                                 var dict = new Dictionary<string, string?>
                                 {
-                                    {
-                                        "en", @"Couldn't save the file. Bot only support files up to 20 MB,
-                                    although you can open a Pull Request on GitLab to upload it or ask an Admin to do it. "
-                                    },
-                                    {
-                                        "it",
-                                        "Impossibile salvare il file. Il bot supporta solo file fino a 20 MB, puoi aprire una " +
-                                        "pull request su GitLab per caricarlo o chiedere a un amministratore di farlo per te."
-                                    }
+                                    { "en", "Couldn't save the file." },
+                                    { "it", "Non è stato possibile salvare il file." }
                                 };
                                 var text = new Language(dict);
-                                await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                    callbackQuery?.From.LanguageCode,
-                                    ParseMode.Html, null, null);
+                                if (sender != null)
+                                {
+                                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
+                                        callbackQuery.From.LanguageCode,
+                                        ParseMode.Html, null, null);
+                                    await BotUtils.NotifyUtil.NotifyOwners(exception, sender);
+                                }
                             }
 
-                            GitHandler(callbackQueryEventArgs, sender);
-                        }
+                            break;
                     }
-                        break;
-
-                    case "n":
-                        try
-                        {
-                            var nameApprover = callbackQuery.From.FirstName;
-                            if (nameApprover.Length > 1) nameApprover = nameApprover[0].ToString();
-                            var fileOnlyName = callbackQuery.Message?.ReplyToMessage?.Document?.FileName;
-                            if (sender != null)
-                            {
-                                await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
-                                    "Modification Denied");
-                                if (callbackQuery.Message != null)
-                                    await sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                                        callbackQuery.Message.MessageId,
-                                        "<b>DENIED</b> by " + nameApprover,
-                                        ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
-
-                                var dict = new Dictionary<string, string?>
-                                {
-                                    { "en", "The file: " + fileOnlyName + " was rejected by an admin" },
-                                    { "it", "Il file: " + fileOnlyName + " è stato rifiutato da un admin" }
-                                };
-                                var text = new Language(dict);
-                                await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                    callbackQuery.From.LanguageCode,
-                                    ParseMode.Html, null, null);
-                            }
-                        }
-                        catch (Exception? exception)
-                        {
-                            var dict = new Dictionary<string, string?>
-                            {
-                                { "en", "Couldn't save the file." },
-                                { "it", "Non è stato possibile salvare il file." }
-                            };
-                            var text = new Language(dict);
-                            if (sender != null)
-                            {
-                                await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                    callbackQuery.From.LanguageCode,
-                                    ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwners(exception, sender);
-                            }
-                        }
-
-                        break;
                 }
             }
         }
@@ -623,7 +635,8 @@ public class Program
 
         if (e.Message.From != null)
         {
-            var file = Config.RootDir + UsersConversations[e.Message.From.Id].GetCourse().ToLower() + "/" +
+            var course = UsersConversations[e.Message.From.Id].GetCourse();
+            var file = Config.RootDir + course?.ToLower() + "/" +
                        UsersConversations[e.Message.From.Id].GetPath() + "/" + e.Message.Document.FileName;
             Logger.WriteLine("File requested: " + file);
             var FileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
@@ -663,9 +676,10 @@ public class Program
 
                     lock (SlowDownLock)
                     {
+                        var idChatMessageTo = ChannelsForApproval.GetChannel(course);
                         var messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                             e.Message.Chat.Id,
-                            ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].GetCourse())).Result;
+                            idChatMessageTo).Result;
 
                         Thread.Sleep(100);
 
@@ -673,14 +687,14 @@ public class Program
                         {
                             {
                                 "uni", "Approvi l'inserimento del documento in " +
-                                       UsersConversations[e.Message.From.Id].GetCourse() + "/" +
+                                       course + "/" +
                                        UsersConversations[e.Message.From.Id].GetPath() + " ?"
                             }
                         };
                         var approveText = new Language(approveMessage);
 
                         _ = telegramBotAbstract.SendTextMessageAsync(
-                            ChannelsForApproval.GetChannel(UsersConversations[e.Message.From.Id].GetCourse()),
+                            idChatMessageTo,
                             approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                             new ReplyMarkupObject(inlineKeyboardMarkup), null,
                             messageFw?.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
@@ -876,15 +890,19 @@ public class Program
                         { "it", "Scegli una scuola" }
                     };
                     var text = new Language(dict);
-                    var replyMarkupObject = new ReplyMarkupObject(
-                        new ReplyMarkupOptions(
-                            BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode)
-                        )
-                    );
-                    if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                            e.Message.From.LanguageCode,
-                            ParseMode.Html, replyMarkupObject, null);
+                    var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
+                    if (optionsStringToKeyboard != null)
+                    {
+                        var replyMarkupObject = new ReplyMarkupObject(
+                            new ReplyMarkupOptions(
+                                optionsStringToKeyboard
+                            )
+                        );
+                        if (telegramBotAbstract != null)
+                            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                                e.Message.From.LanguageCode,
+                                ParseMode.Html, replyMarkupObject, null);
+                    }
                 }
             }
         }
@@ -979,15 +997,19 @@ public class Program
             { "it", "Seleziona un percorso" }
         };
         var text = new Language(dict);
-        var replyMarkupObject = new ReplyMarkupObject(
-            new ReplyMarkupOptions(
-                BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e?.Message?.From?.LanguageCode)
-            )
-        );
-        if (telegramBotAbstract != null)
-            await telegramBotAbstract.SendTextMessageAsync(e?.Message?.Chat.Id, text, ChatType.Private,
-                e?.Message?.From?.LanguageCode,
-                ParseMode.Html, replyMarkupObject, null);
+        var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e?.Message?.From?.LanguageCode);
+        if (optionsStringToKeyboard != null)
+        {
+            var replyMarkupObject = new ReplyMarkupObject(
+                new ReplyMarkupOptions(
+                    optionsStringToKeyboard
+                )
+            );
+            if (telegramBotAbstract != null)
+                await telegramBotAbstract.SendTextMessageAsync(e?.Message?.Chat.Id, text, ChatType.Private,
+                    e?.Message?.From?.LanguageCode,
+                    ParseMode.Html, replyMarkupObject, null);
+        }
     }
 
     private static async Task HandleSchoolAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
@@ -1023,21 +1045,25 @@ public class Program
                 if (e.Message.From != null)
                 {
                     var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetSchool());
-                    var replyMarkupObject = new ReplyMarkupObject(
-                        new ReplyMarkupOptions(
-                            BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode)
-                        )
-                    );
-                    var dict1 = new Dictionary<string, string?>
+                    var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
+                    if (optionsStringToKeyboard != null)
                     {
-                        { "en", "Chosen " + UsersConversations[e.Message.From.Id].GetSchool() },
-                        { "it", "Selezionata " + UsersConversations[e.Message.From.Id].GetSchool() }
-                    };
-                    var text1 = new Language(dict1);
-                    if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,
-                            e.Message.From.LanguageCode,
-                            ParseMode.Html, replyMarkupObject, null);
+                        var replyMarkupObject = new ReplyMarkupObject(
+                            new ReplyMarkupOptions(
+                                optionsStringToKeyboard
+                            )
+                        );
+                        var dict1 = new Dictionary<string, string?>
+                        {
+                            { "en", "Chosen " + UsersConversations[e.Message.From.Id].GetSchool() },
+                            { "it", "Selezionata " + UsersConversations[e.Message.From.Id].GetSchool() }
+                        };
+                        var text1 = new Language(dict1);
+                        if (telegramBotAbstract != null)
+                            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,
+                                e.Message.From.LanguageCode,
+                                ParseMode.Html, replyMarkupObject, null);
+                    }
                 }
             }
         }

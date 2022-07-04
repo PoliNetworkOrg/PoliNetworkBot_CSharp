@@ -292,7 +292,7 @@ internal static class MainAnon
                 { "it", i.ToString() }
             }));
         var x1 = KeyboardMarkup.ArrayToMatrixString(l2);
-        options.AddRange(x1);
+        if (x1 != null) options.AddRange(x1);
 
         ;
 

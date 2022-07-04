@@ -23,7 +23,6 @@
 
     <ItemGroup>
         <None Include="..\.editorconfig" Link=".editorconfig" />
-        <None Include="Code\IG\InstagramApiSharp\InstagramApiSharp.csproj" />
     </ItemGroup>
 
     <ItemGroup>

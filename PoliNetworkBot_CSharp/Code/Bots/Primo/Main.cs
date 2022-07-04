@@ -141,7 +141,7 @@ public class Main
     }
 
     private static async Task HandleMessage3Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
-        string t)
+        string? t)
     {
         if (string.IsNullOrEmpty(t))
             return;
@@ -186,7 +186,7 @@ public class Main
         }
     }
 
-    private static async Task MaybeKing(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e, string t,
+    private static async Task MaybeKing(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e, string? t,
         bool toInsert)
     {
         var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(e, telegramBotClient);
@@ -329,7 +329,7 @@ public class Main
     }
 
     private static async Task<MessageSentResult?> SendMessageYouAreKingAsync(TelegramBotAbstract? telegramBotClient,
-        MessageEventArgs? e, string t)
+        MessageEventArgs? e, string? t)
     {
         var dict = new Dictionary<string, string?>
         {

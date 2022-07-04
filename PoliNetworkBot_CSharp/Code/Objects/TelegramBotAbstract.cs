@@ -397,7 +397,7 @@ public class TelegramBotAbstract
         return false;
     }
 
-    internal async Task<UserIdFound> GetIdFromUsernameAsync(string? target)
+    internal async Task<UserIdFound?> GetIdFromUsernameAsync(string? target)
     {
         switch (_isbot)
         {
@@ -457,17 +457,20 @@ public class TelegramBotAbstract
     }
 
     internal async Task<MessageSentResult?> ForwardMessageAsync(int messageId, long idChatMessageFrom,
-        long idChatMessageTo)
+        long? idChatMessageTo)
     {
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
             {
                 if (_botClient != null)
+                {
+                    if (idChatMessageTo != null)
                     {
                         var m = await _botClient.ForwardMessageAsync(idChatMessageTo, idChatMessageFrom, messageId);
                         return new MessageSentResult(true, m, m.Chat.Type);
                     }
+                }
 
                 break;
             }
@@ -1183,8 +1186,9 @@ public class TelegramBotAbstract
                         {
                             if (_botClient != null)
                                 if (text != null)
-                                    _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                        text.Select(lang));
+                                    if (inputOnlineFile != null)
+                                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                            text.Select(lang));
                             return true;
                         }
 
@@ -1197,7 +1201,8 @@ public class TelegramBotAbstract
                                 if (text != null)
                                     if (t1 != null)
                                         _ = await _botClient.SendTextMessageAsync(userId, t1);
-                                _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                                if (inputOnlineFile != null)
+                                    _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
 
                                 return true;
                             }
@@ -1206,7 +1211,8 @@ public class TelegramBotAbstract
                             {
                                 if (_botClient != null)
                                 {
-                                    _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                                    if (inputOnlineFile != null)
+                                        _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
                                     var t1 = text?.Select(lang);
                                     if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1);
                                 }
@@ -1572,8 +1578,8 @@ public class TelegramBotAbstract
         return false;
     }
 
-    public async Task<MessageSentResult?> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto objectPhoto,
-        string caption,
+    public async Task<MessageSentResult?> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto? objectPhoto,
+        string? caption,
         ParseMode parseMode, ChatType chatTypeToSendTo)
     {
         switch (_isbot)
@@ -1582,7 +1588,7 @@ public class TelegramBotAbstract
             {
                 if (_botClient != null)
                 {
-                    var m2 = objectPhoto.GetTelegramBotInputOnlineFile();
+                    var m2 = objectPhoto?.GetTelegramBotInputOnlineFile();
                     if (m2 != null)
                     {
                         var m1 = await _botClient.SendPhotoAsync(chatIdToSendTo,
@@ -1597,16 +1603,19 @@ public class TelegramBotAbstract
 
             case BotTypeApi.USER_BOT:
 
-                var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(UserbotClient);
-                if (photoFile?.Item1 == null)
-                    return new MessageSentResult(false, null, chatTypeToSendTo);
-
-                if (UserbotClient != null)
+                if (objectPhoto != null)
                 {
-                    var m2 = await UserbotClient.SendUploadedPhoto(
-                        UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
-                        file: photoFile.Item1);
-                    return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
+                    var photoFile = await objectPhoto.GetTelegramUserBotInputPhoto(UserbotClient);
+                    if (photoFile?.Item1 == null)
+                        return new MessageSentResult(false, null, chatTypeToSendTo);
+
+                    if (UserbotClient != null)
+                    {
+                        var m2 = await UserbotClient.SendUploadedPhoto(
+                            UserbotPeer.GetPeerFromIdAndType(chatIdToSendTo, chatTypeToSendTo), caption: caption,
+                            file: photoFile.Item1);
+                        return new MessageSentResult(m2 != null, m2, chatTypeToSendTo);
+                    }
                 }
 
                 break;
@@ -1667,7 +1676,7 @@ public class TelegramBotAbstract
         return null;
     }
 
-    public async Task<MessageSentResult?> SendVideoAsync(long chatIdToSendTo, ObjectVideo video, string caption,
+    public async Task<MessageSentResult?> SendVideoAsync(long chatIdToSendTo, ObjectVideo? video, string? caption,
         ParseMode parseMode, ChatType chatTypeToSendTo)
     {
         switch (_isbot)
@@ -1677,14 +1686,17 @@ public class TelegramBotAbstract
                 {
                     if (_botClient != null)
                     {
-                        var v1 = video.GetTelegramBotInputOnlineFile();
+                        var v1 = video?.GetTelegramBotInputOnlineFile();
                         if (v1 != null)
                         {
-                            var m1 = await _botClient.SendVideoAsync(chatIdToSendTo, caption: caption,
-                                video: v1, duration: video.GetDuration(),
-                                height: video.GetHeight(),
-                                width: video.GetWidth(), parseMode: parseMode);
-                            return new MessageSentResult(true, m1, chatTypeToSendTo);
+                            if (video != null)
+                            {
+                                var m1 = await _botClient.SendVideoAsync(chatIdToSendTo, caption: caption,
+                                    video: v1, duration: video.GetDuration(),
+                                    height: video.GetHeight(),
+                                    width: video.GetWidth(), parseMode: parseMode);
+                                return new MessageSentResult(true, m1, chatTypeToSendTo);
+                            }
                         }
                     }
                 }

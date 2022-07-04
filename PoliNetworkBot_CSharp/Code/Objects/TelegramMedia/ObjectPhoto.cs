@@ -20,10 +20,10 @@ public class ObjectPhoto : GenericMedia
     private readonly int _fileSize;
     private readonly int _idPhotoDb;
     private readonly long? _messageIdFrom;
-    private readonly string _uniqueId;
+    private readonly string? _uniqueId;
 
     public ObjectPhoto(int idPhotoDb, string? fileId, int fileSize, int height, int width,
-        string uniqueId, long? messageIdFrom, long chatId, ChatType chatType)
+        string? uniqueId, long? messageIdFrom, long chatId, ChatType chatType)
     {
         _idPhotoDb = idPhotoDb;
         _fileId = fileId;

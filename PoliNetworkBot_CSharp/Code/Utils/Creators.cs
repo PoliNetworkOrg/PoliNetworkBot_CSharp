@@ -8,9 +8,9 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class Creators
+internal static class Creators
 {
-    internal static bool? CheckIfIsCreatorOrSubCreator(ChatMember chatMember)
+    internal static bool? CheckIfIsCreatorOrSubCreator(ChatMember? chatMember)
     {
         if (chatMember?.User == null)
             return null;
@@ -18,8 +18,8 @@ internal class Creators
         if (string.IsNullOrEmpty(chatMember.User.Username))
             return false;
 
-        return GlobalVariables.Creators.ToList().Any(x => x.Matches(chatMember.User))
-               ||
-               GlobalVariables.SubCreators.ToList().Any(x => x.Matches(chatMember.User));
+        return GlobalVariables.SubCreators != null && GlobalVariables.Creators != null && (GlobalVariables.Creators.ToList().Any(x => x.Matches(chatMember.User))
+            ||
+            GlobalVariables.SubCreators.ToList().Any(x => x.Matches(chatMember.User)));
     }
 }

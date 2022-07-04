@@ -32,11 +32,12 @@ internal class HtmlUtil
             lst.Add(doc);
             for (var i = 0; i < lst.Count; i++)
             {
-                if (lst[i] == null) continue;
+                var htmlNode = lst[i];
+                if (htmlNode == null) continue;
 
-                if (lst[i].GetClasses().Contains(className)) result.Add(lst[i]);
+                if (htmlNode.GetClasses().Contains(className)) result.Add(htmlNode);
 
-                var childcollection = lst[i].ChildNodes;
+                var childcollection = htmlNode.ChildNodes;
                 if (childcollection == null) continue;
                 lst.AddRange(childcollection);
             }
@@ -51,11 +52,12 @@ internal class HtmlUtil
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)
                 {
-                    if (lst[i] == null) continue;
+                    var htmlNode = lst[i];
+                    if (htmlNode == null) continue;
 
-                    if (lst[i].Name == tag) result.Add(lst[i]);
+                    if (htmlNode.Name == tag) result.Add(htmlNode);
 
-                    var childcollection = lst[i].ChildNodes;
+                    var childcollection = htmlNode.ChildNodes;
                     if (childcollection == null) continue;
                     lst.AddRange(childcollection);
                 }
@@ -67,11 +69,12 @@ internal class HtmlUtil
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)
                 {
-                    if (lst[i] == null) continue;
+                    var htmlNode = lst[i];
+                    if (htmlNode == null) continue;
 
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag) result.Add(lst[i]);
+                    if (htmlNode.GetClasses().Contains(className) && htmlNode.Name == tag) result.Add(htmlNode);
 
-                    var childcollection = lst[i].ChildNodes;
+                    var childcollection = htmlNode.ChildNodes;
                     if (childcollection == null) continue;
                     lst.AddRange(childcollection);
                 }
@@ -85,17 +88,18 @@ internal class HtmlUtil
             lst.Add(doc);
             for (var i = 0; i < lst.Count; i++)
             {
-                if (lst[i] == null) continue;
+                var htmlNode = lst[i];
+                if (htmlNode == null) continue;
 
-                if (lst[i].GetClasses().Contains(className))
+                if (htmlNode.GetClasses().Contains(className))
                 {
-                    result.Add(lst[i]);
+                    result.Add(htmlNode);
 
                     if (result.Count == limit.Value)
                         return result;
                 }
 
-                var childcollection = lst[i].ChildNodes;
+                var childcollection = htmlNode.ChildNodes;
                 if (childcollection == null) continue;
                 lst.AddRange(childcollection);
             }
@@ -110,17 +114,18 @@ internal class HtmlUtil
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)
                 {
-                    if (lst[i] == null) continue;
+                    var htmlNode = lst[i];
+                    if (htmlNode == null) continue;
 
-                    if (lst[i].Name == tag)
+                    if (htmlNode.Name == tag)
                     {
-                        result.Add(lst[i]);
+                        result.Add(htmlNode);
 
                         if (result.Count == limit.Value)
                             return result;
                     }
 
-                    var childcollection = lst[i].ChildNodes;
+                    var childcollection = htmlNode.ChildNodes;
                     if (childcollection == null) continue;
                     lst.AddRange(childcollection);
                 }
@@ -132,17 +137,18 @@ internal class HtmlUtil
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)
                 {
-                    if (lst[i] == null) continue;
+                    var htmlNode = lst[i];
+                    if (htmlNode == null) continue;
 
-                    if (lst[i].GetClasses().Contains(className) && lst[i].Name == tag)
+                    if (htmlNode.GetClasses().Contains(className) && htmlNode.Name == tag)
                     {
-                        result.Add(lst[i]);
+                        result.Add(htmlNode);
 
                         if (result.Count == limit.Value)
                             return result;
                     }
 
-                    var childcollection = lst[i].ChildNodes;
+                    var childcollection = htmlNode.ChildNodes;
                     if (childcollection == null) continue;
                     lst.AddRange(childcollection);
                 }

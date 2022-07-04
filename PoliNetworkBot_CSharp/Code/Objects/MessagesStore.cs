@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -47,7 +48,7 @@ public static class MessagesStore
     /// <param name="messageAllowedStatus"></param>
     /// <param name="timeLater">Allow at a later time starting from now.</param>
     /// <returns></returns>
-    public static bool AddMessage(string message,
+    public static bool AddMessage(string? message,
         MessageAllowedStatusEnum messageAllowedStatus = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,
         TimeSpan? timeLater = null)
     {
@@ -79,14 +80,14 @@ public static class MessagesStore
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    public static bool AllowMessage(string message)
+    public static bool AllowMessage(string? message)
     {
         return AddMessage(message, MessageAllowedStatusEnum.ALLOWED);
     }
 
     public static void CheckTimestamp()
     {
-        if (Store != null && Store.Count == 0)
+        if (Store is { Count: 0 })
             return;
         if (Store != null)
             foreach (var message in Store.Keys)
@@ -105,13 +106,13 @@ public static class MessagesStore
             }
     }
 
-    public static void RemoveMessage(string text)
+    public static void RemoveMessage(string? text)
     {
-        if (Store != null && !Store.ContainsKey(text)) return;
+        if (text != null && Store != null && !Store.ContainsKey(text)) return;
         if (Store != null)
             lock (Store)
             {
-                Store.Remove(text);
+                if (text != null) Store.Remove(text);
             }
     }
 
@@ -163,15 +164,14 @@ public static class MessagesStore
                         lock (Store)
                         {
                             if (text != null)
-                                if (message != null)
-                                    if (message.Text != null)
-                                        Store[text] = new StoredMessage
-                                        (
-                                            lastSeenTime: DateTime.Now,
-                                            howManyTimesWeSawIt: 1,
-                                            message: message.Text,
-                                            allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
-                                        );
+                                if (message is { Text: { } })
+                                    Store[text] = new StoredMessage
+                                    (
+                                        lastSeenTime: DateTime.Now,
+                                        howManyTimesWeSawIt: 1,
+                                        message: message.Text,
+                                        allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
+                                    );
                         }
                 }
 
@@ -181,7 +181,7 @@ public static class MessagesStore
                         if (storedMessage != null)
                             lock (storedMessage)
                             {
-                                if (message != null && message.From != null && message != null && !storedMessage.FromUserId.Contains(message.From.Id))
+                                if (message is { From: { } } && !storedMessage.FromUserId.Contains(message.From.Id))
                                     storedMessage.FromUserId.Add(message.From.Id);
 
                                 if (message != null && !storedMessage.GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
@@ -202,15 +202,18 @@ public static class MessagesStore
         return SpamType.UNDEFINED;
     }
 
-    internal static List<Message?>? GetMessages(string text)
+    internal static List<Message?>? GetMessages(string? text)
     {
         try
         {
             if (Store != null)
             {
-                var messages = Store[text]?.Messages;
-                if (messages != null)
-                    return messages;
+                if (text != null)
+                {
+                    var messages = Store[text]?.Messages;
+                    if (messages != null)
+                        return messages;
+                }
             }
         }
         catch
@@ -274,19 +277,24 @@ public static class MessagesStore
     /// </summary>
     /// <param name="message"></param>
     /// <returns>true if the veto was on time, false otherwise</returns>
-    public static bool VetoMessage(string message)
+    public static bool VetoMessage(string? message)
     {
         if (Store != null)
         {
-            var storedMessage = Store![message];
-            if (storedMessage != null)
+            if (message != null)
             {
-                var allowedTime = storedMessage.AllowedStatus.GetAllowedTime();
-                if (allowedTime != null && allowedTime.Value < DateTime.Now) return false;
+                var storedMessage = Store![message];
+                if (storedMessage != null)
+                {
+                    var allowedTime = storedMessage.AllowedStatus.GetAllowedTime();
+                    if (allowedTime != null && allowedTime.Value < DateTime.Now) return false;
+                }
             }
         }
 
-        if (Store != null) Store[message]?.RemoveMessage(true);
+        if (Store != null)
+            if (message != null)
+                Store[message]?.RemoveMessage(true);
         return true;
     }
 
@@ -294,12 +302,15 @@ public static class MessagesStore
     /// </summary>
     /// <param name="message"></param>
     /// <returns>True if message is Allowed to be sent</returns>
-    public static bool MessageIsAllowed(string message)
+    public static bool MessageIsAllowed(string? message)
     {
         if (Store != null)
         {
-            var storedMessage = Store[message];
-            return storedMessage != null && Store != null && storedMessage.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
+            if (message != null)
+            {
+                var storedMessage = Store[message];
+                return storedMessage != null && Store != null && storedMessage.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
+            }
         }
 
         return false;
@@ -307,14 +318,17 @@ public static class MessagesStore
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    private static void DisallowMessage(string message)
+    private static void DisallowMessage(string? message)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
         if (Store != null)
         {
-            var storedMessage = Store[message];
-            if (storedMessage != null) 
-                storedMessage.RemoveMessage(false);
+            if (message != null)
+            {
+                var storedMessage = Store[message];
+                if (storedMessage != null) 
+                    storedMessage.RemoveMessage(false);
+            }
         }
     }
 
@@ -329,10 +343,15 @@ public static class MessagesStore
         }
     }
 
-    public static bool CanBeVetoed(string message)
+    public static bool CanBeVetoed(string? message)
     {
-        var storedMessage = Store?[message];
-        return storedMessage != null && Store != null && storedMessage.InsertedTime.AddHours(48) >= DateTime.Now;
+        if (message != null)
+        {
+            var storedMessage = Store?[message];
+            return storedMessage != null && Store != null && storedMessage.InsertedTime.AddHours(48) >= DateTime.Now;
+        }
+
+        return false;
     }
 
     internal static void BackupToFile()
@@ -347,12 +366,15 @@ public static class MessagesStore
         }
     }
 
-    public static DateTime? GetAllowedTime(string message)
+    public static DateTime? GetAllowedTime(string? message)
     {
         if (Store != null)
         {
-            var storedMessage = Store[message];
-            if (storedMessage != null) return storedMessage.AllowedStatus.GetAllowedTime();
+            if (message != null)
+            {
+                var storedMessage = Store[message];
+                if (storedMessage != null) return storedMessage.AllowedStatus.GetAllowedTime();
+            }
         }
 
         return null;

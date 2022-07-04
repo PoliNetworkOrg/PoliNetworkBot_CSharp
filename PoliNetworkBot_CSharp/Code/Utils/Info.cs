@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class Info
 {
-    internal static async Task<UserIdFound> GetTargetUserIdAsync(string? target,
+    internal static async Task<UserIdFound?> GetTargetUserIdAsync(string? target,
         TelegramBotAbstract? telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(target))
@@ -44,9 +44,10 @@ internal static class Info
         }
     }
 
-    private static async Task<UserIdFound> GetIdFromUsernameAsync(string? target,
+    private static async Task<UserIdFound?> GetIdFromUsernameAsync(string? target,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        return await telegramBotAbstract.GetIdFromUsernameAsync(target);
+        if (telegramBotAbstract != null) return await telegramBotAbstract.GetIdFromUsernameAsync(target);
+        return null;
     }
 }

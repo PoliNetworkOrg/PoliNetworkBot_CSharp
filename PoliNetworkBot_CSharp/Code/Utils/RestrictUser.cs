@@ -139,15 +139,19 @@ internal static class RestrictUser
                         try
                         {
                             var groupChatId = (long)dr["id"];
-                            var success = await BanUserFromGroup(sender, targetId.GetId().Value, groupChatId, null,
-                                revokeMessage);
-                            if (success != null && success.IsSuccess())
-                                done.Add(dr);
-                            else
-                                failed.Add(dr);
+                            if (targetId != null)
+                            {
+                                var target2 = targetId.GetId();
+                                var success = await BanUserFromGroup(sender, target2, groupChatId, null,
+                                    revokeMessage);
+                                if (success != null && success.IsSuccess())
+                                    done.Add(dr);
+                                else
+                                    failed.Add(dr);
 
-                            if (success != null && success.ContainsExceptions())
-                                nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                                if (success != null && success.ContainsExceptions())
+                                    nExceptions += AddExceptionIfNeeded(ref exceptions, success.GetFirstException());
+                            }
                         }
                         catch
                         {
@@ -193,7 +197,7 @@ internal static class RestrictUser
                         {
                             var groupChatId = (long)dr["id"];
                             var chatType = GetChatType(dr);
-                            var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
+                            var success = await MuteUser(sender, targetId.GetId(), groupChatId, until,
                                 chatType, RestrictAction.MUTE);
                             if (success.IsSuccess())
                                 done.Add(dr);
@@ -220,7 +224,7 @@ internal static class RestrictUser
                         {
                             var groupChatId = (long)dr["id"];
                             var chatType = GetChatType(dr);
-                            var success = await MuteUser(sender, targetId.GetId().Value, groupChatId, until,
+                            var success = await MuteUser(sender, targetId.GetId(), groupChatId, until,
                                 chatType, RestrictAction.UNMUTE);
                             if (success.IsSuccess())
                                 done.Add(dr);
@@ -248,21 +252,24 @@ internal static class RestrictUser
                 {
                     if (e.Message.From != null)
                     {
-                        LogBanAction(targetId.GetId().Value, banTarget, sender, e.Message.From.Id, sender);
+                        if (targetId != null)
+                        {
+                            LogBanAction(targetId.GetId(), banTarget, sender, e.Message.From.Id, sender);
 
-                        var targetId2 = targetId.GetId();
-                        var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
-                        if (targetId2 == null)
-                        {
-                            await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
-                                e.Message.From.LanguageCode);
-                        }
-                        else
-                        {
-                            var link2 = "tg://user?id=" + targetId2.Value;
-                            await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
-                                "Ban/Unban All of [<a href='" + link2 + "'>" + targetId2.Value + "</a>]",
-                                e.Message.From.LanguageCode);
+                            var targetId2 = targetId.GetId();
+                            var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
+                            if (targetId2 == null)
+                            {
+                                await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
+                                    e.Message.From.LanguageCode);
+                            }
+                            else
+                            {
+                                var link2 = "tg://user?id=" + targetId2.Value;
+                                await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
+                                    "Ban/Unban All of [<a href='" + link2 + "'>" + targetId2.Value + "</a>]",
+                                    e.Message.From.LanguageCode);
+                            }
                         }
                     }
                 }
@@ -307,7 +314,7 @@ internal static class RestrictUser
     }
 
     private static async Task<SuccessWithException> MuteUser(TelegramBotAbstract? sender,
-        long value, long groupChatId, DateTime? until, ChatType? chatType, RestrictAction restrictAction)
+        long? value, long groupChatId, DateTime? until, ChatType? chatType, RestrictAction restrictAction)
     {
         try
         {
@@ -373,7 +380,7 @@ internal static class RestrictUser
         return e1.AreTheySimilar(item2);
     }
 
-    private static bool LogBanAction(long targetId, RestrictAction bannedTrueUnbannedFalse,
+    private static bool LogBanAction(long? targetId, RestrictAction bannedTrueUnbannedFalse,
         TelegramBotAbstract? bot, long whoBanned, TelegramBotAbstract? sender)
     {
         if (bannedTrueUnbannedFalse != RestrictAction.BAN &&

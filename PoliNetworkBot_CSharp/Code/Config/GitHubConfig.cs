@@ -12,34 +12,35 @@ internal static class GitHubConfig
 {
     private const string Path = Paths.Info.GitHubConfigInfo;
 
-    private static string GetInfo(string param)
+    private static string? GetInfo(string param)
     {
         var json = File.ReadAllText(Path);
         var data = JObject.Parse(json);
-        return (string)data[param];
+        var jToken = data[param];
+        return (string?)jToken;
     }
 
-    public static string GetUser()
+    public static string? GetUser()
     {
         return GetInfo("user");
     }
 
-    public static object GetEmail()
+    public static object? GetEmail()
     {
         return GetInfo("email");
     }
 
-    public static object GetPassword()
+    public static object? GetPassword()
     {
         return GetInfo("password");
     }
 
-    public static object GetRepo()
+    public static object? GetRepo()
     {
         return GetInfo("data_repo");
     }
 
-    public static object GetRemote()
+    public static object? GetRemote()
     {
         return GetInfo("remote_repo");
     }

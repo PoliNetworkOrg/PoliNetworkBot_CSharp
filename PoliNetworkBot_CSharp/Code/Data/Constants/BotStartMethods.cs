@@ -18,12 +18,21 @@ public static class BotStartMethods
     public static readonly Tuple<string, int> Material = new("mat", 4);
     public static readonly Tuple<string, int> Admin = new("ad", 5);
 
-    internal static Action<object?, MessageEventArgs?>? GetMethodFromString(string? s)
+    internal static ActionMessageEvent GetMethodFromString(string? s)
     {
-        return s == Moderation.Item1 ? Main.MainMethod :
-            s == Primo.Item1 ? Bots.Primo.Main.MainMethod :
-            s == Anon.Item1 ? MainAnon.MainMethod :
-            s == Material.Item1 ? Program.BotClient_OnMessageAsync : null;
+        Action<object?, MessageEventArgs?>? x = null;
+        if (s == Moderation.Item1)
+            x = Main.MainMethod;
+        else if (s == Primo.Item1)
+            x = Bots.Primo.Main.MainMethod;
+        else if (s == Anon.Item1)
+            x = MainAnon.MainMethod;
+        else if (s == Material.Item1)
+            x = Program.BotClient_OnMessageAsync;
+
+        return new ActionMessageEvent(x);
+
+        
     }
 }
 

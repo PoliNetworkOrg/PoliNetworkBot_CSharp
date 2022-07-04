@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [JsonObject(MemberSerialization.Fields)]
 public static class FilePaths
 {
-    public static bool TryGetValue(string fileAndGit, TelegramBotAbstract? telegramBotAbstract, out string? output)
+    public static bool TryGetValue(string? fileAndGit, TelegramBotAbstract? telegramBotAbstract, out string? output)
     {
         const string? q1 = "SELECT location FROM FilePaths WHERE file_and_git = @v";
         var d = new Dictionary<string, object?>
@@ -35,7 +35,7 @@ public static class FilePaths
         return true;
     }
 
-    public static bool TryAdd(string fileUniqueAndGit, TelegramBotAbstract? telegramBotAbstract, string? file)
+    public static bool TryAdd(string? fileUniqueAndGit, TelegramBotAbstract? telegramBotAbstract, string? file)
     {
         try
         {

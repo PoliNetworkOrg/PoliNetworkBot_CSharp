@@ -609,7 +609,8 @@ internal static class Program
                     {
                         botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                        botClientWhole.OnmessageMethod2.Item1?.Invoke(botClientWhole.BotClient,
+                        botClientWhole.OnmessageMethod2.Item1?.GetAction()
+                            ?.Invoke(botClientWhole.BotClient,
                             new MessageEventArgs(update.Message));
                     }
 

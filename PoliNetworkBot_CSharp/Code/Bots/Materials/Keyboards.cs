@@ -14,10 +14,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials;
 
 public static class Keyboards
 {
-    internal static IEnumerable<List<Language>>? GetKeyboardCorsi(string scuola)
+    internal static IEnumerable<List<Language>>? GetKeyboardCorsi(string? scuola)
     {
         var options2 = new List<Language>();
-        if (Navigator.ScuoleCorso[scuola] != null)
+        if (scuola != null && Navigator.ScuoleCorso[scuola] != null)
             options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso =>
                 new Language(new Dictionary<string, string?> { { "it", corso }, { "en", corso } })));
         options2.Add(new Language(new Dictionary<string, string?>

@@ -35,31 +35,34 @@ internal class ListaGruppiTG_Update
         foreach (var l2 in L)
             try
             {
-                var s3 = "Success: " + (l2.successoGenerazioneLink != SuccessoGenerazioneLink.ERRORE ? "S" : "N") +
-                         "\n" +
-                         "IdLink: " + StringNotNull(l2.gruppoTG.idLink) + "\n" +
-                         "NewLink: " + StringNotNull(l2.gruppoTG.newLink) + "\n" +
-                         "PermanentId: " + StringNotNullFromLong(l2.gruppoTG.permanentId) + "\n" +
-                         "OldLink: " + "[";
-
-                if (l2.gruppoTG.oldLinks == null || l2.gruppoTG.oldLinks.Count == 0)
+                if (l2.gruppoTG != null)
                 {
-                    ;
-                }
-                else
-                {
-                    var s4 = l2.gruppoTG.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
-                    s4 = s4.Remove(s4.Length - 1);
-                    s3 += s4;
-                }
+                    var s3 = "Success: " + (l2.successoGenerazioneLink != SuccessoGenerazioneLink.ERRORE ? "S" : "N") +
+                             "\n" +
+                             "IdLink: " + StringNotNull(l2.gruppoTG.idLink) + "\n" +
+                             "NewLink: " + StringNotNull(l2.gruppoTG.newLink) + "\n" +
+                             "PermanentId: " + StringNotNullFromLong(l2.gruppoTG.permanentId) + "\n" +
+                             "OldLink: " + "[";
 
-                s3 += "]" + "\n" +
-                      "ExceptionMessage: " + StringNotNull(HttpUtility.HtmlEncode(l2.ExceptionMessage)) + "\n" +
-                      "q1: " + StringNotNullFromBool(l2.Query1Fallita) + "\n" +
-                      "q2: " + StringNotNullFromBool(l2.Query2Fallita) + "\n" +
-                      "q3: " + StringNotNullFromBool(l2.CreateInviteLinkFallita) + "\n" +
-                      "Nome: " + StringNotNull(l2.gruppoTG.nome);
-                st += s3 + "\n\n";
+                    if (l2.gruppoTG.oldLinks == null || l2.gruppoTG.oldLinks.Count == 0)
+                    {
+                        ;
+                    }
+                    else
+                    {
+                        var s4 = l2.gruppoTG.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
+                        s4 = s4.Remove(s4.Length - 1);
+                        s3 += s4;
+                    }
+
+                    s3 += "]" + "\n" +
+                          "ExceptionMessage: " + StringNotNull(HttpUtility.HtmlEncode(l2.ExceptionMessage)) + "\n" +
+                          "q1: " + StringNotNullFromBool(l2.Query1Fallita) + "\n" +
+                          "q2: " + StringNotNullFromBool(l2.Query2Fallita) + "\n" +
+                          "q3: " + StringNotNullFromBool(l2.CreateInviteLinkFallita) + "\n" +
+                          "Nome: " + StringNotNull(l2.gruppoTG.nome);
+                    st += s3 + "\n\n";
+                }
 
                 /*await sender.SendTextMessageAsync(e.Message.From.Id,
                         new Language(

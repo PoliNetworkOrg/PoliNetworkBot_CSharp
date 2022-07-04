@@ -10,16 +10,16 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public class GruppoTG_Update
 {
-    public GruppoTG gruppoTG;
+    public GruppoTG? gruppoTG;
     public SuccessoGenerazioneLink successoGenerazioneLink;
 
-    public GruppoTG_Update(GruppoTG p, SuccessoGenerazioneLink eRRORE)
+    public GruppoTG_Update(GruppoTG? p, SuccessoGenerazioneLink eRRORE)
     {
         gruppoTG = p;
         successoGenerazioneLink = eRRORE;
     }
 
-    public string ExceptionMessage { get; internal set; }
+    public string? ExceptionMessage { get; internal set; }
     public Exception? ExceptionObject { get; internal set; }
     public bool? Query1Fallita { get; internal set; }
     public bool? Query2Fallita { get; internal set; }

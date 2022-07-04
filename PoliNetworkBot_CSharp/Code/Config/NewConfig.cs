@@ -433,7 +433,7 @@ public static class NewConfig
         }
     }
 
-    private static bool AddAssocToDb(string name, IReadOnlyCollection<long>? users, DbConfig? DbConfig)
+    private static bool AddAssocToDb(string? name, IReadOnlyCollection<long>? users, DbConfig? DbConfig)
     {
         const string? q1 = "INSERT INTO Entities (Name) VALUES (@name)";
         _ = Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?> { { "@name", name } });

@@ -11,19 +11,19 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class KeyboardMarkup
 {
-    public static List<List<KeyboardButton>> OptionsStringToKeyboard(IEnumerable<List<Language>>? options,
+    public static List<List<KeyboardButton?>>? OptionsStringToKeyboard(IEnumerable<List<Language>>? options,
         string? lang)
     {
-        return options.Select(o => o.Select(
+        return options?.Select(o => o.Select(
             o2 =>
             {
                 var o3 = o2.Select(lang);
-                return new KeyboardButton(o3);
+                return o3 != null ? new KeyboardButton(o3) : null;
             }
         ).ToList()).ToList();
     }
 
-    internal static List<List<T>> ArrayToMatrixString<T>(List<T> list)
+    internal static List<List<T>>? ArrayToMatrixString<T>(List<T> list)
     {
         if (list == null || list.Count == 0)
             return null;

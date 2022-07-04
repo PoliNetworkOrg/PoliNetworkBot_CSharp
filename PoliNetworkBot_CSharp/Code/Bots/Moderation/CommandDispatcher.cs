@@ -369,37 +369,37 @@ internal static class CommandDispatcher
                                 { "it", "List of messages: " },
                                 { "en", "List of messages: " }
                             });
-                            if (sender != null)
-                            {
-                                if (e != null)
+                            if (sender == null) return;
+                            if (e == null) return;
+
+                            
+                            
+                                var message1 = e!.Message;
+                                if (message1 == null)
+                                    return;
+
+                                await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+                                    ChatType.Private,
+                                    e?.Message?.From?.LanguageCode, ParseMode.Html, null,
+                                    e?.Message?.From?.Username,
+                                    message1.MessageId);
+                                var messages = MessagesStore.GetAllMessages(x =>
+                                    x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
+                                if (messages == null)
+                                    return;
+
+                                foreach (var m2 in messages.Select(message => message?.message)
+                                             .Where(m2 => m2 != null))
                                 {
-                                    if (e != null)
+                                    text = new Language(new Dictionary<string, string?>
                                     {
-                                        var message1 = e!.Message;
-                                        if (message1 != null)
-                                        {
-                                            await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                                                ChatType.Private,
-                                                e?.Message?.From?.LanguageCode, ParseMode.Html, null,
-                                                e?.Message?.From?.Username,
-                                                message1.MessageId);
-                                            var messages = MessagesStore.GetAllMessages(x =>
-                                                x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
-                                            foreach (var m2 in messages.Select(message => message.message)
-                                                         .Where(m2 => m2 != null))
-                                            {
-                                                text = new Language(new Dictionary<string, string?>
-                                                {
-                                                    { "uni", m2 }
-                                                });
-                                                await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                                                    ChatType.Private,
-                                                    "uni", ParseMode.Html, null, e?.Message?.From?.Username);
-                                            }
-                                        }
-                                    }
+                                        { "uni", m2 }
+                                    });
+                                    await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+                                        ChatType.Private,
+                                        "uni", ParseMode.Html, null, e?.Message?.From?.Username);
                                 }
-                            }
+                            
 
                             return;
                         }
@@ -1382,28 +1382,39 @@ internal static class CommandDispatcher
 
         if (e.Message.Text != null)
         {
-            var (dateTimeSchedule, exception, s) = await AskUser.AskDateAsync(e.Message.From.Id,
+            var tuple1 = await AskUser.AskDateAsync(e.Message.From.Id,
                 e.Message.Text,
                 e.Message.From.LanguageCode, sender, e.Message.From.Username);
 
-            if (exception != null)
+            if (tuple1 != null)
             {
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
+                var exception = tuple1.Item2;
+                if (exception != null)
+                {
+                    var s = tuple1.Item3;
+                    await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
 
-                return null;
+                    return null;
+                }
             }
 
-
-            var sentDate2 = dateTimeSchedule.GetDate();
-
-            var dict = new Dictionary<string, string?>
+            if (tuple1 != null)
             {
-                { "en", DateTimeClass.DateTimeToItalianFormat(sentDate2) }
-            };
-            var text = new Language(dict);
-            return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode, e.Message.From.Username,
-                text, ParseMode.Html, e.Message.MessageId);
+                var dateTimeSchedule = tuple1.Item1;
+                if (dateTimeSchedule != null)
+                {
+                    var sentDate2 = dateTimeSchedule.GetDate();
+
+                    var dict = new Dictionary<string, string?>
+                    {
+                        { "en", DateTimeClass.DateTimeToItalianFormat(sentDate2) }
+                    };
+                    var text = new Language(dict);
+                    return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                        e.Message.From.LanguageCode, e.Message.From.Username,
+                        text, ParseMode.Html, e.Message.MessageId);
+                }
+            }
         }
 
         return null;
@@ -1460,7 +1471,7 @@ internal static class CommandDispatcher
         string? lang, ChatType chatType)
     {
         var groups = Utils.Groups.GetAllGroups(sender);
-        Stream stream = new MemoryStream();
+        Stream? stream = new MemoryStream();
         FileSerialization.SerializeFile(groups, ref stream);
 
         var peer = new PeerAbstract(chatId, chatType);
@@ -1657,13 +1668,16 @@ internal static class CommandDispatcher
     {
         try
         {
-            var (banUnbanAllResult, exceptionNumbereds, item3) = done;
-            await SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                "success.bin", sender, e);
-            await SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                "failed.bin", sender, e);
+            if (done != null)
+            {
+                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                await SendReportOfSuccessAndFailures2(
+                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
+                    "success.bin", sender, e);
+                await SendReportOfSuccessAndFailures2(
+                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
+                    "failed.bin", sender, e);
+            }
         }
         catch
         {
@@ -1671,7 +1685,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task SendReportOfSuccessAndFailures2(Stream stream, string filename,
+    private static async Task SendReportOfSuccessAndFailures2(Stream? stream, string filename,
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var file = new TelegramFile(stream, filename, "", "application/octet-stream");

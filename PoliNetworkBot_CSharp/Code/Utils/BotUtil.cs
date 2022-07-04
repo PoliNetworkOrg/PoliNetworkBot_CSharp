@@ -18,40 +18,46 @@ internal class BotUtil
         if (telegramBotAbstract != null)
             return telegramBotAbstract;
 
-        foreach (var x in GlobalVariables.Bots.Keys)
-        {
-            var bot = GlobalVariables.Bots[x];
-            var botType = bot.GetBotType();
-            switch (botType)
+        if (GlobalVariables.Bots != null)
+            foreach (var x in GlobalVariables.Bots.Keys)
             {
-                case BotTypeApi.REAL_BOT:
+                var bot = GlobalVariables.Bots[x];
+                if (bot != null)
                 {
-                    var botMode = bot.GetMode();
-                    if (botMode == BotStartMethods.Moderation.Item1)
-                        return bot;
+                    var botType = bot.GetBotType();
+                    switch (botType)
+                    {
+                        case BotTypeApi.REAL_BOT:
+                        {
+                            var botMode = bot.GetMode();
+                            if (botMode == BotStartMethods.Moderation.Item1)
+                                return bot;
 
-                    break;
+                            break;
+                        }
+                        case BotTypeApi.USER_BOT:
+                            break;
+
+                        case BotTypeApi.DISGUISED_BOT:
+                            break;
+                    }
                 }
-                case BotTypeApi.USER_BOT:
-                    break;
-
-                case BotTypeApi.DISGUISED_BOT:
-                    break;
             }
-        }
 
         return null;
     }
 
-    public static List<TelegramBotAbstract?> GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
+    public static List<TelegramBotAbstract?>? GetBotFromType(BotTypeApi botTypeApi, string botModeParam)
     {
-        return (from x in GlobalVariables.Bots.Keys
-            select GlobalVariables.Bots[x]
-            into bot
-            let botType = bot.GetBotType()
-            where botType == botTypeApi
-            let botMode = bot.GetMode()
-            where botMode == botModeParam
-            select bot).ToList();
+        if (GlobalVariables.Bots != null)
+            return (from x in GlobalVariables.Bots.Keys
+                select GlobalVariables.Bots[x]
+                into bot
+                let botType = bot.GetBotType()
+                where botType == botTypeApi
+                let botMode = bot.GetMode()
+                where botMode == botModeParam
+                select bot).ToList();
+        return null;
     }
 }

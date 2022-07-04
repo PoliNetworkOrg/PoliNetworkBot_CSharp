@@ -36,7 +36,7 @@ internal static class NotifyUtil
                 return;
             }
 
-            var hashText = HashUtils.GetHashOf(text)[..20];
+            var hashText = HashUtils.GetHashOf(text)?[..20];
 
             var message = "#Permitted spam in group: ";
             message += "\n";
@@ -150,7 +150,7 @@ internal static class NotifyUtil
         var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
     }
 
-    internal static Task NotifyOwners(string v, TelegramBotAbstract? telegramBotAbstract,
+    internal static Task NotifyOwners(string? v, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
         return NotifyOwners3(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
@@ -301,20 +301,23 @@ internal static class NotifyUtil
                 message += "\n";
                 message += "-----";
                 message += "\n";
-                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
-                message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
-                ;
-
-                const string? langCode = "it";
-                var text2 = new Language(new Dictionary<string, string?>
+                if (done != null)
                 {
-                    { "it", message }
-                });
-                Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                    Data.Constants.Groups.BanNotificationGroup,
-                    ChatType.Group,
-                    ParseMode.Html, null, true);
+                    var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                    message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
+                    ;
+
+                    const string? langCode = "it";
+                    var text2 = new Language(new Dictionary<string, string?>
+                    {
+                        { "it", message }
+                    });
+                    Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+                    await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                        Data.Constants.Groups.BanNotificationGroup,
+                        ChatType.Group,
+                        ParseMode.Html, null, true);
+                }
             }
         }
         catch (Exception? e)
@@ -401,8 +404,8 @@ internal static class NotifyUtil
     public static string? CreatePermittedSpamMessage(MessageEventArgs? messageEventArgs,
         string? text, string? groups, string? messageType, string? assoc)
     {
-        var hashAssoc = HashUtils.GetHashOf(assoc)[..8];
-        var hashText = HashUtils.GetHashOf(text)[..20];
+        var hashAssoc = HashUtils.GetHashOf(assoc)?[..8];
+        var hashText = HashUtils.GetHashOf(text)?[..20];
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";

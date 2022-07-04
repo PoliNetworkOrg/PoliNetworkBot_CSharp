@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class StreamSerialization
 {
-    public static MemoryStream SerializeToStream(object? o)
+    public static MemoryStream? SerializeToStream(object? o)
     {
         var stream = new MemoryStream();
         IFormatter formatter = new BinaryFormatter();
