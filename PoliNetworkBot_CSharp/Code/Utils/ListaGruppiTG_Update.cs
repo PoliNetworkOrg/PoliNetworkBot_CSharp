@@ -91,7 +91,7 @@ internal class ListaGruppiTG_Update
         return permanentId == null ? "null" : permanentId.Value.ToString();
     }
 
-    private static string? StringNotNull(string? idLink)
+    private static string StringNotNull(string? idLink)
     {
         if (idLink == null)
             return "[null]";

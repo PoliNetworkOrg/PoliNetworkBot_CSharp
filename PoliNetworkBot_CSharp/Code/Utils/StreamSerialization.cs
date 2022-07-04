@@ -8,14 +8,17 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class StreamSerialization
+internal static class StreamSerialization
 {
     public static MemoryStream? SerializeToStream(object? o)
     {
+        if (o == null)
+            return null;
+
         var stream = new MemoryStream();
         IFormatter formatter = new BinaryFormatter();
 #pragma warning disable SYSLIB0011 // Il tipo o il membro è obsoleto
-        if (o != null) formatter.Serialize(stream, o);
+        formatter.Serialize(stream, o);
 #pragma warning restore SYSLIB0011 // Il tipo o il membro è obsoleto
         return stream;
     }

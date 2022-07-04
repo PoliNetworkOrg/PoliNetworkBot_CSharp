@@ -98,7 +98,7 @@ internal static class InviteLinks
         }
     }
 
-    private static NuovoLink? SalvaNuovoLink(string? nuovoLink, long chatId, TelegramBotAbstract? sender,
+    private static NuovoLink SalvaNuovoLink(string? nuovoLink, long chatId, TelegramBotAbstract? sender,
         SuccessoGenerazioneLink successoGenerazioneLink)
     {
         const string? q1 = "UPDATE GroupsTelegram SET link = @link, last_update_link = @lul WHERE id = @id";

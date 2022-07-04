@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class UserbotPeer
 {
-    internal static TLAbsInputPeer? GetPeerFromIdAndType(long chatid, ChatType? chatType)
+    internal static TLAbsInputPeer GetPeerFromIdAndType(long chatid, ChatType? chatType)
     {
         if (chatType == null) return new TLInputPeerChat { ChatId = (int)chatid };
 

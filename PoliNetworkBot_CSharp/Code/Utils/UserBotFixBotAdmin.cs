@@ -101,8 +101,6 @@ internal static class UserBotFixBotAdmin
 
             i += limit;
         }
-
-        return false;
     }
 
     private static async Task<Tuple<bool?, string, long>?> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(
