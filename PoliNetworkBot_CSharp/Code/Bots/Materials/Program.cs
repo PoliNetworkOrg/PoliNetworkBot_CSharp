@@ -357,6 +357,7 @@ public class Program
                         ChannelsForApproval.GetChannel(GetChan(fileNameWithPath)), text,
                         ChatType.Private,
                         callbackQuery?.Message?.From?.LanguageCode, ParseMode.Html, null, null);
+                    return;
                 }
 
                 var fileOnlyRelativePath = fileNameWithPath[Config.RootDir.Length..];
