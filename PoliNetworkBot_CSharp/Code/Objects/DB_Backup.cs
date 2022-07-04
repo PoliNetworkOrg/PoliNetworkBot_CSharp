@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Newtonsoft.Json;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 

@@ -58,7 +58,8 @@ internal static class ModerationCheck
 
                 //start | exclude groups, bot will not operate in them
                 if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
-                    return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null, new List<int> { 30 },
+                    return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
+                        new List<int> { 30 },
                         null);
                 //end | exclude groups
                 lock (Lock)
@@ -77,7 +78,9 @@ internal static class ModerationCheck
                 }
             }
 
-            var (item1, item2, list2, item4) = await CheckIfToExit(sender, e, null) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(null, null, null,null);
+            var (item1, item2, list2, item4) = await CheckIfToExit(sender, e, null) ??
+                                               new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(null, null, null,
+                                                   null);
 
 
             if (list2 != null)
@@ -121,7 +124,8 @@ internal static class ModerationCheck
             case null:
             case DBNull:
             {
-                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
+                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ??
+                                                  new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
                 if (ints != null)
                 {
                     ints.Insert(0, 1);
@@ -132,16 +136,14 @@ internal static class ModerationCheck
             }
             case char b:
             {
-                if (b != 'Y')
-                {
-                    return await PreExitChecks(b.ToString(), e, telegramBotClient);
-                } 
+                if (b != 'Y') return await PreExitChecks(b.ToString(), e, telegramBotClient);
                 return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null, new List<int> { 7 },
-                        b.ToString());
+                    b.ToString());
             }
             case string s when string.IsNullOrEmpty(s):
             {
-                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
+                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ??
+                                                  new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
                 if (ints != null)
                 {
                     ints.Insert(0, 14);
@@ -170,7 +172,8 @@ internal static class ModerationCheck
             }
             default:
             {
-                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?>(null,null,null);
+                var (toExit, chatMembers, ints) = await CheckIfToExit_NullValueAndUpdateIt(telegramBotClient, e) ??
+                                                  new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
                 if (ints != null)
                 {
                     ints.Insert(0, 10);
@@ -190,7 +193,8 @@ internal static class ModerationCheck
         MessageEventArgs? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        var (item1, item2, item3) = await CheckIfToExit_NullValue2Async(telegramBotAbstract, messageEventArgs) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?>(null , null, null);
+        var (item1, item2, item3) = await CheckIfToExit_NullValue2Async(telegramBotAbstract, messageEventArgs) ??
+                                    new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
         if (item1 == ToExit.EXIT)
             return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(item1, item2, item3, oldValid);
         try
@@ -198,7 +202,6 @@ internal static class ModerationCheck
             const string? q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
             const string? valid = "Y";
             if (messageEventArgs != null)
-            {
                 if (messageEventArgs.Message != null)
                 {
                     var d = new Dictionary<string, object?>
@@ -208,7 +211,6 @@ internal static class ModerationCheck
                     };
                     Database.Execute(q, GlobalVariables.DbConfig, d);
                 }
-            }
 
             var name = "";
             if (messageEventArgs is { Message.Chat.Title: { } })
@@ -229,12 +231,12 @@ internal static class ModerationCheck
         TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e)
     {
-        var (toExit, chatMembers, ints) = await CheckIfToExit_NullValue2Async(telegramBotClient, e) ?? new Tuple<ToExit?, ChatMember[]?, List<int>?>(null,null,null);
+        var (toExit, chatMembers, ints) = await CheckIfToExit_NullValue2Async(telegramBotClient, e) ??
+                                          new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
         var valid = toExit == ToExit.STAY ? "Y" : "N";
 
         var q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
         if (e != null)
-        {
             if (e.Message != null)
             {
                 var d = new Dictionary<string, object?>
@@ -244,7 +246,6 @@ internal static class ModerationCheck
                 };
                 Database.Execute(q, GlobalVariables.DbConfig, d);
             }
-        }
 
         if (ints != null)
         {
@@ -259,26 +260,23 @@ internal static class ModerationCheck
         TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (e != null)
-        {
             if (e.Message != null)
             {
                 var idChat = e?.Message?.Chat?.Id;
                 if (idChat != null)
-                {
                     if (telegramBotClient != null)
                     {
                         var r = await telegramBotClient.GetChatAdministratorsAsync(idChat);
                         if (r == null)
-                            return new Tuple<ToExit?, ChatMember[]?, List<int>?>(ToExit.STAY, null, new List<int> { 3 });
+                            return new Tuple<ToExit?, ChatMember[]?, List<int>?>(ToExit.STAY, null,
+                                new List<int> { 3 });
 
                         return r.Select(Creators.CheckIfIsCreatorOrSubCreator)
                             .Any(isCreator => isCreator != null && isCreator.Value)
                             ? new Tuple<ToExit?, ChatMember[]?, List<int>?>(ToExit.STAY, r, new List<int> { 4 })
                             : new Tuple<ToExit?, ChatMember[]?, List<int>?>(ToExit.EXIT, r, new List<int> { 5 });
                     }
-                }
             }
-        }
 
         return null;
     }
@@ -319,12 +317,14 @@ internal static class ModerationCheck
 
     private static List<UsernameAndNameCheckResult>? CheckUsername(MessageEventArgs? e)
     {
-        Message? message1 = e?.Message;
-        long? id = message1?.Chat.Id;
-        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && id !=null && GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
+        var message1 = e?.Message;
+        var id = message1?.Chat.Id;
+        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && id != null &&
+            GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
 
-        User? from = message1?.From;
-        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } && from !=null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
+        var from = message1?.From;
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } &&
+            from != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
             return null;
 
         if (e != null)
@@ -339,12 +339,12 @@ internal static class ModerationCheck
                         userId: e?.Message?.From?.Id, messageId: message.MessageId)
                 };
 
-                User[]? newChatMembers = message1?.NewChatMembers;
-                if (e?.Message?.NewChatMembers == null || (newChatMembers == null || newChatMembers.Length == 0))
+                var newChatMembers = message1?.NewChatMembers;
+                if (e?.Message?.NewChatMembers == null || newChatMembers == null || newChatMembers.Length == 0)
                     return r;
 
                 r.AddRange(from user in newChatMembers
-                           where user.Id != r[0].GetUserId()
+                    where user.Id != r[0].GetUserId()
                     select CheckUsername2(user.Username, user.FirstName, user.Id,
                         user.LastName, user.LanguageCode, message1?.MessageId));
 
@@ -359,7 +359,8 @@ internal static class ModerationCheck
         long? userId,
         string? lastName, string? language, long? messageId)
     {
-        var username = GlobalVariables.AllowedNoUsernameFromThisUserId != null && string.IsNullOrEmpty(fromUsername) && (userId == null || !GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId.Value));
+        var username = GlobalVariables.AllowedNoUsernameFromThisUserId != null && string.IsNullOrEmpty(fromUsername) &&
+                       (userId == null || !GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(userId.Value));
         var name = fromFirstName != null && fromFirstName.Length < 2;
 
         return new UsernameAndNameCheckResult(username, name, language,
@@ -368,18 +369,19 @@ internal static class ModerationCheck
 
     public static async Task<SpamType?> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
-        User? from1 = e?.Message?.From;
+        var from1 = e?.Message?.From;
         switch (e?.Message)
         {
             case { Chat.Type: ChatType.Private }:
             case { From: { }, Chat: { } }
-                when e != null && ((from1 != null && from1.Id == 777000) || (from1 !=null && from1.Id == e.Message.Chat.Id)):
+                when e != null && ((from1 != null && from1.Id == 777000) ||
+                                   (from1 != null && from1.Id == e.Message.Chat.Id)):
                 return SpamType.ALL_GOOD;
         }
 
         var from = e?.Message?.From;
-        if (from != null && (CheckIfIsInList(GlobalVariables.AllowedSpam,from) ||
-                             CheckIfIsInList(GlobalVariables.Creators,from) ||
+        if (from != null && (CheckIfIsInList(GlobalVariables.AllowedSpam, from) ||
+                             CheckIfIsInList(GlobalVariables.Creators, from) ||
                              CheckIfIsInList(GlobalVariables.SubCreators, from) ||
                              CheckIfIsInList(GlobalVariables.Owners, from)))
             return SpamType.ALL_GOOD;
@@ -457,7 +459,8 @@ internal static class ModerationCheck
     private static async Task SendUsernameWarning(TelegramBotAbstract? telegramBotClient,
         bool username, bool name, string? lang, string? usernameOfUser,
         long chatId, long? userId, long? messageId, ChatType messageChatType,
-        string? firstName, string? lastName, IReadOnlyCollection<User>? newChatMembers, MessageEventArgs? messageEventArgs)
+        string? firstName, string? lastName, IReadOnlyCollection<User>? newChatMembers,
+        MessageEventArgs? messageEventArgs)
     {
         var s1I = username switch
         {

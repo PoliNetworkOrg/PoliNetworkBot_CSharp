@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -150,7 +150,8 @@ internal static class ThreadAsync
 
         DictionaryWebpost ??= GetDictionary();
 
-        if (DictionaryWebpost != null && DictionaryWebpost.ContainsKey(webPost.postid) && DictionaryWebpost[webPost.postid].seen == 'Y') return;
+        if (DictionaryWebpost != null && DictionaryWebpost.ContainsKey(webPost.postid) &&
+            DictionaryWebpost[webPost.postid].seen == 'Y') return;
 
         ;
 

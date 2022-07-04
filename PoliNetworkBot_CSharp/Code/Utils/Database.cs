@@ -31,7 +31,6 @@ public static class Database
         var numberOfRowsAffected = cmd.ExecuteNonQuery();
 
         return numberOfRowsAffected;
-
     }
 
     public static DataTable? ExecuteSelect(string? query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)

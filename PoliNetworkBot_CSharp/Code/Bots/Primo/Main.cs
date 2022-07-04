@@ -133,9 +133,7 @@ public class Main
     {
         if (GlobalVariables.wordToBeFirsts != null)
             foreach (var x2 in GlobalVariables.wordToBeFirsts.Select(x => x.Matches(t)).Where(x2 => x2.Item1))
-            {
                 return new Tuple<bool?, string?>(x2.Item1, x2.Item2);
-            }
 
         return new Tuple<bool?, string?>(false, null);
     }
@@ -149,7 +147,8 @@ public class Main
         const string? q = "SELECT * FROM Primo WHERE title = @t";
         if (telegramBotClient != null)
         {
-            var r = Database.ExecuteSelect(q, telegramBotClient.DbConfig, new Dictionary<string, object?> { { "@t", t } });
+            var r = Database.ExecuteSelect(q, telegramBotClient.DbConfig,
+                new Dictionary<string, object?> { { "@t", t } });
             if (r == null || r.Rows.Count == 0)
             {
                 await MaybeKing(telegramBotClient, e, t, true);
@@ -203,17 +202,14 @@ public class Main
                     var m1 = e?.Message;
                     if (m1 != null)
                     {
-
-                        
-                            var r2 = Database.Execute(q2, telegramBotClient.DbConfig, new Dictionary<string, object?>
-                            {
-                                { "@title", t },
-                                { "@fn", m1.From?.FirstName },
-                                { "@ln", m1.From?.LastName },
-                                { "@wk", DateTime.Now },
-                                { "@ki", m1.From?.Id }
-                            });
-                        
+                        var r2 = Database.Execute(q2, telegramBotClient.DbConfig, new Dictionary<string, object?>
+                        {
+                            { "@title", t },
+                            { "@fn", m1.From?.FirstName },
+                            { "@ln", m1.From?.LastName },
+                            { "@wk", DateTime.Now },
+                            { "@ki", m1.From?.Id }
+                        });
                     }
                 }
             }
@@ -294,11 +290,11 @@ public class Main
         if (r == null || e == null)
             return null;
 
-        Telegram.Bot.Types.Message? message = e.Message;
+        var message = e.Message;
         return (from DataRow dr in r.Rows
             where dr != null
             let id = (long)dr["king_id"]
-            where message !=null && message.From != null && id == message.From.Id
+            where message != null && message.From != null && id == message.From.Id
             let dt = (DateTime)dr["when_king"]
             where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
             select dr["title"].ToString()).ToList();
@@ -342,14 +338,12 @@ public class Main
         {
             var m1 = e?.Message;
             if (e != null)
-            {
                 if (m1 != null)
                 {
                     var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1?.From?.LanguageCode, text, e,
                         m1!.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
                     return r;
                 }
-            }
         }
 
         return null;

@@ -49,13 +49,14 @@ public class StoredMessage
 
             case MessageAllowedStatusEnum.PENDING:
                 throw new Exception("MessageAllowedStatusEnum.PENDING should be hidden behind abstraction!");
-            
+
             case MessageAllowedStatusEnum.NOT_DEFINED_ERROR:
             case MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
                 break;
         }
 
-        return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 && (FromUserId.Count <= 1 || FromUserId.Count > 1 && message.Length > 10)
+        return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
+               (FromUserId.Count <= 1 || (FromUserId.Count > 1 && message.Length > 10))
             ? IsSpam2()
             : SpamType.UNDEFINED;
     }

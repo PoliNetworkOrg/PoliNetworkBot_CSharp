@@ -48,7 +48,8 @@ internal static class AskUser
                 var botId = telegramBotAbstract.GetId();
                 var tcs = UserAnswers.GetNewTcs(idUser.Value, botId);
                 UserAnswers.SetAnswerProcessed(idUser.Value, botId, false);
-                UserAnswers.AddWorkCompleted(idUser.Value, botId, sendMessageConfirmationChoice, telegramBotAbstract, lang,
+                UserAnswers.AddWorkCompleted(idUser.Value, botId, sendMessageConfirmationChoice, telegramBotAbstract,
+                    lang,
                     username);
 
                 if (tcs != null) return await tcs.Task;
@@ -204,7 +205,7 @@ internal static class AskUser
         var reply = await AskAsync(id, lang2, sender, lang, username);
         try
         {
-            var tuple1  = DateTimeClass.GetDateTimeFromString(reply);
+            var tuple1 = DateTimeClass.GetDateTimeFromString(reply);
             if (tuple1 != null)
             {
                 var dateTime = tuple1.Item1;

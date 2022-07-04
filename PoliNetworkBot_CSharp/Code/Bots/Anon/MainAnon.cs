@@ -87,7 +87,8 @@ internal static class MainAnon
             var botId = telegramBotAbstract.GetId();
 
             if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
-                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) ==
+                    AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
                     var text = e?.Message?.Text;
                     if (text != null)
@@ -297,7 +298,7 @@ internal static class MainAnon
         ;
 
         var m1 = e?.Message;
-        if (m1!= null)
+        if (m1 != null)
         {
             var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
                 e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username,
@@ -506,7 +507,9 @@ internal static class MainAnon
                         null);
             }
             else
+            {
                 x = await e.SendMessageInQueueAsync(telegramBotAbstract);
+            }
 
             ;
 
@@ -574,7 +577,8 @@ internal static class MainAnon
                 messageIdReplyTo = messageIdReplyTo
             };
 
-            var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon, ConfigAnon.ModAnonCheckGroup,
+            var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
+                ConfigAnon.ModAnonCheckGroup,
                 language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageID());
 
             return m4 != null;

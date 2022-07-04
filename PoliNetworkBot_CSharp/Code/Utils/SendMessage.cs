@@ -120,7 +120,8 @@ internal static class SendMessage
         Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink)
     {
-        return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption, username, lang,
+        return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
+            username, lang,
             replyToMessageId, disablePreviewLink);
     }
 
@@ -165,7 +166,7 @@ internal static class SendMessage
 
         if (replyTo == null)
             return SuccessQueue.INVALID_OBJECT;
-        
+
         if (messageFromIdPerson == null)
             return SuccessQueue.INVALID_MESSAGE_FROM_ID_PERSON;
 

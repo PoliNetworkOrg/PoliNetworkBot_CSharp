@@ -1,16 +1,15 @@
 ﻿#region
 
-using System;
 using System.IO;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 //using InstagramApiSharp.API.Builder;
 //using InstagramApiSharp.Classes;
 //using InstagramApiSharp.Logger;
 //using Minista.Helpers;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 //using PoliNetworkBot_CSharp.Code.IG.InstagramApiSharp.API;
 //using PoliNetworkBot_CSharp.Code.IG.Minista.Helpers.Uploaders;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
 
@@ -98,14 +97,14 @@ internal class Test_IG
         //              Console.WriteLine("!string.IsNullOrEmpty(challenge.Value.StepData.Email)");
         //              }
 //
-    //                  ;
-    //      }
-    //      }
-    //  }
-    //  else
-    //  {
-    //      ;
-    //  }
+        //                  ;
+        //      }
+        //      }
+        //  }
+        //  else
+        //  {
+        //      ;
+        //  }
 //
         //      ;
 

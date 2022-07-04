@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,10 +38,10 @@ public static class Keyboards
         var root = Program.Config.RootDir + corso;
         var percorso = Program.UsersConversations[id].GetPath();
         if (!string.IsNullOrEmpty(percorso)) root += @"/" + percorso;
-        var subdirectoryEntries = System.Array.Empty<string>();
+        var subdirectoryEntries = Array.Empty<string>();
         if (Program.UsersConversations[id].GetState() != UserState.NEW_FOLDER)
             subdirectoryEntries = Directory.GetDirectories(root);
-        if (subdirectoryEntries != null) 
+        if (subdirectoryEntries != null)
             subdirectoryEntries = RemoveGit(subdirectoryEntries);
         return subdirectoryEntries;
     }
@@ -56,7 +57,10 @@ public static class Keyboards
                              : "null"));
         if (subdirectoryEntries != null)
         {
-            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string?> { { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() } }))
+            var options2 = subdirectoryEntries.Select(v => new Language(new Dictionary<string, string?>
+                {
+                    { "it", v.Split("/").Last().Split(@"\").Last() }, { "en", v.Split("/").Last().Split(@"\").Last() }
+                }))
                 .ToList();
             if (percorso == null)
             {

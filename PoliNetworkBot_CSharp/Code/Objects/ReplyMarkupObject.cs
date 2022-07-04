@@ -11,9 +11,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class ReplyMarkupObject
 {
+    private readonly InlineKeyboardMarkup? _inlineKeyboardMarkup;
     private readonly ReplyMarkupOptions? _list;
     private readonly ReplyMarkupEnum _replyMarkupEnum;
-    private readonly InlineKeyboardMarkup? _inlineKeyboardMarkup;
 
     public ReplyMarkupObject(ReplyMarkupOptions? list)
     {
@@ -34,7 +34,7 @@ public class ReplyMarkupObject
             return;
         }
 
-        this._inlineKeyboardMarkup = inlineKeyboardMarkup;
+        _inlineKeyboardMarkup = inlineKeyboardMarkup;
         _replyMarkupEnum = ReplyMarkupEnum.INLINE;
     }
 

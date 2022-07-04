@@ -9,8 +9,8 @@ namespace PoliNetworkBot_CSharp.Code.Data;
 
 public class TelegramUser
 {
-    public readonly long? Id;
     private readonly string? _username;
+    public readonly long? Id;
 
     public TelegramUser(string? v)
     {

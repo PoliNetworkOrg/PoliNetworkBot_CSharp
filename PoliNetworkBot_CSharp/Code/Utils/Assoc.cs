@@ -104,7 +104,8 @@ internal static class Assoc
                 }
             );
 
-            var opt1 = new Language(new Dictionary<string, string?> { { "it", "Metti in coda" }, { "en", "Place in queue" } });
+            var opt1 = new Language(new Dictionary<string, string?>
+                { { "it", "Metti in coda" }, { "en", "Place in queue" } });
             var opt2 = new Language(
                 new Dictionary<string, string?> { { "it", "Scegli la data" }, { "en", "Choose the date" } });
             var options = new List<List<Language>>
@@ -113,7 +114,6 @@ internal static class Assoc
             };
 
             if (e != null)
-            {
                 if (e.Message != null)
                 {
                     var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
@@ -122,7 +122,8 @@ internal static class Assoc
                     Tuple<DateTimeSchedule?, Exception?, string?>? sentDate = null;
                     if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
                     {
-                        sentDate = new Tuple<DateTimeSchedule?, Exception?, string?>(new DateTimeSchedule(null, false), null,
+                        sentDate = new Tuple<DateTimeSchedule?, Exception?, string?>(new DateTimeSchedule(null, false),
+                            null,
                             null);
                     }
                     else
@@ -133,7 +134,8 @@ internal static class Assoc
 
                         if (sentDate?.Item2 != null)
                         {
-                            await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0, sentDate.Item3);
+                            await NotifyUtil.NotifyOwners(new ExceptionNumbered(sentDate.Item2), sender, e, 0,
+                                sentDate.Item3);
                             return false;
                         }
 
@@ -165,7 +167,8 @@ internal static class Assoc
                     {
                         if (sentDate != null)
                         {
-                            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1, e.Message.From?.Id,
+                            var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1,
+                                e.Message.From?.Id,
                                 messageFromIdEntity, idChat, sender, chatTypeSendInto);
 
                             switch (successQueue)
@@ -189,18 +192,17 @@ internal static class Assoc
                                     throw new ArgumentOutOfRangeException();
                             }
 
-                            if (successQueue == SuccessQueue.SUCCESS) 
+                            if (successQueue == SuccessQueue.SUCCESS)
                                 continue;
-                
+
                             await NotifyUtil.NotifyOwners(
-                                new Exception("Success queue is " + successQueue + " while trying to send a message!"), sender, e);
+                                new Exception("Success queue is " + successQueue + " while trying to send a message!"),
+                                sender, e);
                         }
 
                         return false;
-
                     }
                 }
-            }
 
             var lang3 = new Language(new Dictionary<string, string?>
             {
@@ -451,9 +453,7 @@ internal static class Assoc
         Dictionary<string, object?>? dict2 = null;
 
         if (allAssoc == false)
-        {
             if (e != null)
-            {
                 if (e.Message != null)
                 {
                     var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From?.Id, null,
@@ -468,8 +468,6 @@ internal static class Assoc
                     conditionOnIdEntity = "from_id_entity = @id AND";
                     dict2 = new Dictionary<string, object?> { { "@id", messageFromIdEntity.Value } };
                 }
-            }
-        }
 
         var q = "SELECT * FROM Messages WHERE " + conditionOnIdEntity + " has_been_sent = FALSE";
         var r = Database.ExecuteSelect(q, sender?.DbConfig, dict2);
@@ -577,8 +575,9 @@ internal static class Assoc
     {
         string? message = null;
 
-        if (e != null && e.Message != null && e != null && (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
+        if (e != null && e.Message != null && e != null && (e.Message.ReplyToMessage == null ||
+                                                            (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                             string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
         {
             // the command is being called without a reply, ask for the message:
             var question = new Language(new Dictionary<string, string?>
@@ -602,7 +601,8 @@ internal static class Assoc
             { "en", "In which groups do you want to allow it?" },
             { "it", "In quale gruppo le vuoi approvare?" }
         });
-        var groups = await AskUser.AskAsync(e?.Message?.From?.Id, groupsQuestion, sender, e?.Message?.From?.LanguageCode,
+        var groups = await AskUser.AskAsync(e?.Message?.From?.Id, groupsQuestion, sender,
+            e?.Message?.From?.LanguageCode,
             e?.Message?.From?.Username, true);
 
         var typeQuestion = new Language(new Dictionary<string, string?>
@@ -645,9 +645,7 @@ internal static class Assoc
             var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
 
             if (e != null)
-            {
                 if (e.Message != null)
-                {
                     if (e.Message.From != null)
                     {
                         var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion,
@@ -683,14 +681,13 @@ internal static class Assoc
                         if (message != null && message.Length > 4000)
                         {
                             permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(e,
-                                "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType, assocOrClub);
+                                "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType,
+                                assocOrClub);
                             splitMessage = true;
                         }
 
                         await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
                     }
-                }
-            }
         }
     }
 
@@ -728,7 +725,8 @@ internal static class Assoc
     {
         try
         {
-            if (assocVetoData.MessageSent != null && assocVetoData.MessageSent.GetMessage() is Message m1 && assocVetoData.MessageSent.GetMessageID() != null && !assocVetoData.Modified)
+            if (assocVetoData.MessageSent != null && assocVetoData.MessageSent.GetMessage() is Message m1 &&
+                assocVetoData.MessageSent.GetMessageID() != null && !assocVetoData.Modified)
                 if (sender != null)
                     await sender.EditMessageTextAsync(m1.Chat.Id,
                         int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
@@ -753,14 +751,14 @@ internal static class Assoc
             var allowedNotificationTimeLater = allowedTime.Value - DateTime.Now + new TimeSpan(0, 1, 0);
             _ = TimeUtils.ExecuteAtLaterTime(allowedNotificationTimeLater,
                 () => NotifyMessageIsAllowed(messageEventArgs, sender, message));
-            permittedSpamMessage += "\nAllowed at time: " + allowedTime.Value.ToString("dd'-'MMM'-'yyyy' 'HH':'mm':'ss");
+            permittedSpamMessage +=
+                "\nAllowed at time: " + allowedTime.Value.ToString("dd'-'MMM'-'yyyy' 'HH':'mm':'ss");
             Logger.Logger.WriteLine("Assoc, notification in: " + allowedNotificationTimeLater.Seconds + " seconds");
         }
 
         long? replyTo = null;
 
         if (splitMessage)
-        {
             if (sender != null)
             {
                 var m = await sender.SendTextMessageAsync(Data.Constants.Groups.PermittedSpamGroup, new Language(
@@ -770,7 +768,6 @@ internal static class Assoc
                     }), ChatType.Group, "en", ParseMode.Html, null, null);
                 replyTo = m?.GetMessageID();
             }
-        }
 
         var councilMessage = new Language(
             new Dictionary<string, string?>
@@ -799,7 +796,8 @@ internal static class Assoc
         {
             try
             {
-                if (callbackGenericData.CallBackQueryFromTelegram != null && !Permissions.CheckPermissions(Permission.HEAD_ADMIN,
+                if (callbackGenericData.CallBackQueryFromTelegram != null && !Permissions.CheckPermissions(
+                        Permission.HEAD_ADMIN,
                         callbackGenericData.CallBackQueryFromTelegram.From))
                 {
                     if (callbackGenericData.Bot != null)
@@ -822,7 +820,8 @@ internal static class Assoc
                     return;
                 }
 
-                if (assocVetoData.CallBackQueryFromTelegram != null && assocVetoData.CallBackQueryFromTelegram.Message == null)
+                if (assocVetoData.CallBackQueryFromTelegram != null &&
+                    assocVetoData.CallBackQueryFromTelegram.Message == null)
                     throw new Exception("callBackQueryFromTelegram is null on callbackButton");
 
                 var vetoInTime = MessagesStore.VetoMessage(assocVetoData.Message);
@@ -830,9 +829,7 @@ internal static class Assoc
                 try
                 {
                     if (assocVetoData.CallBackQueryFromTelegram != null)
-                    {
                         if (assocVetoData.CallBackQueryFromTelegram.Message != null)
-                        {
                             if (callbackGenericData.CallBackQueryFromTelegram != null)
                             {
                                 var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" +
@@ -846,8 +843,6 @@ internal static class Assoc
                                         assocVetoData.CallBackQueryFromTelegram.Message.MessageId, newMessage,
                                         ParseMode.Html);
                             }
-                        }
-                    }
 
                     assocVetoData.OnCallback();
 

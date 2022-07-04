@@ -40,12 +40,11 @@ public class BotInfoAbstract
     {
         if (onMessages == BotStartMethods.Anon.Item1)
             return CallbackUtils.CallbackMethodStart;
-        else if (onMessages == BotStartMethods.Moderation.Item1)
+        if (onMessages == BotStartMethods.Moderation.Item1)
             return CallbackUtils.CallbackMethodStart;
-        else if (onMessages == BotStartMethods.Material.Item1)
+        if (onMessages == BotStartMethods.Material.Item1)
             return Program.BotOnCallbackQueryReceived;
         return null;
-          
     }
 
     internal string? GetToken()

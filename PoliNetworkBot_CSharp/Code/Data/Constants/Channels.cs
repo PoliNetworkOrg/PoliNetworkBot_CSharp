@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
@@ -11,7 +15,7 @@ public static class Channels
 
         public static IEnumerable<long> GetChannels()
         {
-            return new[] {PoliAssociazioni, AssociazioniPolimi};
+            return new[] { PoliAssociazioni, AssociazioniPolimi };
         }
     }
 }

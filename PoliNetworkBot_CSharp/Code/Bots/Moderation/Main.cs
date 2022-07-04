@@ -67,11 +67,10 @@ internal static class Main
             var notAuthorizedBotHasBeenAddedBool =
                 await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
             if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
-                foreach (var bot in notAuthorizedBotHasBeenAddedBool.Where(bot => e != null).Where(bot => e?.Message != null))
-                {
+                foreach (var bot in notAuthorizedBotHasBeenAddedBool.Where(bot => e != null)
+                             .Where(bot => e?.Message != null))
                     if (e?.Message != null)
                         await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
-                }
 
             //todo: send message "Bots not allowed here!"
 
@@ -117,10 +116,14 @@ internal static class Main
         try
         {
             if (messageEventArgs is { Message: { } } && (messageEventArgs.Message.Text != null ||
-                                                         messageEventArgs.Message.Type != MessageType.ChatMemberLeft)) return false;
+                                                         messageEventArgs.Message.Type != MessageType.ChatMemberLeft))
+                return false;
             if (messageEventArgs != null && messageEventArgs.Message?.From?.Id == null) return false;
             if (messageEventArgs?.Message?.LeftChatMember?.Id == null) return false;
-            return GlobalVariables.Bots != null && messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id && GlobalVariables.Bots.Keys.All(botsKey => messageEventArgs.Message.From != null && messageEventArgs.Message.From.Id != botsKey);
+            return GlobalVariables.Bots != null &&
+                   messageEventArgs.Message.From?.Id != messageEventArgs.Message.LeftChatMember?.Id &&
+                   GlobalVariables.Bots.Keys.All(botsKey =>
+                       messageEventArgs.Message.From != null && messageEventArgs.Message.From.Id != botsKey);
         }
         catch (Exception? e)
         {

@@ -91,21 +91,26 @@ internal static class Groups
                                 await Task.Delay(300);
                                 Tuple<Chat?, Exception?>? newTitleWithException = null;
                                 var e = 0;
-                                while ((newTitleWithException == null || newTitleWithException.Item2 is ApiRequestException)
+                                while ((newTitleWithException == null ||
+                                        newTitleWithException.Item2 is ApiRequestException)
                                        && e < 3)
                                 {
                                     if (telegramBotAbstract != null)
                                         newTitleWithException = await telegramBotAbstract.GetChat(indexIdInTable);
-                                    if (newTitleWithException != null && newTitleWithException.Item2 is ApiRequestException) await Task.Delay(1000 * 60 * 5);
+                                    if (newTitleWithException != null &&
+                                        newTitleWithException.Item2 is ApiRequestException)
+                                        await Task.Delay(1000 * 60 * 5);
                                     e++;
                                 }
 
                                 newTitle = newTitleWithException?.Item1?.Title;
-                                GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException, telegramBotAbstract);
+                                GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException,
+                                    telegramBotAbstract);
                             }
                             catch (Exception e2)
                             {
-                                var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " + oldTitle +
+                                var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " +
+                                                       oldTitle +
                                                        "\n NewTitle: " + newTitle + "\n\n" + e2);
                                 await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
                             }
@@ -130,7 +135,6 @@ internal static class Groups
                 return;
 
             if (e != null)
-            {
                 if (e.Message != null)
                 {
                     var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat, telegramBotClient);
@@ -138,7 +142,6 @@ internal static class Groups
                     if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                         GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
                 }
-            }
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);
         }
@@ -155,7 +158,7 @@ internal static class Groups
             if (e != null && (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null))
                 return;
             InfoChat? infoChat = null;
-            bool? getDone= null;
+            bool? getDone = null;
 
             lock (GroupsInRam)
             {
@@ -169,7 +172,6 @@ internal static class Groups
             else
             {
                 if (e != null)
-                {
                     if (e.Message != null)
                     {
                         infoChat = new InfoChat(e.Message.Chat, DateTime.Now);
@@ -178,14 +180,11 @@ internal static class Groups
                             GroupsInRam[e.Message.Chat.Id] = infoChat;
                         }
                     }
-                }
             }
 
             const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
             if (telegramBotClient != null)
-            {
                 if (e != null)
-                {
                     if (e.Message != null)
                     {
                         var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
@@ -204,7 +203,8 @@ internal static class Groups
 
                             if (linkFunzionante != null && !linkFunzionante.Value)
                             {
-                                var nuovoLink = await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
+                                var nuovoLink =
+                                    await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                                 if (nuovoLink != null && nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
                                     await NotifyUtil.NotifyOwners(
                                         "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
@@ -212,8 +212,6 @@ internal static class Groups
                             }
                         }
                     }
-                }
-            }
 
             infoChat?.UpdateTimeOfLastLinkCheck();
         }
@@ -256,7 +254,9 @@ internal static class Groups
         lock (GroupsInRam)
         {
             if (!GroupsInRam.ContainsKey(group.Id))
+            {
                 GroupsInRam[group.Id] = new InfoChat(group, DateTime.Now);
+            }
             else
             {
                 var infoChat = GroupsInRam[group.Id];

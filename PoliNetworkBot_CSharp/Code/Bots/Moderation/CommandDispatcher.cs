@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
@@ -11,14 +19,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -48,118 +48,123 @@ internal static class CommandDispatcher
         switch (cmd)
         {
             case "/start":
-                {
-                    await Start(sender, e);
-                    return;
-                }
+            {
+                await Start(sender, e);
+                return;
+            }
 
             case "/force_check_invite_links":
-                {
-                    if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(e?.Message?.From)))
-                        _ = ForceCheckInviteLinksAsync(sender, e);
-                    else
-                        await DefaultCommand(sender, e);
-                    return;
-                }
+            {
+                if (GlobalVariables.Creators != null &&
+                    GlobalVariables.Creators.ToList().Any(x => x.Matches(e?.Message?.From)))
+                    _ = ForceCheckInviteLinksAsync(sender, e);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/contact":
-                {
-                    await ContactUs(sender, e);
-                    return;
-                }
+            {
+                await ContactUs(sender, e);
+                return;
+            }
 
             case "/help":
-                {
-                    await Help(sender, e);
-                    return;
-                }
+            {
+                await Help(sender, e);
+                return;
+            }
 
             case "/muteAll":
+            {
+                if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
-                    if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
-                    {
-                        await CommandNotSentInPrivateAsync(sender, e);
-                        return;
-                    }
-
-                    if (e?.Message?.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedMuteAll != null && GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                            e.Message.From?.Username, false);
-                    else
-                        await DefaultCommand(sender, e);
+                    await CommandNotSentInPrivateAsync(sender, e);
                     return;
                 }
+
+                if (e?.Message?.ReplyToMessage == null)
+                {
+                    await CommandNeedsAReplyToMessage(sender, e);
+                    return;
+                }
+
+                if (GlobalVariables.AllowedMuteAll != null &&
+                    GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username, false);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
             case "/unmuteAll":
+            {
+                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
                 {
-                    if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
-                    {
-                        await CommandNotSentInPrivateAsync(sender, e);
-                        return;
-                    }
-
-                    if (e?.Message?.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedMuteAll != null && GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                            false);
-                    else
-                        await DefaultCommand(sender, e);
+                    await CommandNotSentInPrivateAsync(sender, e);
                     return;
                 }
+
+                if (e?.Message?.ReplyToMessage == null)
+                {
+                    await CommandNeedsAReplyToMessage(sender, e);
+                    return;
+                }
+
+                if (GlobalVariables.AllowedMuteAll != null &&
+                    GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                        false);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/banAll":
+            {
+                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
                 {
-                    if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
-                    {
-                        await CommandNotSentInPrivateAsync(sender, e);
-                        return;
-                    }
-
-                    if (e?.Message?.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedBanAll != null && GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                            false);
-                    else
-                        await DefaultCommand(sender, e);
+                    await CommandNotSentInPrivateAsync(sender, e);
                     return;
                 }
+
+                if (e?.Message?.ReplyToMessage == null)
+                {
+                    await CommandNeedsAReplyToMessage(sender, e);
+                    return;
+                }
+
+                if (GlobalVariables.AllowedBanAll != null &&
+                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                        false);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/banDeleteAll":
+            {
+                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
                 {
-                    if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
-                    {
-                        await CommandNotSentInPrivateAsync(sender, e);
-                        return;
-                    }
-
-                    if (e?.Message?.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedBanAll != null && GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                            true);
-                    else
-                        await DefaultCommand(sender, e);
+                    await CommandNotSentInPrivateAsync(sender, e);
                     return;
                 }
+
+                if (e?.Message?.ReplyToMessage == null)
+                {
+                    await CommandNeedsAReplyToMessage(sender, e);
+                    return;
+                }
+
+                if (GlobalVariables.AllowedBanAll != null &&
+                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                        true);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
 
             /*
         case "/massiveSend":
@@ -187,10 +192,10 @@ internal static class CommandDispatcher
             */
 
             case "/ban":
-                {
-                    _ = BanUserAsync(sender, e, cmdLines, false);
-                    return;
-                }
+            {
+                _ = BanUserAsync(sender, e, cmdLines, false);
+                return;
+            }
             /*case "/banAllHistory":
                 {
                     // _ = BanUserAsync(sender, e, cmdLines);
@@ -199,547 +204,542 @@ internal static class CommandDispatcher
                 }*/
 
             case "/unbanAll":
+            {
+                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
                 {
-                    if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
-                    {
-                        await CommandNotSentInPrivateAsync(sender, e);
-                        return;
-                    }
-
-                    if (e?.Message?.ReplyToMessage == null)
-                    {
-                        await CommandNeedsAReplyToMessage(sender, e);
-                        return;
-                    }
-
-                    if (GlobalVariables.AllowedBanAll != null && GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                        _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                            false);
-                    else
-                        await DefaultCommand(sender, e);
+                    await CommandNotSentInPrivateAsync(sender, e);
                     return;
                 }
+
+                if (e?.Message?.ReplyToMessage == null)
+                {
+                    await CommandNeedsAReplyToMessage(sender, e);
+                    return;
+                }
+
+                if (GlobalVariables.AllowedBanAll != null &&
+                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
+                    _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                        false);
+                else
+                    await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/test_spam":
-                {
-                    if (e?.Message?.ReplyToMessage == null)
-                        return;
-
-                    await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
+            {
+                if (e?.Message?.ReplyToMessage == null)
                     return;
-                }
+
+                await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
+                return;
+            }
 
             case "/groups":
-                {
-                    await SendRecommendedGroupsAsync(sender, e);
-                    return;
-                }
+            {
+                await SendRecommendedGroupsAsync(sender, e);
+                return;
+            }
 
             case "/search":
-                {
-                    var query = "";
-                    if (cmdLines != null)
-                        for (var i = 1; i < cmdLines.Length; i++)
-                            query += cmdLines[i] + " ";
+            {
+                var query = "";
+                if (cmdLines != null)
+                    for (var i = 1; i < cmdLines.Length; i++)
+                        query += cmdLines[i] + " ";
 
-                    if (!string.IsNullOrEmpty(query))
-                        query = query[..^1];
+                if (!string.IsNullOrEmpty(query))
+                    query = query[..^1];
 
-                    _ = SendGroupsByTitle(query, sender, e, 6);
+                _ = SendGroupsByTitle(query, sender, e, 6);
 
-                    return;
-                }
+                return;
+            }
 
             case "/reboot":
-                {
-                    if (e != null && e.Message != null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            Reboot();
-                            return;
-                        }
+                        Reboot();
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
 
             case "/sendmessageinchannel":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var message = e!.Message;
+                    if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
+                        message.Chat.Type == ChatType.Private)
                     {
-                        var message = e!.Message;
-                        if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && message.Chat.Type == ChatType.Private)
-                        {
-                            if (cmdLines != null && (e?.Message?.ReplyToMessage == null || cmdLines.Length != 2))
-                                return;
-                            var text = new Language(new Dictionary<string, string?>
-                            {
-                                { "it", e?.Message?.ReplyToMessage?.Text ?? e?.Message?.ReplyToMessage?.Caption }
-                            });
-                            if (cmdLines != null)
-                            {
-                                var c2 = cmdLines[1];
-                                if (cmdLines != null)
-                                    if (c2 != null)
-                                        _ = await SendMessage.SendMessageInAGroup(sender, e?.Message?.From?.LanguageCode,
-                                            text, e,
-                                            long.Parse(c2),
-                                            ChatType.Channel, ParseMode.Html, null, false);
-                            }
-
+                        if (cmdLines != null && (e?.Message?.ReplyToMessage == null || cmdLines.Length != 2))
                             return;
+                        var text = new Language(new Dictionary<string, string?>
+                        {
+                            { "it", e?.Message?.ReplyToMessage?.Text ?? e?.Message?.ReplyToMessage?.Caption }
+                        });
+                        if (cmdLines != null)
+                        {
+                            var c2 = cmdLines[1];
+                            if (cmdLines != null)
+                                if (c2 != null)
+                                    _ = await SendMessage.SendMessageInAGroup(sender, e?.Message?.From?.LanguageCode,
+                                        text, e,
+                                        long.Parse(c2),
+                                        ChatType.Channel, ParseMode.Html, null, false);
                         }
+
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
 
             case "/getGroups":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var message = e!.Message;
+                    if (GlobalVariables.Creators != null && message != null &&
+                        (GlobalVariables.Creators.ToList().Any(x => x.Matches(e?.Message?.From)) ||
+                         Owners.CheckIfOwner(e?.Message?.From?.Id)) && message.Chat.Type == ChatType.Private)
                     {
-                        var message = e!.Message;
-                        if (GlobalVariables.Creators != null && message != null && (GlobalVariables.Creators.ToList().Any(x => x.Matches(e?.Message?.From)) ||
-                                Owners.CheckIfOwner(e?.Message?.From?.Id)) && message.Chat.Type == ChatType.Private)
-                        {
-                            string? username = null;
-                            if (!string.IsNullOrEmpty(e?.Message?.From?.Username))
-                                username = e.Message.From.Username;
+                        string? username = null;
+                        if (!string.IsNullOrEmpty(e?.Message?.From?.Username))
+                            username = e.Message.From.Username;
 
-                            if (e?.Message?.From != null)
-                                _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode,
-                                    e.Message.Chat.Type);
-                            return;
-                        }
+                        if (e?.Message?.From != null)
+                            _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode,
+                                e.Message.Chat.Type);
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
 
             case "/allowmessage":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var message = e!.Message;
+                    if (message != null && Permissions.CheckPermissions(Permission.HEAD_ADMIN, e?.Message?.From) &&
+                        message.Chat.Type == ChatType.Private)
                     {
-                        var message = e!.Message;
-                        if (message != null && Permissions.CheckPermissions(Permission.HEAD_ADMIN, e?.Message?.From) && message.Chat.Type == ChatType.Private)
-                        {
-                            await AllowMessageAsync(e, sender);
-                            return;
-                        }
+                        await AllowMessageAsync(e, sender);
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
 
             case "/allowmessageowner":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var message = e!.Message;
+                    if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
+                        message.Chat.Type == ChatType.Private)
                     {
-                        var message = e!.Message;
-                        if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && message.Chat.Type == ChatType.Private)
-                        {
-                            await AllowMessageOwnerAsync(e, sender);
-                            return;
-                        }
+                        await AllowMessageOwnerAsync(e, sender);
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
 
+                await DefaultCommand(sender, e);
+
+                return;
+            }
+
             case "/allowedmessages":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var o = e!.Message;
+                    if (o != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && o.Chat.Type == ChatType.Private)
                     {
-                        var o = e!.Message;
-                        if (o != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && o.Chat.Type == ChatType.Private)
+                        var text = new Language(new Dictionary<string, string?>
+                        {
+                            { "it", "List of messages: " },
+                            { "en", "List of messages: " }
+                        });
+                        if (sender == null) return;
+                        if (e == null) return;
+
+
+                        var message1 = e!.Message;
+                        if (message1 == null)
+                            return;
+
+                        await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+                            ChatType.Private,
+                            e?.Message?.From?.LanguageCode, ParseMode.Html, null,
+                            e?.Message?.From?.Username,
+                            message1.MessageId);
+                        var messages = MessagesStore.GetAllMessages(x =>
+                            x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
+                        if (messages == null)
+                            return;
+
+                        foreach (var m2 in messages.Select(message => message?.message)
+                                     .Where(m2 => m2 != null))
+                        {
+                            text = new Language(new Dictionary<string, string?>
+                            {
+                                { "uni", m2 }
+                            });
+                            await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+                                ChatType.Private,
+                                "uni", ParseMode.Html, null, e?.Message?.From?.Username);
+                        }
+
+
+                        return;
+                    }
+                }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
+
+            case "/unallowmessage":
+            {
+                if (e != null)
+                {
+                    var message = e!.Message;
+                    if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
+                        message.Chat.Type == ChatType.Private)
+                    {
+                        if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
                         {
                             var text = new Language(new Dictionary<string, string?>
                             {
-                                { "it", "List of messages: " },
-                                { "en", "List of messages: " }
+                                { "en", "You have to reply to a message containing the message" }
                             });
-                            if (sender == null) return;
-                            if (e == null) return;
-
-                            
-                            
-                                var message1 = e!.Message;
-                                if (message1 == null)
-                                    return;
-
-                                await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                                    ChatType.Private,
-                                    e?.Message?.From?.LanguageCode, ParseMode.Html, null,
-                                    e?.Message?.From?.Username,
-                                    message1.MessageId);
-                                var messages = MessagesStore.GetAllMessages(x =>
-                                    x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
-                                if (messages == null)
-                                    return;
-
-                                foreach (var m2 in messages.Select(message => message?.message)
-                                             .Where(m2 => m2 != null))
+                            if (sender != null)
+                                if (e != null)
                                 {
-                                    text = new Language(new Dictionary<string, string?>
-                                    {
-                                        { "uni", m2 }
-                                    });
-                                    await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                                        ChatType.Private,
-                                        "uni", ParseMode.Html, null, e?.Message?.From?.Username);
+                                    var o = e!.Message;
+                                    if (o != null)
+                                        await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+                                            ChatType.Private,
+                                            e?.Message?.From?.LanguageCode, ParseMode.Html, null,
+                                            e?.Message?.From?.Username,
+                                            o.MessageId);
                                 }
-                            
 
                             return;
                         }
+
+                        MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
 
-            case "/unallowmessage":
-                {
-                    if (e != null)
-                    {
-                        var message = e!.Message;
-                        if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && message.Chat.Type == ChatType.Private)
-                        {
-                            if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
-                            {
-                                var text = new Language(new Dictionary<string, string?>
-                                {
-                                    { "en", "You have to reply to a message containing the message" }
-                                });
-                                if (sender != null)
-                                    if (e != null)
-                                    {
-                                        var o = e!.Message;
-                                        if (o != null)
-                                            await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                                                ChatType.Private,
-                                                e?.Message?.From?.LanguageCode, ParseMode.Html, null,
-                                                e?.Message?.From?.Username,
-                                                o.MessageId);
-                                    }
+                await DefaultCommand(sender, e);
 
-                                return;
-                            }
-
-                            MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
-                            return;
-                        }
-                    }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
-                }
+                return;
+            }
             case "/updategroups_dry":
-                {
-                    if (e != null && e.Message!=null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            var text = await UpdateGroups(sender, true, true, false, e);
+                        var text = await UpdateGroups(sender, true, true, false, e);
 
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
-                                ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            ParseMode.Html, null);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/updategroups":
-                {
-                    if (e != null && e.Message!=null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message?.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message?.Chat.Type == ChatType.Private)
-                        {
-                            var text = await UpdateGroups(sender, false, true, false, e);
+                        var text = await UpdateGroups(sender, false, true, false, e);
 
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
-                                ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            ParseMode.Html, null);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/updategroupsandfixnames":
-                {
-                    if (e != null && e.Message!=null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            var text = await UpdateGroups(sender, false, true, true, e);
+                        var text = await UpdateGroups(sender, false, true, true, e);
 
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
-                                ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            ParseMode.Html, null);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/updategroupsandfixnames_dry":
-                {
-                    if (e != null && e.Message != null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            var text = await UpdateGroups(sender, true, true, true, e);
+                        var text = await UpdateGroups(sender, true, true, true, e);
 
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
-                                ParseMode.Html, null);
+                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            ParseMode.Html, null);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/backup":
-                {
-                    if (e is { Message: { } })
+            {
+                if (e is { Message: { } })
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            if (e.Message.From != null)
-                                await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
-                                    e.Message.Chat.Type);
+                        if (e.Message.From != null)
+                            await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
+                                e.Message.Chat.Type);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/getrunningtime":
-                {
-                    if (e != null && e.Message !=null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
+                        try
                         {
-                            try
+                            var lang = new Language(new Dictionary<string, string?>
                             {
-                                var lang = new Language(new Dictionary<string, string?>
-                                {
-                                    { "", await GetRunningTime() }
-                                });
-                                await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                    e.Message.From?.LanguageCode,
-                                    e.Message.From?.Username, lang, ParseMode.Html,
-                                    null);
-                                return;
-                            }
-                            catch (Exception? ex)
-                            {
-                                _ = NotifyUtil.NotifyOwners(ex, sender, e);
-                            }
-
+                                { "", await GetRunningTime() }
+                            });
+                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                                e.Message.From?.LanguageCode,
+                                e.Message.From?.Username, lang, ParseMode.Html,
+                                null);
                             return;
                         }
+                        catch (Exception? ex)
+                        {
+                            _ = NotifyUtil.NotifyOwners(ex, sender, e);
+                        }
+
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/subscribe_log":
-                {
-                    if (e != null && e.Message != null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            await Logger.Subscribe(e.Message.From?.Id, sender, e);
+                        await Logger.Subscribe(e.Message.From?.Id, sender, e);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/unsubscribe_log":
-                {
-                    if (e != null && e.Message!=null)
+            {
+                if (e != null && e.Message != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) && e.Message!.Chat.Type == ChatType.Private)
-                        {
-                            Logger.Unsubscribe(e.Message.From?.Id);
+                        Logger.Unsubscribe(e.Message.From?.Id);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/getlog":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var message = e!.Message;
+                    if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
+                        message.Chat.Type == ChatType.Private)
                     {
-                        var message = e!.Message;
-                        if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) && message.Chat.Type == ChatType.Private)
-                        {
-                            Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
+                        Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
 
-                            return;
-                        }
+                        return;
                     }
-
-                    await DefaultCommand(sender, e);
-
-                    return;
                 }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
             case "/getmessagesent":
-                {
-                    if (e != null && e.Message!=null)
+            {
+                if (e != null && e.Message != null)
+                    if (Owners.CheckIfOwner(e?.Message?.From?.Id)
+                        && e!.Message!.Chat.Type == ChatType.Private && e.Message.ReplyToMessage != null)
                     {
-                        if (Owners.CheckIfOwner(e?.Message?.From?.Id)
-                            && e!.Message!.Chat.Type == ChatType.Private && e.Message.ReplyToMessage != null)
-                        {
-                            await MessagesStore.SendMessageDetailsAsync(sender, e);
+                        await MessagesStore.SendMessageDetailsAsync(sender, e);
 
-                            return;
-                        }
+                        return;
                     }
 
-                    await DefaultCommand(sender, e);
+                await DefaultCommand(sender, e);
 
-                    return;
-                }
+                return;
+            }
             case "/testtime":
-                {
-                    if (e?.Message != null && e != null && e.Message.Chat.Type == ChatType.Private) 
-                        await TestTime(sender, e);
+            {
+                if (e?.Message != null && e != null && e.Message.Chat.Type == ChatType.Private)
+                    await TestTime(sender, e);
 
-                    return;
-                }
+                return;
+            }
 
             case "/time":
+            {
+                if (e != null)
                 {
-                    if (e != null)
+                    var lang = new Language(new Dictionary<string, string?>
                     {
-                        var lang = new Language(new Dictionary<string, string?>
-                        {
-                            { "", DateTimeClass.NowAsStringAmericanFormat() }
-                        });
-                        await SendMessage.SendMessageInPrivate(sender, e.Message?.From?.Id,
-                            e.Message?.From?.LanguageCode,
-                            e.Message?.From?.Username, lang, ParseMode.Html,
-                            null);
-                    }
-
-                    return;
+                        { "", DateTimeClass.NowAsStringAmericanFormat() }
+                    });
+                    await SendMessage.SendMessageInPrivate(sender, e.Message?.From?.Id,
+                        e.Message?.From?.LanguageCode,
+                        e.Message?.From?.Username, lang, ParseMode.Html,
+                        null);
                 }
+
+                return;
+            }
 
             case "/assoc_write":
             case "/assoc_send":
-                {
-                    _ = await Assoc.Assoc_SendAsync(sender, e);
-                    return;
-                }
+            {
+                _ = await Assoc.Assoc_SendAsync(sender, e);
+                return;
+            }
 
             case "/assoc_publish":
-                {
-                    if (Owners.CheckIfOwner(e?.Message?.From?.Id))
-                        _ = await Assoc.Assoc_Publish(sender, e);
-                    else
-                        _ = await DefaultCommand(sender, e);
-                    return;
-                }
+            {
+                if (Owners.CheckIfOwner(e?.Message?.From?.Id))
+                    _ = await Assoc.Assoc_Publish(sender, e);
+                else
+                    _ = await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/assoc_read":
-                {
-                    _ = await Assoc.Assoc_Read(sender, e, false);
-                    return;
-                }
+            {
+                _ = await Assoc.Assoc_Read(sender, e, false);
+                return;
+            }
 
             case "/assoc_read_all":
-                {
-                    if (Owners.CheckIfOwner(e?.Message?.From?.Id))
-                        _ = await Assoc.Assoc_ReadAll(sender, e);
-                    else
-                        _ = await DefaultCommand(sender, e);
-                    return;
-                }
+            {
+                if (Owners.CheckIfOwner(e?.Message?.From?.Id))
+                    _ = await Assoc.Assoc_ReadAll(sender, e);
+                else
+                    _ = await DefaultCommand(sender, e);
+                return;
+            }
 
             case "/assoc_delete":
             case "/assoc_remove":
-                {
-                    _ = await Assoc.Assoc_Delete(sender, e);
-                    return;
-                }
+            {
+                _ = await Assoc.Assoc_Delete(sender, e);
+                return;
+            }
 
             case "/rooms":
-                {
-                    await Rooms.RoomsMainAsync(sender, e);
-                    return;
-                }
+            {
+                await Rooms.RoomsMainAsync(sender, e);
+                return;
+            }
 
             case "/rules":
-                {
-                    _ = await Rules(sender, e);
-                    return;
-                }
+            {
+                _ = await Rules(sender, e);
+                return;
+            }
 
             case "/qe":
-                {
-                    _ = await QueryBot(true, e, sender);
-                    return;
-                }
+            {
+                _ = await QueryBot(true, e, sender);
+                return;
+            }
 
             case "/qs":
-                {
-                    _ = await QueryBot(false, e, sender);
-                    return;
-                }
+            {
+                _ = await QueryBot(false, e, sender);
+                return;
+            }
 
             case "/update_links_from_json":
-                {
-                    await InviteLinks.UpdateLinksFromJsonAsync(sender, e);
-                    return;
-                }
+            {
+                await InviteLinks.UpdateLinksFromJsonAsync(sender, e);
+                return;
+            }
 
             default:
-                {
-                    await DefaultCommand(sender, e);
-                    return;
-                }
+            {
+                await DefaultCommand(sender, e);
+                return;
+            }
         }
     }
 
@@ -747,8 +747,8 @@ internal static class CommandDispatcher
     {
         if (e != null)
         {
-            if (e.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
+            if (e.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                      string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
             {
                 var text = new Language(new Dictionary<string, string?>
                 {
@@ -803,8 +803,8 @@ internal static class CommandDispatcher
         });
         if (e != null)
             await SendMessage.SendMessageInPrivateOrAGroup(sender,
-                    lang, e.Message?.From?.LanguageCode, e.Message?.From?.Username, e.Message?.From?.Id,
-                    e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message?.Chat.Id, e.Message?.Chat.Type);
+                lang, e.Message?.From?.LanguageCode, e.Message?.From?.Username, e.Message?.From?.Id,
+                e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message?.Chat.Id, e.Message?.Chat.Type);
     }
 
     private static void Reboot()
@@ -854,20 +854,20 @@ internal static class CommandDispatcher
 
                 if (e != null && e.Message != null && e.Message.From != null)
                     return e.Message.Chat.Type switch
-                        {
-                            ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
-                                e.Message.From.Id,
+                    {
+                        ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
+                            e.Message.From.Id,
+                            e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e!.Message?.From?.LanguageCode,
+                            "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
+                        ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
+                            .SendMessageInAGroup(
+                                sender,
                                 e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e!.Message?.From?.LanguageCode,
-                                "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
-                            ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
-                                .SendMessageInAGroup(
-                                    sender,
-                                    e?.Message?.ReplyToMessage?.From?.LanguageCode ?? e!.Message?.From?.LanguageCode,
-                                    text2, e,
-                                    e.Message!.Chat.Id, e.Message.Chat.Type,
-                                    ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
-                            _ => throw new ArgumentOutOfRangeException()
-                        };
+                                text2, e,
+                                e.Message!.Chat.Id, e.Message.Chat.Type,
+                                ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
             }
 
             return null;
@@ -1049,10 +1049,7 @@ internal static class CommandDispatcher
         {
             var jsonDb = BackupUtil.GetDB_AsJson(botAbstract);
 
-            if (string.IsNullOrEmpty(jsonDb))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(jsonDb)) return;
 
             var bytes = Encoding.UTF8.GetBytes(jsonDb);
             var stream = new MemoryStream(bytes);
@@ -1078,7 +1075,6 @@ internal static class CommandDispatcher
     private static async Task TestSpamAsync(Message message, TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e != null)
-        {
             if (e.Message != null)
             {
                 var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
@@ -1104,7 +1100,6 @@ internal static class CommandDispatcher
                     ;
                 }
             }
-        }
     }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
@@ -1333,7 +1328,6 @@ internal static class CommandDispatcher
 
             var query = e.Message.ReplyToMessage.Text;
             if (executeTrueSelectFalse)
-            {
                 if (sender != null)
                 {
                     var i = Database.Execute(query, sender.DbConfig);
@@ -1348,7 +1342,6 @@ internal static class CommandDispatcher
                             e.Message.MessageId);
                     return i;
                 }
-            }
 
 
             if (sender != null)
@@ -1377,7 +1370,7 @@ internal static class CommandDispatcher
 
     private static async Task<MessageSentResult?> TestTime(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        if (e?.Message?.From == null) 
+        if (e?.Message?.From == null)
             return null;
 
         if (e.Message.Text != null)
@@ -1690,7 +1683,6 @@ internal static class CommandDispatcher
     {
         var file = new TelegramFile(stream, filename, "", "application/octet-stream");
         if (e != null)
-        {
             if (e != null)
             {
                 var message = e!.Message;
@@ -1705,7 +1697,6 @@ internal static class CommandDispatcher
                         sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, null, true);
                 }
             }
-        }
     }
 
     private static string? GetFinalTargetForRestrictAll(IReadOnlyList<string?>? target)

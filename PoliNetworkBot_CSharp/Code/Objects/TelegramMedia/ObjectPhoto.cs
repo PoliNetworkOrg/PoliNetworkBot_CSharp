@@ -49,7 +49,7 @@ public class ObjectPhoto : GenericMedia
             var r = await userbot.GetHistoryAsync(peer, (int)_messageIdFrom.Value,
                 offsetDate, 0, 1);
 
-            if (r is not TLMessagesSlice ) return null;
+            if (r is not TLMessagesSlice) return null;
             tlMessagesSlice = (TLMessagesSlice)r;
         }
 

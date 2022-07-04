@@ -1,13 +1,13 @@
 #region
 
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using Telegram.Bot.Types;
 
 #endregion
@@ -101,7 +101,8 @@ internal static class Blacklist
             }
 
         var specialGroups = new List<long> { -1001361547847, -452591994, -1001320704409 };
-        if (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) && (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
+        if (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
+            (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
             return SpamType.NOT_ALLOWED_WORDS;
 
         return SpamType.ALL_GOOD;
@@ -208,7 +209,8 @@ internal static class Blacklist
         DataTable? dt = null;
         try
         {
-            dt = Database.ExecuteSelect(q1, botAbstract?.DbConfig, new Dictionary<string, object?> { { "@link", link } });
+            dt = Database.ExecuteSelect(q1, botAbstract?.DbConfig,
+                new Dictionary<string, object?> { { "@link", link } });
         }
         catch
         {
@@ -231,10 +233,8 @@ internal static class Blacklist
     internal static SpamType IsSpam(IEnumerable<PhotoSize>? photo)
     {
         var biggerphoto = UtilsPhoto.GetLargest(photo);
-        
+
         // ReSharper disable once ConditionalTernaryEqualBranch
-        return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD;        //todo: analizzare la foto con un ocr
-
-
+        return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD; //todo: analizzare la foto con un ocr
     }
 }

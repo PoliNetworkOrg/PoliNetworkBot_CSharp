@@ -31,6 +31,8 @@ public static class Logger
 
     private static readonly object PrintLogLock = new();
 
+    private static DateTime? _lastTimeSentAutomaticLog;
+
     internal static async Task MainMethodAsync()
     {
         while (await Buffer.OutputAvailableAsync())
@@ -84,7 +86,7 @@ public static class Logger
             if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
 
             if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
-            
+
             lock (LogFileLock)
             {
                 File.AppendAllLinesAsync(DataLogPath, new[]
@@ -117,10 +119,7 @@ public static class Logger
         try
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
-            if (bots != null && bots.Count < 1)
-            {
-                throw new Exception("No REAL_BOT to send Log");
-            }
+            if (bots != null && bots.Count < 1) throw new Exception("No REAL_BOT to send Log");
 
             if (bots != null) PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
         }
@@ -129,6 +128,7 @@ public static class Logger
             Console.WriteLine(e);
             throw;
         }
+
         return Task.CompletedTask;
     }
 
@@ -142,7 +142,7 @@ public static class Logger
     {
         if (fromId == null)
             return;
-        
+
         try
         {
             Subscribers.TryAdd(fromId.Value, telegramBotAbstract);
@@ -157,7 +157,7 @@ public static class Logger
     {
         if (fromId == null)
             return;
-        
+
         try
         {
             Subscribers.Remove(fromId.Value);
@@ -282,8 +282,6 @@ public static class Logger
         return toReturn;
     }
 
-    private static DateTime? _lastTimeSentAutomaticLog;
-    
     public static void AutomaticLog()
     {
         while (true)

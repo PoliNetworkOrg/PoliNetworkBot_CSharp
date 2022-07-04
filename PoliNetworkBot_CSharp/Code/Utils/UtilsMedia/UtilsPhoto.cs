@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -20,7 +19,7 @@ internal static class UtilsPhoto
         if (photo == null)
             return null;
 
-        List<PhotoSize?> photoSizes = photo.ToList();
+        var photoSizes = photo.ToList();
         if (!photoSizes.Any())
             return null;
 

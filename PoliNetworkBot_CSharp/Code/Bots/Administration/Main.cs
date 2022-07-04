@@ -77,7 +77,8 @@ internal class Main
 
                         var admins = new List<TLInputUser>();
 
-                        var adminTags = new List<string?> { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
+                        var adminTags = new List<string?>
+                            { "polinetwork3bot" }; //tag members to set admins (MUST BE INSIDE THE members ARRAY)
                         foreach (var admin in adminTags)
                         {
                             Thread.Sleep(1 * 1000 * 10);

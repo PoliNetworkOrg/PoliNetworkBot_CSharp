@@ -69,7 +69,8 @@ public static class GroupsFixLog
         var toReturn = "";
         var exceptionTypes = new List<Type>();
         foreach (var exception in newNull.Values.ToList()
-                     .Where(exception => exception.Value != null && !exceptionTypes.Contains(exception.Value.GetType())))
+                     .Where(exception =>
+                         exception.Value != null && !exceptionTypes.Contains(exception.Value.GetType())))
             if (exception.Value != null)
                 exceptionTypes.Add(exception.Value.GetType());
 

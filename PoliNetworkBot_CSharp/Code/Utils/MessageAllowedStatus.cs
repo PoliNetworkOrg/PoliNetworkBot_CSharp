@@ -1,9 +1,9 @@
 ﻿#region
 
 using System;
-using System.Diagnostics;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
+
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -91,8 +91,8 @@ public class MessageAllowedStatus
             {
                 allowedTimeTemp = allowedTimeTemp.Add(remainingTime)
                     .Add(new TimeSpan(24 - VetoHigherBound + VetoLowerBound, 0, 0));
-                if (timeSpan !=null)
-                    timeSpan =  timeSpan - remainingTime;
+                if (timeSpan != null)
+                    timeSpan = timeSpan - remainingTime;
                 dayInCount++;
             }
         }
@@ -109,7 +109,8 @@ public class MessageAllowedStatus
     {
         switch (_messageAllowedStatus)
         {
-            case MessageAllowedStatusEnum.NOT_ALLOWED or MessageAllowedStatusEnum.NOT_DEFINED_ERROR or MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
+            case MessageAllowedStatusEnum.NOT_ALLOWED or MessageAllowedStatusEnum.NOT_DEFINED_ERROR
+                or MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT:
                 return _messageAllowedStatus;
 
             case MessageAllowedStatusEnum.PENDING or MessageAllowedStatusEnum.ALLOWED:

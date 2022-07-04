@@ -247,11 +247,8 @@ internal static class RestrictUser
             }
 
             if (e != null)
-            {
                 if (e.Message != null)
-                {
                     if (e.Message.From != null)
-                    {
                         if (targetId != null)
                         {
                             LogBanAction(targetId.GetId(), banTarget, sender, e.Message.From.Id, sender);
@@ -271,9 +268,6 @@ internal static class RestrictUser
                                     e.Message.From.LanguageCode);
                             }
                         }
-                    }
-                }
-            }
 
             var r5 = new BanUnbanAllResult(done, failed);
             return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>(r5, exceptions, nExceptions);
@@ -339,7 +333,7 @@ internal static class RestrictUser
                 "it", "Azione avviata: '" + target + "'"
             }
         });
-        
+
         if (e is { Message.From: { } })
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,

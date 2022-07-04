@@ -31,8 +31,6 @@ public static class BotStartMethods
             x = Program.BotClient_OnMessageAsync;
 
         return new ActionMessageEvent(x);
-
-        
     }
 }
 

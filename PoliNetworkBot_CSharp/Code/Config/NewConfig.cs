@@ -244,11 +244,13 @@ public static class NewConfig
                 {
                     var d1 = GetLastUpdateLinkTimeFromJson(r3);
                     if (d1 != null && d1.HasValue())
+                    {
                         lastUpdateLinkTime = d1.GetValue();
+                    }
                     else
                     {
                         var e2 = d1?.GetExceptions();
-                        if (e2 != null) 
+                        if (e2 != null)
                             exceptions.AddRange(e2!);
                     }
 
@@ -320,7 +322,7 @@ public static class NewConfig
         ;
         var r4 = r3.Children();
         ;
-        IJEnumerable<JToken> r5 = r4.Children();
+        var r5 = r4.Children();
 
         long? id = null;
         string? type = null;

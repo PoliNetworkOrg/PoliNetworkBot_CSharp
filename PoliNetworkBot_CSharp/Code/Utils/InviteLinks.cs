@@ -128,7 +128,7 @@ internal static class InviteLinks
 
             if (e?.Message?.From == null)
                 return;
-            
+
             if (!Owners.CheckIfOwner(e.Message.From.Id))
                 return;
 
@@ -163,7 +163,8 @@ internal static class InviteLinks
                                     var jObject = (JObject)x;
                                     if (jObject != null)
                                     {
-                                        var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"], jObject["permanentId"],
+                                        var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
+                                            jObject["permanentId"],
                                             jObject["LastUpdateInviteLinkTime"]);
                                         gruppoTGs.Add(gruppoTg);
                                     }
@@ -235,7 +236,8 @@ internal static class InviteLinks
                         var tf = new TelegramFile(stream, "groups.txt", "Gruppi con link rigenerati", "text/plain");
                         await sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
                             new Language(dict),
-                            TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null, false);
+                            TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null,
+                            false);
                     }
                 }
             }
@@ -434,7 +436,7 @@ internal static class InviteLinks
                     gruppoTg2.permanentId == null) continue;
 
                 if (gruppoTg1.permanentId != gruppoTg2.permanentId) continue;
-                
+
                 gruppoTg1.oldLinks.AddRange(gruppoTg2.oldLinks);
                 gruppoTGs.RemoveAt(j);
                 j--;

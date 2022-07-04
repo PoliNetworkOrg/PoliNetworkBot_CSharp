@@ -10,8 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class MessageQueue
 {
-    public readonly ChatType ChatType;
     private readonly ParseMode _parsemode;
+    public readonly ChatType ChatType;
     public readonly string Text;
     public KeyValuePair<long, TelegramBotAbstract?> Key;
 

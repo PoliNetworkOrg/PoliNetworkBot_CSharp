@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Management.Automation;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
@@ -13,14 +21,6 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Test.IG;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -53,59 +53,59 @@ internal static class Program
             switch (item1)
             {
                 case '1': //reset everything
-                    {
-                        ResetEverything(true);
+                {
+                    ResetEverything(true);
 
-                        return;
-                    }
+                    return;
+                }
 
                 case '2': //normal mode
                 case '3': //disguised bot test
                 case '8':
                 case '9':
-                    {
-                        MainBot(item1, item2);
-                        return;
-                    }
+                {
+                    MainBot(item1, item2);
+                    return;
+                }
 
                 case '4':
-                    {
-                        ResetEverything(false);
-                        return;
-                    }
+                {
+                    ResetEverything(false);
+                    return;
+                }
 
                 case '5':
-                    {
-                        _ = await Test_IG.MainIGAsync();
-                        return;
-                    }
+                {
+                    _ = await Test_IG.MainIGAsync();
+                    return;
+                }
 
                 case '6':
-                    {
-                        NewConfig.NewConfigMethod(true, false, false, false, false);
-                        return;
-                    }
+                {
+                    NewConfig.NewConfigMethod(true, false, false, false, false);
+                    return;
+                }
                 case '7':
+                {
+                    NewConfig.NewConfigMethod(false, false, true, false, false);
+                    return;
+                }
+                case 't':
+                {
+                    try
                     {
-                        NewConfig.NewConfigMethod(false, false, true, false, false);
+                        //SpamTest.Main2();
+                        //Test_CheckLink.Test_CheckLink2();
+                        await Test_IG.MainIGAsync();
                         return;
                     }
-                case 't':
+                    catch
                     {
-                        try
-                        {
-                            //SpamTest.Main2();
-                            //Test_CheckLink.Test_CheckLink2();
-                            await Test_IG.MainIGAsync();
-                            return;
-                        }
-                        catch
-                        {
-                            ;
-                        }
-
-                        break;
+                        ;
                     }
+
+                    break;
+                }
             }
         }
     }
@@ -168,7 +168,9 @@ internal static class Program
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.WriteLine("Current TimeZone: " + currentTimeZone);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
-        return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x)) ? ToExit.STAY : ToExit.EXIT;
+        return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))
+            ? ToExit.STAY
+            : ToExit.EXIT;
     }
 
     private static void ResetEverything(bool alsoFillTablesFromJson)
@@ -217,7 +219,8 @@ internal static class Program
             ;
         }
 
-        if (_botDisguisedAsUserBotInfos?.bots != null && _botDisguisedAsUserBotInfos != null && _botDisguisedAsUserBotInfos.bots.Count != 0)
+        if (_botDisguisedAsUserBotInfos?.bots != null && _botDisguisedAsUserBotInfos != null &&
+            _botDisguisedAsUserBotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -269,7 +272,8 @@ internal static class Program
             ;
         }
 
-        if (_userBotsInfos != null && _userBotsInfos.bots != null && _userBotsInfos != null && _userBotsInfos.bots.Count != 0)
+        if (_userBotsInfos != null && _userBotsInfos.bots != null && _userBotsInfos != null &&
+            _userBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -516,9 +520,9 @@ internal static class Program
         const int MAX_WAIT = 1000 * 10; //10 seconds
         var i = 0;
         int? offset = null;
-        
+
         Logger.WriteLine("Starting on main loop for bot: " + botClientWhole.BotInfoAbstract.onMessages);
-        
+
         while (true)
             try
             {
@@ -600,22 +604,22 @@ internal static class Program
                 break;
 
             case UpdateType.Message:
+            {
+                if (update.Message != null && botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
+                    if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                        return;
+
+                if (update.Message != null)
                 {
-                    if (update.Message != null && botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                        if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
-                            return;
+                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    if (update.Message != null)
-                    {
-                        botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
-
-                        botClientWhole.OnmessageMethod2.Item1?.GetAction()
-                            ?.Invoke(botClientWhole.BotClient,
+                    botClientWhole.OnmessageMethod2.Item1?.GetAction()
+                        ?.Invoke(botClientWhole.BotClient,
                             new MessageEventArgs(update.Message));
-                    }
-
-                    break;
                 }
+
+                break;
+            }
             case UpdateType.InlineQuery:
                 break;
 
@@ -623,12 +627,12 @@ internal static class Program
                 break;
 
             case UpdateType.CallbackQuery:
-                {
-                    var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
-                    if (update.CallbackQuery != null && callback != null)
-                        callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
-                    break;
-                }
+            {
+                var callback = botClientWhole.BotInfoAbstract.GetCallbackEvent();
+                if (update.CallbackQuery != null && callback != null)
+                    callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
+                break;
+            }
             case UpdateType.EditedMessage:
                 break;
 

@@ -65,9 +65,11 @@ internal static class TextConversation
             var botId = telegramBotClient.GetId();
 
             if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
-                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) == AnswerTelegram.State.WAITING_FOR_ANSWER)
+                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) ==
+                    AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId, e?.Message?.Text ?? e?.Message?.Caption);
+                    AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId,
+                        e?.Message?.Text ?? e?.Message?.Caption);
                     return;
                 }
         }

@@ -27,7 +27,6 @@ internal class BanUnbanAllResult
             case RestrictAction.UNBAN:
             {
                 if (done != null)
-                {
                     if (failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
@@ -49,7 +48,6 @@ internal class BanUnbanAllResult
 
                         return text2;
                     }
-                }
 
                 break;
             }
@@ -57,7 +55,6 @@ internal class BanUnbanAllResult
             case RestrictAction.BAN:
             {
                 if (done != null)
-                {
                     if (failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
@@ -79,7 +76,6 @@ internal class BanUnbanAllResult
 
                         return text2;
                     }
-                }
 
                 break;
             }
@@ -87,7 +83,6 @@ internal class BanUnbanAllResult
             case RestrictAction.MUTE:
             {
                 if (done != null)
-                {
                     if (failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
@@ -109,14 +104,12 @@ internal class BanUnbanAllResult
 
                         return text2;
                     }
-                }
 
                 break;
             }
             case RestrictAction.UNMUTE:
             {
                 if (done != null)
-                {
                     if (failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
@@ -138,7 +131,6 @@ internal class BanUnbanAllResult
 
                         return text2;
                     }
-                }
 
                 break;
             }

@@ -123,7 +123,7 @@ internal static class Rooms
             return;
         }
 
-        var (item1, item2) = await GetStartAndStopHoursAsync(sender, e) ?? new Tuple<DateTime?, DateTime?>(null,null);
+        var (item1, item2) = await GetStartAndStopHoursAsync(sender, e) ?? new Tuple<DateTime?, DateTime?>(null, null);
 
         var t4 = GetFreeRooms(t3.Item2?[0], item1, item2);
         if (t4 == null || t4.Count == 0)
@@ -654,8 +654,8 @@ internal static class Rooms
             {
                 // else we close this free slot, appending it to the list
                 isCurrentlyFree = false;
-                string? s1 = TimeStringFromSlot(currentSlotStart);
-                string? s2 = TimeStringFromSlot(colsizetotal);
+                var s1 = TimeStringFromSlot(currentSlotStart);
+                var s2 = TimeStringFromSlot(colsizetotal);
                 var s3 = (s1, s2);
                 list.Add(s3);
             }

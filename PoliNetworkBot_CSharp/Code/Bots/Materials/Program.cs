@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -96,7 +95,6 @@ public class Program
                     if (e != null && e.Message?.Text == "/start") GenerateStart(e);
 
                     if (e != null && e.Message != null)
-                    {
                         if (e.Message.From != null)
                         {
                             Logger.WriteLine("Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
@@ -134,7 +132,6 @@ public class Program
                                     throw new ArgumentOutOfRangeException();
                             }
                         }
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -299,7 +296,7 @@ public class Program
     {
         return directory?.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[3];
     }
-    
+
     private static string? GetChan(string? directory)
     {
         return directory?.Split(Convert.ToChar("/"), Convert.ToChar("\\")).ToList()[2];
@@ -340,8 +337,10 @@ public class Program
                 var FromId = long.Parse(s);
                 if (!FilePaths.TryGetValue(callbackdata?[2], sender, out var fileNameWithPath))
                     throw new Exception("Errore nel dizionario dei Path!");
-        
-                if (callbackQueryEventArgs.CallbackQuery?.Message != null && callbackQueryEventArgs.CallbackQuery != null && !UserIsAdmin(sender, callbackQuery.From.Id, callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
+
+                if (callbackQueryEventArgs.CallbackQuery?.Message != null &&
+                    callbackQueryEventArgs.CallbackQuery != null && !UserIsAdmin(sender, callbackQuery.From.Id,
+                        callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
                 {
                     if (sender != null)
                         await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
@@ -375,7 +374,8 @@ public class Program
                                 var dict = new Dictionary<string, string?>
                                 {
                                     {
-                                        "en", "Can't upload " + callbackQuery?.Message?.ReplyToMessage?.Document?.FileName +
+                                        "en", "Can't upload " +
+                                              callbackQuery?.Message?.ReplyToMessage?.Document?.FileName +
                                               ". file size exceeds maximum allowed size. You can upload it manually from GitLab."
                                     },
                                     {
@@ -408,7 +408,6 @@ public class Program
                                     {
                                         await using var fileStream = File.OpenWrite(fileNameWithPath);
                                         if (document != null)
-                                        {
                                             if (document != null)
                                             {
                                                 var tupleFileStream =
@@ -417,7 +416,6 @@ public class Program
                                                 if (tupleFileStream != null)
                                                     await tupleFileStream.Item2.CopyToAsync(fileStream);
                                             }
-                                        }
 
                                         fileStream.Close();
                                     }
@@ -551,33 +549,30 @@ public class Program
 
     private static async Task HandleNewFolderAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e.Message?.Text != null && e.Message != null && (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
+        if (e.Message?.Text != null && e.Message != null &&
+            (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
         {
             GenerateStart(e);
             return;
         }
 
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 UsersConversations[e.Message.From.Id].PathDroppedOneLevel(e.Message.Text);
                 await GenerateFolderKeyboard(e, telegramBotAbstract);
                 UsersConversations[e.Message.From.Id].SetState(UserState.FOLDER);
             }
-        }
     }
 
     private static async Task GenerateFolderKeyboard(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
     {
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
                 await SendFolderAsync(e, replyKeyboard, telegramBotAbstract);
             }
-        }
     }
 
     private static async Task HandleFileAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
@@ -680,7 +675,8 @@ public class Program
                             ChannelsForApproval.GetChannel(course),
                             approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                             new ReplyMarkupObject(inlineKeyboardMarkup), null,
-                            messageFw?.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
+                            messageFw
+                                ?.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
 
                         Thread.Sleep(100);
                     }
@@ -704,13 +700,11 @@ public class Program
         else
         {
             if (e.Message != null)
-            {
                 if (e.Message.From != null)
                 {
                     UsersConversations[e.Message.From.Id].SetState(UserState.START);
                     UsersConversations[e.Message.From.Id].ResetPath();
                 }
-            }
         }
     }
 
@@ -812,14 +806,13 @@ public class Program
     private static bool VerifySubfolder(MessageEventArgs e)
     {
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
                 return sottoCartelle != null && sottoCartelle.Any(a =>
-                    a.Split(@"/").Last().Split(@"\").Last().Equals(e.Message.Text?.Split(@"/").Last().Split(@"\").Last()));
+                    a.Split(@"/").Last().Split(@"\").Last()
+                        .Equals(e.Message.Text?.Split(@"/").Last().Split(@"\").Last()));
             }
-        }
 
         return false;
     }
@@ -827,9 +820,7 @@ public class Program
     private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract? sender)
     {
         if (e.Message != null)
-        {
             if (e != null)
-            {
                 if (e.Message.From != null)
                 {
                     UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
@@ -845,14 +836,11 @@ public class Program
                             e.Message.From.LanguageCode,
                             ParseMode.Html, null, null);
                 }
-            }
-        }
     }
 
     private static async Task HandleStartAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
     {
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 UsersConversations[e.Message.From.Id].SetState(UserState.SCHOOL);
@@ -863,7 +851,8 @@ public class Program
                     { "it", "Scegli una scuola" }
                 };
                 var text = new Language(dict);
-                var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
+                var optionsStringToKeyboard =
+                    BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
                 if (optionsStringToKeyboard != null)
                 {
                     var replyMarkupObject = new ReplyMarkupObject(
@@ -877,13 +866,11 @@ public class Program
                             ParseMode.Html, replyMarkupObject, null);
                 }
             }
-        }
     }
 
     private static async Task HandleCourseAsync(MessageEventArgs e, TelegramBotAbstract? sender)
     {
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 UsersConversations[e.Message.From.Id].ResetPath();
@@ -891,7 +878,8 @@ public class Program
                     || e.Message.Text.StartsWith("🔙")
                     || !Navigator.CourseHandler(UsersConversations[e.Message.From.Id], e.Message.Text))
                 {
-                    if (e.Message.Text != null && !Navigator.CourseHandler(UsersConversations[e.Message.From.Id], e.Message.Text))
+                    if (e.Message.Text != null &&
+                        !Navigator.CourseHandler(UsersConversations[e.Message.From.Id], e.Message.Text))
                     {
                         var dict = new Dictionary<string, string?>
                         {
@@ -944,7 +932,6 @@ public class Program
                     }
                 }
             }
-        }
     }
 
     private static async Task GenerateStartOnBackAndNull(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
@@ -965,10 +952,10 @@ public class Program
         };
         var text = new Language(dict);
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
-                var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
+                var optionsStringToKeyboard =
+                    BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
                 if (optionsStringToKeyboard != null)
                 {
                     var replyMarkupObject = new ReplyMarkupObject(
@@ -982,13 +969,13 @@ public class Program
                             ParseMode.Html, replyMarkupObject, null);
                 }
             }
-        }
     }
 
     private static async Task HandleSchoolAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
     {
         if (e.Message?.From != null && (e.Message?.Text == null ||
-                                        !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id], e.Message.Text)))
+                                        !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
+                                            e.Message.Text)))
         {
             var dict = new Dictionary<string, string?>
             {
@@ -1012,11 +999,11 @@ public class Program
         }
 
         if (e.Message != null)
-        {
             if (e.Message.From != null)
             {
                 var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetSchool());
-                var optionsStringToKeyboard = BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
+                var optionsStringToKeyboard =
+                    BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
                 if (optionsStringToKeyboard != null)
                 {
                     var replyMarkupObject = new ReplyMarkupObject(
@@ -1036,7 +1023,6 @@ public class Program
                             ParseMode.Html, replyMarkupObject, null);
                 }
             }
-        }
     }
 
     private static string DoScript(PowerShell powershell, string script, bool debug, string separator = "\n")
@@ -1044,5 +1030,4 @@ public class Program
         return CommandDispatcher.DoScript(powershell, script, debug)
             .Aggregate("", (current, s) => current + s + separator);
     }
-    
 }

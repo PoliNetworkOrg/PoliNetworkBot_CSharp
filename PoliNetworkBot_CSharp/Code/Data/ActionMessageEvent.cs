@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Data;
 
@@ -14,6 +18,6 @@ public class ActionMessageEvent
 
     public Action<object?, MessageEventArgs?>? GetAction()
     {
-        return this._action;
+        return _action;
     }
 }

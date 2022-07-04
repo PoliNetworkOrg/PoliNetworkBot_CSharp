@@ -1,5 +1,8 @@
 ﻿#region
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
@@ -7,9 +10,6 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -131,10 +131,10 @@ internal class WebPost
         var bots = GlobalVariables.Bots;
         if (bots != null)
             return (from key in bots.Keys
-                    let telegramBotAbstract = bots[key]
-                    let m = telegramBotAbstract.GetMode()
-                    where m == BotStartMethods.Anon.Item1
-                    select bots[key]).FirstOrDefault();
+                let telegramBotAbstract = bots[key]
+                let m = telegramBotAbstract.GetMode()
+                where m == BotStartMethods.Anon.Item1
+                select bots[key]).FirstOrDefault();
         try
         {
             await Program.StartBotsAsync(false, false, true);
@@ -144,7 +144,7 @@ internal class WebPost
             ;
         }
 
-        if (bots!=null)
+        if (bots != null)
             return (from key in bots.Keys
                 let telegramBotAbstract = bots[key]
                 let m = telegramBotAbstract.GetMode()

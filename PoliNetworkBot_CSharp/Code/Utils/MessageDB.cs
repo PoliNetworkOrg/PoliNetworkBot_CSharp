@@ -8,7 +8,6 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -251,7 +250,7 @@ public static class MessageDb
             {
             }
 
-            if (r != null && r.Item1 != null) 
+            if (r != null && r.Item1 != null)
                 return r.Item1.Value;
         }
         catch
