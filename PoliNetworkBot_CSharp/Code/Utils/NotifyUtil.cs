@@ -162,19 +162,22 @@ internal static class NotifyUtil
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
-        if (langCode != null)
-        {
-            var text = new Language(new Dictionary<string, string?>
-            {
-                { langCode, HttpUtility.HtmlEncode(text2.Select(langCode)) }
-            });
-
+        Language text = GetNotifyText(langCode, text2);
+        
+    
             return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
                 Data.Constants.Groups.GroupException,
                 ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
-        }
 
-        return null;
+    }
+
+    private static Language GetNotifyText(string? langCode, Language text2)
+    {
+        var text = new Language(new Dictionary<string, string?>
+        {
+            { langCode ?? "en", HttpUtility.HtmlEncode(text2.Select(langCode)) }
+        });
+        return text;
     }
 
     internal static async Task NotifyOwners(Exception? e, TelegramBotAbstract? telegramBotAbstract,

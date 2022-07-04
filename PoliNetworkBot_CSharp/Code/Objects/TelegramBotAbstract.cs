@@ -81,9 +81,8 @@ public class TelegramBotAbstract
                 case BotTypeApi.REAL_BOT:
                 {
                     if (_botClient != null)
-                        if (e != null)
-                            if (e.Message != null)
-                                await _botClient.LeaveChatAsync(e.Message.Chat.Id);
+                        if (e is { Message: { } })
+                            await _botClient.LeaveChatAsync(e.Message.Chat.Id);
                 }
                     break;
 
@@ -125,7 +124,7 @@ public class TelegramBotAbstract
                         var u = await UserbotPeer.GetPeerUserWithAccessHash(userId[1..], UserbotClient);
                         if (u != null)
                         {
-                            TLAbsInputUser? input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
+                            TLAbsInputUser input2 = new TLInputUser { AccessHash = u.AccessHash, UserId = u.UserId };
                             users.Add(input2);
                         }
                     }
