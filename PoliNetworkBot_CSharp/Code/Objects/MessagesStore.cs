@@ -205,9 +205,12 @@ public static class MessagesStore
             if (Store != null)
                 if (text != null)
                 {
-                    var messages = Store[text]?.Messages;
-                    if (messages != null)
-                        return messages;
+                    if (Store.ContainsKey(text))
+                    {
+                        var messages = Store[text]?.Messages;
+                        if (messages != null)
+                            return messages;
+                    }
                 }
         }
         catch
@@ -244,7 +247,7 @@ public static class MessagesStore
         {
             var storedMessage = Store[e.Message.ReplyToMessage.Text];
             var json = storedMessage?.ToJson();
-            Language? language2 = new(new Dictionary<string, string?>
+            Language language2 = new(new Dictionary<string, string?>
             {
                 {
                     "en", "Messages"
@@ -276,7 +279,7 @@ public static class MessagesStore
         if (Store != null)
             if (message != null)
             {
-                var storedMessage = Store![message];
+                var storedMessage = Store[message];
                 var allowedTime = storedMessage?.AllowedStatus.GetAllowedTime();
                 if (allowedTime != null && allowedTime.Value < DateTime.Now) return false;
             }
@@ -296,7 +299,7 @@ public static class MessagesStore
         if (Store == null) return false;
         if (message == null) return false;
         var storedMessage = Store[message];
-        return storedMessage != null && Store != null &&
+        return storedMessage != null &&
                storedMessage.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED;
     }
 
