@@ -77,11 +77,9 @@ internal static class Groups
                 for (var i = 0; i < groups.Rows.Count; i++)
                 {
                     var groupsRow = groups.Rows[i];
-                    var o = groupsRow?[indexId];
-                    if (o == null) continue;
+                    var o = groupsRow[indexId];
                     var indexIdInTable = (long)o;
-                    var o1 = groupsRow?[indexTitle];
-                    if (o1 == null) continue;
+                    var o1 = groupsRow[indexTitle];
                     var oldTitle = (string)o1;
                     var newTitle = "";
                     try
@@ -126,7 +124,7 @@ internal static class Groups
     {
         try
         {
-            if (e != null && (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null))
+            if (e != null && (e.Message?.Chat.Id == null || e.Message?.Chat.Title == null))
                 return;
 
             if (e?.Message != null)
@@ -149,10 +147,10 @@ internal static class Groups
     {
         try
         {
-            if (e != null && (e.Message?.Chat?.Id == null || e.Message?.Chat?.Title == null))
+            if (e != null && (e.Message?.Chat.Id == null || e.Message?.Chat.Title == null))
                 return;
             InfoChat? infoChat = null;
-            bool? getDone = null;
+            bool? getDone;
 
             lock (GroupsInRam)
             {
@@ -345,7 +343,7 @@ internal static class Groups
                         }
                         catch
                         {
-                            ;
+                            // ignored
                         }
 
                         if (telegramBotClient != null) await telegramBotClient.ExitGroupAsync(e);
@@ -367,7 +365,7 @@ internal static class Groups
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 }

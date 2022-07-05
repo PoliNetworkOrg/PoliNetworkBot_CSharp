@@ -77,7 +77,6 @@ public class Program
     private static async Task BotClient_OnMessageAsync2Async(object? sender, MessageEventArgs? e)
     {
         TelegramBotClient? telegramBotClientBot = null;
-        TelegramBotAbstract? telegramBotClient = null;
 
         try
         {
@@ -86,7 +85,7 @@ public class Program
             if (telegramBotClientBot == null)
                 return;
 
-            telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+            var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
             {
                 try
@@ -204,11 +203,6 @@ public class Program
             {
                 var callbackQuery = e.CallbackQuery;
                 var callbackdata = callbackQuery?.Data?.Split("|");
-                var s1 = callbackdata?[1];
-                if (s1 != null)
-                {
-                    var fromId = long.Parse(s1);
-                }
 
                 //if (!DictPaths.TryGetValue(callbackdata[2], out var directory))
                 //    throw new Exception("Errore nel dizionario dei Path in GITHANDLER!");
@@ -310,7 +304,7 @@ public class Program
     public static async void BotOnCallbackQueryReceived(object? sender1,
         CallbackQueryEventArgs callbackQueryEventArgs)
     {
-        TelegramBotClient? sender2 = null;
+        TelegramBotClient? sender2;
         if (sender1 is TelegramBotClient s2)
             sender2 = s2;
         else
@@ -339,7 +333,7 @@ public class Program
             var s = callbackdata?[1];
             if (s != null)
             {
-                var FromId = long.Parse(s);
+                var fromId = long.Parse(s);
                 if (!FilePaths.TryGetValue(callbackdata?[2], sender, out var fileNameWithPath))
                     throw new Exception("Errore nel dizionario dei Path!");
 
@@ -367,24 +361,24 @@ public class Program
 
                             if (callbackQuery.Message != null)
                             {
-                                var message = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                                _ = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                                     callbackQuery.Message.MessageId,
                                     "<b>MERGED</b> by " + nameApprover + "\nIn " + fileNameWithPath,
                                     ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
                             }
 
-                            var document = callbackQuery?.Message?.ReplyToMessage?.Document;
+                            var document = callbackQuery.Message?.ReplyToMessage?.Document;
                             if (document?.FileSize > 20000000)
                             {
                                 var dict = new Dictionary<string, string?>
                                 {
                                     {
                                         "en", "Can't upload " +
-                                              callbackQuery?.Message?.ReplyToMessage?.Document?.FileName +
+                                              callbackQuery.Message?.ReplyToMessage?.Document?.FileName +
                                               ". file size exceeds maximum allowed size. You can upload it manually from GitLab."
                                     },
                                     {
-                                        "it", "Il file " + callbackQuery?.Message?.ReplyToMessage?.Document?.FileName +
+                                        "it", "Il file " + callbackQuery.Message?.ReplyToMessage?.Document?.FileName +
                                               " supera il peso massimo consentito. Puoi caricarlo a mano da GitLab."
                                     }
                                 };
@@ -393,7 +387,7 @@ public class Program
                                 await sender.SendTextMessageAsync(
                                     ChannelsForApproval.GetChannel(GetChan(fileNameWithPath)), text,
                                     ChatType.Private,
-                                    callbackQuery?.Message?.From?.LanguageCode, ParseMode.Html, null, null);
+                                    callbackQuery.Message?.From?.LanguageCode, ParseMode.Html, null, null);
                                 return;
                             }
 
@@ -430,8 +424,8 @@ public class Program
                                         { "it", "File salvato in " + fileOnlyRelativePath + "\n" }
                                     };
                                     var text = new Language(dict);
-                                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                        callbackQuery?.From.LanguageCode, ParseMode.Html, null, null);
+                                    await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
+                                        callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
 
                                     var gitDir = GetGit(fileNameWithPath);
                                     if (gitDir != null)
@@ -465,8 +459,8 @@ public class Program
                                         }
                                     };
                                     var text = new Language(dict);
-                                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                        callbackQuery?.From.LanguageCode,
+                                    await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
+                                        callbackQuery.From.LanguageCode,
                                         ParseMode.Html, null, null);
                                 }
                             }
@@ -486,24 +480,23 @@ public class Program
                             {
                                 await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
                                     "Modification Denied");
-                                
-                                    if (callbackQuery.Message != null)
-                                        await sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
-                                            callbackQuery.Message.MessageId,
-                                            "<b>DENIED</b> by " + nameApprover,
-                                            ParseMode
-                                                .Html); //modifica il messaggio in modo che non sia più riclickabile
 
-                                    var dict = new Dictionary<string, string?>
-                                    {
-                                        { "en", "The file: " + fileOnlyName + " was rejected by an admin" },
-                                        { "it", "Il file: " + fileOnlyName + " è stato rifiutato da un admin" }
-                                    };
-                                    var text = new Language(dict);
-                                    await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                        callbackQuery.From.LanguageCode,
-                                        ParseMode.Html, null, null);
-                                
+                                if (callbackQuery.Message != null)
+                                    await sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
+                                        callbackQuery.Message.MessageId,
+                                        "<b>DENIED</b> by " + nameApprover,
+                                        ParseMode
+                                            .Html); //modifica il messaggio in modo che non sia più riclickabile
+
+                                var dict = new Dictionary<string, string?>
+                                {
+                                    { "en", "The file: " + fileOnlyName + " was rejected by an admin" },
+                                    { "it", "Il file: " + fileOnlyName + " è stato rifiutato da un admin" }
+                                };
+                                var text = new Language(dict);
+                                await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
+                                    callbackQuery.From.LanguageCode,
+                                    ParseMode.Html, null, null);
                             }
                         }
                         catch (Exception exception)
@@ -516,8 +509,8 @@ public class Program
                             var text = new Language(dict);
                             if (sender != null)
                             {
-                                await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
-                                    callbackQuery?.From.LanguageCode,
+                                await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
+                                    callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
                                 await BotUtils.NotifyUtil.NotifyOwners(exception, sender);
                             }
@@ -547,16 +540,16 @@ public class Program
         }
     }
 
-    private static async Task HandleNewFolderAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task HandleNewFolderAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e.Message?.Text != null && e.Message != null &&
+        if (e?.Message?.Text != null && e.Message != null &&
             (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
         {
             GenerateStart(e);
             return;
         }
 
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             UsersConversations[e.Message.From.Id].PathDroppedOneLevel(e.Message.Text);
             await GenerateFolderKeyboard(e, telegramBotAbstract);
@@ -564,19 +557,19 @@ public class Program
         }
     }
 
-    private static async Task GenerateFolderKeyboard(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task GenerateFolderKeyboard(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
             await SendFolderAsync(e, replyKeyboard, telegramBotAbstract);
         }
     }
 
-    private static async Task HandleFileAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task HandleFileAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
         //gestisce l'arrivo del messaggio dall'utente
-        if (e.Message?.Photo != null)
+        if (e?.Message?.Photo != null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -591,7 +584,7 @@ public class Program
             return;
         }
 
-        if (e.Message?.Document == null)
+        if (e?.Message?.Document == null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -600,8 +593,8 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
-                e.Message?.From?.LanguageCode,
+            await telegramBotAbstract.SendTextMessageAsync(e?.Message?.From?.Id, text, ChatType.Private,
+                e?.Message?.From?.LanguageCode,
                 ParseMode.Html, null, null);
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
@@ -686,24 +679,24 @@ public class Program
         }
     }
 
-    private static void GenerateStart(MessageEventArgs e)
+    private static void GenerateStart(MessageEventArgs? e)
     {
-        if (e.Message?.From != null && e.Message != null && !UsersConversations.ContainsKey(e.Message.From.Id))
+        if (e?.Message?.From != null && e.Message != null && !UsersConversations.ContainsKey(e.Message.From.Id))
         {
             var conv = new Conversation();
             UsersConversations.TryAdd(e.Message.From.Id, conv);
         }
         else
         {
-            if (e.Message?.From == null) return;
+            if (e?.Message?.From == null) return;
             UsersConversations[e.Message.From.Id].SetState(UserState.START);
             UsersConversations[e.Message.From.Id].ResetPath();
         }
     }
 
-    private static async Task HandleFolderAsync(MessageEventArgs e, TelegramBotAbstract? sender)
+    private static async Task HandleFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e.Message?.Text == null)
+        if (e?.Message?.Text == null)
         {
             await GenerateStartOnBackAndNull(e, sender);
             return;
@@ -794,9 +787,9 @@ public class Program
         }
     }
 
-    private static bool VerifySubfolder(MessageEventArgs e)
+    private static bool VerifySubfolder(MessageEventArgs? e)
     {
-        if (e.Message?.From == null)
+        if (e?.Message?.From == null)
             return false;
 
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
@@ -805,7 +798,7 @@ public class Program
                 .Equals(e.Message.Text?.Split(@"/").Last().Split(@"\").Last()));
     }
 
-    private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract? sender)
+    private static async Task GenerateFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message?.From != null)
         {
@@ -824,9 +817,9 @@ public class Program
         }
     }
 
-    private static async Task HandleStartAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task HandleStartAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             UsersConversations[e.Message.From.Id].SetState(UserState.SCHOOL);
             var replyKeyboard = Keyboards.GetKeyboardSchools();
@@ -853,9 +846,9 @@ public class Program
         }
     }
 
-    private static async Task HandleCourseAsync(MessageEventArgs e, TelegramBotAbstract? sender)
+    private static async Task HandleCourseAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             UsersConversations[e.Message.From.Id].ResetPath();
             if (e.Message.Text == null
@@ -918,12 +911,12 @@ public class Program
         }
     }
 
-    private static async Task GenerateStartOnBackAndNull(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task GenerateStartOnBackAndNull(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
         await HandleStartAsync(e, telegramBotAbstract);
     }
 
-    private static async Task SendFolderAsync(MessageEventArgs e,
+    private static async Task SendFolderAsync(MessageEventArgs? e,
         IReadOnlyCollection<List<Language>>? replyKeyboard, TelegramBotAbstract? telegramBotAbstract)
     {
         if (replyKeyboard == null)
@@ -935,7 +928,7 @@ public class Program
             { "it", "Seleziona un percorso" }
         };
         var text = new Language(dict);
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             var optionsStringToKeyboard =
                 BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
@@ -954,11 +947,11 @@ public class Program
         }
     }
 
-    private static async Task HandleSchoolAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task HandleSchoolAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e.Message?.From != null && (e.Message?.Text == null ||
-                                        !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
-                                            e.Message.Text)))
+        if (e?.Message?.From != null && (e.Message?.Text == null ||
+                                         !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
+                                             e.Message.Text)))
         {
             var dict = new Dictionary<string, string?>
             {
@@ -979,7 +972,7 @@ public class Program
             return;
         }
 
-        if (e.Message?.From != null)
+        if (e?.Message?.From != null)
         {
             var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetSchool());
             var optionsStringToKeyboard =

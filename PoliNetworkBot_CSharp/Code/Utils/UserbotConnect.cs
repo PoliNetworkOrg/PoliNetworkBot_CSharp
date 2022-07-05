@@ -46,7 +46,7 @@ internal static class UserbotConnect
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
 
                 if (telegramClient == null)
@@ -63,8 +63,6 @@ internal static class UserbotConnect
                 // ReSharper disable once ConvertToConstant.Local
                 var code = "";
                 var passwordToAuthenticate = userbot.passwordToAuthenticate;
-
-                ;
 
                 TLUser user;
                 try

@@ -275,7 +275,7 @@ internal static class CommandDispatcher
             {
                 if (e != null)
                 {
-                    var message = e!.Message;
+                    var message = e.Message;
                     if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
                         message.Chat.Type == ChatType.Private)
                     {
@@ -308,7 +308,7 @@ internal static class CommandDispatcher
             {
                 if (e != null)
                 {
-                    var message = e!.Message;
+                    var message = e.Message;
                     if (GlobalVariables.Creators != null && message != null &&
                         (GlobalVariables.Creators.ToList().Any(x => x.Matches(e?.Message?.From)) ||
                          Owners.CheckIfOwner(e?.Message?.From?.Id)) && message.Chat.Type == ChatType.Private)
@@ -333,7 +333,7 @@ internal static class CommandDispatcher
             {
                 if (e != null)
                 {
-                    var message = e!.Message;
+                    var message = e.Message;
                     if (message != null && Permissions.CheckPermissions(Permission.HEAD_ADMIN, e?.Message?.From) &&
                         message.Chat.Type == ChatType.Private)
                     {
@@ -783,7 +783,7 @@ internal static class CommandDispatcher
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
@@ -872,7 +872,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static Language? GetTextSearchResult(int limit, List<List<InlineKeyboardButton>>? buttonsMatrix)
+    private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>>? buttonsMatrix)
     {
         return buttonsMatrix switch
         {
@@ -1089,7 +1089,7 @@ internal static class CommandDispatcher
             }
             catch
             {
-                ;
+                // ignored
             }
         }
     }
@@ -1650,16 +1650,16 @@ internal static class CommandDispatcher
         var file = new TelegramFile(stream, filename, "", "application/octet-stream");
         if (e != null)
         {
-            var message = e!.Message;
+            var message = e.Message;
             if (message != null)
             {
-                var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+                var peer = new PeerAbstract(e.Message?.From?.Id, message.Chat.Type);
                 var text = new Language(new Dictionary<string, string?>
                 {
                     { "en", "" }
                 });
                 await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                    sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, null, true);
+                    sender, e.Message?.From?.Username, e.Message?.From?.LanguageCode, null, true);
             }
         }
     }
@@ -1793,11 +1793,11 @@ internal static class CommandDispatcher
             { "it", "Ho aggiornato n=" + n + " link" }
         });
         if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-                e?.Message?.From?.LanguageCode,
-                e?.Message?.From?.Username, text2,
+            await SendMessage.SendMessageInPrivate(sender, e.Message?.From?.Id,
+                e.Message?.From?.LanguageCode,
+                e.Message?.From?.Username, text2,
                 ParseMode.Html,
-                e?.Message?.MessageId);
+                e.Message?.MessageId);
     }
 
     private static async Task Start(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)

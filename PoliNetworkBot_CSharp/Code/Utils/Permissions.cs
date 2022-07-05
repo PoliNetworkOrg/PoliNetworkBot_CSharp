@@ -34,7 +34,7 @@ internal static class Permissions
     {
         const string url = "https://polinetwork.org/en/learnmore/about_us/";
         var webReply = await Web.DownloadHtmlAsync(url);
-        if (webReply == null || !webReply.IsValid()) return false;
+        if (!webReply.IsValid()) return false;
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
         var delegates = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "delegates", 1);
@@ -47,7 +47,7 @@ internal static class Permissions
                 .Split(@"https://t.me/")[1]
                 .Split(@""">")[0])
             .ToList();
-        var headAdmins = HtmlUtil.GetElementsByTagAndClassName(doc?.DocumentNode, "ul", "headadmins", 1);
+        var headAdmins = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "headadmins", 1);
         if (headAdmins is { Count: 0 }) return false;
         var headAdminsInner = HtmlUtil.GetElementsByTagAndClassName(headAdmins?[0], "li");
         if (headAdminsInner != null)

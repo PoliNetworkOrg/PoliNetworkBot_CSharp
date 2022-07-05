@@ -88,10 +88,10 @@ internal static class InviteLinks
         {
             Logger.Logger.WriteLine(ex1);
             var ex3M = "5" +
-                "\n\n" + ex1.Message +
-                "\n\n" + chatId +
-                "\n\n" + (chat == null ? "[null class]" :
-                string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat?.Title);
+                       "\n\n" + ex1.Message +
+                       "\n\n" + chatId +
+                       "\n\n" + (chat == null ? "[null class]" :
+                           string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat?.Title);
 
             await NotifyUtil.NotifyOwners(ex3M, sender, messageEventArgs);
             return null;
@@ -243,7 +243,7 @@ internal static class InviteLinks
     }
 
     private static async Task UpdateLinksFromJson2Async(GruppoTG? gruppoTg, TelegramBotAbstract? sender,
-        MessageEventArgs? e, ListaGruppiTG_Update L)
+        MessageEventArgs? e, ListaGruppiTG_Update l)
     {
         var result = new GruppoTgUpdate(null, SuccessoGenerazioneLink.ERRORE);
 
@@ -298,7 +298,7 @@ internal static class InviteLinks
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex1m;
-                    L.Add(result);
+                    l.Add(result);
 
                     return;
                 }
@@ -344,7 +344,7 @@ internal static class InviteLinks
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex2M;
-                    L.Add(result);
+                    l.Add(result);
 
                     return;
                 }
@@ -353,7 +353,7 @@ internal static class InviteLinks
             {
                 result.GruppoTg = gruppoTg;
                 result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
-                L.Add(result);
+                l.Add(result);
             }
             else
             {
@@ -386,7 +386,7 @@ internal static class InviteLinks
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex3M;
                     result.CreateInviteLinkFallita = true;
-                    L.Add(result);
+                    l.Add(result);
 
                     return;
                 }
@@ -395,7 +395,7 @@ internal static class InviteLinks
 
                 result.GruppoTg = gruppoTg;
                 result.SuccessoGenerazioneLink = successoGenerazione;
-                L.Add(result);
+                l.Add(result);
             }
         }
     }

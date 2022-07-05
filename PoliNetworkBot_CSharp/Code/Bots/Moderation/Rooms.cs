@@ -210,7 +210,7 @@ internal static class Rooms
     /// <summary>
     ///     Recunstruct a readable time string from the number of slots in the Polimi webpage table
     /// </summary>
-    private static string? TimeStringFromSlot(int slot)
+    private static string TimeStringFromSlot(int slot)
     {
         var hours = (8 + slot / 4).ToString().PadLeft(2, '0');
         var minutes = (15 * (slot % 4)).ToString().PadLeft(2, '0');
@@ -221,10 +221,10 @@ internal static class Rooms
     ///     Checks if a room is empty given it's html node, and the start and end of the time period
     /// </summary>
     /// <returns>a string with the room name if the room is empty, null otherwise</returns>
-    private static string? CheckIfFree(HtmlNode node, int? shiftStart, int? shiftEnd)
+    private static string? CheckIfFree(HtmlNode? node, int? shiftStart, int? shiftEnd)
     {
-        if (!node.GetClasses().Contains("normalRow")) return null;
-        if (node.ChildNodes == null) return null;
+        if (node != null && !node.GetClasses().Contains("normalRow")) return null;
+        if (node?.ChildNodes == null) return null;
 
         if (!node.ChildNodes.Any(x =>
                 x.HasClass("dove")
@@ -240,17 +240,17 @@ internal static class Rooms
     /// <summary>
     ///     retrieves the room name from the node
     /// </summary>
-    private static string? GetNomeAula(HtmlNode node)
+    private static string? GetNomeAula(HtmlNode? node)
     {
-        var dove = node.ChildNodes.First(x => x.HasClass("dove"));
-        var a = dove.ChildNodes.First(x => x.Name == "a");
-        return a.InnerText.Trim();
+        var dove = node?.ChildNodes.First(x => x.HasClass("dove"));
+        var a = dove?.ChildNodes.First(x => x.Name == "a");
+        return a?.InnerText.Trim();
     }
 
     /// <summary>
     ///     calculates if a room is free in the given time window
     /// </summary>
-    private static bool IsRoomFree(HtmlNode node, int? shiftStart, int? shiftEnd)
+    private static bool IsRoomFree(HtmlNode? node, int? shiftStart, int? shiftEnd)
     {
         if (node?.ChildNodes == null)
             return true;
@@ -307,20 +307,16 @@ internal static class Rooms
                   "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
         var webReply = await Web.DownloadHtmlAsync(url);
-        if (webReply == null || !webReply.IsValid()) return; //todo: notify user that download failed
-
-        ;
+        if (!webReply.IsValid()) return; //todo: notify user that download failed
 
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
 
-        var t1 = HtmlUtil.GetElementsByTagAndClassName(doc?.DocumentNode, "", "TableDati-tbody");
+        var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "TableDati-tbody");
 
         ;
 
         var t2 = t1?[0];
-
-        ;
 
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t2, "tr");
 
@@ -329,11 +325,7 @@ internal static class Rooms
         var roomIndex = FindRoomIndex(t3, sigla);
         if (roomIndex == null) return; //todo: send to the user "room not found"
 
-        ;
-
         var t4 = t3?[(int)roomIndex.Value];
-
-        ;
 
         var t5 = HtmlUtil.GetElementsByTagAndClassName(t4, "td");
 
@@ -583,34 +575,35 @@ internal static class Rooms
     /// <param name="node">The HTML row for the room</param>
     /// <param name="startSlot">the start time as a time slot</param>
     /// <returns>a string with the time if a transition is found, null otherwise</returns>
-    private static string? GetFirstSlotTransition(HtmlNode node, int? startSlot)
+    private static string? GetFirstSlotTransition(HtmlNode? node, int? startSlot)
     {
         var colsizetotal = 1;
         var isCurrentlyFree = false;
         var afterStartSlot = false;
 
         // start from 8:15, the third child
-        for (var i = 3; i < node.ChildNodes.Count; i++)
-        {
-            var colsize = 1;
-            if (node.ChildNodes[i].Attributes.Contains("colspan"))
-                colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
-
-            if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == !isCurrentlyFree)
+        if (node != null)
+            for (var i = 3; i < node.ChildNodes.Count; i++)
             {
-                // check for a transition, from free to occupied or vice versa
-                isCurrentlyFree = !isCurrentlyFree;
-                // only return if we are after the starting time slot
-                if (afterStartSlot)
-                    return TimeStringFromSlot(colsizetotal);
+                var colsize = 1;
+                if (node.ChildNodes[i].Attributes.Contains("colspan"))
+                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+
+                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == !isCurrentlyFree)
+                {
+                    // check for a transition, from free to occupied or vice versa
+                    isCurrentlyFree = !isCurrentlyFree;
+                    // only return if we are after the starting time slot
+                    if (afterStartSlot)
+                        return TimeStringFromSlot(colsizetotal);
+                }
+
+                colsizetotal += colsize; // keep track of the columns
+
+                // quit searching after 19, dont want to consider a transition this late
+                if (colsizetotal >= 44) break;
+                if (colsizetotal >= startSlot) afterStartSlot = true;
             }
-
-            colsizetotal += colsize; // keep track of the columns
-
-            // quit searching after 19, dont want to consider a transition this late
-            if (colsizetotal >= 44) break;
-            if (colsizetotal >= startSlot) afterStartSlot = true;
-        }
 
         // if there is no transition after the startSlot, just return null
         return null;
@@ -622,7 +615,7 @@ internal static class Rooms
     /// </summary>
     /// <param name="node">The HTML row for the room</param>
     /// <returns>a list of tuples with starting and ending time strings for each slot</returns>
-    private static List<(string?, string?)> GetFreeTimeSlots(HtmlNode node)
+    private static List<(string?, string?)> GetFreeTimeSlots(HtmlNode? node)
     {
         var list = new List<(string?, string?)>();
 
@@ -631,33 +624,34 @@ internal static class Rooms
         var currentSlotStart = 1;
 
         // start from 8:15, the third child
-        for (var i = 3; i < node.ChildNodes.Count; i++)
-        {
-            var colsize = 1;
-            if (node.ChildNodes[i].Attributes.Contains("colspan"))
-                colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
-
-            if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim())) // if the child is an empty slot
+        if (node != null)
+            for (var i = 3; i < node.ChildNodes.Count; i++)
             {
-                if (!isCurrentlyFree)
+                var colsize = 1;
+                if (node.ChildNodes[i].Attributes.Contains("colspan"))
+                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+
+                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim())) // if the child is an empty slot
                 {
-                    // and if we come from a non-empty slot, set the start of this window
-                    isCurrentlyFree = true;
-                    currentSlotStart = colsizetotal;
+                    if (!isCurrentlyFree)
+                    {
+                        // and if we come from a non-empty slot, set the start of this window
+                        isCurrentlyFree = true;
+                        currentSlotStart = colsizetotal;
+                    }
                 }
-            }
-            else if (isCurrentlyFree)
-            {
-                // else we close this free slot, appending it to the list
-                isCurrentlyFree = false;
-                var s1 = TimeStringFromSlot(currentSlotStart);
-                var s2 = TimeStringFromSlot(colsizetotal);
-                var s3 = (s1, s2);
-                list.Add(s3);
-            }
+                else if (isCurrentlyFree)
+                {
+                    // else we close this free slot, appending it to the list
+                    isCurrentlyFree = false;
+                    var s1 = TimeStringFromSlot(currentSlotStart);
+                    var s2 = TimeStringFromSlot(colsizetotal);
+                    var s3 = (s1, s2);
+                    list.Add(s3);
+                }
 
-            colsizetotal += colsize; // keep track of the columns
-        }
+                colsizetotal += colsize; // keep track of the columns
+            }
 
         if (isCurrentlyFree && currentSlotStart < 44)
             // add one last element if the last thing ends before 19:00
