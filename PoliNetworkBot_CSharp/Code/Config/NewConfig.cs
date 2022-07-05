@@ -22,7 +22,7 @@ namespace PoliNetworkBot_CSharp.Code.Config;
 public static class NewConfig
 {
     public static void NewConfigMethod(bool resetBot, bool resetUserBot, bool resetBotDisguisedAsUserBot,
-        bool destroy_db_and_redo_it, bool alsoFillTablesFromJson)
+        bool destroyDbAndRedoIt, bool alsoFillTablesFromJson)
     {
         if (resetBot) ResetBotMethod(BotTypeApi.REAL_BOT);
 
@@ -30,7 +30,7 @@ public static class NewConfig
 
         if (resetBotDisguisedAsUserBot) ResetBotDisguisedAsUserBotMethod(BotTypeApi.DISGUISED_BOT);
 
-        if (destroy_db_and_redo_it)
+        if (destroyDbAndRedoIt)
             DestroyDB_And_Redo_it(alsoFillTablesFromJson);
     }
 
@@ -75,7 +75,7 @@ public static class NewConfig
         }
         catch
         {
-            ;
+            // ignored
         }
 
         CleanDb();
@@ -431,12 +431,12 @@ public static class NewConfig
         }
     }
 
-    private static bool AddAssocToDb(string? name, IReadOnlyCollection<long>? users, DbConfigConnection? DbConfig)
+    private static bool AddAssocToDb(string? name, IReadOnlyCollection<long>? users, DbConfigConnection? dbConfig)
     {
         const string? q1 = "INSERT INTO Entities (Name) VALUES (@name)";
         _ = Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?> { { "@name", name } });
 
-        Tables.FixIdTable("Entities", "id", "name", DbConfig);
+        Tables.FixIdTable("Entities", "id", "name", dbConfig);
 
         const string? q2 = "SELECT id FROM Entities WHERE Name = @name";
         var r2 = Database.ExecuteSelect(q2, GlobalVariables.DbConfig,

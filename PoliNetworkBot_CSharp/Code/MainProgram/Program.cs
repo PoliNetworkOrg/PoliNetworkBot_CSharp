@@ -37,7 +37,7 @@ internal static class Program
     private static BotConfig? _userBotsInfos;
     private static BotConfig? _botDisguisedAsUserBotInfos;
 
-    private static async Task Main(string[] args)
+    private static async Task Main(string[]? args)
     {
         var toExit = FirstThingsToDo();
         if (toExit == ToExit.EXIT)
@@ -101,7 +101,7 @@ internal static class Program
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
 
                     break;
@@ -110,7 +110,7 @@ internal static class Program
         }
     }
 
-    private static Tuple<char, bool> MainGetMenuChoice2(IReadOnlyList<string> args)
+    private static Tuple<char, bool> MainGetMenuChoice2(IReadOnlyList<string>? args)
     {
         if (args == null || args.Count == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
 
@@ -216,10 +216,10 @@ internal static class Program
         }
         catch
         {
-            ;
+            // ignored
         }
 
-        if (_botDisguisedAsUserBotInfos?.bots != null && _botDisguisedAsUserBotInfos != null &&
+        if (_botDisguisedAsUserBotInfos?.bots != null &&
             _botDisguisedAsUserBotInfos.bots.Count != 0)
             return ToExit.STAY;
 
@@ -243,7 +243,7 @@ internal static class Program
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
             }
             else
@@ -344,7 +344,7 @@ internal static class Program
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
             }
             else
@@ -387,7 +387,7 @@ internal static class Program
                     
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2)
+                            BotTypeApi.REAL_BOT, bot.GetOnMessage().S)
                         {
                             DbConfig = x1
                         };
@@ -397,7 +397,7 @@ internal static class Program
                         continue;
 
                     var onmessageMethod2 = bot.GetOnMessage();
-                    if (onmessageMethod2?.Item1 == null)
+                    if (onmessageMethod2.ActionMessageEvent == null)
                         continue;
 
                     BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
@@ -415,9 +415,9 @@ internal static class Program
                     });
                     t.Start();
 
-                    if (onmessageMethod2.Item2 == BotStartMethods.Moderation.Item1)
+                    if (onmessageMethod2.S == BotStartMethods.Moderation.Item1)
                         moderationBots++;
-                    else if (onmessageMethod2.Item2 == BotStartMethods.Anon.Item1)
+                    else if (onmessageMethod2.S == BotStartMethods.Anon.Item1)
                         anonBots++;
                 }
 
@@ -620,7 +620,7 @@ internal static class Program
                 {
                     botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
 
-                    botClientWhole.OnmessageMethod2.Item1?.GetAction()
+                    botClientWhole.OnmessageMethod2.ActionMessageEvent?.GetAction()
                         ?.Invoke(botClientWhole.BotClient,
                             new MessageEventArgs(update.Message));
                 }

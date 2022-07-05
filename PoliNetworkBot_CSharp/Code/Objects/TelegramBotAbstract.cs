@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -1142,7 +1141,7 @@ public class TelegramBotAbstract
         return null;
     }
 
-    private static long? FindMax(IReadOnlyList<PhotoSize> photo)
+    private static long? FindMax(IReadOnlyList<PhotoSize>? photo)
     {
         if (photo == null || photo.Count == 0)
             return null;
@@ -1342,7 +1341,6 @@ public class TelegramBotAbstract
                         return new SuccessWithException(b1);
                     }
 
-                    ;
                     break;
                 case BotTypeApi.USER_BOT:
                     if (UserbotClient != null)
@@ -1355,7 +1353,6 @@ public class TelegramBotAbstract
                         return new SuccessWithException(b2);
                     }
 
-                    ;
                     break;
                 case BotTypeApi.DISGUISED_BOT:
                     break;
@@ -1377,12 +1374,13 @@ public class TelegramBotAbstract
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
-                if (_botClient != null) return await _botClient.ExportChatInviteLinkAsync(chatId);
-                ;
+                if (_botClient != null)
+                    return await _botClient.ExportChatInviteLinkAsync(chatId);
                 break;
             case BotTypeApi.USER_BOT:
                 var channel = new TLChannel { AccessHash = accessHash, Id = (int)Convert.ToInt64(chatId) };
-                if (UserbotClient == null) return null;
+                if (UserbotClient == null)
+                    return null;
                 var invite = await UserbotClient.ChannelsGetInviteLink(channel);
                 if (invite is TLChatInviteExported c1) return c1.Link;
 
@@ -1420,7 +1418,6 @@ public class TelegramBotAbstract
                 return updates != null;
                 */
                 break;
-                ;
             case BotTypeApi.DISGUISED_BOT:
                 break;
 
@@ -1459,7 +1456,6 @@ public class TelegramBotAbstract
                     return new SuccessWithException(false, e1);
                 }
 
-                ;
             case BotTypeApi.USER_BOT:
                 return new SuccessWithException(false, new NotImplementedException());
 
@@ -1480,7 +1476,6 @@ public class TelegramBotAbstract
 
             case BotTypeApi.USER_BOT:
                 if (UserbotClient != null) return await UserbotClient.GetUserDialogsAsync(limit: 100);
-                ;
                 break;
             case BotTypeApi.DISGUISED_BOT:
                 break;
@@ -1533,7 +1528,6 @@ public class TelegramBotAbstract
                     return new SuccessWithException(false, e1);
                 }
 
-                ;
             case BotTypeApi.USER_BOT:
                 break;
 

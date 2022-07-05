@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -46,8 +45,6 @@ public class DbConfig
         {
             GenerateDbConfigEmpty();
         }
-
-        GlobalVariables.DbConfig?.GetMySqlConnection();
     }
 
     private static void GenerateDbConfigEmpty()
