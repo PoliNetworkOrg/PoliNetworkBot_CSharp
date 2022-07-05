@@ -16,11 +16,11 @@ using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Test.IG;
 
-internal static class Test_IG
+internal static class TestIg
 {
     //https://github.com/ramtinak/InstagramApiSharp
 
-    public static async Task<bool> MainIGAsync()
+    public static async Task<bool> MainIgAsync()
     {
         Logger.WriteLine("Starting demo of InstagramApiSharp project");
 
@@ -56,8 +56,6 @@ internal static class Test_IG
         //    .Build();
         // create account
 
-        ;
-
         //if (x.IsUserAuthenticated) return true;
         // login
         //Logger.WriteLine($"Logging in as {userSession.UserName}");
@@ -69,8 +67,6 @@ internal static class Test_IG
         //    await DoThingsAsync(x);
         //    return true;
         //}
-
-        ;
 
         //if (logInResult.Value != InstaLoginResult.ChallengeRequired)
         //    return true;

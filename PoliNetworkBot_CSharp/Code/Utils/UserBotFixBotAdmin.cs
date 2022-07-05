@@ -122,10 +122,7 @@ internal static class UserBotFixBotAdmin
 
                 WaitUntil(r5.DateTime);
                 var r6 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot4(x5, u, telegramBotAbstract);
-                if (r6 == null)
-                {
-                    return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
-                }
+                if (r6 == null) return new Tuple<bool?, string, long>(null, x5.Title, x5.Id);
 
                 if (r6.DateTime == null)
                     return new Tuple<bool?, string, long>(r6.B, x5.Title, x5.Id);
@@ -139,19 +136,13 @@ internal static class UserBotFixBotAdmin
             {
                 var r2 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
 
-                if (r2 == null)
-                {
-                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                }
+                if (r2 == null) return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
 
                 if (r2.Item2 == null) return new Tuple<bool?, string, long>(r2.Item1, x6.Title, x6.Id);
 
                 WaitUntil(r2.Item2);
                 var r3 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot5(x6, u, telegramBotAbstract);
-                if (r3 == null)
-                {
-                    return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
-                }
+                if (r3 == null) return new Tuple<bool?, string, long>(null, x6.Title, x6.Id);
 
                 if (r3.Item2 == null)
                     return new Tuple<bool?, string, long>(r3.Item1, x6.Title, x6.Id);
@@ -187,7 +178,7 @@ internal static class UserBotFixBotAdmin
 
         var x7 = new TLInputChannel { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
         var isBotPresentObject = await CheckIfOurBotIsPresent2Async(x7, telegramBotAbstract);
-        if (isBotPresentObject.DateTime != null) 
+        if (isBotPresentObject.DateTime != null)
             return new Tuple<bool?, DateTime?>(null, isBotPresentObject.DateTime);
 
         if (isBotPresentObject.B != null && isBotPresentObject.B.Value)
@@ -283,7 +274,7 @@ internal static class UserBotFixBotAdmin
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChannel? x5,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        if (x5 != null) 
+        if (x5 != null)
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, x5.AccessHash, telegramBotAbstract);
     }
 
@@ -473,9 +464,9 @@ internal static class UserBotFixBotAdmin
     {
         const long userIdOfOurBot = 768169879;
 
-        if (x5 == null) 
+        if (x5 == null)
             return null;
-        
+
         var channel = accessHash != null
             ? new TLInputChannel { AccessHash = accessHash.Value, ChannelId = x5.Id }
             : new TLInputChannel { ChannelId = x5.Id };
@@ -507,13 +498,12 @@ internal static class UserBotFixBotAdmin
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
         return r4.r2 != null && r4.r != null && r4.r2.Item1 != null;
-
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat? x5, long? accessHash,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        if (x5 != null) 
+        if (x5 != null)
             await DeleteMessageAddedAsync2(idMessageAdded, x5.Id, accessHash, telegramBotAbstract);
     }
 
@@ -549,13 +539,9 @@ internal static class UserBotFixBotAdmin
         var x6 = x5.MigratedTo;
         TLInputChannel x8;
         if (x6 is TLInputChannel x7)
-        {
             x8 = x7;
-        }
         else
-        {
             return null;
-        }
 
         if (x5.MigratedTo == null) return null;
 
@@ -586,7 +572,7 @@ internal static class UserBotFixBotAdmin
         TLChat? x5, TLAbsInputPeer? u, TelegramBotAbstract? telegramBotAbstract)
     {
         var isOurBotPresent2 = await CheckIfOurBotIsPresent3Async(x5, telegramBotAbstract);
-        
+
         if (isOurBotPresent2.DateTime != null) return new IsBotPresentObject(null, isOurBotPresent2.DateTime);
 
         if (isOurBotPresent2.B != null && isOurBotPresent2.B.Value)
@@ -622,7 +608,7 @@ internal static class UserBotFixBotAdmin
         if (x == null) return new IsBotPresentObject(false, null);
 
         var r = CheckIfOurBotIsPresent(x);
-        if (!r || _idOfChatsWeKnowAreOk == null) 
+        if (!r || _idOfChatsWeKnowAreOk == null)
             return new IsBotPresentObject(r, null);
         if (x5 != null)
             _idOfChatsWeKnowAreOk[x5.Id] = true;

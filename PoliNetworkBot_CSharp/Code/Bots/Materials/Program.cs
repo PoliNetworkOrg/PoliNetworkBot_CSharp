@@ -486,8 +486,7 @@ public class Program
                             {
                                 await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
                                     "Modification Denied");
-                                if (callbackQuery != null)
-                                {
+                                
                                     if (callbackQuery.Message != null)
                                         await sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                                             callbackQuery.Message.MessageId,
@@ -504,7 +503,7 @@ public class Program
                                     await sender.SendTextMessageAsync(FromId, text, ChatType.Private,
                                         callbackQuery.From.LanguageCode,
                                         ParseMode.Html, null, null);
-                                }
+                                
                             }
                         }
                         catch (Exception exception)
@@ -808,23 +807,21 @@ public class Program
 
     private static async Task GenerateFolderAsync(MessageEventArgs e, TelegramBotAbstract? sender)
     {
-        if (e.Message != null)
-            if (e != null)
-                if (e.Message.From != null)
-                {
-                    UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
-                    var dict = new Dictionary<string, string?>
-                    {
-                        { "en", "Write the name of the new folder" },
-                        { "it", "Scrivi il nome della cartella" }
-                    };
-                    var text = new Language(dict);
+        if (e?.Message?.From != null)
+        {
+            UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
+            var dict = new Dictionary<string, string?>
+            {
+                { "en", "Write the name of the new folder" },
+                { "it", "Scrivi il nome della cartella" }
+            };
+            var text = new Language(dict);
 
-                    if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                            e.Message.From.LanguageCode,
-                            ParseMode.Html, null, null);
-                }
+            if (sender != null)
+                await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                    e.Message.From.LanguageCode,
+                    ParseMode.Html, null, null);
+        }
     }
 
     private static async Task HandleStartAsync(MessageEventArgs e, TelegramBotAbstract? telegramBotAbstract)

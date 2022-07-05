@@ -156,7 +156,7 @@ internal static class Groups
 
             lock (GroupsInRam)
             {
-                getDone = e?.Message != null && e != null && GroupsInRam.TryGetValue(e.Message.Chat.Id, out infoChat);
+                getDone = e?.Message != null && GroupsInRam.TryGetValue(e.Message.Chat.Id, out infoChat);
             }
 
             if (infoChat != null && getDone != null && getDone.Value)

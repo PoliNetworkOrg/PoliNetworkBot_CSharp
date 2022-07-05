@@ -76,7 +76,7 @@ internal static class Program
 
                 case '5':
                 {
-                    _ = await Test_IG.MainIGAsync();
+                    _ = await TestIg.MainIgAsync();
                     return;
                 }
 
@@ -96,7 +96,7 @@ internal static class Program
                     {
                         //SpamTest.Main2();
                         //Test_CheckLink.Test_CheckLink2();
-                        await Test_IG.MainIGAsync();
+                        await TestIg.MainIgAsync();
                         return;
                     }
                     catch

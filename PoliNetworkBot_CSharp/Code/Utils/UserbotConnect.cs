@@ -60,6 +60,7 @@ internal static class UserbotConnect
 
                 var numberToAuthenticate = userbot.NumberNumber;
                 var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
+                // ReSharper disable once ConvertToConstant.Local
                 var code = "";
                 var passwordToAuthenticate = userbot.passwordToAuthenticate;
 

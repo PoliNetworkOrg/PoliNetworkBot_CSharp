@@ -11,11 +11,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 internal static class Tables
 {
     public static void FixIdTable(string tableName, string columnIdName, string uniqueColumn,
-        DbConfigConnection? DbConfig)
+        DbConfigConnection? dbConfig)
     {
-        var r4 = GetMaxId(tableName, columnIdName, DbConfig);
+        var r4 = GetMaxId(tableName, columnIdName, dbConfig);
         var q2 = "SELECT * FROM " + tableName + " WHERE " + columnIdName + " IS NULL";
-        var r5 = Database.ExecuteSelect(q2, DbConfig);
+        var r5 = Database.ExecuteSelect(q2, dbConfig);
         if (r5 == null)
             return;
 
@@ -26,14 +26,14 @@ internal static class Tables
             var valueUnique = dr[uniqueColumn].ToString();
             var q3 = "UPDATE " + tableName + " SET " + columnIdName + "=" + r4 + " WHERE " + uniqueColumn +
                      "='" + valueUnique + "'";
-            Database.Execute(q3, DbConfig);
+            Database.Execute(q3, dbConfig);
         }
     }
 
-    internal static long GetMaxId(string tableName, string columnIdName, DbConfigConnection? DbConfig)
+    internal static long GetMaxId(string tableName, string columnIdName, DbConfigConnection? dbConfig)
     {
         var q = "SELECT MAX(" + columnIdName + ") FROM " + tableName;
-        var r = Database.ExecuteSelect(q, DbConfig);
+        var r = Database.ExecuteSelect(q, dbConfig);
         var r2 = Database.GetFirstValueFromDataTable(r);
         if (r2 == null) return 0;
 

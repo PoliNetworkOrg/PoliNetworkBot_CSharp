@@ -99,7 +99,7 @@ internal static class CommandDispatcher
             }
             case "/unmuteAll":
             {
-                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+                if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
                     return;
@@ -122,7 +122,7 @@ internal static class CommandDispatcher
 
             case "/banAll":
             {
-                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+                if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
                     return;
@@ -145,7 +145,7 @@ internal static class CommandDispatcher
 
             case "/banDeleteAll":
             {
-                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+                if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
                     return;
@@ -205,7 +205,7 @@ internal static class CommandDispatcher
 
             case "/unbanAll":
             {
-                if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+                if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
                     return;
@@ -641,7 +641,7 @@ internal static class CommandDispatcher
             }
             case "/testtime":
             {
-                if (e?.Message != null && e != null && e.Message.Chat.Type == ChatType.Private)
+                if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
                     await TestTime(sender, e);
 
                 return;
@@ -1693,7 +1693,7 @@ internal static class CommandDispatcher
 
     private static async Task Help(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        if (e?.Message != null && e != null && e.Message.Chat.Type == ChatType.Private)
+        if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
             await HelpPrivate(sender, e);
         else
             await CommandNotSentInPrivateAsync(sender, e);

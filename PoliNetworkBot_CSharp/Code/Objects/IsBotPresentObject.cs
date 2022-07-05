@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
@@ -9,7 +13,7 @@ public class IsBotPresentObject
 
     public IsBotPresentObject(bool? b, DateTime? dateTime)
     {
-        this.B = b;
-        this.DateTime = dateTime;
+        B = b;
+        DateTime = dateTime;
     }
 }

@@ -48,7 +48,7 @@ public static class AutoReplyInGroups
     internal static async Task MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
+        if (e?.Message != null && CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
             if (text.Contains("piano studi") || text.Contains("piano di studi") ||
                 text.Contains("piano degli studi"))
             {
@@ -78,7 +78,7 @@ public static class AutoReplyInGroups
                     true);
             }
 
-        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
+        if (e?.Message != null && CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
             if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") ||
                 text.ToLower().Contains("representative"))
             {
@@ -108,7 +108,7 @@ public static class AutoReplyInGroups
                     true);
             }
 
-        if (e?.Message != null && e != null && CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
+        if (e?.Message != null && CheckIfToSend(SpecialGroup.DSU, e.Message.Chat.Id))
             if (text.Contains("diritto studio universitario") || text.Contains("diritto allo studio") ||
                 text.Contains("dsu"))
             {

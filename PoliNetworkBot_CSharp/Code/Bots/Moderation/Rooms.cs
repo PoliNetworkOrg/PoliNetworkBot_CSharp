@@ -20,7 +20,7 @@ internal static class Rooms
 {
     internal static async Task RoomsMainAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+        if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
             return;
 
         var question = new Language(new Dictionary<string, string?>

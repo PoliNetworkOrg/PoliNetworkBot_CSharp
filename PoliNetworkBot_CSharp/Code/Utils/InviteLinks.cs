@@ -90,8 +90,8 @@ internal static class InviteLinks
             var ex3M = "5" +
                 "\n\n" + ex1.Message +
                 "\n\n" + chatId +
-                "\n\n" + chat == null ? "[null class]" :
-                chat != null && string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat?.Title;
+                "\n\n" + (chat == null ? "[null class]" :
+                string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat?.Title);
 
             await NotifyUtil.NotifyOwners(ex3M, sender, messageEventArgs);
             return null;
@@ -121,7 +121,7 @@ internal static class InviteLinks
     {
         try
         {
-            if (e?.Message != null && e != null && e.Message.Chat.Type != ChatType.Private)
+            if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 return;
 
             if (e?.Message?.From == null)
@@ -154,21 +154,19 @@ internal static class InviteLinks
                         var l = new ListaGruppiTG_Update();
 
                         var gruppoTGs = new List<GruppoTG?>();
-                        if (jArray != null)
-                            foreach (var x in jArray)
-                                try
-                                {
-                                    var jObject = (JObject)x;
-                                    if (jObject == null) continue;
-                                    var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
-                                        jObject["permanentId"],
-                                        jObject["LastUpdateInviteLinkTime"]);
-                                    gruppoTGs.Add(gruppoTg);
-                                }
-                                catch
-                                {
-                                    ;
-                                }
+                        foreach (var x in jArray)
+                            try
+                            {
+                                var jObject = (JObject)x;
+                                var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
+                                    jObject["permanentId"],
+                                    jObject["LastUpdateInviteLinkTime"]);
+                                gruppoTGs.Add(gruppoTg);
+                            }
+                            catch
+                            {
+                                ;
+                            }
 
                         gruppoTGs = RimuoviDuplicati(gruppoTGs);
 
@@ -362,13 +360,10 @@ internal static class InviteLinks
                 NuovoLink? s3 = null;
                 try
                 {
-                    if (groupId != null)
-                    {
-                        gruppoTg.UpdateId(groupId.Value);
+                    gruppoTg.UpdateId(groupId.Value);
 
-                        s3 = await CreateInviteLinkAsync(groupId.Value, sender, e);
-                        if (s3 != null) gruppoTg.UpdateNewLink(s3.link);
-                    }
+                    s3 = await CreateInviteLinkAsync(groupId.Value, sender, e);
+                    if (s3 != null) gruppoTg.UpdateNewLink(s3.link);
                 }
                 catch (Exception? ex3)
                 {
