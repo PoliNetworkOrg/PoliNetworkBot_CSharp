@@ -343,8 +343,8 @@ internal static class ModerationCheck
         {
             case { Chat.Type: ChatType.Private }:
             case { From: { }, Chat: { } }
-                when (from1 is { Id: 777000 } ||
-                      (from1 != null && from1.Id == e.Message.Chat.Id)):
+                when from1 is { Id: 777000 } ||
+                     (from1 != null && from1.Id == e.Message.Chat.Id):
                 return SpamType.ALL_GOOD;
         }
 
@@ -402,7 +402,7 @@ internal static class ModerationCheck
         if (e.Message.Photo != null)
             return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient),
                 Blacklist.IsSpam(e.Message.Photo));
-        
+
         //default is all good
         return SpamType.ALL_GOOD;
     }
@@ -607,7 +607,7 @@ internal static class ModerationCheck
                 // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                 case SpamType.ALL_GOOD:
                     return;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }

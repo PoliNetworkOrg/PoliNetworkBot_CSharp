@@ -143,10 +143,10 @@ public static class MessagesStore
         if (Store == null) return SpamType.UNDEFINED;
         if (text == null) return SpamType.UNDEFINED;
         StoredMessage? storedMessage = null;
-        
+
         if (Store.ContainsKey(text))
             storedMessage = Store[text];
-        
+
         if (Store.ContainsKey(text))
         {
             if (storedMessage != null)
@@ -204,14 +204,12 @@ public static class MessagesStore
         {
             if (Store != null)
                 if (text != null)
-                {
                     if (Store.ContainsKey(text))
                     {
                         var messages = Store[text]?.Messages;
                         if (messages != null)
                             return messages;
                     }
-                }
         }
         catch
         {

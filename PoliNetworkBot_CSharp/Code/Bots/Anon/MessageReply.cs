@@ -2,8 +2,8 @@
 
 public class MessageReply
 {
-    public int? MessageIdToReplyTo;
     private readonly ResultQueueEnum? _resultQueueEnum;
+    public int? MessageIdToReplyTo;
 
     public MessageReply(int? f1, ResultQueueEnum? f2)
     {

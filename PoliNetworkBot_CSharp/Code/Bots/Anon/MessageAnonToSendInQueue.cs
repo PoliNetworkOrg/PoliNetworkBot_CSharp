@@ -17,7 +17,7 @@ internal class MessageAnonToSendInQueue
 
     public MessageAnonToSendInQueue(MessageEventArgs? e)
     {
-        this._e = e;
+        _e = e;
     }
 
     public MessageAnonToSendInQueue(WebPost? webPost)
