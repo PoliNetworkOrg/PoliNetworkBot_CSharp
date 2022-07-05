@@ -142,7 +142,11 @@ public static class MessagesStore
 
         if (Store == null) return SpamType.UNDEFINED;
         if (text == null) return SpamType.UNDEFINED;
-        var storedMessage = Store[text];
+        StoredMessage? storedMessage = null;
+        
+        if (Store.ContainsKey(text))
+            storedMessage = Store[text];
+        
         if (Store.ContainsKey(text))
         {
             if (storedMessage != null)
