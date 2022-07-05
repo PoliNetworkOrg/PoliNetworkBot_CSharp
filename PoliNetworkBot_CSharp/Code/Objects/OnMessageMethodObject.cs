@@ -1,4 +1,8 @@
-﻿using PoliNetworkBot_CSharp.Code.Data;
+﻿#region
+
+using PoliNetworkBot_CSharp.Code.Data;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 

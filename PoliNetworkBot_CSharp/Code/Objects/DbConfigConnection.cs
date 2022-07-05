@@ -1,5 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿#region
+
+using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
@@ -18,9 +22,9 @@ public class DbConfigConnection
     {
         if (_mySqlConnection != null)
             return _mySqlConnection;
-        
+
         _mySqlConnection = new MySqlConnection(_dbConfig.GetConnectionString());
-        return this._mySqlConnection;
+        return _mySqlConnection;
     }
 
     public DbConfig GetDbConfig()

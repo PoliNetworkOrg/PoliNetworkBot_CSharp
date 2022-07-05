@@ -2,7 +2,6 @@
 
 using System;
 using System.Data;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
@@ -11,7 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class Tables
 {
-    public static void FixIdTable(string tableName, string columnIdName, string uniqueColumn, DbConfigConnection? DbConfig)
+    public static void FixIdTable(string tableName, string columnIdName, string uniqueColumn,
+        DbConfigConnection? DbConfig)
     {
         var r4 = GetMaxId(tableName, columnIdName, DbConfig);
         var q2 = "SELECT * FROM " + tableName + " WHERE " + columnIdName + " IS NULL";

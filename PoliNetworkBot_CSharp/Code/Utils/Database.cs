@@ -13,11 +13,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class Database
 {
-    public static int Execute(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
+    public static int Execute(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        if (dbConfigConnection == null) 
+        if (dbConfigConnection == null)
             return 0;
         var connection = dbConfigConnection.GetMySqlConnection();
 
@@ -34,7 +35,8 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
+    public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
