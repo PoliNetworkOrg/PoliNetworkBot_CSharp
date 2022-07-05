@@ -338,8 +338,8 @@ public static class MessageDb
         var fipo = dr["from_id_person"];
 
         DateTime? dt = null;
-        long? from_id_entity = null;
-        long? from_id_person = null;
+        long? fromIdEntity = null;
+        long? fromIdPerson = null;
 
         try
         {
@@ -352,7 +352,7 @@ public static class MessageDb
 
         try
         {
-            from_id_entity = (long?)fieo;
+            fromIdEntity = (long?)fieo;
         }
         catch
         {
@@ -361,7 +361,7 @@ public static class MessageDb
 
         try
         {
-            from_id_person = (long?)fipo;
+            fromIdPerson = (long?)fipo;
         }
         catch
         {
@@ -370,13 +370,13 @@ public static class MessageDb
 
         var text1 = "📌 ID: " + count + "\n";
         if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
-        if (from_id_entity != null)
+        if (fromIdEntity != null)
         {
-            var entity_name = Assoc.GetNameOfEntityFromItsId(from_id_entity.Value, telegramBotAbstract);
+            var entity_name = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
             text1 += "👥 " + entity_name + "\n";
         }
 
-        if (from_id_person != null) text1 += "✍ " + from_id_person + "\n";
+        if (fromIdPerson != null) text1 += "✍ " + fromIdPerson + "\n";
 
         var dict = new Dictionary<string, string?>
         {

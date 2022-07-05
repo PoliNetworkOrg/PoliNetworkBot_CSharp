@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Test.CheckLink;
 
-public static class Test_CheckLink
+public static class TestCheckLink
 {
     public static void Test_CheckLink2()
     {
