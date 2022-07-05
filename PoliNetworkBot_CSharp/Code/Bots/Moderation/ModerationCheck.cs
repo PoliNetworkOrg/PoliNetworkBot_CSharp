@@ -336,7 +336,7 @@ internal static class ModerationCheck
             fromUsername, userId, fromFirstName, lastName, messageId);
     }
 
-    public static async Task<SpamType?> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
+    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
         var from1 = e?.Message?.From;
         switch (e?.Message)
@@ -402,7 +402,9 @@ internal static class ModerationCheck
         if (e.Message.Photo != null)
             return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient),
                 Blacklist.IsSpam(e.Message.Photo));
-        return null;
+        
+        //default is all good
+        return SpamType.ALL_GOOD;
     }
 
     private static bool CheckIfIsInList(IEnumerable<TelegramUser>? a, User from)
@@ -526,9 +528,9 @@ internal static class ModerationCheck
     }
 
     public static async Task AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
-        SpamType? checkSpam)
+        SpamType checkSpam)
     {
-        if (checkSpam is null or SpamType.ALL_GOOD)
+        if (checkSpam == SpamType.ALL_GOOD)
             return;
 
         if (e?.Message?.From != null)
