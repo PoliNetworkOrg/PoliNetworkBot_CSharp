@@ -160,6 +160,7 @@ public static class MessagesStore
             lock (Store)
             {
                 if (message is { Text: { } })
+                {
                     Store[text] = new StoredMessage
                     (
                         lastSeenTime: DateTime.Now,
@@ -167,6 +168,8 @@ public static class MessagesStore
                         message: message.Text,
                         allowedSpam: MessageAllowedStatusEnum.NOT_DEFINED_FOUND_IN_A_MESSAGE_SENT
                     );
+                    storedMessage = Store[text];
+                }
             }
         }
 
