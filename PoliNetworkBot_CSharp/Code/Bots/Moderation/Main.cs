@@ -52,9 +52,9 @@ internal static class Main
                 var itemToPrint = MemberListToString(toExit.Item2);
                 var itemToPrint2 = ListIntToString(toExit.Item3);
                 var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                var itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat?.Title;
+                var itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat.Title;
                 itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                itemToPrintFull += "\n----\n" + e?.Message?.Chat?.Id;
+                itemToPrintFull += "\n----\n" + e?.Message?.Chat.Id;
                 itemToPrintFull += "\n@@@@@@";
 
                 await Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
@@ -67,9 +67,8 @@ internal static class Main
             var notAuthorizedBotHasBeenAddedBool =
                 await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
             if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
-                foreach (var bot in notAuthorizedBotHasBeenAddedBool.Where(bot => e != null)
-                             .Where(bot => e?.Message != null))
-                    if (e?.Message != null)
+                if (e?.Message != null)
+                    foreach (var bot in notAuthorizedBotHasBeenAddedBool)
                         await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
 
             //todo: send message "Bots not allowed here!"
@@ -132,7 +131,7 @@ internal static class Main
         }
     }
 
-    private static string? StringToStringToBePrinted(string? item4)
+    private static string StringToStringToBePrinted(string? item4)
     {
         if (item4 == null)
             return "[NULL]";
@@ -155,6 +154,6 @@ internal static class Main
 
         return item2.Count == 0
             ? "[EMPTY]"
-            : item2.Aggregate("", (current, item3) => current + item3?.User?.Username + " " + item3?.Status + "\n");
+            : item2.Aggregate("", (current, item3) => current + item3.User.Username + " " + item3?.Status + "\n");
     }
 }

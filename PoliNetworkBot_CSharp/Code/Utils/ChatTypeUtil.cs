@@ -9,7 +9,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class ChatTypeUtil
 {
-    public static ChatType? GetChatTypeFromString(object o)
+    public static ChatType? GetChatTypeFromString(object? o)
     {
         if (o == null)
             return null;

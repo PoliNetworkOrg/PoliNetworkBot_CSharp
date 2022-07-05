@@ -18,7 +18,7 @@ public static class Keyboards
     internal static IEnumerable<List<Language>>? GetKeyboardCorsi(string? scuola)
     {
         var options2 = new List<Language>();
-        if (scuola != null && Navigator.ScuoleCorso[scuola] != null)
+        if (scuola != null && Navigator.ScuoleCorso.ContainsKey(scuola))
             options2.AddRange(Navigator.ScuoleCorso[scuola].Select(corso =>
                 new Language(new Dictionary<string, string?> { { "it", corso }, { "en", corso } })));
         options2.Add(new Language(new Dictionary<string, string?>
@@ -41,8 +41,7 @@ public static class Keyboards
         var subdirectoryEntries = Array.Empty<string>();
         if (Program.UsersConversations[id].GetState() != UserState.NEW_FOLDER)
             subdirectoryEntries = Directory.GetDirectories(root);
-        if (subdirectoryEntries != null)
-            subdirectoryEntries = RemoveGit(subdirectoryEntries);
+        subdirectoryEntries = RemoveGit(subdirectoryEntries);
         return subdirectoryEntries;
     }
 

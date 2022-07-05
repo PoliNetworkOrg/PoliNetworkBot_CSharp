@@ -8,34 +8,34 @@ using Newtonsoft.Json.Linq;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
-public class GruppoTG
+public class GruppoTg
 {
+    private readonly DateTime? _lastUpdateInviteLinkTimeDateTime;
     private readonly string? _lastUpdateInviteLinkTimeString;
-    private readonly DateTime? LastUpdateInviteLinkTimeDateTime;
-    public readonly string? nome;
-    public readonly List<string?> oldLinks;
-    public string? idLink;
-    public string? newLink;
-    public long? permanentId;
+    public readonly string? Nome;
+    public readonly List<string?> OldLinks;
+    public string? IdLink;
+    public string? NewLink;
+    public long? PermanentId;
 
-    public GruppoTG(JToken? idLink, JToken? nome, JToken? id, JToken? LastUpdateInviteLinkTime)
+    public GruppoTg(JToken? idLink, JToken? nome, JToken? id, JToken? lastUpdateInviteLinkTime)
     {
-        this.idLink = idLink?.ToString();
-        oldLinks = new List<string?> { this.idLink };
-        this.nome = nome?.ToString();
+        IdLink = idLink?.ToString();
+        OldLinks = new List<string?> { IdLink };
+        Nome = nome?.ToString();
 
         try
         {
-            permanentId = Convert.ToInt64(id?.ToString());
+            PermanentId = Convert.ToInt64(id?.ToString());
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
         {
-            _lastUpdateInviteLinkTimeString = LastUpdateInviteLinkTime?.ToString();
+            _lastUpdateInviteLinkTimeString = lastUpdateInviteLinkTime?.ToString();
             if (_lastUpdateInviteLinkTimeString != null && !_lastUpdateInviteLinkTimeString.Contains(' ')) return;
             var s1 = _lastUpdateInviteLinkTimeString?.Split(' ');
             if (s1 == null) return;
@@ -60,7 +60,7 @@ public class GruppoTG
             var minute = s7[1];
             var second = s7[2];
 
-            LastUpdateInviteLinkTimeDateTime = new DateTime(
+            _lastUpdateInviteLinkTimeDateTime = new DateTime(
                 (int)Convert.ToInt64(year),
                 (int)Convert.ToInt64(month),
                 (int)Convert.ToInt64(day),
@@ -71,17 +71,17 @@ public class GruppoTG
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
     internal void UpdateId(long value)
     {
-        permanentId = value;
+        PermanentId = value;
     }
 
     internal void UpdateNewLink(string? link)
     {
-        newLink = link;
+        NewLink = link;
     }
 }

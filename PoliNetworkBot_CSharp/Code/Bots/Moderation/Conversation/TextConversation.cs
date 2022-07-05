@@ -48,11 +48,8 @@ internal static class TextConversation
         if (string.IsNullOrEmpty(e.Message.Text))
             return;
 
-        if (e.Message.Chat == null)
-            return;
-
         var text = e.Message.Text.ToLower();
-        var title = e.Message?.Chat?.Title?.ToLower();
+        var title = e.Message?.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
             await AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
     }

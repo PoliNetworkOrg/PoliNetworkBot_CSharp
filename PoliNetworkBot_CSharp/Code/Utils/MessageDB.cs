@@ -113,8 +113,8 @@ public static class MessageDb
                     botToReportException,
                     messageEventArgs);
                 telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
-                if (telegramBotAbstract != null &&
-                    r1 != null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
+                if (telegramBotAbstract !=
+                    null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
                     switch (r1.ScheduleMessageSentResult)
                     {
                         case ScheduleMessageSentResult.FAILED_SEND:

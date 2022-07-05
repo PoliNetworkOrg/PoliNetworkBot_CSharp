@@ -38,18 +38,18 @@ internal class ListaGruppiTG_Update
                 if (l2.GruppoTg == null) continue;
                 var s3 = "Success: " + (l2.SuccessoGenerazioneLink != SuccessoGenerazioneLink.ERRORE ? "S" : "N") +
                          "\n" +
-                         "IdLink: " + StringNotNull(l2.GruppoTg.idLink) + "\n" +
-                         "NewLink: " + StringNotNull(l2.GruppoTg.newLink) + "\n" +
-                         "PermanentId: " + StringNotNullFromLong(l2.GruppoTg.permanentId) + "\n" +
+                         "IdLink: " + StringNotNull(l2.GruppoTg.IdLink) + "\n" +
+                         "NewLink: " + StringNotNull(l2.GruppoTg.NewLink) + "\n" +
+                         "PermanentId: " + StringNotNullFromLong(l2.GruppoTg.PermanentId) + "\n" +
                          "OldLink: " + "[";
 
-                if (l2.GruppoTg.oldLinks == null || l2.GruppoTg.oldLinks.Count == 0)
+                if (l2.GruppoTg.OldLinks.Count == 0)
                 {
                     ;
                 }
                 else
                 {
-                    var s4 = l2.GruppoTg.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
+                    var s4 = l2.GruppoTg.OldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
                     s4 = s4.Remove(s4.Length - 1);
                     s3 += s4;
                 }
@@ -59,7 +59,7 @@ internal class ListaGruppiTG_Update
                       "q1: " + StringNotNullFromBool(l2.Query1Fallita) + "\n" +
                       "q2: " + StringNotNullFromBool(l2.Query2Fallita) + "\n" +
                       "q3: " + StringNotNullFromBool(l2.CreateInviteLinkFallita) + "\n" +
-                      "Nome: " + StringNotNull(l2.GruppoTg.nome);
+                      "Nome: " + StringNotNull(l2.GruppoTg.Nome);
                 st += s3 + "\n\n";
 
                 /*await sender.SendTextMessageAsync(e.Message.From.Id,

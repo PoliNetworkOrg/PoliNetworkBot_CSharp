@@ -153,12 +153,12 @@ internal static class InviteLinks
 
                         var l = new ListaGruppiTG_Update();
 
-                        var gruppoTGs = new List<GruppoTG?>();
+                        var gruppoTGs = new List<GruppoTg?>();
                         foreach (var x in jArray)
                             try
                             {
                                 var jObject = (JObject)x;
-                                var gruppoTg = new GruppoTG(jObject["id_link"], jObject["class"],
+                                var gruppoTg = new GruppoTg(jObject["id_link"], jObject["class"],
                                     jObject["permanentId"],
                                     jObject["LastUpdateInviteLinkTime"]);
                                 gruppoTGs.Add(gruppoTg);
@@ -242,27 +242,27 @@ internal static class InviteLinks
         }
     }
 
-    private static async Task UpdateLinksFromJson2Async(GruppoTG? gruppoTg, TelegramBotAbstract? sender,
+    private static async Task UpdateLinksFromJson2Async(GruppoTg? gruppoTg, TelegramBotAbstract? sender,
         MessageEventArgs? e, ListaGruppiTG_Update l)
     {
         var result = new GruppoTgUpdate(null, SuccessoGenerazioneLink.ERRORE);
 
         if (gruppoTg != null)
         {
-            var groupId = gruppoTg.permanentId;
+            var groupId = gruppoTg.PermanentId;
             var sql1 = "empty";
-            if (!string.IsNullOrEmpty(gruppoTg.idLink))
+            if (!string.IsNullOrEmpty(gruppoTg.IdLink))
             {
                 sql1 = "SELECT id FROM GroupsTelegram " +
-                       "WHERE GroupsTelegram.link LIKE '%" + gruppoTg.idLink + "%'";
+                       "WHERE GroupsTelegram.link LIKE '%" + gruppoTg.IdLink + "%'";
 
-                if (gruppoTg.idLink.Length < 3) gruppoTg.idLink = "";
+                if (gruppoTg.IdLink.Length < 3) gruppoTg.IdLink = "";
             }
 
             if (groupId == null)
                 try
                 {
-                    if (!string.IsNullOrEmpty(gruppoTg.idLink))
+                    if (!string.IsNullOrEmpty(gruppoTg.IdLink))
                     {
                         var r1 = Database.ExecuteSelect(sql1, sender?.DbConfig);
                         if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
@@ -280,8 +280,8 @@ internal static class InviteLinks
                 catch (Exception? ex1)
                 {
                     Logger.Logger.WriteLine(ex1);
-                    var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.idLink + "\n\n" +
-                               gruppoTg.nome + "\n\n" + gruppoTg.newLink + "\n\n" + gruppoTg.permanentId;
+                    var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.IdLink + "\n\n" +
+                               gruppoTg.Nome + "\n\n" + gruppoTg.NewLink + "\n\n" + gruppoTg.PermanentId;
                     if (sender != null)
                         if (e?.Message != null)
                             await sender.SendTextMessageAsync(e.Message.From?.Id,
@@ -308,10 +308,10 @@ internal static class InviteLinks
             if (groupId == null)
                 try
                 {
-                    if (!string.IsNullOrEmpty(gruppoTg.nome))
+                    if (!string.IsNullOrEmpty(gruppoTg.Nome))
                     {
                         var r1 = Database.ExecuteSelect(sql2, sender?.DbConfig,
-                            new Dictionary<string, object?> { { "@nome", gruppoTg.nome } });
+                            new Dictionary<string, object?> { { "@nome", gruppoTg.Nome } });
                         if (r1 is { Rows.Count: > 0 } && r1.Rows[0].ItemArray.Length > 0)
                         {
                             var r2 = r1.Rows[0];
@@ -327,7 +327,7 @@ internal static class InviteLinks
                 catch (Exception? ex2)
                 {
                     Logger.Logger.WriteLine(ex2);
-                    var ex2M = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.nome;
+                    var ex2M = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.Nome;
                     if (sender != null)
                         if (e?.Message != null)
                             await sender.SendTextMessageAsync(e.Message.From?.Id,
@@ -405,10 +405,10 @@ internal static class InviteLinks
         return s3?.isNuovo ?? SuccessoGenerazioneLink.ERRORE;
     }
 
-    private static List<GruppoTG?> RimuoviDuplicati(List<GruppoTG?>? gruppoTGs)
+    private static List<GruppoTg?> RimuoviDuplicati(List<GruppoTg?>? gruppoTGs)
     {
         if (gruppoTGs == null)
-            return new List<GruppoTG?>();
+            return new List<GruppoTg?>();
 
         for (var i = 0; i < gruppoTGs.Count; i++)
         for (var j = i + 1; j < gruppoTGs.Count; j++)
@@ -416,12 +416,12 @@ internal static class InviteLinks
             {
                 var gruppoTg1 = gruppoTGs[i];
                 var gruppoTg2 = gruppoTGs[j];
-                if (gruppoTg2 == null || gruppoTg1 is not { permanentId: { } } ||
-                    gruppoTg2.permanentId == null) continue;
+                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: { } } ||
+                    gruppoTg2.PermanentId == null) continue;
 
-                if (gruppoTg1.permanentId != gruppoTg2.permanentId) continue;
+                if (gruppoTg1.PermanentId != gruppoTg2.PermanentId) continue;
 
-                gruppoTg1.oldLinks.AddRange(gruppoTg2.oldLinks);
+                gruppoTg1.OldLinks.AddRange(gruppoTg2.OldLinks);
                 gruppoTGs.RemoveAt(j);
                 j--;
             }

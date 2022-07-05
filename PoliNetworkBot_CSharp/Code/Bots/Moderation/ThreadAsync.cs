@@ -65,7 +65,7 @@ public static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -77,7 +77,7 @@ public static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -154,7 +154,7 @@ public static class ThreadAsync
         }
     }
 
-    private static void SayYouRestarted2(TelegramBotAbstract telegramBotAbstract)
+    private static void SayYouRestarted2(TelegramBotAbstract? telegramBotAbstract)
     {
         if (telegramBotAbstract == null)
             return;
@@ -286,7 +286,7 @@ public static class ThreadAsync
             }
             catch
             {
-                ;
+                // ignored
             }
         }
         // ReSharper disable once FunctionNeverReturns

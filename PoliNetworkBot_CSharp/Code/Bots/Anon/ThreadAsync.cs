@@ -53,7 +53,7 @@ internal static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
 
         DictionaryWebpost ??= GetDictionary();
@@ -82,7 +82,7 @@ internal static class ThreadAsync
             urlFinal += "&random=" + randomstring;
 
             var x = await Web.DownloadHtmlAsync(urlFinal);
-            if (x == null || x.IsValid() == false) return;
+            if (x.IsValid() == false) return;
 
             var data = x.GetData();
 
@@ -96,28 +96,21 @@ internal static class ThreadAsync
 
     private static void DoThingsAsyncBotAsync2(string? data)
     {
-        ;
-
         try
         {
             JArray? r2 = null;
             if (data != null)
             {
                 var result = JsonConvert.DeserializeObject<object>(data);
-                ;
 
                 if (result is not JArray array) return;
                 r2 = array;
             }
 
-            ;
             if (r2 == null) return;
             foreach (var r3 in r2)
             {
-                ;
-
                 if (r3 is not JObject r4) continue;
-                ;
 
                 var webPost = new WebPost(r4);
                 DoThingsAsyncBotAsync3(webPost);
@@ -125,7 +118,7 @@ internal static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -153,8 +146,6 @@ internal static class ThreadAsync
         if (DictionaryWebpost != null && DictionaryWebpost.ContainsKey(webPost.postid) &&
             DictionaryWebpost[webPost.postid].seen == 'Y') return;
 
-        ;
-
         try
         {
             await webPost.SetAsSeenAsync();
@@ -178,7 +169,7 @@ internal static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -193,7 +184,7 @@ internal static class ThreadAsync
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (!done) DictionaryWebpost = new Dictionary<long, WebPost>();

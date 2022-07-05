@@ -302,8 +302,8 @@ public static class Main
 
     private static string? NameOfUser(DataRow dataRow)
     {
-        var fn = dataRow["firstname"]?.ToString();
-        var ln = dataRow["lastname"]?.ToString();
+        var fn = dataRow["firstname"].ToString();
+        var ln = dataRow["lastname"].ToString();
 
         if (string.IsNullOrEmpty(fn) == false && string.IsNullOrEmpty(ln) == false) return fn + " " + ln;
 

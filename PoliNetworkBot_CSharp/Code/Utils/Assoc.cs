@@ -539,7 +539,7 @@ internal static class Assoc
     {
         const string url = "https://www.polimi.it/studenti-iscritti/rappresentanti-e-associazioni/";
         var webReply = await Web.DownloadHtmlAsync(url);
-        if (webReply == null || !webReply.IsValid()) return null;
+        if (!webReply.IsValid()) return null;
 
         // parse the html document
         var doc = new HtmlDocument();

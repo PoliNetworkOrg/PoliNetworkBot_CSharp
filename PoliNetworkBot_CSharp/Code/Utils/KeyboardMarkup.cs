@@ -23,7 +23,7 @@ internal static class KeyboardMarkup
         ).ToList()).ToList();
     }
 
-    internal static List<List<T>>? ArrayToMatrixString<T>(List<T> list)
+    internal static List<List<T>>? ArrayToMatrixString<T>(List<T>? list)
     {
         if (list == null || list.Count == 0)
             return null;
