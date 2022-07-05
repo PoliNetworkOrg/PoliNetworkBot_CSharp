@@ -1555,15 +1555,15 @@ internal static class CommandDispatcher
         return r;
     }
 
-    private static ValueWithException<DateTime?>? GetDateTime(string?[]? target)
+    private static ValueWithException<DateTime?>? GetDateTime(IReadOnlyList<string?>? target)
     {
         if (target == null)
             return null;
-        if (target.Length < 3)
+        if (target.Count < 3)
             return null;
 
         var s = "";
-        for (var i = 2; i < target.Length; i++) s += target[i] + " ";
+        for (var i = 2; i < target.Count; i++) s += target[i] + " ";
 
         s = s.Trim();
         return DateTimeClass.GetFromString(s);

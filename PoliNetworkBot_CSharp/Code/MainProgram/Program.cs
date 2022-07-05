@@ -156,7 +156,7 @@ internal static class Program
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         if (File.Exists("psw_anon.txt"))
-            ConfigAnon.password = File.ReadAllText("psw_anon.txt");
+            ConfigAnon.Password = File.ReadAllText("psw_anon.txt");
 
         if (!Directory.Exists("../config"))
             Directory.CreateDirectory("../config");
@@ -593,6 +593,7 @@ internal static class Program
                 Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.CRITICAL);
                 Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
             }
+        // ReSharper disable once FunctionNeverReturns
     }
 
     private static void HandleUpdate(Update update, BotClientWhole botClientWhole)

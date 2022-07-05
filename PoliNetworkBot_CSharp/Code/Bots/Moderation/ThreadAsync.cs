@@ -19,7 +19,7 @@ using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
-public class ThreadAsync
+public static class ThreadAsync
 {
     public static void DoThingsAsyncBot()
     {
@@ -238,6 +238,7 @@ public class ThreadAsync
             MessagesStore.CheckTimestamp();
             Thread.Sleep(1000 * 3600 * 24);
         }
+        // ReSharper disable once FunctionNeverReturns
     }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
@@ -288,6 +289,7 @@ public class ThreadAsync
                 ;
             }
         }
+        // ReSharper disable once FunctionNeverReturns
     }
 
     private static async void CheckMessagesToSend()

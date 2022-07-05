@@ -16,7 +16,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Test.IG;
 
-internal class Test_IG
+internal static class Test_IG
 {
     //https://github.com/ramtinak/InstagramApiSharp
 

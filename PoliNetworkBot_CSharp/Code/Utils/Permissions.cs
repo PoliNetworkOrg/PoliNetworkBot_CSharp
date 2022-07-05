@@ -23,6 +23,9 @@ internal static class Permissions
         return permission switch
         {
             Permission.HEAD_ADMIN => HeadAdminCheck(messageFrom).Result,
+            Permission.OWNER => throw new NotImplementedException(),
+            Permission.CREATOR => throw new NotImplementedException(),
+            Permission.USER => throw new NotImplementedException(),
             _ => throw new NotImplementedException()
         };
     }

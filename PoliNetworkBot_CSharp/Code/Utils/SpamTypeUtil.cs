@@ -6,7 +6,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class SpamTypeUtil
+internal static class SpamTypeUtil
 {
     internal static SpamType Merge(SpamType spamType1, SpamType spamType2)
     {

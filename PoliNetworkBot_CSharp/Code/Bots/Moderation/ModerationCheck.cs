@@ -529,7 +529,7 @@ internal static class ModerationCheck
     public static async Task AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType? checkSpam)
     {
-        if (checkSpam == SpamType.ALL_GOOD)
+        if (checkSpam is null or SpamType.ALL_GOOD)
             return;
 
         if (e?.Message?.From != null)
@@ -606,7 +606,7 @@ internal static class ModerationCheck
                 // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                 case SpamType.ALL_GOOD:
                     return;
-
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
             }

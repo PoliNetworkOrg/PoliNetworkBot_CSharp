@@ -7,7 +7,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 
-internal class UtilsFileText
+internal static class UtilsFileText
 {
     internal static TelegramFile GenerateFileFromString(string data, string fileName, string? caption,
         string? mimeType)

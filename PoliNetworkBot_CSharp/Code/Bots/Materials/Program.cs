@@ -927,7 +927,7 @@ public class Program
     }
 
     private static async Task SendFolderAsync(MessageEventArgs e,
-        List<List<Language>>? replyKeyboard, TelegramBotAbstract? telegramBotAbstract)
+        IReadOnlyCollection<List<Language>>? replyKeyboard, TelegramBotAbstract? telegramBotAbstract)
     {
         if (replyKeyboard == null)
             return;

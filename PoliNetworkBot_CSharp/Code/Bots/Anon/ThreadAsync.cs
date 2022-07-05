@@ -44,7 +44,7 @@ internal static class ThreadAsync
         if (bot == null)
             return;
 
-        if (string.IsNullOrEmpty(ConfigAnon.password))
+        if (string.IsNullOrEmpty(ConfigAnon.Password))
             return;
 
         try
@@ -77,7 +77,7 @@ internal static class ThreadAsync
         {
             const string url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
 
-            var urlFinal = url + ConfigAnon.password;
+            var urlFinal = url + ConfigAnon.Password;
             var randomstring = GenerateRandomString(30);
             urlFinal += "&random=" + randomstring;
 
@@ -106,8 +106,8 @@ internal static class ThreadAsync
                 var result = JsonConvert.DeserializeObject<object>(data);
                 ;
 
-                if (result is not JArray) return;
-                r2 = (JArray?)result;
+                if (result is not JArray array) return;
+                r2 = array;
             }
 
             ;

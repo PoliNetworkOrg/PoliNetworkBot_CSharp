@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class Web
+internal static class Web
 {
     internal static async Task<WebReply> DownloadHtmlAsync(string urlAddress)
 

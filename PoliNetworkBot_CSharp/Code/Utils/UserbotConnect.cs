@@ -24,7 +24,7 @@ internal static class UserbotConnect
             {
                 if (userbot.token != null)
                 {
-                    TelegramBotClient? telegramBotClient = new(userbot.token);
+                    TelegramBotClient telegramBotClient = new(userbot.token);
                     return new TelegramBotAbstract(telegramBotClient, userbot.website, userbot.contactString,
                         userbot.botTypeApi.Value, userbot.onMessages);
                 }

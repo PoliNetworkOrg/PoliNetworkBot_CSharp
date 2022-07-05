@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 
@@ -8,19 +7,18 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class GruppoTG_Update
+public class GruppoTgUpdate
 {
-    public GruppoTG? gruppoTG;
-    public SuccessoGenerazioneLink successoGenerazioneLink;
+    public GruppoTG? GruppoTg;
+    public SuccessoGenerazioneLink SuccessoGenerazioneLink;
 
-    public GruppoTG_Update(GruppoTG? p, SuccessoGenerazioneLink eRRORE)
+    public GruppoTgUpdate(GruppoTG? p, SuccessoGenerazioneLink errore)
     {
-        gruppoTG = p;
-        successoGenerazioneLink = eRRORE;
+        GruppoTg = p;
+        SuccessoGenerazioneLink = errore;
     }
 
     public string? ExceptionMessage { get; internal set; }
-    public Exception? ExceptionObject { get; internal set; }
     public bool? Query1Fallita { get; internal set; }
     public bool? Query2Fallita { get; internal set; }
     public bool? CreateInviteLinkFallita { get; internal set; }

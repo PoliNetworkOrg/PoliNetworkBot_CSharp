@@ -16,7 +16,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Primo;
 
-public class Main
+public static class Main
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
@@ -245,7 +245,7 @@ public class Main
         }
     }
 
-    private static string GetRoles(List<string?>? item2)
+    private static string GetRoles(IReadOnlyCollection<string?>? item2)
     {
         if (item2 == null || item2.Count == 0)
             return "";

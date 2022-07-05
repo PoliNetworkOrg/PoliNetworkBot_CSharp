@@ -9,7 +9,7 @@ using HtmlAgilityPack;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class HtmlUtil
+internal static class HtmlUtil
 {
     internal static List<HtmlNode?>? GetElementsByTagAndClassName(HtmlNode? doc, string tag = "",
         string className = "", long? limit = null)
@@ -18,16 +18,16 @@ internal class HtmlUtil
             return null;
 
         var lst = new List<HtmlNode?>();
-        var empty_tag = string.IsNullOrEmpty(tag);
-        var empty_cn = string.IsNullOrEmpty(className);
-        if (empty_tag && empty_cn) return null;
+        var emptyTag = string.IsNullOrEmpty(tag);
+        var emptyCn = string.IsNullOrEmpty(className);
+        if (emptyTag && emptyCn) return null;
 
         if (limit is <= 0)
             return null;
 
         var result = new List<HtmlNode?>();
 
-        if (empty_tag && limit == null)
+        if (emptyTag && limit == null)
         {
             lst.Add(doc);
             for (var i = 0; i < lst.Count; i++)
@@ -37,15 +37,15 @@ internal class HtmlUtil
 
                 if (htmlNode.GetClasses().Contains(className)) result.Add(htmlNode);
 
-                var childcollection = htmlNode.ChildNodes;
-                if (childcollection == null) continue;
-                lst.AddRange(childcollection);
+                var childCollection = htmlNode.ChildNodes;
+                if (childCollection == null) continue;
+                lst.AddRange(childCollection);
             }
 
             return result;
         }
 
-        switch (empty_cn)
+        switch (emptyCn)
         {
             case true when limit == null:
             {
@@ -64,7 +64,7 @@ internal class HtmlUtil
 
                 return result;
             }
-            case false when empty_tag == false && limit == null:
+            case false when emptyTag == false && limit == null:
             {
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)
@@ -83,7 +83,7 @@ internal class HtmlUtil
             }
         }
 
-        if (empty_tag && limit != null)
+        if (emptyTag && limit != null)
         {
             lst.Add(doc);
             for (var i = 0; i < lst.Count; i++)
@@ -107,7 +107,7 @@ internal class HtmlUtil
             return result;
         }
 
-        switch (empty_cn)
+        switch (emptyCn)
         {
             case true when limit != null:
             {
@@ -132,7 +132,7 @@ internal class HtmlUtil
 
                 return result;
             }
-            case false when empty_tag == false && limit != null:
+            case false when emptyTag == false && limit != null:
             {
                 lst.Add(doc);
                 for (var i = 0; i < lst.Count; i++)

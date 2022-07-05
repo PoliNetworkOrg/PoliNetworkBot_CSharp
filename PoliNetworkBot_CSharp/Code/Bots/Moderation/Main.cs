@@ -140,7 +140,7 @@ internal static class Main
         return item4.Length == 0 ? "[EMPTY]" : item4;
     }
 
-    private static string ListIntToString(List<int>? item3)
+    private static string ListIntToString(IReadOnlyCollection<int>? item3)
     {
         if (item3 == null)
             return "[NULL]";
@@ -148,12 +148,12 @@ internal static class Main
         return item3.Count == 0 ? "[EMPTY]" : item3.Aggregate("", (current, item4) => current + (item4 + "\n"));
     }
 
-    private static string MemberListToString(ChatMember[]? item2)
+    private static string MemberListToString(IReadOnlyCollection<ChatMember>? item2)
     {
         if (item2 == null)
             return "[NULL]";
 
-        return item2.Length == 0
+        return item2.Count == 0
             ? "[EMPTY]"
             : item2.Aggregate("", (current, item3) => current + item3?.User?.Username + " " + item3?.Status + "\n");
     }

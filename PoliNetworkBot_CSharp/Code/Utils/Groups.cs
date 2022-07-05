@@ -335,7 +335,7 @@ internal static class Groups
                                     "The bot is not authorized in this group. Contact the PoliNetwork administrators."
                                 }
                             };
-                            Language? lang = new(dict);
+                            Language lang = new(dict);
 
                             await SendMessage.SendMessageInAGroup(
                                 telegramBotClient, e.Message.From?.LanguageCode, lang, e,

@@ -156,7 +156,7 @@ internal class WebPost
     internal async Task SetAsSeenAsync()
     {
         var url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + postid + "&password=" +
-                  ConfigAnon.password + "&seen=Y";
+                  ConfigAnon.Password + "&seen=Y";
         var x = await Web.DownloadHtmlAsync(url);
         seen = 'Y';
     }
@@ -166,7 +166,7 @@ internal class WebPost
         var approved = Approved(x);
         if (x.authorId == null) return false;
         var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
-                  ConfigAnon.password + "&approved=" + approved;
+                  ConfigAnon.Password + "&approved=" + approved;
         var x2 = await Web.DownloadHtmlAsync(url);
         if (ThreadAsync.DictionaryWebpost != null)
             ThreadAsync.DictionaryWebpost[x.authorId.Value].approved = approved;

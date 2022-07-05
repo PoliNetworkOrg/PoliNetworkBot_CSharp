@@ -247,7 +247,7 @@ internal static class InviteLinks
     private static async Task UpdateLinksFromJson2Async(GruppoTG? gruppoTg, TelegramBotAbstract? sender,
         MessageEventArgs? e, ListaGruppiTG_Update L)
     {
-        var result = new GruppoTG_Update(null, SuccessoGenerazioneLink.ERRORE);
+        var result = new GruppoTgUpdate(null, SuccessoGenerazioneLink.ERRORE);
 
         if (gruppoTg != null)
         {
@@ -297,10 +297,9 @@ internal static class InviteLinks
                                     }),
                                 ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
-                    result.gruppoTG = gruppoTg;
-                    result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
+                    result.GruppoTg = gruppoTg;
+                    result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex1m;
-                    result.ExceptionObject = ex1;
                     L.Add(result);
 
                     return;
@@ -344,10 +343,9 @@ internal static class InviteLinks
                                     }),
                                 ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
-                    result.gruppoTG = gruppoTg;
-                    result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
+                    result.GruppoTg = gruppoTg;
+                    result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex2M;
-                    result.ExceptionObject = ex2;
                     L.Add(result);
 
                     return;
@@ -355,8 +353,8 @@ internal static class InviteLinks
 
             if (groupId == null)
             {
-                result.gruppoTG = gruppoTg;
-                result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
+                result.GruppoTg = gruppoTg;
+                result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                 L.Add(result);
             }
             else
@@ -389,10 +387,9 @@ internal static class InviteLinks
                                     }),
                                 ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
 
-                    result.gruppoTG = gruppoTg;
-                    result.successoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
+                    result.GruppoTg = gruppoTg;
+                    result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
                     result.ExceptionMessage = ex3M;
-                    result.ExceptionObject = ex3;
                     result.CreateInviteLinkFallita = true;
                     L.Add(result);
 
@@ -401,8 +398,8 @@ internal static class InviteLinks
 
                 var successoGenerazione = GetSuccessoGenerazione(s3);
 
-                result.gruppoTG = gruppoTg;
-                result.successoGenerazioneLink = successoGenerazione;
+                result.GruppoTg = gruppoTg;
+                result.SuccessoGenerazioneLink = successoGenerazione;
                 L.Add(result);
             }
         }

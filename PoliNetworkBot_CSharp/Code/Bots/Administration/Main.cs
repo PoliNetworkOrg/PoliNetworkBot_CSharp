@@ -15,7 +15,7 @@ using TeleSharp.TL;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Administration;
 
-internal class Main
+internal static class Main
 {
     internal static async Task MainMethodAsync(TelegramBotAbstract? telegramBotAbstract)
     {
@@ -43,7 +43,7 @@ internal class Main
     }
 
     private static async Task MainMethodAsync2Async(string group, TelegramBotAbstract? telegramBotAbstract,
-        List<string?> links)
+        ICollection<string?> links)
     {
         var toBeDone = true;
         while (toBeDone)
@@ -61,14 +61,14 @@ internal class Main
                     const string? desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
 
                     var members = new List<long>(); //ID members to insert
-                    long? chatID = null;
-                    while (chatID == null)
+                    long? chatId = null;
+                    while (chatId == null)
                         if (telegramBotAbstract != null)
-                            chatID = await telegramBotAbstract.CreateGroup(group, desc, members);
+                            chatId = await telegramBotAbstract.CreateGroup(group, desc, members);
                     Thread.Sleep(1 * 1000 * 10);
                     if (telegramBotAbstract != null)
                     {
-                        var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatID);
+                        var channel = await telegramBotAbstract.UpgradeGroupIntoSupergroup(chatId);
                         if (channel == null)
                             return;
                         //await telegramBotAbstract.EditDescriptionChannel(channel, desc);

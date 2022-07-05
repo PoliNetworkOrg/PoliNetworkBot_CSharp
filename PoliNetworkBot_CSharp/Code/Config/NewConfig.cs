@@ -292,7 +292,7 @@ public static class NewConfig
         return true;
     }
 
-    private static bool? GetWeAreAdminFromJson(JProperty r3)
+    private static bool? GetWeAreAdminFromJson(JToken r3)
     {
         ;
         var r4 = r3.First;
@@ -305,7 +305,7 @@ public static class NewConfig
         return r5.Value.ToString()?.ToLower() == "true";
     }
 
-    private static ValueWithException<DateTime?>? GetLastUpdateLinkTimeFromJson(JProperty r3)
+    private static ValueWithException<DateTime?>? GetLastUpdateLinkTimeFromJson(JToken r3)
     {
         ;
         var r4 = r3.First;
@@ -315,7 +315,7 @@ public static class NewConfig
         return r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
     }
 
-    private static ChatJson? GetChatFromJson(JProperty r3)
+    private static ChatJson? GetChatFromJson(JToken r3)
     {
         ;
         var r4 = r3.Children();
@@ -325,7 +325,7 @@ public static class NewConfig
         long? id = null;
         string? type = null;
         string? title = null;
-        string? invite_link = null;
+        string? inviteLink = null;
 
         foreach (var r6 in r5)
         {
@@ -348,7 +348,7 @@ public static class NewConfig
                         break;
 
                     case "invite_link":
-                        invite_link = GetInviteLinkFromJson(r7);
+                        inviteLink = GetInviteLinkFromJson(r7);
                         break;
 
                     default:
@@ -358,10 +358,10 @@ public static class NewConfig
             }
         }
 
-        return new ChatJson(id, type, title, invite_link);
+        return new ChatJson(id, type, title, inviteLink);
     }
 
-    private static string? GetInviteLinkFromJson(JProperty r7)
+    private static string? GetInviteLinkFromJson(JToken r7)
     {
         var r8 = r7.First;
         ;
@@ -370,21 +370,21 @@ public static class NewConfig
         return null;
     }
 
-    private static string? GetTitleFromJson(JProperty r7)
+    private static string? GetTitleFromJson(JToken r7)
     {
         var r8 = r7.First;
         ;
         return r8 is not JValue r9 ? null : r9.Value?.ToString();
     }
 
-    private static string? GetTypeFromJson(JProperty r7)
+    private static string? GetTypeFromJson(JToken r7)
     {
         var r8 = r7.First;
         ;
         return r8 is not JValue r9 ? null : r9.Value?.ToString();
     }
 
-    private static long? GetIdFromJson(JProperty r7)
+    private static long? GetIdFromJson(JToken r7)
     {
         var r8 = r7.First;
 

@@ -12,18 +12,18 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class ListaGruppiTG_Update
 {
-    private List<GruppoTG_Update> L = new();
+    private List<GruppoTgUpdate> L = new();
 
     internal int Count()
     {
-        L ??= new List<GruppoTG_Update>();
+        L ??= new List<GruppoTgUpdate>();
 
         return L.Count;
     }
 
-    internal void Add(GruppoTG_Update tuple)
+    internal void Add(GruppoTgUpdate tuple)
     {
-        L ??= new List<GruppoTG_Update>();
+        L ??= new List<GruppoTgUpdate>();
 
         L.Add(tuple);
     }
@@ -35,21 +35,21 @@ internal class ListaGruppiTG_Update
         foreach (var l2 in L)
             try
             {
-                if (l2.gruppoTG == null) continue;
-                var s3 = "Success: " + (l2.successoGenerazioneLink != SuccessoGenerazioneLink.ERRORE ? "S" : "N") +
+                if (l2.GruppoTg == null) continue;
+                var s3 = "Success: " + (l2.SuccessoGenerazioneLink != SuccessoGenerazioneLink.ERRORE ? "S" : "N") +
                          "\n" +
-                         "IdLink: " + StringNotNull(l2.gruppoTG.idLink) + "\n" +
-                         "NewLink: " + StringNotNull(l2.gruppoTG.newLink) + "\n" +
-                         "PermanentId: " + StringNotNullFromLong(l2.gruppoTG.permanentId) + "\n" +
+                         "IdLink: " + StringNotNull(l2.GruppoTg.idLink) + "\n" +
+                         "NewLink: " + StringNotNull(l2.GruppoTg.newLink) + "\n" +
+                         "PermanentId: " + StringNotNullFromLong(l2.GruppoTg.permanentId) + "\n" +
                          "OldLink: " + "[";
 
-                if (l2.gruppoTG.oldLinks == null || l2.gruppoTG.oldLinks.Count == 0)
+                if (l2.GruppoTg.oldLinks == null || l2.GruppoTg.oldLinks.Count == 0)
                 {
                     ;
                 }
                 else
                 {
-                    var s4 = l2.gruppoTG.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
+                    var s4 = l2.GruppoTg.oldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
                     s4 = s4.Remove(s4.Length - 1);
                     s3 += s4;
                 }
@@ -59,7 +59,7 @@ internal class ListaGruppiTG_Update
                       "q1: " + StringNotNullFromBool(l2.Query1Fallita) + "\n" +
                       "q2: " + StringNotNullFromBool(l2.Query2Fallita) + "\n" +
                       "q3: " + StringNotNullFromBool(l2.CreateInviteLinkFallita) + "\n" +
-                      "Nome: " + StringNotNull(l2.gruppoTG.nome);
+                      "Nome: " + StringNotNull(l2.GruppoTg.nome);
                 st += s3 + "\n\n";
 
                 /*await sender.SendTextMessageAsync(e.Message.From.Id,
@@ -101,8 +101,8 @@ internal class ListaGruppiTG_Update
 
     internal int GetCount_Filtered(SuccessoGenerazioneLink successoGenerazione)
     {
-        L ??= new List<GruppoTG_Update>();
+        L ??= new List<GruppoTgUpdate>();
 
-        return L.Where(x => x.successoGenerazioneLink == successoGenerazione).ToList().Count;
+        return L.Where(x => x.SuccessoGenerazioneLink == successoGenerazione).ToList().Count;
     }
 }
