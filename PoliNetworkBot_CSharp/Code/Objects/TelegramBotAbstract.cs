@@ -41,7 +41,7 @@ public class TelegramBotAbstract
     public readonly TelegramClient? UserbotClient;
     private string? _username;
 
-    public DbConfig? DbConfig;
+    public DbConfigConnection? DbConfig;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
         string? website, string? contactString, long? id)

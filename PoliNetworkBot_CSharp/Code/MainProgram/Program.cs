@@ -378,11 +378,18 @@ internal static class Program
 
                     var botClient = new TelegramBotClient(token);
                     if (botClient.BotId == null) continue;
+                    
+                    var x2 = bot.DbConfig;
+                    DbConfigConnection? x1 = null;
+                    if (x2 != null)
+                        x1 = new DbConfigConnection(x2);
+                    x1 ??= GlobalVariables.DbConfig;
+                    
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
                             BotTypeApi.REAL_BOT, bot.GetOnMessage().Item2)
                         {
-                            DbConfig = bot.DbConfig ?? GlobalVariables.DbConfig
+                            DbConfig = x1
                         };
 
                     var acceptMessages = bot.AcceptsMessages();

@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -30,8 +29,7 @@ public static class GlobalVariables
 
     private static bool _alreadyLoaded;
 
-    public static DbConfig? DbConfig { get; set; }
-    public static MySqlConnection? DbConnection { get; set; }
+    public static DbConfigConnection? DbConfig { get; set; }
 
     internal static void LoadToRam()
     {

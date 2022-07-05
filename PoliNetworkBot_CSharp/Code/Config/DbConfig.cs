@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
@@ -30,7 +31,9 @@ public class DbConfig
             try
             {
                 var text = File.ReadAllText(Paths.Info.DbConfig);
-                GlobalVariables.DbConfig = JsonConvert.DeserializeObject<DbConfig>(text);
+                var deserializeObject = JsonConvert.DeserializeObject<DbConfig?>(text);
+                if (deserializeObject != null)
+                    GlobalVariables.DbConfig = new DbConfigConnection(deserializeObject);
             }
             catch (Exception? ex)
             {
@@ -44,13 +47,13 @@ public class DbConfig
             GenerateDbConfigEmpty();
         }
 
-        GlobalVariables.DbConnection = new MySqlConnection(GlobalVariables.DbConfig?.GetConnectionString());
+        GlobalVariables.DbConfig?.GetMySqlConnection();
     }
 
     private static void GenerateDbConfigEmpty()
     {
-        GlobalVariables.DbConfig = new DbConfig();
-        var x = JsonConvert.SerializeObject(GlobalVariables.DbConfig);
+        GlobalVariables.DbConfig = new DbConfigConnection(null);
+        var x = JsonConvert.SerializeObject(GlobalVariables.DbConfig.GetDbConfig());
         File.WriteAllText(Paths.Info.DbConfig, x);
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
         throw new Exception("Database failed to initialize, we generated an empty file to fill");
@@ -61,4 +64,6 @@ public class DbConfig
         return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
                Password + "'";
     }
+
+
 }

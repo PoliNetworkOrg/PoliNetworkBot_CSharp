@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
@@ -13,12 +13,13 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class Database
 {
-    public static int Execute(string? query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
+    public static int Execute(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        if (dbConfig == null) return 0;
-        var connection = new MySqlConnection(dbConfig.GetConnectionString());
+        if (dbConfigConnection == null) 
+            return 0;
+        var connection = dbConfigConnection.GetMySqlConnection();
 
         var cmd = new MySqlCommand(query, connection);
 
@@ -33,12 +34,12 @@ public static class Database
         return numberOfRowsAffected;
     }
 
-    public static DataTable? ExecuteSelect(string? query, DbConfig? dbConfig, Dictionary<string, object?>? args = null)
+    public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
-        if (dbConfig == null) return null;
-        var connection = new MySqlConnection(dbConfig.GetConnectionString());
+        if (dbConfigConnection == null) return null;
+        var connection = dbConfigConnection.GetMySqlConnection();
 
         var cmd = new MySqlCommand(query, connection);
 
