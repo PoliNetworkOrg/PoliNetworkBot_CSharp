@@ -360,12 +360,10 @@ public class Program
                                 "Modification Accepted"); //Mostra un messaggio all'utente
 
                             if (callbackQuery.Message != null)
-                            {
                                 _ = sender.EditMessageTextAsync(callbackQuery.Message.Chat.Id,
                                     callbackQuery.Message.MessageId,
                                     "<b>MERGED</b> by " + nameApprover + "\nIn " + fileNameWithPath,
                                     ParseMode.Html); //modifica il messaggio in modo che non sia più riclickabile
-                            }
 
                             var document = callbackQuery.Message?.ReplyToMessage?.Document;
                             if (document?.FileSize > 20000000)
