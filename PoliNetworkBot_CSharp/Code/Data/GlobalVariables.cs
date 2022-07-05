@@ -23,22 +23,22 @@ public static class GlobalVariables
     public static List<TelegramUser>? Owners;
     public static List<TelegramUser>? AllowedSpam;
     public static List<MessageToDelete>? MessagesToDelete;
-    public static List<WordToBeFirst>? wordToBeFirsts;
+    public static List<WordToBeFirst>? WordToBeFirsts;
     public static List<long>? ExcludedChatsForBot;
     public static List<long>? NoUsernameCheckInThisChats;
     public static List<string>? AllowedTags;
 
-    private static bool alreadyLoaded;
+    private static bool _alreadyLoaded;
 
     public static DbConfig? DbConfig { get; set; }
     public static MySqlConnection? DbConnection { get; set; }
 
     internal static void LoadToRam()
     {
-        if (alreadyLoaded)
+        if (_alreadyLoaded)
             return;
 
-        alreadyLoaded = true;
+        _alreadyLoaded = true;
 
         LoadMessagesToDelete();
 
@@ -115,7 +115,7 @@ public static class GlobalVariables
             new(107050697, "eliamaggioni")
         };
 
-        wordToBeFirsts = new List<WordToBeFirst>
+        WordToBeFirsts = new List<WordToBeFirst>
         {
             new("primo", new List<string> { "prima" }),
             new("secondo", new List<string> { "seconda" }),

@@ -85,8 +85,8 @@ public static class Main
         const string emojiFree = "✅️";
 
         var toSend = "";
-        if (GlobalVariables.wordToBeFirsts != null)
-            foreach (var word in GlobalVariables.wordToBeFirsts)
+        if (GlobalVariables.WordToBeFirsts != null)
+            foreach (var word in GlobalVariables.WordToBeFirsts)
             {
                 var isTaken = word.IsTaken(taken);
                 if (isTaken)
@@ -128,8 +128,8 @@ public static class Main
 
     private static Tuple<bool?, string?>? CheckIfValid(string t)
     {
-        if (GlobalVariables.wordToBeFirsts == null) return new Tuple<bool?, string?>(false, null);
-        foreach (var x2 in GlobalVariables.wordToBeFirsts.Select(x => x.Matches(t)).Where(x2 => x2.Item1))
+        if (GlobalVariables.WordToBeFirsts == null) return new Tuple<bool?, string?>(false, null);
+        foreach (var x2 in GlobalVariables.WordToBeFirsts.Select(x => x.Matches(t)).Where(x2 => x2.Item1))
             return new Tuple<bool?, string?>(x2.Item1, x2.Item2);
 
         return new Tuple<bool?, string?>(false, null);
