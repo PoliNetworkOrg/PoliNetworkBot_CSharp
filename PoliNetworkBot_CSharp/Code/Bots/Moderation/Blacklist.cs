@@ -214,7 +214,7 @@ internal static class Blacklist
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var value = Database.GetFirstValueFromDataTable(dt);

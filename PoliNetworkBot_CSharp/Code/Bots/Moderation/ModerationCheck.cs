@@ -247,7 +247,7 @@ internal static class ModerationCheck
     private static async Task<Tuple<ToExit?, ChatMember[]?, List<int>?>?> CheckIfToExit_NullValue2Async(
         TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        var idChat = e?.Message?.Chat?.Id;
+        var idChat = e?.Message?.Chat.Id;
         if (idChat == null) return null;
         if (telegramBotClient == null) return null;
         var r = await telegramBotClient.GetChatAdministratorsAsync(idChat);
@@ -295,16 +295,15 @@ internal static class ModerationCheck
     {
         var message1 = e?.Message;
         var id = message1?.Chat.Id;
-        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && e != null && id != null &&
+        if (GlobalVariables.NoUsernameCheckInThisChats != null && e?.Message != null && id != null &&
             GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
 
         var from = message1?.From;
-        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e?.Message is { From: { } } &&
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e.Message is { From: { } } &&
             from != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
             return null;
 
-        if (e == null) return null;
-        var message = e!.Message;
+        var message = e?.Message;
         if (message == null) return null;
         var r = new List<UsernameAndNameCheckResult>
         {
@@ -344,8 +343,8 @@ internal static class ModerationCheck
         {
             case { Chat.Type: ChatType.Private }:
             case { From: { }, Chat: { } }
-                when e != null && (from1 is { Id: 777000 } ||
-                                   (from1 != null && from1.Id == e.Message.Chat.Id)):
+                when (from1 is { Id: 777000 } ||
+                      (from1 != null && from1.Id == e.Message.Chat.Id)):
                 return SpamType.ALL_GOOD;
         }
 
@@ -413,7 +412,7 @@ internal static class ModerationCheck
 
     private static bool DetectForeignLanguage(MessageEventArgs? e)
     {
-        if (e?.Message != null && e != null && WhitelistForeignGroups.Contains(e.Message.Chat.Id))
+        if (e?.Message != null && WhitelistForeignGroups.Contains(e.Message.Chat.Id))
             return false;
 
         if (e?.Message?.Text == null)
@@ -619,11 +618,12 @@ internal static class ModerationCheck
     public static async Task<bool> CheckUsernameAndName(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
         var usernameCheck = CheckUsername(e);
-        if (usernameCheck == null) return false;
+        if (usernameCheck == null)
+            return false;
 
         var donesomething = false;
 
-        foreach (var usernameCheck2 in usernameCheck.Where(usernameCheck2 => usernameCheck2 != null)
+        foreach (var usernameCheck2 in usernameCheck
                      .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
         {
             if (e?.Message != null)

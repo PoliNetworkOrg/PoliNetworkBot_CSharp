@@ -122,7 +122,7 @@ internal class WebPost
         var telegramBotAbstract = await GetAnonBotAsync();
         if (telegramBotAbstract == null)
             return false;
-        var e = new MessaggeAnonToSendInQueue(this);
+        var e = new MessageAnonToSendInQueue(this);
         return await MainAnon.PlaceMessageInQueue(telegramBotAbstract, e, 0, null);
     }
 
@@ -164,12 +164,12 @@ internal class WebPost
     internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)
     {
         var approved = Approved(x);
-        if (x.authorId == null) return false;
-        var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.authorId.Value + "&password=" +
+        if (x.AuthorId == null) return false;
+        var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.AuthorId.Value + "&password=" +
                   ConfigAnon.Password + "&approved=" + approved;
         var x2 = await Web.DownloadHtmlAsync(url);
         if (ThreadAsync.DictionaryWebpost != null)
-            ThreadAsync.DictionaryWebpost[x.authorId.Value].approved = approved;
+            ThreadAsync.DictionaryWebpost[x.AuthorId.Value].approved = approved;
         ThreadAsync.WriteDict();
         return true;
     }

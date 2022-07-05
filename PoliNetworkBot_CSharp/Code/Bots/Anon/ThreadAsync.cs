@@ -129,7 +129,7 @@ internal static class ThreadAsync
         }
     }
 
-    private static void DoThingsAsyncBotAsync3(WebPost webPost)
+    private static void DoThingsAsyncBotAsync3(WebPost? webPost)
     {
         DictionaryWebpost ??= GetDictionary();
 
@@ -140,7 +140,7 @@ internal static class ThreadAsync
         }
     }
 
-    private static async Task DoThingsAsyncBotAsync4Async(WebPost webPost)
+    private static async Task DoThingsAsyncBotAsync4Async(WebPost? webPost)
     {
         if (webPost == null)
             return;

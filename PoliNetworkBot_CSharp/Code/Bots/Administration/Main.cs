@@ -21,7 +21,6 @@ internal static class Main
     {
         try
         {
-            ;
             var links = new List<string?>();
             var groupsRaw = await File.ReadAllTextAsync(@"C:\Users\eliam\Documents\groups.csv");
             var groups = Regex.Split(groupsRaw, "\r\n|\r|\n");

@@ -10,49 +10,49 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-internal class MessaggeAnonToSendInQueue
+internal class MessageAnonToSendInQueue
 {
-    private readonly MessageEventArgs? e;
-    private readonly WebPost? e2;
+    private readonly MessageEventArgs? _e;
+    private readonly WebPost? _e2;
 
-    public MessaggeAnonToSendInQueue(MessageEventArgs? e)
+    public MessageAnonToSendInQueue(MessageEventArgs? e)
     {
-        this.e = e;
+        this._e = e;
     }
 
-    public MessaggeAnonToSendInQueue(WebPost? webPost)
+    public MessageAnonToSendInQueue(WebPost? webPost)
     {
-        e2 = webPost;
+        _e2 = webPost;
     }
 
     internal string? GetUsername()
     {
-        return e?.Message?.From?.Username;
+        return _e?.Message?.From?.Username;
     }
 
     internal string? GetLanguageCode()
     {
-        return e?.Message?.From?.LanguageCode;
+        return _e?.Message?.From?.LanguageCode;
     }
 
     internal bool FromTelegram()
     {
-        return e != null;
+        return _e != null;
     }
 
     internal Message? GetMessage()
     {
-        return e?.Message;
+        return _e?.Message;
     }
 
     internal long? GetFromUserId()
     {
-        return e?.Message?.From?.Id;
+        return _e?.Message?.From?.Id;
     }
 
     internal long? GetFromUserIdOrPostId()
     {
-        return e != null ? e.Message?.From?.Id : e2?.postid;
+        return _e != null ? _e.Message?.From?.Id : _e2?.postid;
     }
 
     internal async Task<MessageSentResult?> SendMessageInQueueAsync(TelegramBotAbstract? telegramBotAbstract)
@@ -60,7 +60,7 @@ internal class MessaggeAnonToSendInQueue
         if (telegramBotAbstract == null)
             return null;
 
-        if (e2 != null) return await SendMessageInQueue2Async(telegramBotAbstract);
+        if (_e2 != null) return await SendMessageInQueue2Async(telegramBotAbstract);
 
         return null;
     }
@@ -69,7 +69,7 @@ internal class MessaggeAnonToSendInQueue
     {
         var text = new Language(new Dictionary<string, string?>
         {
-            { "en", e2?.text }
+            { "en", _e2?.text }
         });
         if (telegramBotAbstract == null) return null;
         var m1 = await telegramBotAbstract.SendTextMessageAsync(ConfigAnon.ModAnonCheckGroup, text,

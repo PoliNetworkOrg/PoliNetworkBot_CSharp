@@ -10,13 +10,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
 internal class CallBackDataAnon : CallbackGenericData
 {
-    public long? authorId;
-    public bool? from_telegram;
-    public long? identity;
-    public string? langUser;
-    public int? messageIdReplyTo;
-    public long? messageIdUser;
-    public string? username;
+    public long? AuthorId;
+    public bool? FromTelegram;
+    public long? Identity;
+    public string? LangUser;
+    public int? MessageIdReplyTo;
+    public long? MessageIdUser;
+    public string? Username;
 
     public CallBackDataAnon(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection) : base(options,
         runAfterSelection)
