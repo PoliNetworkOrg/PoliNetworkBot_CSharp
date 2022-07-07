@@ -17,7 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
-    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract, bool toLogMistakes)
+    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract,
+        bool toLogMistakes)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -56,10 +57,7 @@ internal static class Blacklist
     {
         var s = CheckForFormatMistakes2(text, groupId);
 
-        if (toLogMistakes)
-        {
-            Logger.WriteLine("CheckForFormatMistakes\n\n" + s + "\n\n" + text + "\n\n" + groupId);
-        }
+        if (toLogMistakes) Logger.WriteLine("CheckForFormatMistakes\n\n" + s + "\n\n" + text + "\n\n" + groupId);
 
         return s;
     }

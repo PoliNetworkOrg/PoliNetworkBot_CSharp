@@ -361,7 +361,8 @@ internal static class ModerationCheck
 
         if (string.IsNullOrEmpty(e?.Message?.Text))
         {
-            var s1 =  SpamTypeUtil.Merge(Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat?.Id, telegramBotClient, false),
+            var s1 = SpamTypeUtil.Merge(
+                Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat?.Id, telegramBotClient, false),
                 Blacklist.IsSpam(e?.Message?.Photo));
             if (s1 != null)
                 return s1.Value;
@@ -379,7 +380,7 @@ internal static class ModerationCheck
         {
             var spamType1 = Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient, true);
             var spamType2 = Blacklist.IsSpam(e.Message.Photo);
-            var s2 =  SpamTypeUtil.Merge(spamType1, spamType2);
+            var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
             if (s2 != null)
                 return s2.Value;
         }
@@ -388,12 +389,13 @@ internal static class ModerationCheck
         return SpamType.ALL_GOOD;
     }
 
-    private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
+    private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e,
+        TelegramBotAbstract? telegramBotAbstract)
     {
         var eMessage = e?.Message;
         if (eMessage == null)
             return null;
-        
+
         var storedMessageResult = MessagesStore.StoreAndCheck(eMessage);
         switch (storedMessageResult)
         {

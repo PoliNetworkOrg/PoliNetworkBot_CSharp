@@ -78,14 +78,14 @@ internal static class Groups
             Logger.Logger.WriteLine("Starting fix of groups name");
             const string? q1 = "SELECT * FROM GroupsTelegram";
             var groups = Database.ExecuteSelect(q1, telegramBotAbstract?.DbConfig);
-            List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> s2 = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
+            var s2 = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
             if (groups != null)
             {
                 var indexTitle = groups.Columns.IndexOf("title");
                 var indexId = groups.Columns.IndexOf("id");
                 for (var i = 0; i < groups.Rows.Count; i++)
                 {
-                    DataRow groupsRow = groups.Rows[i];
+                    var groupsRow = groups.Rows[i];
                     var o = groupsRow[indexId];
                     var indexIdInTable = (long)o;
                     var o1 = groupsRow[indexTitle];
@@ -110,7 +110,7 @@ internal static class Groups
                         newTitle = newTitleWithException?.Item1?.Title;
                         var s1 = GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException,
                             telegramBotAbstract);
-                        s2.Add(new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(s1,groupsRow));
+                        s2.Add(new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(s1, groupsRow));
                     }
                     catch (Exception e2)
                     {
@@ -122,7 +122,7 @@ internal static class Groups
                 }
             }
 
-            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs,s2);
+            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs, s2);
         }
         catch (Exception? e)
         {
@@ -143,9 +143,9 @@ internal static class Groups
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
-                    Tuple<GroupsFixLogUpdatedEnum, DataRow?> tuple =
+                    var tuple =
                         new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(GroupsFixLogUpdatedEnum.NEW_NAME, null);
-                    List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
+                    var list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
                     list.Add(tuple);
                     GroupsFixLog.SendLog(telegramBotClient, e, list);
                 }
