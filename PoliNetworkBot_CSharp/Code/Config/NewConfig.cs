@@ -95,7 +95,7 @@ public static class NewConfig
             var name = dr.ItemArray[0]?.ToString();
             if (name != null && name.StartsWith("sqlite_"))
                 continue;
-            
+
             var q = "DROP TABLE IF EXISTS " + name;
             Database.Execute(q, GlobalVariables.DbConfig);
         }
@@ -179,7 +179,7 @@ public static class NewConfig
     private static List<GroupAddedResult>? FillGroups(int botIdWhoInsertedThem)
     {
         var r15 = new List<GroupAddedResult>();
-        
+
         //read groups from polinetwork python config file and fill db
         try
         {
@@ -187,7 +187,7 @@ public static class NewConfig
             var r = JsonConvert.DeserializeObject<JObject>(s);
             if (r == null)
                 return null;
-            
+
             var r2 = r.Children();
             foreach (var r3 in r2)
                 if (r3 is JProperty { Name: "Gruppi" } r4)

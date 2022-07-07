@@ -72,7 +72,7 @@ public static class FileSerialization
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
 
                 return r;
@@ -85,7 +85,7 @@ public static class FileSerialization
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
 
                 return default;

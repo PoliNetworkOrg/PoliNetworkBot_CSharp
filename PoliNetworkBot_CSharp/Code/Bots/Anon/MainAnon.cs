@@ -251,7 +251,7 @@ internal static class MainAnon
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var f2 = GetMessageReply2(r2);
