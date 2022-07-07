@@ -294,32 +294,20 @@ public static class NewConfig
 
     private static bool? GetWeAreAdminFromJson(JToken r3)
     {
-        ;
         var r4 = r3.First;
-        ;
-        if (r4 is not JValue r5) return null;
-        ;
-        if (r5.Value == null)
-            return null;
-
-        return r5.Value.ToString()?.ToLower() == "true";
+        return r4 is not JValue r5 ? null : r5.Value == null ? null : r5.Value.ToString()?.ToLower() == "true";
     }
 
     private static ValueWithException<DateTime?>? GetLastUpdateLinkTimeFromJson(JToken r3)
     {
-        ;
         var r4 = r3.First;
-        ;
-        if (r4 is not JValue r5) return new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound());
-        ;
-        return r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
+        return r4 is not JValue r5 ? new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound()) :
+            r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
     }
 
     private static ChatJson? GetChatFromJson(JToken r3)
     {
-        ;
         var r4 = r3.Children();
-        ;
         var r5 = r4.Children();
 
         long? id = null;
@@ -329,10 +317,8 @@ public static class NewConfig
 
         foreach (var r6 in r5)
         {
-            ;
             if (r6 is JProperty r7)
             {
-                ;
                 switch (r7.Name)
                 {
                     case "id":
@@ -364,7 +350,6 @@ public static class NewConfig
     private static string? GetInviteLinkFromJson(JToken r7)
     {
         var r8 = r7.First;
-        ;
         if (r8 is JValue r9) return r9.Value?.ToString();
 
         return null;

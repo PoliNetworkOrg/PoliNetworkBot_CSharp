@@ -165,7 +165,7 @@ internal static class InviteLinks
                             }
                             catch
                             {
-                                ;
+                                // ignored
                             }
 
                         gruppoTGs = RimuoviDuplicati(gruppoTGs);

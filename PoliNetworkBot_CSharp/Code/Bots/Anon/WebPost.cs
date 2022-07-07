@@ -44,9 +44,7 @@ internal class WebPost
 
         foreach (var r5 in r4.Children())
         {
-            ;
             if (r5 is not JProperty r6) continue;
-            ;
 
             if (r6.Value is JValue r7)
             {

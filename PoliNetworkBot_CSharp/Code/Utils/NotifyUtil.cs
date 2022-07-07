@@ -308,7 +308,6 @@ internal static class NotifyUtil
 
                 var (banUnbanAllResult, exceptionNumbereds, item3) = done;
                 message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
-                ;
 
                 const string? langCode = "it";
                 var text2 = new Language(new Dictionary<string, string?>

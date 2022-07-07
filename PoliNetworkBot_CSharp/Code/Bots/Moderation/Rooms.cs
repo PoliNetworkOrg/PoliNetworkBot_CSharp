@@ -335,17 +335,11 @@ internal static class Rooms
 
         var t6 = t5?[2];
 
-        ;
-
         var t7 = HtmlUtil.GetElementsByTagAndClassName(t6, "a");
 
         if (t7 is { Count: < 1 }) return; //todo: send to the user "room not found"
 
-        ;
-
         var t8 = t7?[0];
-
-        ;
 
         var t9 = t8?.Attributes;
 

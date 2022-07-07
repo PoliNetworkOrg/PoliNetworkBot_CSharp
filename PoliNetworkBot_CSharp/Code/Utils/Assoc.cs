@@ -856,7 +856,7 @@ internal static class Assoc
         }
         catch (Exception)
         {
-            ;
+            // ignored
         }
     }
 }

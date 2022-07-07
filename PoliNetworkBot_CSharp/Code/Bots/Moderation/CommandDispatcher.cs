@@ -445,7 +445,7 @@ internal static class CommandDispatcher
                         var text = await UpdateGroups(sender, true, true, false, e);
 
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
                         return;
@@ -464,7 +464,7 @@ internal static class CommandDispatcher
                         var text = await UpdateGroups(sender, false, true, false, e);
 
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
                         return;
@@ -483,7 +483,7 @@ internal static class CommandDispatcher
                         var text = await UpdateGroups(sender, false, true, true, e);
 
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
                         return;
@@ -502,7 +502,7 @@ internal static class CommandDispatcher
                         var text = await UpdateGroups(sender, true, true, true, e);
 
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, new Language(text),
+                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
                         return;
@@ -621,8 +621,11 @@ internal static class CommandDispatcher
             }
             case "/testtime":
             {
-                if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
-                    await TestTime(sender, e);
+                if (e?.Message == null || e.Message.Chat.Type != ChatType.Private) 
+                    return;
+                
+                var time = await TestTime(sender, e);
+                Console.WriteLine(time);
 
                 return;
             }
@@ -880,15 +883,18 @@ internal static class CommandDispatcher
         };
     }
 
-    public static async Task<Dictionary<string, string?>> UpdateGroups(TelegramBotAbstract? sender, bool dry,
+    public static async Task<UpdateGroupsResult> UpdateGroups(TelegramBotAbstract? sender, bool dry,
         bool debug,
         bool updateDb, MessageEventArgs? messageEventArgs)
     {
         Logger.WriteLine(
             "UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")",
             LogSeverityLevel.ALERT);
-
-        if (updateDb) await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
+        List<ResultFixGroupsName>? x1 = null;
+        if (updateDb)
+        {
+             x1 = await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
+        }
 
         var groups = Utils.Groups.GetAllGroups(sender, true);
 
@@ -913,11 +919,12 @@ internal static class CommandDispatcher
         if (dry)
         {
             Logger.WriteLine(await File.ReadAllTextAsync(path));
-            return new Dictionary<string, string?>
+            var l = new Language( new Dictionary<string, string?>
             {
                 { "it", "Dry run completata" },
                 { "en", "Dry run completed" }
-            };
+            });
+            return new UpdateGroupsResult(l, x1);
         }
 
         using var powershell = PowerShell.Create();
@@ -961,7 +968,8 @@ internal static class CommandDispatcher
         _ = NotifyUtil.NotifyOwners(
             "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null);
 
-        return text;
+        var l1 = new Language( text);
+        return new UpdateGroupsResult(l1, x1);
     }
 
     private static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo,
@@ -1505,13 +1513,13 @@ internal static class CommandDispatcher
 
     private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
         MessageEventArgs? e,
-        IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction bAN,
+        IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
         bool? revokeMessage)
     {
         var d1 = GetDateTime(target);
         try
         {
-            await BanAllUnbanAllMethod1Async(bAN, GetFinalTargetForRestrictAll(target), e, sender, lang,
+            await BanAllUnbanAllMethod1Async(ban, GetFinalTargetForRestrictAll(target), e, sender, lang,
                 username,
                 d1?.GetValue(), revokeMessage);
             return new SuccessWithException(true, d1?.GetExceptions());
@@ -1612,7 +1620,7 @@ internal static class CommandDispatcher
         {
             if (done != null)
             {
-                var (banUnbanAllResult, exceptionNumbereds, _) = done;
+                var (banUnbanAllResult, _, _) = done;
                 await SendReportOfSuccessAndFailures2(
                     StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
                     "success.bin", sender, e);
