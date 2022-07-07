@@ -57,16 +57,7 @@ internal static class Groups
         if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(userId, username)))
             return new SuccessWithException(true);
 
-        if (telegramBotAbstract != null)
-        {
-            var s1 = await telegramBotAbstract.IsAdminAsync(userId, chatId);
-            if (s1 != null && s1.IsSuccess())
-                return s1;
-        }
-
-        if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId, username)))
-            return new SuccessWithException(true);
-
+        if (telegramBotAbstract != null) return await telegramBotAbstract.IsAdminAsync(userId, chatId);
         return null;
     }
 
@@ -76,9 +67,9 @@ internal static class Groups
         try
         {
             Logger.Logger.WriteLine("Starting fix of groups name");
+            ;
             const string? q1 = "SELECT * FROM GroupsTelegram";
             var groups = Database.ExecuteSelect(q1, telegramBotAbstract?.DbConfig);
-            var s2 = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
             if (groups != null)
             {
                 var indexTitle = groups.Columns.IndexOf("title");
@@ -108,9 +99,9 @@ internal static class Groups
                         }
 
                         newTitle = newTitleWithException?.Item1?.Title;
-                        var s1 = GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException,
+                        GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException,
                             telegramBotAbstract);
-                        s2.Add(new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(s1, groupsRow));
+                        s2.Add(new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(s1,groupsRow));
                     }
                     catch (Exception e2)
                     {
@@ -122,7 +113,7 @@ internal static class Groups
                 }
             }
 
-            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs, s2);
+            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs,s2);
         }
         catch (Exception? e)
         {
@@ -143,9 +134,10 @@ internal static class Groups
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
                 {
-                    var tuple =
+                    Tuple<GroupsFixLogUpdatedEnum, DataRow?> tuple =
                         new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(GroupsFixLogUpdatedEnum.NEW_NAME, null);
-                    var list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> { tuple };
+                    List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
+                    list.Add(tuple);
                     GroupsFixLog.SendLog(telegramBotClient, e, list);
                 }
             }
