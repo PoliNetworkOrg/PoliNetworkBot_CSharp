@@ -1469,7 +1469,8 @@ internal static class CommandDispatcher
     }
 
     private static async Task<SuccessWithException> UnbanAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
+        string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
@@ -1485,7 +1486,8 @@ internal static class CommandDispatcher
     }
 
     private static async Task<SuccessWithException> MuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
+        string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
@@ -1493,7 +1495,8 @@ internal static class CommandDispatcher
     }
 
     private static async Task<SuccessWithException> UnMuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
+        string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
