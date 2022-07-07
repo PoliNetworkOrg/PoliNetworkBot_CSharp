@@ -58,7 +58,7 @@ internal static class Main
                     }
 
                     const string? desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
-                    
+
                     long? chatId = null;
                     while (chatId == null)
                         if (telegramBotAbstract != null)

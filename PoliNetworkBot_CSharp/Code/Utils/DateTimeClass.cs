@@ -191,7 +191,7 @@ internal static class DateTimeClass
                             }
                             catch
                             {
-                                ;
+                                // ignored
                             }
 
                             ;

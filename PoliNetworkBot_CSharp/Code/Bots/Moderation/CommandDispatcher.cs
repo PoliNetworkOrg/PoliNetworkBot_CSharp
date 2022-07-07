@@ -1469,7 +1469,7 @@ internal static class CommandDispatcher
     }
 
     private static async Task<SuccessWithException> UnbanAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, string?[]? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
@@ -1478,14 +1478,14 @@ internal static class CommandDispatcher
 
     private static async Task<SuccessWithException> BanAllAsync(
         TelegramBotAbstract? sender, MessageEventArgs? e,
-        string?[]? target, string? lang, string? username, bool? revokeMessage)
+        IReadOnlyList<string?>? target, string? lang, string? username, bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN,
             revokeMessage);
     }
 
     private static async Task<SuccessWithException> MuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, string?[]? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
@@ -1493,7 +1493,7 @@ internal static class CommandDispatcher
     }
 
     private static async Task<SuccessWithException> UnMuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, string?[]? target, string? lang, string? username,
+        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang, string? username,
         bool? revokeMessage)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
@@ -1637,7 +1637,7 @@ internal static class CommandDispatcher
                 { "en", "" }
             });
             await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, 
+                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode,
                 null, true);
         }
     }

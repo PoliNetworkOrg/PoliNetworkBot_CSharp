@@ -16,9 +16,9 @@ internal class ResultF1
 
     public ResultF1(bool? returnObject, long? idMessageAdded, TLAbsUpdates? r, Tuple<TLAbsUpdates?, Exception?>? r2)
     {
-        this.ReturnObject = returnObject;
-        this.IdMessageAdded = idMessageAdded;
-        this.R = r;
-        this.R2 = r2;
+        ReturnObject = returnObject;
+        IdMessageAdded = idMessageAdded;
+        R = r;
+        R2 = r2;
     }
 }

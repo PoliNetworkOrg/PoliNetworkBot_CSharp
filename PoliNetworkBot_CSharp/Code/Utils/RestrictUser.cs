@@ -208,7 +208,7 @@ internal static class RestrictUser
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
                 }
 

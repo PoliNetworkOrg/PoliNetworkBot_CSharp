@@ -209,7 +209,8 @@ public static class Main
             }
             else
             {
-                const string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
+                const string q3 =
+                    "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                 var m1 = e?.Message;
                 if (m1 != null)
                 {

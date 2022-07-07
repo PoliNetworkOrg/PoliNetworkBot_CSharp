@@ -255,7 +255,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
@@ -304,7 +304,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var s3 = s4;

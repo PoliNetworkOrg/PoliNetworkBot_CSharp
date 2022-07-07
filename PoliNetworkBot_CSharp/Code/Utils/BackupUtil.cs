@@ -60,7 +60,7 @@ internal static class BackupUtil
             }
             catch
             {
-                ;
+                // ignored
             }
 
             return JsonConvert.SerializeObject(db);

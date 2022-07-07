@@ -582,9 +582,9 @@ internal static class Rooms
         var afterStartSlot = false;
 
         // start from 8:15, the third child
-        if (node == null) 
+        if (node == null)
             return null;
-        
+
         for (var i = 3; i < node.ChildNodes.Count; i++)
         {
             var colsize = 1;
