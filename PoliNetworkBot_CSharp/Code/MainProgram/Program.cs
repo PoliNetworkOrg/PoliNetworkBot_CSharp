@@ -269,7 +269,7 @@ internal static class Program
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (_userBotsInfos is { bots: { } } && _userBotsInfos.bots.Count != 0)
@@ -294,7 +294,7 @@ internal static class Program
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
             }
             else
@@ -436,7 +436,7 @@ internal static class Program
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
 
                     GlobalVariables.Bots[userId.Value] = x2;
@@ -523,7 +523,7 @@ internal static class Program
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
     {
-        const int MAX_WAIT = 1000 * 10; //10 seconds
+        const int maxWait = 1000 * 10; //10 seconds
         var i = 0;
         int? offset = null;
 
@@ -593,7 +593,7 @@ internal static class Program
                 i++;
 
                 var wait = i * 200;
-                Thread.Sleep(wait > MAX_WAIT ? MAX_WAIT : wait);
+                Thread.Sleep(wait > maxWait ? maxWait : wait);
             }
             catch (Exception? e)
             {
@@ -702,13 +702,12 @@ internal static class Program
             }
         }
 
-        ;
-
         return done;
     }
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
+    // ReSharper disable once UnusedMember.Local
     private static bool TestThings(long userId)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {

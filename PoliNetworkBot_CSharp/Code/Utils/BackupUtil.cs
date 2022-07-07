@@ -55,7 +55,7 @@ internal static class BackupUtil
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
             }
             catch
@@ -67,7 +67,7 @@ internal static class BackupUtil
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return JsonConvert.SerializeObject("ERROR 2");

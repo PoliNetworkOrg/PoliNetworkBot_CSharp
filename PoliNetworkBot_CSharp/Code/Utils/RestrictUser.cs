@@ -180,7 +180,7 @@ internal static class RestrictUser
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
                 }
 
@@ -235,7 +235,7 @@ internal static class RestrictUser
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
                 }
             }

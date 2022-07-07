@@ -22,12 +22,13 @@ public static class Main
     {
         var t = new Thread(() =>
         {
-            if (sender != null) _ = MainMethod2(sender, e);
+            if (sender != null)
+                _ = MainMethod2(sender, e);
         });
         t.Start();
     }
 
-    private static async Task MainMethod2(object sender, MessageEventArgs? e)
+    private static async Task<MessageSentResult?> MainMethod2(object sender, MessageEventArgs? e)
     {
         TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;
@@ -36,48 +37,51 @@ public static class Main
         {
             if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
-            if (telegramBotClientBot == null)
-                return;
+
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
             if (telegramBotClient == null)
-                return;
+                return null;
 
-            await HandleMessageAsync(telegramBotClient, e);
+            return await HandleMessageAsync(telegramBotClient, e);
         }
         catch (Exception? exception)
         {
             await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
         }
+
+        return null;
     }
 
-    private static async Task HandleMessageAsync(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task<MessageSentResult?> HandleMessageAsync(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        if (e?.Message?.Chat.Id is 1001129635578 or -1001129635578)
-            await HandleMessage2Async(telegramBotClient, e);
+        return e?.Message?.Chat.Id is 1001129635578 or -1001129635578
+            ? await HandleMessage2Async(telegramBotClient, e)
+            : null;
     }
 
-    private static async Task HandleMessage2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task<MessageSentResult?> HandleMessage2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         var t = e?.Message?.Text?.ToLower();
 
         if (string.IsNullOrEmpty(t))
-            return;
+            return null;
 
         if (t is "/lista_primo@primopolibot" or "/lista_primo")
         {
-            await HandleListAsync(telegramBotClient, e);
-            return;
+            return await HandleListAsync(telegramBotClient, e);
         }
 
-        var (b, s) = CheckIfValid(t) ?? new Tuple<bool?, string?>(null, null);
-        if (b ?? false)
-            if (s != null)
-                await HandleMessage3Async(telegramBotClient, e, s);
+        var (b, s) = CheckIfValid(t);
+        var b1 = b ?? false;
+        if (!b1)
+            return null;
+
+        return string.IsNullOrEmpty(s) ? null : await HandleMessage3Async(telegramBotClient, e, s);
     }
 
-    private static async Task HandleListAsync(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task<MessageSentResult?> HandleListAsync(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         var taken = GetTaken(telegramBotClient);
 
@@ -106,11 +110,12 @@ public static class Main
         var text = new Language(dict);
         var message = e?.Message;
         if (message != null)
-            await SendMessage.SendMessageInAGroup(
+            return await SendMessage.SendMessageInAGroup(
                 telegramBotClient, e?.Message?.From?.LanguageCode,
                 text, e,
                 message.Chat.Id, message.Chat.Type,
                 ParseMode.Html, message.MessageId, true);
+        return null;
     }
 
     private static List<string?> GetTaken(TelegramBotAbstract? telegramBotAbstract)
@@ -126,7 +131,7 @@ public static class Main
             select dr["title"].ToString()).ToList();
     }
 
-    private static Tuple<bool?, string?>? CheckIfValid(string t)
+    private static Tuple<bool?, string?> CheckIfValid(string t)
     {
         if (GlobalVariables.WordToBeFirsts == null) return new Tuple<bool?, string?>(false, null);
         foreach (var x2 in GlobalVariables.WordToBeFirsts.Select(x => x.Matches(t)).Where(x2 => x2.Item1))
@@ -135,53 +140,58 @@ public static class Main
         return new Tuple<bool?, string?>(false, null);
     }
 
-    private static async Task HandleMessage3Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
+    private static async Task<MessageSentResult?> HandleMessage3Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string? t)
     {
         if (string.IsNullOrEmpty(t))
-            return;
+            return null;
 
         const string? q = "SELECT * FROM Primo WHERE title = @t";
-        if (telegramBotClient != null)
+        if (telegramBotClient == null)
+            return null;
+        
+        var r = Database.ExecuteSelect(q, telegramBotClient.DbConfig,
+            new Dictionary<string, object?> { { "@t", t } });
+        if (r == null || r.Rows.Count == 0)
         {
-            var r = Database.ExecuteSelect(q, telegramBotClient.DbConfig,
-                new Dictionary<string, object?> { { "@t", t } });
-            if (r == null || r.Rows.Count == 0)
-            {
-                await MaybeKing(telegramBotClient, e, t, true);
+            return await MaybeKing(telegramBotClient, e, t, true);
 
-                return;
-            }
-
-            var datetime = (DateTime)r.Rows[0]["when_king"];
-            if (datetime.Day != DateTime.Now.Day || datetime.Month != DateTime.Now.Month ||
-                datetime.Year != DateTime.Now.Year)
-            {
-                await MaybeKing(telegramBotClient, e, t, false);
-                return;
-            }
-
-            var user = GenerateUserStringHtml(r.Rows[0]);
-            var dict4 = new Dictionary<string, string?>
-            {
-                { "it", "C'è già " + user + " come re " + t + "!" },
-                { "en", "There is already " + user + " as the " + t + " king!" }
-            };
-            var text = new Language(dict4);
-            var r5 = e?.Message;
-            if (r5 != null)
-            {
-                var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message?.From?.LanguageCode,
-                    text,
-                    e,
-                    r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
-            }
+              
         }
+
+        var datetime = (DateTime)r.Rows[0]["when_king"];
+        if (datetime.Day != DateTime.Now.Day || datetime.Month != DateTime.Now.Month ||
+            datetime.Year != DateTime.Now.Year)
+        {
+            return await MaybeKing(telegramBotClient, e, t, false);
+
+        }
+
+        var user = GenerateUserStringHtml(r.Rows[0]);
+        var dict4 = new Dictionary<string, string?>
+        {
+            { "it", "C'è già " + user + " come re " + t + "!" },
+            { "en", "There is already " + user + " as the " + t + " king!" }
+        };
+        var text = new Language(dict4);
+        var r5 = e?.Message;
+        if (r5 != null)
+        {
+            return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message?.From?.LanguageCode,
+                text,
+                e,
+                r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
+        }
+
+        return null;
     }
 
-    private static async Task MaybeKing(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e, string? t,
+    private static async Task<MessageSentResult?> MaybeKing(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e, string? t,
         bool toInsert)
     {
+        if (telegramBotClient == null)
+            return null;
+        
         var (b, list) = CheckIfLimitOfMaxKingsHasBeenReached(e, telegramBotClient);
         if (b == false)
         {
@@ -191,20 +201,20 @@ public static class Main
                                    " VALUES " +
                                    " (@title, @fn, @ln, @wk, @ki)";
 
-                if (telegramBotClient != null)
+                
+    
+                
+                var m1 = e?.Message;
+                if (m1 != null)
                 {
-                    var m1 = e?.Message;
-                    if (m1 != null)
+                    var r2 = Database.Execute(q2, telegramBotClient.DbConfig, new Dictionary<string, object?>
                     {
-                        var r2 = Database.Execute(q2, telegramBotClient.DbConfig, new Dictionary<string, object?>
-                        {
-                            { "@title", t },
-                            { "@fn", m1.From?.FirstName },
-                            { "@ln", m1.From?.LastName },
-                            { "@wk", DateTime.Now },
-                            { "@ki", m1.From?.Id }
-                        });
-                    }
+                        { "@title", t },
+                        { "@fn", m1.From?.FirstName },
+                        { "@ln", m1.From?.LastName },
+                        { "@wk", DateTime.Now },
+                        { "@ki", m1.From?.Id }
+                    });
                 }
             }
             else
@@ -212,22 +222,21 @@ public static class Main
                 const string q3 =
                     "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                 var m1 = e?.Message;
-                if (m1 != null)
+                if (m1 == null) 
+                    return await SendMessageYouAreKingAsync(telegramBotClient, e, t);
+                
+                var dict3 = new Dictionary<string, object?>
                 {
-                    var dict3 = new Dictionary<string, object?>
-                    {
-                        { "@t", t },
-                        { "@fn", e?.Message?.From?.FirstName },
-                        { "@ln", e?.Message?.From?.LastName },
-                        { "@wk", DateTime.Now },
-                        { "@ki", m1.From?.Id }
-                    };
-                    var r3 = Database.Execute(q3, telegramBotClient?.DbConfig, dict3);
-                }
+                    { "@t", t },
+                    { "@fn", e?.Message?.From?.FirstName },
+                    { "@ln", e?.Message?.From?.LastName },
+                    { "@wk", DateTime.Now },
+                    { "@ki", m1.From?.Id }
+                };
+                var r3 = Database.Execute(q3, telegramBotClient.DbConfig, dict3);
             }
 
-            await SendMessageYouAreKingAsync(telegramBotClient, e, t);
-            return;
+            return await SendMessageYouAreKingAsync(telegramBotClient, e, t);
         }
 
         var roles = GetRoles(list);
@@ -240,9 +249,11 @@ public static class Main
         var r5 = e?.Message;
         if (r5 != null)
         {
-            var r4 = await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text, e,
+            return  await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text, e,
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
         }
+
+        return null;
     }
 
     private static string GetRoles(IReadOnlyCollection<string?>? item2)
@@ -291,7 +302,7 @@ public static class Main
             select dr["title"].ToString()).ToList();
     }
 
-    private static string? GenerateUserStringHtml(DataRow dataRow)
+    private static string GenerateUserStringHtml(DataRow dataRow)
     {
         var link = "tg://user?id=" + dataRow["king_id"];
         var r = "<a href='" + link + "'>";
@@ -329,7 +340,7 @@ public static class Main
         if (e == null) return null;
         if (m1 == null) return null;
         var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text, e,
-            m1!.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
+            m1.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
         return r;
     }
 }

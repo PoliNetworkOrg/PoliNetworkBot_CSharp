@@ -23,8 +23,8 @@ public static class MessageDb
         long messageFromIdPerson, long? messageFromIdEntity,
         long? idChatSentInto, DateTime? sentDate,
         bool hasBeenSent, long? messageFromIdBot,
-        int messageIdTgFrom, ChatType? type_chat_sent_into,
-        long? photo_id, long? video_id, TelegramBotAbstract? sender)
+        int messageIdTgFrom, ChatType? typeChatSentInto,
+        long? photoId, long? videoId, TelegramBotAbstract? sender)
     {
         const string? q = "INSERT INTO Messages " +
                           "(id, from_id_person, from_id_entity, type, " +
@@ -45,15 +45,15 @@ public static class MessageDb
             { "@fip", messageFromIdPerson },
             { "@fie", messageFromIdEntity },
             { "@t", typeI },
-            { "@idp", photo_id },
-            { "@idv", video_id },
+            { "@idp", photoId },
+            { "@idv", videoId },
             { "@mt", messageText },
             { "@icsi", idChatSentInto },
             { "@sent_date", sentDate },
             { "@hbs", hasBeenSent },
             { "@fib", messageFromIdBot },
             { "@mitf", messageIdTgFrom },
-            { "@tcsi", type_chat_sent_into.ToString() }
+            { "@tcsi", typeChatSentInto.ToString() }
         });
 
         return true;
@@ -95,7 +95,7 @@ public static class MessageDb
         Tables.FixIdTable("MessageTypes", "id", "name", bot?.DbConfig);
     }
 
-    public static async Task<bool> CheckMessagesToSend(bool force_send_everything_in_queue,
+    public static async Task<bool> CheckMessagesToSend(bool forceSendEverythingInQueue,
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
         const string? q = "SELECT * " +
@@ -109,7 +109,7 @@ public static class MessageDb
             try
             {
                 var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                var r1 = await SendMessageToSend(dr, telegramBotAbstract, !force_send_everything_in_queue,
+                var r1 = await SendMessageToSend(dr, telegramBotAbstract, !forceSendEverythingInQueue,
                     botToReportException,
                     messageEventArgs);
                 telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
@@ -184,10 +184,10 @@ public static class MessageDb
         if (string.IsNullOrEmpty(s4))
             s4 = "[NULL(1)]";
         s3 += "\n[Id1]: " + s4 + "\n";
-        var s5 = r1?.R1?.Item3;
+        var s5 = r1.R1?.Item3;
         if (string.IsNullOrEmpty(s5)) s5 = "[NULL(2)]";
         s3 += "[Id2]: " + s5 + "\n";
-        s3 += "[Id3]: " + r1?.ScheduleMessageSentResult + "\n";
+        s3 += "[Id3]: " + r1.ScheduleMessageSentResult + "\n";
         s3 += "CheckMessagesToSend\n\n";
         var e3 = new Exception(s3);
         await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
@@ -277,7 +277,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
@@ -294,7 +294,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var s4 = "[WE DON'T KNOW]";
@@ -347,7 +347,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
@@ -356,7 +356,7 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
@@ -365,15 +365,15 @@ public static class MessageDb
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var text1 = "📌 ID: " + count + "\n";
         if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToItalianFormat(dt) + "\n";
         if (fromIdEntity != null)
         {
-            var entity_name = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
-            text1 += "👥 " + entity_name + "\n";
+            var entityName = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
+            text1 += "👥 " + entityName + "\n";
         }
 
         if (fromIdPerson != null) text1 += "✍ " + fromIdPerson + "\n";
@@ -510,7 +510,9 @@ public static class MessageDb
         return null;
     }
 
-    private static MessageSentResult? SendTextFromDataRow(DataRow dr, TelegramBotAbstract? botClass)
+    // ReSharper disable once UnusedParameter.Local
+    // ReSharper disable once UnusedParameter.Local
+    private static MessageSentResult SendTextFromDataRow(DataRow dr, TelegramBotAbstract? botClass)
     {
         throw new NotImplementedException();
         //non serve perché le assoc mandano solo immagini

@@ -1137,13 +1137,13 @@ internal static class CommandDispatcher
                             }
                             catch
                             {
-                                ;
+                                // ignored
                             }
                         }
                     }
                     catch
                     {
-                        ;
+                        // ignored
                     }
 
                     await Task.Delay(500);
@@ -1151,7 +1151,7 @@ internal static class CommandDispatcher
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var text = new Language(new Dictionary<string, string?>
@@ -1520,7 +1520,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static List<Exception?>? Concat(Exception? ex, ValueWithException<DateTime?>? d1)
+    private static List<Exception?> Concat(Exception? ex, ValueWithException<DateTime?>? d1)
     {
         var r = new List<Exception?>
         {
@@ -1609,7 +1609,7 @@ internal static class CommandDispatcher
         {
             if (done != null)
             {
-                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                var (banUnbanAllResult, exceptionNumbereds, _) = done;
                 await SendReportOfSuccessAndFailures2(
                     StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
                     "success.bin", sender, e);
@@ -1620,7 +1620,7 @@ internal static class CommandDispatcher
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 

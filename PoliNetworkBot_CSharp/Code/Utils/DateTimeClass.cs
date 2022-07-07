@@ -193,27 +193,9 @@ internal static class DateTimeClass
                             {
                                 // ignored
                             }
-
-                            ;
-                        }
-                        else
-                        {
-                            ;
                         }
                     }
-                    else
-                    {
-                        ;
-                    }
                 }
-                else
-                {
-                    ;
-                }
-            }
-            else
-            {
-                ;
             }
         }
         else if (reply.Contains('-'))
@@ -267,8 +249,6 @@ internal static class DateTimeClass
                 reply = reply[3..].Trim();
                 return GetDateTimeFromString2(reply);
             }
-
-            ;
         }
 
         return null;
@@ -277,7 +257,6 @@ internal static class DateTimeClass
     internal static DateTime? GetHours(string? s)
     {
         var dt = GetDateTimeFromString(s);
-        ;
         return dt?.Item1;
     }
 
@@ -350,7 +329,7 @@ internal static class DateTimeClass
         return i == null ? null : new Tuple<DateTime?, Exception?>(DateTime.Now.AddSeconds(i.Value), null);
     }
 
-    internal static ValueWithException<DateTime?>? GetFromString(string? v)
+    internal static ValueWithException<DateTime?> GetFromString(string? v)
     {
         try
         {
