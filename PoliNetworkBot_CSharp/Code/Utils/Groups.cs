@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -57,7 +57,16 @@ internal static class Groups
         if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(userId, username)))
             return new SuccessWithException(true);
 
-        if (telegramBotAbstract != null) return await telegramBotAbstract.IsAdminAsync(userId, chatId);
+        if (telegramBotAbstract != null)
+        {
+            var s1 = await telegramBotAbstract.IsAdminAsync(userId, chatId);
+            if (s1 != null && s1.IsSuccess())
+                return s1;
+        }
+        
+        if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId, username)))
+            return new SuccessWithException(true);
+        
         return null;
     }
 
