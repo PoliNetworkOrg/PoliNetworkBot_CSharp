@@ -7,6 +7,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 
@@ -16,7 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
-    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract)
+    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract, bool toLogMistakes)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -28,14 +29,14 @@ internal static class Blacklist
         if (words is not { Count: > 0 })
             return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
-                : CheckForFormatMistakes(text, groupId);
+                : CheckForFormatMistakes(text, groupId, toLogMistakes);
         var words2 = words.ToList().Select(x => x?.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
         if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
         return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
             ? SpamType.NOT_ALLOWED_WORDS
-            : CheckForFormatMistakes(text, groupId);
+            : CheckForFormatMistakes(text, groupId, toLogMistakes);
     }
 
     private static List<string?> SplitTextBy(List<string?>? vs, string v)
@@ -51,7 +52,19 @@ internal static class Blacklist
         return r;
     }
 
-    private static SpamType CheckForFormatMistakes(string? text, long? groupId)
+    private static SpamType CheckForFormatMistakes(string? text, long? groupId, bool toLogMistakes)
+    {
+        var s = CheckForFormatMistakes2(text, groupId);
+
+        if (toLogMistakes)
+        {
+            Logger.WriteLine("CheckForFormatMistakes\n\n" + s + "\n\n" + text + "\n\n" + groupId);
+        }
+
+        return s;
+    }
+
+    private static SpamType CheckForFormatMistakes2(string? text, long? groupId)
     {
         if (groupId == null)
             return SpamType.ALL_GOOD;

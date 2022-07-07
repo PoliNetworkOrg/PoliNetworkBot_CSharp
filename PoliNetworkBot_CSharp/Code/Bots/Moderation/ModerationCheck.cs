@@ -355,43 +355,19 @@ internal static class ModerationCheck
                              CheckIfIsInList(GlobalVariables.Owners, from)))
             return SpamType.ALL_GOOD;
 
-        if (e?.Message is { From: { }, Chat: { } })
-        {
-            var storedMessageResult = MessagesStore.StoreAndCheck(e.Message);
-            switch (storedMessageResult)
-            {
-                case SpamType.SPAM_LINK:
-                {
-                    if (e.Message.Text != null)
-                        await DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(e.Message.Text),
-                            telegramBotClient);
-                    return SpamType.SPAM_LINK;
-                }
-                case SpamType.NOT_ALLOWED_WORDS:
-                    break;
-
-                case SpamType.ALL_GOOD:
-                    break;
-
-                case SpamType.FOREIGN:
-                    break;
-
-                case SpamType.FORMAT_INCORRECT:
-                    break;
-
-                case SpamType.SPAM_PERMITTED:
-                    return SpamType.SPAM_PERMITTED;
-
-                case SpamType.UNDEFINED:
-                    break;
-            }
-        }
+        var isSpamStored = await CheckIfSpamStored(e, telegramBotClient);
+        if (isSpamStored != null)
+            return isSpamStored.Value;
 
         if (string.IsNullOrEmpty(e?.Message?.Text))
-            return SpamTypeUtil.Merge(Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat?.Id, telegramBotClient),
+        {
+            var s1 =  SpamTypeUtil.Merge(Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat?.Id, telegramBotClient, false),
                 Blacklist.IsSpam(e?.Message?.Photo));
+            if (s1 != null)
+                return s1.Value;
+        }
 
-        if (e.Message.Text.StartsWith("/"))
+        if (e?.Message?.Text != null && e.Message != null && e.Message.Text.StartsWith("/"))
             return SpamType.ALL_GOOD;
 
         var isForeign = DetectForeignLanguage(e);
@@ -399,12 +375,55 @@ internal static class ModerationCheck
         if (isForeign)
             return SpamType.FOREIGN;
 
-        if (e.Message.Photo != null)
-            return SpamTypeUtil.Merge(Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient),
-                Blacklist.IsSpam(e.Message.Photo));
+        if (e?.Message?.Photo != null)
+        {
+            var spamType1 = Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient, true);
+            var spamType2 = Blacklist.IsSpam(e.Message.Photo);
+            var s2 =  SpamTypeUtil.Merge(spamType1, spamType2);
+            if (s2 != null)
+                return s2.Value;
+        }
 
         //default is all good
         return SpamType.ALL_GOOD;
+    }
+
+    private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
+    {
+        var eMessage = e?.Message;
+        if (eMessage == null)
+            return null;
+        
+        var storedMessageResult = MessagesStore.StoreAndCheck(eMessage);
+        switch (storedMessageResult)
+        {
+            case SpamType.SPAM_LINK:
+            {
+                if (eMessage.Text != null)
+                    await DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(eMessage.Text),
+                        telegramBotAbstract);
+                return SpamType.SPAM_LINK;
+            }
+            case SpamType.NOT_ALLOWED_WORDS:
+                break;
+
+            case SpamType.ALL_GOOD:
+                break;
+
+            case SpamType.FOREIGN:
+                break;
+
+            case SpamType.FORMAT_INCORRECT:
+                break;
+
+            case SpamType.SPAM_PERMITTED:
+                return SpamType.SPAM_PERMITTED;
+
+            case SpamType.UNDEFINED:
+                break;
+        }
+
+        return null;
     }
 
     private static bool CheckIfIsInList(IEnumerable<TelegramUser>? a, User from)
