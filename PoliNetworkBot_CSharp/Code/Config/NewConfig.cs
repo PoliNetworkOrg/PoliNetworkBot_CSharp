@@ -94,14 +94,10 @@ public static class NewConfig
         {
             var name = dr.ItemArray[0]?.ToString();
             if (name != null && name.StartsWith("sqlite_"))
-            {
-                ;
-            }
-            else
-            {
-                var q = "DROP TABLE IF EXISTS " + name;
-                Database.Execute(q, GlobalVariables.DbConfig);
-            }
+                continue;
+            
+            var q = "DROP TABLE IF EXISTS " + name;
+            Database.Execute(q, GlobalVariables.DbConfig);
         }
     }
 
@@ -118,7 +114,7 @@ public static class NewConfig
                          ") ", GlobalVariables.DbConfig);
 
         if (alsoFillTablesFromJson)
-            FillGroups(0);
+            _ = FillGroups(0);
 
         Database.Execute("CREATE TABLE PeopleInEntities (" +
                          "id_entity INT(12)," +
@@ -132,7 +128,7 @@ public static class NewConfig
                          ");", GlobalVariables.DbConfig);
 
         if (alsoFillTablesFromJson)
-            FillAssoc(GlobalVariables.DbConfig);
+            _ = FillAssoc(GlobalVariables.DbConfig);
 
         Database.Execute("CREATE TABLE Messages (" +
                          "id INT(12) PRIMARY KEY," +
@@ -180,14 +176,18 @@ public static class NewConfig
                          ");", GlobalVariables.DbConfig);
     }
 
-    private static void FillGroups(int botIdWhoInsertedThem)
+    private static List<GroupAddedResult>? FillGroups(int botIdWhoInsertedThem)
     {
+        var r15 = new List<GroupAddedResult>();
+        
         //read groups from polinetwork python config file and fill db
         try
         {
             var s = File.ReadAllText("../../../Old/data/groups.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            if (r == null) return;
+            if (r == null)
+                return null;
+            
             var r2 = r.Children();
             foreach (var r3 in r2)
                 if (r3 is JProperty { Name: "Gruppi" } r4)
@@ -201,7 +201,8 @@ public static class NewConfig
                             {
                                 var r10 = r9.Children();
 
-                                AddGroupToDb(r10, botIdWhoInsertedThem);
+                                var r11 = AddGroupToDb(r10, botIdWhoInsertedThem);
+                                r15.Add(r11);
                             }
                     }
                 }
@@ -216,22 +217,20 @@ public static class NewConfig
             Console.WriteLine(e);
             Logger.WriteLine("Skipping Old bot groups import");
         }
+
+        return r15;
     }
 
-    private static Tuple<bool, List<Exception>> AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
+    private static GroupAddedResult AddGroupToDb(JEnumerable<JToken> r1, int botIdWhoInsertedThem)
     {
-        ;
-
         ChatJson? chat = null;
         DateTime? lastUpdateLinkTime = null;
-        bool? we_are_admin = null;
+        bool? weAreAdmin = null;
 
         var exceptions = new List<Exception>();
         foreach (var r2 in r1)
         {
-            ;
             if (r2 is not JProperty r3) continue;
-            ;
             switch (r3.Name)
             {
                 case "Chat":
@@ -255,16 +254,16 @@ public static class NewConfig
                     break;
                 }
                 case "we_are_admin":
-                    we_are_admin = GetWeAreAdminFromJson(r3);
+                    weAreAdmin = GetWeAreAdminFromJson(r3);
                     break;
             }
         }
 
-        var d2 = AddGroupToDb2(chat, lastUpdateLinkTime, we_are_admin, botIdWhoInsertedThem);
-        return new Tuple<bool, List<Exception>>(d2, exceptions);
+        var d2 = AddGroupToDb2(chat, lastUpdateLinkTime, weAreAdmin, botIdWhoInsertedThem);
+        return new GroupAddedResult(d2, exceptions);
     }
 
-    private static bool AddGroupToDb2(ChatJson? chat, DateTime? lastUpdateLinkTime, bool? we_are_admin,
+    private static bool AddGroupToDb2(ChatJson? chat, DateTime? lastUpdateLinkTime, bool? weAreAdmin,
         int botIdWhoInsertedThem)
     {
         try
@@ -281,7 +280,7 @@ public static class NewConfig
                     { "@title", chat.title },
                     { "@link", chat.invite_link },
                     { "@lul", InviteLinks.GetDateTimeLastUpdateLinkFormattedString(lastUpdateLinkTime) },
-                    { "@valid", we_are_admin }
+                    { "@valid", weAreAdmin }
                 });
         }
         catch
@@ -305,7 +304,7 @@ public static class NewConfig
             r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
     }
 
-    private static ChatJson? GetChatFromJson(JToken r3)
+    private static ChatJson GetChatFromJson(JToken r3)
     {
         var r4 = r3.Children();
         var r5 = r4.Children();
@@ -354,14 +353,12 @@ public static class NewConfig
     private static string? GetTitleFromJson(JToken r7)
     {
         var r8 = r7.First;
-        ;
         return r8 is not JValue r9 ? null : r9.Value?.ToString();
     }
 
     private static string? GetTypeFromJson(JToken r7)
     {
         var r8 = r7.First;
-        ;
         return r8 is not JValue r9 ? null : r9.Value?.ToString();
     }
 
@@ -376,20 +373,21 @@ public static class NewConfig
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
     }
 
-    private static void FillAssoc(DbConfigConnection? dbConfig)
+    private static List<bool>? FillAssoc(DbConfigConnection? dbConfig)
     {
+        var r10 = new List<bool>();
         try
         {
             //read assoc from polinetwork python config file and fill db
             var s = File.ReadAllText("../../../Old/config/assoc.json");
             var r = JsonConvert.DeserializeObject<JObject>(s);
-            if (r == null) return;
+            if (r == null) return null;
             var r2 = r.Children();
             foreach (var r3 in r2)
                 if (r3 is JProperty r4)
@@ -397,7 +395,8 @@ public static class NewConfig
                     var name = r4.Name;
                     var r5 = r4.Value;
                     var users = GetUsersFromAssocJson(r5);
-                    AddAssocToDb(name, users, dbConfig);
+                    var r6 = AddAssocToDb(name, users, dbConfig);
+                    r10.Add(r6);
                 }
         }
         catch (FileNotFoundException e)
@@ -410,6 +409,8 @@ public static class NewConfig
             Console.WriteLine(e);
             Logger.WriteLine("Skipping assoc.json import");
         }
+
+        return r10;
     }
 
     private static bool AddAssocToDb(string? name, IReadOnlyCollection<long>? users, DbConfigConnection? dbConfig)
@@ -431,7 +432,7 @@ public static class NewConfig
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (r4 == null)

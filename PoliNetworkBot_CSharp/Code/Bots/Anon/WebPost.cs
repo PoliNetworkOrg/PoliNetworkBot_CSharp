@@ -33,14 +33,11 @@ internal class WebPost
     public WebPost(JObject r4)
     {
         //this.r4 = r4;
-        ;
         var r23 = r4["PostID"];
         if (r23 != null)
         {
             var x = r23.Values()[0];
         }
-
-        ;
 
         foreach (var r5 in r4.Children())
         {
@@ -72,7 +69,7 @@ internal class WebPost
                         }
                         catch
                         {
-                            ;
+                            // ignored
                         }
 
                         photoid = p;
@@ -139,7 +136,7 @@ internal class WebPost
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (bots != null)
@@ -151,12 +148,16 @@ internal class WebPost
         return null;
     }
 
-    internal async Task SetAsSeenAsync()
+    internal async Task<bool> SetAsSeenAsync()
     {
         var url = "https://spottedpolimi.altervista.org/s/setseen.php?id=" + postid + "&password=" +
                   ConfigAnon.Password + "&seen=Y";
         var x = await Web.DownloadHtmlAsync(url);
+        if (!x.IsValid())
+            return false;
+
         seen = 'Y';
+        return true;
     }
 
     internal static async Task<bool> SetApprovedStatusAsync(CallBackDataAnon x)

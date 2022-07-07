@@ -373,7 +373,7 @@ internal static class Assoc
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (dr == null)
@@ -522,7 +522,7 @@ internal static class Assoc
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (count == null)

@@ -43,7 +43,7 @@ public static class FileSerialization
             }
             catch
             {
-                ;
+                // ignored
             }
 
             return new Tuple<bool, Exception?>(false, e);
@@ -99,7 +99,7 @@ public static class FileSerialization
             }
             catch
             {
-                ;
+                // ignored
             }
 
             return default;

@@ -314,13 +314,9 @@ internal static class Rooms
 
         var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "TableDati-tbody");
 
-        ;
-
         var t2 = t1?[0];
 
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t2, "tr");
-
-        ;
 
         var roomIndex = FindRoomIndex(t3, sigla);
         if (roomIndex == null) return; //todo: send to the user "room not found"
@@ -328,8 +324,6 @@ internal static class Rooms
         var t4 = t3?[(int)roomIndex.Value];
 
         var t5 = HtmlUtil.GetElementsByTagAndClassName(t4, "td");
-
-        ;
 
         if (t5 is { Count: < 3 }) return; //todo: send to the user "room not found"
 
@@ -372,22 +366,14 @@ internal static class Rooms
 
             var t6 = HtmlUtil.GetElementsByTagAndClassName(t4, "td");
 
-            ;
-
             if (t6 == null || t6.Count < 2)
                 return null;
 
             var t7 = t6[1];
 
-            ;
-
             var t8 = HtmlUtil.GetElementsByTagAndClassName(t7, "b");
 
-            ;
-
             var t9 = t8?[0]?.InnerHtml.Trim();
-
-            ;
 
             if (t9 == sigla)
                 return i;
@@ -433,8 +419,6 @@ internal static class Rooms
                         ParseMode.Html, null);
                     return;
                 }
-
-                ;
 
                 // retrieves the table for the day
                 var t3 = await GetDailySituationOnDate(sender, e, d2.Value);

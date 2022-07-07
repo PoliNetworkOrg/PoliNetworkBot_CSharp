@@ -68,13 +68,13 @@ internal static class NotifyUtil
         }
     }
 
-    internal static async Task NotifyOwners(ExceptionNumbered exception,
+    internal static async Task<MessageSentResult?> NotifyOwners(ExceptionNumbered exception,
         TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string? extrainfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
         if (sender == null)
-            return;
+            return null;
 
         string message3;
         try
@@ -148,6 +148,7 @@ internal static class NotifyUtil
         });
 
         var r1 = await NotifyOwners2Async(text, sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
+        return r1;
     }
 
     internal static Task NotifyOwners(string? v, TelegramBotAbstract? telegramBotAbstract,
@@ -227,7 +228,7 @@ internal static class NotifyUtil
         }
         catch
         {
-            ;
+            // ignored
         }
 
         var (exceptionNumbereds, item2) = exceptions;
@@ -253,12 +254,12 @@ internal static class NotifyUtil
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
@@ -269,14 +270,13 @@ internal static class NotifyUtil
             });
 
             long? replyto = null;
-            ;
 
             if (m != null) replyto = m.GetMessageId();
             await NotifyOwners2Async(text2, sender, 0, langCode, replyto, messageEventArgs);
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 
@@ -306,7 +306,7 @@ internal static class NotifyUtil
                 if (done == null)
                     return;
 
-                var (banUnbanAllResult, exceptionNumbereds, item3) = done;
+                var (banUnbanAllResult, _, item3) = done;
                 message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
 
                 const string? langCode = "it";
@@ -402,7 +402,7 @@ internal static class NotifyUtil
         return message;
     }
 
-    public static string? CreatePermittedSpamMessage(MessageEventArgs? messageEventArgs,
+    public static string CreatePermittedSpamMessage(MessageEventArgs? messageEventArgs,
         string? text, string? groups, string? messageType, string? assoc)
     {
         var hashAssoc = HashUtils.GetHashOf(assoc)?[..8];

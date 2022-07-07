@@ -178,7 +178,7 @@ internal static class InviteLinks
                             }
                             catch
                             {
-                                ;
+                                // ignored
                             }
 
                             try
@@ -357,7 +357,7 @@ internal static class InviteLinks
             }
             else
             {
-                NuovoLink? s3 = null;
+                NuovoLink? s3;
                 try
                 {
                     gruppoTg.UpdateId(groupId.Value);

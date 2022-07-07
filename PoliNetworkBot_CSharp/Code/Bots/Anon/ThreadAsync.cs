@@ -148,12 +148,18 @@ internal static class ThreadAsync
 
         try
         {
-            await webPost.SetAsSeenAsync();
+            var b = await webPost.SetAsSeenAsync();
+            if (b)
+            {
+                await webPost.PlaceInQueue();
 
-            await webPost.PlaceInQueue();
-
-            if (DictionaryWebpost != null) DictionaryWebpost[webPost.postid] = webPost;
-            WriteDict();
+                if (DictionaryWebpost != null) DictionaryWebpost[webPost.postid] = webPost;
+                WriteDict();
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
         catch (Exception? e)
         {
