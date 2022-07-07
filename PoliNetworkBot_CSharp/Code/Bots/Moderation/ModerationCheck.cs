@@ -228,7 +228,7 @@ internal static class ModerationCheck
                                           new Tuple<ToExit?, ChatMember[]?, List<int>?>(null, null, null);
         var valid = toExit == ToExit.STAY ? "Y" : "N";
 
-        var q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
+        const string q = "UPDATE GroupsTelegram SET valid = @valid WHERE id = @id";
         if (e?.Message != null)
         {
             var d = new Dictionary<string, object?>
@@ -376,17 +376,13 @@ internal static class ModerationCheck
         if (isForeign)
             return SpamType.FOREIGN;
 
-        if (e?.Message?.Photo != null)
-        {
-            var spamType1 = Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient, true);
-            var spamType2 = Blacklist.IsSpam(e.Message.Photo);
-            var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
-            if (s2 != null)
-                return s2.Value;
-        }
-
-        //default is all good
-        return SpamType.ALL_GOOD;
+        if (e?.Message?.Photo == null) 
+            return SpamType.ALL_GOOD;
+        
+        var spamType1 = Blacklist.IsSpam(e.Message.Text, e.Message.Chat?.Id, telegramBotClient, true);
+        var spamType2 = Blacklist.IsSpam(e.Message.Photo);
+        var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
+        return s2 ?? SpamType.ALL_GOOD;
     }
 
     private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e,

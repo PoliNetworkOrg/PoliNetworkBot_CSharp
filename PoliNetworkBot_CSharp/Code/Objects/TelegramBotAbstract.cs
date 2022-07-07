@@ -1614,7 +1614,7 @@ public class TelegramBotAbstract
         return new MessageSentResult(false, null, chatTypeToSendTo);
     }
 
-    public async Task<long?> CreateGroup(string name, string? description, IEnumerable<long> membersToInvite)
+    public async Task<long?> CreateGroup(string name, string? description, IEnumerable<long>? membersToInvite)
     {
         switch (_isbot)
         {
@@ -1624,7 +1624,9 @@ public class TelegramBotAbstract
             case BotTypeApi.USER_BOT:
             case BotTypeApi.DISGUISED_BOT:
                 var users = new TLVector<TLAbsInputUser>();
-                foreach (var userId in membersToInvite) users.Add(new TLInputUser { UserId = (int)userId });
+                if (membersToInvite != null)
+                    foreach (var userId in membersToInvite)
+                        users.Add(new TLInputUser { UserId = (int)userId });
 
                 try
                 {

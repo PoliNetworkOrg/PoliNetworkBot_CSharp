@@ -546,17 +546,17 @@ internal static class Rooms
                     ParseMode.Html, null);
 
                 // send the table as an html document for further info
-                var htmlresult = t4.Aggregate(
+                var htmlResult = t4.Aggregate(
                     "<html><head><style>td {border: #333 1px solid;} td.slot {background: #cce6ff;}</style></head><body><table>",
                     (current, t5) => current + t5.OuterHtml);
-                htmlresult += "</table></body></html>";
+                htmlResult += "</table></body></html>";
 
                 var peer = new PeerAbstract(e?.Message?.From?.Id, ChatType.Private);
                 message = new Language(new Dictionary<string, string?>
                 {
                     { "en", roomName }
                 });
-                var document = UtilsFileText.GenerateFileFromString(htmlresult, roomName + ".html",
+                var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
                     roomName, "text/html");
 
                 if (sender != null)
@@ -582,28 +582,30 @@ internal static class Rooms
         var afterStartSlot = false;
 
         // start from 8:15, the third child
-        if (node != null)
-            for (var i = 3; i < node.ChildNodes.Count; i++)
+        if (node == null) 
+            return null;
+        
+        for (var i = 3; i < node.ChildNodes.Count; i++)
+        {
+            var colsize = 1;
+            if (node.ChildNodes[i].Attributes.Contains("colspan"))
+                colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
+
+            if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == !isCurrentlyFree)
             {
-                var colsize = 1;
-                if (node.ChildNodes[i].Attributes.Contains("colspan"))
-                    colsize = (int)Convert.ToInt64(node.ChildNodes[i].Attributes["colspan"].Value);
-
-                if (string.IsNullOrEmpty(node.ChildNodes[i].InnerHtml.Trim()) == !isCurrentlyFree)
-                {
-                    // check for a transition, from free to occupied or vice versa
-                    isCurrentlyFree = !isCurrentlyFree;
-                    // only return if we are after the starting time slot
-                    if (afterStartSlot)
-                        return TimeStringFromSlot(colsizetotal);
-                }
-
-                colsizetotal += colsize; // keep track of the columns
-
-                // quit searching after 19, dont want to consider a transition this late
-                if (colsizetotal >= 44) break;
-                if (colsizetotal >= startSlot) afterStartSlot = true;
+                // check for a transition, from free to occupied or vice versa
+                isCurrentlyFree = !isCurrentlyFree;
+                // only return if we are after the starting time slot
+                if (afterStartSlot)
+                    return TimeStringFromSlot(colsizetotal);
             }
+
+            colsizetotal += colsize; // keep track of the columns
+
+            // quit searching after 19, dont want to consider a transition this late
+            if (colsizetotal >= 44) break;
+            if (colsizetotal >= startSlot) afterStartSlot = true;
+        }
 
         // if there is no transition after the startSlot, just return null
         return null;

@@ -145,8 +145,7 @@ internal static class Groups
                 {
                     var tuple =
                         new Tuple<GroupsFixLogUpdatedEnum, DataRow?>(GroupsFixLogUpdatedEnum.NEW_NAME, null);
-                    var list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>>();
-                    list.Add(tuple);
+                    var list = new List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> { tuple };
                     GroupsFixLog.SendLog(telegramBotClient, e, list);
                 }
             }

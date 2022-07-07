@@ -545,7 +545,7 @@ internal static class Assoc
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
 
-        // select the second ce-bodytext in the page, and of that div select the first child, wich is the dotted ul
+        // select the second ce-bodytext in the page, and of that div select the first child, which is the dotted ul
         // list with the associations name
         var elementsByTagAndClassName = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext");
         var assocUl = elementsByTagAndClassName?[1]
@@ -580,7 +580,7 @@ internal static class Assoc
         {
             // the message which got replied to is used for the text
             if (e?.Message?.ReplyToMessage != null)
-                message = e?.Message.ReplyToMessage.Text ?? e?.Message?.ReplyToMessage?.Caption;
+                message = e.Message.ReplyToMessage.Text ?? e?.Message?.ReplyToMessage?.Caption;
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>

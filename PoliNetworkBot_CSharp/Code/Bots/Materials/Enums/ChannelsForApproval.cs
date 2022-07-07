@@ -8,29 +8,29 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 
 internal static class ChannelsForApproval
 {
-    private static readonly long matNanoChannel = -1001227167038;
-    private static readonly long aesChannel = -1001413802045;
-    private static readonly long infoChannel = -1001422638605;
-    private static readonly long mobilityMDChannel = -1001401676534;
-    private static readonly long electronicsChannel = -1001165704108;
-    private static readonly long automationChannel = -1001541302296;
-    private static readonly long chimicaChannel = -1001510001243;
+    private const long MatNanoChannel = -1001227167038;
+    private const long AesChannel = -1001413802045;
+    private const long InfoChannel = -1001422638605;
+    private const long MobilityMdChannel = -1001401676534;
+    private const long ElectronicsChannel = -1001165704108;
+    private const long AutomationChannel = -1001541302296;
+    private const long ChimicaChannel = -1001510001243;
 
     internal static long? GetChannel(string? v)
     {
         if (v != null)
             return v.ToLower() switch
             {
-                "matnano" => matNanoChannel,
-                "info" => infoChannel,
-                "mobilitymd" => mobilityMDChannel,
-                "aes" => aesChannel,
-                "electronics" => electronicsChannel,
-                "automazione" => automationChannel,
-                "chimica" => chimicaChannel,
-                "elettrica" => electronicsChannel,
-                "energetica" => aesChannel,
-                "meccanica" => aesChannel,
+                "matnano" => MatNanoChannel,
+                "info" => InfoChannel,
+                "mobilitymd" => MobilityMdChannel,
+                "aes" => AesChannel,
+                "electronics" => ElectronicsChannel,
+                "automazione" => AutomationChannel,
+                "chimica" => ChimicaChannel,
+                "elettrica" => ElectronicsChannel,
+                "energetica" => AesChannel,
+                "meccanica" => AesChannel,
                 _ => throw new Exception("No such channel: " + v)
             };
         return null;

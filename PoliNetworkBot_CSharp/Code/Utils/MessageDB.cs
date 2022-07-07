@@ -180,7 +180,7 @@ public static class MessageDb
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
         var s3 = r1.ToString();
-        var s4 = r1?.R1?.Item2.ToString();
+        var s4 = r1.R1?.Item2.ToString();
         if (string.IsNullOrEmpty(s4))
             s4 = "[NULL(1)]";
         s3 += "\n[Id1]: " + s4 + "\n";

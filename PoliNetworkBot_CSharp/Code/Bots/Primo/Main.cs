@@ -209,8 +209,7 @@ public static class Main
             }
             else
             {
-                var q3 =
-                    "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
+                const string q3 = "UPDATE Primo SET when_king = @wk, king_id = @ki, firstname = @fn, lastname = @ln WHERE title = @t";
                 var m1 = e?.Message;
                 if (m1 != null)
                 {
@@ -261,7 +260,7 @@ public static class Main
     private static Tuple<bool, List<string?>?> CheckIfLimitOfMaxKingsHasBeenReached(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        var q = "SELECT * FROM Primo";
+        const string q = "SELECT * FROM Primo";
         var r = Database.ExecuteSelect(q, telegramBotAbstract?.DbConfig);
         if (r == null || r.Rows.Count == 0)
             return new Tuple<bool, List<string?>?>(false, null);
@@ -328,7 +327,7 @@ public static class Main
         var m1 = e?.Message;
         if (e == null) return null;
         if (m1 == null) return null;
-        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1?.From?.LanguageCode, text, e,
+        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text, e,
             m1!.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
         return r;
     }

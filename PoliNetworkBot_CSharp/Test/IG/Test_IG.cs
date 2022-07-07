@@ -35,8 +35,7 @@ internal static class TestIg
             c = new[] { "user", "password" };
         }
 
-        if (c.Length < 2 || c[0] == "user")
-            return false;
+        return c.Length >= 2 && c[0] != "user";
 
         // create user session data and provide login details
         //var userSession = new UserSessionData
@@ -104,8 +103,6 @@ internal static class TestIg
         //  }
 //
         //      ;
-
-        return true;
     }
 
     // private static async Task DoThingsAsync(InstaApi x)

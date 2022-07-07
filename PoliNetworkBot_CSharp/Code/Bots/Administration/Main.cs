@@ -58,12 +58,11 @@ internal static class Main
                     }
 
                     const string? desc = "Gruppo @polinetwork \nPer tutti i link: polinetwork.github.io";
-
-                    var members = new List<long>(); //ID members to insert
+                    
                     long? chatId = null;
                     while (chatId == null)
                         if (telegramBotAbstract != null)
-                            chatId = await telegramBotAbstract.CreateGroup(group, desc, members);
+                            chatId = await telegramBotAbstract.CreateGroup(group, desc, null);
                     Thread.Sleep(1 * 1000 * 10);
                     if (telegramBotAbstract != null)
                     {

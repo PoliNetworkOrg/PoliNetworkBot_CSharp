@@ -9,16 +9,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 
 internal class ResultF1
 {
-    public readonly long? idMessageAdded;
-    public readonly TLAbsUpdates? r;
-    public readonly Tuple<TLAbsUpdates?, Exception?>? r2;
-    public readonly bool? returnobject;
+    public readonly long? IdMessageAdded;
+    public readonly TLAbsUpdates? R;
+    public readonly Tuple<TLAbsUpdates?, Exception?>? R2;
+    public readonly bool? ReturnObject;
 
-    public ResultF1(bool? returnobject, long? idMessageAdded, TLAbsUpdates? r, Tuple<TLAbsUpdates?, Exception?>? r2)
+    public ResultF1(bool? returnObject, long? idMessageAdded, TLAbsUpdates? r, Tuple<TLAbsUpdates?, Exception?>? r2)
     {
-        this.returnobject = returnobject;
-        this.idMessageAdded = idMessageAdded;
-        this.r = r;
-        this.r2 = r2;
+        this.ReturnObject = returnObject;
+        this.IdMessageAdded = idMessageAdded;
+        this.R = r;
+        this.R2 = r2;
     }
 }

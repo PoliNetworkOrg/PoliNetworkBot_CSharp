@@ -10,15 +10,12 @@ internal static class SpamTypeUtil
 {
     internal static SpamType? Merge(SpamType? spamType1, SpamType? spamType2)
     {
-        if (spamType1 == null && spamType2 == null)
-            return null;
-
-        if (spamType1 == null)
+        if (spamType1 is null) 
             return spamType2;
 
-        if (spamType2 == null)
+        if (spamType2 is null)
             return spamType1;
-
+        
         return spamType1 switch
         {
             SpamType.ALL_GOOD => spamType2,

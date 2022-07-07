@@ -908,7 +908,7 @@ internal static class CommandDispatcher
             InitGithubRepo();
         }
 
-        var path = Paths.Data.PoliNetworkWebsiteData + "/groupsGenerated.json";
+        const string path = Paths.Data.PoliNetworkWebsiteData + "/groupsGenerated.json";
         await File.WriteAllTextAsync(path, json, Encoding.UTF8);
         if (dry)
         {
@@ -1502,7 +1502,7 @@ internal static class CommandDispatcher
 
     private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
         MessageEventArgs? e,
-        string?[]? target, string? lang, string? username, RestrictAction bAN,
+        IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction bAN,
         bool? revokeMessage)
     {
         var d1 = GetDateTime(target);
@@ -1628,19 +1628,17 @@ internal static class CommandDispatcher
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var file = new TelegramFile(stream, filename, "", "application/octet-stream");
-        if (e != null)
+        var message = e?.Message;
+        if (message != null)
         {
-            var message = e.Message;
-            if (message != null)
+            var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+            var text = new Language(new Dictionary<string, string?>
             {
-                var peer = new PeerAbstract(e.Message?.From?.Id, message.Chat.Type);
-                var text = new Language(new Dictionary<string, string?>
-                {
-                    { "en", "" }
-                });
-                await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                    sender, e.Message?.From?.Username, e.Message?.From?.LanguageCode, null, true);
-            }
+                { "en", "" }
+            });
+            await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode, 
+                null, true);
         }
     }
 

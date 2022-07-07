@@ -91,7 +91,7 @@ internal static class InviteLinks
                        "\n\n" + ex1.Message +
                        "\n\n" + chatId +
                        "\n\n" + (chat == null ? "[null class]" :
-                           string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat?.Title);
+                           string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title);
 
             await NotifyUtil.NotifyOwners(ex3M, sender, messageEventArgs);
             return null;

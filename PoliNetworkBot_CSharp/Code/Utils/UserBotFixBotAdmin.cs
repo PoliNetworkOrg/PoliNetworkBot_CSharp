@@ -236,10 +236,10 @@ internal static class UserBotFixBotAdmin
         var channel = new TLInputChannel { AccessHash = x5.AccessHash.Value, ChannelId = x5.Id };
 
         var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
-        if (r4.returnobject != null)
-            return r4.returnobject;
+        if (r4.ReturnObject != null)
+            return r4.ReturnObject;
 
-        if (r4.r2 is { Item1: null })
+        if (r4.R2 is { Item1: null })
         {
             var m = "\n";
             m += "We can't make our bot admin in this group:\n";
@@ -247,10 +247,10 @@ internal static class UserBotFixBotAdmin
             m += "[ID]    " + x5.Id;
             m += "\n --- end --- ";
             m += "\n";
-            var e2 = new Exception(m, r4.r2.Item2);
+            var e2 = new Exception(m, r4.R2.Item2);
             await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
 
-            await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
+            await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, telegramBotAbstract);
 
             return false;
         }
@@ -259,7 +259,7 @@ internal static class UserBotFixBotAdmin
 
         try
         {
-            await DeleteMessageAddedAsync(r4.idMessageAdded, x5, telegramBotAbstract);
+            await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, telegramBotAbstract);
         }
         catch (Exception? e5)
         {
@@ -268,7 +268,7 @@ internal static class UserBotFixBotAdmin
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4.r2 != null && r4.r != null && r4.r2.Item1 != null;
+        return r4.R2 != null && r4.R != null && r4.R2.Item1 != null;
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChannel? x5,
@@ -472,10 +472,10 @@ internal static class UserBotFixBotAdmin
             : new TLInputChannel { ChannelId = x5.Id };
 
         var r4 = await F1Async(telegramBotAbstract, userIdOfOurBot, u, x5.Title, x5.Id, channel);
-        if (r4.returnobject != null)
-            return r4.returnobject.Value;
+        if (r4.ReturnObject != null)
+            return r4.ReturnObject.Value;
 
-        if (r4.r2 is { Item1: null })
+        if (r4.R2 is { Item1: null })
         {
             var m = "\n";
             m += "We can't make our bot admin in this group:\n";
@@ -483,21 +483,21 @@ internal static class UserBotFixBotAdmin
             m += "[ID]    " + x5.Id;
             m += "\n --- end --- ";
             m += "\n";
-            var e2 = new Exception(m, r4.r2.Item2);
+            var e2 = new Exception(m, r4.R2.Item2);
             await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
 
-            await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
+            await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, accessHash, telegramBotAbstract);
 
             return false;
         }
 
         Thread.Sleep(2000);
 
-        await DeleteMessageAddedAsync(r4.idMessageAdded, x5, accessHash, telegramBotAbstract);
+        await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, accessHash, telegramBotAbstract);
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4.r2 != null && r4.r != null && r4.r2.Item1 != null;
+        return r4.R2 != null && r4.R != null && r4.R2.Item1 != null;
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat? x5, long? accessHash,
