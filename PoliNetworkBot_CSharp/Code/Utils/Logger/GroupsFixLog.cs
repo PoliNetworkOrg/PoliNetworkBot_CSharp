@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -21,36 +22,40 @@ public static class GroupsFixLog
     private static int _countIgnored;
 
     public static void SendLog(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs,
-        GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
+        List<Tuple<GroupsFixLogUpdatedEnum, DataRow?>> fixLogUpdatedEnum)
     {
-        var message = "Groups Fix Log:";
-        message += "\n\n";
-        if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.ALL)
+        foreach (var x in fixLogUpdatedEnum)
         {
-            message += "-NewTitle null && OldTitle null: [Group ID]";
-            message += "\n";
-            message = _bothNull.Aggregate(message, (current, group) => current + group + "\n");
+            var message = "Groups Fix Log:";
             message += "\n\n";
-            message += "-NewTitle null:";
+            if (x.Item1 == GroupsFixLogUpdatedEnum.ALL)
+            {
+                message += "-NewTitle null && OldTitle null: [Group ID]";
+                message += "\n";
+                message = _bothNull.Aggregate(message, (current, group) => current + group + "\n");
+                message += "\n\n";
+                message += "-NewTitle null:";
+                message += "\n";
+                message += HandleNewTitleNull(_newNull);
+                message += "\n\n";
+                message += "-OldTitle null: [newTitle]";
+                message += "\n";
+                message = _oldNull.Aggregate(message, (current, newTitle) => current + newTitle + "\n");
+                message += "\n\n";
+            }
+
+            message += "-Name Changed: [oldTitle [->] newTitle]";
             message += "\n";
-            message += HandleNewTitleNull(_newNull);
+            message = _nameChange.Aggregate(message, (current, nameChange) => current + nameChange + "\n");
             message += "\n\n";
-            message += "-OldTitle null: [newTitle]";
-            message += "\n";
-            message = _oldNull.Aggregate(message, (current, newTitle) => current + newTitle + "\n");
-            message += "\n\n";
+            message += "Fixed: " + _countFixed;
+            message += "\nIgnored (already ok): " + _countIgnored;
+
+            var escaped = HttpUtility.HtmlEncode(message);
+            Logger.WriteLine(message);
+            NotifyUtil.NotifyOwners(escaped, telegramBotAbstract, messageEventArgs);
         }
 
-        message += "-Name Changed: [oldTitle [->] newTitle]";
-        message += "\n";
-        message = _nameChange.Aggregate(message, (current, nameChange) => current + nameChange + "\n");
-        message += "\n\n";
-        message += "Fixed: " + _countFixed;
-        message += "\nIgnored (already ok): " + _countIgnored;
-
-        var escaped = HttpUtility.HtmlEncode(message);
-        Logger.WriteLine(message);
-        NotifyUtil.NotifyOwners(escaped, telegramBotAbstract, messageEventArgs);
         Reset();
     }
 
