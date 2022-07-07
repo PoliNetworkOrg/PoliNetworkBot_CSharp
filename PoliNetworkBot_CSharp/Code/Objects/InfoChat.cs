@@ -9,13 +9,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class InfoChat
 {
-    public Chat _Chat;
-
     private DateTime? _dateTime;
+    public Chat Chat;
 
     public InfoChat(Chat messageChat, DateTime updatedAt)
     {
-        _Chat = messageChat;
+        Chat = messageChat;
         _dateTime = updatedAt;
     }
 

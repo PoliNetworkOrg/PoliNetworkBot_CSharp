@@ -663,7 +663,7 @@ public class Program
                             approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                             new ReplyMarkupObject(inlineKeyboardMarkup), null,
                             messageFw
-                                ?.GetMessageID()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
+                                ?.GetMessageId()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
 
                         Thread.Sleep(100);
                     }

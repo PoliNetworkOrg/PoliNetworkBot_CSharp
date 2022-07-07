@@ -17,6 +17,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 [JsonObject(MemberSerialization.Fields)]
 public class CallBackDataFull
 {
+    // ReSharper disable once InconsistentNaming
     public Dictionary<string, CallbackGenericData> callbackDatas = new();
     public BigInteger last = 0;
 

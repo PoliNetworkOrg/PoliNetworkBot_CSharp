@@ -210,7 +210,7 @@ internal static class Groups
                         {
                             var nuovoLink =
                                 await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
-                            if (nuovoLink != null && nuovoLink.isNuovo != SuccessoGenerazioneLink.ERRORE)
+                            if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
                                 await NotifyUtil.NotifyOwners(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
                                     telegramBotClient, e);
@@ -237,14 +237,14 @@ internal static class Groups
 
         if (telegramGroup != null && groupInRamGetDone.Value)
         {
-            if (group.Title == telegramGroup._Chat.Title) return GroupsFixLogUpdatedEnum.DID_NOTHING;
+            if (group.Title == telegramGroup.Chat.Title) return GroupsFixLogUpdatedEnum.DID_NOTHING;
             lock (GroupsInRam)
             {
                 GroupsInRam.Remove(group.Id);
                 GroupsInRam.Add(group.Id, new InfoChat(group, DateTime.Now));
             }
 
-            return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup._Chat.Title, sender);
+            return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup.Chat.Title, sender);
         }
 
         const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
@@ -265,7 +265,7 @@ internal static class Groups
             else
             {
                 var infoChat = GroupsInRam[group.Id];
-                if (infoChat != null) infoChat._Chat = group;
+                if (infoChat != null) infoChat.Chat = group;
             }
         }
 

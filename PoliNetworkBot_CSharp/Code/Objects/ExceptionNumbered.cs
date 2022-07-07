@@ -10,22 +10,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class ExceptionNumbered : Exception
 {
-    private const int default_v = 1;
-    private int v;
+    private const int DefaultV = 1;
+    private int _v;
 
-    public ExceptionNumbered(Exception? item1, int v = default_v) : base(item1?.Message, item1)
+    public ExceptionNumbered(Exception? item1, int v = DefaultV) : base(item1?.Message, item1)
     {
-        this.v = v;
+        _v = v;
     }
 
-    public ExceptionNumbered(string message, int v = default_v) : base(message)
+    public ExceptionNumbered(string message, int v = DefaultV) : base(message)
     {
-        this.v = v;
+        _v = v;
     }
 
     internal void Increment()
     {
-        v++;
+        _v++;
     }
 
     internal Exception GetException()
@@ -40,7 +40,7 @@ public class ExceptionNumbered : Exception
 
     internal int GetNumberOfTimes()
     {
-        return v;
+        return _v;
     }
 
     internal static async Task<bool> SendExceptionAsync(Exception? e, TelegramBotAbstract? telegramBotAbstract,

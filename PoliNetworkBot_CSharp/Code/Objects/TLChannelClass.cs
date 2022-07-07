@@ -6,12 +6,12 @@ using TeleSharp.TL;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
-public class TLChannelClass
+public class TlChannelClass
 {
-    public readonly TLChannel channel;
+    public readonly TLChannel Channel;
 
-    public TLChannelClass(TLChannel channel)
+    public TlChannelClass(TLChannel channel)
     {
-        this.channel = channel;
+        Channel = channel;
     }
 }

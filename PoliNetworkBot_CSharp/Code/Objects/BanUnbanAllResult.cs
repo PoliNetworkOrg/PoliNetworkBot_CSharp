@@ -10,38 +10,38 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 internal class BanUnbanAllResult
 {
-    private readonly List<DataRow>? done;
-    private readonly List<DataRow>? failed;
+    private readonly List<DataRow>? _done;
+    private readonly List<DataRow>? _failed;
 
     public BanUnbanAllResult(List<DataRow>? done, List<DataRow>? failed)
     {
-        this.done = done;
-        this.failed = failed;
+        _done = done;
+        _failed = failed;
     }
 
-    internal Language? GetLanguage(RestrictAction ban_true_unban_false, string? target1, long nExceptions)
+    internal Language? GetLanguage(RestrictAction banTrueUnbanFalse, string? target1, long nExceptions)
     {
         var target = "<a href=\"tg://user?id=" + target1 + "\">" + target1 + "</a>";
-        switch (ban_true_unban_false)
+        switch (banTrueUnbanFalse)
         {
             case RestrictAction.UNBAN:
             {
-                if (done != null)
-                    if (failed != null)
+                if (_done != null)
+                    if (_failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
                         {
                             {
                                 "en",
-                                "Target " + target + " unbanned from " + done.Count + " groups" + "\n" +
-                                "not unbanned from " + failed.Count + " groups" + "\n" +
+                                "Target " + target + " unbanned from " + _done.Count + " groups" + "\n" +
+                                "not unbanned from " + _failed.Count + " groups" + "\n" +
                                 "exception number = " + nExceptions
                             },
 
                             {
                                 "it",
-                                "Target " + target + " sbannato da " + done.Count + " gruppi" + "\n" +
-                                "non sbannato da " + failed.Count + " gruppi" + "\n" +
+                                "Target " + target + " sbannato da " + _done.Count + " gruppi" + "\n" +
+                                "non sbannato da " + _failed.Count + " gruppi" + "\n" +
                                 "numero eccezioni = " + nExceptions
                             }
                         });
@@ -54,22 +54,22 @@ internal class BanUnbanAllResult
 
             case RestrictAction.BAN:
             {
-                if (done != null)
-                    if (failed != null)
+                if (_done != null)
+                    if (_failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
                         {
                             {
                                 "en",
-                                "Target " + target + " banned from " + done.Count + " groups" + "\n" +
-                                "not banned from " + failed.Count + " groups" + "\n" +
+                                "Target " + target + " banned from " + _done.Count + " groups" + "\n" +
+                                "not banned from " + _failed.Count + " groups" + "\n" +
                                 "exception number = " + nExceptions
                             },
 
                             {
                                 "it",
-                                "Target " + target + " bannato da " + done.Count + " gruppi" + "\n" +
-                                "non bannato da " + failed.Count + " gruppi" + "\n" +
+                                "Target " + target + " bannato da " + _done.Count + " gruppi" + "\n" +
+                                "non bannato da " + _failed.Count + " gruppi" + "\n" +
                                 "numero eccezioni = " + nExceptions
                             }
                         });
@@ -82,22 +82,22 @@ internal class BanUnbanAllResult
 
             case RestrictAction.MUTE:
             {
-                if (done != null)
-                    if (failed != null)
+                if (_done != null)
+                    if (_failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
                         {
                             {
                                 "en",
-                                "Target " + target + " muted from " + done.Count + " groups" + "\n" +
-                                "not muted from " + failed.Count + " groups" + "\n" +
+                                "Target " + target + " muted from " + _done.Count + " groups" + "\n" +
+                                "not muted from " + _failed.Count + " groups" + "\n" +
                                 "exception number = " + nExceptions
                             },
 
                             {
                                 "it",
-                                "Target " + target + " mutato da " + done.Count + " gruppi" + "\n" +
-                                "non mutato da " + failed.Count + " gruppi" + "\n" +
+                                "Target " + target + " mutato da " + _done.Count + " gruppi" + "\n" +
+                                "non mutato da " + _failed.Count + " gruppi" + "\n" +
                                 "numero eccezioni = " + nExceptions
                             }
                         });
@@ -109,22 +109,22 @@ internal class BanUnbanAllResult
             }
             case RestrictAction.UNMUTE:
             {
-                if (done != null)
-                    if (failed != null)
+                if (_done != null)
+                    if (_failed != null)
                     {
                         var text2 = new Language(new Dictionary<string, string?>
                         {
                             {
                                 "en",
-                                "Target " + target + " unmuted from " + done.Count + " groups" + "\n" +
-                                "not unmuted from " + failed.Count + " groups" + "\n" +
+                                "Target " + target + " unmuted from " + _done.Count + " groups" + "\n" +
+                                "not unmuted from " + _failed.Count + " groups" + "\n" +
                                 "exception number = " + nExceptions
                             },
 
                             {
                                 "it",
-                                "Target " + target + " smutato da " + done.Count + " gruppi" + "\n" +
-                                "non smutato da " + failed.Count + " gruppi" + "\n" +
+                                "Target " + target + " smutato da " + _done.Count + " gruppi" + "\n" +
+                                "non smutato da " + _failed.Count + " gruppi" + "\n" +
                                 "numero eccezioni = " + nExceptions
                             }
                         });
@@ -141,11 +141,11 @@ internal class BanUnbanAllResult
 
     internal List<DataRow>? GetSuccess()
     {
-        return done;
+        return _done;
     }
 
     internal List<DataRow>? GetFailed()
     {
-        return failed;
+        return _failed;
     }
 }

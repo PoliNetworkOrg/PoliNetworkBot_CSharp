@@ -580,7 +580,7 @@ internal static class Assoc
         {
             // the message which got replied to is used for the text
             if (e?.Message?.ReplyToMessage != null)
-                message = e.Message.ReplyToMessage.Text ?? e?.Message?.ReplyToMessage?.Caption;
+                message = e.Message.ReplyToMessage.Text ?? e.Message?.ReplyToMessage?.Caption;
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>
@@ -711,10 +711,10 @@ internal static class Assoc
         try
         {
             if (assocVetoData.MessageSent?.GetMessage() is not Message m1 ||
-                assocVetoData.MessageSent.GetMessageID() == null || assocVetoData.Modified) return;
+                assocVetoData.MessageSent.GetMessageId() == null || assocVetoData.Modified) return;
             if (sender != null)
                 await sender.EditMessageTextAsync(m1.Chat.Id,
-                    int.Parse(assocVetoData.MessageSent?.GetMessageID()?.ToString() ?? "0"),
+                    int.Parse(assocVetoData.MessageSent?.GetMessageId()?.ToString() ?? "0"),
                     assocVetoData.MessageWithMetadata, ParseMode.Html);
         }
         catch (Exception? ex)
@@ -751,7 +751,7 @@ internal static class Assoc
                     {
                         { "en", message }
                     }), ChatType.Group, "en", ParseMode.Html, null, null);
-                replyTo = m?.GetMessageID();
+                replyTo = m?.GetMessageId();
             }
 
         var councilMessage = new Language(

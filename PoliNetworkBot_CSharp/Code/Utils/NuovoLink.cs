@@ -8,12 +8,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class NuovoLink
 {
-    public readonly SuccessoGenerazioneLink isNuovo; //se il link è nuovo
-    public readonly string? link;
+    public readonly SuccessoGenerazioneLink IsNuovo; //se il link è nuovo
+    public readonly string? Link;
 
     public NuovoLink(SuccessoGenerazioneLink v, string? link = null)
     {
-        isNuovo = v;
-        this.link = link;
+        IsNuovo = v;
+        Link = link;
     }
 }

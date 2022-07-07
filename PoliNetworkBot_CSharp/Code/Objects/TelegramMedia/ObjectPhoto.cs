@@ -26,10 +26,10 @@ public class ObjectPhoto : GenericMedia
         string? uniqueId, long? messageIdFrom, long chatId, ChatType chatType)
     {
         _idPhotoDb = idPhotoDb;
-        _fileId = fileId;
+        FileId = fileId;
         _fileSize = fileSize;
-        _height = height;
-        _width = width;
+        Height = height;
+        Width = width;
         _uniqueId = uniqueId;
         _messageIdFrom = messageIdFrom;
         _chatId = chatId;

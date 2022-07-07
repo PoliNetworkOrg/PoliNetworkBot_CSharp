@@ -9,32 +9,32 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 internal class ValueWithException<T>
 {
-    private readonly SuccessWithException SuccessWithException;
-    private readonly T value;
+    private readonly SuccessWithException _successWithException;
+    private readonly T _value;
 
     public ValueWithException(T d2, Exception? p)
     {
-        SuccessWithException = new SuccessWithException(d2 != null && p == null, p);
-        value = d2;
+        _successWithException = new SuccessWithException(d2 != null && p == null, p);
+        _value = d2;
     }
 
     internal List<Exception?>? GetExceptions()
     {
-        return SuccessWithException.GetExceptions();
+        return _successWithException.GetExceptions();
     }
 
     internal bool ContainsExceptions()
     {
-        return SuccessWithException.ContainsExceptions();
+        return _successWithException.ContainsExceptions();
     }
 
     internal T GetValue()
     {
-        return value;
+        return _value;
     }
 
     internal bool HasValue()
     {
-        return value != null;
+        return _value != null;
     }
 }

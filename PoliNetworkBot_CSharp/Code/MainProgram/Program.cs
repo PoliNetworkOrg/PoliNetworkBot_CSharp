@@ -676,30 +676,32 @@ internal static class Program
     {
         var done = true;
         var bot = GlobalVariables.Bots?[userbotId];
+        if (bot == null)
+            return done;
+
         var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
         var text = new Language(new Dictionary<string, string?>
         {
             { "en", "ciao test" },
             { "it", "ciao test" }
         });
-        if (bot != null)
-        {
-            await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-                "", default, replyMarkupObject, "@polinetwork3bot");
 
-            /*
+
+        await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
+            "", default, replyMarkupObject, "@polinetwork3bot");
+
+        /*
         done &= await bot.CreateGroup("Gruppo test by bot",
             null, new List<long> { 5651789 });
         */
 
-            try
-            {
-                done &= await bot.UpdateUsername("PoliAssociazioni", "PoliAssociazioni2");
-            }
-            catch (Exception? e1)
-            {
-                Logger.WriteLine(e1);
-            }
+        try
+        {
+            done &= await bot.UpdateUsername("PoliAssociazioni", "PoliAssociazioni2");
+        }
+        catch (Exception? e1)
+        {
+            Logger.WriteLine(e1);
         }
 
         return done;

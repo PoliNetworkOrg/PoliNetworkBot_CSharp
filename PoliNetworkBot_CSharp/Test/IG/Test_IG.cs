@@ -27,11 +27,11 @@ internal static class TestIg
         string[] c;
         try
         {
-            c = await File.ReadAllLinesAsync(Paths.IG.CREDENTIALS);
+            c = await File.ReadAllLinesAsync(Paths.Ig.Credentials);
         }
         catch
         {
-            await File.WriteAllTextAsync(Paths.IG.CREDENTIALS, "user\npassword");
+            await File.WriteAllTextAsync(Paths.Ig.Credentials, "user\npassword");
             c = new[] { "user", "password" };
         }
 

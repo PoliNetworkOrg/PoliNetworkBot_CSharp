@@ -21,7 +21,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 
 public static class CallbackUtils
 {
-    private const string SEPARATOR = "-";
+    private const string Separator = "-";
     public static CallBackDataFull? CallBackDataFull = new();
 
     public static async Task<MessageSentResult?> SendMessageWithCallbackQueryAsync(
@@ -69,7 +69,7 @@ public static class CallbackUtils
     private static ReplyMarkupObject? GetReplyMarkupObject(CallbackGenericData callbackGenericData, string? key)
     {
         var x2 = callbackGenericData.Options.Select((option, i1) => new List<InlineKeyboardButton>
-            { new(option.displayed) { CallbackData = key + SEPARATOR + i1 } }).ToList();
+            { new(option.displayed) { CallbackData = key + Separator + i1 } }).ToList();
 
         var inlineKeyboardMarkup = new InlineKeyboardMarkup(x2);
         return new ReplyMarkupObject(inlineKeyboardMarkup);
@@ -136,7 +136,7 @@ public static class CallbackUtils
                 var data = callbackQueryEventArgs.CallbackQuery.Data;
                 if (string.IsNullOrEmpty(data) == false)
                 {
-                    string?[] datas = data.Split(SEPARATOR);
+                    string?[] datas = data.Split(Separator);
                     var key = datas[0];
                     var answer = Convert.ToInt32(datas[1]);
                     CallBackDataFull?.UpdateAndRun(callbackQueryEventArgs, answer, key);

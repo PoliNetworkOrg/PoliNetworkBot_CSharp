@@ -9,46 +9,46 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class SuccessWithException
 {
-    private readonly List<Exception?>? ex;
-    private readonly bool success;
+    private readonly List<Exception?>? _ex;
+    private readonly bool _success;
 
     public SuccessWithException(bool v)
     {
-        success = v;
+        _success = v;
     }
 
     public SuccessWithException(bool v, Exception? e2)
     {
-        success = v;
-        ex = new List<Exception?> { e2 };
+        _success = v;
+        _ex = new List<Exception?> { e2 };
     }
 
     public SuccessWithException(bool v, List<Exception?>? e2)
     {
-        success = v;
-        ex = e2;
+        _success = v;
+        _ex = e2;
     }
 
     internal bool IsSuccess()
     {
-        return success;
+        return _success;
     }
 
     internal List<Exception?>? GetExceptions()
     {
-        return ex;
+        return _ex;
     }
 
     internal bool ContainsExceptions()
     {
-        return ex is { Count: > 0 };
+        return _ex is { Count: > 0 };
     }
 
     internal ExceptionNumbered? GetFirstException()
     {
         if (!ContainsExceptions()) return null;
-        if (ex == null) return null;
-        var ex2 = ex[0];
+        if (_ex == null) return null;
+        var ex2 = _ex[0];
         return new ExceptionNumbered(ex2);
     }
 }

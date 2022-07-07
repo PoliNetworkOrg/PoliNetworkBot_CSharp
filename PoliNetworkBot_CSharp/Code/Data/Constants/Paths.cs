@@ -34,8 +34,8 @@ public static class Paths
         public const string MessagesToDelete = "../config/messagestodelete.bin";
     }
 
-    public static class IG
+    public static class Ig
     {
-        public const string CREDENTIALS = "../config/ig.txt";
+        public const string Credentials = "../config/ig.txt";
     }
 }

@@ -10,29 +10,29 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal class ListaGruppiTG_Update
+internal class ListaGruppiTgUpdate
 {
-    private List<GruppoTgUpdate> L = new();
+    private List<GruppoTgUpdate> _l = new();
 
     internal int Count()
     {
-        L ??= new List<GruppoTgUpdate>();
+        _l ??= new List<GruppoTgUpdate>();
 
-        return L.Count;
+        return _l.Count;
     }
 
     internal void Add(GruppoTgUpdate tuple)
     {
-        L ??= new List<GruppoTgUpdate>();
+        _l ??= new List<GruppoTgUpdate>();
 
-        L.Add(tuple);
+        _l.Add(tuple);
     }
 
     internal string GetStringList()
     {
         var st = "";
 
-        foreach (var l2 in L)
+        foreach (var l2 in _l)
             try
             {
                 if (l2.GruppoTg == null) continue;
@@ -101,8 +101,8 @@ internal class ListaGruppiTG_Update
 
     internal int GetCount_Filtered(SuccessoGenerazioneLink successoGenerazione)
     {
-        L ??= new List<GruppoTgUpdate>();
+        _l ??= new List<GruppoTgUpdate>();
 
-        return L.Where(x => x.SuccessoGenerazioneLink == successoGenerazione).ToList().Count;
+        return _l.Where(x => x.SuccessoGenerazioneLink == successoGenerazione).ToList().Count;
     }
 }

@@ -10,62 +10,62 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class MessageSentResult
 {
-    private readonly ChatType? chatType;
-    private readonly object? message;
-    private readonly bool success;
-    private long? messageId;
+    private readonly ChatType? _chatType;
+    private readonly object? _message;
+    private readonly bool _success;
+    private long? _messageId;
 
     public MessageSentResult(bool success, object? message, ChatType? chatType)
     {
-        this.success = success;
-        this.message = message;
-        this.chatType = chatType;
+        _success = success;
+        _message = message;
+        _chatType = chatType;
 
         SetMessageId();
     }
 
     private void SetMessageId()
     {
-        switch (message)
+        switch (_message)
         {
             case null:
                 return;
 
             case TLMessage m1:
-                messageId = m1.Id;
+                _messageId = m1.Id;
                 break;
 
             case Message m2:
-                messageId = m2.MessageId;
+                _messageId = m2.MessageId;
                 break;
         }
     }
 
     internal object? GetMessage()
     {
-        return message;
+        return _message;
     }
 
     internal ChatType? GetChatType()
     {
-        return chatType;
+        return _chatType;
     }
 
     internal bool IsSuccess()
     {
-        return success;
+        return _success;
     }
 
-    internal long? GetMessageID()
+    internal long? GetMessageId()
     {
-        return messageId;
+        return _messageId;
     }
 
-    internal string GetLink(string chatId, bool IsPrivate)
+    internal string GetLink(string chatId, bool isPrivate)
     {
-        if (IsPrivate)
-            return "https://t.me/c/" + chatId + "/" + GetMessageID();
+        if (isPrivate)
+            return "https://t.me/c/" + chatId + "/" + GetMessageId();
 
-        return "https://t.me/" + chatId + "/" + GetMessageID();
+        return "https://t.me/" + chatId + "/" + GetMessageId();
     }
 }

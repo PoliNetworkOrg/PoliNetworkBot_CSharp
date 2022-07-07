@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 public class GenericMedia : GenericFile
 {
-    internal string? _fileId;
-    internal int _height;
-    internal int _width;
+    internal string? FileId;
+    internal int Height;
+    internal int Width;
 
     public override MessageType? GetMediaBotType()
     {
@@ -28,8 +28,8 @@ public class GenericMedia : GenericFile
 
     public InputOnlineFile? GetTelegramBotInputOnlineFile()
     {
-        if (_fileId == null) return null;
-        var r = new InputOnlineFile(_fileId);
+        if (FileId == null) return null;
+        var r = new InputOnlineFile(FileId);
         return r;
     }
 }

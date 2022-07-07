@@ -5,9 +5,9 @@ public class UsernameAndNameCheckResult
     private readonly string? _firstName;
     private readonly string? _language;
     private readonly string? _lastName;
+    private readonly long? _messageId;
     private readonly long? _userId;
     private readonly string? _usernameString;
-    private readonly long? messageId;
     public readonly bool Name;
     public readonly bool UsernameBool;
 
@@ -21,7 +21,7 @@ public class UsernameAndNameCheckResult
         _userId = userId;
         _firstName = firstName;
         _lastName = lastName;
-        this.messageId = messageId;
+        _messageId = messageId;
     }
 
     public string? GetLanguage()
@@ -51,6 +51,6 @@ public class UsernameAndNameCheckResult
 
     internal long? GetMessageId()
     {
-        return messageId;
+        return _messageId;
     }
 }

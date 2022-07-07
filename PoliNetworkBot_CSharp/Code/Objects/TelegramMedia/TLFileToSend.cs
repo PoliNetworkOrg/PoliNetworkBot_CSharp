@@ -13,16 +13,16 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 public class TlFileToSend
 {
+    private readonly TLVector<TLAbsDocumentAttribute>? _attributes;
+    private readonly string? _mimeType;
     private readonly TLAbsInputMedia? _tlAbsInputMedia;
     private readonly TLInputFile? _tlInputFile;
-    private readonly TLVector<TLAbsDocumentAttribute>? attributes;
-    private readonly string? mimeType;
 
     public TlFileToSend(TLInputFile? r2, string? mimeType, TLVector<TLAbsDocumentAttribute>? attributes)
     {
         _tlInputFile = r2;
-        this.mimeType = mimeType;
-        this.attributes = attributes;
+        _mimeType = mimeType;
+        _attributes = attributes;
     }
 
     public TlFileToSend(TLAbsInputMedia? r2)
@@ -75,8 +75,8 @@ public class TlFileToSend
 
             if (telegramClient != null)
             {
-                var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2, mimeType,
-                    attributes);
+                var r = await telegramClient.SendUploadedDocument(peer, _tlInputFile, caption2, _mimeType,
+                    _attributes);
                 return r;
             }
         }

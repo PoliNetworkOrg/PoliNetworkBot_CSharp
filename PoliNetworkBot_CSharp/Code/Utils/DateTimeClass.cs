@@ -163,39 +163,39 @@ internal static class DateTimeClass
 
         if (reply.Contains('/'))
         {
-            if (reply.Contains(':'))
+            if (!reply.Contains(':'))
+                return null;
+
+            if (!reply.Contains(' '))
+                return null;
+
+            var s = reply.Split(' ');
+            if (!s[0].Contains('/'))
+                return null;
+
+            if (!s[1].Contains(':'))
+                return null;
+
+            var s2 = s[0].Split('/');
+            var s3 = s[1].Split(':');
+
+            try
             {
-                if (reply.Contains(' '))
-                {
-                    var s = reply.Split(' ');
-                    if (s[0].Contains('/'))
-                    {
-                        if (s[1].Contains(':'))
-                        {
-                            var s2 = s[0].Split('/');
-                            var s3 = s[1].Split(':');
+                long seconds = 0;
+                if (s3.Length == 3) seconds = Convert.ToInt64(s3[2]);
 
-                            try
-                            {
-                                long seconds = 0;
-                                if (s3.Length == 3) seconds = Convert.ToInt64(s3[2]);
+                var d1 = new DateTime((int)Convert.ToInt64(s2[2]),
+                    (int)Convert.ToInt64(s2[1]),
+                    (int)Convert.ToInt64(s2[0]),
+                    (int)Convert.ToInt64(s3[0]),
+                    (int)Convert.ToInt64(s3[1]),
+                    (int)seconds);
 
-                                var d1 = new DateTime((int)Convert.ToInt64(s2[2]),
-                                    (int)Convert.ToInt64(s2[1]),
-                                    (int)Convert.ToInt64(s2[0]),
-                                    (int)Convert.ToInt64(s3[0]),
-                                    (int)Convert.ToInt64(s3[1]),
-                                    (int)seconds);
-
-                                return new Tuple<DateTime?, Exception?>(d1, null);
-                            }
-                            catch
-                            {
-                                // ignored
-                            }
-                        }
-                    }
-                }
+                return new Tuple<DateTime?, Exception?>(d1, null);
+            }
+            catch
+            {
+                // ignored
             }
         }
         else if (reply.Contains('-'))
@@ -244,11 +244,11 @@ internal static class DateTimeClass
             if (reply[0] >= '0' && reply[0] <= '9')
                 return GetDateTimeFromString2(reply);
 
-            if (reply.StartsWith("un'"))
-            {
-                reply = reply[3..].Trim();
-                return GetDateTimeFromString2(reply);
-            }
+            if (!reply.StartsWith("un'"))
+                return null;
+
+            reply = reply[3..].Trim();
+            return GetDateTimeFromString2(reply);
         }
 
         return null;

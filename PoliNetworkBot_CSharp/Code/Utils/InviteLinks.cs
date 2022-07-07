@@ -36,7 +36,7 @@ internal static class InviteLinks
             if (x1 == null) continue;
             var success = await CreateInviteLinkAsync((long)x1, sender, e);
             if (success != null)
-                switch (success.isNuovo)
+                switch (success.IsNuovo)
                 {
                     case SuccessoGenerazioneLink.NUOVO_LINK:
                     case SuccessoGenerazioneLink.RICICLATO:
@@ -151,7 +151,7 @@ internal static class InviteLinks
                     {
                         var jArray = (JArray)obj;
 
-                        var l = new ListaGruppiTG_Update();
+                        var l = new ListaGruppiTgUpdate();
 
                         var gruppoTGs = new List<GruppoTg?>();
                         foreach (var x in jArray)
@@ -243,7 +243,7 @@ internal static class InviteLinks
     }
 
     private static async Task UpdateLinksFromJson2Async(GruppoTg? gruppoTg, TelegramBotAbstract? sender,
-        MessageEventArgs? e, ListaGruppiTG_Update l)
+        MessageEventArgs? e, ListaGruppiTgUpdate l)
     {
         var result = new GruppoTgUpdate(null, SuccessoGenerazioneLink.ERRORE);
 
@@ -280,7 +280,7 @@ internal static class InviteLinks
                 catch (Exception? ex1)
                 {
                     Logger.Logger.WriteLine(ex1);
-                    var ex1m = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.IdLink + "\n\n" +
+                    var ex1M = "1" + "\n\n" + ex1.Message + "\n\n" + sql1 + "\n\n" + gruppoTg.IdLink + "\n\n" +
                                gruppoTg.Nome + "\n\n" + gruppoTg.NewLink + "\n\n" + gruppoTg.PermanentId;
                     if (sender != null)
                         if (e?.Message != null)
@@ -290,14 +290,14 @@ internal static class InviteLinks
                                     {
                                         {
                                             "it",
-                                            ex1m
+                                            ex1M
                                         }
                                     }),
                                 ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
-                    result.ExceptionMessage = ex1m;
+                    result.ExceptionMessage = ex1M;
                     l.Add(result);
 
                     return;
@@ -363,7 +363,7 @@ internal static class InviteLinks
                     gruppoTg.UpdateId(groupId.Value);
 
                     s3 = await CreateInviteLinkAsync(groupId.Value, sender, e);
-                    if (s3 != null) gruppoTg.UpdateNewLink(s3.link);
+                    if (s3 != null) gruppoTg.UpdateNewLink(s3.Link);
                 }
                 catch (Exception? ex3)
                 {
@@ -402,7 +402,7 @@ internal static class InviteLinks
 
     private static SuccessoGenerazioneLink GetSuccessoGenerazione(NuovoLink? s3)
     {
-        return s3?.isNuovo ?? SuccessoGenerazioneLink.ERRORE;
+        return s3?.IsNuovo ?? SuccessoGenerazioneLink.ERRORE;
     }
 
     private static List<GruppoTg?> RimuoviDuplicati(List<GruppoTg?>? gruppoTGs)

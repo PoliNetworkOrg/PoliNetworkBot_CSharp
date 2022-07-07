@@ -241,7 +241,7 @@ internal static class NotifyUtil
         }
         catch
         {
-            ;
+            // ignored
         }
 
         try
@@ -271,7 +271,7 @@ internal static class NotifyUtil
             long? replyto = null;
             ;
 
-            if (m != null) replyto = m.GetMessageID();
+            if (m != null) replyto = m.GetMessageId();
             await NotifyOwners2Async(text2, sender, 0, langCode, replyto, messageEventArgs);
         }
         catch

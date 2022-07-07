@@ -10,41 +10,41 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class WordToBeFirst
 {
-    private readonly List<string>? similarWords;
-    private readonly string word;
+    private readonly List<string>? _similarWords;
+    private readonly string _word;
 
     public WordToBeFirst(string word)
     {
-        this.word = word;
+        _word = word;
     }
 
     public WordToBeFirst(string word, List<string>? similarWords) : this(word)
     {
-        this.similarWords = similarWords;
+        _similarWords = similarWords;
     }
 
     internal Tuple<bool, string> Matches(string t)
     {
         if (string.IsNullOrEmpty(t))
-            return new Tuple<bool, string>(false, word);
+            return new Tuple<bool, string>(false, _word);
 
-        if (t == word)
-            return new Tuple<bool, string>(true, word);
+        if (t == _word)
+            return new Tuple<bool, string>(true, _word);
 
-        if (similarWords == null || similarWords.Count == 0) return new Tuple<bool, string>(false, word);
+        if (_similarWords == null || _similarWords.Count == 0) return new Tuple<bool, string>(false, _word);
 
-        return similarWords.Any(x => x == t)
-            ? new Tuple<bool, string>(true, word)
-            : new Tuple<bool, string>(false, word);
+        return _similarWords.Any(x => x == t)
+            ? new Tuple<bool, string>(true, _word)
+            : new Tuple<bool, string>(false, _word);
     }
 
     internal bool IsTaken(IEnumerable<string?> taken)
     {
-        return taken.Any(r => r == word);
+        return taken.Any(r => r == _word);
     }
 
     internal string GetWord()
     {
-        return word;
+        return _word;
     }
 }

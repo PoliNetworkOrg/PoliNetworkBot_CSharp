@@ -8,18 +8,18 @@ namespace PoliNetworkBot_CSharp.Code.Objects.WebObject;
 
 internal class WebReply
 {
-    private readonly string? data;
-    private readonly HttpStatusCode statusCode;
+    private readonly string? _data;
+    private readonly HttpStatusCode _statusCode;
 
     public WebReply(string? data, HttpStatusCode statusCode)
     {
-        this.data = data;
-        this.statusCode = statusCode;
+        _data = data;
+        _statusCode = statusCode;
     }
 
     internal bool IsValid()
     {
-        switch (statusCode)
+        switch (_statusCode)
         {
             case HttpStatusCode.Continue:
                 break;
@@ -210,6 +210,6 @@ internal class WebReply
 
     internal string? GetData()
     {
-        return data;
+        return _data;
     }
 }

@@ -154,6 +154,6 @@ internal static class Main
 
         return item2.Count == 0
             ? "[EMPTY]"
-            : item2.Aggregate("", (current, item3) => current + item3.User.Username + " " + item3?.Status + "\n");
+            : item2.Aggregate("", (current, item3) => current + item3.User.Username + " " + item3.Status + "\n");
     }
 }

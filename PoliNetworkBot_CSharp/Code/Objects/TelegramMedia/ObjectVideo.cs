@@ -23,10 +23,10 @@ public class ObjectVideo : GenericMedia
         string? uniqueId, long? messageIdFrom, long chatId, ChatType chatType, int durationVideo)
     {
         _idVideoDb = idVideoDb;
-        _fileId = fileId;
+        FileId = fileId;
         _fileSize = fileSize;
-        _height = height;
-        _width = width;
+        Height = height;
+        Width = width;
         _uniqueId = uniqueId;
         _messageIdFrom = messageIdFrom;
         _chatId = chatId;
@@ -46,12 +46,12 @@ public class ObjectVideo : GenericMedia
 
     public int GetHeight()
     {
-        return _height;
+        return Height;
     }
 
     public int GetWidth()
     {
-        return _width;
+        return Width;
     }
 
     public static TLAbsInputFile? GetTelegramUserBotInputVideo(TelegramClient? userbotClient)

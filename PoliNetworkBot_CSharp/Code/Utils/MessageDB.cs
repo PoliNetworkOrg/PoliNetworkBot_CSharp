@@ -386,7 +386,7 @@ public static class MessageDb
         if (telegramBotAbstract != null)
             return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
                 ParseMode.Html,
-                null, null, r1.GetMessageID(), true);
+                null, null, r1.GetMessageId(), true);
         return null;
     }
 

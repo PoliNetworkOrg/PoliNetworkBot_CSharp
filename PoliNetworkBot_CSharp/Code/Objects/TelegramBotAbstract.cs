@@ -156,7 +156,7 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task<TLChannelClass?> UpgradeGroupIntoSupergroup(long? chatId)
+    internal async Task<TlChannelClass?> UpgradeGroupIntoSupergroup(long? chatId)
     {
         switch (_isbot)
         {
@@ -171,7 +171,7 @@ public class TelegramBotAbstract
                     if (r is TLUpdates { Chats.Count: 2 } r2)
                     {
                         var c1 = r2.Chats[1];
-                        if (c1 is TLChannel c2) return new TLChannelClass(c2);
+                        if (c1 is TLChannel c2) return new TlChannelClass(c2);
                     }
                 }
             }

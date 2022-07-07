@@ -1,7 +1,7 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Objects;
 
-public class Couple<T, S>
+public class Couple<T, TS>
 {
     public T? Item1;
-    public S? Item2;
+    public TS? Item2;
 }

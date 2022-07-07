@@ -71,7 +71,7 @@ internal static class Main
                             return;
                         //await telegramBotAbstract.EditDescriptionChannel(channel, desc);
                         Thread.Sleep(1 * 1000 * 10);
-                        await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel.channel);
+                        await telegramBotAbstract.AddUserIntoChannel("@polinetwork3bot", channel.Channel);
 
                         var admins = new List<TLInputUser>();
 
@@ -91,13 +91,13 @@ internal static class Main
                         foreach (var admin in admins)
                         {
                             Thread.Sleep(1 * 1000 * 10);
-                            await telegramBotAbstract.PromoteChatMember(admin, channel.channel.Id,
-                                channel.channel.AccessHash);
+                            await telegramBotAbstract.PromoteChatMember(admin, channel.Channel.Id,
+                                channel.Channel.AccessHash);
                         }
 
                         Thread.Sleep(1 * 1000 * 10);
-                        var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.channel.Id,
-                            channel.channel.AccessHash);
+                        var link = await telegramBotAbstract.ExportChatInviteLinkAsync(channel.Channel.Id,
+                            channel.Channel.AccessHash);
                         links.Add(link);
                         await using (var sw = File.AppendText(@"C:\Users\eliam\Documents\groupslist.txt"))
                         {
