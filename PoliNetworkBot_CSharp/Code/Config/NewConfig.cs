@@ -316,9 +316,7 @@ public static class NewConfig
         string? inviteLink = null;
 
         foreach (var r6 in r5)
-        {
             if (r6 is JProperty r7)
-            {
                 switch (r7.Name)
                 {
                     case "id":
@@ -341,8 +339,6 @@ public static class NewConfig
                         Logger.WriteLine(r7);
                         break;
                 }
-            }
-        }
 
         return new ChatJson(id, type, title, inviteLink);
     }

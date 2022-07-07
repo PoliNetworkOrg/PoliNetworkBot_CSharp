@@ -64,10 +64,10 @@ internal static class Groups
             if (s1 != null && s1.IsSuccess())
                 return s1;
         }
-        
+
         if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId, username)))
             return new SuccessWithException(true);
-        
+
         return null;
     }
 
@@ -111,8 +111,7 @@ internal static class Groups
                         newTitle = newTitleWithException?.Item1?.Title;
                         var s1 = GroupCheckAndUpdate(indexIdInTable, oldTitle, newTitleWithException,
                             telegramBotAbstract);
-                        r.Add(new ResultFixGroupsName(s1,groupsRow));
-
+                        r.Add(new ResultFixGroupsName(s1, groupsRow));
                     }
                     catch (Exception e2)
                     {
@@ -146,9 +145,7 @@ internal static class Groups
                 var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat, telegramBotClient);
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
-                {
                     GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
-                }
             }
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);

@@ -621,9 +621,9 @@ internal static class CommandDispatcher
             }
             case "/testtime":
             {
-                if (e?.Message == null || e.Message.Chat.Type != ChatType.Private) 
+                if (e?.Message == null || e.Message.Chat.Type != ChatType.Private)
                     return;
-                
+
                 var time = await TestTime(sender, e);
                 Console.WriteLine(time);
 
@@ -891,10 +891,7 @@ internal static class CommandDispatcher
             "UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")",
             LogSeverityLevel.ALERT);
         List<ResultFixGroupsName>? x1 = null;
-        if (updateDb)
-        {
-             x1 = await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
-        }
+        if (updateDb) x1 = await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
 
         var groups = Utils.Groups.GetAllGroups(sender, true);
 
@@ -919,7 +916,7 @@ internal static class CommandDispatcher
         if (dry)
         {
             Logger.WriteLine(await File.ReadAllTextAsync(path));
-            var l = new Language( new Dictionary<string, string?>
+            var l = new Language(new Dictionary<string, string?>
             {
                 { "it", "Dry run completata" },
                 { "en", "Dry run completed" }
@@ -968,7 +965,7 @@ internal static class CommandDispatcher
         _ = NotifyUtil.NotifyOwners(
             "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null);
 
-        var l1 = new Language( text);
+        var l1 = new Language(text);
         return new UpdateGroupsResult(l1, x1);
     }
 

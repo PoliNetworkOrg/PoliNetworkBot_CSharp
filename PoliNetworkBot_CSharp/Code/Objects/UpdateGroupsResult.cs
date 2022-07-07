@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class UpdateGroupsResult
 {
-    private List<ResultFixGroupsName>? _list;
     public readonly Language Language;
+    private List<ResultFixGroupsName>? _list;
+
     public UpdateGroupsResult(Language language, List<ResultFixGroupsName>? x1)
     {
         _list = x1;
-        this.Language = language;
+        Language = language;
     }
 }
