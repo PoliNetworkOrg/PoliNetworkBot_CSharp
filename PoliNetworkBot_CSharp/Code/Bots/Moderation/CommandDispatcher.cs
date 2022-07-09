@@ -812,7 +812,14 @@ internal static class CommandDispatcher
 
             var groups = Utils.Groups.GetGroupsByTitle(query, limit, sender);
 
-            if (groups == null) return null;
+            if (groups == null) 
+                return null;
+            
+            Logger.WriteLine("Groups search (1): " + groups?.Rows.Count);
+
+            if (groups == null)
+                return null;
+            
             var indexTitle = groups.Columns.IndexOf("title");
             var indexLink = groups.Columns.IndexOf("link");
             var buttons = (from DataRow row in groups.Rows
@@ -824,6 +831,8 @@ internal static class CommandDispatcher
             var buttonsMatrix = buttons is { Count: > 0 }
                 ? KeyboardMarkup.ArrayToMatrixString(buttons)
                 : null;
+            
+            Logger.WriteLine("Groups search (2): " + buttonsMatrix?.Count);
 
             var text2 = GetTextSearchResult(limit, buttonsMatrix);
 
