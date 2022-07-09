@@ -17,6 +17,8 @@ public class ReplyMarkupObject
 
     public ReplyMarkupObject(ReplyMarkupOptions? list)
     {
+        if (_list == null)
+            return;
         _list = list;
         _replyMarkupEnum = ReplyMarkupEnum.CHOICE;
     }
@@ -40,16 +42,14 @@ public class ReplyMarkupObject
 
     public IReplyMarkup? GetReplyMarkupBot()
     {
-        if (_list != null)
-            return _replyMarkupEnum switch
-            {
-                ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
-                ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
-                ReplyMarkupEnum.CHOICE => KeyboardMarkupMethod(),
-                ReplyMarkupEnum.INLINE => _inlineKeyboardMarkup,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        return null;
+        return _replyMarkupEnum switch
+        {
+            ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
+            ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
+            ReplyMarkupEnum.CHOICE => KeyboardMarkupMethod(),
+            ReplyMarkupEnum.INLINE => _inlineKeyboardMarkup,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     private IReplyMarkup? KeyboardMarkupMethod()
