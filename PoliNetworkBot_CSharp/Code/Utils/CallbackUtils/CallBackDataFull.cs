@@ -35,7 +35,7 @@ public class CallBackDataFull
         }
         catch
         {
-            ;
+            // ignored
         }
     }
 

@@ -66,20 +66,15 @@ internal static class MainAnon
                 }
                 default:
                 {
-                    ;
                     return;
                 }
             }
 
         await DetectMessageAsync(telegramBotAbstract, e);
-
-        ;
     }
 
     private static async Task DetectMessageAsync(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e)
     {
-        ;
-
         if (telegramBotAbstract != null)
         {
             var botId = telegramBotAbstract.GetId();
@@ -297,8 +292,6 @@ internal static class MainAnon
         var x1 = KeyboardMarkup.ArrayToMatrixString(l2);
         if (x1 != null) options.AddRange(x1);
 
-        ;
-
         var m1 = e?.Message;
         if (m1 != null)
         {
@@ -344,7 +337,6 @@ internal static class MainAnon
         }
         catch (Exception e1)
         {
-            ;
             Logger.WriteLine(e1.Message);
         }
 
@@ -365,7 +357,7 @@ internal static class MainAnon
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
 
                 if (dataAnon.FromTelegram != null && dataAnon.FromTelegram.Value)
@@ -402,7 +394,7 @@ internal static class MainAnon
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
 
                 if (dataAnon.FromTelegram != null && dataAnon.FromTelegram.Value)
@@ -463,8 +455,6 @@ internal static class MainAnon
         if (e.CallbackQuery == null) return null;
         var r2 = e.CallbackQuery.Message?.ReplyToMessage; //todo: fill this with the message to send
 
-        ;
-
         //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
         if (telegramBotAbstract == null) return null;
         var r = await telegramBotAbstract.ForwardMessageAnonAsync(
@@ -479,10 +469,7 @@ internal static class MainAnon
     public static async Task<bool> PlaceMessageInQueue(TelegramBotAbstract? telegramBotAbstract,
         MessageAnonToSendInQueue e, long identity, MessageReply? messageReply)
     {
-        ;
-
         MessageSentResult? x = null;
-        MessageSentResult? m2 = null;
 
         try
         {
@@ -490,8 +477,6 @@ internal static class MainAnon
             {
                 { "it", "Il tuo messaggio è stato correttamente messo in coda. Attendi risposta" }
             });
-
-            ;
 
             if (e.FromTelegram())
             {
@@ -503,8 +488,6 @@ internal static class MainAnon
             {
                 x = await e.SendMessageInQueueAsync(telegramBotAbstract);
             }
-
-            ;
 
             if (x == null && e.FromTelegram())
             {
@@ -530,7 +513,7 @@ internal static class MainAnon
                 {
                     var m5 = e.GetMessage();
                     if (m5 != null)
-                        m2 = await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
+                        await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
                             ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
                             m5.MessageId);
                 }
@@ -539,8 +522,6 @@ internal static class MainAnon
         {
             Console.WriteLine(e1);
         }
-
-        ;
 
         var language = new Language(new Dictionary<string, string?>
         {
@@ -593,7 +574,7 @@ internal static class MainAnon
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;

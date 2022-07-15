@@ -53,7 +53,7 @@ internal static class AskUser
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
@@ -83,10 +83,7 @@ internal static class AskUser
                 replyToMessageId: messageIdToReplyTo);
         }
 
-        ;
-
         var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
-        ;
         UserAnswers.Delete(idUser, botId);
         return result;
     }

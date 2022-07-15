@@ -362,7 +362,7 @@ internal static class ModerationCheck
 
         if (isForeign)
             return SpamType.FOREIGN;
-        
+
         var spamType1 = Blacklist.IsSpam(e?.Message?.Text, e?.Message?.Chat.Id, telegramBotClient, true);
         var spamType2 = Blacklist.IsSpam(e?.Message?.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
@@ -374,15 +374,15 @@ internal static class ModerationCheck
         var message = e?.Message;
         if (message == null)
             return false;
-        
+
         var from1 = message.From;
         var chat = message.Chat;
-        return chat.Type == ChatType.Private || from1 != null &&
-            (from1.Id == 777000 || from1.Id == chat.Id || from1.Id == chat.Id ||
-             CheckIfIsInList(GlobalVariables.AllowedSpam, from1) || 
-             CheckIfIsInList(GlobalVariables.Creators, from1) ||
-             CheckIfIsInList(GlobalVariables.SubCreators, from1) || 
-             CheckIfIsInList(GlobalVariables.Owners, from1));
+        return chat.Type == ChatType.Private || (from1 != null &&
+                                                 (from1.Id == 777000 || from1.Id == chat.Id || from1.Id == chat.Id ||
+                                                  CheckIfIsInList(GlobalVariables.AllowedSpam, from1) ||
+                                                  CheckIfIsInList(GlobalVariables.Creators, from1) ||
+                                                  CheckIfIsInList(GlobalVariables.SubCreators, from1) ||
+                                                  CheckIfIsInList(GlobalVariables.Owners, from1)));
     }
 
     private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e,

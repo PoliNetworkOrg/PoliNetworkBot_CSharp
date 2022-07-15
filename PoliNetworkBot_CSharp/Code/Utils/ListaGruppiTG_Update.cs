@@ -43,11 +43,7 @@ internal class ListaGruppiTgUpdate
                          "PermanentId: " + StringNotNullFromLong(l2.GruppoTg.PermanentId) + "\n" +
                          "OldLink: " + "[";
 
-                if (l2.GruppoTg.OldLinks.Count == 0)
-                {
-                    ;
-                }
-                else
+                if (l2.GruppoTg.OldLinks.Count != 0)
                 {
                     var s4 = l2.GruppoTg.OldLinks.Aggregate("", (current, l3) => current + "'" + l3 + "',");
                     s4 = s4.Remove(s4.Length - 1);

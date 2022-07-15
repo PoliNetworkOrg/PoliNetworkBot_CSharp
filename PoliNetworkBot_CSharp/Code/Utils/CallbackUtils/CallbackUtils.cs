@@ -58,7 +58,7 @@ public static class CallbackUtils
             }
             catch
             {
-                ;
+                // ignored
             }
 
             Thread.Sleep(1000 * 60 * 60 * 24); //every day
