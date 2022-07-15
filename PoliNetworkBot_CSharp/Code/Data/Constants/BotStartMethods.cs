@@ -18,7 +18,7 @@ public static class BotStartMethods
     public static readonly Tuple<string, int> Material = new("mat", 4);
     public static readonly Tuple<string, int> Admin = new("ad", 5);
 
-    internal static ActionMessageEvent? GetMethodFromString(string? s)
+    internal static ActionMessageEvent GetMethodFromString(string? s)
     {
         Action<object?, MessageEventArgs?>? x = null;
         if (s == Moderation.Item1)

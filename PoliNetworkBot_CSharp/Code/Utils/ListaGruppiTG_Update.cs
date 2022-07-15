@@ -12,19 +12,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal class ListaGruppiTgUpdate
 {
-    private List<GruppoTgUpdate> _l = new();
+    private readonly List<GruppoTgUpdate> _l = new();
 
     internal int Count()
     {
-        _l ??= new List<GruppoTgUpdate>();
-
         return _l.Count;
     }
 
     internal void Add(GruppoTgUpdate tuple)
     {
-        _l ??= new List<GruppoTgUpdate>();
-
         _l.Add(tuple);
     }
 
@@ -75,7 +71,7 @@ internal class ListaGruppiTgUpdate
         return st;
     }
 
-    private static string? StringNotNullFromBool(bool? query2Fallita)
+    private static string StringNotNullFromBool(bool? query2Fallita)
     {
         if (query2Fallita == null) return StringNotNull(null);
 
@@ -97,8 +93,6 @@ internal class ListaGruppiTgUpdate
 
     internal int GetCount_Filtered(SuccessoGenerazioneLink successoGenerazione)
     {
-        _l ??= new List<GruppoTgUpdate>();
-
         return _l.Where(x => x.SuccessoGenerazioneLink == successoGenerazione).ToList().Count;
     }
 }

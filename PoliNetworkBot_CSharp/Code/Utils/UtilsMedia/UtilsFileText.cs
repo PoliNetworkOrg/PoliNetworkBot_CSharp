@@ -17,7 +17,7 @@ internal static class UtilsFileText
         return telegramFile;
     }
 
-    public static Stream? GenerateStreamFromString(string s)
+    public static Stream GenerateStreamFromString(string s)
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);

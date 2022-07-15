@@ -12,11 +12,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class DictionaryUserAnswer
 {
-    private readonly Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>> _d;
+    private readonly Dictionary<long, AnswerWithTask> _d;
 
     public DictionaryUserAnswer()
     {
-        _d = new Dictionary<long, Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>>();
+        _d = new Dictionary<long, AnswerWithTask>();
     }
 
     internal void Reset(long? idUser, long? botId)
@@ -25,32 +25,29 @@ public class DictionaryUserAnswer
             return;
 
         if (!_d.ContainsKey(idUser.Value))
-            _d[idUser.Value] = new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>();
+            _d[idUser.Value] = new AnswerWithTask();
+        
+        if (botId == null)
+            return;
+        
+        _d[idUser.Value].InitializeIfKeyNotPresent(botId.Value);
 
-        _d[idUser.Value] ??= new Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>>();
-        if (botId == null) return;
-        if (!_d[idUser.Value].ContainsKey(botId.Value))
-            _d[idUser.Value][botId.Value] = new Couple<AnswerTelegram, TaskCompletionSource<string?>?>();
 
-        _d[idUser.Value][botId.Value] ??= new Couple<AnswerTelegram, TaskCompletionSource<string?>?>();
-
-        _d[idUser.Value][botId.Value].Item1 = null;
-        _d[idUser.Value][botId.Value].Item1 = new AnswerTelegram();
-        var answerTelegram = _d[idUser.Value][botId.Value].Item1;
+        _d[idUser.Value].ResetItem1(botId.Value);
+        var answerTelegram = _d[idUser.Value].GetItem1(botId.Value);
         answerTelegram?.Reset();
     }
 
     internal void Delete(long? idUser, long? botId)
     {
         if (botId == null || idUser == null) return;
-        _d[idUser.Value][botId.Value].Item1 = null;
-        _d[idUser.Value][botId.Value].Item2 = null;
+        _d[idUser.Value].Delete(botId.Value);
     }
 
     internal void SetAnswerProcessed(long idUser, long? botId, bool v)
     {
         if (botId == null) return;
-        var answerTelegram = _d[idUser][botId.Value].Item1;
+        var answerTelegram = _d[idUser].GetItem1(botId.Value);
         answerTelegram?.SetAnswerProcessed(v);
     }
 
@@ -59,7 +56,7 @@ public class DictionaryUserAnswer
     {
         if (botId == null) return;
 
-        var answerTelegram = _d[idUser][botId.Value].Item1;
+        var answerTelegram = _d[idUser].GetItem1(botId.Value);
         if (answerTelegram != null)
             // ReSharper disable once AsyncVoidLambda
             answerTelegram.WorkCompleted += async result =>
@@ -96,7 +93,7 @@ public class DictionaryUserAnswer
                     crashed = false;
                     if (botId != null)
                     {
-                        var taskCompletionSource = _d[idUser][botId.Value].Item2;
+                        var taskCompletionSource = _d[idUser].GetItem2(botId.Value);
                         var done = taskCompletionSource != null && taskCompletionSource.TrySetResult(resultstring);
                         Console.WriteLine("Task" + idUser + " " + botId.Value + " " + done);
                     }
@@ -110,14 +107,14 @@ public class DictionaryUserAnswer
 
         if (crashed)
             if (botId != null)
-                _d[idUser][botId.Value].Item2?.TrySetResult("");
+                _d[idUser].GetItem2(botId.Value)?.TrySetResult("");
     }
 
     internal TaskCompletionSource<string?>? GetNewTcs(long idUser, long? botId)
     {
         if (botId == null) return null;
-        _d[idUser][botId.Value].Item2 = new TaskCompletionSource<string?>();
-        return _d[idUser][botId.Value].Item2;
+        _d[idUser].ResetItem2(botId.Value);
+        return _d[idUser].GetItem2(botId.Value);
     }
 
     internal bool ContainsUser(long? userId, long? botId)
@@ -130,15 +127,15 @@ public class DictionaryUserAnswer
     internal AnswerTelegram.State? GetState(long? userId, long? botId)
     {
         if (botId == null || userId == null) return null;
-        if (_d[userId.Value][botId.Value].Item1 == null) return null;
-        var answerTelegram = _d[userId.Value][botId.Value].Item1;
+        if (_d[userId.Value].GetItem1(botId.Value) == null) return null;
+        var answerTelegram = _d[userId.Value].GetItem1(botId.Value);
         return answerTelegram?.GetState();
     }
 
     internal void RecordAnswer(long? userId, long? botId, string? text)
     {
         if (botId == null || userId == null) return;
-        var answerTelegram = _d[userId.Value][botId.Value].Item1;
+        var answerTelegram = _d[userId.Value].GetItem1(botId.Value);
         answerTelegram?.RecordAnswer(text);
     }
 }

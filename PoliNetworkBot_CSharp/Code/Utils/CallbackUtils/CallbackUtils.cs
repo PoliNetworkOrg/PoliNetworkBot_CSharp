@@ -66,7 +66,7 @@ public static class CallbackUtils
         // ReSharper disable once FunctionNeverReturns
     }
 
-    private static ReplyMarkupObject? GetReplyMarkupObject(CallbackGenericData callbackGenericData, string? key)
+    private static ReplyMarkupObject GetReplyMarkupObject(CallbackGenericData callbackGenericData, string? key)
     {
         var x2 = callbackGenericData.Options.Select((option, i1) => new List<InlineKeyboardButton>
             { new(option.displayed) { CallbackData = key + Separator + i1 } }).ToList();

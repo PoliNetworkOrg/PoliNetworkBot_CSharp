@@ -17,7 +17,7 @@ public static class HashUtils
         return hash;
     }
 
-    private static string? ByteArrayToString(byte[] arrInput)
+    private static string ByteArrayToString(byte[] arrInput)
     {
         int i;
         var sOutput = new StringBuilder(arrInput.Length);

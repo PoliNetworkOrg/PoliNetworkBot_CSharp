@@ -64,7 +64,7 @@ public static class GroupsFixLog
         _countIgnored = 0;
     }
 
-    private static string? HandleNewTitleNull(Dictionary<long, KeyValuePair<string?, Exception?>> newNull)
+    private static string HandleNewTitleNull(Dictionary<long, KeyValuePair<string?, Exception?>> newNull)
     {
         var toReturn = "";
         var exceptionTypes = new List<Type>();
@@ -108,7 +108,7 @@ public static class GroupsFixLog
 
     public static void OldNull(string newTitle)
     {
-        _oldNull.Add(newTitle ?? "[NULL VALUE]");
+        _oldNull.Add(newTitle);
     }
 
     public static void NameChange(string? oldTitle, string? newTitle)
