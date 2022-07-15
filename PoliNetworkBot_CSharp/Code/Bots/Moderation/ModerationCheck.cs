@@ -338,21 +338,8 @@ internal static class ModerationCheck
 
     public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
-        var from1 = e?.Message?.From;
-        switch (e?.Message)
-        {
-            case { Chat.Type: ChatType.Private }:
-            case { From: { }, Chat: { } }
-                when from1 is { Id: 777000 } ||
-                     (from1 != null && from1.Id == e.Message.Chat.Id):
-                return SpamType.ALL_GOOD;
-        }
-
-        var from = e?.Message?.From;
-        if (from != null && (CheckIfIsInList(GlobalVariables.AllowedSpam, from) ||
-                             CheckIfIsInList(GlobalVariables.Creators, from) ||
-                             CheckIfIsInList(GlobalVariables.SubCreators, from) ||
-                             CheckIfIsInList(GlobalVariables.Owners, from)))
+        var checkIfHeIsAllowedResult = CheckIfHeIsAllowedSpam(e);
+        if (checkIfHeIsAllowedResult)
             return SpamType.ALL_GOOD;
 
         var isSpamStored = await CheckIfSpamStored(e, telegramBotClient);
@@ -362,7 +349,7 @@ internal static class ModerationCheck
         if (string.IsNullOrEmpty(e?.Message?.Text))
         {
             var s1 = SpamTypeUtil.Merge(
-                Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat?.Id, telegramBotClient, false),
+                Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat.Id, telegramBotClient, false),
                 Blacklist.IsSpam(e?.Message?.Photo));
             if (s1 != null)
                 return s1.Value;
@@ -376,10 +363,26 @@ internal static class ModerationCheck
         if (isForeign)
             return SpamType.FOREIGN;
         
-        var spamType1 = Blacklist.IsSpam(e?.Message?.Text, e?.Message?.Chat?.Id, telegramBotClient, true);
+        var spamType1 = Blacklist.IsSpam(e?.Message?.Text, e?.Message?.Chat.Id, telegramBotClient, true);
         var spamType2 = Blacklist.IsSpam(e?.Message?.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;
+    }
+
+    private static bool CheckIfHeIsAllowedSpam(MessageEventArgs? e)
+    {
+        var message = e?.Message;
+        if (message == null)
+            return false;
+        
+        var from1 = message.From;
+        var chat = message.Chat;
+        return chat.Type == ChatType.Private || from1 != null &&
+            (from1.Id == 777000 || from1.Id == chat.Id || from1.Id == chat.Id ||
+             CheckIfIsInList(GlobalVariables.AllowedSpam, from1) || 
+             CheckIfIsInList(GlobalVariables.Creators, from1) ||
+             CheckIfIsInList(GlobalVariables.SubCreators, from1) || 
+             CheckIfIsInList(GlobalVariables.Owners, from1));
     }
 
     private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e,
