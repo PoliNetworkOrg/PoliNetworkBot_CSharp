@@ -718,6 +718,7 @@ internal static class Program
             emojiReaction: "😎", messageId: 8, Telegram.Bot.Types.Enums.ChatType.Group);
         */
 
+        // ReSharper disable once ConvertToConstant.Local
         var done = true;
         _ = GlobalVariables.Bots?[userId];
         //Objects.TelegramMedia.GenericFile media = new Objects.TelegramMedia.Contact("+39 1234567890", "Mario", "Rossi", null);

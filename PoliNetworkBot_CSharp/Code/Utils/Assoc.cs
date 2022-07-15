@@ -315,7 +315,7 @@ internal static class Assoc
         }
         catch
         {
-            ;
+            // ignored
         }
 
         if (index == null) return true;
