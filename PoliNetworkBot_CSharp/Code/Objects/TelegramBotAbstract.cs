@@ -560,7 +560,8 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task EditText(ChatId chatId, int messageId, string newText)
+    internal async Task EditText(ChatId chatId, int messageId, string newText,
+        InlineKeyboardMarkup inlineKeyboardMarkup)
     {
         switch (_isbot)
         {

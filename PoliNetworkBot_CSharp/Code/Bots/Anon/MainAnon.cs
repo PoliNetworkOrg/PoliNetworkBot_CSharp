@@ -35,13 +35,10 @@ internal static class MainAnon
 
         if (e.Message.Chat.Type != ChatType.Private) return;
 
-        TelegramBotClient? telegramBotClient = null;
-        if (sender is TelegramBotClient t2)
-            telegramBotClient = t2;
-        else
+        if (sender is not TelegramBotClient t2)
             return;
 
-        var telegramBotAbstract = TelegramBotAbstract.GetFromRam(telegramBotClient);
+        var telegramBotAbstract = TelegramBotAbstract.GetFromRam(t2);
 
         if (string.IsNullOrEmpty(e.Message.Text))
         {
@@ -333,7 +330,7 @@ internal static class MainAnon
                 if (dataAnon.Bot != null)
                     await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
                         dataAnon.CallBackQueryFromTelegram.Message.MessageId,
-                        "Hai scelto [" + dataAnon.GetResultEnum() + "]");
+                        "Hai scelto [" + dataAnon.GetResultEnum() + "]", replyMarkup);
         }
         catch (Exception e1)
         {
