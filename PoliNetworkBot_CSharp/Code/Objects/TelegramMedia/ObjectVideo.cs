@@ -54,7 +54,7 @@ public class ObjectVideo : GenericMedia
         return Width;
     }
 
-    public static TLAbsInputFile GetTelegramUserBotInputVideo(TelegramClient? userbotClient)
+    public static TLAbsInputFile? GetTelegramUserBotInputVideo(TelegramClient? userbotClient)
     {
         throw new NotImplementedException();
     }

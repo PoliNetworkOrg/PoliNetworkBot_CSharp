@@ -70,7 +70,7 @@ internal static class Main
                 if (e?.Message != null)
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
                         await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
-                //todo: send message "Bots not allowed here!"
+            //todo: send message "Bots not allowed here!"
 
 
             if (BanMessageDetected(e, telegramBotClient))

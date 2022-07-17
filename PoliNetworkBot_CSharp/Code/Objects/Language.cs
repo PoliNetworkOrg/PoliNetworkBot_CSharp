@@ -37,10 +37,7 @@ public class Language
             return null;
 
         var keys = _dict.Keys.ToList();
-        foreach (var key in keys.Where(key => key.Contains(lang)))
-        {
-            return this._dict[key];
-        }
+        foreach (var key in keys.Where(key => key.Contains(lang))) return _dict[key];
 
         if (_dict.ContainsKey("en"))
             return _dict["en"];

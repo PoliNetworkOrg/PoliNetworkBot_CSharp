@@ -9,8 +9,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class LeaveChat
 {
-    internal static async Task ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
+    internal static async Task<bool> ExitFromChat(TelegramBotAbstract sender, MessageEventArgs e)
     {
-        if (e.Message != null) await sender.LeaveChatAsync(e.Message.Chat.Id);
+        return e.Message != null && await sender.LeaveChatAsync(e.Message.Chat.Id);
     }
 }

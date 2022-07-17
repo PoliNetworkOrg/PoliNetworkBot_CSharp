@@ -11,7 +11,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 public class GruppoTg
 {
     private readonly DateTime? _lastUpdateInviteLinkTimeDateTime;
-    private readonly string? _lastUpdateInviteLinkTimeString;
     public readonly string? Nome;
     public readonly List<string?> OldLinks;
     public string? IdLink;
@@ -35,9 +34,9 @@ public class GruppoTg
 
         try
         {
-            _lastUpdateInviteLinkTimeString = lastUpdateInviteLinkTime?.ToString();
-            if (_lastUpdateInviteLinkTimeString != null && !_lastUpdateInviteLinkTimeString.Contains(' ')) return;
-            var s1 = _lastUpdateInviteLinkTimeString?.Split(' ');
+            var lastUpdateInviteLinkTimeString = lastUpdateInviteLinkTime?.ToString();
+            if (lastUpdateInviteLinkTimeString != null && !lastUpdateInviteLinkTimeString.Contains(' ')) return;
+            var s1 = lastUpdateInviteLinkTimeString?.Split(' ');
             if (s1 == null) return;
             var s2 = s1[0]; //2021-06-30
             var s3 = s1[1]; //22:12:06.399

@@ -66,12 +66,12 @@ internal static class ThreadAsync
             }
     }
 
-    private static async Task IterationAsync2Async(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
+    private static async Task<bool> IterationAsync2Async(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
     {
-        await IterationAsync(bot, messageEventArgs);
+        return await IterationAsync(bot, messageEventArgs);
     }
 
-    private static async Task IterationAsync(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
+    private static async Task<bool> IterationAsync(TelegramBotAbstract? bot, MessageEventArgs? messageEventArgs)
     {
         try
         {
@@ -82,7 +82,8 @@ internal static class ThreadAsync
             urlFinal += "&random=" + randomstring;
 
             var x = await Web.DownloadHtmlAsync(urlFinal);
-            if (x.IsValid() == false) return;
+            if (x.IsValid() == false)
+                return false;
 
             var data = x.GetData();
 
@@ -90,8 +91,10 @@ internal static class ThreadAsync
         }
         catch (Exception? e)
         {
-            await ExceptionNumbered.SendExceptionAsync(e, bot, messageEventArgs);
+            return await ExceptionNumbered.SendExceptionAsync(e, bot, messageEventArgs);
         }
+
+        return true;
     }
 
     private static void DoThingsAsyncBotAsync2(string? data)

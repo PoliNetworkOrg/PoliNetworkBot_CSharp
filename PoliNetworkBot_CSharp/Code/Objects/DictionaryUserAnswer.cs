@@ -26,10 +26,10 @@ public class DictionaryUserAnswer
 
         if (!_d.ContainsKey(idUser.Value))
             _d[idUser.Value] = new AnswerWithTask();
-        
+
         if (botId == null)
             return;
-        
+
         _d[idUser.Value].InitializeIfKeyNotPresent(botId.Value);
 
 
