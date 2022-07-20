@@ -55,7 +55,7 @@ public class StoredMessage
                 break;
         }
 
-        return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 1 &&
+        return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 2 &&
                (FromUserId.Count <= 1 || (FromUserId.Count > 1 && message.Length > 10))
             ? IsSpam2()
             : SpamType.UNDEFINED;
@@ -65,7 +65,7 @@ public class StoredMessage
     {
         if (LastSeenTime == null)
             return SpamType.UNDEFINED;
-
+        
         var diff = LastSeenTime.Value - InsertedTime;
         var average = diff.TotalSeconds / HowManyTimesWeSawIt;
 
