@@ -65,7 +65,7 @@ public class StoredMessage
     {
         if (LastSeenTime == null)
             return SpamType.UNDEFINED;
-        
+
         var diff = LastSeenTime.Value - InsertedTime;
         var average = diff.TotalSeconds / HowManyTimesWeSawIt;
 

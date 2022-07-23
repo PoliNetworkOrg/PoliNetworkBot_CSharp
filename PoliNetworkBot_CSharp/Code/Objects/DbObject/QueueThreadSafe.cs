@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 public class QueueThreadSafe
 {
-    private readonly string _connString;
     private readonly Queue<MySqlConnectionWithLock> _available;
+    private readonly string _connString;
+
     public QueueThreadSafe(string getConnectionString)
     {
         _connString = getConnectionString;
@@ -17,12 +22,8 @@ public class QueueThreadSafe
     {
         lock (this)
         {
-            if (_available.Count == 0)
-            {
-                _available.Enqueue(new MySqlConnectionWithLock(_connString));
-            }
+            if (_available.Count == 0) _available.Enqueue(new MySqlConnectionWithLock(_connString));
             return _available.Dequeue();
-          
         }
     }
 

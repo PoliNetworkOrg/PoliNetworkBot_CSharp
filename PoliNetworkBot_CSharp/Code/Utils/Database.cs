@@ -51,7 +51,6 @@ public static class Database
         var ret = new DataSet();
         lock (connectionWithLock.Lock)
         {
-
             var cmd = new MySqlCommand(query, connection);
 
             if (args != null)
@@ -65,10 +64,9 @@ public static class Database
                 SelectCommand = cmd
             };
 
-  
 
             adapter.Fill(ret);
-            
+
             adapter.Dispose();
         }
 
@@ -79,7 +77,7 @@ public static class Database
 
     private static void OpenConnection(IDbConnection connection)
     {
-        if (connection.State != ConnectionState.Open) 
+        if (connection.State != ConnectionState.Open)
             connection.Open();
     }
 
