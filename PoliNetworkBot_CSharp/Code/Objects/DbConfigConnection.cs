@@ -1,7 +1,7 @@
 ﻿#region
 
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 #endregion
 
@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 public class DbConfigConnection
 {
     private readonly DbConfig _dbConfig;
-    private MySqlConnection? _mySqlConnection;
+    private QueueThreadSafe? _mySqlConnection;
 
     public DbConfigConnection(DbConfig? dbConfig)
     {
@@ -18,17 +18,22 @@ public class DbConfigConnection
         _dbConfig = dbConfig;
     }
 
-    public MySqlConnection GetMySqlConnection()
+    public MySqlConnectionWithLock GetMySqlConnection()
     {
         if (_mySqlConnection != null)
-            return _mySqlConnection;
+            return _mySqlConnection.GetFirstAvailable();
 
-        _mySqlConnection = new MySqlConnection(_dbConfig.GetConnectionString());
-        return _mySqlConnection;
+        _mySqlConnection = new QueueThreadSafe(_dbConfig.GetConnectionString());
+        return _mySqlConnection.GetFirstAvailable();
     }
 
     public DbConfig GetDbConfig()
     {
         return _dbConfig;
+    }
+
+    public void ReleaseConn(MySqlConnectionWithLock connectionWithLock)
+    {
+        _mySqlConnection?.ReleaseConn(connectionWithLock);
     }
 }

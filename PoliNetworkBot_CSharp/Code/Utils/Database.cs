@@ -20,18 +20,23 @@ public static class Database
 
         if (dbConfigConnection == null)
             return 0;
-        var connection = dbConfigConnection.GetMySqlConnection();
+        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
+        var connection = connectionWithLock.Conn;
+        int numberOfRowsAffected;
+        lock (connectionWithLock.Lock)
+        {
+            var cmd = new MySqlCommand(query, connection);
 
-        var cmd = new MySqlCommand(query, connection);
+            OpenConnection(connection);
 
-        OpenConnection(connection);
+            if (args != null)
+                foreach (var (key, value) in args)
+                    cmd.Parameters.AddWithValue(key, value);
 
-        if (args != null)
-            foreach (var (key, value) in args)
-                cmd.Parameters.AddWithValue(key, value);
+            numberOfRowsAffected = cmd.ExecuteNonQuery();
+        }
 
-        var numberOfRowsAffected = cmd.ExecuteNonQuery();
-
+        dbConfigConnection.ReleaseConn(connectionWithLock);
         return numberOfRowsAffected;
     }
 
@@ -41,33 +46,41 @@ public static class Database
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         if (dbConfigConnection == null) return null;
-        var connection = dbConfigConnection.GetMySqlConnection();
-
-        var cmd = new MySqlCommand(query, connection);
-
-        if (args != null)
-            foreach (var (key, value) in args)
-                cmd.Parameters.AddWithValue(key, value);
-
-        OpenConnection(connection);
-
-        var adapter = new MySqlDataAdapter
-        {
-            SelectCommand = cmd
-        };
-
+        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
+        var connection = connectionWithLock.Conn;
         var ret = new DataSet();
+        lock (connectionWithLock.Lock)
+        {
 
-        adapter.Fill(ret);
+            var cmd = new MySqlCommand(query, connection);
 
-        adapter.Dispose();
+            if (args != null)
+                foreach (var (key, value) in args)
+                    cmd.Parameters.AddWithValue(key, value);
 
+            OpenConnection(connection);
+
+            var adapter = new MySqlDataAdapter
+            {
+                SelectCommand = cmd
+            };
+
+  
+
+            adapter.Fill(ret);
+            
+            adapter.Dispose();
+        }
+
+
+        dbConfigConnection.ReleaseConn(connectionWithLock);
         return ret.Tables[0];
     }
 
     private static void OpenConnection(IDbConnection connection)
     {
-        if (connection.State != ConnectionState.Open) connection.Open();
+        if (connection.State != ConnectionState.Open) 
+            connection.Open();
     }
 
     internal static object? GetFirstValueFromDataTable(DataTable? dt)
