@@ -18,32 +18,19 @@ public class Language
 
     public string? Select(string? lang)
     {
-        if (_dict == null)
+        if (_dict == null || _dict.Keys.Count == 0)
             return null;
 
         if (string.IsNullOrEmpty(lang))
         {
-            if (_dict.Keys.Count == 0)
-                return null;
-
-            var d2 = _dict.Keys.First();
-            return _dict[d2];
+            return _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
         }
 
         if (_dict.ContainsKey(lang))
             return _dict[lang];
 
-        if (_dict.Keys.Count == 0)
-            return null;
-
-        var keys = _dict.Keys.ToList();
-        foreach (var key in keys.Where(key => key.Contains(lang))) return _dict[key];
-
-        if (_dict.ContainsKey("en"))
-            return _dict["en"];
-
-        var d = _dict.Keys.First();
-        return _dict[d];
+        var key2 = _dict.Keys.ToList().Where(key => key.Contains(lang)).FirstOrDefault(key => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(_dict[key]), null);
+        return !string.IsNullOrEmpty(key2) ? _dict[key2] : _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
     }
 
     public static bool EqualsLang(string? aValue, Language bLanguage, string? languageOfB)
