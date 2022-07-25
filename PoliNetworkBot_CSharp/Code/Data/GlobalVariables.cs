@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -25,6 +26,7 @@ public static class GlobalVariables
     public static List<long>? ExcludedChatsForBot;
     public static List<long>? NoUsernameCheckInThisChats;
     public static List<string>? AllowedTags;
+    public static Dictionary<long, DateTime>? UsernameWarningDictSent;
 
     private static bool _alreadyLoaded;
 
