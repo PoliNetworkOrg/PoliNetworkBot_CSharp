@@ -35,7 +35,14 @@ internal static class CommandDispatcher
     {
         string?[]? cmdLines = e?.Message?.Text?.Split(' ');
         var cmd = cmdLines?[0]?.Trim();
-        if (cmd?.Contains('@') ?? false)
+
+        if (string.IsNullOrEmpty(cmd))
+        {
+            await DefaultCommand(sender, e);
+            return;
+        }
+        
+        if (cmd.Contains('@'))
         {
             var cmd2 = cmd.Split("@");
             if (sender != null)
@@ -1183,14 +1190,15 @@ internal static class CommandDispatcher
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    private static async Task<object> BanUserHistoryAsync(TelegramBotAbstract sender, long idGroup)
+    private static async Task<List<long>> BanUserHistoryAsync(TelegramBotAbstract sender, long idGroup)
 #pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
 #pragma warning restore CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
     {
         const string? queryForBannedUsers =
             "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target = B2.target) and banned_true_unbanned_false = 83";
         var bannedUsers = Database.ExecuteSelect(queryForBannedUsers, sender.DbConfig);
-        if (bannedUsers == null) return true;
+        if (bannedUsers == null) 
+            return new List<long>();
         var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
         var bannedUsersIdArray = bannedUsersId.Select(user =>
         {
@@ -1198,7 +1206,7 @@ internal static class CommandDispatcher
             return r1 != null ? long.Parse(r1) : 0;
         }).ToList();
 
-        return true;
+        return bannedUsersIdArray;
     }
 
     /*
