@@ -137,6 +137,32 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
             }
+        
+        if ((text.Contains("cento") || text.Contains("100")) &&
+            text.Contains("maturità") && (text.Contains("esonero") || text.Contains("sconto") || text.Contains("tasse")))
+        {
+            var text2 = new Language(new Dictionary<string, string?>
+            {
+                {
+                    "it",
+                    "No."
+                },
+                {
+                    "en",
+                    "No."
+                }
+            });
+            if (e?.Message != null)
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e.Message.From?.LanguageCode,
+                    text2,
+                    e,
+                    e.Message.Chat.Id,
+                    e.Message.Chat.Type,
+                    ParseMode.Html,
+                    e.Message.MessageId,
+                    true);
+        }
 
         if (text.Contains("esiste un gruppo"))
         {
