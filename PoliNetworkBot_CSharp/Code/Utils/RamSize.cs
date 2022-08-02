@@ -42,7 +42,7 @@ public static class RamSize
 
             if (!_ramUsedStatic.InferioreDi(ramUsed) && firstTime == false) return;
 
-            var message = "Ram size " + ramUsed;
+            var message = "#ramsize " + ramUsed;
             Logger.Logger.WriteLine(message);
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
                 new Language(
