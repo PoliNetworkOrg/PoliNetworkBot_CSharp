@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class RamSize
 {
-    private static RamUsed? _ramUsedStatic;
+    private static RamUsedCollection? _ramUsedStatic;
 
     [SuppressMessage("ReSharper", "FunctionNeverReturns")]
     public static async Task CheckRamSizeThread()
@@ -37,15 +37,11 @@ public static class RamSize
             var ramUsed2 = GC.GetTotalMemory(true);
             var ramUsed = new RamUsed(procPrivateMemorySize64, ramUsed2);
             var firstTime = _ramUsedStatic == null;
-            _ramUsedStatic ??= ramUsed;
+            _ramUsedStatic ??= new RamUsedCollection();
+            _ramUsedStatic.Append(ramUsed);
 
-            if (!_ramUsedStatic.InferioreDi(ramUsed) && firstTime == false)
-            {
-                _ramUsedStatic = ramUsed;
-                return;
-            }
+            if (!_ramUsedStatic.InferioreDi(ramUsed) && firstTime == false) return;
 
-            _ramUsedStatic = ramUsed;
             var message = "Ram size " + ramUsed;
             Logger.Logger.WriteLine(message);
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
@@ -62,24 +58,66 @@ public static class RamSize
     }
 }
 
-internal class RamUsed
+internal class RamUsedCollection
 {
-    private readonly long _ram1;
-    private readonly long _ram2;
+    private const int Limit = 100;
+    private readonly List<RamUsed> _ramUseds;
 
-    public RamUsed(long ramUsed1, long ramUsed2)
+    public RamUsedCollection()
     {
-        _ram1 = ramUsed1;
-        _ram2 = ramUsed2;
-    }
-
-    public override string ToString()
-    {
-        return _ram1 + " " + _ram2;
+        _ramUseds = new List<RamUsed>();
     }
 
     public bool InferioreDi(RamUsed ramUsed)
     {
-        return _ram1 * 1.2d < ramUsed._ram1 || _ram2 * 1.2d < ramUsed._ram2;
+        return _ramUseds.Count == 0 || _ramUseds[^1].InferioreDi(ramUsed) || MediaInferiore(ramUsed);
+    }
+
+    private bool MediaInferiore(RamUsed ramUsed)
+    {
+        if (_ramUseds.Count == 0)
+            return true;
+
+        var last = _ramUseds[^1];
+        var media = new RamUsed(last.Ram1, last.Ram2);
+        for (var i = 0; i < _ramUseds.Count - 1; i++)
+        {
+            media.Ram1 += _ramUseds[i].Ram1;
+            media.Ram2 += _ramUseds[i].Ram2;
+        }
+
+        media.Ram1 /= _ramUseds.Count;
+        media.Ram2 /= _ramUseds.Count;
+
+        return media.InferioreDi(ramUsed);
+    }
+
+    public void Append(RamUsed ramUsed)
+    {
+        if (_ramUseds.Count >= Limit) _ramUseds.RemoveAt(0);
+
+        _ramUseds.Add(ramUsed);
+    }
+}
+
+internal class RamUsed
+{
+    internal long Ram1;
+    internal long Ram2;
+
+    public RamUsed(long ramUsed1, long ramUsed2)
+    {
+        Ram1 = ramUsed1;
+        Ram2 = ramUsed2;
+    }
+
+    public override string ToString()
+    {
+        return Ram1 + " " + Ram2;
+    }
+
+    public bool InferioreDi(RamUsed ramUsed)
+    {
+        return Ram1 * 1.2d < ramUsed.Ram1 || Ram2 * 1.2d < ramUsed.Ram2;
     }
 }
