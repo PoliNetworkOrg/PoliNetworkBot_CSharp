@@ -137,9 +137,10 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
             }
-        
+
         if ((text.Contains("cento") || text.Contains("100")) &&
-            text.Contains("maturità") && (text.Contains("esonero") || text.Contains("sconto") || text.Contains("tasse")))
+            text.Contains("maturità") &&
+            (text.Contains("esonero") || text.Contains("sconto") || text.Contains("tasse")))
         {
             var text2 = new Language(new Dictionary<string, string?>
             {

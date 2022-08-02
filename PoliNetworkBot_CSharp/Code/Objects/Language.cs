@@ -22,15 +22,16 @@ public class Language
             return null;
 
         if (string.IsNullOrEmpty(lang))
-        {
             return _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
-        }
 
         if (_dict.ContainsKey(lang))
             return _dict[lang];
 
-        var key2 = _dict.Keys.ToList().Where(key => key.Contains(lang)).FirstOrDefault(key => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(_dict[key]), null);
-        return !string.IsNullOrEmpty(key2) ? _dict[key2] : _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
+        var key2 = _dict.Keys.ToList().Where(key => key.Contains(lang))
+            .FirstOrDefault(key => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(_dict[key]), null);
+        return !string.IsNullOrEmpty(key2)
+            ? _dict[key2]
+            : _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
     }
 
     public static bool EqualsLang(string? aValue, Language bLanguage, string? languageOfB)

@@ -41,7 +41,7 @@ internal static class CommandDispatcher
             await DefaultCommand(sender, e);
             return;
         }
-        
+
         if (cmd.Contains('@'))
         {
             var cmd2 = cmd.Split("@");
@@ -1197,7 +1197,7 @@ internal static class CommandDispatcher
         const string? queryForBannedUsers =
             "SELECT * from Banned as B1 WHERE when_banned >= (SELECT MAX(B2.when_banned) from Banned as B2 where B1.target = B2.target) and banned_true_unbanned_false = 83";
         var bannedUsers = Database.ExecuteSelect(queryForBannedUsers, sender.DbConfig);
-        if (bannedUsers == null) 
+        if (bannedUsers == null)
             return new List<long>();
         var bannedUsersId = bannedUsers.Rows[bannedUsers.Columns.IndexOf("target")].ItemArray;
         var bannedUsersIdArray = bannedUsersId.Select(user =>
