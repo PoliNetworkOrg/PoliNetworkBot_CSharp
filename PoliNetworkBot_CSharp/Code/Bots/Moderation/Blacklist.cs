@@ -121,6 +121,13 @@ internal static class Blacklist
             (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
             return SpamType.NOT_ALLOWED_WORDS;
 
+        if (text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
+            text.Contains("spam"))
+        {
+            await NotifyUtil.NotifyOwners(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
+            return SpamType.NOT_ALLOWED_WORDS;
+        }
+
         return SpamType.ALL_GOOD;
     }
 
