@@ -167,7 +167,8 @@ public static class AutoReplyInGroups
 
         if (e is { Message: { } } && e.Message.Chat.Title != null &&
             e.Message.Chat.Title.ToLower().Contains("matricole"))
-            if (text.Contains("link") && text.Contains("whatsapp") && text.Contains("grupp"))
+            if ((text.Contains("link") || text.Contains("esiste")) && text.Contains("whatsapp") &&
+                text.Contains("grupp"))
             {
                 var text2 = new Language(new Dictionary<string, string?>
                 {
