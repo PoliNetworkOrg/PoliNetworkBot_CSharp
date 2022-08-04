@@ -165,6 +165,34 @@ public static class AutoReplyInGroups
                     true);
         }
 
+        if (e is { Message: { } } && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole"))
+        {
+            if ((text.Contains("link") && text.Contains("whatsapp") && text.Contains(("grupp"))))
+            {
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    {
+                        "it",
+                        "Controlla il messaggio fissato"
+                    },
+                    {
+                        "en",
+                        "Check the pinned message."
+                    }
+                });
+                if (e.Message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From?.LanguageCode,
+                        text2,
+                        e,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
+            }
+        }
+
         if (text.Contains("esiste un gruppo"))
         {
             var text2 = new Language(
