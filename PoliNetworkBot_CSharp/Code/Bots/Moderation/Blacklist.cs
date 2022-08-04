@@ -1,8 +1,10 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -17,8 +19,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
-    internal static SpamType IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract,
-        bool toLogMistakes)
+    internal static async Task<SpamType> IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract,
+        bool toLogMistakes, MessageEventArgs? messageEventArgs)
     {
         if (string.IsNullOrEmpty(text))
             return SpamType.ALL_GOOD;
@@ -28,14 +30,16 @@ internal static class Blacklist
         words = splitBy.Aggregate(words, SplitTextBy);
 
         if (words is not { Count: > 0 })
-            return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
+            return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, messageEventArgs) ==
+                   SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId, toLogMistakes);
         var words2 = words.ToList().Select(x => x?.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
         if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
-        return CheckNotAllowedWords(text, groupId) == SpamType.NOT_ALLOWED_WORDS
+        return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, messageEventArgs) ==
+               SpamType.NOT_ALLOWED_WORDS
             ? SpamType.NOT_ALLOWED_WORDS
             : CheckForFormatMistakes(text, groupId, toLogMistakes);
     }
@@ -87,7 +91,8 @@ internal static class Blacklist
         return SpamType.ALL_GOOD;
     }
 
-    private static SpamType CheckNotAllowedWords(string? text, long? groupId)
+    private static async Task<SpamType> CheckNotAllowedWords(string? text, long? groupId,
+        TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
         text = text?.ToLower();
 

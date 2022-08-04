@@ -165,9 +165,9 @@ public static class AutoReplyInGroups
                     true);
         }
 
-        if (e is { Message: { } } && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole"))
-        {
-            if ((text.Contains("link") && text.Contains("whatsapp") && text.Contains(("grupp"))))
+        if (e is { Message: { } } && e.Message.Chat.Title != null &&
+            e.Message.Chat.Title.ToLower().Contains("matricole"))
+            if (text.Contains("link") && text.Contains("whatsapp") && text.Contains("grupp"))
             {
                 var text2 = new Language(new Dictionary<string, string?>
                 {
@@ -191,7 +191,6 @@ public static class AutoReplyInGroups
                         e.Message.MessageId,
                         true);
             }
-        }
 
         if (text.Contains("esiste un gruppo"))
         {
