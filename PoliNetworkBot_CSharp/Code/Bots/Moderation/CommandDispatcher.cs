@@ -1383,10 +1383,10 @@ internal static class CommandDispatcher
     private static async Task<MessageSentResult?> Rules(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         const string text = "Ecco le regole!\n" +
-                            "https://polinetwork.github.io/it/rules";
+                            "https://polinetwork.org/it/rules";
 
         const string textEng = "Here are the rules!\n" +
-                               "https://polinetwork.github.io/en/rules";
+                               "https://polinetwork.org/en/rules";
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -1723,7 +1723,7 @@ internal static class CommandDispatcher
         const string text = "<i>Lista di funzioni</i>:\n" +
                             //"\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
                             //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
-                            "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                            "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
                             "FAQ (domande frequenti)</a>\n" +
                             "\n🏫 Ricerca aule libere /rooms\n" +
                             //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
@@ -1735,7 +1735,7 @@ internal static class CommandDispatcher
         const string textEng = "<i>List of features</i>:\n" +
                                //"\n📑 Review system of courses (for more info /help_review)\n" +
                                //"\n🔖 Link to notes (for more info /help_material)\n" +
-                               "\n🙋 <a href='https://polinetwork.github.io/it/faq/index.html'>" +
+                               "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
                                "FAQ (frequently asked questions)</a>\n" +
                                "\n🏫 Find free rooms /rooms\n" +
                                //"\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
