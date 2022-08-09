@@ -78,8 +78,8 @@ internal static class ThreadAsync
             const string url = "https://spottedpolimi.altervista.org/s/getposts.php?password=";
 
             var urlFinal = url + ConfigAnon.Password;
-            var randomstring = GenerateRandomString(30);
-            urlFinal += "&random=" + randomstring;
+            var randomString = GenerateRandomString(30);
+            urlFinal += "&random=" + randomString;
 
             var x = await Web.DownloadHtmlAsync(urlFinal);
             if (x.IsValid() == false)
