@@ -127,8 +127,8 @@ internal static class Blacklist
             await NotifyUtil.NotifyOwners(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
             return SpamType.NOT_ALLOWED_WORDS;
         }
-        
-        if (text != null && groupId != null && (text.Contains("google") && text.Contains("whatsapp")) &&
+
+        if (text != null && groupId != null && text.Contains("google") && text.Contains("whatsapp") &&
             text.Contains("application") && text.Contains("link"))
         {
             await NotifyUtil.NotifyOwners(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
