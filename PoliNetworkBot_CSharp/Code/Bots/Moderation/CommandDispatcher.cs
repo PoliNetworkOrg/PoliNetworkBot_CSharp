@@ -164,12 +164,32 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                if (GlobalVariables.AllowedBanAll != null &&
-                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
-                        true);
-                else
+                if ((GlobalVariables.AllowedBanAll == null ||
+                     !GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From))) &&
+                    (GlobalVariables.Owners == null ||
+                     !GlobalVariables.Owners.ToList().Any(x => x.Matches(e.Message?.From))))
+                {
                     await DefaultCommand(sender, e);
+                    return;
+                }
+
+                _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    true);
+                return;
+            }
+
+            case "/del":
+            {
+                var reply = e?.Message?.ReplyToMessage;
+                if (reply == null || sender == null||((GlobalVariables.AllowedBanAll == null || !GlobalVariables.AllowedBanAll.ToList()
+                        .Any(x => e != null && x.Matches(e.Message?.From))) && (GlobalVariables.Owners == null ||
+                        !GlobalVariables.Owners.ToList().Any(x => e != null && x.Matches(e.Message?.From)))))
+                {
+                    await DefaultCommand(sender, e);
+                    return;
+                }
+                
+                await sender.DeleteMessageAsync(reply.Chat.Id, reply.MessageId, null);
                 return;
             }
 
