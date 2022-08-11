@@ -174,11 +174,11 @@ public static class AutoReplyInGroups
                 {
                     {
                         "it",
-                        "Controlla il messaggio fissato"
+                        "Controlla i messaggi fissati"
                     },
                     {
                         "en",
-                        "Check the pinned message."
+                        "Check the pinned messages."
                     }
                 });
                 if (e.Message != null)
