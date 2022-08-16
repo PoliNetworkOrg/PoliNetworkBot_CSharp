@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -43,6 +43,9 @@ internal static class Main
             if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
             if (telegramBotClientBot == null)
+                return;
+
+            if (e?.Message == null)
                 return;
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
