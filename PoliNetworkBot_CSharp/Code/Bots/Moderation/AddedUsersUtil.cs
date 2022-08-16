@@ -1,14 +1,20 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 public static class AddedUsersUtil
 {
-    public static async Task DealWithAddedUsers(TelegramBotAbstract? telegramBotClient, MessageEventArgs? messageEventArgs)
+    public static async Task DealWithAddedUsers(TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? messageEventArgs)
     {
         try
         {
@@ -21,15 +27,12 @@ public static class AddedUsersUtil
 
             var chatId = messageEventArgs.Message.Chat.Id;
             if (chatId == AutoReplyInGroups.ExcludedGroups[SpecialGroup.PIANO_DI_STUDI])
-            {
-                await Utils.RestrictUser.TryMuteUsers(telegramBotClient, messageEventArgs, added,
+                await RestrictUser.TryMuteUsers(telegramBotClient, messageEventArgs, added,
                     TimeSpan.FromMinutes(5));
-            }
         }
         catch
         {
             //ignored
         }
-
     }
 }

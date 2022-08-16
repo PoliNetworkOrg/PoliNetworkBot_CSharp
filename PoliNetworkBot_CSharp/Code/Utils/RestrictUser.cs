@@ -17,7 +17,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class RestrictUser
 {
-    internal static async Task Mute(int timeInSeconds, TelegramBotAbstract? telegramBotClient, long chatId, long? userId,
+    internal static async Task Mute(int timeInSeconds, TelegramBotAbstract? telegramBotClient, long chatId,
+        long? userId,
         ChatType chatType, RestrictAction restrictAction)
     {
         var untilDate = DateTime.Now.AddSeconds(timeInSeconds);
@@ -432,14 +433,15 @@ internal static class RestrictUser
         return null;
     }
 
-    public static async Task TryMuteUsers(TelegramBotAbstract telegramBotClient, MessageEventArgs messageEventArgs, IEnumerable<User> added, TimeSpan fromMinutes)
+    public static async Task TryMuteUsers(TelegramBotAbstract telegramBotClient, MessageEventArgs messageEventArgs,
+        IEnumerable<User> added, TimeSpan fromMinutes)
     {
         foreach (var user in added)
-        {
             try
             {
                 if (messageEventArgs.Message != null)
-                    await Mute((int)fromMinutes.TotalSeconds, telegramBotClient, messageEventArgs.Message.Chat.Id, user.Id,
+                    await Mute((int)fromMinutes.TotalSeconds, telegramBotClient, messageEventArgs.Message.Chat.Id,
+                        user.Id,
                         messageEventArgs.Message.Chat.Type,
                         RestrictAction.MUTE);
             }
@@ -447,6 +449,5 @@ internal static class RestrictUser
             {
                 // ignored
             }
-        }
     }
 }
