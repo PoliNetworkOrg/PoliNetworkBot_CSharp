@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -55,9 +55,9 @@ internal static class Main
                 var itemToPrint = MemberListToString(toExit.Item2);
                 var itemToPrint2 = ListIntToString(toExit.Item3);
                 var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                var itemToPrintFull = itemToPrint + "\n" + e?.Message?.Chat.Title;
+                var itemToPrintFull = itemToPrint + "\n" + e.Message?.Chat.Title;
                 itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                itemToPrintFull += "\n----\n" + e?.Message?.Chat.Id;
+                itemToPrintFull += "\n----\n" + e.Message?.Chat.Id;
                 itemToPrintFull += "\n@@@@@@";
 
                 await Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
@@ -70,13 +70,14 @@ internal static class Main
             var notAuthorizedBotHasBeenAddedBool =
                 await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
             if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
-                if (e?.Message != null)
+                if (e.Message != null)
                 {
                     foreach (var bot in notAuthorizedBotHasBeenAddedBool)
                         await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
                     //todo: send message "Bots not allowed here!"
                 }
 
+            await AddedUsersUtil.DealWithAddedUsers(telegramBotClient, e);
 
             if (BanMessageDetected(e, telegramBotClient))
             {
@@ -102,7 +103,7 @@ internal static class Main
                 return;
             }
 
-            if (e?.Message?.Text != null && e.Message.Text.StartsWith("/"))
+            if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
                 await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             else
                 await TextConversation.DetectMessage(telegramBotClient, e);
