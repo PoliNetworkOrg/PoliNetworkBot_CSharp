@@ -11,10 +11,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class TargetUserObject
 {
-    private string? _username;
+    private const string TargetNullString = "[target null]";
     private long? _userId;
+    private string? _username;
 
-    public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs)
+    public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs)
     {
         var target = stringInfo?[1];
         SetStartParam(target);
@@ -25,7 +27,7 @@ public class TargetUserObject
 
         var usernameFrom = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
         if (!string.IsNullOrEmpty(usernameFrom))
-            this._username = usernameFrom;
+            _username = usernameFrom;
 
         _ = TryGetUserId(sender);
     }
@@ -44,8 +46,6 @@ public class TargetUserObject
             _username = s;
         }
     }
-
-    private const string TargetNullString = "[target null]";
 
     public string GetTargetHtmlString()
     {
@@ -88,7 +88,7 @@ public class TargetUserObject
     {
         if (_userId != null)
             return;
-        
+
         var i2 = await Info.GetIdFromUsernameAsync(_username, telegramBotAbstract);
         var idFound = i2?.GetId();
         if (idFound != null) _userId = idFound;

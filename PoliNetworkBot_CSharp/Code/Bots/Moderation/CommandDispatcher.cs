@@ -1690,7 +1690,6 @@ internal static class CommandDispatcher
     }
 
 
-
     private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var text2 = new Language(new Dictionary<string, string?>
