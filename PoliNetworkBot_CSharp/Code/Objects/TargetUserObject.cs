@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
 
@@ -10,10 +11,26 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class TargetUserObject
 {
-    private readonly string? _username;
+    private string? _username;
     private long? _userId;
 
-    public TargetUserObject(string? s)
+    public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs)
+    {
+        var target = stringInfo?[1];
+        SetStartParam(target);
+
+        var fromId = messageEventArgs?.Message?.ReplyToMessage?.From?.Id;
+        if (fromId != null)
+            _userId = fromId;
+
+        var usernameFrom = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
+        if (!string.IsNullOrEmpty(usernameFrom))
+            this._username = usernameFrom;
+
+        _ = TryGetUserId(sender);
+    }
+
+    private void SetStartParam(string? s)
     {
         if (string.IsNullOrEmpty(s))
             return;
@@ -27,6 +44,8 @@ public class TargetUserObject
             _username = s;
         }
     }
+
+    private const string TargetNullString = "[target null]";
 
     public string GetTargetHtmlString()
     {
@@ -43,10 +62,10 @@ public class TargetUserObject
         }
         else
         {
-            target = "[target null]";
+            target = TargetNullString;
         }
 
-        return target ?? "";
+        return target ?? TargetNullString;
     }
 
     private string? GetUsernameWithAt()
@@ -67,6 +86,9 @@ public class TargetUserObject
 
     private async Task TryGetUserId(TelegramBotAbstract? telegramBotAbstract)
     {
+        if (_userId != null)
+            return;
+        
         var i2 = await Info.GetIdFromUsernameAsync(_username, telegramBotAbstract);
         var idFound = i2?.GetId();
         if (idFound != null) _userId = idFound;

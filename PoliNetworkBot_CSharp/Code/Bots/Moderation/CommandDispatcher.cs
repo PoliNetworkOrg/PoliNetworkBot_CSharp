@@ -1482,7 +1482,7 @@ internal static class CommandDispatcher
 
         if (e?.Message?.ReplyToMessage == null)
         {
-            var targetUserObject = new TargetUserObject(stringInfo?[1]);
+            var targetUserObject = new TargetUserObject(stringInfo, sender, e);
             var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
             var targetEmpty = await userIdFound.UserIdEmpty(sender);
             if (targetEmpty)
@@ -1553,7 +1553,8 @@ internal static class CommandDispatcher
         var d1 = GetDateTime(target);
         try
         {
-            await BanAllUnbanAllMethod1Async(ban, GetFinalTargetForRestrictAll(target), e, sender, lang,
+            var targetUserObject = new TargetUserObject(target, sender, e);
+            await BanAllUnbanAllMethod1Async(ban, targetUserObject, e, sender, lang,
                 username,
                 d1?.GetValue(), revokeMessage);
             return new SuccessWithException(true, d1?.GetExceptions());
@@ -1688,11 +1689,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static TargetUserObject GetFinalTargetForRestrictAll(IReadOnlyList<string?>? target)
-    {
-        var result = new TargetUserObject(target?[1]);
-        return result;
-    }
+
 
     private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
