@@ -19,9 +19,9 @@ internal class BanUnbanAllResult
         _failed = failed;
     }
 
-    internal Language? GetLanguage(RestrictAction banTrueUnbanFalse, string? target1, long nExceptions)
+    internal Language? GetLanguage(RestrictAction banTrueUnbanFalse, TargetUserObject target1, long nExceptions)
     {
-        var target = "<a href=\"tg://user?id=" + target1 + "\">" + target1 + "</a>";
+        var target = target1.GetTargetHtmlString();
         switch (banTrueUnbanFalse)
         {
             case RestrictAction.UNBAN:

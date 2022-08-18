@@ -282,7 +282,7 @@ internal static class NotifyUtil
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
         RestrictAction restrictAction, Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done,
-        string? finalTarget,
+        TargetUserObject finalTarget,
         string? reason)
     {
         try

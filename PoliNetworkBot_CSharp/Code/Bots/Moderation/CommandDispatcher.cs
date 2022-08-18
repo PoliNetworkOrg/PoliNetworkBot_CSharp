@@ -1482,15 +1482,17 @@ internal static class CommandDispatcher
 
         if (e?.Message?.ReplyToMessage == null)
         {
-            var userIdFound = await Info.GetTargetUserIdAsync(stringInfo?[1], sender);
-            if (userIdFound == null)
+            var targetUserObject = new TargetUserObject(stringInfo?[1]);
+            var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
+            var targetEmpty = await userIdFound.UserIdEmpty(sender);
+            if (targetEmpty)
             {
                 var e2 = new Exception("Can't find userid (1)");
                 await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
                 return new SuccessWithException(false, e2);
             }
 
-            var targetId = userIdFound.GetId();
+            var targetId = userIdFound.GetUserId();
             if (targetId != null && e?.Message != null)
                 return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);
@@ -1593,11 +1595,12 @@ internal static class CommandDispatcher
     }
 
     private static async Task BanAllUnbanAllMethod1Async(RestrictAction restrictAction,
-        string? finalTarget,
+        TargetUserObject finalTarget,
         MessageEventArgs? e, TelegramBotAbstract? sender, string? lang, string? username, DateTime? until,
         bool? revokeMessage)
     {
-        if (string.IsNullOrEmpty(finalTarget))
+        var targetEmpty = await finalTarget.UserIdEmpty(sender);
+        if (targetEmpty)
         {
             var lang2 = new Language(new Dictionary<string, string?>
             {
@@ -1685,9 +1688,10 @@ internal static class CommandDispatcher
         }
     }
 
-    private static string? GetFinalTargetForRestrictAll(IReadOnlyList<string?>? target)
+    private static TargetUserObject GetFinalTargetForRestrictAll(IReadOnlyList<string?>? target)
     {
-        return target?[1];
+        var result = new TargetUserObject(target?[1]);
+        return result;
     }
 
     private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)

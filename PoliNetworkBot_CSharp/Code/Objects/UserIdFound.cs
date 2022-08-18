@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Objects;
 
-internal class UserIdFound
+public class UserIdFound
 {
     private readonly long? _i;
     private readonly string? _v;
