@@ -290,7 +290,8 @@ internal static class CommandDispatcher
                     if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
                     {
-                        Reboot();
+                        RebootWithLog(sender, e);
+        
                         return;
                     }
 
@@ -623,8 +624,7 @@ internal static class CommandDispatcher
                 if (message != null && Owners.CheckIfOwner(e?.Message?.From?.Id) &&
                     message.Chat.Type == ChatType.Private)
                 {
-                    Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
-
+                    GetLog(sender, e);
                     return;
                 }
 
@@ -747,6 +747,25 @@ internal static class CommandDispatcher
                 return;
             }
         }
+    }
+
+    private static void GetLog(TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
+    }
+
+    private static void RebootWithLog(TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        try
+        {
+            GetLog(sender, e);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        Reboot();
     }
 
     private static async Task AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
