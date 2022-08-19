@@ -21,13 +21,15 @@ public class TargetUserObject
         var target = stringInfo?[1];
         SetStartParam(target);
 
-        var fromId = messageEventArgs?.Message?.ReplyToMessage?.From?.Id;
-        if (fromId != null)
-            _userId = fromId;
+        var fromIdReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Id;
+        var fromIdAction = messageEventArgs?.Message?.From?.Id;
+        if (fromIdReply != null && fromIdAction != null && fromIdAction != fromIdReply)
+            _userId = fromIdReply;
 
-        var usernameFrom = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
-        if (!string.IsNullOrEmpty(usernameFrom))
-            _username = usernameFrom;
+        var usernameFromReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
+        var usernameFromAction = messageEventArgs?.Message?.From?.Username;
+        if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) && usernameFromAction != usernameFromReply)
+            _username = usernameFromReply;
 
         _ = TryGetUserId(sender);
     }
