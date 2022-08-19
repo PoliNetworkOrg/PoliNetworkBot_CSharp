@@ -167,30 +167,21 @@ public static class AutoReplyInGroups
 
         if (e is { Message: { } } && e.Message.Chat.Title != null &&
             e.Message.Chat.Title.ToLower().Contains("matricole"))
+        {
+            if ((text.Contains("qualcun") || text.Contains("sa") || text.Contains("notiz"))
+                && (text.Contains("lezion")) 
+                && (text.Contains("online") || text.Contains("registrazion") || text.Contains("streaming")))
+            {
+                await CheckPinnedMessages(telegramBotClient, e);
+            }
+        }
+
+        if (e is { Message: { } } && e.Message.Chat.Title != null &&
+            e.Message.Chat.Title.ToLower().Contains("matricole"))
             if ((text.Contains("link") || text.Contains("esiste")) && text.Contains("whatsapp") &&
                 text.Contains("grupp"))
             {
-                var text2 = new Language(new Dictionary<string, string?>
-                {
-                    {
-                        "it",
-                        "Controlla i messaggi fissati"
-                    },
-                    {
-                        "en",
-                        "Check the pinned messages."
-                    }
-                });
-                if (e.Message != null)
-                    await SendMessage.SendMessageInAGroup(telegramBotClient,
-                        e.Message.From?.LanguageCode,
-                        text2,
-                        e,
-                        e.Message.Chat.Id,
-                        e.Message.Chat.Type,
-                        ParseMode.Html,
-                        e.Message.MessageId,
-                        true);
+                await CheckPinnedMessages(telegramBotClient, e);
             }
 
         if (text.Contains("esiste un gruppo"))
@@ -291,5 +282,30 @@ public static class AutoReplyInGroups
                         message.MessageId,
                         true);
             }
+    }
+
+    private static async Task CheckPinnedMessages(TelegramBotAbstract? telegramBotClient, MessageEventArgs e)
+    {
+        var text2 = new Language(new Dictionary<string, string?>
+        {
+            {
+                "it",
+                "Controlla i messaggi fissati"
+            },
+            {
+                "en",
+                "Check the pinned messages."
+            }
+        });
+        if (e.Message != null)
+            await SendMessage.SendMessageInAGroup(telegramBotClient,
+                e.Message.From?.LanguageCode,
+                text2,
+                e,
+                e.Message.Chat.Id,
+                e.Message.Chat.Type,
+                ParseMode.Html,
+                e.Message.MessageId,
+                true);
     }
 }
