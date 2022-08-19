@@ -294,7 +294,7 @@ public static class AutoReplyInGroups
             },
             {
                 "en",
-                "Check the pinned messages."
+                "Check the pinned messages"
             }
         });
         if (e.Message != null)
