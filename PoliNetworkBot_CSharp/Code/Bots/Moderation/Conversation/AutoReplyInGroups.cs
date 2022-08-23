@@ -164,17 +164,54 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
         }
-
-        if (e is { Message: { } } && e.Message.Chat.Title != null &&
-            e.Message.Chat.Title.ToLower().Contains("matricole"))
+        
+        if (text.Contains("quando") 
+            && (text.Contains("presentare") || text.Contains("compilare") || text.Contains("modificare")) 
+            && (text.Contains("piano studi") || text.Contains("piano di studi")))
         {
-            if ((text.Contains("qualcun") || text.Contains("sa") || text.Contains("notiz"))
-                && (text.Contains("lezion")) 
-                && (text.Contains("online") || text.Contains("registrazion") || text.Contains("streaming")))
+            var text2 = new Language(new Dictionary<string, string?>
             {
-                await CheckPinnedMessages(telegramBotClient, e);
-            }
+                {
+                    "it",
+                    "Ciao, forse la risposta è qui https://faq.polinetwork.org/?id=2&cat=1"
+                }
+            });
+            if (e?.Message != null)
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e.Message.From?.LanguageCode,
+                    text2,
+                    e,
+                    e.Message.Chat.Id,
+                    e.Message.Chat.Type,
+                    ParseMode.Html,
+                    e.Message.MessageId,
+                    true);
         }
+
+
+        if ((text.Contains("qualcun") || text.Contains("sa") || text.Contains("notiz"))
+            && (text.Contains("lezion")) 
+            && (text.Contains("online") || text.Contains("registrazion") || text.Contains("streaming")))
+        {
+            var text2 = new Language(new Dictionary<string, string?>
+            {
+                {
+                    "it",
+                    "Ciao, forse la risposta è qui https://faq.polinetwork.org/?id=1&lang=it&cat=3"
+                }
+            });
+            if (e?.Message != null)
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e.Message.From?.LanguageCode,
+                    text2,
+                    e,
+                    e.Message.Chat.Id,
+                    e.Message.Chat.Type,
+                    ParseMode.Html,
+                    e.Message.MessageId,
+                    true);
+        }
+        
 
         if (e is { Message: { } } && e.Message.Chat.Title != null &&
             e.Message.Chat.Title.ToLower().Contains("matricole"))
