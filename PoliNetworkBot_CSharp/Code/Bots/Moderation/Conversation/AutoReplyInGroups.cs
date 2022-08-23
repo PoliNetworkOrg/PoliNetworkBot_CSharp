@@ -190,7 +190,7 @@ public static class AutoReplyInGroups
 
 
         if ((text.Contains("qualcun") || text.Contains("sa") || text.Contains("notiz"))
-            && (text.Contains("lezion")) 
+            && text.Contains("lezion") 
             && (text.Contains("online") || text.Contains("registrazion") || text.Contains("streaming")))
         {
             var text2 = new Language(new Dictionary<string, string?>
