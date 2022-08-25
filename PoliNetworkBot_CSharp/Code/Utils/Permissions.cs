@@ -59,7 +59,7 @@ internal static class Permissions
                 .ToList());
         var headAdminsNotRen = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "headadmins_notrenewed", 1);
         if (headAdminsNotRen is { Count: 0 }) return false;
-        var headAdminsNotRenInner = HtmlUtil.GetElementsByTagAndClassName(headAdmins?[0], "li");
+        var headAdminsNotRenInner = HtmlUtil.GetElementsByTagAndClassName(headAdminsNotRen?[0], "li");
         if (headAdminsNotRenInner != null)
             authorizedUsernames.AddRange(headAdminsNotRenInner.Select(x => x?.InnerHtml.Replace(" ", "")
                     .Replace("\r", "")
