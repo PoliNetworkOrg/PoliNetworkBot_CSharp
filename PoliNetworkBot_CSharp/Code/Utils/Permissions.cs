@@ -57,6 +57,16 @@ internal static class Permissions
                     .Split(@"https://t.me/")[1]
                     .Split(@""">")[0])
                 .ToList());
+        var headAdminsNotRen = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "headadmins_notrenewed", 1);
+        if (headAdminsNotRen is { Count: 0 }) return false;
+        var headAdminsNotRenInner = HtmlUtil.GetElementsByTagAndClassName(headAdmins?[0], "li");
+        if (headAdminsNotRenInner != null)
+            authorizedUsernames.AddRange(headAdminsNotRenInner.Select(x => x?.InnerHtml.Replace(" ", "")
+                    .Replace("\r", "")
+                    .Replace("\n", "")
+                    .Split(@"https://t.me/")[1]
+                    .Split(@""">")[0])
+                .ToList());
         return messageFrom?.Username != null && authorizedUsernames.Any(username =>
             string.Equals(messageFrom.Username, username, StringComparison.CurrentCultureIgnoreCase));
     }
