@@ -51,7 +51,7 @@ internal static class TextConversation
         var text = e.Message.Text.ToLower();
         var title = e.Message?.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
-            await AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
+            AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
     }
 
     private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)

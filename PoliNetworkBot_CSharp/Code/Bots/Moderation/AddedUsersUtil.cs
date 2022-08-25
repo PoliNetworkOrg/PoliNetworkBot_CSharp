@@ -6,6 +6,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
 #endregion
 
@@ -26,7 +27,7 @@ public static class AddedUsersUtil
                 return;
 
             var chatId = messageEventArgs.Message.Chat.Id;
-            if (chatId == AutoReplyInGroups.ExcludedGroups[SpecialGroup.PIANO_DI_STUDI])
+            if (Groups.PianoDiStudi.Equals(chatId))
                 await RestrictUser.TryMuteUsers(telegramBotClient, messageEventArgs, added,
                     TimeSpan.FromMinutes(5));
         }
