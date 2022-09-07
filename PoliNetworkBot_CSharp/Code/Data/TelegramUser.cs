@@ -42,4 +42,9 @@ public class TelegramUser
             _ => Id == userIdParam
         };
     }
+
+    public bool Matches(long userIdParam)
+    {
+        return Id == userIdParam;
+    }
 }

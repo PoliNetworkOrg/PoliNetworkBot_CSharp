@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
@@ -55,10 +57,21 @@ public class StoredMessage
                 break;
         }
 
+        
+        if (FromUserId.All(Innocuo))
+        {
+            return SpamType.ALL_GOOD;
+        }
+        
         return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 2 &&
                (FromUserId.Count <= 1 || (FromUserId.Count > 1 && message.Length > 10))
             ? IsSpam2()
             : SpamType.UNDEFINED;
+    }
+
+    private bool Innocuo(long e)
+    {
+        return GlobalVariables.IsAdmin(e) || GroupsIdItHasBeenSentInto.Any(groupId => e == groupId);
     }
 
     private SpamType IsSpam2()

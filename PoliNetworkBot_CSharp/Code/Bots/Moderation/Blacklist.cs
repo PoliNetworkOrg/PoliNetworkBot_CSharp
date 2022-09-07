@@ -91,6 +91,13 @@ internal static class Blacklist
         return SpamType.ALL_GOOD;
     }
 
+    private static readonly List<long> SpecialGroups = new() { -1001361547847, -452591994, -1001320704409 };
+    private static readonly List<string> BannedWords = new List<string>()
+    {
+        
+        "porcodio","dioporco","diocane", "negro", "negri", "negra","negre"
+    };
+
     private static async Task<SpamType> CheckNotAllowedWords(string? text, long? groupId,
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
@@ -98,44 +105,39 @@ internal static class Blacklist
 
         var s = text?.Split(' ');
         if (s != null)
-            foreach (var s2 in s)
+            if (s.Select(RemoveUselessCharacters).Any(s3 => s3 != null && BannedWords.Contains(s3)))
             {
-                var s3 = RemoveUselessCharacters(s2);
-
-                if (!string.IsNullOrEmpty(s3))
-                    switch (s3)
-                    {
-                        case "porcodio":
-                        case "dioporco":
-                        case "diocane":
-                        case "negro":
-                        case "negri":
-                        case "negra":
-                        case "negre":
-                            return SpamType.NOT_ALLOWED_WORDS;
-                    }
+                return SpamType.NOT_ALLOWED_WORDS;
             }
 
-        var specialGroups = new List<long> { -1001361547847, -452591994, -1001320704409 };
-        if (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
-            (text.Contains("guadagn") || text.Contains("rischio")) && specialGroups.All(group => groupId != group))
+        
+        if (Bitcoin(text, groupId))
             return SpamType.NOT_ALLOWED_WORDS;
 
-        if (text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
-            text.Contains("spam"))
+        // ReSharper disable once InvertIf
+        if (ChiedoScusa(text, groupId))
         {
             await NotifyUtil.NotifyOwners(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
             return SpamType.NOT_ALLOWED_WORDS;
         }
 
-        if (text != null && groupId != null && text.Contains("google") && text.Contains("whatsapp") &&
-            text.Contains("application") && text.Contains("link"))
-        {
-            await NotifyUtil.NotifyOwners(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
-            return SpamType.NOT_ALLOWED_WORDS;
-        }
-
+    
+        //all good!
         return SpamType.ALL_GOOD;
+    }
+
+    private static bool Bitcoin(string? text, long? groupId)
+    {
+        return (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
+                (text.Contains("guadagn") || text.Contains("rischio")) && SpecialGroups.All(group => groupId != group));
+    }
+
+    private static bool ChiedoScusa(string? text, long? groupId)
+    {
+        return ((text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
+                 text.Contains("spam")) || (text != null && groupId != null && text.Contains("google") &&
+                                            text.Contains("whatsapp") &&
+                                            text.Contains("application") && text.Contains("link")));
     }
 
     private static string? RemoveUselessCharacters(string s3)

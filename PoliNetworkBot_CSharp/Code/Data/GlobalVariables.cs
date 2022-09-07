@@ -156,4 +156,12 @@ public static class GlobalVariables
     {
         return Owners != null && Owners.Any(x => x.Id == id);
     }
+
+    public static bool IsAdmin(long id)
+    {
+        return (Owners != null && Owners.Any(x => x.Id == id))
+               || (Creators != null && Creators.Any(x => x.Id == id))
+               || (SubCreators != null && SubCreators.Any(x => x.Id == id))
+               || (AllowedSpam != null && AllowedSpam.Any(x => x.Id == id));
+    }
 }
