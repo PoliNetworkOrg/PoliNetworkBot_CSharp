@@ -405,9 +405,13 @@ internal static class ModerationCheck
         {
             case SpamType.SPAM_LINK:
             {
-                if (eMessage.Text != null)
-                    await DeleteMessage.TryDeleteMessagesAsync(MessagesStore.GetMessages(eMessage.Text),
-                        telegramBotAbstract);
+                if (eMessage.Text == null) 
+                    return SpamType.SPAM_LINK;
+                
+                var messages = MessagesStore.GetMessages(eMessage.Text);
+                await DeleteMessage.TryDeleteMessagesAsync(messages,
+                    telegramBotAbstract);
+
                 return SpamType.SPAM_LINK;
             }
             case SpamType.NOT_ALLOWED_WORDS:

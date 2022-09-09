@@ -185,7 +185,8 @@ public static class MessagesStore
                         !storedMessage.GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
                         storedMessage.GroupsIdItHasBeenSentInto.Add(message.Chat.Id);
 
-                    storedMessage.Messages.Add(message);
+                    if (message != null) 
+                        storedMessage.Messages.Add(message);
 
                     return Store.Count == 0 ? SpamType.UNDEFINED : storedMessage.IsSpam();
                 }
@@ -198,7 +199,7 @@ public static class MessagesStore
         return SpamType.UNDEFINED;
     }
 
-    internal static List<Message?>? GetMessages(string? text)
+    internal static MessageList? GetMessages(string? text)
     {
         try
         {

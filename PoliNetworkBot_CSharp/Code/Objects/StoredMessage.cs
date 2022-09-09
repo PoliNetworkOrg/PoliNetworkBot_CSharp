@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
-using Telegram.Bot.Types;
 
 #endregion
 
@@ -26,7 +25,7 @@ public class StoredMessage
     internal DateTime InsertedTime;
     internal DateTime? LastSeenTime;
     internal string? message;
-    public List<Message?> Messages = new();
+    public MessageList Messages = new();
 
     public StoredMessage(string? message, int howManyTimesWeSawIt = 0,
         MessageAllowedStatusEnum allowedSpam = MessageAllowedStatusEnum.NOT_DEFINED_ERROR,

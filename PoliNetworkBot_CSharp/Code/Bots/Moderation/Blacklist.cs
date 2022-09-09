@@ -92,9 +92,8 @@ internal static class Blacklist
     }
 
     private static readonly List<long> SpecialGroups = new() { -1001361547847, -452591994, -1001320704409 };
-    private static readonly List<string> BannedWords = new List<string>()
+    private static readonly List<string> BannedWords = new()
     {
-        
         "porcodio","dioporco","diocane", "negro", "negri", "negra","negre"
     };
 
