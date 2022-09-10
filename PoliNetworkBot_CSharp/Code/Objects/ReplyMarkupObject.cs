@@ -17,7 +17,7 @@ public class ReplyMarkupObject
 
     public ReplyMarkupObject(ReplyMarkupOptions? list)
     {
-        if (_list == null)
+        if (list == null)
             return;
         _list = list;
         _replyMarkupEnum = ReplyMarkupEnum.CHOICE;
