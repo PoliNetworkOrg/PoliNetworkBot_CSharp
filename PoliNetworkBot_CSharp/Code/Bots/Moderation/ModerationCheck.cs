@@ -342,7 +342,7 @@ internal static class ModerationCheck
         if (checkIfHeIsAllowedResult)
             return SpamType.ALL_GOOD;
 
-        var isSpamStored = await CheckIfSpamStored(e, telegramBotClient);
+        var isSpamStored = CheckIfSpamStored(e, telegramBotClient);
         if (isSpamStored != null)
             return isSpamStored.Value;
         
@@ -393,7 +393,7 @@ internal static class ModerationCheck
          CheckIfIsInList(GlobalVariables.Owners, from1);
     }
 
-    private static async Task<SpamType?> CheckIfSpamStored(MessageEventArgs? e,
+    private static SpamType? CheckIfSpamStored(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotAbstract)
     {
         var eMessage = e?.Message;
@@ -409,8 +409,7 @@ internal static class ModerationCheck
                     return SpamType.SPAM_LINK;
                 
                 var messages = MessagesStore.GetMessages(eMessage.Text);
-                await DeleteMessage.TryDeleteMessagesAsync(messages,
-                    telegramBotAbstract);
+                DeleteMessage.TryDeleteMessagesAsync(messages, telegramBotAbstract);
 
                 return SpamType.SPAM_LINK;
             }

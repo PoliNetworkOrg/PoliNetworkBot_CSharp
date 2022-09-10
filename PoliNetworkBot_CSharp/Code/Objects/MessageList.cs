@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Telegram.Bot.Types;
 
@@ -12,52 +10,56 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 public class MessageList
 {
     public readonly List<Message?> Messages;
-    public readonly Mutex Mutex;
+
 
     
     public MessageList()
     {
         Messages = new List<Message?>();
-        Mutex = new Mutex();
+
     }
 
-    public async Task TryDeleteMessagesAsync(TelegramBotAbstract telegramBotClient)
+    public void TryDeleteMessagesAsync(TelegramBotAbstract telegramBotClient)
     {
-        Mutex.WaitOne();
-        try
+        lock(this)
         {
-            foreach (var m in Messages)
+            try
             {
-                try
+                foreach (var m in Messages)
                 {
-                    await Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
-                }
-                catch
-                {
-                    // ignored
+                    try
+                    {
+                        var a = Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
+                        a.Wait();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
-        }
-        catch
-        {
-            // ignored
-        }
+            catch
+            {
+                // ignored
+            }
 
-        Mutex.ReleaseMutex();
+
+        }
+        
     }
 
     public void Add(Message message)
     {
-        Mutex.WaitOne();
-        try
+        lock(this)
         {
-            Messages.Add(message);
+            try
+            {
+                Messages.Add(message);
+            }
+            catch
+            {
+                // ignored
+            }
         }
-        catch
-        {
-            // ignored
-        }
-
-        Mutex.ReleaseMutex();
     }
 }

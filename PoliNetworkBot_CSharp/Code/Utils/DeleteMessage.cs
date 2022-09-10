@@ -29,10 +29,11 @@ internal static class DeleteMessage
         }
     }
 
-    internal static async Task TryDeleteMessagesAsync(MessageList? messages, TelegramBotAbstract? telegramBotClient)
+    internal static void TryDeleteMessagesAsync(MessageList? messages, TelegramBotAbstract? telegramBotClient)
     {
         if (telegramBotClient != null)
-            if (messages != null)
-                await messages.TryDeleteMessagesAsync(telegramBotClient);
+        {
+            messages?.TryDeleteMessagesAsync(telegramBotClient);
+        }
     }
 }
