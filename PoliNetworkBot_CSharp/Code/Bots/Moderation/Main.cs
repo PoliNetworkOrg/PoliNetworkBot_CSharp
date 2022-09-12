@@ -26,14 +26,14 @@ internal static class Main
     {
         var t = new Thread(() =>
         {
-            if (sender != null) _ = MainMethod2(sender, e);
+            if (sender != null && e != null) _ = MainMethod2(sender, e);
         });
         t.Start();
         //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
         //t1.Start();
     }
 
-    private static async Task MainMethod2(object sender, MessageEventArgs? e)
+    private static async Task MainMethod2(object sender, MessageEventArgs e)
     {
         TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;

@@ -36,6 +36,7 @@ public static class MessagesStore
         }
         catch (Exception? ex)
         {
+            File.Create(Paths.Data.MessageStore);
             Store = new Dictionary<string, StoredMessage?>();
             Logger.WriteLine(ex);
         }

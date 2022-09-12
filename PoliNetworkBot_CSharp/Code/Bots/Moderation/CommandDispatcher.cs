@@ -31,11 +31,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
-    public static async Task CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
         string?[]? cmdLines = e?.Message?.Text?.Split(' ');
         var cmd = cmdLines?[0]?.Trim();
-
+        
+        
         if (string.IsNullOrEmpty(cmd))
         {
             await DefaultCommand(sender, e);
@@ -271,6 +272,7 @@ internal static class CommandDispatcher
 
             case "/search":
             {
+                if (e?.Message == null || sender == null) return;
                 var query = "";
                 if (cmdLines != null)
                     for (var i = 1; i < cmdLines.Length; i++)
@@ -278,8 +280,23 @@ internal static class CommandDispatcher
 
                 if (!string.IsNullOrEmpty(query))
                     query = query[..^1];
-
-                _ = SendGroupsByTitle(query, sender, e, 6);
+                
+                if (e.Message.Chat.Type == ChatType.Private)
+                {
+                    _ = SendGroupsByTitle(query, sender, e, 6);
+                }
+                else
+                {
+                    if (e.Message.ReplyToMessage != null)
+                    {
+                        _ = SendGroupsByTitle(query, sender, e, 6);
+                    }
+                    else
+                    {
+                        await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                    }
+                }
+                
 
                 return;
             }

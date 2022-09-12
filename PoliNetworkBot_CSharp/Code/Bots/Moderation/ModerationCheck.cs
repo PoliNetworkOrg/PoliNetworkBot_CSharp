@@ -367,7 +367,7 @@ internal static class ModerationCheck
             return SpamType.FOREIGN;
 
         var spamType1 = await Blacklist.IsSpam(e?.Message?.Text,
-            e?.Message?.Chat.Id, telegramBotClient, true, e);
+            e?.Message?.Chat.Id, telegramBotClient, false, e);
         var spamType2 = Blacklist.IsSpam(e?.Message?.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;

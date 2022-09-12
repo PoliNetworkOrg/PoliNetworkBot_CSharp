@@ -161,6 +161,7 @@ public static class CallbackUtils
             }
             catch (Exception ex)
             {
+                File.Create(Paths.Data.CallbackData);
                 Console.WriteLine(ex);
                 CallBackDataFull = new CallBackDataFull();
             }
