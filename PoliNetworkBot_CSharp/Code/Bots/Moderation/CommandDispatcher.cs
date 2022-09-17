@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
@@ -287,7 +288,8 @@ internal static class CommandDispatcher
                 }
                 else
                 {
-                    if (e.Message.ReplyToMessage != null)
+                    if (e.Message.ReplyToMessage != null || (GlobalVariables.AllowedBanAll != null &&
+                        GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From))))
                     {
                         _ = SendGroupsByTitle(query, sender, e, 6);
                     }
@@ -605,6 +607,21 @@ internal static class CommandDispatcher
 
                 return;
             }
+            case "/massivesend_polimi":
+            {
+                if (e is { Message: { } } && sender != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
+                    {
+                        await MassiveGeneralSendAsync(e, sender);
+
+                        return;
+                    }
+
+                await DefaultCommand(sender, e);
+
+                return;
+            }
             case "/subscribe_log":
             {
                 if (e is { Message: { } })
@@ -764,6 +781,30 @@ internal static class CommandDispatcher
                 return;
             }
         }
+    }
+
+    private static async Task MassiveGeneralSendAsync(MessageEventArgs e, TelegramBotAbstract sender)
+    {
+        if (e.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                  string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)) 
+                                              || e.Message.ReplyToMessage.Text == null)
+        {
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "en", "You have to reply to a message containing the message" },
+                { "it", "You have to reply to a message containing the message" }
+            });
+
+            if (e.Message != null)
+                await sender.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
+                    e.Message?.From?.LanguageCode, ParseMode.Html, null, e.Message?.From?.Username,
+                    e.Message!.MessageId);
+            return;
+        }
+        
+        var textToBeSent = e.Message.ReplyToMessage.Text;
+        var groups = Utils.Groups.GetGroupsByTitle("polimi", 1000, sender);
+        await MassiveSendSlaveAsync(sender, e, groups, textToBeSent);
     }
 
     private static void GetLog(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -1151,28 +1192,41 @@ internal static class CommandDispatcher
 
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    private static async Task<object> MassiveSendAsync(TelegramBotAbstract? sender, MessageEventArgs? e,
-#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
+    /*
+     private static async Task<bool> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e,
         string textToSend)
     {
-        /*
+        
 
         textToSend =        "Buonasera a tutti, vi ricordiamo che lunedì 24 fino al 27 verranno aperti i seggi online per le elezioni, fate sentire la vostra voce mi raccomando. <b>Votate!</b>\nPotete informarvi su modalità di voto e candidati al sito\npolinetworkelezioni.github.io/it" +
                 "\n\n\n" +
                 "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en"
 
-         */
+         
 
         var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender?.DbConfig);
 
+        return await MassiveSendSlaveAsync(sender, e, groups);
+    }
+    */
+
+    private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs e, DataTable? groups, string textToSend)
+    {
+
+        await NotifyUtil.NotifyOwners(
+            $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
+            $"The message is:\n\n{textToSend}", sender, e);
+        
+        Thread.Sleep(1000 * 1000);
+        
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
             if (e?.Message?.From != null)
-                if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private,
-                        e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                        e.Message.MessageId);
+                await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private,
+                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
+                    e.Message.MessageId);
+            return false;
         }
 
         var counter = 0;
@@ -1237,10 +1291,9 @@ internal static class CommandDispatcher
         await Task.Delay(500);
 
         if (e?.Message?.From == null) return true;
-        if (sender != null)
-            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                e.Message.From.LanguageCode,
-                ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
+        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
+            e.Message.From.LanguageCode,
+            ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
         return true;
     }
 
