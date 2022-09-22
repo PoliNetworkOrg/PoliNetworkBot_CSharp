@@ -127,16 +127,16 @@ internal static class Blacklist
 
     private static bool Bitcoin(string? text, long? groupId)
     {
-        return (text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
-                (text.Contains("guadagn") || text.Contains("rischio")) && SpecialGroups.All(group => groupId != group));
+        return text != null && groupId != null && (text.Contains("bitcoin") || text.Contains("bitpanda")) &&
+               (text.Contains("guadagn") || text.Contains("rischio")) && SpecialGroups.All(group => groupId != group);
     }
 
     private static bool ChiedoScusa(string? text, long? groupId)
     {
-        return ((text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
-                 text.Contains("spam")) || (text != null && groupId != null && text.Contains("google") &&
-                                            text.Contains("whatsapp") &&
-                                            text.Contains("application") && text.Contains("link")));
+        return (text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
+            text.Contains("spam") || (text != null && groupId != null && text.Contains("google") &&
+                                      text.Contains("whatsapp") &&
+                                      text.Contains("application") && text.Contains("link")));
     }
 
     private static string? RemoveUselessCharacters(string s3)

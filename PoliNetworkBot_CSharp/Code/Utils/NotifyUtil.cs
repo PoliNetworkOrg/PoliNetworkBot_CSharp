@@ -247,22 +247,8 @@ internal static class NotifyUtil
             // ignored
         }
 
-        try
-        {
-            foreach (var e1 in exceptionNumbereds)
-                try
-                {
-                    await NotifyOwners(e1, sender, messageEventArgs);
-                }
-                catch
-                {
-                    // ignored
-                }
-        }
-        catch
-        {
-            // ignored
-        }
+        await NotifyUtil.SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs);
+
 
         try
         {
@@ -275,6 +261,31 @@ internal static class NotifyUtil
 
             if (m != null) replyto = m.GetMessageId();
             await NotifyOwners2Async(text2, sender, 0, langCode, replyto, messageEventArgs);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static async Task SendNumberedExceptionsAsFile(
+            List<ExceptionNumbered> exceptionNumbereds, 
+            TelegramBotAbstract? sender, 
+            MessageEventArgs? messageEventArgs
+        )
+    {
+        
+        try
+        {
+            foreach (var e1 in exceptionNumbereds)
+                try
+                {
+                    await NotifyOwners(e1, sender, messageEventArgs);
+                }
+                catch
+                {
+                    // ignored
+                }
         }
         catch
         {

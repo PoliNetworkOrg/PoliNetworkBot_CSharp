@@ -60,7 +60,7 @@ internal static class RestrictUser
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
     }
 
-    internal static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>?> BanAllAsync(
+    private static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>?> BanAllAsync(
         TelegramBotAbstract? sender, MessageEventArgs? e,
         TargetUserObject target, RestrictAction banTarget, DateTime? until,
         bool? revokeMessage)
@@ -455,7 +455,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
+    private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
         MessageEventArgs? e,
         IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
         bool? revokeMessage)
@@ -485,7 +485,7 @@ internal static class RestrictUser
         bool? revokeMessage)
     {
         var targetEmpty = await finalTarget.UserIdEmpty(sender);
-        if (targetEmpty)
+        if (targetEmpty && finalTarget.IsTest == false)
         {
             var lang2 = new Language(new Dictionary<string, string?>
             {

@@ -14,6 +14,7 @@ public class TargetUserObject
     private const string TargetNullString = "[target null]";
     private long? _userId;
     private string? _username;
+    public bool IsTest = false;
 
     public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
@@ -114,4 +115,6 @@ public class TargetUserObject
     {
         return _userId;
     }
+    
+    
 }
