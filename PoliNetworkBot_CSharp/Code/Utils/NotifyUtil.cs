@@ -2,11 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -429,5 +431,47 @@ internal static class NotifyUtil
         message += "\n\n";
         message += "Message tag: #" + hashText;
         return message;
+    }
+
+
+    public static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract? sender, MessageEventArgs? e,
+        Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done)
+    {
+        try
+        {
+            if (done != null)
+            {
+                var (banUnbanAllResult, _, _) = done;
+                await SendReportOfSuccessAndFailures2(
+                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
+                    "success.bin", sender, e);
+                await SendReportOfSuccessAndFailures2(
+                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
+                    "failed.bin", sender, e);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+    
+    
+    private static async Task SendReportOfSuccessAndFailures2(Stream? stream, string filename,
+        TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        var file = new TelegramFile(stream, filename, "", "application/octet-stream");
+        var message = e?.Message;
+        if (message != null)
+        {
+            var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "en", "" }
+            });
+            await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode,
+                null, true);
+        }
     }
 }

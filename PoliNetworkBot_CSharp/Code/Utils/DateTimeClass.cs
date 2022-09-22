@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
@@ -370,5 +371,20 @@ internal static class DateTimeClass
         }
 
         return new ValueWithException<DateTime?>(null, new NotImplementedException());
+    }
+
+
+    public static ValueWithException<DateTime?>? GetDateTime(IReadOnlyList<string?>? target)
+    {
+        if (target == null)
+            return null;
+        if (target.Count < 3)
+            return null;
+
+        var s = "";
+        for (var i = 2; i < target.Count; i++) s += target[i] + " ";
+
+        s = s.Trim();
+        return DateTimeClass.GetFromString(s);
     }
 }

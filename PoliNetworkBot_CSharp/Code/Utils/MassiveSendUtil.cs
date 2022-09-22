@@ -8,7 +8,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class MassiveSendUtil
+public static class MassiveSendUtil
 {
     public static async Task MassiveGeneralSendAsync(MessageEventArgs e, TelegramBotAbstract sender)
     {

@@ -444,4 +444,93 @@ internal static class RestrictUser
                 // ignored
             }
     }
+
+
+    public static async Task<SuccessWithException> BanAllAsync2(
+        TelegramBotAbstract? sender, MessageEventArgs? e,
+        IReadOnlyList<string?>? target, string? lang, string? username, bool? revokeMessage)
+    {
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN,
+            revokeMessage);
+    }
+
+
+    public static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
+        MessageEventArgs? e,
+        IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
+        bool? revokeMessage)
+    {
+        var d1 = Utils.DateTimeClass.GetDateTime(target);
+        try
+        {
+            var targetUserObject = new TargetUserObject(target, sender, e);
+            await BanAllUnbanAllMethod1Async(ban, targetUserObject, e, sender, lang,
+                username,
+                d1?.GetValue(), revokeMessage);
+            return new SuccessWithException(true, d1?.GetExceptions());
+        }
+        catch (Exception? ex)
+        {
+            var ex2 = Utils.ExceptionUtil.Concat(ex, d1);
+            return new SuccessWithException(false, ex2);
+        }
+    }
+    
+    
+    
+
+    private static async Task BanAllUnbanAllMethod1Async(RestrictAction restrictAction,
+        TargetUserObject finalTarget,
+        MessageEventArgs? e, TelegramBotAbstract? sender, string? lang, string? username, DateTime? until,
+        bool? revokeMessage)
+    {
+        var targetEmpty = await finalTarget.UserIdEmpty(sender);
+        if (targetEmpty)
+        {
+            var lang2 = new Language(new Dictionary<string, string?>
+            {
+                { "en", "We can't find the target." },
+                { "it", "Non riusciamo a trovare il bersaglio" }
+            });
+            if (sender != null)
+                await sender.SendTextMessageAsync(e?.Message?.From?.Id, lang2, ChatType.Private,
+                    lang, ParseMode.Html, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+
+            return;
+        }
+
+        if (string.IsNullOrEmpty(e?.Message?.ReplyToMessage?.Text))
+        {
+            var lang2 = new Language(new Dictionary<string, string?>
+            {
+                { "en", "The replied message cannot be empty!" },
+                { "it", "Il messaggio a cui rispondi non può essere vuoto" }
+            });
+            if (e?.Message?.From == null) return;
+            if (sender != null)
+                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
+                    lang, ParseMode.Html, username: username,
+                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+
+            return;
+        }
+
+        var done =
+            await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
+        var text2 = done?.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
+
+        NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget,
+            e.Message.ReplyToMessage.Text);
+
+        if (e.Message.From != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, text2,
+                ParseMode.Html,
+                e.Message.MessageId);
+
+        await Utils.NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
+    }
+
 }

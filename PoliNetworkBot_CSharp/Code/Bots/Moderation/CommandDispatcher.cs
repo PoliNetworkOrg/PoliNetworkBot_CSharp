@@ -144,7 +144,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedBanAll != null &&
                     GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -174,7 +174,7 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                _ = BanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                     true);
                 return;
             }
@@ -1491,24 +1491,18 @@ internal static class CommandDispatcher
         string? username,
         bool? revokeMessage)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
+        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
             RestrictAction.UNBAN, revokeMessage);
     }
 
-    private static async Task<SuccessWithException> BanAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e,
-        IReadOnlyList<string?>? target, string? lang, string? username, bool? revokeMessage)
-    {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN,
-            revokeMessage);
-    }
+ 
 
     private static async Task<SuccessWithException> MuteAllAsync(
         TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
         string? username,
         bool? revokeMessage)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
+        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
             revokeMessage);
     }
 
@@ -1517,153 +1511,15 @@ internal static class CommandDispatcher
         string? username,
         bool? revokeMessage)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
+        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
             revokeMessage);
     }
 
-    private static async Task<SuccessWithException> BanAllUnbanAllMethod1Async2Async(TelegramBotAbstract? sender,
-        MessageEventArgs? e,
-        IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
-        bool? revokeMessage)
-    {
-        var d1 = GetDateTime(target);
-        try
-        {
-            var targetUserObject = new TargetUserObject(target, sender, e);
-            await BanAllUnbanAllMethod1Async(ban, targetUserObject, e, sender, lang,
-                username,
-                d1?.GetValue(), revokeMessage);
-            return new SuccessWithException(true, d1?.GetExceptions());
-        }
-        catch (Exception? ex)
-        {
-            var ex2 = Concat(ex, d1);
-            return new SuccessWithException(false, ex2);
-        }
-    }
 
-    private static List<Exception?> Concat(Exception? ex, ValueWithException<DateTime?>? d1)
-    {
-        var r = new List<Exception?>
-        {
-            ex
-        };
-        var d2 = d1?.GetExceptions();
-        if (d1 == null || !d1.ContainsExceptions())
-            return r;
-        if (d2 != null)
-            r.AddRange(d2);
+   
 
-        return r;
-    }
 
-    private static ValueWithException<DateTime?>? GetDateTime(IReadOnlyList<string?>? target)
-    {
-        if (target == null)
-            return null;
-        if (target.Count < 3)
-            return null;
 
-        var s = "";
-        for (var i = 2; i < target.Count; i++) s += target[i] + " ";
-
-        s = s.Trim();
-        return DateTimeClass.GetFromString(s);
-    }
-
-    private static async Task BanAllUnbanAllMethod1Async(RestrictAction restrictAction,
-        TargetUserObject finalTarget,
-        MessageEventArgs? e, TelegramBotAbstract? sender, string? lang, string? username, DateTime? until,
-        bool? revokeMessage)
-    {
-        var targetEmpty = await finalTarget.UserIdEmpty(sender);
-        if (targetEmpty)
-        {
-            var lang2 = new Language(new Dictionary<string, string?>
-            {
-                { "en", "We can't find the target." },
-                { "it", "Non riusciamo a trovare il bersaglio" }
-            });
-            if (sender != null)
-                await sender.SendTextMessageAsync(e?.Message?.From?.Id, lang2, ChatType.Private,
-                    lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-
-            return;
-        }
-
-        if (string.IsNullOrEmpty(e?.Message?.ReplyToMessage?.Text))
-        {
-            var lang2 = new Language(new Dictionary<string, string?>
-            {
-                { "en", "The replied message cannot be empty!" },
-                { "it", "Il messaggio a cui rispondi non può essere vuoto" }
-            });
-            if (e?.Message?.From == null) return;
-            if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
-                    lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
-
-            return;
-        }
-
-        var done =
-            await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
-        var text2 = done?.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
-
-        NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget,
-            e.Message.ReplyToMessage.Text);
-
-        if (e.Message.From != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username, text2,
-                ParseMode.Html,
-                e.Message.MessageId);
-
-        await SendReportOfSuccessAndFailures(sender, e, done);
-    }
-
-    private static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract? sender, MessageEventArgs? e,
-        Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done)
-    {
-        try
-        {
-            if (done != null)
-            {
-                var (banUnbanAllResult, _, _) = done;
-                await SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                    "success.bin", sender, e);
-                await SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                    "failed.bin", sender, e);
-            }
-        }
-        catch
-        {
-            // ignored
-        }
-    }
-
-    private static async Task SendReportOfSuccessAndFailures2(Stream? stream, string filename,
-        TelegramBotAbstract? sender, MessageEventArgs? e)
-    {
-        var file = new TelegramFile(stream, filename, "", "application/octet-stream");
-        var message = e?.Message;
-        if (message != null)
-        {
-            var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
-            var text = new Language(new Dictionary<string, string?>
-            {
-                { "en", "" }
-            });
-            await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode,
-                null, true);
-        }
-    }
 
 
     private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)
