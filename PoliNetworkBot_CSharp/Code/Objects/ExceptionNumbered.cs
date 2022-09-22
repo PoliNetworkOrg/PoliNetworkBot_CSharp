@@ -68,7 +68,7 @@ public class ExceptionNumbered : Exception
                 ["number"] = this.GetNumberOfTimes(),
                 ["message"] = this.Message,
                 ["ExceptionToString"] = this.GetException().ToString(),
-                ["StackTrace"] = this.StackTrace,
+                ["StackTrace"] = GetStackTrace(),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
                 ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null: extrainfo
             };
@@ -115,7 +115,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "StackTrace:\n";
-                message3 += this.StackTrace;
+                message3 += JsonConvert.SerializeObject( GetStackTrace());
             }
             catch
             {
@@ -143,5 +143,15 @@ public class ExceptionNumbered : Exception
             
         return message3;
 
+    }
+
+    private JObject GetStackTrace()
+    {
+        var result = new JObject
+        {
+            ["eStack"] = this.StackTrace,
+            ["currStack"] = System.Environment.StackTrace
+        };
+        return result;
     }
 }
