@@ -99,7 +99,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedMuteAll != null &&
                     GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                    _ = Utils.RestrictUser.MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
                         e.Message.From?.Username, false);
                 else
                     await DefaultCommand(sender, e);
@@ -121,7 +121,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedMuteAll != null &&
                     GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = Utils.RestrictUser.UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -222,7 +222,7 @@ internal static class CommandDispatcher
 
             case "/ban":
             {
-                _ = BanUserAsync(sender, e, cmdLines, false);
+                _ = Utils.RestrictUser.BanUserAsync(sender, e, cmdLines, false);
                 return;
             }
             /*case "/banAllHistory":
@@ -248,7 +248,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedBanAll != null &&
                     GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = Utils.RestrictUser.UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -1443,78 +1443,6 @@ internal static class CommandDispatcher
             text2, TextAsCaption.BEFORE_FILE,
             sender, username, lang, null, true);
     }
-
-    private static async Task<SuccessWithException?> BanUserAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e,
-        string?[]? stringInfo, bool? revokeMessage)
-    {
-        if (e?.Message?.From != null)
-        {
-            var r =
-                await Utils.Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
-                    sender);
-            if (r != null && !r.IsSuccess()) return r;
-        }
-
-        if (e?.Message?.ReplyToMessage == null)
-        {
-            var targetUserObject = new TargetUserObject(stringInfo, sender, e);
-            var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
-            var targetEmpty = await userIdFound.UserIdEmpty(sender);
-            if (targetEmpty)
-            {
-                var e2 = new Exception("Can't find userid (1)");
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
-                return new SuccessWithException(false, e2);
-            }
-
-            var targetId = userIdFound.GetUserId();
-            if (targetId != null && e?.Message != null)
-                return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
-                    revokeMessage);
-
-            var e3 = new Exception("Can't find userid (2)");
-            await NotifyUtil.NotifyOwners(new ExceptionNumbered(e3), sender, e);
-            return new SuccessWithException(false, e3);
-        }
-
-        var targetInt = e.Message.ReplyToMessage.From?.Id;
-
-        NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From?.Username);
-
-        return await RestrictUser.BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
-            revokeMessage);
-    }
-
-    private static async Task<SuccessWithException> UnbanAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
-    {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
-            RestrictAction.UNBAN, revokeMessage);
-    }
-
- 
-
-    private static async Task<SuccessWithException> MuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
-    {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
-            revokeMessage);
-    }
-
-    private static async Task<SuccessWithException> UnMuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
-    {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
-            revokeMessage);
-    }
-
 
    
 
