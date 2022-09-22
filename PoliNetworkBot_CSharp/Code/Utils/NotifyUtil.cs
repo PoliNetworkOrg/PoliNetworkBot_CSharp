@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
@@ -78,70 +79,8 @@ internal static class NotifyUtil
         if (sender == null)
             return null;
 
-        string message3;
-        try
-        {
-            message3 = "";
-            try
-            {
-                message3 += "Number of times: ";
-                message3 += exception.GetNumberOfTimes();
-                message3 += "\n\n";
-            }
-            catch
-            {
-                message3 += "\n\n";
-            }
-
-            try
-            {
-                message3 += "Message:\n";
-                message3 += exception.Message;
-                message3 += "\n\n";
-            }
-            catch
-            {
-                message3 += "\n\n";
-            }
-
-            try
-            {
-                message3 += "ExceptionToString:\n";
-                message3 += exception.GetException().ToString();
-                message3 += "\n\n";
-            }
-            catch
-            {
-                message3 += "\n\n";
-            }
-
-            try
-            {
-                message3 += "StackTrace:\n";
-                message3 += exception.StackTrace;
-            }
-            catch
-            {
-                message3 += "\n\n";
-            }
-
-            if (messageEventArgs != null)
-                try
-                {
-                    message3 += "MessageArgs:\n";
-                    message3 += JsonConvert.SerializeObject(messageEventArgs);
-                }
-                catch
-                {
-                    message3 += "\n\n";
-                }
-
-            if (!string.IsNullOrEmpty(extrainfo)) message3 += "\n\n" + extrainfo;
-        }
-        catch (Exception e1)
-        {
-            message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
-        }
+        var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs);
+        
 
         var text = new Language(new Dictionary<string, string?>
         {
@@ -215,8 +154,9 @@ internal static class NotifyUtil
         await NotifyOwners(exception, sender, null);
     }
 
-    internal static async Task NotifyOwnersAsync(Tuple<List<ExceptionNumbered>, int> exceptions,
+    internal static async Task NotifyOwnersAsync5(Tuple<List<ExceptionNumbered>, int> exceptions,
         TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string v, string? langCode,
+        string filename,
         long? replyToMessageId = null)
     {
         MessageSentResult? m = null;
@@ -247,7 +187,7 @@ internal static class NotifyUtil
             // ignored
         }
 
-        await NotifyUtil.SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs);
+        await NotifyUtil.SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs, filename);
 
 
         try
@@ -268,29 +208,59 @@ internal static class NotifyUtil
         }
     }
 
-    private static async Task SendNumberedExceptionsAsFile(
-            List<ExceptionNumbered> exceptionNumbereds, 
-            TelegramBotAbstract? sender, 
-            MessageEventArgs? messageEventArgs
-        )
+    private static async Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionNumbereds,
+        TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs, string filename)
     {
-        
         try
         {
-            foreach (var e1 in exceptionNumbereds)
-                try
-                {
-                    await NotifyOwners(e1, sender, messageEventArgs);
-                }
-                catch
-                {
-                    // ignored
-                }
+            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs)).ToList();
+            var toSendString = JsonConvert.SerializeObject(toSend);
+            var stream = GenerateStreamFromString(toSendString);
+            await SendFiles(messageEventArgs, sender, filename, stream);
         }
-        catch
+        catch (Exception e)
         {
-            // ignored
+            try
+            {
+                _ = NotifyOwners(e, sender);
+            }
+            catch
+            {
+                //ignored
+            }
         }
+
+
+    }
+
+    private static Stream GenerateStreamFromString(string s)
+    {
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(s);
+        writer.Flush();
+        stream.Position = 0;
+        return stream;
+    }
+
+    private static async Task SendFiles(MessageEventArgs? messageEventArgs, TelegramBotAbstract? telegramBotAbstract,
+        string filename, Stream stream)
+    {
+        var file = new TelegramFile(stream, filename, "", "application/json");
+
+        
+        //var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+        var text = new Language(new Dictionary<string, string?>
+        {
+            { "en", "" }
+        });
+
+        var peer = new PeerAbstract(Data.Constants.Groups.GroupException, ChatType.Group);
+        await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+            telegramBotAbstract, messageEventArgs?.Message?.From?.Username, "en",
+            null, true);
+        
     }
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,

@@ -249,15 +249,27 @@ internal static class RestrictUser
             {
                 LogBanAction(targetId.GetUserId(), banTarget, sender, e.Message.From.Id, sender);
 
+                var filename = "";
+                filename += banTarget switch
+                {
+                    RestrictAction.BAN => "ban",
+                    RestrictAction.UNBAN => "unban",
+                    RestrictAction.MUTE => "mute",
+                    RestrictAction.UNMUTE => "unmute",
+                    _ => "unknown"
+                };
+            
                 var targetId2 = targetId.GetUserId();
+                filename += targetId2 == null ? "_null" : targetId2.Value;
+
                 var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
                 if (targetId2 == null)
-                    await NotifyUtil.NotifyOwnersAsync(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
-                        e.Message.From.LanguageCode);
+                    await NotifyUtil.NotifyOwnersAsync5(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
+                        e.Message.From.LanguageCode, filename);
                 else
-                    await NotifyUtil.NotifyOwnersAsync(r6, sender, e,
+                    await NotifyUtil.NotifyOwnersAsync5(r6, sender, e,
                         "Ban/Unban All of [" + targetId.GetTargetHtmlString() + "]",
-                        e.Message.From.LanguageCode);
+                        e.Message.From.LanguageCode, filename);
             }
 
         var r5 = new BanUnbanAllResult(done, failed);

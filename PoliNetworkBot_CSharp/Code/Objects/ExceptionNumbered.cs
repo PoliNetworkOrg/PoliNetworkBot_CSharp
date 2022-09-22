@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
@@ -51,5 +52,76 @@ public class ExceptionNumbered : Exception
 
         await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
         return true;
+    }
+
+    public string GetMessageAsText(string? extrainfo, MessageEventArgs? messageEventArgs)
+    {
+        string message3 = "";
+        try
+        {
+            message3 = "";
+            try
+            {
+                message3 += "Number of times: ";
+                message3 += this.GetNumberOfTimes();
+                message3 += "\n\n";
+            }
+            catch
+            {
+                message3 += "\n\n";
+            }
+
+            try
+            {
+                message3 += "Message:\n";
+                message3 += this.Message;
+                message3 += "\n\n";
+            }
+            catch
+            {
+                message3 += "\n\n";
+            }
+
+            try
+            {
+                message3 += "ExceptionToString:\n";
+                message3 += this.GetException().ToString();
+                message3 += "\n\n";
+            }
+            catch
+            {
+                message3 += "\n\n";
+            }
+
+            try
+            {
+                message3 += "StackTrace:\n";
+                message3 += this.StackTrace;
+            }
+            catch
+            {
+                message3 += "\n\n";
+            }
+
+            if (messageEventArgs != null)
+                try
+                {
+                    message3 += "MessageArgs:\n";
+                    message3 += JsonConvert.SerializeObject(messageEventArgs);
+                }
+                catch
+                {
+                    message3 += "\n\n";
+                }
+
+            if (!string.IsNullOrEmpty(extrainfo)) 
+                message3 += "\n\n" + extrainfo;
+        }
+        catch (Exception e1)
+        {
+            message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
+        }
+
+        return message3;
     }
 }
