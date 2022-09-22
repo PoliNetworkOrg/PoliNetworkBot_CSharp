@@ -35,8 +35,8 @@ internal static class CommandDispatcher
     {
         string?[]? cmdLines = e.Message?.Text?.Split(' ');
         var cmd = cmdLines?[0]?.Trim();
-        
-        
+
+
         if (string.IsNullOrEmpty(cmd))
         {
             await DefaultCommand(sender, e);
@@ -99,7 +99,7 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedMuteAll != null &&
                     GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = Utils.RestrictUser.MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                    _ = RestrictUser.MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
                         e.Message.From?.Username, false);
                 else
                     await DefaultCommand(sender, e);
@@ -121,7 +121,8 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedMuteAll != null &&
                     GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = Utils.RestrictUser.UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = RestrictUser.UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -144,7 +145,8 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedBanAll != null &&
                     GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -174,7 +176,8 @@ internal static class CommandDispatcher
                     return;
                 }
 
-                _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                    e.Message.From?.Username,
                     true);
                 return;
             }
@@ -185,7 +188,8 @@ internal static class CommandDispatcher
                 if (reply == null || sender == null || ((GlobalVariables.AllowedBanAll == null || !GlobalVariables
                         .AllowedBanAll.ToList()
                         .Any(x => x.Matches(e.Message?.From))) && (GlobalVariables.Owners == null ||
-                                                                   !GlobalVariables.Owners.ToList().Any(x => x.Matches(e.Message?.From)))))
+                                                                   !GlobalVariables.Owners.ToList().Any(x =>
+                                                                       x.Matches(e.Message?.From)))))
                 {
                     await DefaultCommand(sender, e);
                     return;
@@ -222,7 +226,7 @@ internal static class CommandDispatcher
 
             case "/ban":
             {
-                _ = Utils.RestrictUser.BanUserAsync(sender, e, cmdLines, false);
+                _ = RestrictUser.BanUserAsync(sender, e, cmdLines, false);
                 return;
             }
             /*case "/banAllHistory":
@@ -248,7 +252,8 @@ internal static class CommandDispatcher
 
                 if (GlobalVariables.AllowedBanAll != null &&
                     GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = Utils.RestrictUser.UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode, e.Message.From?.Username,
+                    _ = RestrictUser.UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
+                        e.Message.From?.Username,
                         false);
                 else
                     await DefaultCommand(sender, e);
@@ -280,7 +285,7 @@ internal static class CommandDispatcher
 
                 if (!string.IsNullOrEmpty(query))
                     query = query[..^1];
-                
+
                 if (e.Message.Chat.Type == ChatType.Private)
                 {
                     _ = SendGroupsByTitle(query, sender, e, 6);
@@ -288,16 +293,13 @@ internal static class CommandDispatcher
                 else
                 {
                     if (e.Message.ReplyToMessage != null || (GlobalVariables.AllowedBanAll != null &&
-                        GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From))))
-                    {
+                                                             GlobalVariables.AllowedBanAll.ToList()
+                                                                 .Any(x => x.Matches(e.Message?.From))))
                         _ = SendGroupsByTitle(query, sender, e, 6);
-                    }
                     else
-                    {
                         await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-                    }
                 }
-                
+
 
                 return;
             }
@@ -309,7 +311,7 @@ internal static class CommandDispatcher
                         e.Message!.Chat.Type == ChatType.Private)
                     {
                         RebootWithLog(sender, e);
-        
+
                         return;
                     }
 
@@ -778,7 +780,6 @@ internal static class CommandDispatcher
     }
 
 
-
     private static void GetLog(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
@@ -1161,7 +1162,6 @@ internal static class CommandDispatcher
             }
         }
     }
-
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
     /*
@@ -1182,7 +1182,6 @@ internal static class CommandDispatcher
     }
     */
 
-    
 
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
@@ -1443,11 +1442,6 @@ internal static class CommandDispatcher
             text2, TextAsCaption.BEFORE_FILE,
             sender, username, lang, null, true);
     }
-
-   
-
-
-
 
 
     private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)

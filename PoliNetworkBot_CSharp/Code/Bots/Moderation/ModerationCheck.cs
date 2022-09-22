@@ -345,9 +345,7 @@ internal static class ModerationCheck
         var isSpamStored = CheckIfSpamStored(e, telegramBotClient);
         if (isSpamStored != null)
             return isSpamStored.Value;
-        
-        
-        
+
 
         if (string.IsNullOrEmpty(e?.Message?.Text))
         {
@@ -387,10 +385,10 @@ internal static class ModerationCheck
     private static bool Innocuo(User from1, Chat chat)
     {
         return from1.Id == 777000 || from1.Id == chat.Id ||
-         CheckIfIsInList(GlobalVariables.AllowedSpam, from1) ||
-         CheckIfIsInList(GlobalVariables.Creators, from1) ||
-         CheckIfIsInList(GlobalVariables.SubCreators, from1) ||
-         CheckIfIsInList(GlobalVariables.Owners, from1);
+               CheckIfIsInList(GlobalVariables.AllowedSpam, from1) ||
+               CheckIfIsInList(GlobalVariables.Creators, from1) ||
+               CheckIfIsInList(GlobalVariables.SubCreators, from1) ||
+               CheckIfIsInList(GlobalVariables.Owners, from1);
     }
 
     private static SpamType? CheckIfSpamStored(MessageEventArgs? e,
@@ -405,9 +403,9 @@ internal static class ModerationCheck
         {
             case SpamType.SPAM_LINK:
             {
-                if (eMessage.Text == null) 
+                if (eMessage.Text == null)
                     return SpamType.SPAM_LINK;
-                
+
                 var messages = MessagesStore.GetMessages(eMessage.Text);
                 DeleteMessage.TryDeleteMessagesAsync(messages, telegramBotAbstract);
 

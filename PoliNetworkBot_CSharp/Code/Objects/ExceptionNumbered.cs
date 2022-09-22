@@ -31,7 +31,6 @@ public class ExceptionNumbered : Exception
     }
 
 
-
     internal bool AreTheySimilar(Exception? item2)
     {
         return Message == item2?.Message;
@@ -53,21 +52,21 @@ public class ExceptionNumbered : Exception
     }
 
     public string GetMessageAsText(
-        string? extrainfo, 
-        MessageEventArgs? messageEventArgs, 
+        string? extrainfo,
+        MessageEventArgs? messageEventArgs,
         bool json
-        )
+    )
     {
         if (json)
         {
             var jObject = new JObject
             {
-                ["number"] = this.GetNumberOfTimes(),
-                ["message"] = this.Message,
-                ["ExceptionToString"] = this.ToString(),
+                ["number"] = GetNumberOfTimes(),
+                ["message"] = Message,
+                ["ExceptionToString"] = ToString(),
                 ["StackTrace"] = GetStackTrace(),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
-                ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null: extrainfo
+                ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null : extrainfo
             };
             return JsonConvert.SerializeObject(jObject);
         }
@@ -79,7 +78,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "Number of times: ";
-                message3 += this.GetNumberOfTimes();
+                message3 += GetNumberOfTimes();
                 message3 += "\n\n";
             }
             catch
@@ -90,7 +89,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "Message:\n";
-                message3 += this.Message;
+                message3 += Message;
                 message3 += "\n\n";
             }
             catch
@@ -101,7 +100,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "ExceptionToString:\n";
-                message3 += this.ToString();
+                message3 += ToString();
                 message3 += "\n\n";
             }
             catch
@@ -112,7 +111,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "StackTrace:\n";
-                message3 += JsonConvert.SerializeObject( GetStackTrace());
+                message3 += JsonConvert.SerializeObject(GetStackTrace());
             }
             catch
             {
@@ -137,9 +136,8 @@ public class ExceptionNumbered : Exception
         {
             message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
         }
-            
-        return message3;
 
+        return message3;
     }
 
     private JObject GetStackTrace()

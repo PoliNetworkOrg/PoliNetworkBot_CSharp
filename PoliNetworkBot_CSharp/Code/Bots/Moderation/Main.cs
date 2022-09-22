@@ -49,7 +49,7 @@ internal static class Main
                 return;
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
-            
+
             var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (toExit is { Item1: ToExit.EXIT })
             {

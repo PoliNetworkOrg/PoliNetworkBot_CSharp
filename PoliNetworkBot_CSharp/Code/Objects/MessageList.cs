@@ -1,7 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
@@ -12,45 +17,38 @@ public class MessageList
     public readonly List<Message?> Messages;
 
 
-    
     public MessageList()
     {
         Messages = new List<Message?>();
-
     }
 
     public void TryDeleteMessagesAsync(TelegramBotAbstract telegramBotClient)
     {
-        lock(this)
+        lock (this)
         {
             try
             {
                 foreach (var m in Messages)
-                {
                     try
                     {
-                        var a = Utils.DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
+                        var a = DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, m);
                         a.Wait();
                     }
                     catch
                     {
                         // ignored
                     }
-                }
             }
             catch
             {
                 // ignored
             }
-
-
         }
-        
     }
 
     public void Add(Message message)
     {
-        lock(this)
+        lock (this)
         {
             try
             {

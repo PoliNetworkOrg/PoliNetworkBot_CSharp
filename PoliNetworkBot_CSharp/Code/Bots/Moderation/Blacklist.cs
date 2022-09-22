@@ -19,6 +19,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class Blacklist
 {
+    private static readonly List<long> SpecialGroups = new() { -1001361547847, -452591994, -1001320704409 };
+
+    private static readonly List<string> BannedWords = new()
+    {
+        "porcodio", "dioporco", "diocane", "negro", "negri", "negra", "negre"
+    };
+
     internal static async Task<SpamType> IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract,
         bool toLogMistakes, MessageEventArgs? messageEventArgs)
     {
@@ -91,12 +98,6 @@ internal static class Blacklist
         return SpamType.ALL_GOOD;
     }
 
-    private static readonly List<long> SpecialGroups = new() { -1001361547847, -452591994, -1001320704409 };
-    private static readonly List<string> BannedWords = new()
-    {
-        "porcodio","dioporco","diocane", "negro", "negri", "negra","negre"
-    };
-
     private static async Task<SpamType> CheckNotAllowedWords(string? text, long? groupId,
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
@@ -105,11 +106,9 @@ internal static class Blacklist
         var s = text?.Split(' ');
         if (s != null)
             if (s.Select(RemoveUselessCharacters).Any(s3 => s3 != null && BannedWords.Contains(s3)))
-            {
                 return SpamType.NOT_ALLOWED_WORDS;
-            }
 
-        
+
         if (Bitcoin(text, groupId))
             return SpamType.NOT_ALLOWED_WORDS;
 
@@ -120,7 +119,7 @@ internal static class Blacklist
             return SpamType.NOT_ALLOWED_WORDS;
         }
 
-    
+
         //all good!
         return SpamType.ALL_GOOD;
     }
@@ -134,9 +133,9 @@ internal static class Blacklist
     private static bool ChiedoScusa(string? text, long? groupId)
     {
         return (text != null && groupId != null && (text.Contains("scusate") || text.Contains("chiedo scusa")) &&
-            text.Contains("spam") || (text != null && groupId != null && text.Contains("google") &&
-                                      text.Contains("whatsapp") &&
-                                      text.Contains("application") && text.Contains("link")));
+                text.Contains("spam")) || (text != null && groupId != null && text.Contains("google") &&
+                                           text.Contains("whatsapp") &&
+                                           text.Contains("application") && text.Contains("link"));
     }
 
     private static string? RemoveUselessCharacters(string s3)

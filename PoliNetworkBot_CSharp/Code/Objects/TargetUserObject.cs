@@ -29,7 +29,8 @@ public class TargetUserObject
 
         var usernameFromReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
         var usernameFromAction = messageEventArgs?.Message?.From?.Username;
-        if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) && usernameFromAction != usernameFromReply)
+        if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) &&
+            usernameFromAction != usernameFromReply)
             _username = usernameFromReply;
 
         _ = TryGetUserId(sender);
@@ -115,6 +116,4 @@ public class TargetUserObject
     {
         return _userId;
     }
-    
-    
 }

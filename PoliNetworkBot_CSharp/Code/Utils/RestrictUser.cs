@@ -258,12 +258,12 @@ internal static class RestrictUser
                     RestrictAction.UNMUTE => "unmute",
                     _ => "unknown"
                 };
-            
+
                 var targetId2 = targetId.GetUserId();
-                filename += targetId2 == null ? "_null" : ("_" + targetId2.Value);
+                filename += targetId2 == null ? "_null" : "_" + targetId2.Value;
 
                 filename += ".json";
-                
+
                 var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
                 if (targetId2 == null)
                     await NotifyUtil.NotifyOwnersAsync5(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
@@ -474,7 +474,7 @@ internal static class RestrictUser
         IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
         bool? revokeMessage)
     {
-        var d1 = Utils.DateTimeClass.GetDateTime(target);
+        var d1 = DateTimeClass.GetDateTime(target);
         try
         {
             var targetUserObject = new TargetUserObject(target, sender, e);
@@ -485,13 +485,11 @@ internal static class RestrictUser
         }
         catch (Exception? ex)
         {
-            var ex2 = Utils.ExceptionUtil.Concat(ex, d1);
+            var ex2 = ExceptionUtil.Concat(ex, d1);
             return new SuccessWithException(false, ex2);
         }
     }
-    
-    
-    
+
 
     private static async Task BanAllUnbanAllMethod1Async(RestrictAction restrictAction,
         TargetUserObject finalTarget,
@@ -531,7 +529,7 @@ internal static class RestrictUser
         }
 
         var done =
-            await RestrictUser.BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
+            await BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
         var text2 = done?.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
 
         NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget,
@@ -544,7 +542,7 @@ internal static class RestrictUser
                 ParseMode.Html,
                 e.Message.MessageId);
 
-        await Utils.NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
+        await NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }
 
 
@@ -555,7 +553,7 @@ internal static class RestrictUser
         if (e?.Message?.From != null)
         {
             var r =
-                await Utils.Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
+                await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
                     sender);
             if (r != null && !r.IsSuccess()) return r;
         }
@@ -574,7 +572,7 @@ internal static class RestrictUser
 
             var targetId = userIdFound.GetUserId();
             if (targetId != null && e?.Message != null)
-                return await RestrictUser.BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
+                return await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
                     revokeMessage);
 
             var e3 = new Exception("Can't find userid (2)");
@@ -586,7 +584,7 @@ internal static class RestrictUser
 
         NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From?.Username);
 
-        return await RestrictUser.BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
+        return await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             revokeMessage);
     }
 
@@ -596,7 +594,7 @@ internal static class RestrictUser
         string? username,
         bool? revokeMessage)
     {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
             RestrictAction.UNBAN, revokeMessage);
     }
 
@@ -606,7 +604,7 @@ internal static class RestrictUser
         string? username,
         bool? revokeMessage)
     {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
             revokeMessage);
     }
 
@@ -615,10 +613,7 @@ internal static class RestrictUser
         string? username,
         bool? revokeMessage)
     {
-        return await Utils.RestrictUser.BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
             revokeMessage);
     }
-
-
-
 }

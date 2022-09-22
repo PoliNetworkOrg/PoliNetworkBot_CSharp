@@ -385,6 +385,6 @@ internal static class DateTimeClass
         for (var i = 2; i < target.Count; i++) s += target[i] + " ";
 
         s = s.Trim();
-        return DateTimeClass.GetFromString(s);
+        return GetFromString(s);
     }
 }

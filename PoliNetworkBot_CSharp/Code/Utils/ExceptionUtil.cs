@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
@@ -20,5 +24,4 @@ public static class ExceptionUtil
 
         return r;
     }
-
 }

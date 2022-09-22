@@ -164,9 +164,9 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
         }
-        
-        if (text.Contains("quando") 
-            && (text.Contains("presentare") || text.Contains("compilare") || text.Contains("modificare")) 
+
+        if (text.Contains("quando")
+            && (text.Contains("presentare") || text.Contains("compilare") || text.Contains("modificare"))
             && (text.Contains("piano studi") || text.Contains("piano di studi")))
         {
             var text2 = new Language(new Dictionary<string, string?>
@@ -190,7 +190,7 @@ public static class AutoReplyInGroups
 
 
         if ((text.Contains("qualcun") || text.Contains("sa") || text.Contains("notiz"))
-            && text.Contains("lezion") 
+            && text.Contains("lezion")
             && (text.Contains("online") || text.Contains("registrazion") || text.Contains("streaming")))
         {
             var text2 = new Language(new Dictionary<string, string?>
@@ -211,15 +211,13 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
         }
-        
+
 
         if (e is { Message: { } } && e.Message.Chat.Title != null &&
             e.Message.Chat.Title.ToLower().Contains("matricole"))
             if ((text.Contains("link") || text.Contains("esiste")) && text.Contains("whatsapp") &&
                 text.Contains("grupp"))
-            {
                 await CheckPinnedMessages(telegramBotClient, e);
-            }
 
         if (text.Contains("esiste un gruppo"))
         {

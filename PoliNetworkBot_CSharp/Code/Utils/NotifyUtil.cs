@@ -80,7 +80,7 @@ internal static class NotifyUtil
             return null;
 
         var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
-        
+
 
         var text = new Language(new Dictionary<string, string?>
         {
@@ -187,7 +187,7 @@ internal static class NotifyUtil
             // ignored
         }
 
-        await NotifyUtil.SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs, filename);
+        await SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs, filename);
 
 
         try
@@ -214,7 +214,8 @@ internal static class NotifyUtil
     {
         try
         {
-            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, json:true)).ToList();
+            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
+                .ToList();
             var toSendString = JsonConvert.SerializeObject(toSend);
             var stream = GenerateStreamFromString(toSendString);
             await SendFiles(messageEventArgs, sender, filename, stream);
@@ -230,8 +231,6 @@ internal static class NotifyUtil
                 //ignored
             }
         }
-
-
     }
 
     private static Stream GenerateStreamFromString(string s)
@@ -249,7 +248,7 @@ internal static class NotifyUtil
     {
         var file = new TelegramFile(stream, filename, "", "application/json");
 
-        
+
         //var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
         var text = new Language(new Dictionary<string, string?>
         {
@@ -260,7 +259,6 @@ internal static class NotifyUtil
         await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
             telegramBotAbstract, messageEventArgs?.Message?.From?.Username, "en",
             null, true);
-        
     }
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
@@ -436,8 +434,8 @@ internal static class NotifyUtil
             // ignored
         }
     }
-    
-    
+
+
     private static async Task SendReportOfSuccessAndFailures2(Stream? stream, string filename,
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {

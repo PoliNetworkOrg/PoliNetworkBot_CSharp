@@ -56,12 +56,9 @@ public class StoredMessage
                 break;
         }
 
-        
-        if (FromUserId.All(Innocuo))
-        {
-            return SpamType.ALL_GOOD;
-        }
-        
+
+        if (FromUserId.All(Innocuo)) return SpamType.ALL_GOOD;
+
         return message != null && GroupsIdItHasBeenSentInto.Count > 1 && HowManyTimesWeSawIt > 2 &&
                (FromUserId.Count <= 1 || (FromUserId.Count > 1 && message.Length > 10))
             ? IsSpam2()

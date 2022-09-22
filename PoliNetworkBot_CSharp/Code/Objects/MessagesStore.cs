@@ -186,7 +186,7 @@ public static class MessagesStore
                         !storedMessage.GroupsIdItHasBeenSentInto.Contains(message.Chat.Id))
                         storedMessage.GroupsIdItHasBeenSentInto.Add(message.Chat.Id);
 
-                    if (message != null) 
+                    if (message != null)
                         storedMessage.Messages.Add(message);
 
                     return Store.Count == 0 ? SpamType.UNDEFINED : storedMessage.IsSpam();

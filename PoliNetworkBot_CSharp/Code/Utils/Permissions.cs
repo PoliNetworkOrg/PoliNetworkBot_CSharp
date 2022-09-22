@@ -57,7 +57,8 @@ internal static class Permissions
                     .Split(@"https://t.me/")[1]
                     .Split(@""">")[0])
                 .ToList());
-        var headAdminsNotRen = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "headadmins_notrenewed", 1);
+        var headAdminsNotRen =
+            HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "ul", "headadmins_notrenewed", 1);
         if (headAdminsNotRen is { Count: 0 }) return false;
         var headAdminsNotRenInner = HtmlUtil.GetElementsByTagAndClassName(headAdminsNotRen?[0], "li");
         if (headAdminsNotRenInner != null)
