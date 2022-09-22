@@ -260,8 +260,10 @@ internal static class RestrictUser
                 };
             
                 var targetId2 = targetId.GetUserId();
-                filename += targetId2 == null ? "_null" : targetId2.Value;
+                filename += targetId2 == null ? "_null" : ("_" + targetId2.Value);
 
+                filename += ".json";
+                
                 var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
                 if (targetId2 == null)
                     await NotifyUtil.NotifyOwnersAsync5(r6, sender, e, "Ban/Unban All of [UNKNOWN]",

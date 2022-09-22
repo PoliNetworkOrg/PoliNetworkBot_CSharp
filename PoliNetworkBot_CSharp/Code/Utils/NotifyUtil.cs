@@ -79,7 +79,7 @@ internal static class NotifyUtil
         if (sender == null)
             return null;
 
-        var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs);
+        var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
         
 
         var text = new Language(new Dictionary<string, string?>
@@ -214,7 +214,7 @@ internal static class NotifyUtil
     {
         try
         {
-            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs)).ToList();
+            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, json:true)).ToList();
             var toSendString = JsonConvert.SerializeObject(toSend);
             var stream = GenerateStreamFromString(toSendString);
             await SendFiles(messageEventArgs, sender, filename, stream);

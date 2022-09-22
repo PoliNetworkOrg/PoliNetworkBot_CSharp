@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
@@ -54,9 +55,27 @@ public class ExceptionNumbered : Exception
         return true;
     }
 
-    public string GetMessageAsText(string? extrainfo, MessageEventArgs? messageEventArgs)
+    public string GetMessageAsText(
+        string? extrainfo, 
+        MessageEventArgs? messageEventArgs, 
+        bool json
+        )
     {
-        string message3 = "";
+        if (json)
+        {
+            var jObject = new JObject
+            {
+                ["number"] = this.GetNumberOfTimes(),
+                ["message"] = this.Message,
+                ["ExceptionToString"] = this.GetException().ToString(),
+                ["StackTrace"] = this.StackTrace,
+                ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
+                ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null: extrainfo
+            };
+            return JsonConvert.SerializeObject(jObject);
+        }
+
+        var message3 = "";
         try
         {
             message3 = "";
@@ -114,14 +133,15 @@ public class ExceptionNumbered : Exception
                     message3 += "\n\n";
                 }
 
-            if (!string.IsNullOrEmpty(extrainfo)) 
+            if (!string.IsNullOrEmpty(extrainfo))
                 message3 += "\n\n" + extrainfo;
         }
         catch (Exception e1)
         {
             message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
         }
-
+            
         return message3;
+
     }
 }
