@@ -30,17 +30,14 @@ public class ExceptionNumbered : Exception
         _v++;
     }
 
-    internal Exception GetException()
-    {
-        return this;
-    }
+
 
     internal bool AreTheySimilar(Exception? item2)
     {
         return Message == item2?.Message;
     }
 
-    internal int GetNumberOfTimes()
+    private int GetNumberOfTimes()
     {
         return _v;
     }
@@ -67,7 +64,7 @@ public class ExceptionNumbered : Exception
             {
                 ["number"] = this.GetNumberOfTimes(),
                 ["message"] = this.Message,
-                ["ExceptionToString"] = this.GetException().ToString(),
+                ["ExceptionToString"] = this.ToString(),
                 ["StackTrace"] = GetStackTrace(),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
                 ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null: extrainfo
@@ -75,7 +72,7 @@ public class ExceptionNumbered : Exception
             return JsonConvert.SerializeObject(jObject);
         }
 
-        var message3 = "";
+        string message3;
         try
         {
             message3 = "";
@@ -104,7 +101,7 @@ public class ExceptionNumbered : Exception
             try
             {
                 message3 += "ExceptionToString:\n";
-                message3 += this.GetException().ToString();
+                message3 += this.ToString();
                 message3 += "\n\n";
             }
             catch
@@ -149,8 +146,8 @@ public class ExceptionNumbered : Exception
     {
         var result = new JObject
         {
-            ["eStack"] = this.StackTrace,
-            ["currStack"] = System.Environment.StackTrace
+            ["eStack"] = StackTrace,
+            ["currStack"] = Environment.StackTrace
         };
         return result;
     }
