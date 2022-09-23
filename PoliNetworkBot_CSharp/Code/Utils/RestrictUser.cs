@@ -497,7 +497,7 @@ internal static class RestrictUser
         bool? revokeMessage)
     {
         var targetEmpty = await finalTarget.UserIdEmpty(sender);
-        if (targetEmpty && finalTarget.IsTest == false)
+        if (targetEmpty)
         {
             var lang2 = new Language(new Dictionary<string, string?>
             {

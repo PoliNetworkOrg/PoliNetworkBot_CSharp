@@ -1162,7 +1162,8 @@ public class TelegramBotAbstract
 
     internal async Task<bool> SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
         Language? text,
-        TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink)
+        TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        ParseMode parseModeCaption = ParseMode.Html)
     {
         switch (_isbot)
         {
@@ -1181,7 +1182,7 @@ public class TelegramBotAbstract
                         if (text == null) return true;
                         if (inputOnlineFile != null)
                             _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                text.Select(lang));
+                                text.Select(lang), parseMode:parseModeCaption);
                         return true;
                     }
 
@@ -1193,9 +1194,9 @@ public class TelegramBotAbstract
                         var t1 = text?.Select(lang);
                         if (text != null)
                             if (t1 != null)
-                                _ = await _botClient.SendTextMessageAsync(userId, t1);
+                                _ = await _botClient.SendTextMessageAsync(userId, t1, parseMode:parseModeCaption);
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode:parseModeCaption);
 
                         return true;
                     }
@@ -1204,9 +1205,9 @@ public class TelegramBotAbstract
                     {
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode:parseModeCaption);
                         var t1 = text?.Select(lang);
-                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1);
+                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1, parseMode: parseModeCaption);
 
                         return true;
                     }

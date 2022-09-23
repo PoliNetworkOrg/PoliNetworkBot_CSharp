@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
@@ -51,7 +52,7 @@ public class ExceptionNumbered : Exception
         return true;
     }
 
-    public string GetMessageAsText(
+    public TelegramFileContent GetMessageAsText(
         string? extrainfo,
         MessageEventArgs? messageEventArgs,
         bool json
@@ -68,7 +69,8 @@ public class ExceptionNumbered : Exception
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
                 ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null : extrainfo
             };
-            return JsonConvert.SerializeObject(jObject);
+            var s = JsonConvert.SerializeObject(jObject);
+            return new TelegramFileContent(fileContent: s, caption: null);
         }
 
         string message3;
@@ -107,16 +109,7 @@ public class ExceptionNumbered : Exception
             {
                 message3 += "\n\n";
             }
-
-            try
-            {
-                message3 += "StackTrace:\n";
-                message3 += JsonConvert.SerializeObject(GetStackTrace());
-            }
-            catch
-            {
-                message3 += "\n\n";
-            }
+            
 
             if (messageEventArgs != null)
                 try
@@ -137,7 +130,7 @@ public class ExceptionNumbered : Exception
             message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
         }
 
-        return message3;
+        return new TelegramFileContent("StackTrace:\n" + JsonConvert.SerializeObject(GetStackTrace()), message3);
     }
 
     private JObject GetStackTrace()
