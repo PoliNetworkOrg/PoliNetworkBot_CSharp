@@ -6,7 +6,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 
 public class BanUnbanAllResult
 {
