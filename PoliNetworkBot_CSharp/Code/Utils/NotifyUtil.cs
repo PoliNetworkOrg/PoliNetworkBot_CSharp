@@ -9,6 +9,7 @@ using System.Web;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -271,7 +272,7 @@ internal static class NotifyUtil
             { "en",caption }
         });
 
-        List<MessageSentResult>? done = new List<MessageSentResult>();
+        var done = new List<MessageSentResult>();
         
         foreach (var peer in peerAbstracts)
         {
@@ -285,7 +286,7 @@ internal static class NotifyUtil
     }
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
-        RestrictAction restrictAction, Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done,
+        RestrictAction restrictAction, BanUnbanAllResultComplete? done,
         TargetUserObject finalTarget,
         string? reason)
     {
@@ -437,7 +438,7 @@ internal static class NotifyUtil
 
 
     public static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract? sender, MessageEventArgs? e,
-        Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>? done)
+        BanUnbanAllResultComplete? done)
     {
         try
         {

@@ -8,7 +8,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
-internal class BanUnbanAllResult
+public class BanUnbanAllResult
 {
     private readonly List<DataRow>? _done;
     private readonly List<DataRow>? _failed;

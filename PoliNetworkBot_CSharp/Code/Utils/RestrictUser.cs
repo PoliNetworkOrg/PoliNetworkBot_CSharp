@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -60,7 +61,7 @@ internal static class RestrictUser
             await telegramBotClient.RestrictChatMemberAsync(chatId, userId, permissions, untilDate, chatType);
     }
 
-    private static async Task<Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>?> BanAllAsync(
+    private static async Task<BanUnbanAllResultComplete?> BanAllAsync(
         TelegramBotAbstract? sender, MessageEventArgs? e,
         TargetUserObject target, RestrictAction banTarget, DateTime? until,
         bool? revokeMessage)
@@ -91,7 +92,9 @@ internal static class RestrictUser
         }
 
         const string? q1 = "SELECT id, type FROM GroupsTelegram";
-        if (sender == null) return null;
+        if (sender == null) 
+            return null;
+        
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
         {
@@ -249,33 +252,51 @@ internal static class RestrictUser
             {
                 LogBanAction(targetId.GetUserId(), banTarget, sender, e.Message.From.Id, sender);
 
-                var filename = "";
-                filename += banTarget switch
-                {
-                    RestrictAction.BAN => "ban",
-                    RestrictAction.UNBAN => "unban",
-                    RestrictAction.MUTE => "mute",
-                    RestrictAction.UNMUTE => "unmute",
-                    _ => "unknown"
-                };
-
-                var targetId2 = targetId.GetUserId();
-                filename += targetId2 == null ? "_null" : "_" + targetId2.Value;
-
-                filename += ".json";
-
-                var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
-                if (targetId2 == null)
-                    await NotifyUtil.NotifyOwnersAsync5(r6, sender, e, "Ban/Unban All of [UNKNOWN]",
-                        e.Message.From.LanguageCode, filename);
-                else
-                    await NotifyUtil.NotifyOwnersAsync5(r6, sender, e,
-                        "Ban/Unban All of [" + targetId.GetTargetHtmlString() + "]",
-                        e.Message.From.LanguageCode, filename);
+   
             }
 
+        await SendFileNotify(targetId, banTarget, exceptions, nExceptions, sender, e);
+        
         var r5 = new BanUnbanAllResult(done, failed);
-        return new Tuple<BanUnbanAllResult, List<ExceptionNumbered>, long>(r5, exceptions, nExceptions);
+        return new BanUnbanAllResultComplete(r5, exceptions, nExceptions);
+    }
+
+    private static async Task SendFileNotify(TargetUserObject? targetId, RestrictAction banTarget,
+        List<ExceptionNumbered> exceptions, int nExceptions, TelegramBotAbstract telegramBotAbstract,
+        MessageEventArgs? messageEventArgs)
+    {
+        var targetId2 = targetId?.GetUserId();
+        var filename = GetFileName(banTarget, targetId2);
+        var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
+        var unbanAllOfUnknown = GetBanUnbanText(targetId);
+        await NotifyUtil.NotifyOwnersAsync5(r6, telegramBotAbstract, messageEventArgs, 
+            unbanAllOfUnknown,
+            messageEventArgs?.Message?.From?.LanguageCode, filename);
+    }
+
+    private static string GetBanUnbanText(TargetUserObject? targetUserObject)
+    {
+        var banUnbanAllOf = "Ban/Unban All of [" + targetUserObject?.GetTargetHtmlString() + "]";
+        const string banUnbanAllOfUnknown = "Ban/Unban All of [UNKNOWN]";
+        var unbanAllOfUnknown = targetUserObject?.GetUserId() == null ? banUnbanAllOfUnknown : banUnbanAllOf;
+        return unbanAllOfUnknown;
+    }
+
+    private static string GetFileName(RestrictAction banTarget, long? targetUserObject)
+    {
+        var filename = "";
+        filename += banTarget switch
+        {
+            RestrictAction.BAN => "ban",
+            RestrictAction.UNBAN => "unban",
+            RestrictAction.MUTE => "mute",
+            RestrictAction.UNMUTE => "unmute",
+            _ => "unknown"
+        };
+        
+        filename += targetUserObject == null ? "_null" : "_" + targetUserObject.Value;
+        filename += ".json";
+        return filename;
     }
 
     private static ChatType? GetChatType(DataRow dr)
@@ -530,7 +551,7 @@ internal static class RestrictUser
 
         var done =
             await BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
-        var text2 = done?.Item1.GetLanguage(restrictAction, finalTarget, done.Item3);
+        var text2 = done?.BanUnbanAllResult.GetLanguage(restrictAction, finalTarget, done.NExceptions);
 
         NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget,
             e.Message.ReplyToMessage.Text);
