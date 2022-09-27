@@ -87,12 +87,12 @@ internal static class NotifyUtil
     internal static Task NotifyOwners(string? v, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
-        return NotifyOwners8(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
-            null, 0, null, messageEventArgs);
+        return NotifyOwners12(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
+            null, 0, null, messageEventArgs, fileContent: null);
     }
 
-    private static async Task<List<MessageSentResult>?> NotifyOwners8(Language text2, TelegramBotAbstract? sender,
-        long? replyToMessageId, int v, string? langCode, MessageEventArgs? messageEventArgs, string? fileContent = null)
+    private static async Task<List<MessageSentResult>?> NotifyOwners12(Language text2, TelegramBotAbstract? sender,
+        long? replyToMessageId, int v, string? langCode, MessageEventArgs? messageEventArgs, string? fileContent)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
@@ -126,7 +126,7 @@ internal static class NotifyUtil
     public static async Task<List<MessageSentResult>?> NotifyOwners7(Language text, TelegramBotAbstract? sender,
         int v, string? langCode, long? replyto, MessageEventArgs? messageEventArgs, string? fileContent = null)
     {
-        return await NotifyOwners8(text, sender, replyto, v, langCode, messageEventArgs, fileContent);
+        return await NotifyOwners12(text, sender, replyto, v, langCode, messageEventArgs, fileContent);
     }
 
     internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
