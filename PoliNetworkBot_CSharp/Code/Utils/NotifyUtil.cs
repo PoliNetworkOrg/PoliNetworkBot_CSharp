@@ -81,25 +81,26 @@ internal static class NotifyUtil
             return null;
 
         var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
-        return await message3.Send(sender, loopNumber, langCode, replyToMessageId2, messageEventArgs);
+        return await message3.Send(sender, loopNumber, langCode, replyToMessageId2, messageEventArgs,  FileTypeJsonEnum.SIMPLE_STRING);
     }
 
-    internal static Task NotifyOwners(string? v, TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs)
+    internal static Task NotifyOwners13(string? v, TelegramBotAbstract? telegramBotAbstract,
+        MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
     {
         return NotifyOwners12(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
-            null, null, messageEventArgs, null);
+            null, null, messageEventArgs, null, whatWeWant);
     }
 
     private static async Task<List<MessageSentResult>?> NotifyOwners12(Language text2, TelegramBotAbstract? sender,
-        long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent)
+        long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent,
+        FileTypeJsonEnum? whatWeWant)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
         var text = GetNotifyText(langCode, text2);
 
         return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
-            replyToMessageId);
+            replyToMessageId, ParseMode.Html, whatWeWant);
 
         /*
         return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
@@ -125,9 +126,10 @@ internal static class NotifyUtil
     }
 
     public static async Task<List<MessageSentResult>?> NotifyOwners7(Language text, TelegramBotAbstract? sender,
-        string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent = null)
+        string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent,
+        FileTypeJsonEnum? whatWeWant)
     {
-        return await NotifyOwners12(text, sender, replyto, langCode, messageEventArgs, fileContent);
+        return await NotifyOwners12(text, sender, replyto, langCode, messageEventArgs, fileContent, whatWeWant);
     }
 
     internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -162,7 +164,7 @@ internal static class NotifyUtil
             {
                 { "en", v }
             });
-            m = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs);
+            m = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
         }
         catch
         {
@@ -176,7 +178,7 @@ internal static class NotifyUtil
             {
                 { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
             });
-            _ = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs);
+            _ = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
         }
         catch
         {
@@ -197,7 +199,7 @@ internal static class NotifyUtil
 
             if (m != null)
                 replyto = m.First().GetMessageId();
-            await NotifyOwners7(text2, sender, langCode, replyto, messageEventArgs);
+            await NotifyOwners7(text2, sender, langCode, replyto, messageEventArgs, null, null);
         }
         catch
         {
@@ -214,7 +216,7 @@ internal static class NotifyUtil
             var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
                 .Select(x => x.GetFileContentStringJson()).ToList();
             var toSendString = GetSerialized(toSend);
-            await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId);
+            await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,  FileTypeJsonEnum.STRING_JSONED);
         }
         catch (Exception e)
         {
@@ -236,10 +238,11 @@ internal static class NotifyUtil
         for (var i = 0; i < toSend2.Count; i++)
         {
             r += toSend2[i]?.GetStringAsJson();
-            
+
             if (i == toSend2.Count - 1)
                 r += ",";
         }
+
         r += "]";
         return new StringJson(FileTypeJsonEnum.STRING_JSONED, r);
     }
@@ -247,18 +250,18 @@ internal static class NotifyUtil
     public static async Task<List<MessageSentResult>?> SendString(StringJson? toSendString,
         MessageEventArgs? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
-        ParseMode parseMode = ParseMode.Html)
+        ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
     {
-        var stream = GenerateStreamFromString(toSendString);
+        var stream = GenerateStreamFromString(toSendString, whatWeWant);
         return await SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId);
     }
 
-    private static Stream GenerateStreamFromString(StringJson? s)
+    private static Stream GenerateStreamFromString(StringJson? s, FileTypeJsonEnum? whatWeWant)
     {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
-        if (s != null) 
-            writer.Write(s.GetStringAsJson());
+        if (s != null)
+            writer.Write(s.Get(whatWeWant));
         writer.Flush();
         stream.Position = 0;
         return stream;

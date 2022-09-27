@@ -2,6 +2,7 @@
 
 public enum FileTypeJsonEnum
 {
-    STRING_JSONED, OBJECT,
+    STRING_JSONED,
+    OBJECT,
     SIMPLE_STRING
 }

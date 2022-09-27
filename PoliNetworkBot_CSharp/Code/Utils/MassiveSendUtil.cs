@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
 
@@ -41,9 +42,9 @@ public static class MassiveSendUtil
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
         DataTable? groups, string textToSend)
     {
-        await NotifyUtil.NotifyOwners(
+        await NotifyUtil.NotifyOwners13(
             $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
-            $"The message is:\n\n{textToSend}", sender, e);
+            $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING );
 
         Thread.Sleep(1000 * 1000);
 

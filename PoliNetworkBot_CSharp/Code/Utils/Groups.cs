@@ -209,9 +209,9 @@ internal static class Groups
                             var nuovoLink =
                                 await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                             if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
-                                await NotifyUtil.NotifyOwners(
+                                await NotifyUtil.NotifyOwners13(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
-                                    telegramBotClient, e);
+                                    telegramBotClient, e, FileTypeJsonEnum.SIMPLE_STRING);
                         }
                     }
                 }

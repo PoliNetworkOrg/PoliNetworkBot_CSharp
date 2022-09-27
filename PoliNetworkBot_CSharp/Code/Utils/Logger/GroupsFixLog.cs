@@ -50,7 +50,7 @@ public static class GroupsFixLog
 
         var escaped = HttpUtility.HtmlEncode(message);
         Logger.WriteLine(message);
-        NotifyUtil.NotifyOwners(escaped, telegramBotAbstract, messageEventArgs);
+        NotifyUtil.NotifyOwners13(escaped, telegramBotAbstract, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
         Reset();
     }
 
