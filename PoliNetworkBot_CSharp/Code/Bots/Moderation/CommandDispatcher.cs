@@ -31,7 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
-    public static async Task CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
         string?[]? cmdLines = e.Message?.Text?.Split(' ');
         var cmd = cmdLines?[0]?.Trim();
@@ -40,7 +40,7 @@ internal static class CommandDispatcher
         if (string.IsNullOrEmpty(cmd))
         {
             await DefaultCommand(sender, e);
-            return;
+            return false;
         }
 
         if (cmd.Contains('@'))
@@ -49,7 +49,8 @@ internal static class CommandDispatcher
             if (sender != null)
             {
                 var botUsername = await sender.GetBotUsernameAsync();
-                if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase)) return;
+                if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase)) 
+                    return false;
             }
         }
 
@@ -58,7 +59,7 @@ internal static class CommandDispatcher
             case "/start":
             {
                 await Start(sender, e);
-                return;
+                return false;
             }
 
             case "/force_check_invite_links":
@@ -68,19 +69,19 @@ internal static class CommandDispatcher
                     _ = ForceCheckInviteLinksAsync(sender, e);
                 else
                     await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/contact":
             {
                 await ContactUs(sender, e);
-                return;
+                return false;
             }
 
             case "/help":
             {
                 await Help(sender, e);
-                return;
+                return false;
             }
 
             case "/muteAll":
@@ -88,13 +89,13 @@ internal static class CommandDispatcher
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (e.Message?.ReplyToMessage == null)
                 {
                     await CommandNeedsAReplyToMessage(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (GlobalVariables.AllowedMuteAll != null &&
@@ -103,20 +104,20 @@ internal static class CommandDispatcher
                         e.Message.From?.Username, false);
                 else
                     await DefaultCommand(sender, e);
-                return;
+                return false;
             }
             case "/unmuteAll":
             {
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (e.Message?.ReplyToMessage == null)
                 {
                     await CommandNeedsAReplyToMessage(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (GlobalVariables.AllowedMuteAll != null &&
@@ -126,7 +127,7 @@ internal static class CommandDispatcher
                         false);
                 else
                     await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/banAll":
@@ -134,13 +135,13 @@ internal static class CommandDispatcher
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (e.Message?.ReplyToMessage == null)
                 {
                     await CommandNeedsAReplyToMessage(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (GlobalVariables.AllowedBanAll != null &&
@@ -150,7 +151,7 @@ internal static class CommandDispatcher
                         false);
                 else
                     await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/banDeleteAll":
@@ -158,13 +159,13 @@ internal static class CommandDispatcher
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (e.Message?.ReplyToMessage == null)
                 {
                     await CommandNeedsAReplyToMessage(sender, e);
-                    return;
+                    return false;
                 }
 
                 if ((GlobalVariables.AllowedBanAll == null ||
@@ -173,13 +174,13 @@ internal static class CommandDispatcher
                      !GlobalVariables.Owners.ToList().Any(x => x.Matches(e.Message?.From))))
                 {
                     await DefaultCommand(sender, e);
-                    return;
+                    return false;
                 }
 
                 _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode,
                     e.Message.From?.Username,
                     true);
-                return;
+                return false;
             }
 
             case "/del":
@@ -192,11 +193,11 @@ internal static class CommandDispatcher
                                                                        x.Matches(e.Message?.From)))))
                 {
                     await DefaultCommand(sender, e);
-                    return;
+                    return false;
                 }
 
                 await sender.DeleteMessageAsync(reply.Chat.Id, reply.MessageId, null);
-                return;
+                return false;
             }
 
             /*
@@ -227,7 +228,7 @@ internal static class CommandDispatcher
             case "/ban":
             {
                 _ = RestrictUser.BanUserAsync(sender, e, cmdLines, false);
-                return;
+                return false;
             }
             /*case "/banAllHistory":
                 {
@@ -241,13 +242,13 @@ internal static class CommandDispatcher
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
                 {
                     await CommandNotSentInPrivateAsync(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (e.Message?.ReplyToMessage == null)
                 {
                     await CommandNeedsAReplyToMessage(sender, e);
-                    return;
+                    return false;
                 }
 
                 if (GlobalVariables.AllowedBanAll != null &&
@@ -257,27 +258,29 @@ internal static class CommandDispatcher
                         false);
                 else
                     await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/test_spam":
             {
                 if (e.Message?.ReplyToMessage == null)
-                    return;
+                    return false;
 
                 await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
-                return;
+                return false;
             }
 
             case "/groups":
             {
                 await SendRecommendedGroupsAsync(sender, e);
-                return;
+                return false;
             }
 
             case "/search":
             {
-                if (e.Message == null || sender == null) return;
+                if (e.Message == null || sender == null) 
+                    return false;
+                
                 var query = "";
                 if (cmdLines != null)
                     for (var i = 1; i < cmdLines.Length; i++)
@@ -301,7 +304,7 @@ internal static class CommandDispatcher
                 }
 
 
-                return;
+                return false;
             }
 
             case "/reboot":
@@ -312,12 +315,12 @@ internal static class CommandDispatcher
                     {
                         RebootWithLog(sender, e);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/sendmessageinchannel":
@@ -327,14 +330,14 @@ internal static class CommandDispatcher
                     message.Chat.Type == ChatType.Private)
                 {
                     if (cmdLines != null && (e.Message?.ReplyToMessage == null || cmdLines.Length != 2))
-                        return;
+                        return false;
                     var text = new Language(new Dictionary<string, string?>
                     {
                         { "it", e.Message?.ReplyToMessage?.Text ?? e.Message?.ReplyToMessage?.Caption }
                     });
                     var c2 = cmdLines?[1];
                     if (cmdLines == null)
-                        return;
+                        return false;
 
                     if (c2 != null)
                         _ = await SendMessage.SendMessageInAGroup(sender, e.Message?.From?.LanguageCode,
@@ -342,12 +345,12 @@ internal static class CommandDispatcher
                             long.Parse(c2),
                             ChatType.Channel, ParseMode.Html, null, false);
 
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/getGroups":
@@ -364,12 +367,12 @@ internal static class CommandDispatcher
                     if (e.Message?.From != null)
                         _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode,
                             e.Message.Chat.Type);
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/allowmessage":
@@ -379,12 +382,12 @@ internal static class CommandDispatcher
                     message.Chat.Type == ChatType.Private)
                 {
                     await AllowMessageAsync(e, sender);
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/allowmessageowner":
@@ -394,12 +397,12 @@ internal static class CommandDispatcher
                     message.Chat.Type == ChatType.Private)
                 {
                     await AllowMessageOwnerAsync(e, sender);
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/allowedmessages":
@@ -412,12 +415,13 @@ internal static class CommandDispatcher
                         { "it", "List of messages: " },
                         { "en", "List of messages: " }
                     });
-                    if (sender == null) return;
+                    if (sender == null) 
+                        return false;
 
 
                     var message1 = e.Message;
                     if (message1 == null)
-                        return;
+                        return false;
 
                     await sender.SendTextMessageAsync(e.Message?.From?.Id, text,
                         ChatType.Private,
@@ -427,7 +431,7 @@ internal static class CommandDispatcher
                     var messages = MessagesStore.GetAllMessages(x =>
                         x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
                     if (messages == null)
-                        return;
+                        return false;
 
                     foreach (var m2 in messages.Select(message => message?.message)
                                  .Where(m2 => m2 != null))
@@ -442,12 +446,12 @@ internal static class CommandDispatcher
                     }
 
 
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
 
             case "/unallowmessage":
@@ -462,7 +466,8 @@ internal static class CommandDispatcher
                         {
                             { "en", "You have to reply to a message containing the message" }
                         });
-                        if (sender == null) return;
+                        if (sender == null) 
+                            return false;
                         var o = e.Message;
                         if (o != null)
                             await sender.SendTextMessageAsync(e.Message?.From?.Id, text,
@@ -471,16 +476,16 @@ internal static class CommandDispatcher
                                 e.Message?.From?.Username,
                                 o.MessageId);
 
-                        return;
+                        return false;
                     }
 
                     MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/updategroups_dry":
             {
@@ -493,13 +498,12 @@ internal static class CommandDispatcher
                         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                             e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
-
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/updategroups":
             {
@@ -513,12 +517,12 @@ internal static class CommandDispatcher
                             e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/updategroupsandfixnames":
             {
@@ -532,12 +536,12 @@ internal static class CommandDispatcher
                             e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/updategroupsandfixnames_dry":
             {
@@ -551,12 +555,12 @@ internal static class CommandDispatcher
                             e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                             ParseMode.Html, null);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/backup":
             {
@@ -568,12 +572,12 @@ internal static class CommandDispatcher
                             await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
                                 e.Message.Chat.Type);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/getrunningtime":
             {
@@ -591,19 +595,19 @@ internal static class CommandDispatcher
                                 e.Message.From?.LanguageCode,
                                 e.Message.From?.Username, lang, ParseMode.Html,
                                 null);
-                            return;
+                            return false;
                         }
                         catch (Exception? ex)
                         {
                             _ = NotifyUtil.NotifyOwners(ex, sender, e);
                         }
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/massivesend_polimi":
             {
@@ -611,13 +615,12 @@ internal static class CommandDispatcher
                     if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
                     {
-                        await MassiveSendUtil.MassiveGeneralSendAsync(e, sender);
-                        return;
+                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender);
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/subscribe_log":
             {
@@ -627,12 +630,12 @@ internal static class CommandDispatcher
                     {
                         await Logger.Subscribe(e.Message.From?.Id, sender, e);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/unsubscribe_log":
             {
@@ -642,12 +645,12 @@ internal static class CommandDispatcher
                     {
                         Logger.Unsubscribe(e.Message.From?.Id);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/getlog":
             {
@@ -656,12 +659,12 @@ internal static class CommandDispatcher
                     message.Chat.Type == ChatType.Private)
                 {
                     GetLog(sender, e);
-                    return;
+                    return false;
                 }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/getmessagesent":
             {
@@ -671,22 +674,22 @@ internal static class CommandDispatcher
                     {
                         await MessagesStore.SendMessageDetailsAsync(sender, e);
 
-                        return;
+                        return false;
                     }
 
                 await DefaultCommand(sender, e);
 
-                return;
+                return false;
             }
             case "/testtime":
             {
                 if (e.Message == null || e.Message.Chat.Type != ChatType.Private)
-                    return;
+                    return false;
 
                 var time = await TestTime(sender, e);
                 Console.WriteLine(time);
 
-                return;
+                return false;
             }
 
             case "/time":
@@ -700,14 +703,14 @@ internal static class CommandDispatcher
                     e.Message?.From?.Username, lang, ParseMode.Html,
                     null);
 
-                return;
+                return false;
             }
 
             case "/assoc_write":
             case "/assoc_send":
             {
                 _ = await Assoc.Assoc_SendAsync(sender, e);
-                return;
+                return false;
             }
 
             case "/assoc_publish":
@@ -716,13 +719,13 @@ internal static class CommandDispatcher
                     _ = await Assoc.Assoc_Publish(sender, e);
                 else
                     _ = await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/assoc_read":
             {
                 _ = await Assoc.Assoc_Read(sender, e, false);
-                return;
+                return false;
             }
 
             case "/assoc_read_all":
@@ -731,50 +734,50 @@ internal static class CommandDispatcher
                     _ = await Assoc.Assoc_ReadAll(sender, e);
                 else
                     _ = await DefaultCommand(sender, e);
-                return;
+                return false;
             }
 
             case "/assoc_delete":
             case "/assoc_remove":
             {
                 _ = await Assoc.Assoc_Delete(sender, e);
-                return;
+                return false;
             }
 
             case "/rooms":
             {
                 await Rooms.RoomsMainAsync(sender, e);
-                return;
+                return false;
             }
 
             case "/rules":
             {
                 _ = await Rules(sender, e);
-                return;
+                return false;
             }
 
             case "/qe":
             {
                 _ = await QueryBot(true, e, sender);
-                return;
+                return false;
             }
 
             case "/qs":
             {
                 _ = await QueryBot(false, e, sender);
-                return;
+                return false;
             }
 
             case "/update_links_from_json":
             {
                 await InviteLinks.UpdateLinksFromJsonAsync(sender, e);
-                return;
+                return false;
             }
 
             default:
             {
                 await DefaultCommand(sender, e);
-                return;
+                return false;
             }
         }
     }

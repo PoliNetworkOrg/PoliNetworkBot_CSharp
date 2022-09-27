@@ -14,11 +14,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class MassiveSendUtil
 {
-    public static async Task MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender)
+    public static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender)
     {
-        if (e.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                                  string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
-                                              || e.Message.ReplyToMessage.Text == null)
+        if (e?.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                   string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
+                                               || e.Message.ReplyToMessage.Text == null)
         {
             var text = new Language(new Dictionary<string, string?>
             {
@@ -26,16 +26,16 @@ public static class MassiveSendUtil
                 { "it", "You have to reply to a message containing the message" }
             });
 
-            if (e.Message != null)
+            if (e?.Message != null)
                 await sender.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
                     e.Message?.From?.LanguageCode, ParseMode.Html, null, e.Message?.From?.Username,
                     e.Message!.MessageId);
-            return;
+            return false;
         }
 
         var textToBeSent = e.Message.ReplyToMessage.Text;
         var groups = Groups.GetGroupsByTitle("polimi", 1000, sender);
-        await MassiveSendSlaveAsync(sender, e, groups, textToBeSent);
+        return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent);
     }
 
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
