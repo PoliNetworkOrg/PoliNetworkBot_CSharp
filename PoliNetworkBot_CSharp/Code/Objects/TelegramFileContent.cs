@@ -1,56 +1,56 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class TelegramFileContent
 {
- public readonly string? FileContent;
- private readonly string? _caption;
- public TelegramFileContent(string? fileContent, string? caption)
- {
-  this.FileContent = fileContent;
-  this._caption = caption;
- }
+    private readonly string? _caption;
+    public readonly string? FileContent;
 
- public  async Task<List<MessageSentResult>?> Send(TelegramBotAbstract sender, int loopNumber, string? langCode, long? replyToMessageId2, MessageEventArgs? messageEventArgs)
- {
+    public TelegramFileContent(string? fileContent, string? caption)
+    {
+        FileContent = fileContent;
+        _caption = caption;
+    }
 
+    public async Task<List<MessageSentResult>?> Send(TelegramBotAbstract sender, int loopNumber, string? langCode,
+        long? replyToMessageId2, MessageEventArgs? messageEventArgs)
+    {
+        if (string.IsNullOrEmpty(FileContent) && string.IsNullOrEmpty(_caption)) return null;
 
-  if (string.IsNullOrEmpty(this.FileContent) && string.IsNullOrEmpty(this._caption))
-  {
-   return null;
-  }
+        if (string.IsNullOrEmpty(FileContent))
+        {
+            var text1 = new Language(new Dictionary<string, string?>
+            {
+                { "it", "Eccezione! " + _caption },
+                { "en", "Exception! " + _caption }
+            });
 
-  if (string.IsNullOrEmpty(this.FileContent))
-  {
-   var text1 = new Language(new Dictionary<string, string?>
-   {
-    { "it", "Eccezione! " + this._caption },
-    { "en", "Exception! " + this._caption }
-   });
-
-   var r11 = await NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs, this.FileContent);
-   return r11;
-  }
+            var r11 = await NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs,
+                FileContent);
+            return r11;
+        }
 
 
-  if (string.IsNullOrEmpty(this._caption))
-  {
-   await NotifyUtil.SendString(
-    this.FileContent, messageEventArgs, sender, 
-    "ex.json", "", replyToMessageId2
-    );
-  }
-  
-  var text = new Language(new Dictionary<string, string?>
-  {
-   { "it", "Eccezione! " + this._caption },
-   { "en", "Exception! " + this._caption }
-  });
+        if (string.IsNullOrEmpty(_caption))
+            await NotifyUtil.SendString(
+                FileContent, messageEventArgs, sender,
+                "ex.json", "", replyToMessageId2
+            );
 
-  var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs);
-  return r1;
- }
+        var text = new Language(new Dictionary<string, string?>
+        {
+            { "it", "Eccezione! " + _caption },
+            { "en", "Exception! " + _caption }
+        });
+
+        var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs);
+        return r1;
+    }
 }

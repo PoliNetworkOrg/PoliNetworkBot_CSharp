@@ -69,7 +69,7 @@ public class ExceptionNumbered : Exception
                 ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null : extrainfo
             };
             var s = JsonConvert.SerializeObject(jObject);
-            return new TelegramFileContent(fileContent: s, caption: null);
+            return new TelegramFileContent(s, null);
         }
 
         string message3;
@@ -108,7 +108,7 @@ public class ExceptionNumbered : Exception
             {
                 message3 += "\n\n";
             }
-            
+
 
             if (messageEventArgs != null)
                 try

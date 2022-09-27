@@ -1182,7 +1182,7 @@ public class TelegramBotAbstract
                         if (text == null) return true;
                         if (inputOnlineFile != null)
                             _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                text.Select(lang), parseMode:parseModeCaption);
+                                text.Select(lang), parseMode: parseModeCaption);
                         return true;
                     }
 
@@ -1194,9 +1194,10 @@ public class TelegramBotAbstract
                         var t1 = text?.Select(lang);
                         if (text != null)
                             if (t1 != null)
-                                _ = await _botClient.SendTextMessageAsync(userId, t1, parseMode:parseModeCaption);
+                                _ = await _botClient.SendTextMessageAsync(userId, t1, parseModeCaption);
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode:parseModeCaption);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                parseMode: parseModeCaption);
 
                         return true;
                     }
@@ -1205,9 +1206,10 @@ public class TelegramBotAbstract
                     {
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode:parseModeCaption);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                parseMode: parseModeCaption);
                         var t1 = text?.Select(lang);
-                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1, parseMode: parseModeCaption);
+                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1, parseModeCaption);
 
                         return true;
                     }

@@ -49,7 +49,7 @@ internal static class CommandDispatcher
             if (sender != null)
             {
                 var botUsername = await sender.GetBotUsernameAsync();
-                if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase)) 
+                if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase))
                     return false;
             }
         }
@@ -278,9 +278,9 @@ internal static class CommandDispatcher
 
             case "/search":
             {
-                if (e.Message == null || sender == null) 
+                if (e.Message == null || sender == null)
                     return false;
-                
+
                 var query = "";
                 if (cmdLines != null)
                     for (var i = 1; i < cmdLines.Length; i++)
@@ -415,7 +415,7 @@ internal static class CommandDispatcher
                         { "it", "List of messages: " },
                         { "en", "List of messages: " }
                     });
-                    if (sender == null) 
+                    if (sender == null)
                         return false;
 
 
@@ -466,7 +466,7 @@ internal static class CommandDispatcher
                         {
                             { "en", "You have to reply to a message containing the message" }
                         });
-                        if (sender == null) 
+                        if (sender == null)
                             return false;
                         var o = e.Message;
                         if (o != null)
@@ -614,9 +614,7 @@ internal static class CommandDispatcher
                 if (e is { Message: { } } && sender != null)
                     if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
-                    {
                         return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender);
-                    }
 
                 await DefaultCommand(sender, e);
 

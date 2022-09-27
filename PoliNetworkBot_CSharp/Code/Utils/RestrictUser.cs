@@ -92,9 +92,9 @@ internal static class RestrictUser
         }
 
         const string? q1 = "SELECT id, type FROM GroupsTelegram";
-        if (sender == null) 
+        if (sender == null)
             return null;
-        
+
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
         if (dt == null || dt.Rows.Count == 0)
         {
@@ -249,14 +249,10 @@ internal static class RestrictUser
 
         if (e?.Message?.From != null)
             if (targetId != null)
-            {
                 LogBanAction(targetId.GetUserId(), banTarget, sender, e.Message.From.Id, sender);
 
-   
-            }
-
         await SendFileNotify(targetId, banTarget, exceptions, nExceptions, sender, e);
-        
+
         var r5 = new BanUnbanAllResult(done, failed);
         return new BanUnbanAllResultComplete(r5, exceptions, nExceptions);
     }
@@ -269,7 +265,7 @@ internal static class RestrictUser
         var filename = GetFileName(banTarget, targetId2);
         var r6 = new Tuple<List<ExceptionNumbered>, int>(exceptions, nExceptions);
         var unbanAllOfUnknown = GetBanUnbanText(targetId);
-        await NotifyUtil.NotifyOwnersAsync5(r6, telegramBotAbstract, messageEventArgs, 
+        await NotifyUtil.NotifyOwnersAsync5(r6, telegramBotAbstract, messageEventArgs,
             unbanAllOfUnknown,
             messageEventArgs?.Message?.From?.LanguageCode, filename);
     }
@@ -293,7 +289,7 @@ internal static class RestrictUser
             RestrictAction.UNMUTE => "unmute",
             _ => "unknown"
         };
-        
+
         filename += targetUserObject == null ? "_null" : "_" + targetUserObject.Value;
         filename += ".json";
         return filename;
