@@ -14,10 +14,9 @@ public class BanUnbanAllResultComplete
         this.BanUnbanAllResult = banUnbanAllResult;
     }
 
-    public void Deconstruct(out BanUnbanAllResult banunbanallresult, out List<ExceptionNumbered> o, out int item3)
+    public void Deconstruct(out BanUnbanAllResult banunbanallresult, out int item3)
     {
         banunbanallresult = this.BanUnbanAllResult;
-        o = this.Exceptions;
         item3 = this.NExceptions;
     }
 }

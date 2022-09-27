@@ -310,7 +310,7 @@ internal static class NotifyUtil
                 if (done == null)
                     return;
 
-                var (banUnbanAllResult, _, item3) = done;
+                var (banUnbanAllResult, item3) = done;
                 message += banUnbanAllResult.GetLanguage(restrictAction, finalTarget, item3)?.Select("it");
 
                 const string? langCode = "it";
@@ -443,7 +443,7 @@ internal static class NotifyUtil
         {
             if (done != null)
             {
-                var (banUnbanAllResult, _, _) = done;
+                var (banUnbanAllResult, _) = done;
                 await SendReportOfSuccessAndFailures2(
                     StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
                     "success.bin", sender, e);

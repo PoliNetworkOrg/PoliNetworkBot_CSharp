@@ -31,7 +31,7 @@ public class TelegramFileContent
     { "en", "Exception! " + this._caption }
    });
 
-   var r11 = await Utils.NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs, this.FileContent);
+   var r11 = await NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs, this.FileContent);
    return r11;
   }
 
@@ -50,7 +50,7 @@ public class TelegramFileContent
    { "en", "Exception! " + this._caption }
   });
 
-  var r1 = await Utils.NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs);
+  var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs);
   return r1;
  }
 }
