@@ -71,7 +71,7 @@ internal static class RestrictUser
         return dt == null ? null : await BanAllAsync3(sender, target, e, targetId, banTarget, dt, revokeMessage, until);
     }
 
-    private static async Task< DataTable?> ToExitBan(TargetUserObject targetId, TelegramBotAbstract? sender,
+    private static async Task<DataTable?> ToExitBan(TargetUserObject targetId, TelegramBotAbstract? sender,
         TargetUserObject target, MessageEventArgs? e)
     {
         var targetEmpty = await targetId.UserIdEmpty(sender);
@@ -105,7 +105,7 @@ internal static class RestrictUser
         var dt = Database.ExecuteSelect(q1, sender.DbConfig);
         if (dt != null && dt.Rows.Count != 0)
             return dt;
-        
+
         var text3 = new Language(new Dictionary<string, string?>
         {
             {
@@ -125,7 +125,6 @@ internal static class RestrictUser
                 ParseMode.Html,
                 e.Message.MessageId);
         return null;
-
     }
 
     private static async Task<BanUnbanAllResultComplete> BanAllAsync3(TelegramBotAbstract? sender,
@@ -135,15 +134,17 @@ internal static class RestrictUser
         await AlertActionStartedAsync(sender, target, e);
 
         var banUnbanAllResultComplete = await BanSingleInAll(banTarget, dt, targetId, sender, revokeMessage, until);
-        
+
         LogBanAction(targetId.GetUserId(), banTarget, sender, e?.Message?.From?.Id, sender);
 
-        await SendFileNotify(targetId, banTarget, banUnbanAllResultComplete.Exceptions, banUnbanAllResultComplete.NExceptions, sender, e);
+        await SendFileNotify(targetId, banTarget, banUnbanAllResultComplete.Exceptions,
+            banUnbanAllResultComplete.NExceptions, sender, e);
 
         return banUnbanAllResultComplete;
     }
 
-    private static async Task<BanUnbanAllResultComplete> BanSingleInAll(RestrictAction? banTarget, DataTable? dt, TargetUserObject targetId,
+    private static async Task<BanUnbanAllResultComplete> BanSingleInAll(RestrictAction? banTarget, DataTable? dt,
+        TargetUserObject targetId,
         TelegramBotAbstract? sender, bool? revokeMessage, DateTime? until)
     {
         const int timeSleepBetweenBanUnban = 10;
@@ -272,7 +273,7 @@ internal static class RestrictUser
             default:
                 throw new ArgumentOutOfRangeException(nameof(banTarget), banTarget, null);
         }
-        
+
         var r5 = new BanUnbanAllResult(done, failed);
         return new BanUnbanAllResultComplete(r5, exceptions, nExceptions);
     }
