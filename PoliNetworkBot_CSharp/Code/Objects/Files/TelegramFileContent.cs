@@ -6,25 +6,25 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.Files;
 
 public class TelegramFileContent
 {
     private readonly string? _caption;
-    public readonly string? FileContent;
+    private readonly StringJson? _fileContent;
 
-    public TelegramFileContent(string? fileContent, string? caption)
+    public TelegramFileContent(StringJson? fileContent, string? caption)
     {
-        FileContent = fileContent;
+        _fileContent = fileContent;
         _caption = caption;
     }
 
     public async Task<List<MessageSentResult>?> Send(TelegramBotAbstract sender, int loopNumber, string? langCode,
         long? replyToMessageId2, MessageEventArgs? messageEventArgs)
     {
-        if (string.IsNullOrEmpty(FileContent) && string.IsNullOrEmpty(_caption)) return null;
+        if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;
 
-        if (string.IsNullOrEmpty(FileContent))
+        if (_fileContent == null || _fileContent.IsEmpty())
         {
             var text1 = new Language(new Dictionary<string, string?>
             {
@@ -33,14 +33,14 @@ public class TelegramFileContent
             });
 
             var r11 = await NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs,
-                FileContent);
+                _fileContent);
             return r11;
         }
 
 
         if (string.IsNullOrEmpty(_caption))
             await NotifyUtil.SendString(
-                FileContent, messageEventArgs, sender,
+                _fileContent, messageEventArgs, sender,
                 "ex.json", "", replyToMessageId2
             );
 
@@ -52,5 +52,10 @@ public class TelegramFileContent
 
         var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs);
         return r1;
+    }
+
+    public StringJson? GetFileContentStringJson()
+    {
+        return this._fileContent;
     }
 }
