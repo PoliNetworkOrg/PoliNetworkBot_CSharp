@@ -81,7 +81,8 @@ internal static class NotifyUtil
             return null;
 
         var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
-        return await message3.Send(sender, loopNumber, langCode, replyToMessageId2, messageEventArgs,  FileTypeJsonEnum.SIMPLE_STRING);
+        return await message3.Send(sender, loopNumber, langCode, replyToMessageId2, messageEventArgs,
+            FileTypeJsonEnum.SIMPLE_STRING);
     }
 
     internal static Task NotifyOwners13(string? v, TelegramBotAbstract? telegramBotAbstract,
@@ -216,7 +217,8 @@ internal static class NotifyUtil
             var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
                 .Select(x => x.GetFileContentStringJson()).ToList();
             var toSendString = GetSerialized(toSend);
-            await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,  FileTypeJsonEnum.STRING_JSONED);
+            await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,
+                FileTypeJsonEnum.STRING_JSONED);
         }
         catch (Exception e)
         {

@@ -44,7 +44,7 @@ public static class MassiveSendUtil
     {
         await NotifyUtil.NotifyOwners13(
             $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
-            $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING );
+            $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING);
 
         Thread.Sleep(1000 * 1000);
 

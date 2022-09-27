@@ -1048,7 +1048,8 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners13(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null, FileTypeJsonEnum.SIMPLE_STRING);
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null,
+            FileTypeJsonEnum.SIMPLE_STRING);
 
         var l1 = new Language(text);
         return new UpdateGroupsResult(l1, x1);

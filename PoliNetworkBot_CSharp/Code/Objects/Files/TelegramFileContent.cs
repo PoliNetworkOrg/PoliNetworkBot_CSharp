@@ -43,7 +43,7 @@ public class TelegramFileContent
         if (string.IsNullOrEmpty(_caption))
             await NotifyUtil.SendString(
                 _fileContent, messageEventArgs, sender,
-                "ex.json", "", replyToMessageId2, ParseMode.Html,  whatWeWant);
+                "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
 
         var text = new Language(new Dictionary<string, string?>
         {
@@ -51,7 +51,8 @@ public class TelegramFileContent
             { "en", "Exception! " + _caption }
         });
 
-        var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs, null, null);
+        var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs, null,
+            null);
         return r1;
     }
 

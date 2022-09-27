@@ -9,9 +9,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Files;
 
 public class StringJson
 {
+    private readonly string? _simpleString;
     private readonly string? _stringValue;
     private readonly object? _value;
-    private readonly string? _simpleString;
 
     public StringJson(FileTypeJsonEnum jsoned, object? value)
     {
@@ -20,19 +20,19 @@ public class StringJson
         {
             case FileTypeJsonEnum.STRING_JSONED:
                 _stringValue = value?.ToString();
-                this._simpleString = value?.ToString();
+                _simpleString = value?.ToString();
                 break;
             case FileTypeJsonEnum.OBJECT:
                 _stringValue = JsonConvert.SerializeObject(value);
-                this._simpleString = value?.ToString();
+                _simpleString = value?.ToString();
                 break;
             case FileTypeJsonEnum.SIMPLE_STRING:
                 _stringValue = JsonConvert.SerializeObject(value);
-                this._simpleString = value?.ToString();
+                _simpleString = value?.ToString();
                 break;
             default:
                 _stringValue = JsonConvert.SerializeObject(value);
-                this._simpleString = value?.ToString();
+                _simpleString = value?.ToString();
                 break;
         }
     }
