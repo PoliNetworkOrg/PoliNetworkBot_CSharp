@@ -39,7 +39,7 @@ public class StringJson
 
     public bool IsEmpty()
     {
-        return string.IsNullOrEmpty(_stringValue) || string.IsNullOrEmpty(this._simpleString);
+        return string.IsNullOrEmpty(_stringValue) || string.IsNullOrEmpty(_simpleString);
     }
 
     public string? GetStringAsJson()
@@ -51,9 +51,9 @@ public class StringJson
     {
         return whatWeWant switch
         {
-            FileTypeJsonEnum.STRING_JSONED => this._stringValue,
-            FileTypeJsonEnum.OBJECT => this._value,
-            FileTypeJsonEnum.SIMPLE_STRING => this._simpleString,
+            FileTypeJsonEnum.STRING_JSONED => _stringValue,
+            FileTypeJsonEnum.OBJECT => _value,
+            FileTypeJsonEnum.SIMPLE_STRING => _simpleString,
             _ => null
         };
     }
