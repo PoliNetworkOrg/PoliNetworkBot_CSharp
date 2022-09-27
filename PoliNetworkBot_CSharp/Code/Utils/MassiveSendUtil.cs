@@ -14,7 +14,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class MassiveSendUtil
 {
-    public static async Task MassiveGeneralSendAsync(MessageEventArgs e, TelegramBotAbstract sender)
+    public static async Task MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender)
     {
         if (e.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                                                   string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
@@ -38,7 +38,7 @@ public static class MassiveSendUtil
         await MassiveSendSlaveAsync(sender, e, groups, textToBeSent);
     }
 
-    private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs e,
+    private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
         DataTable? groups, string textToSend)
     {
         await NotifyUtil.NotifyOwners(
@@ -69,42 +69,41 @@ public static class MassiveSendUtil
 
         try
         {
-            var g1 = groups?.Rows;
-            if (g1 != null)
-                foreach (DataRow element in g1)
+            var g1 = groups.Rows;
+            foreach (DataRow element in g1)
+            {
+                try
                 {
+                    var groupId = Convert.ToInt64(element.ItemArray[0]);
+
                     try
                     {
-                        var groupId = Convert.ToInt64(element.ItemArray[0]);
-
+                        await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e, groupId,
+                            ChatType.Supergroup, ParseMode.Html, null, default);
+                        counter++;
+                    }
+                    catch
+                    {
                         try
                         {
-                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e, groupId,
-                                ChatType.Supergroup, ParseMode.Html, null, default);
+                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e,
+                                groupId,
+                                ChatType.Group, ParseMode.Html, null, default);
                             counter++;
                         }
                         catch
                         {
-                            try
-                            {
-                                await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e,
-                                    groupId,
-                                    ChatType.Group, ParseMode.Html, null, default);
-                                counter++;
-                            }
-                            catch
-                            {
-                                // ignored
-                            }
+                            // ignored
                         }
                     }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    await Task.Delay(500);
                 }
+                catch
+                {
+                    // ignored
+                }
+
+                await Task.Delay(500);
+            }
         }
         catch
         {

@@ -31,7 +31,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
-    public static async Task CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
+    public static async Task CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         string?[]? cmdLines = e.Message?.Text?.Split(' ');
         var cmd = cmdLines?[0]?.Trim();

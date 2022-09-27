@@ -33,7 +33,7 @@ internal static class Main
         //t1.Start();
     }
 
-    private static async Task MainMethod2(object sender, MessageEventArgs e)
+    private static async Task MainMethod2(object sender, MessageEventArgs? e)
     {
         TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;
