@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Config;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
-internal class BotConfig
+public class BotConfig
 {
     // ReSharper disable once InconsistentNaming
     public List<BotInfoAbstract>? bots;

@@ -33,9 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram;
 
 internal static class Program
 {
-    private static BotConfig? _botInfos;
-    private static BotConfig? _userBotsInfos;
-    private static BotConfig? _botDisguisedAsUserBotInfos;
+    private static readonly BotConfigAll BotConfigAll = new();
 
     private static async Task Main(string[]? args)
     {
@@ -210,7 +208,7 @@ internal static class Program
     {
         try
         {
-            _botDisguisedAsUserBotInfos =
+            BotConfigAll._botDisguisedAsUserBotInfos =
                 JsonConvert.DeserializeObject<BotConfig>(
                     File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
         }
@@ -219,8 +217,8 @@ internal static class Program
             // ignored
         }
 
-        if (_botDisguisedAsUserBotInfos?.bots != null &&
-            _botDisguisedAsUserBotInfos.bots.Count != 0)
+        if (BotConfigAll._botDisguisedAsUserBotInfos?.bots != null &&
+            BotConfigAll._botDisguisedAsUserBotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -237,7 +235,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _botDisguisedAsUserBotInfos =
+                    BotConfigAll._botDisguisedAsUserBotInfos =
                         JsonConvert.DeserializeObject<BotConfig>(
                             File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
                 }
@@ -264,7 +262,7 @@ internal static class Program
     {
         try
         {
-            _userBotsInfos =
+            BotConfigAll._userBotsInfos =
                 JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
         }
         catch
@@ -272,7 +270,7 @@ internal static class Program
             // ignored
         }
 
-        if (_userBotsInfos is { bots: { } } && _userBotsInfos.bots.Count != 0)
+        if (BotConfigAll._userBotsInfos is { bots: { } } && BotConfigAll._userBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -289,7 +287,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _userBotsInfos =
+                    BotConfigAll._userBotsInfos =
                         JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
                 }
                 catch
@@ -315,14 +313,14 @@ internal static class Program
     {
         try
         {
-            _botInfos = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
+            BotConfigAll._botInfos = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
         }
         catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
 
-        if (_botInfos is { bots: { } } && _botInfos.bots.Count != 0)
+        if (BotConfigAll._botInfos is { bots: { } } && BotConfigAll._botInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -339,7 +337,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _botInfos = JsonConvert.DeserializeObject<BotConfig>(
+                    BotConfigAll._botInfos = JsonConvert.DeserializeObject<BotConfig>(
                         File.ReadAllText(Paths.Info.ConfigBotsInfo));
                 }
                 catch
@@ -368,9 +366,9 @@ internal static class Program
         var anonBots = 0;
 
         GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract?>();
-        if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
-            if (_botInfos.bots != null)
-                foreach (var bot in _botInfos.bots)
+        if (BotConfigAll._botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
+            if (BotConfigAll._botInfos.bots != null)
+                foreach (var bot in BotConfigAll._botInfos.bots)
                 {
                     var token = bot.GetToken();
                     if (string.IsNullOrEmpty(token))
@@ -421,9 +419,9 @@ internal static class Program
                         anonBots++;
                 }
 
-        if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
-            if (_userBotsInfos.bots != null)
-                foreach (var userbot in _userBotsInfos.bots)
+        if (BotConfigAll._userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
+            if (BotConfigAll._userBotsInfos.bots != null)
+                foreach (var userbot in BotConfigAll._userBotsInfos.bots)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
@@ -454,10 +452,10 @@ internal static class Program
                         }
                 }
 
-        if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
+        if (BotConfigAll._botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
             runOnlyNormalBot == false)
-            if (_botDisguisedAsUserBotInfos.bots != null)
-                foreach (var userbot in _botDisguisedAsUserBotInfos.bots)
+            if (BotConfigAll._botDisguisedAsUserBotInfos.bots != null)
+                foreach (var userbot in BotConfigAll._botDisguisedAsUserBotInfos.bots)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
