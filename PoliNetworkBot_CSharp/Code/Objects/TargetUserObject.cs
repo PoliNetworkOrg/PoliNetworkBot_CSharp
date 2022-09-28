@@ -57,7 +57,7 @@ public class TargetUserObject
         }
     }
 
-    public string? GetTargetHtmlString()
+    public string GetTargetHtmlString()
     {
         string? target;
         if (_userId != null)
