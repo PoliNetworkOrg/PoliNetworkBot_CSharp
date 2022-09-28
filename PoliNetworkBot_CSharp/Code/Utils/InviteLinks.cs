@@ -93,7 +93,7 @@ internal static class InviteLinks
                        "\n\n" + (chat == null ? "[null class]" :
                            string.IsNullOrEmpty(chat.Title) ? "[null or empty title]" : chat.Title);
 
-            await NotifyUtil.NotifyOwners13(ex3M, sender, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
+            await NotifyUtil.NotifyOwners_AnError_AndLog3(ex3M, sender, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
             return null;
         }
     }

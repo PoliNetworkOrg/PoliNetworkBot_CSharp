@@ -115,7 +115,7 @@ internal static class Blacklist
         // ReSharper disable once InvertIf
         if (ChiedoScusa(text, groupId))
         {
-            await NotifyUtil.NotifyOwners16(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
+            await NotifyUtil.NotifyOwnersWithLog(new Exception("Chiedo scusa per lo spam \n\n" + text), telegramBotAbstract);
             return SpamType.NOT_ALLOWED_WORDS;
         }
 

@@ -36,7 +36,7 @@ internal static class NotifyUtil
             if (text == null)
             {
                 var ex = new Exception("text null and caption null in permitted spam notification");
-                await NotifyOwners15(ex, sender, messageEventArgs);
+                await NotifyOwnerWithLog2(ex, sender, messageEventArgs);
                 return;
             }
 
@@ -72,7 +72,7 @@ internal static class NotifyUtil
         }
     }
 
-    internal static async Task<List<MessageSentResult>?> NotifyOwners14(ExceptionNumbered exception,
+    internal static async Task<List<MessageSentResult>?> NotifyOwnersClassic(ExceptionNumbered exception,
         TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extrainfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
@@ -81,18 +81,18 @@ internal static class NotifyUtil
             return null;
 
         var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
-        return await message3.Send(sender, langCode, replyToMessageId2, messageEventArgs,
+        return await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
             FileTypeJsonEnum.SIMPLE_STRING);
     }
 
-    internal static Task NotifyOwners13(string? v, TelegramBotAbstract? telegramBotAbstract,
+    internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
     {
-        return NotifyOwners12(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
+        return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
             null, null, messageEventArgs, null, whatWeWant);
     }
 
-    private static async Task<List<MessageSentResult>?> NotifyOwners12(Language text2, TelegramBotAbstract? sender,
+    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2, TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant)
     {
@@ -119,18 +119,18 @@ internal static class NotifyUtil
         return text;
     }
 
-    internal static async Task NotifyOwners15(Exception? e, TelegramBotAbstract? telegramBotAbstract,
+    internal static async Task NotifyOwnerWithLog2(Exception? e, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
-        await NotifyOwners14(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+        await NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
     }
 
-    public static async Task<List<MessageSentResult>?> NotifyOwners7(Language text, TelegramBotAbstract? sender,
+    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text, TelegramBotAbstract? sender,
         string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant)
     {
-        return await NotifyOwners12(text, sender, replyto, langCode, messageEventArgs, fileContent, whatWeWant);
+        return await NotifyOwners_AnError_AndLog(text, sender, replyto, langCode, messageEventArgs, fileContent, whatWeWant);
     }
 
     internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -150,7 +150,7 @@ internal static class NotifyUtil
         error += "\n";
 
         var exception = new ExceptionNumbered(error);
-        await NotifyOwners14(exception, sender, null);
+        await NotifyOwnersClassic(exception, sender, null);
     }
 
     internal static async Task NotifyOwnersAsync5(Tuple<List<ExceptionNumbered>, int> exceptions,
@@ -165,7 +165,7 @@ internal static class NotifyUtil
             {
                 { "en", v }
             });
-            m = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
+            m = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
         }
         catch
         {
@@ -179,7 +179,7 @@ internal static class NotifyUtil
             {
                 { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
             });
-            _ = await NotifyOwners7(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
+            _ = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
         }
         catch
         {
@@ -200,7 +200,7 @@ internal static class NotifyUtil
 
             if (m != null)
                 replyto = m.First().GetMessageId();
-            await NotifyOwners7(text2, sender, langCode, replyto, messageEventArgs, null, null);
+            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null);
         }
         catch
         {
@@ -224,7 +224,7 @@ internal static class NotifyUtil
         {
             try
             {
-                _ = NotifyOwners16(e, sender);
+                _ = NotifyOwnersWithLog(e, sender);
             }
             catch
             {
@@ -391,9 +391,9 @@ internal static class NotifyUtil
         }
     }
 
-    public static async Task NotifyOwners16(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
+    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
     {
-        await NotifyOwners14(new ExceptionNumbered(exception), telegramBotAbstract, null);
+        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract, null);
         Logger.Logger.WriteLine(exception);
     }
 

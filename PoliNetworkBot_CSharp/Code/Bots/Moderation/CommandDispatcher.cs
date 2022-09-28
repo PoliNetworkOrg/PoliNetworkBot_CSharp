@@ -599,7 +599,7 @@ internal static class CommandDispatcher
                         }
                         catch (Exception? ex)
                         {
-                            _ = NotifyUtil.NotifyOwners15(ex, sender, e);
+                            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
                         }
 
                         return false;
@@ -935,7 +935,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? exception)
         {
-            _ = NotifyUtil.NotifyOwners15(exception, sender, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(exception, sender, e);
             return null;
         }
     }
@@ -1047,7 +1047,7 @@ internal static class CommandDispatcher
                 { "en", "Error in execution" }
             };
 
-        _ = NotifyUtil.NotifyOwners13(
+        _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
             "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null,
             FileTypeJsonEnum.SIMPLE_STRING);
 
@@ -1132,7 +1132,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwners15(ex, botAbstract, null);
+            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, null);
         }
     }
 
@@ -1359,7 +1359,7 @@ internal static class CommandDispatcher
         if (exception != null)
         {
             var s = tuple1?.Item3;
-            await NotifyUtil.NotifyOwners14(new ExceptionNumbered(exception), sender, e, s);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, e, s);
 
             return null;
         }
@@ -1558,7 +1558,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwners14(new ExceptionNumbered(e2), sender, e);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, e);
         }
 
         if (n == null)

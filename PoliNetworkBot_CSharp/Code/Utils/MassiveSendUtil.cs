@@ -42,7 +42,7 @@ public static class MassiveSendUtil
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
         DataTable? groups, string textToSend)
     {
-        await NotifyUtil.NotifyOwners13(
+        await NotifyUtil.NotifyOwners_AnError_AndLog3(
             $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
             $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING);
 

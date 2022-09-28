@@ -47,7 +47,7 @@ public static class Main
         }
         catch (Exception? exception)
         {
-            await NotifyUtil.NotifyOwners15(exception, telegramBotClient, e);
+            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, e);
         }
 
         return null;

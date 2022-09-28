@@ -49,7 +49,7 @@ internal static class ThreadAsync
 
         try
         {
-            await NotifyUtil.NotifyOwners15(new Exception("Check anon message started."), bot, null);
+            await NotifyUtil.NotifyOwnerWithLog2(new Exception("Check anon message started."), bot, null);
         }
         catch
         {

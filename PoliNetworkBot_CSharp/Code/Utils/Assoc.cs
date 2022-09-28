@@ -133,7 +133,7 @@ internal static class Assoc
 
                     if (sentDate?.Item2 != null)
                     {
-                        await NotifyUtil.NotifyOwners14(new ExceptionNumbered(sentDate.Item2), sender, e,
+                        await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(sentDate.Item2), sender, e,
                             sentDate.Item3);
                         return false;
                     }
@@ -193,7 +193,7 @@ internal static class Assoc
                     if (successQueue == SuccessQueue.SUCCESS)
                         continue;
 
-                    await NotifyUtil.NotifyOwners15(
+                    await NotifyUtil.NotifyOwnerWithLog2(
                         new Exception("Success queue is " + successQueue + " while trying to send a message!"),
                         sender, e);
 
@@ -217,7 +217,7 @@ internal static class Assoc
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwners15(ex, sender, e);
+            await NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
             return false;
         }
     }
@@ -261,7 +261,7 @@ internal static class Assoc
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwners15(e1, sender, e);
+            await NotifyUtil.NotifyOwnerWithLog2(e1, sender, e);
             return false;
         }
     }
@@ -844,14 +844,14 @@ internal static class Assoc
                 }
                 catch (Exception? exc)
                 {
-                    await NotifyUtil.NotifyOwners16(exc, assocVetoData.Bot);
-                    await NotifyUtil.NotifyOwners16(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
+                    await NotifyUtil.NotifyOwnersWithLog(exc, assocVetoData.Bot);
+                    await NotifyUtil.NotifyOwnersWithLog(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
                         assocVetoData.Bot);
                 }
             }
             catch (Exception? e)
             {
-                await NotifyUtil.NotifyOwners16(e, callbackGenericData.Bot);
+                await NotifyUtil.NotifyOwnersWithLog(e, callbackGenericData.Bot);
             }
         }
         catch (Exception)

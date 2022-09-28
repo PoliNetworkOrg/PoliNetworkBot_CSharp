@@ -114,7 +114,7 @@ internal static class Main
         {
             Logger.WriteLine(exception.Message);
 
-            await NotifyUtil.NotifyOwners15(exception, telegramBotClient, e);
+            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, e);
         }
     }
 
@@ -134,7 +134,7 @@ internal static class Main
         }
         catch (Exception? e)
         {
-            _ = NotifyUtil.NotifyOwners15(e, sender, messageEventArgs);
+            _ = NotifyUtil.NotifyOwnerWithLog2(e, sender, messageEventArgs);
             return false;
         }
     }

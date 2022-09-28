@@ -21,7 +21,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public async Task<List<MessageSentResult>?> Send(TelegramBotAbstract sender, string? langCode,
+    public async Task<List<MessageSentResult>?> SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
     {
         if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;
@@ -34,7 +34,7 @@ public class TelegramFileContent
                 { "en", "Exception! " + _caption }
             });
 
-            var r11 = await NotifyUtil.NotifyOwners7(text1, sender, langCode, replyToMessageId2, messageEventArgs,
+            var r11 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2, messageEventArgs,
                 _fileContent, whatWeWant);
             return r11;
         }
@@ -51,7 +51,7 @@ public class TelegramFileContent
             { "en", "Exception! " + _caption }
         });
 
-        var r1 = await NotifyUtil.NotifyOwners7(text, sender, langCode, replyToMessageId2, messageEventArgs, null,
+        var r1 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2, messageEventArgs, null,
             null);
         return r1;
     }

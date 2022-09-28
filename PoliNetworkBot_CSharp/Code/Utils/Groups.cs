@@ -118,7 +118,7 @@ internal static class Groups
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " +
                                                oldTitle +
                                                "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        await NotifyUtil.NotifyOwners15(e3, telegramBotAbstract, messageEventArgs);
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, messageEventArgs);
                     }
                 }
             }
@@ -127,7 +127,7 @@ internal static class Groups
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners15(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, messageEventArgs);
         }
 
         return r;
@@ -152,7 +152,7 @@ internal static class Groups
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwners15(ex, telegramBotClient, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
         }
     }
 
@@ -209,7 +209,7 @@ internal static class Groups
                             var nuovoLink =
                                 await InviteLinks.CreateInviteLinkAsync(indexIdInTable, telegramBotClient, e);
                             if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
-                                await NotifyUtil.NotifyOwners13(
+                                await NotifyUtil.NotifyOwners_AnError_AndLog3(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
                                     telegramBotClient, e, FileTypeJsonEnum.SIMPLE_STRING);
                         }
@@ -220,7 +220,7 @@ internal static class Groups
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwners15(ex, telegramBotClient, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
         }
     }
 

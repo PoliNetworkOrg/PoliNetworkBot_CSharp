@@ -139,7 +139,7 @@ public class Program
                 }
                 catch (Exception ex)
                 {
-                    await BotUtils.NotifyUtil.NotifyOwners15(ex, telegramBotClient, e);
+                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
                 }
             }
         }
@@ -277,7 +277,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwners16(ex, sender);
+            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, sender);
         }
     }
 
@@ -319,7 +319,7 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwners16(exception, sender);
+            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender);
         }
     }
 
@@ -510,7 +510,7 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwners16(exception, sender);
+                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender);
                             }
                         }
 
@@ -533,7 +533,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwners16(ex, bot);
+            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot);
             return false;
         }
     }
@@ -903,7 +903,7 @@ public class Program
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
                         ParseMode.Html, null, null);
-                    await BotUtils.NotifyUtil.NotifyOwners15(ex, sender, e);
+                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
                 }
             }
         }

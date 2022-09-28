@@ -120,7 +120,7 @@ public static class CallbackUtils
         }
         catch (Exception? exc)
         {
-            await NotifyUtil.NotifyOwners16(exc, telegramBotClient);
+            await NotifyUtil.NotifyOwnersWithLog(exc, telegramBotClient);
         }
 
         return false;
@@ -145,7 +145,7 @@ public static class CallbackUtils
         }
         catch (Exception? exception)
         {
-            await NotifyUtil.NotifyOwners16(exception, telegramBotClientBot);
+            await NotifyUtil.NotifyOwnersWithLog(exception, telegramBotClientBot);
         }
     }
 

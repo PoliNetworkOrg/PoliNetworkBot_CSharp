@@ -487,7 +487,7 @@ internal static class Program
         {
             var toSend = "WARNING! \n";
             toSend += "Critical errors found in log while starting up! \n" + critics;
-            NotifyUtil.NotifyOwners13(toSend, telegramBotAbstract, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
+            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
         }
 
         using var powershell = PowerShell.Create();

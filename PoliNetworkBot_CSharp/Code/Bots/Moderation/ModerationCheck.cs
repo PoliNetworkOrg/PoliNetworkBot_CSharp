@@ -214,7 +214,7 @@ internal static class ModerationCheck
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners15(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, messageEventArgs);
         }
 
         return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(item1, item2, item3, oldValid);
@@ -282,7 +282,7 @@ internal static class ModerationCheck
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwners15(ex, sender, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
         }
     }
 
@@ -564,7 +564,7 @@ internal static class ModerationCheck
                     {
                         var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
                         var e3 = new Exception(e4);
-                        await NotifyUtil.NotifyOwners15(e3, telegramBotClient, messageEventArgs);
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient, messageEventArgs);
                         break;
                     }
                 }
