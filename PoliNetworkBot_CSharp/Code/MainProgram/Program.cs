@@ -33,7 +33,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram;
 
 internal static class Program
 {
-    private static readonly BotConfigAll BotConfigAll = new();
+    public static readonly BotConfigAll BotConfigAll = new();
 
     private static async Task Main(string[]? args)
     {

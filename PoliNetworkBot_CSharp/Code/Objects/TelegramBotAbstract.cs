@@ -1168,6 +1168,7 @@ public class TelegramBotAbstract
         TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
+        var inputMedia = GetCaptionInline(text, lang, documentInput);
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1184,8 +1185,12 @@ public class TelegramBotAbstract
                         if (_botClient == null) return true;
                         if (text == null) return true;
                         if (inputOnlineFile != null)
+                        {
+                            
                             _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                text.Select(lang), parseMode: parseModeCaption);
+                                inputMedia, parseMode: parseModeCaption);
+                        }
+
                         return true;
                     }
 
@@ -1230,7 +1235,7 @@ public class TelegramBotAbstract
                         var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
                         if (tlFileToSend != null)
                         {
-                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, text, username, lang);
+                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, inputMedia, username);
                             return r != null;
                         }
 
@@ -1281,6 +1286,12 @@ public class TelegramBotAbstract
         }
 
         return false;
+    }
+
+    private static string? GetCaptionInline(Language? text, string? lang, TelegramFile documentInput)
+    {
+        var s = text?.Select(lang);
+        return string.IsNullOrEmpty(s) ? documentInput.GetCaption() : s;
     }
 
     internal async Task<bool> UpdateUsername(string from, string to)

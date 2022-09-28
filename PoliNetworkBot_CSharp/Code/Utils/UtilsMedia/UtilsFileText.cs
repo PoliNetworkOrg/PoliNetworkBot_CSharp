@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 internal static class UtilsFileText
 {
     internal static TelegramFile GenerateFileFromString(string data, string fileName, string? caption,
-        string? mimeType)
+        string? mimeType = "application/json")
     {
         var stream = GenerateStreamFromString(data);
         var telegramFile = new TelegramFile(stream, fileName, caption, mimeType);

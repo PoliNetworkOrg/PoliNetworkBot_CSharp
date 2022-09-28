@@ -355,22 +355,20 @@ internal static class CommandDispatcher
 
             case "/get_config":
             {
-                if (!OwnerInPrivate(e)) 
-                    return await DefaultCommand(sender, e);
-                
-
-
-                return await GetAllGroups(e.Message?.From?.Id, e.Message?.From?.Username, sender, e.Message?.From?.LanguageCode,
+                return !OwnerInPrivate(e)
+                    ? await DefaultCommand(sender, e)
+                    : await Utils.ConfigUtil.GetConfig(e.Message?.From?.Id, e.Message?.From?.Username, sender,
+                        e.Message?.From?.LanguageCode,
                         e.Message?.Chat.Type);
             }
             
             case "/getGroups":
             {
-                if (!OwnerInPrivate(e)) 
-                    return await DefaultCommand(sender, e);
-                
-                return await GetAllGroups(e.Message?.From?.Id, e.Message?.From?.Username, sender, e.Message?.From?.LanguageCode,
-                    e.Message?.Chat.Type);
+                return !OwnerInPrivate(e)
+                    ? await DefaultCommand(sender, e)
+                    : await GetAllGroups(e.Message?.From?.Id, e.Message?.From?.Username, sender,
+                        e.Message?.From?.LanguageCode,
+                        e.Message?.Chat.Type);
             }
 
             case "/allowmessage":

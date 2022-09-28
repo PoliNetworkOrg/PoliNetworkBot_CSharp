@@ -285,7 +285,7 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
-        var file = new TelegramFile(stream, filename, caption, "application/json");
+        var file = TelegramFile.FromStreamJson(stream, filename, caption);
 
 
         //var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
