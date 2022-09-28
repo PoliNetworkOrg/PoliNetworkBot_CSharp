@@ -370,11 +370,7 @@ internal static class NotifyUtil
                            (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " +
                            messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
                 message += "\n";
-                message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null
-                               ? "@" + messageEventArgs.Message.From?.Username
-                               : "Unknown") + " [" +
-                           "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
-                           messageEventArgs.Message.From?.Id + "</a>" + "]";
+                message += "Restricted by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
 
                 const string? langCode = "it";
                 var text2 = new Language(new Dictionary<string, string?>
@@ -439,11 +435,7 @@ internal static class NotifyUtil
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";
-        message += "Allowed by: " + (messageEventArgs?.Message?.From?.Username != null
-                       ? "@" + messageEventArgs.Message.From?.Username
-                       : "Unknown") + " [" +
-                   "<a href=\"tg://user?id=" + messageEventArgs?.Message?.From?.Id + "\">" +
-                   messageEventArgs?.Message?.From?.Id + "</a>" + "]";
+        message += "Allowed by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message?.From);
         message += "\n\n";
         message += "Association: " + assoc;
         message += " #" + hashAssoc;

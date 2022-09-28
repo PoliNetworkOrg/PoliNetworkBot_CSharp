@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 
 #endregion
 
@@ -35,6 +36,12 @@ public class TargetUserObject
         _ = TryGetUserId(sender);
     }
 
+    public TargetUserObject(User stringInfo)
+    {
+        this._userId = stringInfo.Id;
+        this._username = stringInfo.Username;
+    }
+
     private void SetStartParam(string? s)
     {
         if (string.IsNullOrEmpty(s))
@@ -50,7 +57,7 @@ public class TargetUserObject
         }
     }
 
-    public string GetTargetHtmlString()
+    public string? GetTargetHtmlString()
     {
         string? target;
         if (_userId != null)

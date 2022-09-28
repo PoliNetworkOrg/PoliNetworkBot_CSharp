@@ -74,12 +74,12 @@ internal static class UserbotPeer
             : null;
     }
 
-    public static string GetHtmlStringWithUserLink(User? user)
+    public static string? GetHtmlStringWithUserLink(User? user)
     {
-        return (user?.Username != null
-                   ? "@" + user?.Username
-                   : "Unknown") + " [" +
-               "<a href=\"tg://user?id=" + user?.Id + "\">" +
-               user?.Id + "</a>" + "]";
+        if (user == null)
+            return null;
+        
+        var x = new TargetUserObject(user);
+        return x.GetTargetHtmlString();
     }
 }

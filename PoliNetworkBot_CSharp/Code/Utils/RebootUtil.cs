@@ -19,7 +19,7 @@ public static class RebootUtil
         var sendTo = Logger.Logger.GetLogTo(messageEventArgs);
         var text = new Language(new Dictionary<string, string?>
         {
-            { "en", "Reboot by " +  }
+            { "en", "Reboot by " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message?.From) }
         });
 
         foreach (var sendToSingle in sendTo)
