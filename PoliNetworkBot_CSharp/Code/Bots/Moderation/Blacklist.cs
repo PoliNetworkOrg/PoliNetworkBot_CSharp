@@ -99,7 +99,7 @@ internal static class Blacklist
     }
 
     private static async Task<SpamType> CheckNotAllowedWords(string? text, long? groupId,
-        TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
+        TelegramBotAbstract? telegramBotAbstract)
     {
         text = text?.ToLower();
 
