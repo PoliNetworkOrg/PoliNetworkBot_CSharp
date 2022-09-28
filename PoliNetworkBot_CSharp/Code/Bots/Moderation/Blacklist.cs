@@ -37,7 +37,7 @@ internal static class Blacklist
         words = splitBy.Aggregate(words, SplitTextBy);
 
         if (words is not { Count: > 0 })
-            return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, messageEventArgs) ==
+            return await CheckNotAllowedWords(text, groupId, telegramBotAbstract) ==
                    SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId, toLogMistakes);
@@ -45,7 +45,7 @@ internal static class Blacklist
         if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
-        return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, messageEventArgs) ==
+        return await CheckNotAllowedWords(text, groupId, telegramBotAbstract) ==
                SpamType.NOT_ALLOWED_WORDS
             ? SpamType.NOT_ALLOWED_WORDS
             : CheckForFormatMistakes(text, groupId, toLogMistakes);
