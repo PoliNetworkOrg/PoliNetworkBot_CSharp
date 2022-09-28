@@ -212,7 +212,15 @@ public static class ThreadAsync
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e, bot, messageEventArgs);
+            try
+            {
+                await NotifyUtil.NotifyOwnerWithLog2(e, bot, messageEventArgs);
+            }
+            catch (Exception e2)
+            {
+                Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
+                Logger.WriteLine(e2, LogSeverityLevel.CRITICAL);
+            }
         }
     }
 
