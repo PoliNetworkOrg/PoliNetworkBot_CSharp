@@ -38,8 +38,8 @@ public class TargetUserObject
 
     public TargetUserObject(User stringInfo)
     {
-        this._userId = stringInfo.Id;
-        this._username = stringInfo.Username;
+        _userId = stringInfo.Id;
+        _username = stringInfo.Username;
     }
 
     private void SetStartParam(string? s)
