@@ -560,15 +560,16 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task EditText(ChatId chatId, int messageId, string newText,
+    internal async Task<Message?> EditText(ChatId chatId, int messageId, string newText,
         InlineKeyboardMarkup inlineKeyboardMarkup)
     {
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
             {
-                if (_botClient != null) await _botClient.EditMessageTextAsync(chatId, messageId, newText);
-                return;
+                if (_botClient != null) 
+                    return await _botClient.EditMessageTextAsync(chatId, messageId, newText, replyMarkup: inlineKeyboardMarkup);
+                break;
             }
 
             case BotTypeApi.USER_BOT:
@@ -580,6 +581,8 @@ public class TelegramBotAbstract
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        return null;
     }
 
     internal async Task RemoveInlineKeyboardAsync(ChatId chatId, long messageId, InlineKeyboardMarkup replyMarkup)

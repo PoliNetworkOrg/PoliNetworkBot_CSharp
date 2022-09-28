@@ -96,7 +96,7 @@ public static class Logger
                 });
             }
 
-            foreach (var subscriber in Subscribers.Where(subscriber => log1 != null))
+            foreach (var subscriber in Subscribers.Where(subscriber => subscriber.Value != null))
                 if (log1 != null)
                     Buffer.Post(
                         new MessageQueue(subscriber,

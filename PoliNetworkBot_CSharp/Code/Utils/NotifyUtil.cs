@@ -81,7 +81,7 @@ internal static class NotifyUtil
             return null;
 
         var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
-        return await message3.Send(sender, loopNumber, langCode, replyToMessageId2, messageEventArgs,
+        return await message3.Send(sender, langCode, replyToMessageId2, messageEventArgs,
             FileTypeJsonEnum.SIMPLE_STRING);
     }
 
