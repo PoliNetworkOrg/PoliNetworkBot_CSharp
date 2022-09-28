@@ -1359,7 +1359,7 @@ internal static class CommandDispatcher
         if (exception != null)
         {
             var s = tuple1?.Item3;
-            await NotifyUtil.NotifyOwners(new ExceptionNumbered(exception), sender, e, 0, s);
+            await NotifyUtil.NotifyOwners14(new ExceptionNumbered(exception), sender, e, 0, s);
 
             return null;
         }
@@ -1558,7 +1558,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
+            await NotifyUtil.NotifyOwners14(new ExceptionNumbered(e2), sender, e);
         }
 
         if (n == null)

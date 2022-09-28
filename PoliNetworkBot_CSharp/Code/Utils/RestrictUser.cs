@@ -604,7 +604,7 @@ internal static class RestrictUser
             if (targetEmpty)
             {
                 var e2 = new Exception("Can't find userid (1)");
-                await NotifyUtil.NotifyOwners(new ExceptionNumbered(e2), sender, e);
+                await NotifyUtil.NotifyOwners14(new ExceptionNumbered(e2), sender, e);
                 return new SuccessWithException(false, e2);
             }
 
@@ -614,7 +614,7 @@ internal static class RestrictUser
                     revokeMessage);
 
             var e3 = new Exception("Can't find userid (2)");
-            await NotifyUtil.NotifyOwners(new ExceptionNumbered(e3), sender, e);
+            await NotifyUtil.NotifyOwners14(new ExceptionNumbered(e3), sender, e);
             return new SuccessWithException(false, e3);
         }
 
