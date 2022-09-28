@@ -212,7 +212,7 @@ public static class ThreadAsync
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners(e, bot, messageEventArgs);
+            await NotifyUtil.NotifyOwners15(e, bot, messageEventArgs);
         }
     }
 
@@ -227,7 +227,7 @@ public static class ThreadAsync
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
-            await NotifyUtil.NotifyOwners(e, bots[0], null);
+            await NotifyUtil.NotifyOwners15(e, bots[0], null);
         }
     }
 
@@ -277,7 +277,7 @@ public static class ThreadAsync
             }
             catch (Exception? e)
             {
-                _ = NotifyUtil.NotifyOwners(e, GetFirstBot(), null);
+                _ = NotifyUtil.NotifyOwners15(e, GetFirstBot(), null);
             }
 
             try

@@ -66,7 +66,7 @@ public class MessageToDelete
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners(e, bot, e2);
+            await NotifyUtil.NotifyOwners15(e, bot, e2);
         }
 
         return false;

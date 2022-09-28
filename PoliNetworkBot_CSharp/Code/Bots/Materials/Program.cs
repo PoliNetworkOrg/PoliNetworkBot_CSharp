@@ -139,7 +139,7 @@ public class Program
                 }
                 catch (Exception ex)
                 {
-                    await BotUtils.NotifyUtil.NotifyOwners(ex, telegramBotClient, e);
+                    await BotUtils.NotifyUtil.NotifyOwners15(ex, telegramBotClient, e);
                 }
             }
         }
@@ -903,7 +903,7 @@ public class Program
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
                         ParseMode.Html, null, null);
-                    await BotUtils.NotifyUtil.NotifyOwners(ex, sender, e);
+                    await BotUtils.NotifyUtil.NotifyOwners15(ex, sender, e);
                 }
             }
         }

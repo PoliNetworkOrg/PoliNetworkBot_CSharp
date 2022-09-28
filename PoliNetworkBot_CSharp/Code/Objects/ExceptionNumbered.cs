@@ -49,7 +49,7 @@ public class ExceptionNumbered : Exception
         if (telegramBotAbstract == null)
             return false;
 
-        await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
+        await NotifyUtil.NotifyOwners15(e, telegramBotAbstract, messageEventArgs);
         return true;
     }
 

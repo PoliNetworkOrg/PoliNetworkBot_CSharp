@@ -248,7 +248,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, r4.R2.Item2);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwners15(e2, telegramBotAbstract, null);
 
             await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, telegramBotAbstract);
 
@@ -263,7 +263,7 @@ internal static class UserBotFixBotAdmin
         }
         catch (Exception? e5)
         {
-            await NotifyUtil.NotifyOwners(e5, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwners15(e5, telegramBotAbstract, null);
         }
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
@@ -437,7 +437,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, e);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwners15(e2, telegramBotAbstract, null);
 
             return new ResultF1(false, null, r, null);
         }
@@ -484,7 +484,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, r4.R2.Item2);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwners15(e2, telegramBotAbstract, null);
 
             await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, accessHash, telegramBotAbstract);
 
