@@ -249,7 +249,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
@@ -300,7 +300,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
@@ -350,7 +350,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
