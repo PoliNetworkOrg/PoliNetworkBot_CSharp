@@ -224,7 +224,7 @@ internal static class NotifyUtil
         {
             try
             {
-                _ = NotifyOwners(e, sender);
+                _ = NotifyOwners16(e, sender);
             }
             catch
             {
@@ -391,7 +391,7 @@ internal static class NotifyUtil
         }
     }
 
-    public static async Task NotifyOwners(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
+    public static async Task NotifyOwners16(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
         int loopNumber = 0)
     {
         await NotifyOwners14(new ExceptionNumbered(exception), telegramBotAbstract, null);

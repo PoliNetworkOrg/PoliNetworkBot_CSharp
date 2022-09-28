@@ -277,7 +277,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwners(ex, sender);
+            _ = BotUtils.NotifyUtil.NotifyOwners16(ex, sender);
         }
     }
 
@@ -319,7 +319,7 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwners(exception, sender);
+            await BotUtils.NotifyUtil.NotifyOwners16(exception, sender);
         }
     }
 
@@ -510,7 +510,7 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwners(exception, sender);
+                                await BotUtils.NotifyUtil.NotifyOwners16(exception, sender);
                             }
                         }
 
@@ -533,7 +533,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwners(ex, bot);
+            _ = BotUtils.NotifyUtil.NotifyOwners16(ex, bot);
             return false;
         }
     }

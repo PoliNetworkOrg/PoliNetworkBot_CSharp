@@ -844,14 +844,14 @@ internal static class Assoc
                 }
                 catch (Exception? exc)
                 {
-                    await NotifyUtil.NotifyOwners(exc, assocVetoData.Bot);
-                    await NotifyUtil.NotifyOwners(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
+                    await NotifyUtil.NotifyOwners16(exc, assocVetoData.Bot);
+                    await NotifyUtil.NotifyOwners16(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
                         assocVetoData.Bot);
                 }
             }
             catch (Exception? e)
             {
-                await NotifyUtil.NotifyOwners(e, callbackGenericData.Bot);
+                await NotifyUtil.NotifyOwners16(e, callbackGenericData.Bot);
             }
         }
         catch (Exception)
