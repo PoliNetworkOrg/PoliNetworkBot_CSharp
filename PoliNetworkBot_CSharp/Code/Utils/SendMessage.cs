@@ -110,7 +110,7 @@ internal static class SendMessage
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwners15(e1, telegramBotClient, messageEventArgs, i + 1);
+            await NotifyUtil.NotifyOwners15(e1, telegramBotClient, messageEventArgs);
         }
 
         return r1;
