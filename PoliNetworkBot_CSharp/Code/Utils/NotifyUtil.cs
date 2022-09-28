@@ -326,11 +326,7 @@ internal static class NotifyUtil
 
                 var message = "Restrict action: " + restrictAction;
                 message += "\n";
-                message += "Restricted by: " + (messageEventArgs.Message.From?.Username != null
-                               ? "@" + messageEventArgs.Message.From?.Username
-                               : "Unknown") + " [" +
-                           "<a href=\"tg://user?id=" + messageEventArgs.Message.From?.Id + "\">" +
-                           messageEventArgs.Message.From?.Id + "</a>" + "]";
+                message += "Restricted by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
                 message += "\n";
                 message += "For reason: \n";
                 message += reason;

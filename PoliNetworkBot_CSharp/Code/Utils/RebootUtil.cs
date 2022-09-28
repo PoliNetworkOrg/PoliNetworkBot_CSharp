@@ -19,7 +19,7 @@ public static class RebootUtil
         var sendTo = Logger.Logger.GetLogTo(messageEventArgs);
         var text = new Language(new Dictionary<string, string?>
         {
-            { "en", "No log available." }
+            { "en", "Reboot by " +  }
         });
 
         foreach (var sendToSingle in sendTo)

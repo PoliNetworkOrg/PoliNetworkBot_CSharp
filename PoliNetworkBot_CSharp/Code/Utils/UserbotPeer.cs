@@ -1,6 +1,8 @@
 ﻿#region
 
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
 using TLSharp.Core;
@@ -70,5 +72,14 @@ internal static class UserbotPeer
         return user2 is { AccessHash: { } }
             ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
             : null;
+    }
+
+    public static string GetHtmlStringWithUserLink(User? user)
+    {
+        return (user?.Username != null
+                   ? "@" + user?.Username
+                   : "Unknown") + " [" +
+               "<a href=\"tg://user?id=" + user?.Id + "\">" +
+               user?.Id + "</a>" + "]";
     }
 }
