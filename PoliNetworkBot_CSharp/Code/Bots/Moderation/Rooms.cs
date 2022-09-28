@@ -378,7 +378,7 @@ internal static class Rooms
 
     private static async Task RoomNotFoundAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        Language? text2 = new(new Dictionary<string, string?>()
+        Language? text2 = new(new Dictionary<string, string?>
         {
             {
                 "it", "Aula non trovata."
@@ -395,7 +395,7 @@ internal static class Rooms
 
     private static async Task DownloadFailedAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        Language? text2 = new(new Dictionary<string, string?>()
+        Language? text2 = new(new Dictionary<string, string?>
         {
             {
                 "it", "Aula non trovata."

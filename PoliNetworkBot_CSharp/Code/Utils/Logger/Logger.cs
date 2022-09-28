@@ -320,6 +320,6 @@ public static class Logger
 
     public static List<long?> GetLogTo(MessageEventArgs e)
     {
-        return new List<long?> { e?.Message?.From?.Id, GroupsConstants.BackupGroup };
+        return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
     }
 }

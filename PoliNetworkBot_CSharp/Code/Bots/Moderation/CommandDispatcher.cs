@@ -1380,8 +1380,7 @@ internal static class CommandDispatcher
     private static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
         string? lang, ChatType? chatType)
     {
-        DataTable? groups;
-        groups = Utils.Groups.GetAllGroups(sender);
+        var groups = Groups.GetAllGroups(sender);
         Stream? stream = new MemoryStream();
         FileSerialization.SerializeFile(groups, ref stream);
 
