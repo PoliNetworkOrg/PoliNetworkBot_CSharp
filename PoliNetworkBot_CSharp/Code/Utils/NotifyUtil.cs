@@ -73,7 +73,7 @@ internal static class NotifyUtil
     }
 
     internal static async Task<List<MessageSentResult>?> NotifyOwners14(ExceptionNumbered exception,
-        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, int loopNumber = 0, string? extrainfo = null,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extrainfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
@@ -122,7 +122,7 @@ internal static class NotifyUtil
     internal static async Task NotifyOwners(Exception? e, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs, int loopNumber = 0)
     {
-        await NotifyOwners14(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs, loopNumber);
+        await NotifyOwners14(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
     }
 
@@ -394,7 +394,7 @@ internal static class NotifyUtil
     public static async Task NotifyOwners(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
         int loopNumber = 0)
     {
-        await NotifyOwners14(new ExceptionNumbered(exception), telegramBotAbstract, null, loopNumber);
+        await NotifyOwners14(new ExceptionNumbered(exception), telegramBotAbstract, null);
         Logger.Logger.WriteLine(exception);
     }
 
