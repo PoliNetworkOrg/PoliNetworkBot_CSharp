@@ -90,9 +90,10 @@ public class TlFileToSend
             telegramClient != null ? await telegramClient.Messages_SendMedia(peer, _tlAbsInputMedia) : null;
     }
 
-    public async Task<TLAbsUpdates?> SendMedia(TLAbsInputPeer? peer, TelegramClient? telegramClient, Language? caption, string? username, string? lang)
+    public async Task<TLAbsUpdates?> SendMedia(TLAbsInputPeer? peer, TelegramClient? telegramClient, Language? caption,
+        string? username, string? lang)
     {
-        var captionString = StringUtil.NotNull(caption,lang);
+        var captionString = StringUtil.NotNull(caption, lang);
         return await SendMedia(peer, telegramClient, captionString, username);
     }
 }

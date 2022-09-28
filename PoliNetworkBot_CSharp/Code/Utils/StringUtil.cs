@@ -14,7 +14,7 @@ public static class StringUtil
     {
         return caption == null ? "" : caption.Select(lang);
     }
-    
+
     public static string NotNull(string? caption)
     {
         return caption ?? "";
@@ -50,6 +50,4 @@ public static class StringUtil
     {
         return b == null ? '?' : b.Value ? 'S' : 'N';
     }
-
-  
 }

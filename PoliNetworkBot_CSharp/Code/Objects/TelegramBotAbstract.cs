@@ -567,8 +567,9 @@ public class TelegramBotAbstract
         {
             case BotTypeApi.REAL_BOT:
             {
-                if (_botClient != null) 
-                    return await _botClient.EditMessageTextAsync(chatId, messageId, newText, replyMarkup: inlineKeyboardMarkup);
+                if (_botClient != null)
+                    return await _botClient.EditMessageTextAsync(chatId, messageId, newText,
+                        replyMarkup: inlineKeyboardMarkup);
                 break;
             }
 
@@ -1185,11 +1186,8 @@ public class TelegramBotAbstract
                         if (_botClient == null) return true;
                         if (text == null) return true;
                         if (inputOnlineFile != null)
-                        {
-                            
                             _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
                                 inputMedia, parseMode: parseModeCaption);
-                        }
 
                         return true;
                     }

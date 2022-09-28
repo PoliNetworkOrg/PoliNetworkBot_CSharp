@@ -357,11 +357,11 @@ internal static class CommandDispatcher
             {
                 return !OwnerInPrivate(e)
                     ? await DefaultCommand(sender, e)
-                    : await Utils.ConfigUtil.GetConfig(e.Message?.From?.Id, e.Message?.From?.Username, sender,
+                    : await ConfigUtil.GetConfig(e.Message?.From?.Id, e.Message?.From?.Username, sender,
                         e.Message?.From?.LanguageCode,
                         e.Message?.Chat.Type);
             }
-            
+
             case "/getGroups":
             {
                 return !OwnerInPrivate(e)
@@ -1436,9 +1436,9 @@ internal static class CommandDispatcher
         Stream? stream = new MemoryStream();
         FileSerialization.SerializeFile(groups, ref stream);
 
-        if (chatType == null) 
+        if (chatType == null)
             return false;
-        
+
         var peer = new PeerAbstract(chatId, chatType.Value);
 
         var text2 = new Language(new Dictionary<string, string?>
@@ -1450,7 +1450,6 @@ internal static class CommandDispatcher
                 null, "application/octet-stream"), peer,
             text2, TextAsCaption.BEFORE_FILE,
             sender, username, lang, null, true);
-
     }
 
 

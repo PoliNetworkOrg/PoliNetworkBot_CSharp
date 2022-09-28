@@ -88,11 +88,13 @@ internal static class NotifyUtil
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
     {
-        return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }), telegramBotAbstract,
+        return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }),
+            telegramBotAbstract,
             null, null, messageEventArgs, null, whatWeWant);
     }
 
-    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2, TelegramBotAbstract? sender,
+    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
+        TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant)
     {
@@ -126,11 +128,13 @@ internal static class NotifyUtil
         Logger.Logger.WriteLine(e);
     }
 
-    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text, TelegramBotAbstract? sender,
+    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text,
+        TelegramBotAbstract? sender,
         string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant)
     {
-        return await NotifyOwners_AnError_AndLog(text, sender, replyto, langCode, messageEventArgs, fileContent, whatWeWant);
+        return await NotifyOwners_AnError_AndLog(text, sender, replyto, langCode, messageEventArgs, fileContent,
+            whatWeWant);
     }
 
     internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -165,7 +169,8 @@ internal static class NotifyUtil
             {
                 { "en", v }
             });
-            m = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
+            m = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null,
+                null);
         }
         catch
         {
@@ -179,7 +184,8 @@ internal static class NotifyUtil
             {
                 { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
             });
-            _ = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null, null);
+            _ = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null,
+                null);
         }
         catch
         {

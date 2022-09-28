@@ -313,7 +313,8 @@ internal static class Program
     {
         try
         {
-            BotConfigAll.BotInfos = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
+            BotConfigAll.BotInfos =
+                JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
         }
         catch (Exception? ex)
         {
@@ -485,7 +486,8 @@ internal static class Program
         {
             var toSend = "WARNING! \n";
             toSend += "Critical errors found in log while starting up! \n" + critics;
-            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
+            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs,
+                FileTypeJsonEnum.SIMPLE_STRING);
         }
 
         using var powershell = PowerShell.Create();
