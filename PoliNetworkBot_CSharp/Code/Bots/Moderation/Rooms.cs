@@ -307,7 +307,8 @@ internal static class Rooms
                   "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
         var webReply = await Web.DownloadHtmlAsync(url);
-        if (!webReply.IsValid()) {
+        if (!webReply.IsValid())
+        {
             await DownloadFailedAsync(sender, e);
             return;
         }
@@ -384,12 +385,11 @@ internal static class Rooms
                 "it", "Aula non trovata."
             },
             {
-                "en", "Room not found." 
+                "en", "Room not found."
             }
-
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-        e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
+            e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
             text2, ParseMode.Html, null);
     }
 
@@ -403,10 +403,9 @@ internal static class Rooms
             {
                 "en", "Room not found."
             }
-
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-        e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
+            e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
             text2, ParseMode.Html, null);
     }
 

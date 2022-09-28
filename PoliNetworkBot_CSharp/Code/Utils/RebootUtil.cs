@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
+
+#endregion
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
@@ -19,7 +23,6 @@ public static class RebootUtil
         });
 
         foreach (var sendToSingle in sendTo)
-        {
             try
             {
                 SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
@@ -29,14 +32,12 @@ public static class RebootUtil
             {
                 await NotifyUtil.NotifyOwnersWithLog(e, sender);
             }
-        }
     }
 
     public static async Task<bool> RebootWithLog(TelegramBotAbstract? sender, MessageEventArgs e)
     {
-      
         await AnnounceReboot(sender, e);
-    
+
         try
         {
             Logger.Logger.GetLog(sender, e);
@@ -47,9 +48,8 @@ public static class RebootUtil
         }
 
         return Reboot();
-        
     }
-    
+
     private static bool Reboot()
     {
         try
@@ -63,9 +63,9 @@ public static class RebootUtil
 
         using var powershell = PowerShell.Create();
         if (ScriptUtil.DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
-            .Contains("rebooter")) 
+            .Contains("rebooter"))
             return false;
-        
+
         ScriptUtil.DoScript(powershell, "screen -d -m -S rebooter ./static/rebooter.sh", true);
 
         return true;

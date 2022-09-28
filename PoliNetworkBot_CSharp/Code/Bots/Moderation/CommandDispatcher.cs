@@ -311,11 +311,7 @@ internal static class CommandDispatcher
                 if (e is { Message: { } })
                     if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
-                    {
                         return await RebootUtil.RebootWithLog(sender, e);
-
-                  
-                    }
 
                 await DefaultCommand(sender, e);
 
@@ -784,10 +780,6 @@ internal static class CommandDispatcher
     }
 
 
-    
-
-
-
     private static async Task AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e != null)
@@ -852,7 +844,6 @@ internal static class CommandDispatcher
                 e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message?.Chat.Id, e.Message?.Chat.Type);
     }
 
- 
 
     private static async Task<object?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
         MessageEventArgs? e, int limit)
@@ -1055,7 +1046,6 @@ internal static class CommandDispatcher
         ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
         ScriptUtil.DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
     }
-
 
 
     public static async Task BackupHandler(long sendTo, TelegramBotAbstract? botAbstract, string? username,
