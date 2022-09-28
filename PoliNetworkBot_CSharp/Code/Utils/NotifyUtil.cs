@@ -326,7 +326,7 @@ internal static class NotifyUtil
 
                 var message = "Restrict action: " + restrictAction;
                 message += "\n";
-                message += "Restricted by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
+                message += "Restricted by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
                 message += "\n";
                 message += "For reason: \n";
                 message += reason;
@@ -370,7 +370,7 @@ internal static class NotifyUtil
                            (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " +
                            messageEventArgs.Message.Chat.Id + " [" + messageEventArgs.Message.Chat.Title + "]";
                 message += "\n";
-                message += "Restricted by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
+                message += "Restricted by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From);
 
                 const string? langCode = "it";
                 var text2 = new Language(new Dictionary<string, string?>
@@ -435,7 +435,7 @@ internal static class NotifyUtil
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";
-        message += "Allowed by: " + Utils.UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message?.From);
+        message += "Allowed by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message?.From);
         message += "\n\n";
         message += "Association: " + assoc;
         message += " #" + hashAssoc;

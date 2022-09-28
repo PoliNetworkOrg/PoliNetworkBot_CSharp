@@ -78,7 +78,7 @@ internal static class UserbotPeer
     {
         if (user == null)
             return null;
-        
+
         var x = new TargetUserObject(user);
         return x.GetTargetHtmlString();
     }
