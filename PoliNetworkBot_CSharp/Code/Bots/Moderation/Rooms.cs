@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
+using static JsonPolimi_Core_nf.Tipi.CheckGruppo;
 
 #endregion
 
@@ -307,7 +308,10 @@ internal static class Rooms
                   "RicercaAvanzataAuleVO___soloPreseDiRete_default=N";
 
         var webReply = await Web.DownloadHtmlAsync(url);
-        if (!webReply.IsValid()) return; //todo: notify user that download failed
+        if (!webReply.IsValid()) {
+            await DownloadFailedAsync(sender, e);
+            return;
+        }
 
         var doc = new HtmlDocument();
         doc.LoadHtml(webReply.GetData());
@@ -319,19 +323,31 @@ internal static class Rooms
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t2, "tr");
 
         var roomIndex = FindRoomIndex(t3, sigla);
-        if (roomIndex == null) return; //todo: send to the user "room not found"
+        if (roomIndex == null)
+        {
+            await RoomNotFoundAsync(sender, e);
+            return;
+        }
 
         var t4 = t3?[(int)roomIndex.Value];
 
         var t5 = HtmlUtil.GetElementsByTagAndClassName(t4, "td");
 
-        if (t5 is { Count: < 3 }) return; //todo: send to the user "room not found"
+        if (t5 is { Count: < 3 })
+        {
+            await RoomNotFoundAsync(sender, e);
+            return;
+        }
 
         var t6 = t5?[2];
 
         var t7 = HtmlUtil.GetElementsByTagAndClassName(t6, "a");
 
-        if (t7 is { Count: < 1 }) return; //todo: send to the user "room not found"
+        if (t7 is { Count: < 1 })
+        {
+            await RoomNotFoundAsync(sender, e);
+            return;
+        }
 
         var t8 = t7?[0];
 
@@ -339,9 +355,17 @@ internal static class Rooms
 
         var t10 = t9?["href"];
 
-        if (t10 == null) return; //todo: send to the user "room not found"
+        if (t10 == null)
+        {
+            await RoomNotFoundAsync(sender, e);
+            return;
+        }
 
-        if (string.IsNullOrEmpty(t10.Value)) return; //todo: send to the user "room not found"
+        if (string.IsNullOrEmpty(t10.Value))
+        {
+            await RoomNotFoundAsync(sender, e);
+            return;
+        }
 
         var result = "https://www7.ceda.polimi.it/spazi/spazi/controller/" + t10.Value;
         var text2 = new Language(new Dictionary<string, string?>
@@ -350,6 +374,40 @@ internal static class Rooms
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
             e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
+            text2, ParseMode.Html, null);
+    }
+
+    private static async Task RoomNotFoundAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        Language? text2 = new(new Dictionary<string, string?>()
+        {
+            {
+                "it", "Aula non trovata."
+            },
+            {
+                "en", "Room not found." 
+            }
+
+        });
+        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+        e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
+            text2, ParseMode.Html, null);
+    }
+
+    private static async Task DownloadFailedAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        Language? text2 = new(new Dictionary<string, string?>()
+        {
+            {
+                "it", "Aula non trovata."
+            },
+            {
+                "en", "Room not found."
+            }
+
+        });
+        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+        e?.Message?.From?.LanguageCode, e?.Message?.From?.Username,
             text2, ParseMode.Html, null);
     }
 
