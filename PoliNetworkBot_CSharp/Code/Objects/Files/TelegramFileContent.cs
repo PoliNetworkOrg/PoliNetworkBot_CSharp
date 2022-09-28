@@ -34,7 +34,8 @@ public class TelegramFileContent
                 { "en", "Exception! " + _caption }
             });
 
-            var r11 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2, messageEventArgs,
+            var r11 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
+                messageEventArgs,
                 _fileContent, whatWeWant);
             return r11;
         }
@@ -51,7 +52,8 @@ public class TelegramFileContent
             { "en", "Exception! " + _caption }
         });
 
-        var r1 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2, messageEventArgs, null,
+        var r1 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
+            messageEventArgs, null,
             null);
         return r1;
     }
