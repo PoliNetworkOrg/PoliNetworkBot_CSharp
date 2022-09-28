@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
-public static class Groups
+public static class GroupsConstants
 {
     public const long BackupGroup = -653874197;
     public const long GroupException = -1001456960264;

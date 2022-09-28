@@ -66,7 +66,7 @@ internal static class NotifyUtil
             });
             Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
             await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                Data.Constants.Groups.PermittedSpamGroup,
+                Data.Constants.GroupsConstants.PermittedSpamGroup,
                 ChatType.Group,
                 ParseMode.Html, null, true);
         }
@@ -279,7 +279,7 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
-        var peer = new PeerAbstract(Data.Constants.Groups.GroupException, ChatType.Group);
+        var peer = new PeerAbstract(Data.Constants.GroupsConstants.GroupException, ChatType.Group);
         var destinatari = new List<PeerAbstract> { peer };
         return await SendFiles2(
             stream, filename, caption, telegramBotAbstract,
@@ -349,7 +349,7 @@ internal static class NotifyUtil
                 });
                 Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                    Data.Constants.Groups.BanNotificationGroup,
+                    Data.Constants.GroupsConstants.BanNotificationGroup,
                     ChatType.Group,
                     ParseMode.Html, null, true);
             }
@@ -386,7 +386,7 @@ internal static class NotifyUtil
                 });
                 Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
                 await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                    Data.Constants.Groups.BanNotificationGroup,
+                    Data.Constants.GroupsConstants.BanNotificationGroup,
                     ChatType.Group,
                     ParseMode.Html, null, true);
             }
@@ -427,7 +427,7 @@ internal static class NotifyUtil
 
         Logger.Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
         await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-            Data.Constants.Groups.PermittedSpamGroup,
+            Data.Constants.GroupsConstants.PermittedSpamGroup,
             ChatType.Group,
             ParseMode.Html, null, true);
 

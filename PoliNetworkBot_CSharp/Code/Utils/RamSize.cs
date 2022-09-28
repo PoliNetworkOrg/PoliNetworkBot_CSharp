@@ -49,7 +49,7 @@ public static class RamSize
                     new Dictionary<string, string?>
                     {
                         { "en", message }
-                    }), null, Data.Constants.Groups.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                    }), null, Data.Constants.GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
         }
         catch (Exception? ex)
         {

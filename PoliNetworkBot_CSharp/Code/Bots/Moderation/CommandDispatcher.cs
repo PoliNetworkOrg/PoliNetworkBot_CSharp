@@ -23,7 +23,6 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using File = System.IO.File;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
 #endregion
 
@@ -313,7 +312,7 @@ internal static class CommandDispatcher
                     if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
                     {
-                        RebootWithLog(sender, e);
+                        RebootUtil.RebootWithLog(sender, e);
 
                         return false;
                     }
@@ -652,7 +651,7 @@ internal static class CommandDispatcher
                 if (message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                     message.Chat.Type == ChatType.Private)
                 {
-                    GetLog(sender, e);
+                    Logger.GetLog(sender, e);
                     return false;
                 }
 
@@ -785,24 +784,9 @@ internal static class CommandDispatcher
     }
 
 
-    private static void GetLog(TelegramBotAbstract? sender, MessageEventArgs? e)
-    {
-        Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, Groups.BackupGroup }, e);
-    }
+    
 
-    private static void RebootWithLog(TelegramBotAbstract? sender, MessageEventArgs? e)
-    {
-        try
-        {
-            GetLog(sender, e);
-        }
-        catch
-        {
-            // ignored
-        }
 
-        Reboot();
-    }
 
     private static async Task AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
@@ -868,22 +852,7 @@ internal static class CommandDispatcher
                 e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message?.Chat.Id, e.Message?.Chat.Type);
     }
 
-    private static void Reboot()
-    {
-        try
-        {
-            BackupUtil.BackupBeforeReboot();
-        }
-        catch
-        {
-            // ignored
-        }
-
-        using var powershell = PowerShell.Create();
-        if (DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
-            .Contains("rebooter")) return;
-        DoScript(powershell, "screen -d -m -S rebooter ./static/rebooter.sh", true);
-    }
+ 
 
     private static async Task<object?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
         MessageEventArgs? e, int limit)
@@ -893,7 +862,7 @@ internal static class CommandDispatcher
             if (string.IsNullOrEmpty(query))
                 return null;
 
-            var groups = Utils.Groups.GetGroupsByTitle(query, limit, sender);
+            var groups = Groups.GetGroupsByTitle(query, limit, sender);
 
             if (groups == null)
                 return null;
@@ -980,9 +949,9 @@ internal static class CommandDispatcher
             "UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")",
             LogSeverityLevel.ALERT);
         List<ResultFixGroupsName>? x1 = null;
-        if (updateDb) x1 = await Utils.Groups.FixAllGroupsName(sender, messageEventArgs);
+        if (updateDb) x1 = await Groups.FixAllGroupsName(sender, messageEventArgs);
 
-        var groups = Utils.Groups.GetAllGroups(sender, true);
+        var groups = Groups.GetAllGroups(sender, true);
 
         Variabili.L = new ListaGruppo();
 
@@ -1015,25 +984,25 @@ internal static class CommandDispatcher
 
         using var powershell = PowerShell.Create();
         const string cd = Paths.Data.PoliNetworkWebsiteData;
-        DoScript(powershell, "cd " + cd, debug);
-        DoScript(powershell, "git fetch org", debug);
-        DoScript(powershell, "git pull --force", debug);
-        DoScript(powershell, "git add . --ignore-errors", debug);
+        ScriptUtil.DoScript(powershell, "cd " + cd, debug);
+        ScriptUtil.DoScript(powershell, "git fetch org", debug);
+        ScriptUtil.DoScript(powershell, "git pull --force", debug);
+        ScriptUtil.DoScript(powershell, "git add . --ignore-errors", debug);
 
         var commit = @"git commit -m ""[Automatic Commit] Updated Group List""" +
                      @" --author=""" + GitHubConfig.GetUser() + "<" + GitHubConfig.GetEmail() +
                      @">""";
-        DoScript(powershell, commit, debug);
+        ScriptUtil.DoScript(powershell, commit, debug);
 
         var push = @"git push https://" + GitHubConfig.GetUser() + ":" +
                    GitHubConfig.GetPassword() + "@" +
                    GitHubConfig.GetRepo() + @" --all -f";
-        DoScript(powershell, push, debug);
+        ScriptUtil.DoScript(powershell, push, debug);
 
         const string hubPr =
             @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
 
-        var result = DoScript(powershell, hubPr, debug);
+        var result = ScriptUtil.DoScript(powershell, hubPr, debug);
 
         powershell.Stop();
 
@@ -1081,34 +1050,13 @@ internal static class CommandDispatcher
     {
         Logger.WriteLine("Init websitedata repository");
         using var powershell = PowerShell.Create();
-        DoScript(powershell, "cd ../data/", true);
-        DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
-        DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-        DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
+        ScriptUtil.DoScript(powershell, "cd ../data/", true);
+        ScriptUtil.DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
+        ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
+        ScriptUtil.DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
     }
 
-    public static List<string?> DoScript(PowerShell powershell, string script, bool debug)
-    {
-        powershell.AddScript(script);
-        List<string?> listString = new();
-        if (debug)
-        {
-            var x = "Executing command: " + script;
-            Logger.WriteLine(x);
-            listString.Add(x);
-        }
 
-        var results = powershell.Invoke().ToList();
-        if (debug)
-            foreach (var t in results)
-            {
-                Logger.WriteLine(t.ToString());
-                listString.Add(t.ToString());
-            }
-
-        powershell.Commands.Clear();
-        return listString;
-    }
 
     public static async Task BackupHandler(long sendTo, TelegramBotAbstract? botAbstract, string? username,
         ChatType chatType)

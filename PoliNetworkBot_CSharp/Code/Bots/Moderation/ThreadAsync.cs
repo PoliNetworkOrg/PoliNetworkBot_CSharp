@@ -13,7 +13,6 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types.Enums;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
 #endregion
 
@@ -165,7 +164,7 @@ public static class ThreadAsync
             {
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
-            _ = telegramBotAbstract.SendTextMessageAsync(Groups.BackupGroup, text, ChatType.Supergroup, "en",
+            _ = telegramBotAbstract.SendTextMessageAsync(GroupsConstants.BackupGroup, text, ChatType.Supergroup, "en",
                 ParseMode.Html, null, null);
         }
         catch (Exception? ex)
@@ -205,7 +204,7 @@ public static class ThreadAsync
         {
             while (true)
             {
-                await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null, ChatType.Group);
+                await CommandDispatcher.BackupHandler(GroupsConstants.BackupGroup, bot, null, ChatType.Group);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }
