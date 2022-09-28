@@ -779,9 +779,9 @@ internal static class CommandDispatcher
     private static bool OwnerInPrivate(MessageEventArgs e)
     {
         var message = e.Message;
-        return (GlobalVariables.Creators != null && message != null &&
-                (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)) ||
-                 Owners.CheckIfOwner(e.Message?.From?.Id)) && message.Chat.Type == ChatType.Private);
+        return GlobalVariables.Creators != null && message != null &&
+               (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)) ||
+                Owners.CheckIfOwner(e.Message?.From?.Id)) && message.Chat.Type == ChatType.Private;
     }
 
 

@@ -69,6 +69,6 @@ public class TelegramFile : GenericFile
 
     public string? GetCaption()
     {
-        return this._caption;
+        return _caption;
     }
 }

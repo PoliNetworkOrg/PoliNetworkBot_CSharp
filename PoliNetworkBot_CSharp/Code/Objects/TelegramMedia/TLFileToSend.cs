@@ -92,7 +92,7 @@ public class TlFileToSend
 
     public async Task<TLAbsUpdates?> SendMedia(TLAbsInputPeer? peer, TelegramClient? telegramClient, Language? caption, string? username, string? lang)
     {
-        string? captionString = StringUtil.NotNull(caption,lang);
+        var captionString = StringUtil.NotNull(caption,lang);
         return await SendMedia(peer, telegramClient, captionString, username);
     }
 }
