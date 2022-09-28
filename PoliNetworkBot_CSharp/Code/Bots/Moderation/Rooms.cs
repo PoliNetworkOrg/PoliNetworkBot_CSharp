@@ -11,7 +11,6 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
-using static JsonPolimi_Core_nf.Tipi.CheckGruppo;
 
 #endregion
 

@@ -746,7 +746,7 @@ internal static class Assoc
         if (splitMessage)
             if (sender != null)
             {
-                var m = await sender.SendTextMessageAsync(Data.Constants.GroupsConstants.PermittedSpamGroup, new Language(
+                var m = await sender.SendTextMessageAsync(GroupsConstants.PermittedSpamGroup, new Language(
                     new Dictionary<string, string?>
                     {
                         { "en", message }
@@ -769,7 +769,7 @@ internal static class Assoc
             permittedSpamMessage);
 
         await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
-            Data.Constants.GroupsConstants.ConsiglioDegliAdminRiservato,
+            GroupsConstants.ConsiglioDegliAdminRiservato,
             councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
         _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));

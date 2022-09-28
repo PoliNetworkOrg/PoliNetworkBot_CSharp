@@ -314,8 +314,8 @@ public static class Logger
 
     public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
     {
-        var sendTo = Logger.GetLogTo(e);
-        Logger.PrintLog(sender, sendTo, e);
+        var sendTo = GetLogTo(e);
+        PrintLog(sender, sendTo, e);
     }
 
     public static List<long?> GetLogTo(MessageEventArgs e)

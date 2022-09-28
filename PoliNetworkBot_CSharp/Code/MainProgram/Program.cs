@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -491,7 +490,7 @@ internal static class Program
         }
 
         using var powershell = PowerShell.Create();
-        foreach (var line in Utils.ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
+        foreach (var line in ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
         if (botInfoAbstract.onMessages != BotStartMethods.Material.Item1)
             return;
