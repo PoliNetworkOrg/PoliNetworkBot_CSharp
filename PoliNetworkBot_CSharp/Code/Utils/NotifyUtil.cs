@@ -391,8 +391,7 @@ internal static class NotifyUtil
         }
     }
 
-    public static async Task NotifyOwners16(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
-        int loopNumber = 0)
+    public static async Task NotifyOwners16(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
     {
         await NotifyOwners14(new ExceptionNumbered(exception), telegramBotAbstract, null);
         Logger.Logger.WriteLine(exception);
