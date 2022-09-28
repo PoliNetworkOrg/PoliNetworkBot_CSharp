@@ -36,7 +36,7 @@ internal static class NotifyUtil
             if (text == null)
             {
                 var ex = new Exception("text null and caption null in permitted spam notification");
-                await NotifyOwners(ex, sender, messageEventArgs);
+                await NotifyOwners15(ex, sender, messageEventArgs);
                 return;
             }
 
@@ -119,7 +119,7 @@ internal static class NotifyUtil
         return text;
     }
 
-    internal static async Task NotifyOwners(Exception? e, TelegramBotAbstract? telegramBotAbstract,
+    internal static async Task NotifyOwners15(Exception? e, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs, int loopNumber = 0)
     {
         await NotifyOwners14(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);

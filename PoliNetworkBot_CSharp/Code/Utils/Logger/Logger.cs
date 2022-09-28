@@ -149,7 +149,7 @@ public static class Logger
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwners15(e, telegramBotAbstract, messageEventArgs);
         }
     }
 
@@ -196,7 +196,7 @@ public static class Logger
             }
             catch (Exception? e)
             {
-                NotifyUtil.NotifyOwners(e, sender, messageEventArgs).Wait();
+                NotifyUtil.NotifyOwners15(e, sender, messageEventArgs).Wait();
             }
         }
     }

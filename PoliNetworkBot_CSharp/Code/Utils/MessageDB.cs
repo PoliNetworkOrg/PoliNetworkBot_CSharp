@@ -134,7 +134,7 @@ public static class MessageDb
             }
             catch (Exception? e)
             {
-                await NotifyUtil.NotifyOwners(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
+                await NotifyUtil.NotifyOwners15(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
                     messageEventArgs);
             }
 
@@ -190,7 +190,7 @@ public static class MessageDb
         s3 += "[Id3]: " + r1.ScheduleMessageSentResult + "\n";
         s3 += "CheckMessagesToSend\n\n";
         var e3 = new Exception(s3);
-        await NotifyUtil.NotifyOwners(e3, telegramBotAbstract, messageEventArgs);
+        await NotifyUtil.NotifyOwners15(e3, telegramBotAbstract, messageEventArgs);
     }
 
     private static async Task<MessageSendScheduled> SendMessageToSend(DataRow dr,
@@ -205,7 +205,7 @@ public static class MessageDb
         }
         catch (Exception? e3)
         {
-            await NotifyUtil.NotifyOwners(e3, botToReportException, messageEventArgs);
+            await NotifyUtil.NotifyOwners15(e3, botToReportException, messageEventArgs);
         }
 
         if (r1 != null) hasBeenSent = r1.Item1;
@@ -311,7 +311,7 @@ public static class MessageDb
         s3 += "\n";
         s3 += "GetHasBeenSentAsync";
         var e3 = new Exception(s3);
-        await NotifyUtil.NotifyOwners(e3, sender, messageEventArgs);
+        await NotifyUtil.NotifyOwners15(e3, sender, messageEventArgs);
         return new Tuple<bool?, int, string>(null, 3, s3);
     }
 

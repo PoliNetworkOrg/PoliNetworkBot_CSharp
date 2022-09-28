@@ -599,7 +599,7 @@ internal static class CommandDispatcher
                         }
                         catch (Exception? ex)
                         {
-                            _ = NotifyUtil.NotifyOwners(ex, sender, e);
+                            _ = NotifyUtil.NotifyOwners15(ex, sender, e);
                         }
 
                         return false;
@@ -935,7 +935,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? exception)
         {
-            _ = NotifyUtil.NotifyOwners(exception, sender, e);
+            _ = NotifyUtil.NotifyOwners15(exception, sender, e);
             return null;
         }
     }
@@ -1132,7 +1132,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwners(ex, botAbstract, null);
+            await NotifyUtil.NotifyOwners15(ex, botAbstract, null);
         }
     }
 

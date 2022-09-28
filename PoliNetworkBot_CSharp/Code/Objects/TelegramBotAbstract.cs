@@ -94,7 +94,7 @@ public class TelegramBotAbstract
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwners(ex, this, e);
+            await NotifyUtil.NotifyOwners15(ex, this, e);
         }
     }
 
@@ -358,7 +358,7 @@ public class TelegramBotAbstract
                 }
                 catch (Exception? e)
                 {
-                    await NotifyUtil.NotifyOwners(e, this, null);
+                    await NotifyUtil.NotifyOwners15(e, this, null);
                     return false;
                 }
 
@@ -379,7 +379,7 @@ public class TelegramBotAbstract
                 }
                 catch (Exception? e)
                 {
-                    await NotifyUtil.NotifyOwners(e, this, null);
+                    await NotifyUtil.NotifyOwners15(e, this, null);
                     return false;
                 }
 
