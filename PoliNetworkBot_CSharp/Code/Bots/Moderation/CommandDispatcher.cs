@@ -353,26 +353,24 @@ internal static class CommandDispatcher
                 return false;
             }
 
+            case "/get_config":
+            {
+                if (!OwnerInPrivate(e)) 
+                    return await DefaultCommand(sender, e);
+                
+
+
+                return await GetAllGroups(e.Message?.From?.Id, e.Message?.From?.Username, sender, e.Message?.From?.LanguageCode,
+                        e.Message?.Chat.Type);
+            }
+            
             case "/getGroups":
             {
-                var message = e.Message;
-                if (GlobalVariables.Creators != null && message != null &&
-                    (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)) ||
-                     Owners.CheckIfOwner(e.Message?.From?.Id)) && message.Chat.Type == ChatType.Private)
-                {
-                    string? username = null;
-                    if (!string.IsNullOrEmpty(e.Message?.From?.Username))
-                        username = e.Message.From.Username;
-
-                    if (e.Message?.From != null)
-                        _ = GetAllGroups(e.Message.From.Id, username, sender, e.Message.From.LanguageCode,
-                            e.Message.Chat.Type);
-                    return false;
-                }
-
-                await DefaultCommand(sender, e);
-
-                return false;
+                if (!OwnerInPrivate(e)) 
+                    return await DefaultCommand(sender, e);
+                
+                return await GetAllGroups(e.Message?.From?.Id, e.Message?.From?.Username, sender, e.Message?.From?.LanguageCode,
+                    e.Message?.Chat.Type);
             }
 
             case "/allowmessage":
@@ -778,6 +776,14 @@ internal static class CommandDispatcher
                 return false;
             }
         }
+    }
+
+    private static bool OwnerInPrivate(MessageEventArgs e)
+    {
+        var message = e.Message;
+        return (GlobalVariables.Creators != null && message != null &&
+                (GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)) ||
+                 Owners.CheckIfOwner(e.Message?.From?.Id)) && message.Chat.Type == ChatType.Private);
     }
 
 
@@ -1425,14 +1431,17 @@ internal static class CommandDispatcher
             e?.Message?.From?.Username, text2, ParseMode.Html, null);
     }
 
-    private static async Task<bool> GetAllGroups(long chatId, string? username, TelegramBotAbstract? sender,
-        string? lang, ChatType chatType)
+    private static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
+        string? lang, ChatType? chatType)
     {
         var groups = Utils.Groups.GetAllGroups(sender);
         Stream? stream = new MemoryStream();
         FileSerialization.SerializeFile(groups, ref stream);
 
-        var peer = new PeerAbstract(chatId, chatType);
+        if (chatType == null) 
+            return false;
+        
+        var peer = new PeerAbstract(chatId, chatType.Value);
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -1443,6 +1452,7 @@ internal static class CommandDispatcher
                 null, "application/octet-stream"), peer,
             text2, TextAsCaption.BEFORE_FILE,
             sender, username, lang, null, true);
+
     }
 
 

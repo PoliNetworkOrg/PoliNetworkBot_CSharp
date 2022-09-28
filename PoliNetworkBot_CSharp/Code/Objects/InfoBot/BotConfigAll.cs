@@ -8,7 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 [JsonObject(MemberSerialization.Fields)]
 public class BotConfigAll
 {
-    public  BotConfig? _botInfos;
-    public  BotConfig? _userBotsInfos;
-    public  BotConfig? _botDisguisedAsUserBotInfos;
+    public  BotConfig? BotInfos;
+    public  BotConfig? UserBotsInfos;
+    public  BotConfig? BotDisguisedAsUserBotInfos;
 }
