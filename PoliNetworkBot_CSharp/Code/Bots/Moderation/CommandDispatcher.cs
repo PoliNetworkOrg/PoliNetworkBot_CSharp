@@ -312,9 +312,9 @@ internal static class CommandDispatcher
                     if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
                     {
-                        RebootUtil.RebootWithLog(sender, e);
+                        return await RebootUtil.RebootWithLog(sender, e);
 
-                        return false;
+                  
                     }
 
                 await DefaultCommand(sender, e);

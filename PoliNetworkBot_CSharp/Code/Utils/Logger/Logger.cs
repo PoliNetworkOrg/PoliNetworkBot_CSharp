@@ -314,6 +314,12 @@ public static class Logger
 
     public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
     {
-        Logger.PrintLog(sender, new List<long?> { e?.Message?.From?.Id, GroupsConstants.BackupGroup }, e);
+        var sendTo = Logger.GetLogTo(e);
+        Logger.PrintLog(sender, sendTo, e);
+    }
+
+    public static List<long?> GetLogTo(MessageEventArgs e)
+    {
+        return new List<long?> { e?.Message?.From?.Id, GroupsConstants.BackupGroup };
     }
 }
