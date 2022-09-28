@@ -491,7 +491,7 @@ internal static class Program
         }
 
         using var powershell = PowerShell.Create();
-        foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
+        foreach (var line in Utils.ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
         if (botInfoAbstract.onMessages != BotStartMethods.Material.Item1)
             return;

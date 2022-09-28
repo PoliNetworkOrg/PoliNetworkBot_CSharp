@@ -998,7 +998,7 @@ public class Program
 
     private static string DoScript(PowerShell powershell, string script, bool debug, string separator = "\n")
     {
-        return CommandDispatcher.DoScript(powershell, script, debug)
+        return PoliNetworkBot_CSharp.Code.Utils.ScriptUtil.DoScript(powershell, script, debug)
             .Aggregate("", (current, s) => current + s + separator);
     }
 }
