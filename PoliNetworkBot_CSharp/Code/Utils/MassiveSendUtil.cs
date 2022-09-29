@@ -17,26 +17,36 @@ public static class MassiveSendUtil
 {
     public static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender, bool test)
     {
-        if (e?.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                                   string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
-                                               || e.Message.ReplyToMessage.Text == null)
+        try
         {
-            var text = new Language(new Dictionary<string, string?>
+            if (e?.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                       string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
+                                                   || e.Message.ReplyToMessage.Text == null)
             {
-                { "en", "You have to reply to a message containing the message" },
-                { "it", "You have to reply to a message containing the message" }
-            });
+                var text = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "You have to reply to a message containing the message" },
+                    { "it", "You have to reply to a message containing the message" }
+                });
 
-            if (e?.Message != null)
-                await sender.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
-                    e.Message?.From?.LanguageCode, ParseMode.Html, null, e.Message?.From?.Username,
-                    e.Message!.MessageId);
-            return false;
+                if (e?.Message != null)
+                    await sender.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
+                        e.Message?.From?.LanguageCode, ParseMode.Html, null, e.Message?.From?.Username,
+                        e.Message!.MessageId);
+                return false;
+            }
+
+            var textToBeSent = e.Message.ReplyToMessage.Text;
+            Logger.Logger.WriteLine("textToBeSent " + textToBeSent);
+            var groups = Groups.GetGroupsByTitle("polimi", 1000, sender);
+            var rowsCount = groups?.Rows.Count ?? -1;
+            Logger.Logger.WriteLine("rowsCount " + rowsCount);
+            return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent, test);
         }
-
-        var textToBeSent = e.Message.ReplyToMessage.Text;
-        var groups = Groups.GetGroupsByTitle("polimi", 1000, sender);
-        return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent, test);
+        catch (Exception ex)
+        {
+            await NotifyUtil.NotifyOwnersWithLog(ex, sender);
+        }
     }
 
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
@@ -107,7 +117,7 @@ public static class MassiveSendUtil
         MessageEventArgs? e, bool test)
     {
         if (test)
-            return null; //todo: remove
+            return null;
         
         try
         {
