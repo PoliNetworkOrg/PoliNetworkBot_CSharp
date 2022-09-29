@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
@@ -73,7 +74,7 @@ internal static class NotifyUtil
         }
     }
 
-    internal static async Task<List<MessageSentResult>?> NotifyOwnersClassic(ExceptionNumbered exception,
+    internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
         TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extrainfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
@@ -87,30 +88,41 @@ internal static class NotifyUtil
     }
 
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
+        MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant, SendActionEnum sendActionEnum)
     {
         return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }),
             telegramBotAbstract,
-            null, null, messageEventArgs, null, whatWeWant);
+            null, null, messageEventArgs, null, whatWeWant, sendActionEnum);
     }
 
-    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
+    private static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent,
-        FileTypeJsonEnum? whatWeWant)
+        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
         var text = GetNotifyText(langCode, text2);
 
-        return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
-            replyToMessageId, ParseMode.Html, whatWeWant);
+        switch (sendActionEnum)
+        {
+            case SendActionEnum.SEND_TEXT:
+                return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
+                    replyToMessageId, ParseMode.Html, whatWeWant);
+            case SendActionEnum.SEND_FILE:
+                       
+                var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
+                    Data.Constants.GroupsConstants.GroupException,
+                    ChatType.Group, ParseMode.Html, replyToMessageId, true);
+                return new List<MessageSentResult?>() { x };
 
-        /*
-        return await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
-            Data.Constants.Groups.GroupException,
-            ChatType.Group, ParseMode.Html, replyToMessageId, true, v);
-            */
+        }
+
+        return null;
+
+
+
+        
     }
 
     private static Language GetNotifyText(string? langCode, Language text2)
@@ -129,13 +141,13 @@ internal static class NotifyUtil
         Logger.Logger.WriteLine(e);
     }
 
-    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text,
+    public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
         string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent,
-        FileTypeJsonEnum? whatWeWant)
+        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
         return await NotifyOwners_AnError_AndLog(text, sender, replyto, langCode, messageEventArgs, fileContent,
-            whatWeWant);
+            whatWeWant, sendActionEnum);
     }
 
     internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -163,7 +175,7 @@ internal static class NotifyUtil
         string filename,
         long? replyToMessageId = null)
     {
-        List<MessageSentResult>? m = null;
+        List<MessageSentResult?>? m = null;
         try
         {
             var text = new Language(new Dictionary<string, string?>
@@ -206,7 +218,11 @@ internal static class NotifyUtil
             long? replyto = null;
 
             if (m != null)
-                replyto = m.First().GetMessageId();
+            {
+                var messageSentResult = m.First(x => x!=null);
+                replyto = messageSentResult?.GetMessageId();
+            }
+
             await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null);
         }
         catch
@@ -256,7 +272,7 @@ internal static class NotifyUtil
         return new StringJson(FileTypeJsonEnum.STRING_JSONED, r);
     }
 
-    public static async Task<List<MessageSentResult>?> SendString(StringJson? toSendString,
+    public static async Task<List<MessageSentResult?>?> SendString(StringJson? toSendString,
         MessageEventArgs? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
@@ -276,7 +292,7 @@ internal static class NotifyUtil
         return stream;
     }
 
-    private static async Task<List<MessageSentResult>?> SendFiles(MessageEventArgs? messageEventArgs,
+    private static async Task<List<MessageSentResult?>?> SendFiles(MessageEventArgs? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -288,7 +304,7 @@ internal static class NotifyUtil
         );
     }
 
-    private static async Task<List<MessageSentResult>?> SendFiles2(Stream stream, string filename, string? caption,
+    private static async Task<List<MessageSentResult?>?> SendFiles2(Stream stream, string filename, string? caption,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -301,7 +317,7 @@ internal static class NotifyUtil
             { "en", caption }
         });
 
-        var done = new List<MessageSentResult>();
+        var done = new List<MessageSentResult?>();
 
         foreach (var peer in peerAbstracts)
         {
