@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Enums.Action;
 
-public class SendActionEnum
+public enum SendActionEnum
 {
-    
+    SEND_TEXT,SEND_FILE
 }
