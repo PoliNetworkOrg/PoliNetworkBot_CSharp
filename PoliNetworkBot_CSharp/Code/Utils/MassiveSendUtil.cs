@@ -56,7 +56,8 @@ public static class MassiveSendUtil
         DataTable? groups, string textToSend, bool test)
     {
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
-            $"WARNING! \n A new massive send has ben authorized by "+Utils.UserbotPeer.GetHtmlStringWithUserLink(e?.Message?.From)+" and will be sent in 1000 seconds. \n" +
+            "WARNING! \n A new massive send has ben authorized by " +
+            UserbotPeer.GetHtmlStringWithUserLink(e?.Message?.From) + " and will be sent in 1000 seconds. \n" +
             $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
 
         Thread.Sleep(1000 * 1000);
@@ -106,9 +107,9 @@ public static class MassiveSendUtil
 
         await Task.Delay(500);
 
-        if (e?.Message?.From == null) 
+        if (e?.Message?.From == null)
             return true;
-        
+
         await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
             e.Message.From.LanguageCode,
             ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
@@ -121,7 +122,7 @@ public static class MassiveSendUtil
     {
         if (test)
             return null;
-        
+
         try
         {
             var groupId = Convert.ToInt64(element.ItemArray[0]);
@@ -130,7 +131,6 @@ public static class MassiveSendUtil
             {
                 return await SendMessage.SendMessageInAGroup(sender, "en", text, e, groupId,
                     ChatType.Supergroup, ParseMode.Html, null, default);
-                
             }
             catch
             {
@@ -139,7 +139,6 @@ public static class MassiveSendUtil
                     return await SendMessage.SendMessageInAGroup(sender, "en", text, e,
                         groupId,
                         ChatType.Group, ParseMode.Html, null, default);
-                   
                 }
                 catch
                 {

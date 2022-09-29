@@ -110,19 +110,14 @@ internal static class NotifyUtil
                 return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
                     replyToMessageId, ParseMode.Html, whatWeWant);
             case SendActionEnum.SEND_TEXT:
-                       
-                var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
-                    Data.Constants.GroupsConstants.GroupException,
-                    ChatType.Group, ParseMode.Html, replyToMessageId, true);
-                return new List<MessageSentResult?>() { x };
 
+                var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
+                    GroupsConstants.GroupException,
+                    ChatType.Group, ParseMode.Html, replyToMessageId, true);
+                return new List<MessageSentResult?> { x };
         }
 
         return null;
-
-
-
-        
     }
 
     private static Language GetNotifyText(string? langCode, Language text2)
@@ -219,11 +214,12 @@ internal static class NotifyUtil
 
             if (m != null)
             {
-                var messageSentResult = m.First(x => x!=null);
+                var messageSentResult = m.First(x => x != null);
                 replyto = messageSentResult?.GetMessageId();
             }
 
-            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null, SendActionEnum.SEND_TEXT);
+            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null,
+                SendActionEnum.SEND_TEXT);
         }
         catch
         {

@@ -815,10 +815,11 @@ internal static class Assoc
                     if (assocVetoData.CallBackQueryFromTelegram?.Message != null)
                         if (callbackGenericData.CallBackQueryFromTelegram != null)
                         {
+                            var vetoInStWindow = vetoInTime ? "\nVeto in 1st window" : "\nVeto in 2nd window";
                             var newMessage = assocVetoData.CallBackQueryFromTelegram.Message.Text + "\n\n" +
-                                             "<b>VETO</b> by @"
-                                             + callbackGenericData.CallBackQueryFromTelegram.From.Username +
-                                             (vetoInTime ? "\nVeto in 1st window" : "\nVeto in 2nd window");
+                                             "<b>VETO</b> by " + UserbotPeer.GetHtmlStringWithUserLink(
+                                                 callbackGenericData.CallBackQueryFromTelegram.From
+                                             ) + vetoInStWindow;
 
                             if (callbackGenericData.Bot != null)
                                 await callbackGenericData.Bot.EditMessageTextAsync(

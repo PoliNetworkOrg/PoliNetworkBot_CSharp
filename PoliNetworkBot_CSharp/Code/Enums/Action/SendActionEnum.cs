@@ -2,5 +2,6 @@
 
 public enum SendActionEnum
 {
-    SEND_TEXT,SEND_FILE
+    SEND_TEXT,
+    SEND_FILE
 }
