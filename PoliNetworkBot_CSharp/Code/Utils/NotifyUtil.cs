@@ -183,7 +183,7 @@ internal static class NotifyUtil
                 { "en", v }
             });
             m = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null,
-                null);
+                null, SendActionEnum.SEND_TEXT);
         }
         catch
         {
@@ -198,7 +198,7 @@ internal static class NotifyUtil
                 { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
             });
             _ = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null,
-                null);
+                null, SendActionEnum.SEND_FILE);
         }
         catch
         {
@@ -223,7 +223,7 @@ internal static class NotifyUtil
                 replyto = messageSentResult?.GetMessageId();
             }
 
-            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null);
+            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null, SendActionEnum.SEND_TEXT);
         }
         catch
         {

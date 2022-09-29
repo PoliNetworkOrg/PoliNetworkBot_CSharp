@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
@@ -36,7 +37,7 @@ public class TelegramFileContent
 
             var r11 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
                 messageEventArgs,
-                _fileContent, whatWeWant);
+                _fileContent, whatWeWant, SendActionEnum.SEND_TEXT);
             return r11;
         }
 
@@ -54,7 +55,7 @@ public class TelegramFileContent
 
         var r1 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
             messageEventArgs, null,
-            null);
+            null, SendActionEnum.SEND_TEXT);
         return r1;
     }
 
