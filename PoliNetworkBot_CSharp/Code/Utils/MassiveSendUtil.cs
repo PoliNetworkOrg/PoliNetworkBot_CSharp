@@ -93,7 +93,9 @@ public static class MassiveSendUtil
 
         await Task.Delay(500);
 
-        if (e?.Message?.From == null) return true;
+        if (e?.Message?.From == null) 
+            return true;
+        
         await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
             e.Message.From.LanguageCode,
             ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
