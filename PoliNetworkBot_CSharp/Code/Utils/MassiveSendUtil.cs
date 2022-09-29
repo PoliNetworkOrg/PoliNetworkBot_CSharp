@@ -68,40 +68,15 @@ public static class MassiveSendUtil
             }
         };
 
+        var text2 = new Language(dict2);
         try
         {
             var g1 = groups.Rows;
             foreach (DataRow element in g1)
             {
-                try
-                {
-                    var groupId = Convert.ToInt64(element.ItemArray[0]);
-
-                    try
-                    {
-                        await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e, groupId,
-                            ChatType.Supergroup, ParseMode.Html, null, default);
-                        counter++;
-                    }
-                    catch
-                    {
-                        try
-                        {
-                            await SendMessage.SendMessageInAGroup(sender, "en", new Language(dict2), e,
-                                groupId,
-                                ChatType.Group, ParseMode.Html, null, default);
-                            counter++;
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-                }
-                catch
-                {
-                    // ignored
-                }
+                var sent = await SendInAGroup(element, sender, text2, e);
+                if (sent != null)
+                    counter++;
 
                 await Task.Delay(500);
             }
@@ -123,5 +98,42 @@ public static class MassiveSendUtil
             e.Message.From.LanguageCode,
             ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
         return true;
+    }
+
+    private static async Task<MessageSentResult?> SendInAGroup(
+        DataRow element, TelegramBotAbstract sender, Language text,
+        MessageEventArgs? e)
+    {
+        try
+        {
+            var groupId = Convert.ToInt64(element.ItemArray[0]);
+
+            try
+            {
+                return await SendMessage.SendMessageInAGroup(sender, "en", text, e, groupId,
+                    ChatType.Supergroup, ParseMode.Html, null, default);
+                
+            }
+            catch
+            {
+                try
+                {
+                    return await SendMessage.SendMessageInAGroup(sender, "en", text, e,
+                        groupId,
+                        ChatType.Group, ParseMode.Html, null, default);
+                   
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return null;
     }
 }
