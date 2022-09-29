@@ -39,6 +39,8 @@ public static class AutoReplyInGroups
             }
         };
 
+    static readonly DateTime DsuLimit2022 = new DateTime(2022,11,30);
+
     private static bool CheckIfToSend(SpecialGroup s, long id)
     {
         var x = ExcludedGroupsMatch[s];
@@ -281,6 +283,42 @@ public static class AutoReplyInGroups
                     ParseMode.Html,
                     message.MessageId,
                     true);
+        }
+
+
+        if (e?.Message?.Chat.Id == ExcludedGroups[SpecialGroup.DSU] && DateTime.Now <= DsuLimit2022)
+        {
+            if (text.Contains("quando") && (text.Contains("idone") && text.Contains("beneficiari")))
+            {
+                var text2 = new Language(
+                    new Dictionary<string, string?>
+                    {
+                        {
+                            "it",
+                            "Per sapere se idoneo = beneficiario si dovrà attendere il CdA di novembre. " +
+                            "Finché non viene stabilita la graduatoria definitiva è difficile " +
+                            "sapere quanti soldi serviranno per attuare la manovra"
+                        },
+                        {
+                            "en",
+                            "To find out if eligible = beneficiary you will have to wait for the November Board of Directors. " +
+                            "Until the final ranking is established, it is difficult " +
+                            "to know how much money will be needed to implement the maneuver"
+                        }
+                    }
+                );
+                var message = e.Message;
+                if (message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message?.From?.LanguageCode,
+                        text2,
+                        e,
+                        message.Chat.Id,
+                        message.Chat.Type,
+                        ParseMode.Html,
+                        message.MessageId,
+                        true);
+            }
         }
 
         if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
