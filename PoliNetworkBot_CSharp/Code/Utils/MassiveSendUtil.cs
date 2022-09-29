@@ -106,6 +106,8 @@ public static class MassiveSendUtil
         DataRow element, TelegramBotAbstract sender, Language text,
         MessageEventArgs? e)
     {
+        return null; //todo: remove
+        
         try
         {
             var groupId = Convert.ToInt64(element.ItemArray[0]);
