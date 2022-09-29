@@ -15,6 +15,7 @@ using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -1024,7 +1025,7 @@ internal static class CommandDispatcher
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
             "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null,
-            FileTypeJsonEnum.SIMPLE_STRING);
+            FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
         return new UpdateGroupsResult(l1, x1);

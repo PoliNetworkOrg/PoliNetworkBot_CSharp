@@ -21,7 +21,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public async Task<List<MessageSentResult>?> SendToOwners(TelegramBotAbstract sender, string? langCode,
+    public async Task<List<MessageSentResult?>?> SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, MessageEventArgs? messageEventArgs, FileTypeJsonEnum whatWeWant)
     {
         if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
@@ -51,7 +52,7 @@ public static class GroupsFixLog
         var escaped = HttpUtility.HtmlEncode(message);
         Logger.WriteLine(message);
         NotifyUtil.NotifyOwners_AnError_AndLog3(escaped, telegramBotAbstract, messageEventArgs,
-            FileTypeJsonEnum.SIMPLE_STRING);
+            FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
         Reset();
     }
 

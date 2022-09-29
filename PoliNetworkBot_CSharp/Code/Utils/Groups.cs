@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Exceptions;
@@ -211,7 +212,7 @@ internal static class Groups
                             if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
                                 await NotifyUtil.NotifyOwners_AnError_AndLog3(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
-                                    telegramBotClient, e, FileTypeJsonEnum.SIMPLE_STRING);
+                                    telegramBotClient, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
                         }
                     }
                 }
