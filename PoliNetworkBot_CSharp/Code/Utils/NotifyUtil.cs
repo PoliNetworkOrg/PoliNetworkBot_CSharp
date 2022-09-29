@@ -106,10 +106,10 @@ internal static class NotifyUtil
 
         switch (sendActionEnum)
         {
-            case SendActionEnum.SEND_TEXT:
+            case SendActionEnum.SEND_FILE:
                 return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
                     replyToMessageId, ParseMode.Html, whatWeWant);
-            case SendActionEnum.SEND_FILE:
+            case SendActionEnum.SEND_TEXT:
                        
                 var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
                     Data.Constants.GroupsConstants.GroupException,
