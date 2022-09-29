@@ -605,7 +605,18 @@ internal static class CommandDispatcher
                 if (e is { Message: { } } && sender != null)
                     if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
                         e.Message!.Chat.Type == ChatType.Private)
-                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender);
+                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, false);
+
+                await DefaultCommand(sender, e);
+
+                return false;
+            }
+            case "/massivesend_polimi_test":
+            {
+                if (e is { Message: { } } && sender != null)
+                    if (e.Message != null && Owners.CheckIfOwner(e.Message?.From?.Id) &&
+                        e.Message!.Chat.Type == ChatType.Private)
+                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, true);
 
                 await DefaultCommand(sender, e);
 

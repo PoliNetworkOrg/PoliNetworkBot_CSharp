@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class MassiveSendUtil
 {
-    public static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender)
+    public static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender, bool test)
     {
         if (e?.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                                                    string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
@@ -36,11 +36,11 @@ public static class MassiveSendUtil
 
         var textToBeSent = e.Message.ReplyToMessage.Text;
         var groups = Groups.GetGroupsByTitle("polimi", 1000, sender);
-        return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent);
+        return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent, test);
     }
 
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
-        DataTable? groups, string textToSend)
+        DataTable? groups, string textToSend, bool test)
     {
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
             $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
@@ -74,8 +74,8 @@ public static class MassiveSendUtil
             var g1 = groups.Rows;
             foreach (DataRow element in g1)
             {
-                var sent = await SendInAGroup(element, sender, text2, e);
-                if (sent != null)
+                var sent = await SendInAGroup(element, sender, text2, e, test);
+                if (sent != null || test)
                     counter++;
 
                 await Task.Delay(500);
@@ -102,11 +102,12 @@ public static class MassiveSendUtil
         return true;
     }
 
-    private static async Task<MessageSentResult?> SendInAGroup(
-        DataRow element, TelegramBotAbstract sender, Language text,
-        MessageEventArgs? e)
+    private static async Task<MessageSentResult?> SendInAGroup(DataRow element, TelegramBotAbstract sender,
+        Language text,
+        MessageEventArgs? e, bool test)
     {
-        return null; //todo: remove
+        if (test)
+            return null; //todo: remove
         
         try
         {
