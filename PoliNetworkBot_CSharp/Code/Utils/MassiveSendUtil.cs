@@ -56,7 +56,7 @@ public static class MassiveSendUtil
         DataTable? groups, string textToSend, bool test)
     {
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
-            $"WARNING! \n A new massive send has ben authorized by {e?.Message?.From?.Id} [{e?.Message?.From?.Id}] and will be sent in 1000 seconds. \n" +
+            $"WARNING! \n A new massive send has ben authorized by "+Utils.UserbotPeer.GetHtmlStringWithUserLink(e?.Message?.From)+" and will be sent in 1000 seconds. \n" +
             $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
 
         Thread.Sleep(1000 * 1000);
