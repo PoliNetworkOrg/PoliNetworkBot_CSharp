@@ -47,6 +47,8 @@ public static class MassiveSendUtil
         {
             await NotifyUtil.NotifyOwnersWithLog(ex, sender);
         }
+
+        return false;
     }
 
     private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
