@@ -39,7 +39,7 @@ public static class AutoReplyInGroups
             }
         };
 
-    static readonly DateTime DsuLimit2022 = new DateTime(2022,11,30);
+    private static readonly DateTime DsuLimit2022 = new(2022, 11, 30);
 
     private static bool CheckIfToSend(SpecialGroup s, long id)
     {
@@ -287,8 +287,7 @@ public static class AutoReplyInGroups
 
 
         if (e?.Message?.Chat.Id == ExcludedGroups[SpecialGroup.DSU] && DateTime.Now <= DsuLimit2022)
-        {
-            if (text.Contains("quando") && (text.Contains("idone") && text.Contains("beneficiari")))
+            if (text.Contains("quando") && text.Contains("idone") && text.Contains("beneficiari"))
             {
                 var text2 = new Language(
                     new Dictionary<string, string?>
@@ -319,7 +318,6 @@ public static class AutoReplyInGroups
                         message.MessageId,
                         true);
             }
-        }
 
         if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
             if (text.Contains("whatsapp") && text.Contains("grupp"))
