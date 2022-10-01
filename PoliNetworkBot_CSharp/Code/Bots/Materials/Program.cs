@@ -607,7 +607,7 @@ public class Program
             var fileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
             var fileAlreadyPresent = false;
             string? oldPath = null;
-            if (!FilePaths.TryAdd(fileUniqueAndGit, telegramBotAbstract, file))
+            if (!await FilePaths.TryAdd(fileUniqueAndGit, telegramBotAbstract, file))
             {
                 //Verifica anti-SPAM, da attivare se servisse
                 if (FilePaths.TryGetValue(fileUniqueAndGit, telegramBotAbstract, out oldPath))
