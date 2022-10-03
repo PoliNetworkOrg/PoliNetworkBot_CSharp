@@ -51,6 +51,7 @@ public static class AutoReplyInGroups
         string text)
     {
         if (e?.Message != null && CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
+        {
             if (text.Contains("piano studi") || text.Contains("piano di studi") ||
                 text.Contains("piano degli studi"))
             {
@@ -79,6 +80,34 @@ public static class AutoReplyInGroups
                     e.Message.MessageId,
                     true);
             }
+        }
+        else
+        {
+            
+            //siamo dentro il gruppo piano di studi
+            if (text.Contains("piano") && (text.Contains("attesa") || text.Contains("non")) && (text.Contains("approva")))
+            {
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    {
+                        "it",
+                        "Se non avete fatto cose strane tipo: inserito esami autonomi senza essersi accertati preventivamente che fossero ok, " +
+                        "vincoli del regolamento non rispettati ecc, non vi preoccupate. Il piano prima o poi vi verrà approvato. " +
+                        "In caso abbiate presentato un piano personalizzato sarà la commissione stessa a contattarvi in caso di problemi"
+                    }
+                });
+                if (e?.Message != null)
+                    await SendMessage.SendMessageInAGroup(telegramBotClient,
+                        e.Message.From?.LanguageCode,
+                        text2,
+                        e,
+                        e.Message.Chat.Id,
+                        e.Message.Chat.Type,
+                        ParseMode.Html,
+                        e.Message.MessageId,
+                        true);
+            }
+        }
 
         if (e?.Message != null && CheckIfToSend(SpecialGroup.ASK_POLIMI, e.Message.Chat.Id))
             if (text.ToLower().Contains("rappresentant") || text.ToLower().Contains("rappresentanza") ||
