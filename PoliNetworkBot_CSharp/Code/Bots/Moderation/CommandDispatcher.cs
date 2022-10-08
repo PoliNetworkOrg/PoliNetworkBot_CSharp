@@ -11,12 +11,14 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
+using Org.BouncyCastle.Utilities;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -31,11 +33,18 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
+
+    private static readonly List<Command> _commands = new()
+    {
+        new Command("start", Start, new List<ChatType>{ ChatType.Private }, Permission.USER, "Initialize bot", null),
+        new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType>{ ChatType.Private }, Permission.CREATOR, "Regenerates broken links for all groups", null),
+        new Command("contact", ContactUs, new List<ChatType>{ ChatType.Private }, Permission.USER, "Show Polinetwork contact's information", null),
+        new Command("help", Help, new List<ChatType>{ ChatType.Private }, Permission.USER, "This menu", null),
+    };
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
-        string?[]? cmdLines = e.Message?.Text?.Split(' ');
-        var cmd = cmdLines?[0]?.Trim();
-
+        var cmdLines = e.Message.Text?.Split(' ');
+        var cmd = cmdLines?[0].Trim();
 
         if (string.IsNullOrEmpty(cmd))
         {
@@ -43,6 +52,8 @@ internal static class CommandDispatcher
             return false;
         }
 
+        var args = cmdLines?.Skip(1).ToArray();
+        
         if (cmd.Contains('@'))
         {
             var cmd2 = cmd.Split("@");
@@ -56,33 +67,6 @@ internal static class CommandDispatcher
 
         switch (cmd)
         {
-            case "/start":
-            {
-                await Start(sender, e);
-                return false;
-            }
-
-            case "/force_check_invite_links":
-            {
-                if (GlobalVariables.Creators != null &&
-                    GlobalVariables.Creators.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = ForceCheckInviteLinksAsync(sender, e);
-                else
-                    await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/contact":
-            {
-                await ContactUs(sender, e);
-                return false;
-            }
-
-            case "/help":
-            {
-                await Help(sender, e);
-                return false;
-            }
 
             case "/muteAll":
             {
@@ -1425,7 +1409,7 @@ internal static class CommandDispatcher
         return true;
     }
 
-    private static async Task Help(TelegramBotAbstract? sender, MessageEventArgs? e)
+    private static async Task Help(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
             await HelpPrivate(sender, e);
@@ -1488,7 +1472,7 @@ internal static class CommandDispatcher
             e?.Message?.From?.Username, text2, ParseMode.Html, null);
     }
 
-    private static async Task ContactUs(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task ContactUs(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
         if (telegramBotClient != null)
@@ -1506,7 +1490,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task ForceCheckInviteLinksAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    private static async Task ForceCheckInviteLinksAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         long? n = null;
         try
@@ -1534,7 +1518,7 @@ internal static class CommandDispatcher
                 e.Message?.MessageId);
     }
 
-    private static async Task Start(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task Start(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string[]? args)
     {
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
         var lang2 = new Language(new Dictionary<string, string?>
