@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
+using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -637,13 +638,20 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException> MuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
+    public static async Task<SuccessWithException> MuteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.MUTE,
-            revokeMessage);
+        if (args.Length < 1)
+        {
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "en", "You need to insert the ID of the users to mute as arguments" },
+                { "it", "Devi inserire gli ID delle persone da mutare come argomenti" }
+            });
+            throw new NotEnoughArgumentsException(text);
+        }
+
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,  e?.Message.From?.Username, RestrictAction.MUTE,
+            false);
     }
 
     public static async Task<SuccessWithException> UnMuteAllAsync(

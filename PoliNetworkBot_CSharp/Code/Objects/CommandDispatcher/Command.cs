@@ -20,15 +20,15 @@ public class Command
     // Trigger command
     private string _trigger;
 
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task>? _action;
+    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[], Task>? _action;
     private readonly Action<MessageEventArgs, TelegramBotAbstract?, string[]?>? _action2;
     private readonly Func<MessageEventArgs, TelegramBotAbstract?, Task>? _action3;
     private readonly Func<MessageEventArgs, bool>? _optionalConditions;
     private List<ChatType> _chatTypes;
     private readonly Permission _permissionLevel;
-    private readonly string _helpMessage;
+    private readonly Language _helpMessage;
     
-    public Command(string trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action, List<ChatType> chatTypes, Permission permissionLevel, string helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
+    public Command(string trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action, List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
     {
         _optionalConditions = optionalConditions;
         _trigger = trigger.ToLower();
@@ -38,7 +38,7 @@ public class Command
         _helpMessage = helpMessage;
     }
     
-    public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action, List<ChatType> chatTypes, Permission permissionLevel, string helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
+    public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[], Task> action, List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
     {
         _trigger = trigger.ToLower();
         _action = action;
@@ -48,7 +48,7 @@ public class Command
         _optionalConditions = optionalConditions;
     }
     
-    public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action, List<ChatType> chatTypes, Permission permissionLevel, string helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
+    public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action, List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Func<MessageEventArgs, bool>? optionalConditions)
     {
         _trigger = trigger.ToLower();
         _action3 = action;

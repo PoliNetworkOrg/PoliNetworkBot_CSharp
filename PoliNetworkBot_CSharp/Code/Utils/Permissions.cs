@@ -20,6 +20,8 @@ internal static class Permissions
     {
         { Permission.USER, 0 },
         { Permission.HEAD_ADMIN, 100 },
+        { Permission.ALLOWED_MUTE_ALL, 200 },
+        { Permission.ALLOWED_BAN_ALL, 201 },
         { Permission.CREATOR, 1000 },
         { Permission.OWNER, int.MaxValue },
     };
@@ -68,10 +70,24 @@ internal static class Permissions
             Permission.OWNER => OwnerCheck,
             Permission.CREATOR => CreatorCheck,
             Permission.USER => UserCheck,
+            Permission.ALLOWED_MUTE_ALL => MuteAllCheck,
+            Permission.ALLOWED_BAN_ALL => BanAllCheck,
             _ => throw new Exception("No such permission level")
         };
     }
-    
+
+    private static bool BanAllCheck(User messageFrom)
+    {
+        return GlobalVariables.AllowedBanAll != null &&
+               GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(messageFrom));
+    }
+
+    private static bool MuteAllCheck(User messageFrom)
+    {
+        return GlobalVariables.AllowedMuteAll != null &&
+               GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(messageFrom));
+    }
+
     private static bool UserCheck(User messageFrom)
     {
         return true;

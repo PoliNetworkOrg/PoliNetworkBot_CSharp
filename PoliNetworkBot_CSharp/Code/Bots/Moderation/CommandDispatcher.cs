@@ -34,12 +34,25 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 internal static class CommandDispatcher
 {
 
+    /// <summary>
+    /// List of commands actively listened to from the bot.
+    ///
+    /// triggers are case insensitive!
+    ///
+    /// in the helpMessage section insert the descriptions of the arguments if required.
+    /// It's delegated to the callee to verify presence and type of the arguments and if not present call NotEnoughArgumentsException() inserting the text to be sent back to the user.
+    /// It's delegated to the caller to catch the exception and provide the feedback to the user
+    ///
+    /// If optionalConditions are specified, they need to be documented in the helpMessage after the @condition tag, in order to provide feedback to the user (and try to keep them standard)
+    /// optionalConditions are checked by the caller
+    /// </summary>
     private static readonly List<Command> _commands = new()
     {
-        new Command("start", Start, new List<ChatType>{ ChatType.Private }, Permission.USER, "Initialize bot", null),
-        new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType>{ ChatType.Private }, Permission.CREATOR, "Regenerates broken links for all groups", null),
-        new Command("contact", ContactUs, new List<ChatType>{ ChatType.Private }, Permission.USER, "Show Polinetwork contact's information", null),
-        new Command("help", Help, new List<ChatType>{ ChatType.Private }, Permission.USER, "This menu", null),
+        new Command("start", Start, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Initialize bot", "it", "Inizializza il bot"), null),
+        new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType>{ ChatType.Private }, Permission.CREATOR, new L("en", "Regenerates broken links for all groups", "it", "Rigenera tutti i link rotti dei gruppi"), null),
+        new Command("contact", ContactUs, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Show PoliNetwork contact's information", "it", "Mostra le informazioni per contattare PoliNetwork"), null),
+        new Command("help", Help, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "This Menu", "it", "Questo menu"), null),
+        new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "Mute user from the network. @args: list of int. @condition: you need to reply to a message to explain the mute", "it", "Mute un utente dal network. @args: lista di interi. @condition: devi rispondere ad un messaggio di motivazione del mute"), e => e.Message.ReplyToMessage != null),
     };
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
@@ -67,29 +80,6 @@ internal static class CommandDispatcher
 
         switch (cmd)
         {
-
-            case "/muteAll":
-            {
-                if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return false;
-                }
-
-                if (e.Message?.ReplyToMessage == null)
-                {
-                    await CommandNeedsAReplyToMessage(sender, e);
-                    return false;
-                }
-
-                if (GlobalVariables.AllowedMuteAll != null &&
-                    GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = RestrictUser.MuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                        e.Message.From?.Username, false);
-                else
-                    await DefaultCommand(sender, e);
-                return false;
-            }
             case "/unmuteAll":
             {
                 if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
