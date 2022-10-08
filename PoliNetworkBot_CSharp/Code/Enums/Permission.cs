@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Enums;
 
-internal enum Permission
+public enum Permission
 {
     OWNER,
     CREATOR,
