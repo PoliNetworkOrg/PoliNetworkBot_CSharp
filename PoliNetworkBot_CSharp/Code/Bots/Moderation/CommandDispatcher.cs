@@ -46,6 +46,10 @@ internal static class CommandDispatcher
     /// If optionalConditions are specified, they need to be documented in the helpMessage after the @condition tag, in order to provide feedback to the user (and try to keep them standard)
     /// optionalConditions are checked by the caller
     /// </summary>
+    ///
+    /// TODO porting of all commands in the new format
+    /// TODO make a recursive method to check all the commands and trigger the (first) selected
+    /// TODO make the help method to read all the commands specified here and provide useful information in a nice clean way
     private static readonly List<Command> _commands = new()
     {
         new Command("start", Start, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Initialize bot", "it", "Inizializza il bot"), null),
