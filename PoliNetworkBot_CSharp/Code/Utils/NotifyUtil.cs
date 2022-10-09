@@ -31,7 +31,7 @@ internal static class NotifyUtil
     internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
-        var title = messageEventArgs?.Message?.Chat.Title;
+        var title = messageEventArgs?.Message.Chat.Title;
         if (messageEventArgs is { Message: { } })
         {
             var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
@@ -296,7 +296,7 @@ internal static class NotifyUtil
         var destinatari = new List<PeerAbstract> { peer };
         return await SendFiles2(
             stream, filename, caption, telegramBotAbstract,
-            messageEventArgs?.Message?.From?.Username, destinatari, parseModeCaption, replyToMessageId
+            messageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId
         );
     }
 
@@ -447,7 +447,7 @@ internal static class NotifyUtil
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";
-        message += "Allowed by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message?.From);
+        message += "Allowed by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message.From);
         message += "\n\n";
         message += "Association: " + assoc;
         message += " #" + hashAssoc;
@@ -495,13 +495,13 @@ internal static class NotifyUtil
         var message = e?.Message;
         if (message != null)
         {
-            var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+            var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
             var text = new Language(new Dictionary<string, string?>
             {
                 { "en", "" }
             });
             await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode,
+                sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
                 null, true);
         }
     }

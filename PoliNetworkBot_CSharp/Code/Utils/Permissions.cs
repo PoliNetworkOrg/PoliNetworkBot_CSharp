@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -23,7 +21,7 @@ internal static class Permissions
         { Permission.ALLOWED_MUTE_ALL, 200 },
         { Permission.ALLOWED_BAN_ALL, 201 },
         { Permission.CREATOR, 1000 },
-        { Permission.OWNER, int.MaxValue },
+        { Permission.OWNER, int.MaxValue }
     };
 
     private static readonly List<KeyValuePair<Permission, int>> OrderedClearance = new();
@@ -38,25 +36,17 @@ internal static class Permissions
         if (OrderedClearance.Count == 0)
         {
             // Init ordered clearance
-            foreach (var clearanceWithLevel in ClearanceLevel)
-            {
-                OrderedClearance.Add(clearanceWithLevel);
-            }
+            foreach (var clearanceWithLevel in ClearanceLevel) OrderedClearance.Add(clearanceWithLevel);
             OrderedClearance.Sort((a, b) => b.Value.CompareTo(a.Value));
         }
+
         if (messageFrom == null)
             return false;
         var currentClearance = 0;
         foreach (var clearance in OrderedClearance)
         {
-            if (currentClearance >= ClearanceLevel.GetValueOrDefault(permission, int.MaxValue))
-            {
-                return true;
-            }
-            if (GetPermissionFunc(clearance.Key).Invoke(messageFrom))
-            {
-                currentClearance = clearance.Value;
-            }
+            if (currentClearance >= ClearanceLevel.GetValueOrDefault(permission, int.MaxValue)) return true;
+            if (GetPermissionFunc(clearance.Key).Invoke(messageFrom)) currentClearance = clearance.Value;
         }
 
         return false;
@@ -75,7 +65,7 @@ internal static class Permissions
             _ => throw new Exception("No such permission level")
         };
     }
-    
+
     private static bool BanAllCheck(User messageFrom)
     {
         return GlobalVariables.AllowedBanAll != null &&
@@ -99,11 +89,11 @@ internal static class Permissions
     }
 
     /// <summary>
-    /// Get Permissions from polinetwork.org/learnmore/about_us to check the level HEAD_ADMIN
+    ///     Get Permissions from polinetwork.org/learnmore/about_us to check the level HEAD_ADMIN
     /// </summary>
     /// <param name="messageFrom">User to check</param>
     /// <returns></returns>
-    private static bool HeadAdminCheck(User messageFrom)
+    private static bool HeadAdminCheck(User? messageFrom)
     {
         const string url = "https://polinetwork.org/en/learnmore/about_us/";
         var webReply = Web.DownloadHtmlAsync(url).Result;

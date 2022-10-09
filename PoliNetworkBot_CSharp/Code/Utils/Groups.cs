@@ -139,7 +139,7 @@ internal static class Groups
     {
         try
         {
-            if (e != null && (e.Message?.Chat.Id == null || e.Message?.Chat.Title == null))
+            if (e != null && e.Message.Chat.Title == null)
                 return;
 
             if (e?.Message != null)
@@ -162,7 +162,7 @@ internal static class Groups
     {
         try
         {
-            if (e != null && (e.Message?.Chat.Id == null || e.Message?.Chat.Title == null))
+            if (e != null && e.Message.Chat.Title == null)
                 return;
             InfoChat? infoChat = null;
             bool? getDone;
@@ -385,12 +385,10 @@ internal static class Groups
     }
 
 
-    public static async Task<MessageSentResult?> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+    public static async Task<MessageSentResult?> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
+        string[] args)
     {
-        if (args.Length < 1)
-        {
-            return null;
-        }
+        if (args.Length < 1) return null;
         return await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
     }
 
@@ -402,7 +400,7 @@ internal static class Groups
             if (string.IsNullOrEmpty(query))
                 return null;
 
-            var groups = Groups.GetGroupsByTitle(query, limit, sender);
+            var groups = GetGroupsByTitle(query, limit, sender);
 
             if (groups == null)
                 return null;
@@ -432,15 +430,15 @@ internal static class Groups
                 {
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
                         e.Message.From.Id,
-                        e.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
+                        e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
+                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
                         .SendMessageInAGroup(
                             sender,
-                            e.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
+                            e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
                             text2, e,
-                            e.Message!.Chat.Id, e.Message.Chat.Type,
-                            ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
+                            e.Message.Chat.Id, e.Message.Chat.Type,
+                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, 0, inline),
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
@@ -452,7 +450,7 @@ internal static class Groups
             return null;
         }
     }
-    
+
     private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>>? buttonsMatrix)
     {
         return buttonsMatrix switch

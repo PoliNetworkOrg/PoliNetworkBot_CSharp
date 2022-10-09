@@ -20,9 +20,9 @@ public static class MassiveSendUtil
     {
         try
         {
-            if (e?.Message?.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                                       string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
-                                                   || e.Message.ReplyToMessage.Text == null)
+            if (e?.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                      string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))
+                                                  || e.Message.ReplyToMessage.Text == null)
             {
                 var text = new Language(new Dictionary<string, string?>
                 {
@@ -31,9 +31,9 @@ public static class MassiveSendUtil
                 });
 
                 if (e?.Message != null)
-                    await sender.SendTextMessageAsync(e.Message?.From?.Id, text, ChatType.Private,
-                        e.Message?.From?.LanguageCode, ParseMode.Html, null, e.Message?.From?.Username,
-                        e.Message!.MessageId);
+                    await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
+                        e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
+                        e.Message.MessageId);
                 return false;
             }
 
@@ -57,7 +57,7 @@ public static class MassiveSendUtil
     {
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
             "WARNING! \n A new massive send has ben authorized by " +
-            UserbotPeer.GetHtmlStringWithUserLink(e?.Message?.From) + " and will be sent in 1000 seconds. \n" +
+            UserbotPeer.GetHtmlStringWithUserLink(e?.Message.From) + " and will be sent in 1000 seconds. \n" +
             $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
 
         Thread.Sleep(1000 * 1000);
@@ -65,7 +65,7 @@ public static class MassiveSendUtil
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
-            if (e?.Message?.From != null)
+            if (e?.Message.From != null)
                 await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private,
                     e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
                     e.Message.MessageId);
@@ -107,7 +107,7 @@ public static class MassiveSendUtil
 
         await Task.Delay(500);
 
-        if (e?.Message?.From == null)
+        if (e?.Message.From == null)
             return true;
 
         await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,

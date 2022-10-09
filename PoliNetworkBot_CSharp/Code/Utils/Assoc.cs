@@ -56,7 +56,7 @@ internal static class Assoc
     {
         try
         {
-            var replyTo = e?.Message?.ReplyToMessage;
+            var replyTo = e?.Message.ReplyToMessage;
 
             if (replyTo == null)
             {
@@ -70,8 +70,8 @@ internal static class Assoc
                 { "en", "Choose the entity you are writing this message for" }
             });
 
-            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e?.Message?.From?.Id, languageList,
-                sender, e?.Message?.From?.LanguageCode, e?.Message?.From?.Username);
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e?.Message.From?.Id, languageList,
+                sender, e?.Message.From?.LanguageCode, e?.Message.From?.Username);
 
             if (messageFromIdEntity == null)
             {
@@ -305,8 +305,8 @@ internal static class Assoc
             })
         };
         options?.Insert(0, options2);
-        var r1 = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, sender,
-            e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username);
+        var r1 = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, sender,
+            e?.Message.From?.LanguageCode, options, e?.Message.From?.Username);
 
         long? index = null;
         try
@@ -336,11 +336,10 @@ internal static class Assoc
             });
             if (telegramBotAbstract == null) return r;
             if (e == null) return r;
-            if (e.Message != null)
-                await telegramBotAbstract.SendTextMessageAsync(e.Message.From?.Id, text1,
-                    e.Message.Chat.Type, e.Message.From?.LanguageCode, ParseMode.Html, null,
-                    e.Message.From?.Username,
-                    null, true);
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.From?.Id, text1,
+                e.Message.Chat.Type, e.Message.From?.LanguageCode, ParseMode.Html, null,
+                e.Message.From?.Username,
+                null, true);
         }
         else
         {
@@ -419,7 +418,7 @@ internal static class Assoc
             }
         });
         if (sender != null)
-            if (e?.Message?.From != null)
+            if (e?.Message.From != null)
                 await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, default,
                     ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
     }
@@ -580,7 +579,7 @@ internal static class Assoc
         {
             // the message which got replied to is used for the text
             if (e?.Message?.ReplyToMessage != null)
-                message = e.Message.ReplyToMessage.Text ?? e.Message?.ReplyToMessage?.Caption;
+                message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage?.Caption;
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>
@@ -695,10 +694,10 @@ internal static class Assoc
 
             if (sender != null)
                 await sender.SendTextMessageAsync(
-                    eventArgs?.Message?.From?.Id,
+                    eventArgs?.Message.From?.Id,
                     privateText, ChatType.Private,
-                    eventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
-                    eventArgs?.Message?.MessageId);
+                    eventArgs?.Message.From?.LanguageCode, ParseMode.Html, null, null,
+                    eventArgs?.Message.MessageId);
         }
         catch (Exception? ex)
         {
@@ -838,10 +837,10 @@ internal static class Assoc
 
                     if (callbackGenericData.Bot != null)
                         await callbackGenericData.Bot.SendTextMessageAsync(
-                            assocVetoData.MessageEventArgs?.Message?.From?.Id,
+                            assocVetoData.MessageEventArgs?.Message.From?.Id,
                             privateText, ChatType.Private,
-                            assocVetoData.MessageEventArgs?.Message?.From?.LanguageCode, ParseMode.Html, null, null,
-                            assocVetoData.MessageEventArgs?.Message?.MessageId);
+                            assocVetoData.MessageEventArgs?.Message.From?.LanguageCode, ParseMode.Html, null, null,
+                            assocVetoData.MessageEventArgs?.Message.MessageId);
                 }
                 catch (Exception? exc)
                 {

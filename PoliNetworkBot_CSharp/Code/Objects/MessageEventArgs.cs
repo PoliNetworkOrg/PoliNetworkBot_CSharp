@@ -9,7 +9,7 @@ using Telegram.Bot.Types;
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
 /// <summary>
-/// A Telegram Message Wrapper
+///     A Telegram Message Wrapper
 /// </summary>
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]

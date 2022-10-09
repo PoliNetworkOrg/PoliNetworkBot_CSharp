@@ -34,7 +34,7 @@ public static class RebootUtil
             }
     }
 
-    public static async Task<bool> RebootWithLog( MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> RebootWithLog(MessageEventArgs e, TelegramBotAbstract? sender)
     {
         await AnnounceReboot(sender, e);
 

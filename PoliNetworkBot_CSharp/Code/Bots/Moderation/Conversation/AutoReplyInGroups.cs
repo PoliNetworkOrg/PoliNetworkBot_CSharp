@@ -83,9 +83,8 @@ public static class AutoReplyInGroups
         }
         else
         {
-            
             //siamo dentro il gruppo piano di studi
-            if (text.Contains("piano") && (text.Contains("attesa") || text.Contains("non")) && (text.Contains("approva")))
+            if (text.Contains("piano") && (text.Contains("attesa") || text.Contains("non")) && text.Contains("approva"))
             {
                 var text2 = new Language(new Dictionary<string, string?>
                 {
@@ -336,16 +335,15 @@ public static class AutoReplyInGroups
                     }
                 );
                 var message = e.Message;
-                if (message != null)
-                    await SendMessage.SendMessageInAGroup(telegramBotClient,
-                        e.Message?.From?.LanguageCode,
-                        text2,
-                        e,
-                        message.Chat.Id,
-                        message.Chat.Type,
-                        ParseMode.Html,
-                        message.MessageId,
-                        true);
+                await SendMessage.SendMessageInAGroup(telegramBotClient,
+                    e.Message.From?.LanguageCode,
+                    text2,
+                    e,
+                    message.Chat.Id,
+                    message.Chat.Type,
+                    ParseMode.Html,
+                    message.MessageId,
+                    true);
             }
 
         if (DateTime.Now.Month is >= 1 and <= 6 or >= 11 and <= 12)
@@ -397,15 +395,14 @@ public static class AutoReplyInGroups
                 "Check the pinned messages"
             }
         });
-        if (e.Message != null)
-            await SendMessage.SendMessageInAGroup(telegramBotClient,
-                e.Message.From?.LanguageCode,
-                text2,
-                e,
-                e.Message.Chat.Id,
-                e.Message.Chat.Type,
-                ParseMode.Html,
-                e.Message.MessageId,
-                true);
+        await SendMessage.SendMessageInAGroup(telegramBotClient,
+            e.Message.From?.LanguageCode,
+            text2,
+            e,
+            e.Message.Chat.Id,
+            e.Message.Chat.Type,
+            ParseMode.Html,
+            e.Message.MessageId,
+            true);
     }
 }
