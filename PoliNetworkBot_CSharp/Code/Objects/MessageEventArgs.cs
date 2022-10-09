@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public class MessageEventArgs
 {
-    public Message Message;
+    public readonly Message Message;
 
     public MessageEventArgs(Message message)
     {

@@ -58,11 +58,18 @@ internal static class CommandDispatcher
         new Command("contact", ContactUs, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Show PoliNetwork contact's information", "it", "Mostra le informazioni per contattare PoliNetwork"), null),
         new Command("help", Help, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "This Menu", "it", "Questo menu"), null),
         new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "Mute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
-        new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "UNMute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "UNMute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "UNMute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
         new Command("ban_all", RestrictUser.BanAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_BAN_ALL, new L("en", "Ban users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Banna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("unban_all", RestrictUser.UnbanAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_BAN_ALL, new L("en", "UNBan users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "UNBanna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
         new Command("ban_delete_all", RestrictUser.BanDeleteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_BAN_ALL, new L("en", "Ban users from the network and delete all its messages. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Banna un utente dal network e cancella tutti i suoi messaggi. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
         new Command("del", RestrictUser.DeleteMessageFromUser, new List<ChatType>{ ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.ALLOWED_BAN_ALL, new L("en", "Delete a message in chat. @condition: you need to reply to the message to delete", "it", "Cancella un messaggio in chat. @condition: devi rispondere al messaggio da cancellare"), e => e.Message.ReplyToMessage != null),
-
+        new Command("ban", RestrictUser.BanUserAsync, new List<ChatType>{ ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER, new L("en", "Delete a message in chat. @condition: you need to reply to the message to delete", "it", "Cancella un messaggio in chat. @condition: devi rispondere al messaggio da cancellare"), e => e.Message.ReplyToMessage != null),
+        new Command("test_spam", TestSpamAsync, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Test a message for spam. @condition: you need to reply to the message to test", "it", "Testa un messaggio contro il filtro spam. @condition: devi rispondere al messaggio da testare"), e => e.Message.ReplyToMessage != null),
+        new Command("groups", SendRecommendedGroupsAsync, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Get suggested groups for you.", "it", "Ricevi i gruppi consigliati per te."), null),
+        new Command("search", Groups.SendGroupsByTitle, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Search for a group by title.", "it", "Cerca gruppi per titolo."), null),
+        new Command("search", Groups.SendGroupsByTitle, new List<ChatType>{ ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER, new L("en", "Search for a group by title. @condition: you need to reply to a message", "it", "Cerca gruppi per titolo. @condition: devi rispondere ad un messaggio"), e => e.Message.ReplyToMessage != null),
+        new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER, new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null),
+        
     };
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
@@ -116,100 +123,15 @@ internal static class CommandDispatcher
                 return;
             }
             */
-
-            case "/ban":
-            {
-                _ = RestrictUser.BanUserAsync(sender, e, cmdLines, false);
-                return false;
-            }
+            
             /*case "/banAllHistory":
                 {
                     // _ = BanUserAsync(sender, e, cmdLines);
                     _ = BanUserHistoryAsync(sender, e, false);
                     return;
                 }*/
+            
 
-            case "/unbanAll":
-            {
-                if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return false;
-                }
-
-                if (e.Message?.ReplyToMessage == null)
-                {
-                    await CommandNeedsAReplyToMessage(sender, e);
-                    return false;
-                }
-
-                if (GlobalVariables.AllowedBanAll != null &&
-                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = RestrictUser.UnbanAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                        e.Message.From?.Username,
-                        false);
-                else
-                    await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/test_spam":
-            {
-                if (e.Message?.ReplyToMessage == null)
-                    return false;
-
-                await TestSpamAsync(e.Message.ReplyToMessage, sender, e);
-                return false;
-            }
-
-            case "/groups":
-            {
-                await SendRecommendedGroupsAsync(sender, e);
-                return false;
-            }
-
-            case "/search":
-            {
-                if (e.Message == null || sender == null)
-                    return false;
-
-                var query = "";
-                if (cmdLines != null)
-                    for (var i = 1; i < cmdLines.Length; i++)
-                        query += cmdLines[i] + " ";
-
-                if (!string.IsNullOrEmpty(query))
-                    query = query[..^1];
-
-                if (e.Message.Chat.Type == ChatType.Private)
-                {
-                    _ = SendGroupsByTitle(query, sender, e, 6);
-                }
-                else
-                {
-                    if (e.Message.ReplyToMessage != null || (GlobalVariables.AllowedBanAll != null &&
-                                                             GlobalVariables.AllowedBanAll.ToList()
-                                                                 .Any(x => x.Matches(e.Message?.From))))
-                        _ = SendGroupsByTitle(query, sender, e, 6);
-                    else
-                        await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-                }
-
-
-                return false;
-            }
-
-            case "/reboot":
-            {
-                if (e is { Message: { } })
-                    if (e.Message is { } && Owners.CheckIfOwner(e.Message?.From?.Id) &&
-                        e.Message!.Chat.Type == ChatType.Private)
-                        return await RebootUtil.RebootWithLog(sender, e);
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
 
             case "/sendmessageinchannel":
             {
@@ -748,94 +670,6 @@ internal static class CommandDispatcher
                 e.Message?.From?.FirstName, e.Message?.From?.LastName, e.Message?.Chat.Id, e.Message?.Chat.Type);
     }
 
-
-    private static async Task<object?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
-        MessageEventArgs? e, int limit)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(query))
-                return null;
-
-            var groups = Groups.GetGroupsByTitle(query, limit, sender);
-
-            if (groups == null)
-                return null;
-
-            Logger.WriteLine("Groups search (1): " + groups.Rows.Count);
-
-            var indexTitle = groups.Columns.IndexOf("title");
-            var indexLink = groups.Columns.IndexOf("link");
-            var buttons = (from DataRow row in groups.Rows
-                where !string.IsNullOrEmpty(row?[indexLink].ToString()) &&
-                      !string.IsNullOrEmpty(row?[indexTitle]?.ToString())
-                select new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
-                    { Url = row[indexLink].ToString() }).ToList();
-
-            var buttonsMatrix = buttons is { Count: > 0 }
-                ? KeyboardMarkup.ArrayToMatrixString(buttons)
-                : null;
-
-            Logger.WriteLine("Groups search (2): " + buttonsMatrix?.Count);
-
-            var text2 = GetTextSearchResult(limit, buttonsMatrix);
-
-            var inline = buttonsMatrix == null ? null : new InlineKeyboardMarkup(buttonsMatrix);
-
-            if (e is { Message.From: { } })
-                return e.Message.Chat.Type switch
-                {
-                    ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
-                        e.Message.From.Id,
-                        e.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, inline),
-                    ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
-                        .SendMessageInAGroup(
-                            sender,
-                            e.Message?.ReplyToMessage?.From?.LanguageCode ?? e.Message?.From?.LanguageCode,
-                            text2, e,
-                            e.Message!.Chat.Id, e.Message.Chat.Type,
-                            ParseMode.Html, e.Message?.ReplyToMessage?.MessageId, true, 0, inline),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-
-            return null;
-        }
-        catch (Exception? exception)
-        {
-            _ = NotifyUtil.NotifyOwnerWithLog2(exception, sender, e);
-            return null;
-        }
-    }
-
-    private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>>? buttonsMatrix)
-    {
-        return buttonsMatrix switch
-        {
-            null => new Language(new Dictionary<string, string?>
-                {
-                    { "en", "<b>No results</b>." },
-                    { "it", "<b>Nessun risultato</b>." }
-                }
-            ),
-            _ => limit switch
-            {
-                <= 0 => new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "<b>Here are the groups </b>:" },
-                        { "it", "<b>Ecco i gruppi</b>:" }
-                    }
-                ),
-                _ => new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "<b>Here are the groups </b> (max " + limit + "):" },
-                        { "it", "<b>Ecco i gruppi</b> (max " + limit + "):" }
-                    }
-                )
-            }
-        };
-    }
-
     public static async Task<UpdateGroupsResult> UpdateGroups(TelegramBotAbstract? sender, bool dry,
         bool debug,
         bool updateDb, MessageEventArgs? messageEventArgs)
@@ -982,8 +816,11 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task TestSpamAsync(Message message, TelegramBotAbstract? sender, MessageEventArgs? e)
+    private static async Task TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        var message = e?.Message.ReplyToMessage;
+        if (message == null)
+            return;
         if (e?.Message != null)
         {
             var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
@@ -1243,7 +1080,7 @@ internal static class CommandDispatcher
             e?.Message?.From?.Username, text2, ParseMode.Html, null);
     }
 
-    private static async Task SendRecommendedGroupsAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    private static async Task SendRecommendedGroupsAsync( MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +

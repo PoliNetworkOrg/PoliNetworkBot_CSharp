@@ -75,7 +75,7 @@ internal static class Permissions
             _ => throw new Exception("No such permission level")
         };
     }
-
+    
     private static bool BanAllCheck(User messageFrom)
     {
         return GlobalVariables.AllowedBanAll != null &&

@@ -597,9 +597,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException?> BanUserAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e,
-        string?[]? stringInfo, bool? revokeMessage)
+    public static async Task<SuccessWithException?> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender, string[] stringInfo)
     {
         if (e?.Message?.From != null)
         {
@@ -624,7 +622,7 @@ internal static class RestrictUser
             var targetId = userIdFound.GetUserId();
             if (targetId != null && e?.Message != null)
                 return await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
-                    revokeMessage);
+                    false);
 
             var e3 = new Exception("Can't find userid (2)");
             await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, e);
@@ -636,17 +634,15 @@ internal static class RestrictUser
         NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From?.Username);
 
         return await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
-            revokeMessage);
+            false);
     }
 
 
     public static async Task<SuccessWithException> UnbanAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
+        MessageEventArgs? e, TelegramBotAbstract? sender, string[] target)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username,
-            RestrictAction.UNBAN, revokeMessage);
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, e?.Message.From?.LanguageCode, e?.Message.From?.Username,
+            RestrictAction.UNBAN, false);
     }
 
 
