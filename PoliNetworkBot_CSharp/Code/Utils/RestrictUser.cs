@@ -499,12 +499,24 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException> BanAllAsync2(
-        TelegramBotAbstract? sender, MessageEventArgs? e,
-        IReadOnlyList<string?>? target, string? lang, string? username, bool? revokeMessage)
+    public static async Task<SuccessWithException> BanAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.BAN,
-            revokeMessage);
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode, e?.Message.From?.Username, RestrictAction.BAN,
+            false);
+    }
+    
+    public static async Task<SuccessWithException> BanDeleteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+    {
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode, e?.Message.From?.Username, RestrictAction.BAN,
+            true);
+    }
+
+    public static async Task DeleteMessageFromUser(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+    {
+        if (e?.Message.ReplyToMessage?.Chat.Id != null && sender != null)
+        {
+            await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
+        }
     }
 
 
@@ -655,11 +667,9 @@ internal static class RestrictUser
     }
 
     public static async Task<SuccessWithException> UnMuteAllAsync(
-        TelegramBotAbstract? sender, MessageEventArgs? e, IReadOnlyList<string?>? target, string? lang,
-        string? username,
-        bool? revokeMessage)
+        MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, lang, username, RestrictAction.UNMUTE,
-            revokeMessage);
+        return await BanAllUnbanAllMethod1Async2Async(sender, e, target: args, e?.Message.From?.LanguageCode, e?.Message.From?.Username, RestrictAction.UNMUTE,
+            false);
     }
 }

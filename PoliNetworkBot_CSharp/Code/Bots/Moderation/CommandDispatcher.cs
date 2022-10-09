@@ -50,13 +50,19 @@ internal static class CommandDispatcher
     /// TODO porting of all commands in the new format
     /// TODO make a recursive method to check all the commands and trigger the (first) selected
     /// TODO make the help method to read all the commands specified here and provide useful information in a nice clean way
+    /// TODO verify restrict actions are still working (they probably aren't, we changed the target from IReadOnlyList<string?>? target to string[] containing all the targets to ban)
     private static readonly List<Command> _commands = new()
     {
         new Command("start", Start, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Initialize bot", "it", "Inizializza il bot"), null),
         new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType>{ ChatType.Private }, Permission.CREATOR, new L("en", "Regenerates broken links for all groups", "it", "Rigenera tutti i link rotti dei gruppi"), null),
         new Command("contact", ContactUs, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "Show PoliNetwork contact's information", "it", "Mostra le informazioni per contattare PoliNetwork"), null),
         new Command("help", Help, new List<ChatType>{ ChatType.Private }, Permission.USER, new L("en", "This Menu", "it", "Questo menu"), null),
-        new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "Mute user from the network. @args: list of int. @condition: you need to reply to a message to explain the mute", "it", "Mute un utente dal network. @args: lista di interi. @condition: devi rispondere ad un messaggio di motivazione del mute"), e => e.Message.ReplyToMessage != null),
+        new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "Mute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_MUTE_ALL, new L("en", "UNMute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("ban_all", RestrictUser.BanAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_BAN_ALL, new L("en", "Ban users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Banna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("ban_delete_all", RestrictUser.BanDeleteAllAsync, new List<ChatType>{ ChatType.Private }, Permission.ALLOWED_BAN_ALL, new L("en", "Ban users from the network and delete all its messages. @args: list of ids. @condition: you need to reply to a message to explain the action", "it", "Banna un utente dal network e cancella tutti i suoi messaggi. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), e => e.Message.ReplyToMessage != null),
+        new Command("del", RestrictUser.BanDeleteAllAsync, new List<ChatType>{ ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.ALLOWED_BAN_ALL, new L("en", "Delete a message in chat. @condition: you need to reply to the message to delete", "it", "Cancella un messaggio in chat. @condition: devi rispondere al messaggio da cancellare"), e => e.Message.ReplyToMessage != null),
+
     };
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
@@ -84,100 +90,8 @@ internal static class CommandDispatcher
 
         switch (cmd)
         {
-            case "/unmuteAll":
-            {
-                if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return false;
-                }
-
-                if (e.Message?.ReplyToMessage == null)
-                {
-                    await CommandNeedsAReplyToMessage(sender, e);
-                    return false;
-                }
-
-                if (GlobalVariables.AllowedMuteAll != null &&
-                    GlobalVariables.AllowedMuteAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = RestrictUser.UnMuteAllAsync(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                        e.Message.From?.Username,
-                        false);
-                else
-                    await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/banAll":
-            {
-                if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return false;
-                }
-
-                if (e.Message?.ReplyToMessage == null)
-                {
-                    await CommandNeedsAReplyToMessage(sender, e);
-                    return false;
-                }
-
-                if (GlobalVariables.AllowedBanAll != null &&
-                    GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From)))
-                    _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                        e.Message.From?.Username,
-                        false);
-                else
-                    await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/banDeleteAll":
-            {
-                if (e.Message != null && e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return false;
-                }
-
-                if (e.Message?.ReplyToMessage == null)
-                {
-                    await CommandNeedsAReplyToMessage(sender, e);
-                    return false;
-                }
-
-                if ((GlobalVariables.AllowedBanAll == null ||
-                     !GlobalVariables.AllowedBanAll.ToList().Any(x => x.Matches(e.Message?.From))) &&
-                    (GlobalVariables.Owners == null ||
-                     !GlobalVariables.Owners.ToList().Any(x => x.Matches(e.Message?.From))))
-                {
-                    await DefaultCommand(sender, e);
-                    return false;
-                }
-
-                _ = RestrictUser.BanAllAsync2(sender, e, cmdLines, e.Message.From?.LanguageCode,
-                    e.Message.From?.Username,
-                    true);
-                return false;
-            }
-
-            case "/del":
-            {
-                var reply = e.Message?.ReplyToMessage;
-                if (reply == null || sender == null || ((GlobalVariables.AllowedBanAll == null || !GlobalVariables
-                        .AllowedBanAll.ToList()
-                        .Any(x => x.Matches(e.Message?.From))) && (GlobalVariables.Owners == null ||
-                                                                   !GlobalVariables.Owners.ToList().Any(x =>
-                                                                       x.Matches(e.Message?.From)))))
-                {
-                    await DefaultCommand(sender, e);
-                    return false;
-                }
-
-                await sender.DeleteMessageAsync(reply.Chat.Id, reply.MessageId, null);
-                return false;
-            }
-
+            
+            
             /*
         case "/massiveSend":
             {
