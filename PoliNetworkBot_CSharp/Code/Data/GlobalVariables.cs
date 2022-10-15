@@ -95,7 +95,8 @@ public static class GlobalVariables
             new("eliamaggioni"),
             new("tlpats"),
             new(349275135), //policreator
-            new(1051414781) //polinetwork
+            new(1051414781), //polinetwork,
+            new(1087968824) //@GroupAnonymousBot (è quello di telegram per retrocompatibilità
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>
@@ -105,7 +106,7 @@ public static class GlobalVariables
 
         AllowedTags = new List<string>
         {
-            "poligruppo", "polirules", "polibook", "poliextra"
+            "poligruppo", "polirules", "polibook", "poliextra", "askpolimi"
         };
 
         Owners = new List<TelegramUser>
