@@ -41,9 +41,10 @@ public static class Database
     }
 
     public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
+        Dictionary<string, object?>? args = null, ToLog toLog = ToLog.YES)
     {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        if (toLog == ToLog.YES)
+            Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         if (dbConfigConnection == null) return null;
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
