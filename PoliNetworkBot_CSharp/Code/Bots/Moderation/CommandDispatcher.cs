@@ -185,7 +185,22 @@ internal static class CommandDispatcher
         new Command("getmessagesent", MessagesStore.GetMessagesSent, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "get messages sent"), null,e => e.Message.ReplyToMessage != null),
 
-
+        new Command( new List<string>(){"assoc_write", "assoc_send"}, Utils.AssocCommands.AssocWrite, new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "assoc write"), null,null),
+        new Command( new List<string>(){"assoc_publish"}, Utils.AssocCommands.AssocPublish, 
+            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "assoc publish"), null,null),
+        new Command( new List<string>(){"assoc_read"}, Utils.AssocCommands.AssocRead, 
+            new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "assoc read"), null,null),
+        
+        new Command( new List<string>(){"assoc_read_all"}, Utils.AssocCommands.AssocReadAll, 
+            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "assoc read all"), null,null),
+        
+        new Command( new List<string>(){"assoc_delete", "assoc_remove"}, Utils.AssocCommands.AssocDelete, 
+            new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "assoc delete"), null,null),
     };
 
     private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -230,7 +245,7 @@ internal static class CommandDispatcher
         {   
             if(sender != null)
                 command.TryTrigger(e, sender, cmd, args);
-            if(command.hasBeenTriggered())
+            if(command.HasBeenTriggered())
                 return true;
         }
 
@@ -270,62 +285,7 @@ internal static class CommandDispatcher
                     return;
                 }*/
 
-            
- 
-            
-        
-            
-         
-            
-     
-            
-        
-            
-          
-            
 
-          
-            case "/assoc_write":
-            case "/assoc_send":
-            {
-                _ = await Assoc.Assoc_SendAsync(sender, e);
-                return false;
-            }
-
-            case "/assoc_publish":
-            {
-                if (Owners.CheckIfOwner(e.Message.From?.Id))
-                    _ = await Assoc.Assoc_Publish(sender, e);
-                else
-                    _ = await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/assoc_read":
-            {
-                _ = await Assoc.Assoc_Read(sender, e, false);
-                return false;
-            }
-
-            case "/assoc_read_all":
-            {
-                if (Owners.CheckIfOwner(e.Message.From?.Id))
-                    _ = await Assoc.Assoc_ReadAll(sender, e);
-                else
-                    _ = await DefaultCommand(sender, e);
-                return false;
-            }
-
-            case "/assoc_delete":
-            case "/assoc_remove":
-            {
-                _ = await Assoc.Assoc_Delete(sender, e);
-                return false;
-            }
-
-          
-
-      
             default:
             {
                 await DefaultCommand(sender, e);

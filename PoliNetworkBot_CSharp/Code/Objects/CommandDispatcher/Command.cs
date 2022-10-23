@@ -127,7 +127,7 @@ public class Command
         return this._trigger.Any(trigger => string.CompareOrdinal(trigger, lowMessage) == 0);
     }
 
-    public bool hasBeenTriggered(){
+    public bool HasBeenTriggered(){
         return _hasBeenTriggered;
     }
 
