@@ -118,7 +118,7 @@ internal static class CommandDispatcher
                 "Cerca gruppi per titolo. @condition: devi rispondere ad un messaggio"), null,
             e => e.Message.ReplyToMessage != null),
         new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER,
-            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null),
+            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null)
 
     };
 
@@ -150,7 +150,7 @@ internal static class CommandDispatcher
             }
         }
 
-        foreach (Command command in Commands)
+        foreach (var command in Commands)
         {   
             if(sender != null)
                 command.TryTrigger(e, sender, cmd, args);
@@ -1268,8 +1268,8 @@ internal static class CommandDispatcher
 
         var text2 = new Language(new Dictionary<string, string?>
         {
-            { "en", textEng + "\nCommands available:\n" + String.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("en"))) },
-            { "it", text + "\nCommands available:\n" + String.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("it"))) }
+            { "en", textEng + "\nCommands available:\n" + string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("en"))) },
+            { "it", text + "\nCommands available:\n" + string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("it"))) }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,

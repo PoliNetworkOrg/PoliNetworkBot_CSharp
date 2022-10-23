@@ -42,10 +42,7 @@ public class Command
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
-        if(shortDescription != null)
-            _shortDescription = shortDescription;
-        else 
-            _shortDescription = helpMessage;
+        _shortDescription = shortDescription ?? helpMessage;
     }
 
     public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[], Task> action,
@@ -58,10 +55,7 @@ public class Command
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
-        if(shortDescription != null)
-            _shortDescription = shortDescription;
-        else 
-            _shortDescription = helpMessage;
+        _shortDescription = shortDescription ?? helpMessage;
     }
 
     public Command(string trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action, List<ChatType> chatTypes,
@@ -73,10 +67,7 @@ public class Command
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
-        if(shortDescription != null)
-            _shortDescription = shortDescription;
-        else 
-            _shortDescription = helpMessage;
+        _shortDescription = shortDescription ?? helpMessage;
     }
 
 

@@ -32,49 +32,48 @@ internal static class NotifyUtil
         MessageEventArgs? messageEventArgs)
     {
         var title = messageEventArgs?.Message.Chat.Title;
-        if (messageEventArgs is { Message: { } })
+        if (messageEventArgs is not { Message: { } }) 
+            return false;
+        
+        var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
+        if (text == null)
         {
-            var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
-            if (text == null)
-            {
-                var ex = new Exception("text null and caption null in permitted spam notification");
-                await NotifyOwnerWithLog2(ex, sender, messageEventArgs);
-                return false;
-            }
-
-            var hashText = HashUtils.GetHashOf(text)?[..20];
-
-            var message = "#Permitted spam in group: ";
-            message += "\n";
-            message += title;
-            message += "\n\n";
-            message += "@@@@@@@";
-            message += "\n\n";
-            message += text;
-            message += "\n\n";
-            message += "@@@@@@@";
-            message += "\n\n";
-            message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0
-                ? messageEventArgs.Message.Chat.Id.ToString()
-                : "n" + -1 * messageEventArgs.Message.Chat.Id);
-            message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
-            message += "\n\n";
-            message += "Message tag: #" + hashText;
-
-            const string? langCode = "it";
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", message }
-            });
-            Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-            var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                GroupsConstants.PermittedSpamGroup,
-                ChatType.Group,
-                ParseMode.Html, null, true);
-            return m != null && m.IsSuccess();
+            var ex = new Exception("text null and caption null in permitted spam notification");
+            await NotifyOwnerWithLog2(ex, sender, messageEventArgs);
+            return false;
         }
 
-        return false;
+        var hashText = HashUtils.GetHashOf(text)?[..20];
+
+        var message = "#Permitted spam in group: ";
+        message += "\n";
+        message += title;
+        message += "\n\n";
+        message += "@@@@@@@";
+        message += "\n\n";
+        message += text;
+        message += "\n\n";
+        message += "@@@@@@@";
+        message += "\n\n";
+        message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0
+            ? messageEventArgs.Message.Chat.Id.ToString()
+            : "n" + -1 * messageEventArgs.Message.Chat.Id);
+        message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
+        message += "\n\n";
+        message += "Message tag: #" + hashText;
+
+        const string? langCode = "it";
+        var text2 = new Language(new Dictionary<string, string?>
+        {
+            { "it", message }
+        });
+        Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+        var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+            GroupsConstants.PermittedSpamGroup,
+            ChatType.Group,
+            ParseMode.Html, null, true);
+        return m != null && m.IsSuccess();
+
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
