@@ -219,16 +219,16 @@ internal static class CommandDispatcher
         new Command(new List<string> { "assoc_delete", "assoc_remove" }, AssocCommands.AssocDelete,
             new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "assoc delete"), null, null),
-        
-        new Command("massiveSend", MassiveSendUtil.MassiveSend, 
-            new List<ChatType>() { ChatType.Private}, Permission.OWNER, 
-            new L("en", "massive send"), null, 
+
+        new Command("massiveSend", MassiveSendUtil.MassiveSend,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "massive send"), null,
             null, false),
-        
-        new Command("banAllHistory", BanHistory, 
-        new List<ChatType>() { ChatType.Private}, Permission.OWNER, 
-        new L("en", "ban all history"), null, 
-        null, false)
+
+        new Command("banAllHistory", BanHistory,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "ban all history"), null,
+            null, false)
     };
 
     private static Task BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -286,10 +286,6 @@ internal static class CommandDispatcher
 
         switch (cmd)
         {
- 
-
-        
-
             default:
             {
                 await DefaultCommand(sender, e);
@@ -549,7 +545,6 @@ internal static class CommandDispatcher
 
         return sender != null && await MassiveSendUtil.MassiveSendSlaveAsync(sender, e, groups, textToSend, false);
     }
-    
 
 
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono

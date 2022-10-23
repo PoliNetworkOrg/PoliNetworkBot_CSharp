@@ -175,15 +175,15 @@ public static class MassiveSendUtil
             if (e != null && Matches(GlobalVariables.AllowedBanAll, e.Message.From))
             {
                 if (e.Message.From != null)
-                {
                     if (e.Message.ReplyToMessage != null)
                         if (sender != null)
                             if (e.Message.ReplyToMessage.Text != null)
                                 _ = CommandDispatcher.MassiveSendAsync(sender, e, e.Message.ReplyToMessage.Text);
-                }
             }
             else
+            {
                 await CommandDispatcher.DefaultCommand(sender, e);
+            }
         }
         catch (Exception ex)
         {
@@ -195,5 +195,4 @@ public static class MassiveSendUtil
     {
         return allowedBanAll != null && allowedBanAll.Any(item => item.Matches(user));
     }
-    
 }

@@ -24,16 +24,15 @@ public class Command
     private readonly Action<MessageEventArgs, TelegramBotAbstract?, string[]?>? _action2;
     private readonly Func<MessageEventArgs, TelegramBotAbstract?, Task>? _action3;
     private readonly List<ChatType> _chatTypes;
+    private readonly bool _enabled;
     private readonly Language _helpMessage;
     private readonly Func<MessageEventArgs, bool>? _optionalConditions;
     private readonly Permission _permissionLevel;
     private readonly Language _shortDescription;
     private bool _hasBeenTriggered;
-    private readonly bool _enabled;
 
     // Trigger command
     private List<string> _trigger;
-    
 
 
     public Command(IEnumerable<string> trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action,
@@ -112,9 +111,9 @@ public class Command
         List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage,
         Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions, 
+        Func<MessageEventArgs, bool>? optionalConditions,
         bool enabled = true
-        )
+    )
     {
         _trigger = new List<string> { trigger.ToLower() };
         _action3 = action;

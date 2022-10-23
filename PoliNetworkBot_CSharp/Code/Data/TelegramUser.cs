@@ -47,6 +47,4 @@ public class TelegramUser
     {
         return Id == userIdParam;
     }
-
-
 }
