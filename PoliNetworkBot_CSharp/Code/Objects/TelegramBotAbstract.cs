@@ -1734,7 +1734,7 @@ public class TelegramBotAbstract
         return new MessageSentResult(false, null, chatTypeToSendTo);
     }
 
-    internal async Task FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync()
+    internal async Task<bool> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync()
     {
         switch (_isbot)
         {
@@ -1743,13 +1743,15 @@ public class TelegramBotAbstract
 
             case BotTypeApi.USER_BOT:
             {
-                await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
+                return await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
             }
                 break;
 
             case BotTypeApi.DISGUISED_BOT:
                 break;
         }
+
+        return false;
     }
 
     public async Task AnswerCallbackQueryAsync(string callbackQueryId, string text)

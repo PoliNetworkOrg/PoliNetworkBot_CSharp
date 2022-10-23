@@ -129,11 +129,12 @@ internal static class NotifyUtil
         return text;
     }
 
-    internal static async Task NotifyOwnerWithLog2(Exception? e, TelegramBotAbstract? telegramBotAbstract,
+    internal static async Task<List<MessageSentResult?>?> NotifyOwnerWithLog2(Exception? e, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
-        await NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+        var x = await NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
+        return x;
     }
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,

@@ -85,7 +85,7 @@ public static class AutoReplyInGroups
         {
             
             //siamo dentro il gruppo piano di studi
-            if (text.Contains("piano") && (text.Contains("attesa") || text.Contains("non")) && (text.Contains("approva")))
+            if (text.Contains("piano") && (text.Contains("attesa") || text.Contains("non")) && text.Contains("approva"))
             {
                 var text2 = new Language(new Dictionary<string, string?>
                 {
