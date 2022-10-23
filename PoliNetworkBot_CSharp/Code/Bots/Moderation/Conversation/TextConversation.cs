@@ -13,48 +13,54 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 
 internal static class TextConversation
 {
-    internal static async Task DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
-    {
-        if (e?.Message != null)
-            switch (e.Message.Chat.Type)
-            {
-                case ChatType.Private:
-                {
-                    await PrivateMessage(telegramBotClient, e);
-                    break;
-                }
-                case ChatType.Channel:
-                    break;
-
-                case ChatType.Group:
-                case ChatType.Supergroup:
-                {
-                    await MessageInGroup(telegramBotClient, e);
-                    break;
-                }
-                case ChatType.Sender:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-    }
-
-    private static async Task MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    internal static async Task<bool> DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (e?.Message == null)
-            return;
+        {
+            return false;
+        }
+
+        switch (e.Message.Chat.Type)
+        {
+            case ChatType.Private:
+            {
+                return await PrivateMessage(telegramBotClient, e);
+            }
+            case ChatType.Channel:
+                break;
+
+            case ChatType.Group:
+            case ChatType.Supergroup:
+            {
+                return await MessageInGroup(telegramBotClient, e);
+            }
+            case ChatType.Sender:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        return false;
+    }
+
+    private static async Task<bool> MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    {
+        if (e?.Message == null)
+            return false;
 
         if (string.IsNullOrEmpty(e.Message.Text))
-            return;
+            return false;
 
         var text = e.Message.Text.ToLower();
         var title = e.Message?.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
-            await AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
+            return await AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
+
+        return false;
     }
 
-    private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static async Task<bool> PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (telegramBotClient != null)
         {
@@ -66,11 +72,12 @@ internal static class TextConversation
                 {
                     AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId,
                         e?.Message?.Text ?? e?.Message?.Caption);
-                    return;
+                    return true;
                 }
         }
 
-        if (string.IsNullOrEmpty(e?.Message?.Text)) return;
+        if (string.IsNullOrEmpty(e?.Message?.Text)) 
+            return false;
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -89,5 +96,7 @@ internal static class TextConversation
             e.Message.From?.LanguageCode,
             e.Message.From?.Username, text2,
             ParseMode.Html, null);
+
+        return false;
     }
 }

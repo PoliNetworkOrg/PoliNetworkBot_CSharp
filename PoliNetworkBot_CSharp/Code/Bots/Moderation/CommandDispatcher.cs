@@ -1346,9 +1346,9 @@ internal static class CommandDispatcher
             );
     }
 
-    public static void BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    public static async Task<bool> BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        NotifyUtil.NotifyOwnersBanAction(telegramBotClient, e, e?.Message.LeftChatMember?.Id,
+        return await NotifyUtil.NotifyOwnersBanAction(telegramBotClient, e, e?.Message.LeftChatMember?.Id,
             e?.Message.LeftChatMember?.Username);
     }
 }

@@ -47,7 +47,7 @@ public static class AutoReplyInGroups
         return x.Select(i => ExcludedGroups[i]).All(j => id != j);
     }
 
-    internal static async Task MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
+    internal static async Task<bool> MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
         if (e?.Message != null && CheckIfToSend(SpecialGroup.PIANO_DI_STUDI, e.Message.Chat.Id))
@@ -380,6 +380,8 @@ public static class AutoReplyInGroups
                         message.MessageId,
                         true);
             }
+
+        return true;
     }
 
     private static async Task CheckPinnedMessages(TelegramBotAbstract? telegramBotClient, MessageEventArgs e)
