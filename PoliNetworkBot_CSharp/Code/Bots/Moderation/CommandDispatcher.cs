@@ -53,7 +53,8 @@ internal static class CommandDispatcher
             new L("en", "Initialize bot", "it", "Inizializza il bot"), null, null),
         new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType> { ChatType.Private },
             Permission.CREATOR,
-            new L("en", "Regenerates broken links for all groups", "it", "Rigenera tutti i link rotti dei gruppi"), null,
+            new L("en", "Regenerates broken links for all groups", "it", "Rigenera tutti i link rotti dei gruppi"),
+            null,
             null),
         new Command("contact", ContactUs, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Show PoliNetwork contact's information", "it",
@@ -187,12 +188,12 @@ internal static class CommandDispatcher
 
     };
 
-    private static async Task GetRooms(MessageEventArgs e, TelegramBotAbstract? sender)
+    private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Rooms.RoomsMainAsync(sender, e);
     }
 
-    private static async Task GetRules(MessageEventArgs e, TelegramBotAbstract? sender)
+    private static async Task GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         _ = await Rules(sender, e);
     }

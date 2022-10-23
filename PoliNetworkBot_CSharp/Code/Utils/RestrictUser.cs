@@ -500,7 +500,7 @@ internal static class RestrictUser
 
 
     public static async Task<SuccessWithException> BanAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[] args)
+        string[]? args)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
@@ -508,14 +508,14 @@ internal static class RestrictUser
     }
 
     public static async Task<SuccessWithException> BanDeleteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[] args)
+        string[]? args)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
             true);
     }
 
-    public static async Task DeleteMessageFromUser(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+    public static async Task DeleteMessageFromUser(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
         if (e?.Message.ReplyToMessage?.Chat.Id != null && sender != null)
             await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
@@ -600,7 +600,7 @@ internal static class RestrictUser
 
 
     public static async Task<SuccessWithException?> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[] stringInfo)
+        string[]? stringInfo)
     {
         if (e?.Message.From != null)
         {
@@ -642,7 +642,7 @@ internal static class RestrictUser
 
 
     public static async Task<SuccessWithException> UnbanAllAsync(
-        MessageEventArgs? e, TelegramBotAbstract? sender, string[] target)
+        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? target)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, target, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username,
@@ -651,9 +651,9 @@ internal static class RestrictUser
 
 
     public static async Task<SuccessWithException> MuteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[] args)
+        string[]? args)
     {
-        if (args.Length >= 1)
+        if (args is { Length: >= 1 })
             return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
                 e?.Message.From?.Username, RestrictAction.MUTE,
                 false);
@@ -667,7 +667,7 @@ internal static class RestrictUser
     }
 
     public static async Task<SuccessWithException> UnMuteAllAsync(
-        MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
         return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.UNMUTE,

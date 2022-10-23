@@ -114,12 +114,12 @@ public static class Database
         }
     }
 
-    public static async Task QueryBotExec(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task QueryBotExec(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         _ = await CommandDispatcher.QueryBot(true, e, sender);
     }
 
-    public static async Task QueryBotSelect(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task QueryBotSelect(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         _ = await CommandDispatcher.QueryBot(false, e, sender);
     }

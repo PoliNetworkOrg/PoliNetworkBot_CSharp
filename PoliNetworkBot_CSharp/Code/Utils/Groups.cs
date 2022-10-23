@@ -387,10 +387,10 @@ internal static class Groups
 
 
     public static async Task<MessageSentResult?> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[] args)
+        string[]? args)
     {
-        if (args.Length < 1) return null;
-        return await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
+        if (args is { Length: < 1 }) return null;
+        return args != null ? await SendGroupsByTitle(string.Join(" ", args), sender, e, 6) : null;
     }
 
     private static async Task<MessageSentResult?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
@@ -480,52 +480,56 @@ internal static class Groups
         };
     }
 
-    public  static async Task<bool> GetGroups(MessageEventArgs e, TelegramBotAbstract? sender)
+    public  static async Task<bool> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return  await  CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
+        return  e != null && await  CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
             e.Message.Chat.Type);
     }
 
-    public static async Task<bool> UpdateGroupsDry(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
 
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null);
+        if (e != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+                ParseMode.Html, null);
         return false;
     }
 
-    public static async Task<bool> UpdateGroups(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
 
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null);
+        if (e != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+                ParseMode.Html, null);
 
         return false;
     }
 
-    public static async Task<bool> UpdateGroupsAndFixNames(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> UpdateGroupsAndFixNames(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
 
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null);
+        if (e != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+                ParseMode.Html, null);
 
         return false;
     }
 
-    public static async Task<bool> UpdateGroupsAndFixNamesDry(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> UpdateGroupsAndFixNamesDry(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
 
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null);
+        if (e != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+                ParseMode.Html, null);
 
         return false;
     }

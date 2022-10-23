@@ -27,7 +27,7 @@ internal static class TimeUtils
         }
     }
 
-    public static async Task<bool> GetRunningTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> GetRunningTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         try
         {
@@ -35,10 +35,11 @@ internal static class TimeUtils
             {
                 { "", await CommandDispatcher.GetRunningTime() }
             });
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode,
-                e.Message.From?.Username, lang, ParseMode.Html,
-                null);
+            if (e != null)
+                await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                    e.Message.From?.LanguageCode,
+                    e.Message.From?.Username, lang, ParseMode.Html,
+                    null);
             return false;
         }
         catch (Exception? ex)
@@ -49,22 +50,23 @@ internal static class TimeUtils
         return false;
     }
 
-    public static async Task TestTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task TestTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var time = await CommandDispatcher.TestTime(sender, e);
         Console.WriteLine(time);
     }
 
-    public static async Task<bool> GetTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> GetTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var lang = new Language(new Dictionary<string, string?>
         {
             { "", DateTimeClass.NowAsStringAmericanFormat() }
         });
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode,
-            e.Message.From?.Username, lang, ParseMode.Html,
-            null);
+        if (e != null)
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode,
+                e.Message.From?.Username, lang, ParseMode.Html,
+                null);
 
         return false;
     }

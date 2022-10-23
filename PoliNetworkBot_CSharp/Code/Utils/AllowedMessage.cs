@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class AllowedMessage
 {
-    public static async Task<bool> GetAllowedMessages(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> GetAllowedMessages(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -21,13 +21,17 @@ public static class AllowedMessage
             return false;
 
 
-        var message1 = e.Message;
+        if (e != null)
+        {
+            var message1 = e.Message;
 
-        await sender.SendTextMessageAsync(e.Message.From?.Id, text,
-            ChatType.Private,
-            e.Message.From?.LanguageCode, ParseMode.Html, null,
-            e.Message.From?.Username,
-            message1.MessageId);
+            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
+                ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null,
+                e.Message.From?.Username,
+                message1.MessageId);
+        }
+
         var messages = MessagesStore.GetAllMessages(x =>
             x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
         if (messages == null)
@@ -49,10 +53,12 @@ public static class AllowedMessage
         return false;
     }
 
-    public static async Task<bool> UnAllowMessage(MessageEventArgs e, TelegramBotAbstract? sender)
+    public static async Task<bool> UnAllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        var message = e.Message;
-        if (Owners.CheckIfOwner(e.Message.From?.Id) &&
+        var message = e?.Message;
+        if (message != null &&
+            e != null &&
+            Owners.CheckIfOwner(e.Message.From?.Id) &&
             message.Chat.Type == ChatType.Private)
         {
             if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
