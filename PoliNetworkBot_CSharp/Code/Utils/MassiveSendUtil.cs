@@ -16,7 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class MassiveSendUtil
 {
-    public static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender, bool test)
+    private static async Task<bool> MassiveGeneralSendAsync(MessageEventArgs? e, TelegramBotAbstract sender, bool test)
     {
         try
         {

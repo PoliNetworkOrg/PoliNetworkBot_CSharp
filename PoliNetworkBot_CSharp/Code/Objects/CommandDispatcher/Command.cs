@@ -35,7 +35,7 @@ public class Command
 
 
 
-    public Command(List<string> trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action,
+    public Command(IEnumerable<string> trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
         Func<MessageEventArgs, bool>? optionalConditions)
     {
@@ -48,7 +48,7 @@ public class Command
         _shortDescription = shortDescription ?? helpMessage;
     }
 
-    public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
+    private Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
         Func<MessageEventArgs, bool>? optionalConditions)
     {
@@ -59,6 +59,12 @@ public class Command
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
         _shortDescription = shortDescription ?? helpMessage;
+    }
+
+    public static Command CreateInstance(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action, 
+        List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription, Func<MessageEventArgs, bool>? optionalConditions)
+    {
+        return new Command(trigger, action, chatTypes, permissionLevel, helpMessage, shortDescription, optionalConditions);
     }
 
     public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action, List<ChatType> chatTypes,

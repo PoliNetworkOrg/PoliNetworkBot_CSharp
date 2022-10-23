@@ -137,7 +137,7 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
+    private static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
         if (fromId == null)
@@ -153,7 +153,7 @@ public static class Logger
         }
     }
 
-    public static void Unsubscribe(long? fromId)
+    private static void Unsubscribe(long? fromId)
     {
         if (fromId == null)
             return;
