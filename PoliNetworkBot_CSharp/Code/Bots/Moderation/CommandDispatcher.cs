@@ -173,9 +173,24 @@ internal static class CommandDispatcher
         
         new Command("rules", GetRules, new List<ChatType>() { ChatType.Private }, Permission.USER, 
             new L("en", "get rules"), null,null),
+        new Command("rooms", GetRooms, new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "get rooms"), null,null),
+        
+        new Command("massivesend_polimi", MassiveSendUtil.MassiveGeneralSendAsyncCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "massive send polimi"), null,null),
+        new Command("massivesend_polimi_test", MassiveSendUtil.MassiveGeneralSendAsyncTestCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "massive send polimi test"), null,null),
+        
+        new Command("getmessagesent", MessagesStore.GetMessagesSent, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "get messages sent"), null,e => e.Message.ReplyToMessage != null),
 
 
     };
+
+    private static async Task GetRooms(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        await Rooms.RoomsMainAsync(sender, e);
+    }
 
     private static async Task GetRules(MessageEventArgs e, TelegramBotAbstract? sender)
     {
@@ -259,46 +274,12 @@ internal static class CommandDispatcher
             
         
             
-            case "/massivesend_polimi":
-            {
-                if (e is { Message: { } } && sender != null)
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, false);
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-            case "/massivesend_polimi_test":
-            {
-                if (e is { Message: { } } && sender != null)
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                        return await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, true);
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-        
-           
          
-            case "/getmessagesent":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id)
-                        && e.Message.Chat.Type == ChatType.Private && e.Message.ReplyToMessage != null)
-                    {
-                        await MessagesStore.SendMessageDetailsAsync(sender, e);
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
+            
+     
+            
+        
+            
           
             
 
@@ -338,12 +319,6 @@ internal static class CommandDispatcher
             case "/assoc_remove":
             {
                 _ = await Assoc.Assoc_Delete(sender, e);
-                return false;
-            }
-
-            case "/rooms":
-            {
-                await Rooms.RoomsMainAsync(sender, e);
                 return false;
             }
 

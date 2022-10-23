@@ -348,4 +348,9 @@ public static class MessagesStore
         var storedMessage = Store[message];
         return storedMessage?.AllowedStatus.GetAllowedTime();
     }
+
+    public static async Task GetMessagesSent(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        await MessagesStore.SendMessageDetailsAsync(sender, e);
+    }
 }
