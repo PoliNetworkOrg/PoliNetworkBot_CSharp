@@ -154,6 +154,8 @@ internal static class CommandDispatcher
             new L("en", "update groups and fix names"), null,null),
         new Command("updategroupsandfixnames_dry", Groups.UpdateGroupsAndFixNamesDry, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "update groups and fix names dry"), null,null),
+        new Command("update_links_from_json", InviteLinks.UpdateLinksFromJsonAsync2, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "update links from json"), null,null),
         
         new Command("subscribe_log", Logger.SubscribeCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "subscribe log"), null,null),
@@ -164,9 +166,21 @@ internal static class CommandDispatcher
         
         new Command("getrunningtime", Utils.TimeUtils.GetRunningTime, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "get running time"), null,null),
+        new Command("testtime", Utils.TimeUtils.TestTime, new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "test time"), null,null),
+        new Command("time", Utils.TimeUtils.GetTime, new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "get time"), null,null),
+        
+        new Command("rules", GetRules, new List<ChatType>() { ChatType.Private }, Permission.USER, 
+            new L("en", "get rules"), null,null),
 
 
     };
+
+    private static async Task GetRules(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        _ = await Rules(sender, e);
+    }
 
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
@@ -285,31 +299,10 @@ internal static class CommandDispatcher
 
                 return false;
             }
-            case "/testtime":
-            {
-                if (e.Message.Chat.Type != ChatType.Private)
-                    return false;
+          
+            
 
-                var time = await TestTime(sender, e);
-                Console.WriteLine(time);
-
-                return false;
-            }
-
-            case "/time":
-            {
-                var lang = new Language(new Dictionary<string, string?>
-                {
-                    { "", DateTimeClass.NowAsStringAmericanFormat() }
-                });
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                    e.Message.From?.LanguageCode,
-                    e.Message.From?.Username, lang, ParseMode.Html,
-                    null);
-
-                return false;
-            }
-
+          
             case "/assoc_write":
             case "/assoc_send":
             {
@@ -354,19 +347,9 @@ internal static class CommandDispatcher
                 return false;
             }
 
-            case "/rules":
-            {
-                _ = await Rules(sender, e);
-                return false;
-            }
+          
 
       
-            case "/update_links_from_json":
-            {
-                await InviteLinks.UpdateLinksFromJsonAsync(sender, e);
-                return false;
-            }
-
             default:
             {
                 await DefaultCommand(sender, e);
@@ -797,7 +780,7 @@ internal static class CommandDispatcher
         return v ? 1 : 0;
     }
 
-    private static async Task<MessageSentResult?> TestTime(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task<MessageSentResult?> TestTime(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e?.Message.From == null)
             return null;

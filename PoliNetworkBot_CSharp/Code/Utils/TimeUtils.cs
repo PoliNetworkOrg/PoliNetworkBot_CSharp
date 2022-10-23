@@ -48,4 +48,24 @@ internal static class TimeUtils
 
         return false;
     }
+
+    public static async Task TestTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var time = await CommandDispatcher.TestTime(sender, e);
+        Console.WriteLine(time);
+    }
+
+    public static async Task<bool> GetTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var lang = new Language(new Dictionary<string, string?>
+        {
+            { "", DateTimeClass.NowAsStringAmericanFormat() }
+        });
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode,
+            e.Message.From?.Username, lang, ParseMode.Html,
+            null);
+
+        return false;
+    }
 }

@@ -430,4 +430,9 @@ internal static class InviteLinks
 
         return gruppoTGs;
     }
+
+    public static async Task UpdateLinksFromJsonAsync2(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        await UpdateLinksFromJsonAsync(sender, e);
+    }
 }
