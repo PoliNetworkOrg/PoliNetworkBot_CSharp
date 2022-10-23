@@ -218,8 +218,8 @@ internal static class SendMessage
     }
 
 
-
-    public static async Task<bool> SendMessageInChannel2(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? cmdLines)
+    public static async Task<bool> SendMessageInChannel2(MessageEventArgs? e, TelegramBotAbstract? sender,
+        string[]? cmdLines)
     {
         if (e != null)
         {
@@ -238,7 +238,7 @@ internal static class SendMessage
                     return false;
 
                 if (c2 != null)
-                    _ = await SendMessage.SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
+                    _ = await SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
                         text, e,
                         long.Parse(c2),
                         ChatType.Channel, ParseMode.Html, null, false);

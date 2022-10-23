@@ -21,7 +21,6 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types.Enums;
-using TLSharp.Core.Utils;
 
 #endregion
 
@@ -66,35 +65,40 @@ internal static class CommandDispatcher
             new L("en",
                 "Mute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), null,
+                "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+            null,
             e => e.Message.ReplyToMessage != null),
         new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
                 "UNMute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
                 "it",
-                "UNMute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), null,
+                "UNMute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+            null,
             e => e.Message.ReplyToMessage != null),
         new Command("ban_all", RestrictUser.BanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
                 "Ban users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Banna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), null,
+                "Banna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+            null,
             e => e.Message.ReplyToMessage != null),
         new Command("unban_all", RestrictUser.UnbanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
                 "UNBan users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
                 "it",
-                "UNBanna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), null,
+                "UNBanna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+            null,
             e => e.Message.ReplyToMessage != null),
         new Command("ban_delete_all", RestrictUser.BanDeleteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
                 "Ban users from the network and delete all its messages. @args: list of ids. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Banna un utente dal network e cancella tutti i suoi messaggi. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"), null,
+                "Banna un utente dal network e cancella tutti i suoi messaggi. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+            null,
             e => e.Message.ReplyToMessage != null),
         new Command("del", RestrictUser.DeleteMessageFromUser,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.ALLOWED_BAN_ALL,
@@ -121,86 +125,100 @@ internal static class CommandDispatcher
             e => e.Message.ReplyToMessage != null),
         new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null),
-        new Command("sendmessageinchannel", SendMessage.SendMessageInChannel2 , new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+        new Command("sendmessageinchannel", SendMessage.SendMessageInChannel2, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
             new L("en", "Send message in channel", "it", "Invia messaggio in canale"),
-            null,e => e.Message.ReplyToMessage != null),
-        new Command("get_config", Config.BotConfig.GetConfig, new List<ChatType>() { ChatType.Private }, 
-            Permission.OWNER, new L("en", "Get bot config"), null, null ),
-        new Command("getgroups", Groups.GetGroups, new List<ChatType>() { ChatType.Private }, 
-            Permission.OWNER, new L("en", "Get bot groups"), null, null ),
-        
-        new Command("qe", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotExec, new List<ChatType>() { ChatType.Private }, 
+            null, e => e.Message.ReplyToMessage != null),
+        new Command("get_config", BotConfig.GetConfig, new List<ChatType> { ChatType.Private },
+            Permission.OWNER, new L("en", "Get bot config"), null, null),
+        new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
+            Permission.OWNER, new L("en", "Get bot groups"), null, null),
+
+        new Command("qe", Database.QueryBotExec, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query execute"), null, null),
-        new Command("qs", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotSelect, new List<ChatType>() { ChatType.Private }, 
-        Permission.OWNER, new L("en", "Esegui una query select"), null, null),
-        
-        new Command("allowmessage", CommandDispatcher.AllowMessageAsync, new List<ChatType>() { ChatType.Private }, Permission.HEAD_ADMIN,
+        new Command("qs", Database.QueryBotSelect, new List<ChatType> { ChatType.Private },
+            Permission.OWNER, new L("en", "Esegui una query select"), null, null),
+
+        new Command("allowmessage", AllowMessageAsync, new List<ChatType> { ChatType.Private }, Permission.HEAD_ADMIN,
             new L("en", "allow a message"), null, null),
-        new Command("allowmessageowner", CommandDispatcher.AllowMessageOwnerAsync, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+        new Command("allowmessageowner", AllowMessageOwnerAsync, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
             new L("en", "allow a message owner"), null, null),
-        new Command("allowedmessages", Utils.AllowedMessage.GetAllowedMessages, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+        new Command("allowedmessages", AllowedMessage.GetAllowedMessages, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
             new L("en", "get allowed messages"), null, null),
-        new Command("unallowmessage", Utils.AllowedMessage.UnAllowMessage, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+        new Command("unallowmessage", AllowedMessage.UnAllowMessage, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
             new L("en", "unallow a message"), null, null),
-        
-        new Command("backup", BackupUtil.Backup, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "backup"), null,null),
-        
 
-        new Command("updategroups", Groups.UpdateGroups, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "update groups"), null,null),
-        new Command("updategroups_dry", Groups.UpdateGroupsDry, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "update groups dry"), null,null),
-        new Command("updategroupsandfixnames", Groups.UpdateGroupsAndFixNames, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "update groups and fix names"), null,null),
-        new Command("updategroupsandfixnames_dry", Groups.UpdateGroupsAndFixNamesDry, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "update groups and fix names dry"), null,null),
-        new Command("update_links_from_json", InviteLinks.UpdateLinksFromJsonAsync2, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "update links from json"), null,null),
-        
-        new Command("subscribe_log", Logger.SubscribeCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "subscribe log"), null,null),
-        new Command("unsubscribe_log", Logger.UnsubscribeCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "unsubscribe log"), null,null),
-        new Command("getlog", Logger.GetLogCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "get log"), null,null),
-        
-        new Command("getrunningtime", Utils.TimeUtils.GetRunningTime, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "get running time"), null,null),
-        new Command("testtime", Utils.TimeUtils.TestTime, new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "test time"), null,null),
-        new Command("time", Utils.TimeUtils.GetTime, new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "get time"), null,null),
-        
-        new Command("rules", GetRules, new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "get rules"), null,null),
-        new Command("rooms", GetRooms, new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "get rooms"), null,null),
-        
-        new Command("massivesend_polimi", MassiveSendUtil.MassiveGeneralSendAsyncCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "massive send polimi"), null,null),
-        new Command("massivesend_polimi_test", MassiveSendUtil.MassiveGeneralSendAsyncTestCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "massive send polimi test"), null,null),
-        
-        new Command("getmessagesent", MessagesStore.GetMessagesSent, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "get messages sent"), null,e => e.Message.ReplyToMessage != null),
+        new Command("backup", BackupUtil.Backup, new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "backup"), null, null),
 
-        new Command( new List<string>(){"assoc_write", "assoc_send"}, Utils.AssocCommands.AssocWrite, new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "assoc write"), null,null),
-        new Command( new List<string>(){"assoc_publish"}, Utils.AssocCommands.AssocPublish, 
-            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "assoc publish"), null,null),
-        new Command( new List<string>(){"assoc_read"}, Utils.AssocCommands.AssocRead, 
-            new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "assoc read"), null,null),
-        
-        new Command( new List<string>(){"assoc_read_all"}, Utils.AssocCommands.AssocReadAll, 
-            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
-            new L("en", "assoc read all"), null,null),
-        
-        new Command( new List<string>(){"assoc_delete", "assoc_remove"}, Utils.AssocCommands.AssocDelete, 
-            new List<ChatType>() { ChatType.Private }, Permission.USER, 
-            new L("en", "assoc delete"), null,null),
+
+        new Command("updategroups", Groups.UpdateGroups, new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "update groups"), null, null),
+        new Command("updategroups_dry", Groups.UpdateGroupsDry, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
+            new L("en", "update groups dry"), null, null),
+        new Command("updategroupsandfixnames", Groups.UpdateGroupsAndFixNames, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
+            new L("en", "update groups and fix names"), null, null),
+        new Command("updategroupsandfixnames_dry", Groups.UpdateGroupsAndFixNamesDry,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "update groups and fix names dry"), null, null),
+        new Command("update_links_from_json", InviteLinks.UpdateLinksFromJsonAsync2,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "update links from json"), null, null),
+
+        new Command("subscribe_log", Logger.SubscribeCommand, new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "subscribe log"), null, null),
+        new Command("unsubscribe_log", Logger.UnsubscribeCommand, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
+            new L("en", "unsubscribe log"), null, null),
+        new Command("getlog", Logger.GetLogCommand, new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "get log"), null, null),
+
+        new Command("getrunningtime", TimeUtils.GetRunningTime, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
+            new L("en", "get running time"), null, null),
+        new Command("testtime", TimeUtils.TestTime, new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "test time"), null, null),
+        new Command("time", TimeUtils.GetTime, new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "get time"), null, null),
+
+        new Command("rules", GetRules, new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "get rules"), null, null),
+        new Command("rooms", GetRooms, new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "get rooms"), null, null),
+
+        new Command("massivesend_polimi", MassiveSendUtil.MassiveGeneralSendAsyncCommand,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "massive send polimi"), null, null),
+        new Command("massivesend_polimi_test", MassiveSendUtil.MassiveGeneralSendAsyncTestCommand,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "massive send polimi test"), null, null),
+
+        new Command("getmessagesent", MessagesStore.GetMessagesSent, new List<ChatType> { ChatType.Private },
+            Permission.OWNER,
+            new L("en", "get messages sent"), null, e => e.Message.ReplyToMessage != null),
+
+        new Command(new List<string> { "assoc_write", "assoc_send" }, AssocCommands.AssocWrite,
+            new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "assoc write"), null, null),
+        new Command(new List<string> { "assoc_publish" }, AssocCommands.AssocPublish,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "assoc publish"), null, null),
+        new Command(new List<string> { "assoc_read" }, AssocCommands.AssocRead,
+            new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "assoc read"), null, null),
+
+        new Command(new List<string> { "assoc_read_all" }, AssocCommands.AssocReadAll,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "assoc read all"), null, null),
+
+        new Command(new List<string> { "assoc_delete", "assoc_remove" }, AssocCommands.AssocDelete,
+            new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "assoc delete"), null, null)
     };
 
     private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -215,13 +233,10 @@ internal static class CommandDispatcher
 
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
     {
-        if (string.IsNullOrEmpty(e.Message.Text))
-        {
-            return false;
-        }
+        if (string.IsNullOrEmpty(e.Message.Text)) return false;
 
         var cmdLines = e.Message.Text.Split(' ');
-        var cmd = cmdLines[0].Trim();      
+        var cmd = cmdLines[0].Trim();
         var args = cmdLines.Skip(1).ToArray();
 
         if (string.IsNullOrEmpty(cmd))
@@ -242,10 +257,10 @@ internal static class CommandDispatcher
         }
 
         foreach (var command in Commands)
-        {   
-            if(sender != null)
+        {
+            if (sender != null)
                 command.TryTrigger(e, sender, cmd, args);
-            if(command.HasBeenTriggered())
+            if (command.HasBeenTriggered())
                 return true;
         }
 
@@ -895,11 +910,18 @@ internal static class CommandDispatcher
                                "\n✍ To contact us /contact";
 
 
-
         var text2 = new Language(new Dictionary<string, string?>
         {
-            { "en", textEng + "\nCommands available:\n" + string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("en"))) },
-            { "it", text + "\nCommands available:\n" + string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("it"))) }
+            {
+                "en",
+                textEng + "\nCommands available:\n" +
+                string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("en")))
+            },
+            {
+                "it",
+                text + "\nCommands available:\n" +
+                string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("it")))
+            }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,

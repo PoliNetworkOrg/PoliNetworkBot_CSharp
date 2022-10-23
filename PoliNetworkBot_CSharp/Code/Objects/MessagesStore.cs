@@ -351,6 +351,6 @@ public static class MessagesStore
 
     public static async Task GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        await MessagesStore.SendMessageDetailsAsync(sender, e);
+        await SendMessageDetailsAsync(sender, e);
     }
 }

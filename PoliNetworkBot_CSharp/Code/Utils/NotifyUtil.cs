@@ -32,9 +32,9 @@ internal static class NotifyUtil
         MessageEventArgs? messageEventArgs)
     {
         var title = messageEventArgs?.Message.Chat.Title;
-        if (messageEventArgs is not { Message: { } }) 
+        if (messageEventArgs is not { Message: { } })
             return false;
-        
+
         var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
         if (text == null)
         {
@@ -73,7 +73,6 @@ internal static class NotifyUtil
             ChatType.Group,
             ParseMode.Html, null, true);
         return m != null && m.IsSuccess();
-
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
@@ -371,7 +370,8 @@ internal static class NotifyUtil
         }
     }
 
-    public static async Task<bool> NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
+    public static async Task<bool> NotifyOwnersBanAction(TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs,
         long? target, string? username)
     {
         try

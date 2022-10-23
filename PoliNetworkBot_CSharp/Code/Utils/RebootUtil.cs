@@ -38,7 +38,7 @@ public static class RebootUtil
     {
         if (e == null)
             return false;
-        
+
         await AnnounceReboot(sender, e);
 
         try
@@ -48,9 +48,9 @@ public static class RebootUtil
         catch
         {
             // ignored
-        }       
-        return Reboot();
+        }
 
+        return Reboot();
     }
 
     private static bool Reboot()

@@ -82,9 +82,7 @@ internal static class Main
             await AddedUsersUtil.DealWithAddedUsers(telegramBotClient, e);
 
             if (BanMessageDetected(e, telegramBotClient))
-            {
                 return await CommandDispatcher.BanMessageActions(telegramBotClient, e);
-            }
 
             var toExitBecauseUsernameAndNameCheck =
                 await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
@@ -93,19 +91,14 @@ internal static class Main
 
             var checkSpam = await ModerationCheck.CheckSpamAsync(e, telegramBotClient);
             if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
-            {
                 return await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
-            }
 
             if (checkSpam == SpamType.SPAM_PERMITTED)
-            {
                 return await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e);
-            }
 
             if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            else
-                return await TextConversation.DetectMessage(telegramBotClient, e);
+            return await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
         {

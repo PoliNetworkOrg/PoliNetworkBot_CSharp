@@ -480,9 +480,9 @@ internal static class Groups
         };
     }
 
-    public  static async Task<bool> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<bool> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return  e != null && await  CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
+        return e != null && await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
             e.Message.Chat.Type);
     }

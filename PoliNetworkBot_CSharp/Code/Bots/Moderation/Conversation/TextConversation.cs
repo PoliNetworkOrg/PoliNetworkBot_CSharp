@@ -15,10 +15,7 @@ internal static class TextConversation
 {
     internal static async Task<bool> DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        if (e?.Message == null)
-        {
-            return false;
-        }
+        if (e?.Message == null) return false;
 
         switch (e.Message.Chat.Type)
         {
@@ -76,7 +73,7 @@ internal static class TextConversation
                 }
         }
 
-        if (string.IsNullOrEmpty(e?.Message?.Text)) 
+        if (string.IsNullOrEmpty(e?.Message?.Text))
             return false;
 
         var text2 = new Language(new Dictionary<string, string?>

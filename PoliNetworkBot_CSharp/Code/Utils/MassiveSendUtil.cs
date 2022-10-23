@@ -156,11 +156,11 @@ public static class MassiveSendUtil
 
     public static async Task<bool> MassiveGeneralSendAsyncCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return sender != null && await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, false);
+        return sender != null && await MassiveGeneralSendAsync(e, sender, false);
     }
 
     public static async Task<bool> MassiveGeneralSendAsyncTestCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return sender != null && await MassiveSendUtil.MassiveGeneralSendAsync(e, sender, true);
+        return sender != null && await MassiveGeneralSendAsync(e, sender, true);
     }
 }

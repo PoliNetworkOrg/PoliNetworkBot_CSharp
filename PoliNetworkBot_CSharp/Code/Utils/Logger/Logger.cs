@@ -327,22 +327,22 @@ public static class Logger
     {
         if (e == null)
             return false;
-        
-        await Logger.Subscribe(e.Message.From?.Id, sender, e);
+
+        await Subscribe(e.Message.From?.Id, sender, e);
         return true;
     }
 
     public static Task<bool> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e == null) 
+        if (e == null)
             return Task.FromResult(false);
-        Logger.Unsubscribe(e.Message.From?.Id);
+        Unsubscribe(e.Message.From?.Id);
         return Task.FromResult(true);
     }
 
     public static Task GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
     {
-        if (arg1 != null) Logger.GetLog(arg2, arg1);
+        if (arg1 != null) GetLog(arg2, arg1);
         return Task.CompletedTask;
     }
 }
