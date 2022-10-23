@@ -1,8 +1,12 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
@@ -21,5 +25,27 @@ internal static class TimeUtils
         {
             Logger.Logger.WriteLine(ex, LogSeverityLevel.ERROR);
         }
+    }
+
+    public static async Task<bool> GetRunningTime(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        try
+        {
+            var lang = new Language(new Dictionary<string, string?>
+            {
+                { "", await CommandDispatcher.GetRunningTime() }
+            });
+            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+                e.Message.From?.LanguageCode,
+                e.Message.From?.Username, lang, ParseMode.Html,
+                null);
+            return false;
+        }
+        catch (Exception? ex)
+        {
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
+        }
+
+        return false;
     }
 }

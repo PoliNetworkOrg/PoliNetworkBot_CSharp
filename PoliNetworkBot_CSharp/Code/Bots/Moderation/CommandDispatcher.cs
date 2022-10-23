@@ -127,10 +127,12 @@ internal static class CommandDispatcher
             Permission.OWNER, new L("en", "Get bot config"), null, null ),
         new Command("getgroups", Groups.GetGroups, new List<ChatType>() { ChatType.Private }, 
             Permission.OWNER, new L("en", "Get bot groups"), null, null ),
+        
         new Command("qe", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotExec, new List<ChatType>() { ChatType.Private }, 
             Permission.OWNER, new L("en", "Esegui una query execute"), null, null),
         new Command("qs", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotSelect, new List<ChatType>() { ChatType.Private }, 
         Permission.OWNER, new L("en", "Esegui una query select"), null, null),
+        
         new Command("allowmessage", CommandDispatcher.AllowMessageAsync, new List<ChatType>() { ChatType.Private }, Permission.HEAD_ADMIN,
             new L("en", "allow a message"), null, null),
         new Command("allowmessageowner", CommandDispatcher.AllowMessageOwnerAsync, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
@@ -139,16 +141,30 @@ internal static class CommandDispatcher
             new L("en", "get allowed messages"), null, null),
         new Command("unallowmessage", Utils.AllowedMessage.UnAllowMessage, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
             new L("en", "unallow a message"), null, null),
+        
         new Command("backup", BackupUtil.Backup, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "backup"), null,null),
+        
+
+        new Command("updategroups", Groups.UpdateGroups, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "update groups"), null,null),
         new Command("updategroups_dry", Groups.UpdateGroupsDry, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "update groups dry"), null,null),
+        new Command("updategroupsandfixnames", Groups.UpdateGroupsAndFixNames, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "update groups and fix names"), null,null),
+        new Command("updategroupsandfixnames_dry", Groups.UpdateGroupsAndFixNamesDry, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "update groups and fix names dry"), null,null),
+        
         new Command("subscribe_log", Logger.SubscribeCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "subscribe log"), null,null),
         new Command("unsubscribe_log", Logger.UnsubscribeCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "unsubscribe log"), null,null),
         new Command("getlog", Logger.GetLogCommand, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
             new L("en", "get log"), null,null),
+        
+        new Command("getrunningtime", Utils.TimeUtils.GetRunningTime, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "get running time"), null,null),
+
 
     };
 
@@ -226,95 +242,9 @@ internal static class CommandDispatcher
 
             
  
-            case "/updategroups":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                    {
-                        var text = await UpdateGroups(sender, false, true, false, e);
-
-                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                            ParseMode.Html, null);
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-            case "/updategroupsandfixnames":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                    {
-                        var text = await UpdateGroups(sender, false, true, true, e);
-
-                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                            ParseMode.Html, null);
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-            case "/updategroupsandfixnames_dry":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                    {
-                        var text = await UpdateGroups(sender, true, true, true, e);
-
-                        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                            ParseMode.Html, null);
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
             
+        
             
-            case "/getrunningtime":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                    {
-                        try
-                        {
-                            var lang = new Language(new Dictionary<string, string?>
-                            {
-                                { "", await GetRunningTime() }
-                            });
-                            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                                e.Message.From?.LanguageCode,
-                                e.Message.From?.Username, lang, ParseMode.Html,
-                                null);
-                            return false;
-                        }
-                        catch (Exception? ex)
-                        {
-                            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
-                        }
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
             case "/massivesend_polimi":
             {
                 if (e is { Message: { } } && sender != null)

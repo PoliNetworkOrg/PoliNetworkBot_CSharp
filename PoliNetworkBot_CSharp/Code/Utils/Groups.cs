@@ -496,4 +496,37 @@ internal static class Groups
             ParseMode.Html, null);
         return false;
     }
+
+    public static async Task<bool> UpdateGroups(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
+
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null);
+
+        return false;
+    }
+
+    public static async Task<bool> UpdateGroupsAndFixNames(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
+
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null);
+
+        return false;
+    }
+
+    public static async Task<bool> UpdateGroupsAndFixNamesDry(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
+
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null);
+
+        return false;
+    }
 }
