@@ -233,6 +233,7 @@ internal static class CommandDispatcher
 
     private static Task BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        throw new NotImplementedException();
         //todo: complete
         //_ = BanUserHistoryAsync(sender, e, false);
         return Task.CompletedTask;
