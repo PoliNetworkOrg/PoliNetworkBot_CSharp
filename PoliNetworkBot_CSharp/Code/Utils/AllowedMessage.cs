@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
@@ -44,6 +45,39 @@ public static class AllowedMessage
                 "uni", ParseMode.Html, null, e?.Message?.From?.Username);
         }
 
+
+        return false;
+    }
+
+    public static async Task<bool> UnAllowMessage(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        var message = e.Message;
+        if (Owners.CheckIfOwner(e.Message.From?.Id) &&
+            message.Chat.Type == ChatType.Private)
+        {
+            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+            {
+                var text = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "You have to reply to a message containing the message" }
+                });
+                if (sender == null)
+                    return false;
+                var o = e.Message;
+                await sender.SendTextMessageAsync(e.Message.From?.Id, text,
+                    ChatType.Private,
+                    e.Message.From?.LanguageCode, ParseMode.Html, null,
+                    e.Message.From?.Username,
+                    o.MessageId);
+
+                return false;
+            }
+
+            MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
+            return false;
+        }
+
+        await CommandDispatcher.DefaultCommand(sender, e);
 
         return false;
     }

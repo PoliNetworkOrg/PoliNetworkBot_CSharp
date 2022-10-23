@@ -322,4 +322,21 @@ public static class Logger
     {
         return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
     }
+
+    public static async Task SubscribeCommand(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        await Logger.Subscribe(e.Message.From?.Id, sender, e);
+    }
+
+    public static Task UnsubscribeCommand(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        Logger.Unsubscribe(e.Message.From?.Id);
+        return Task.CompletedTask;
+    }
+
+    public static Task GetLogCommand(MessageEventArgs arg1, TelegramBotAbstract? arg2)
+    {
+        Logger.GetLog(arg2, arg1);
+        return Task.CompletedTask;
+    }
 }
