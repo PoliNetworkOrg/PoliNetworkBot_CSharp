@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
@@ -477,5 +478,12 @@ internal static class Groups
                 )
             }
         };
+    }
+
+    public  static async Task<bool> GetGroups(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        return  await  CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
+            e.Message.From?.LanguageCode,
+            e.Message.Chat.Type);
     }
 }

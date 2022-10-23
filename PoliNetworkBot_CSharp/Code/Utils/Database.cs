@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 
@@ -110,5 +112,15 @@ public static class Database
         {
             return null;
         }
+    }
+
+    public static async Task QueryBotExec(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        _ = await CommandDispatcher.QueryBot(true, e, sender);
+    }
+
+    public static async Task QueryBotSelect(MessageEventArgs e, TelegramBotAbstract? sender)
+    {
+        _ = await CommandDispatcher.QueryBot(false, e, sender);
     }
 }

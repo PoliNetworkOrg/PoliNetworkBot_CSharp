@@ -21,6 +21,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types.Enums;
+using TLSharp.Core.Utils;
 
 #endregion
 
@@ -118,7 +119,27 @@ internal static class CommandDispatcher
                 "Cerca gruppi per titolo. @condition: devi rispondere ad un messaggio"), null,
             e => e.Message.ReplyToMessage != null),
         new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER,
-            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null)
+            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null),
+        new Command("sendmessageinchannel", SendMessage.SendMessageInChannel2 , new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+            new L("en", "Send message in channel", "it", "Invia messaggio in canale"),
+            null,e => e.Message.ReplyToMessage != null),
+        new Command("get_config", Config.BotConfig.GetConfig, new List<ChatType>() { ChatType.Private }, 
+            Permission.OWNER, new L("en", "Get bot config"), null, null ),
+        new Command("getgroups", Groups.GetGroups, new List<ChatType>() { ChatType.Private }, 
+            Permission.OWNER, new L("en", "Get bot groups"), null, null ),
+        new Command("qe", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotExec, new List<ChatType>() { ChatType.Private }, 
+            Permission.OWNER, new L("en", "Esegui una query"), null, null),
+        new Command("qs", PoliNetworkBot_CSharp.Code.Utils.Database.QueryBotSelect, new List<ChatType>() { ChatType.Private }, 
+        Permission.OWNER, new L("en", "Esegui una query"), null, null),
+        new Command("allowmessage", CommandDispatcher.AllowMessageAsync, new List<ChatType>() { ChatType.Private }, Permission.HEAD_ADMIN,
+            new L("en", "allow a message"), null, null),
+        new Command("allowmessageowner", CommandDispatcher.AllowMessageOwnerAsync, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+            new L("en", "allow a message"), null, null),
+        new Command("allowedmessages", Utils.AllowedMessage.GetAllowedMessages, new List<ChatType>() { ChatType.Private }, Permission.OWNER,
+            new L("en", "allow a message"), null, null),
+        new Command("backup", BackupUtil.Backup, new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("en", "backup"), null,null)
+           
 
     };
 
@@ -194,131 +215,10 @@ internal static class CommandDispatcher
                     return;
                 }*/
 
+            
 
-            case "/sendmessageinchannel":
-            {
-                var message = e.Message;
-                if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                    message.Chat.Type == ChatType.Private)
-                {
-                    if (cmdLines != null && (e.Message.ReplyToMessage == null || cmdLines.Length != 2))
-                        return false;
-                    var text = new Language(new Dictionary<string, string?>
-                    {
-                        { "it", e.Message.ReplyToMessage?.Text ?? e.Message.ReplyToMessage?.Caption }
-                    });
-                    var c2 = cmdLines?[1];
-                    if (cmdLines == null)
-                        return false;
-
-                    if (c2 != null)
-                        _ = await SendMessage.SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
-                            text, e,
-                            long.Parse(c2),
-                            ChatType.Channel, ParseMode.Html, null, false);
-
-                    return false;
-                }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-
-            case "/get_config":
-            {
-                return !OwnerInPrivate(e)
-                    ? await DefaultCommand(sender, e)
-                    : await ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
-                        e.Message.From?.LanguageCode,
-                        e.Message.Chat.Type);
-            }
-
-            case "/getGroups":
-            {
-                return !OwnerInPrivate(e)
-                    ? await DefaultCommand(sender, e)
-                    : await GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
-                        e.Message.From?.LanguageCode,
-                        e.Message.Chat.Type);
-            }
-
-            case "/allowmessage":
-            {
-                var message = e.Message;
-                if (Permissions.CheckPermissions(Permission.HEAD_ADMIN, e.Message.From) &&
-                    message.Chat.Type == ChatType.Private)
-                {
-                    await AllowMessageAsync(e, sender);
-                    return false;
-                }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-
-            case "/allowmessageowner":
-            {
-                var message = e.Message;
-                if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                    message.Chat.Type == ChatType.Private)
-                {
-                    await AllowMessageOwnerAsync(e, sender);
-                    return false;
-                }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
-
-            case "/allowedmessages":
-            {
-                var o = e.Message;
-                if (Owners.CheckIfOwner(e.Message.From?.Id) && o.Chat.Type == ChatType.Private)
-                {
-                    var text = new Language(new Dictionary<string, string?>
-                    {
-                        { "it", "List of messages: " },
-                        { "en", "List of messages: " }
-                    });
-                    if (sender == null)
-                        return false;
-
-
-                    var message1 = e.Message;
-
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, text,
-                        ChatType.Private,
-                        e.Message.From?.LanguageCode, ParseMode.Html, null,
-                        e.Message.From?.Username,
-                        message1.MessageId);
-                    var messages = MessagesStore.GetAllMessages(x =>
-                        x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
-                    if (messages == null)
-                        return false;
-
-                    foreach (var m2 in messages.Select(message => message?.message)
-                                 .Where(m2 => m2 != null))
-                    {
-                        text = new Language(new Dictionary<string, string?>
-                        {
-                            { "uni", m2 }
-                        });
-                        await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                            ChatType.Private,
-                            "uni", ParseMode.Html, null, e?.Message?.From?.Username);
-                    }
-
-
-                    return false;
-                }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
+         
+            
 
             case "/unallowmessage":
             {
@@ -427,23 +327,8 @@ internal static class CommandDispatcher
 
                 return false;
             }
-            case "/backup":
-            {
-                if (e is { Message: { } })
-                    if (Owners.CheckIfOwner(e.Message.From?.Id) &&
-                        e.Message.Chat.Type == ChatType.Private)
-                    {
-                        if (e.Message.From != null)
-                            await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
-                                e.Message.Chat.Type);
-
-                        return false;
-                    }
-
-                await DefaultCommand(sender, e);
-
-                return false;
-            }
+            
+            
             case "/getrunningtime":
             {
                 if (e is { Message: { } })
@@ -630,18 +515,7 @@ internal static class CommandDispatcher
                 return false;
             }
 
-            case "/qe":
-            {
-                _ = await QueryBot(true, e, sender);
-                return false;
-            }
-
-            case "/qs":
-            {
-                _ = await QueryBot(false, e, sender);
-                return false;
-            }
-
+      
             case "/update_links_from_json":
             {
                 await InviteLinks.UpdateLinksFromJsonAsync(sender, e);
@@ -1016,7 +890,7 @@ internal static class CommandDispatcher
     }
     */
 
-    private static async Task<long?> QueryBot(bool executeTrueSelectFalse, MessageEventArgs? e,
+    public static async Task<long?> QueryBot(bool executeTrueSelectFalse, MessageEventArgs? e,
         TelegramBotAbstract? sender)
     {
         if (e?.Message.ForwardFrom != null)
@@ -1166,7 +1040,7 @@ internal static class CommandDispatcher
             e?.Message.From?.Username, text2, ParseMode.Html, null);
     }
 
-    private static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
+    public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
         string? lang, ChatType? chatType)
     {
         var groups = Groups.GetAllGroups(sender);
@@ -1190,7 +1064,7 @@ internal static class CommandDispatcher
     }
 
 
-    private static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task<bool> DefaultCommand(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var text2 = new Language(new Dictionary<string, string?>
         {

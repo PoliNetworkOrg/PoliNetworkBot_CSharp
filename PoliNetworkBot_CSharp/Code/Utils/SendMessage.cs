@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -214,5 +215,37 @@ internal static class SendMessage
         }
 
         return SuccessQueue.SUCCESS;
+    }
+
+
+
+    public static async Task<bool> SendMessageInChannel2(MessageEventArgs e, TelegramBotAbstract? sender, string[] cmdLines)
+    {
+        var message = e.Message;
+        if (Owners.CheckIfOwner(e.Message.From?.Id) &&
+            message.Chat.Type == ChatType.Private)
+        {
+            if ((e.Message.ReplyToMessage == null || cmdLines.Length != 2))
+                return false;
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "it", e.Message.ReplyToMessage?.Text ?? e.Message.ReplyToMessage?.Caption }
+            });
+            var c2 = cmdLines?[1];
+            if (cmdLines == null)
+                return false;
+
+            if (c2 != null)
+                _ = await SendMessage.SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
+                    text, e,
+                    long.Parse(c2),
+                    ChatType.Channel, ParseMode.Html, null, false);
+
+            return false;
+        }
+
+        await CommandDispatcher.DefaultCommand(sender, e);
+
+        return false;
     }
 }
