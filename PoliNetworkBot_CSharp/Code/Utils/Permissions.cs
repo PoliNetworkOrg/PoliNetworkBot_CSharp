@@ -6,6 +6,7 @@ using System.Linq;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 
 #endregion
@@ -33,12 +34,7 @@ internal static class Permissions
     /// <exception cref="NotImplementedException"></exception>
     internal static bool CheckPermissions(Permission permission, User? messageFrom)
     {
-        if (OrderedClearance.Count == 0)
-        {
-            // Init ordered clearance
-            foreach (var clearanceWithLevel in ClearanceLevel) OrderedClearance.Add(clearanceWithLevel);
-            OrderedClearance.Sort((a, b) => b.Value.CompareTo(a.Value));
-        }
+        InitClearance();
 
         if (messageFrom == null)
             return false;
@@ -50,6 +46,17 @@ internal static class Permissions
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Orders OrderedClearance in REVERSE ORDER (from highest to lowest) if OrderedClearance is empty, otherwise does nothing.
+    /// </summary>
+    private static void InitClearance()
+    {
+        if (OrderedClearance.Count != 0) return;
+        // Init ordered clearance
+        foreach (var clearanceWithLevel in ClearanceLevel) OrderedClearance.Add(clearanceWithLevel);
+        OrderedClearance.Sort((a, b) => b.Value.CompareTo(a.Value));
     }
 
     private static Func<User, bool> GetPermissionFunc(Permission permission)
@@ -150,5 +157,36 @@ internal static class Permissions
     private static bool OwnerCheck(User user)
     {
         return Owners.CheckIfOwner(user.Id);
+    }
+
+    public static Permission GetPrivileges(User? messageFrom)
+    {
+        InitClearance();
+        
+        if (messageFrom == null)
+            return Permission.USER;
+
+        foreach (var clearance in OrderedClearance)
+        {
+            if (GetPermissionFunc(clearance.Key).Invoke(messageFrom))
+            {
+                return clearance.Key;
+            }
+        }
+
+        return Permission.USER;
+    }
+
+    /// <summary>
+    /// returns 1 if a > b, 0 if a = b, -1 otherwise<br/>
+    /// Put the one you want to check in the unsafe parameter
+    /// </summary>
+    /// <param name="a">unsafe parameter</param>
+    /// <param name="b">safe parameter</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public static int Compare(Permission a, Permission b)
+    {
+        return ClearanceLevel.GetValueOrDefault(a, int.MinValue).CompareTo(ClearanceLevel.GetValueOrDefault(b, int.MaxValue));
     }
 }

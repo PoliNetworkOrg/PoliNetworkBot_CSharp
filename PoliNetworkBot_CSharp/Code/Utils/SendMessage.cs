@@ -76,8 +76,9 @@ internal static class SendMessage
                     replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
                     replyToMessageId: messageIdToReplyTo);
         }
-        catch
+        catch (Exception e)
         {
+            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient);
             return new MessageSentResult(false, null, ChatType.Private);
         }
 

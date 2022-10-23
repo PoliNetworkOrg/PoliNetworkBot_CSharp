@@ -7,11 +7,7 @@ using System.Collections.Generic;
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
 /// <summary>
-///     ___
-///     _-_-  _/\______\\__
-///     _-_-__  / ,-. -|-  ,-.`-.
-///     whoosh _-_- `( o )----( o )-'
-///     `-'      `-'
+///     Language but faster
 /// </summary>
 public class L : Language
 {
@@ -27,4 +23,6 @@ public class L : Language
     })
     {
     }
+
+    public L() : base(new Dictionary<string, string?>()) {}
 }

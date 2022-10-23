@@ -9,16 +9,21 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class Language
 {
-    private readonly Dictionary<string, string?>? _dict;
+    private readonly Dictionary<string, string?> _dict;
 
-    public Language(Dictionary<string, string?>? dict)
+    public Language(Dictionary<string, string?> dict)
     {
         _dict = dict;
     }
 
+    public List<string> GetLanguages()
+    {
+        return new List<string>(_dict.Keys);
+    }
+
     public string? Select(string? lang)
     {
-        if (_dict == null || _dict.Keys.Count == 0)
+        if (_dict.Keys.Count == 0)
             return null;
 
         if (string.IsNullOrEmpty(lang))
@@ -54,6 +59,6 @@ public class Language
 
     internal bool Matches(string? r)
     {
-        return _dict != null && _dict.Keys.Count != 0 && _dict.Keys.Any(key => _dict[key] == r);
+        return _dict.Keys.Count != 0 && _dict.Keys.Any(key => _dict[key] == r);
     }
 }

@@ -39,16 +39,11 @@ internal static class CommandDispatcher
     ///     order to provide feedback to the user (and try to keep them standard)
     ///     optionalConditions are checked by the caller
     /// </summary>
-    /// TODO porting of all commands in the new format
-    /// done TODO make a iterative method to check all the commands and trigger the (first) selected
-    /// half done TODO make the help method to read all the commands specified here and provide useful information in a nice clean way
     /// TODO verify restrict actions are still working (they probably aren't, we changed the target from IReadOnlyList
-    /// <string
-    /// ?>
-    /// ? target to string[] containing all the targets to ban)
+    /// \<string?>? target to string[] containing all the targets to ban)
     private static readonly List<Command> Commands = new()
     {
-        new Command("start", Start, new List<ChatType> { ChatType.Private }, Permission.USER,
+        new Command("start", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Initialize bot", "it", "Inizializza il bot"), null, null),
         new Command("force_check_invite_links", ForceCheckInviteLinksAsync, new List<ChatType> { ChatType.Private },
             Permission.CREATOR,
@@ -59,7 +54,7 @@ internal static class CommandDispatcher
             new L("en", "Show PoliNetwork contact's information", "it",
                 "Mostra le informazioni per contattare PoliNetwork"), null, null),
         new Command("help", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "This Menu", "it", "Questo menu"), null, null),
+            new L("en", "This Menu @args: (optional) specific command to describe", "it", "Questo menu @args: (optional) spiegazione per un comando"), null, null),
         new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
@@ -204,7 +199,17 @@ internal static class CommandDispatcher
 
         new Command(new List<string> { "assoc_write", "assoc_send" }, AssocCommands.AssocWrite,
             new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "assoc write"), null, null),
+            new L("en", "Insert a message in queue @condition: Reply to the message to send", "it", 
+                "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"), 
+              new L("un", "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
+                          "- Rispondere al messaggio inviato al punto precedente con il messaggio /assoc_write (è importante rispondere al messaggio, che significa selezionare il messaggio e poi premere il tasto \"reply\" o \"rispondi\")\n"+
+                          "- Il bot chiede se lo si vuole \"mettere in coda\" o di scegliere una data\n"+
+                          "- Rispondere \"scegli la data \" \n" +
+                          "- Il formato della data è il seguente (non saranno accettati altri formati):\n" +
+                          "ANNO-MESE-GIORNO ORA:MINUTO\n" +
+                          "Esempio: 2020-12-31 23:59\n" +
+                          "Nota bene che c'è un solo spazio fra data e orario, e non ci sono spazi da altre parti. Siate molto precisi con il formato della data/ora"), 
+            e => e.Message.ReplyToMessage != null),
         new Command(new List<string> { "assoc_publish" }, AssocCommands.AssocPublish,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "assoc publish"), null, null),
@@ -836,7 +841,7 @@ internal static class CommandDispatcher
     private static async Task Help(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
-            await HelpPrivate(e, sender);
+            await HelpPrivate(e, sender, null);
         else
             await CommandNotSentInPrivateAsync(sender, e);
     }
@@ -859,44 +864,69 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
-        const string text = "<i>Lista di funzioni</i>:\n" +
-                            //"\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
-                            //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
-                            "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
-                            "FAQ (domande frequenti)</a>\n" +
-                            "\n🏫 Ricerca aule libere /rooms\n" +
-                            //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                            //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
-                            "\n👥 Gruppo consigliati e utili /groups\n" +
-                            "\n⚠ Hai già letto le regole del network? /rules\n" +
-                            "\n✍ Per contattarci /contact";
+        if (args == null || args.Length == 0)
+            await HelpPrivateMessage(e, sender);
+        else
+            await HelpSpecific(e, sender, args);
+    }
 
-        const string textEng = "<i>List of features</i>:\n" +
-                               //"\n📑 Review system of courses (for more info /help_review)\n" +
-                               //"\n🔖 Link to notes (for more info /help_material)\n" +
-                               "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
-                               "FAQ (frequently asked questions)</a>\n" +
-                               "\n🏫 Find free rooms /rooms\n" +
-                               //"\n🕶️ Anonymous posting system (for more info /help_anon)\n" +
-                               //"\n🎙️ Record of lessons (for more info /help_record)\n" +
-                               "\n👥 Recommended groups /groups\n" +
-                               "\n⚠ Have you already read our network rules? /rules\n" +
-                               "\n✍ To contact us /contact";
+    private static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
+    {
+        var command = Commands.Find(x => x.GetTriggers().Contains(args[0]));
+
+        if (command == null)
+            return;
+        
+        string text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +  "</b>:\n";
+
+        string textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) + " </b>:\n";
 
 
         var text2 = new Language(new Dictionary<string, string?>
         {
             {
                 "en",
-                textEng + "\nCommands available:\n" +
-                string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("en")))
+                textEng + "\n<b>Commands available:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
             },
             {
                 "it",
-                text + "\nCommands available:\n" +
-                string.Join("\n\n", Commands.Select(x => x.HelpMessage().Select("it")))
+                text + "\n<b>Comandi disponibili:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
+            }
+        });
+        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
+            e?.Message.From?.LanguageCode,
+            e?.Message.From?.Username, text2, ParseMode.Html, null);
+    }
+
+    private static async Task HelpPrivateMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        const string text = "<i>Lista di funzioni</i>:\n" +
+                            //"\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
+                            //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
+                            "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
+                            "FAQ (domande frequenti)</a>\n\n";
+                            //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+                            //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+        const string textEng = "<i>List of features</i>:\n" + 
+                               //"\n📑 Review system of courses (for more info /help_review)\n" +
+                               //"\n🔖 Link to notes (for more info /help_material)\n" +
+                               "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
+                               "FAQ (frequently asked questions)</a>\n\n";
+
+
+        var text2 = new Language(new Dictionary<string, string?>
+        {
+            {
+                "en",
+                textEng + "\n<b>Commands available:</b>\n" +
+                string.Join("", Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
+            },
+            {
+                "it",
+                text + "\n<b>Comandi disponibili:</b>\n" +
+                string.Join("", Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
             }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
