@@ -3,11 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -52,7 +56,7 @@ public static class MassiveSendUtil
         return false;
     }
 
-    private static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
+    public static async Task<bool> MassiveSendSlaveAsync(TelegramBotAbstract sender, MessageEventArgs? e,
         DataTable? groups, string textToSend, bool test)
     {
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
@@ -163,4 +167,33 @@ public static class MassiveSendUtil
     {
         return sender != null && await MassiveGeneralSendAsync(e, sender, true);
     }
+
+    public static async Task MassiveSend(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? cmdLines)
+    {
+        try
+        {
+            if (e != null && Matches(GlobalVariables.AllowedBanAll, e.Message.From))
+            {
+                if (e.Message.From != null)
+                {
+                    if (e.Message.ReplyToMessage != null)
+                        if (sender != null)
+                            if (e.Message.ReplyToMessage.Text != null)
+                                _ = CommandDispatcher.MassiveSendAsync(sender, e, e.Message.ReplyToMessage.Text);
+                }
+            }
+            else
+                await CommandDispatcher.DefaultCommand(sender, e);
+        }
+        catch (Exception ex)
+        {
+            Logger.Logger.WriteLine(ex);
+        }
+    }
+
+    private static bool Matches(IReadOnlyCollection<TelegramUser>? allowedBanAll, User? user)
+    {
+        return allowedBanAll != null && allowedBanAll.Any(item => item.Matches(user));
+    }
+    
 }

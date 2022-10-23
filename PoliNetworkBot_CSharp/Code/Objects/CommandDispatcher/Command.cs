@@ -29,14 +29,16 @@ public class Command
     private readonly Permission _permissionLevel;
     private readonly Language _shortDescription;
     private bool _hasBeenTriggered;
+    private readonly bool _enabled;
 
     // Trigger command
     private List<string> _trigger;
+    
 
 
     public Command(IEnumerable<string> trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _optionalConditions = optionalConditions;
         _trigger = trigger.Select(x => x.ToLower()).ToList();
@@ -45,11 +47,12 @@ public class Command
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     private Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
         _action = action;
@@ -58,12 +61,13 @@ public class Command
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     public Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action,
         List<ChatType> chatTypes,
         Permission permissionLevel, Language helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
         _action3 = action;
@@ -72,11 +76,12 @@ public class Command
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     public Command(string trigger, Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = new List<string> { trigger.ToLower() };
         _action = action;
@@ -85,11 +90,12 @@ public class Command
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     public Command(string trigger, Action<MessageEventArgs?, TelegramBotAbstract?, string[]?> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _optionalConditions = optionalConditions;
         _trigger = new List<string> { trigger.ToLower() };
@@ -98,6 +104,7 @@ public class Command
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     public Command(string trigger,
@@ -105,7 +112,9 @@ public class Command
         List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage,
         Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, 
+        bool enabled = true
+        )
     {
         _trigger = new List<string> { trigger.ToLower() };
         _action3 = action;
@@ -114,15 +123,16 @@ public class Command
         _helpMessage = helpMessage;
         _optionalConditions = optionalConditions;
         _shortDescription = shortDescription ?? helpMessage;
+        _enabled = enabled;
     }
 
     public static Command CreateInstance(IEnumerable<string> trigger,
         Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? shortDescription,
-        Func<MessageEventArgs, bool>? optionalConditions)
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         return new Command(trigger, action, chatTypes, permissionLevel, helpMessage, shortDescription,
-            optionalConditions);
+            optionalConditions, enabled);
     }
 
 
@@ -146,6 +156,8 @@ public class Command
     public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract, string command,
         string[] args)
     {
+        if (!_enabled)
+            return false;
         if (!IsTriggered(command))
             return false;
         if (!_chatTypes.Contains(e.Message.Chat.Type))

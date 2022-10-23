@@ -218,8 +218,25 @@ internal static class CommandDispatcher
 
         new Command(new List<string> { "assoc_delete", "assoc_remove" }, AssocCommands.AssocDelete,
             new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "assoc delete"), null, null)
+            new L("en", "assoc delete"), null, null),
+        
+        new Command("massiveSend", MassiveSendUtil.MassiveSend, 
+            new List<ChatType>() { ChatType.Private}, Permission.OWNER, 
+            new L("en", "massive send"), null, 
+            null, false),
+        
+        new Command("banAllHistory", BanHistory, 
+        new List<ChatType>() { ChatType.Private}, Permission.OWNER, 
+        new L("en", "ban all history"), null, 
+        null, false)
     };
+
+    private static Task BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        //todo: complete
+        //_ = BanUserHistoryAsync(sender, e, false);
+        return Task.CompletedTask;
+    }
 
     private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
@@ -268,38 +285,9 @@ internal static class CommandDispatcher
 
         switch (cmd)
         {
-            /*
-        case "/massiveSend":
-            {
-                if (e.Message.Chat.Type != ChatType.Private)
-                {
-                    await CommandNotSentInPrivateAsync(sender, e);
-                    return;
-                }
+ 
 
-                try
-                {
-                    if (GlobalVariables.AllowedBanAll.Contains(e.Message.From?.Username?.ToLower()))
-                        _ = MassiveSendAsync(sender, e, cmdLines, e.Message.From.LanguageCode, e.Message.From.Username);
-                    else
-                        await DefaultCommand(sender, e);
-                }
-                catch
-                {
-                    ;
-                }
-
-                return;
-            }
-            */
-
-            /*case "/banAllHistory":
-                {
-                    // _ = BanUserAsync(sender, e, cmdLines);
-                    _ = BanUserHistoryAsync(sender, e, false);
-                    return;
-                }*/
-
+        
 
             default:
             {
@@ -552,23 +540,15 @@ internal static class CommandDispatcher
     }
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
-    /*
-     private static async Task<bool> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e,
+
+    public static async Task<bool> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e,
         string textToSend)
     {
-        
-
-        textToSend =        "Buonasera a tutti, vi ricordiamo che lunedì 24 fino al 27 verranno aperti i seggi online per le elezioni, fate sentire la vostra voce mi raccomando. <b>Votate!</b>\nPotete informarvi su modalità di voto e candidati al sito\npolinetworkelezioni.github.io/it" +
-                "\n\n\n" +
-                "Good evening everyone, we remind you that on Monday 24th to 27th the online polling stations will be open for the elections, please let your voice be heard. <b>Vote!</b>\nYou can find out about voting procedures and candidates in the website\npolinetworkelezioni.github.io/en"
-
-         
-
         var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender?.DbConfig);
 
-        return await MassiveSendSlaveAsync(sender, e, groups);
+        return sender != null && await MassiveSendUtil.MassiveSendSlaveAsync(sender, e, groups, textToSend, false);
     }
-    */
+    
 
 
 #pragma warning disable CS1998 // Il metodo asincrono non contiene operatori 'await', pertanto verrà eseguito in modo sincrono
