@@ -17,9 +17,9 @@ public class Help
         if (command == null)
             return;
         
-        string text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +  "</b>:\n";
+        var text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +  "</b>:\n";
 
-        string textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) + " </b>:\n";
+        var textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) + " </b>:\n";
 
 
         var text2 = new Language(new Dictionary<string, string?>

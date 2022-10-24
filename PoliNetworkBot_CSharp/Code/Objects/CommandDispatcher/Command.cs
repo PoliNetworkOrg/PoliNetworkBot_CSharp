@@ -141,23 +141,23 @@ public class Command
     public Language HelpMessage(Permission clearance)
     {
         var languages = new Dictionary<string, string?>();
-        if (Permissions.Compare(clearance, _permissionLevel) >= 0)
+        if (Permissions.Compare(clearance, _permissionLevel) < 0) 
+            return new Language(languages);
+        
+        foreach (var lang in _helpMessage.GetLanguages())
         {
-            foreach (var lang in _helpMessage.GetLanguages())
-            {
-                var body = ParseText(_helpMessage, "body");
-                var args = ParseText(_helpMessage, "args");
-                var condition = ParseText(_helpMessage, "condition");
-                var text = "/<b>" + string.Join(" | /", _trigger.ToArray()) + "</b>:\n" + body.Select(lang);
+            var body = ParseText(_helpMessage, "body");
+            var args = ParseText(_helpMessage, "args");
+            var condition = ParseText(_helpMessage, "condition");
+            var text = "/<b>" + string.Join(" | /", _trigger.ToArray()) + "</b>:\n" + body.Select(lang);
                 
-                if (!string.IsNullOrEmpty(args.Select(lang)))
-                    text += "<i>\nArguments: </i>" + args.Select(lang);
+            if (!string.IsNullOrEmpty(args.Select(lang)))
+                text += "<i>\nArguments: </i>" + args.Select(lang);
                 
-                if (!string.IsNullOrEmpty(condition.Select(lang)))
-                    text += "<i>\nConditions: </i>" + condition.Select(lang) + "";
+            if (!string.IsNullOrEmpty(condition.Select(lang)))
+                text += "<i>\nConditions: </i>" + condition.Select(lang) + "";
                                 
-                languages.Add(lang, text + "\n\n");
-            }
+            languages.Add(lang, text + "\n\n");
         }
 
         return new Language(languages);
@@ -179,24 +179,26 @@ public class Command
     /// <param name="helpMessage"></param>
     /// <param name="tag"></param>
     /// <returns></returns>
-    private Language ParseText(Language helpMessage, string tag)
+    private static Language ParseText(Language helpMessage, string tag)
     {
         var toReturn = new Dictionary<string, string?>();
         foreach (var language in helpMessage.GetLanguages())
         {
+            var select = helpMessage.Select(language) ?? "";
             if (tag == "body")
             {
-                toReturn.Add(language, helpMessage.Select(language)?.Split(" @")[0].Replace("/@", "@"));
+                toReturn.Add(language, select.Split(" @")[0].Replace("/@", "@"));
             }
             else
             {
-                var tags = (helpMessage.Select(language) ?? "").Split(" @").Skip(1).ToList();
-                foreach (var innerTag in tags)
+                
+                var tags = select.Split(" @").Skip(1).ToList();
+                var innerTags = tags.Where(innerTag => innerTag.Split(": ")[0] == tag)
+                    .Select(x => x.Replace(tag + ": ", "").Replace("/@", "@"));
+                
+                foreach (var innerTag in innerTags)
                 {
-                    if (innerTag.Split(": ")[0] == tag)
-                    {
-                        toReturn.Add(language, innerTag.Replace(tag + ": ", "").Replace("/@", "@"));
-                    }
+                    toReturn.Add(language, innerTag);
                 }
             }
         }

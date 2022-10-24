@@ -6,7 +6,6 @@ using System.Linq;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 
 #endregion
@@ -162,19 +161,13 @@ internal static class Permissions
     public static Permission GetPrivileges(User? messageFrom)
     {
         InitClearance();
-        
-        if (messageFrom == null)
-            return Permission.USER;
 
-        foreach (var clearance in OrderedClearance)
-        {
-            if (GetPermissionFunc(clearance.Key).Invoke(messageFrom))
-            {
-                return clearance.Key;
-            }
-        }
-
-        return Permission.USER;
+        return messageFrom == null
+            ? Permission.USER
+            : OrderedClearance
+                .Where(clearance => GetPermissionFunc(clearance.Key).Invoke(messageFrom))
+                .Select(x => x.Key)
+                .FirstOrDefault(Permission.USER);
     }
 
     /// <summary>
