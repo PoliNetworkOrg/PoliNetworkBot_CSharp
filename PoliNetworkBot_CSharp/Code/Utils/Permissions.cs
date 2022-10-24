@@ -6,7 +6,6 @@ using System.Linq;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 
 #endregion
@@ -49,7 +48,8 @@ internal static class Permissions
     }
 
     /// <summary>
-    /// Orders OrderedClearance in REVERSE ORDER (from highest to lowest) if OrderedClearance is empty, otherwise does nothing.
+    ///     Orders OrderedClearance in REVERSE ORDER (from highest to lowest) if OrderedClearance is empty, otherwise does
+    ///     nothing.
     /// </summary>
     private static void InitClearance()
     {
@@ -162,24 +162,18 @@ internal static class Permissions
     public static Permission GetPrivileges(User? messageFrom)
     {
         InitClearance();
-        
-        if (messageFrom == null)
-            return Permission.USER;
 
-        foreach (var clearance in OrderedClearance)
-        {
-            if (GetPermissionFunc(clearance.Key).Invoke(messageFrom))
-            {
-                return clearance.Key;
-            }
-        }
-
-        return Permission.USER;
+        return messageFrom == null
+            ? Permission.USER
+            : OrderedClearance
+                .Where(clearance => GetPermissionFunc(clearance.Key).Invoke(messageFrom))
+                .Select(x => x.Key)
+                .FirstOrDefault(Permission.USER);
     }
 
     /// <summary>
-    /// returns 1 if a > b, 0 if a = b, -1 otherwise<br/>
-    /// Put the one you want to check in the unsafe parameter
+    ///     returns 1 if a > b, 0 if a = b, -1 otherwise<br />
+    ///     Put the one you want to check in the unsafe parameter
     /// </summary>
     /// <param name="a">unsafe parameter</param>
     /// <param name="b">safe parameter</param>
@@ -187,6 +181,7 @@ internal static class Permissions
     /// <exception cref="NotImplementedException"></exception>
     public static int Compare(Permission a, Permission b)
     {
-        return ClearanceLevel.GetValueOrDefault(a, int.MinValue).CompareTo(ClearanceLevel.GetValueOrDefault(b, int.MaxValue));
+        return ClearanceLevel.GetValueOrDefault(a, int.MinValue)
+            .CompareTo(ClearanceLevel.GetValueOrDefault(b, int.MaxValue));
     }
 }

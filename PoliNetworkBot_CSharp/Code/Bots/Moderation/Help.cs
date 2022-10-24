@@ -9,28 +9,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 public class Help
 {
-    
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
         var command = CommandDispatcher.Commands.Find(x => x.GetTriggers().Contains(args[0]));
 
         if (command == null)
             return;
-        
-        string text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +  "</b>:\n";
 
-        string textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) + " </b>:\n";
+        var text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +
+                   "</b>:\n";
+
+        var textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +
+                      " </b>:\n";
 
 
         var text2 = new Language(new Dictionary<string, string?>
         {
             {
                 "en",
-                textEng + "\n<b>Commands available:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
+                textEng + "\n<b>Commands available:</b>\n" +
+                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
             },
             {
                 "it",
-                text + "\n<b>Comandi disponibili:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
+                text + "\n<b>Comandi disponibili:</b>\n" +
+                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
             }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
@@ -45,9 +48,9 @@ public class Help
                             //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
                             "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
                             "FAQ (domande frequenti)</a>\n\n";
-                            //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                            //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
-        const string textEng = "<i>List of features</i>:\n" + 
+        //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
+        //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
+        const string textEng = "<i>List of features</i>:\n" +
                                //"\n📑 Review system of courses (for more info /help_review)\n" +
                                //"\n🔖 Link to notes (for more info /help_material)\n" +
                                "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
@@ -59,12 +62,16 @@ public class Help
             {
                 "en",
                 textEng + "\n<b>Commands available:</b>\n" +
-                string.Join("", CommandDispatcher.Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
+                string.Join("",
+                    CommandDispatcher.Commands.Select(x =>
+                        x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
             },
             {
                 "it",
                 text + "\n<b>Comandi disponibili:</b>\n" +
-                string.Join("", CommandDispatcher.Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
+                string.Join("",
+                    CommandDispatcher.Commands.Select(x =>
+                        x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
             }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,

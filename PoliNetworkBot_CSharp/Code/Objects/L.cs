@@ -24,5 +24,7 @@ public class L : Language
     {
     }
 
-    public L() : base(new Dictionary<string, string?>()) {}
+    public L() : base(new Dictionary<string, string?>())
+    {
+    }
 }
