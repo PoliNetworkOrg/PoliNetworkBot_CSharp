@@ -104,8 +104,8 @@ public static class MessageDb
         var dt = Database.ExecuteSelect(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig,
             null, ToLog.NO
-            );
-        
+        );
+
         if (dt == null || dt.Rows.Count == 0)
             return false;
 

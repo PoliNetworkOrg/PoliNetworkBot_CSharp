@@ -48,7 +48,8 @@ internal static class Permissions
     }
 
     /// <summary>
-    /// Orders OrderedClearance in REVERSE ORDER (from highest to lowest) if OrderedClearance is empty, otherwise does nothing.
+    ///     Orders OrderedClearance in REVERSE ORDER (from highest to lowest) if OrderedClearance is empty, otherwise does
+    ///     nothing.
     /// </summary>
     private static void InitClearance()
     {
@@ -171,8 +172,8 @@ internal static class Permissions
     }
 
     /// <summary>
-    /// returns 1 if a > b, 0 if a = b, -1 otherwise<br/>
-    /// Put the one you want to check in the unsafe parameter
+    ///     returns 1 if a > b, 0 if a = b, -1 otherwise<br />
+    ///     Put the one you want to check in the unsafe parameter
     /// </summary>
     /// <param name="a">unsafe parameter</param>
     /// <param name="b">safe parameter</param>
@@ -180,6 +181,7 @@ internal static class Permissions
     /// <exception cref="NotImplementedException"></exception>
     public static int Compare(Permission a, Permission b)
     {
-        return ClearanceLevel.GetValueOrDefault(a, int.MinValue).CompareTo(ClearanceLevel.GetValueOrDefault(b, int.MaxValue));
+        return ClearanceLevel.GetValueOrDefault(a, int.MinValue)
+            .CompareTo(ClearanceLevel.GetValueOrDefault(b, int.MaxValue));
     }
 }

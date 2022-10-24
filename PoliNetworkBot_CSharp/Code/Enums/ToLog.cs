@@ -2,5 +2,6 @@
 
 public enum ToLog
 {
-    YES, NO
+    YES,
+    NO
 }

@@ -54,9 +54,11 @@ internal static class CommandDispatcher
             new L("en", "Show PoliNetwork contact's information", "it",
                 "Mostra le informazioni per contattare PoliNetwork"), null, null),
         new Command("help", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "This Menu @args: (optional) specific command to describe", "it", "Questo menu @args: (optional) spiegazione per un comando"), null, null),
+            new L("en", "This Menu @args: (optional) specific command to describe", "it",
+                "Questo menu @args: (optional) spiegazione per un comando"), null, null),
         new Command("help_all", HelpExtended, new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "Extended help menu, with all commands", "it", "Menu Help esteso con tutti i comandi"), null, null),
+            new L("en", "Extended help menu, with all commands", "it", "Menu Help esteso con tutti i comandi"), null,
+            null),
         new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
@@ -201,16 +203,10 @@ internal static class CommandDispatcher
 
         new Command(new List<string> { "assoc_write", "assoc_send" }, AssocCommands.AssocWrite,
             new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "Insert a message in queue @condition: Reply to the message to send", "it", 
-                "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"), 
-              new L("un", "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
-                          "- Rispondere al messaggio inviato al punto precedente con il messaggio /assoc_write (è importante rispondere al messaggio, che significa selezionare il messaggio e poi premere il tasto \"reply\" o \"rispondi\")\n"+
-                          "- Il bot chiede se lo si vuole \"mettere in coda\" o di scegliere una data\n"+
-                          "- Rispondere \"scegli la data \" \n" +
-                          "- Il formato della data è il seguente (non saranno accettati altri formati):\n" +
-                          "ANNO-MESE-GIORNO ORA:MINUTO\n" +
-                          "Esempio: 2020-12-31 23:59\n" +
-                          "Nota bene che c'è un solo spazio fra data e orario, e non ci sono spazi da altre parti. Siate molto precisi con il formato della data/ora"), 
+            new L("en", "Insert a message in queue @condition: Reply to the message to send", "it",
+                "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"),
+            new L("un",
+                "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
             e => e.Message.ReplyToMessage != null),
         new Command(new List<string> { "assoc_publish" }, AssocCommands.AssocPublish,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
@@ -848,7 +844,7 @@ internal static class CommandDispatcher
                 await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
         }
     }
-    
+
     private static async Task HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Help.HelpExtendedSlave(e, sender);

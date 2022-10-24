@@ -81,7 +81,7 @@ internal static class TextConversation
             {
                 "en",
                 "Hi, we advice you to write " +
-                "- <b>/help</b> to see what this bot can do\n"+
+                "- <b>/help</b> to see what this bot can do\n" +
                 "- <b>/help_all</b> to have a list of all commands"
             },
             {

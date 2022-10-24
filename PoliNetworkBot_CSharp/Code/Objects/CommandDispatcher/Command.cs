@@ -29,9 +29,9 @@ public class Command
     private readonly List<ChatType> _chatTypes;
     private readonly bool _enabled;
     private readonly Language _helpMessage;
+    private readonly Language _longDescription;
     private readonly Func<MessageEventArgs, bool>? _optionalConditions;
     private readonly Permission _permissionLevel;
-    private readonly Language _longDescription;
     private bool _hasBeenTriggered;
 
     // Trigger command
@@ -141,22 +141,22 @@ public class Command
     public Language HelpMessage(Permission clearance)
     {
         var languages = new Dictionary<string, string?>();
-        if (Permissions.Compare(clearance, _permissionLevel) < 0) 
+        if (Permissions.Compare(clearance, _permissionLevel) < 0)
             return new Language(languages);
-        
+
         foreach (var lang in _helpMessage.GetLanguages())
         {
             var body = ParseText(_helpMessage, "body");
             var args = ParseText(_helpMessage, "args");
             var condition = ParseText(_helpMessage, "condition");
             var text = "/<b>" + string.Join(" | /", _trigger.ToArray()) + "</b>:\n" + body.Select(lang);
-                
+
             if (!string.IsNullOrEmpty(args.Select(lang)))
                 text += "<i>\nArguments: </i>" + args.Select(lang);
-                
+
             if (!string.IsNullOrEmpty(condition.Select(lang)))
                 text += "<i>\nConditions: </i>" + condition.Select(lang) + "";
-                                
+
             languages.Add(lang, text + "\n\n");
         }
 
@@ -174,7 +174,7 @@ public class Command
     }
 
     /// <summary>
-    /// body returns everything except the tags
+    ///     body returns everything except the tags
     /// </summary>
     /// <param name="helpMessage"></param>
     /// <param name="tag"></param>
@@ -191,18 +191,14 @@ public class Command
             }
             else
             {
-                
                 var tags = select.Split(" @").Skip(1).ToList();
                 var innerTags = tags.Where(innerTag => innerTag.Split(": ")[0] == tag)
                     .Select(x => x.Replace(tag + ": ", "").Replace("/@", "@"));
-                
-                foreach (var innerTag in innerTags)
-                {
-                    toReturn.Add(language, innerTag);
-                }
+
+                foreach (var innerTag in innerTags) toReturn.Add(language, innerTag);
             }
         }
-        
+
         return new Language(toReturn);
     }
 
