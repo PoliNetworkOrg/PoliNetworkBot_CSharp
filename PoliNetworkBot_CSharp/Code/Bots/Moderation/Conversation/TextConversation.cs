@@ -80,13 +80,15 @@ internal static class TextConversation
         {
             {
                 "en",
-                "Hi, at the moment is not possible to have conversation with the bot.\n" +
-                "We advice you to write /help to see what this bot can do"
+                "Hi, we advice you to write " +
+                "- <b>/help</b> to see what this bot can do\n"+
+                "- <b>/help_all</b> to have a list of all commands"
             },
             {
                 "it",
-                "Ciao, al momento non è possibile fare conversazione col bot.\n" +
-                "Ti consigliamo di premere /help per vedere le funzioni disponibili"
+                "Ciao, ti consigliamo di premere " +
+                "\n- <b>/help</b> per vedere le funzioni disponibili" +
+                "\n- <b>/help_all</b> per avere la lista di tutti i comandi"
             }
         });
         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From?.Id,

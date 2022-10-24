@@ -41,7 +41,7 @@ internal static class CommandDispatcher
     /// </summary>
     /// TODO verify restrict actions are still working (they probably aren't, we changed the target from IReadOnlyList
     /// \<string?>? target to string[] containing all the targets to ban)
-    private static readonly List<Command> Commands = new()
+    public static readonly List<Command> Commands = new()
     {
         new Command("start", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Initialize bot", "it", "Inizializza il bot"), null, null),
@@ -55,44 +55,46 @@ internal static class CommandDispatcher
                 "Mostra le informazioni per contattare PoliNetwork"), null, null),
         new Command("help", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "This Menu @args: (optional) specific command to describe", "it", "Questo menu @args: (optional) spiegazione per un comando"), null, null),
+        new Command("help_all", HelpExtended, new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "Extended help menu, with all commands", "it", "Menu Help esteso con tutti i comandi"), null, null),
         new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
-                "Mute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
+                "Mute users from the network. @args: &lt;id to ban&gt; &lt;optional - until time&gt;. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Mute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+                "Mute un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
         new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
-                "UNMute users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
+                "UNMute users from the network. @args: &lt;id to ban&gt; &lt;optional - until time&gt;. @condition: you need to reply to a message to explain the action",
                 "it",
-                "UNMute un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+                "UNMute un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
         new Command("ban_all", RestrictUser.BanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
-                "Ban users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
+                "Ban users from the network. @args: &lt;id to ban&gt; &lt;optional - until time&gt;. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Banna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+                "Banna un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
         new Command("unban_all", RestrictUser.UnbanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
-                "UNBan users from the network. @args: list of ids. @condition: you need to reply to a message to explain the action",
+                "UNBan users from the network. @args: &lt;id to ban&gt; &lt;optional - until time&gt;. @condition: you need to reply to a message to explain the action",
                 "it",
-                "UNBanna un utente dal network. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+                "UNBanna un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
         new Command("ban_delete_all", RestrictUser.BanDeleteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
-                "Ban users from the network and delete all its messages. @args: list of ids. @condition: you need to reply to a message to explain the action",
+                "Ban users from the network and delete all its messages. @args: &lt;id to ban&gt; &lt;optional - until time&gt;. @condition: you need to reply to a message to explain the action",
                 "it",
-                "Banna un utente dal network e cancella tutti i suoi messaggi. @args: lista di id. @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
+                "Banna un utente dal network e cancella tutti i suoi messaggi. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
         new Command("del", RestrictUser.DeleteMessageFromUser,
@@ -287,16 +289,7 @@ internal static class CommandDispatcher
                 return true;
         }
 
-        ///// following to be cancelled!
-
-        switch (cmd)
-        {
-            default:
-            {
-                await DefaultCommand(sender, e);
-                return false;
-            }
-        }
+        return await DefaultCommand(sender, e);
     }
 
 
@@ -838,14 +831,6 @@ internal static class CommandDispatcher
         return true;
     }
 
-    private static async Task Help(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        if (e?.Message != null && e.Message.Chat.Type == ChatType.Private)
-            await HelpPrivate(e, sender, null);
-        else
-            await CommandNotSentInPrivateAsync(sender, e);
-    }
-
     private static async Task CommandNotSentInPrivateAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var lang = new Language(new Dictionary<string, string?>
@@ -863,75 +848,18 @@ internal static class CommandDispatcher
                 await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
         }
     }
+    
+    private static async Task HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        await Help.HelpExtendedSlave(e, sender);
+    }
 
     private static async Task HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
         if (args == null || args.Length == 0)
-            await HelpPrivateMessage(e, sender);
+            await Help.HelpPrivateSlave(e, sender);
         else
-            await HelpSpecific(e, sender, args);
-    }
-
-    private static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
-    {
-        var command = Commands.Find(x => x.GetTriggers().Contains(args[0]));
-
-        if (command == null)
-            return;
-        
-        string text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +  "</b>:\n";
-
-        string textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) + " </b>:\n";
-
-
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            {
-                "en",
-                textEng + "\n<b>Commands available:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
-            },
-            {
-                "it",
-                text + "\n<b>Comandi disponibili:</b>\n" + command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
-            }
-        });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
-    }
-
-    private static async Task HelpPrivateMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        const string text = "<i>Lista di funzioni</i>:\n" +
-                            //"\n📑 Sistema di recensioni dei corsi (per maggiori info /help_review)\n" +
-                            //"\n🔖 Link ai materiali nei gruppi (per maggiori info /help_material)\n" +
-                            "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
-                            "FAQ (domande frequenti)</a>\n\n";
-                            //"\n🕶️ Sistema di pubblicazione anonima (per maggiori info /help_anon)\n" +
-                            //"\n🎙️ Registrazione delle lezioni (per maggiori info /help_record)\n" +
-        const string textEng = "<i>List of features</i>:\n" + 
-                               //"\n📑 Review system of courses (for more info /help_review)\n" +
-                               //"\n🔖 Link to notes (for more info /help_material)\n" +
-                               "\n🙋 <a href='https://polinetwork.org/it/faq/index.html'>" +
-                               "FAQ (frequently asked questions)</a>\n\n";
-
-
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            {
-                "en",
-                textEng + "\n<b>Commands available:</b>\n" +
-                string.Join("", Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
-            },
-            {
-                "it",
-                text + "\n<b>Comandi disponibili:</b>\n" +
-                string.Join("", Commands.Select(x => x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
-            }
-        });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
+            await Help.HelpSpecific(e, sender, args);
     }
 
     private static async Task ContactUs(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
