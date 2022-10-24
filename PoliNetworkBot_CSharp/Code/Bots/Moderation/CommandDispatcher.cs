@@ -207,6 +207,13 @@ internal static class CommandDispatcher
                 "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"),
             new L("un",
                 "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
+                "- Rispondere al messaggio inviato al punto precedente con il messaggio /assoc_write (Ã¨ importante rispondere al messaggio, che significa selezionare il messaggio e poi premere il tasto \"reply\" o \"rispondi\")\n" +
+                "- Il bot chiede se lo si vuole \"mettere in coda\" o di scegliere una data\n" +
+                "- Rispondere \"scegli la data \" \n" +
+                "- Il formato della data Ã¨ il seguente (non saranno accettati altri formati):\n" +
+                "ANNO-MESE-GIORNO ORA:MINUTO\n" +
+                "Esempio: 2020-12-31 23:59\n" +
+                "Nota bene che c'Ã¨ un solo spazio fra data e orario, e non ci sono spazi da altre parti. Siate molto precisi con il formato della data/ora"),
             e => e.Message.ReplyToMessage != null),
         new Command(new List<string> { "assoc_publish" }, AssocCommands.AssocPublish,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
