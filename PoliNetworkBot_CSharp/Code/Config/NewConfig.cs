@@ -157,7 +157,7 @@ public static class NewConfig
 
         Database.Execute("CREATE TABLE Photos (" +
                          "id_photo INT(12) PRIMARY KEY," +
-                         "file_id VARCHAR(250)," +
+                         "file_id VARCHAR(2500)," +
                          "file_size INT(12)," +
                          "height INT(12)," +
                          "width INT(12)," +
@@ -166,7 +166,7 @@ public static class NewConfig
 
         Database.Execute("CREATE TABLE Videos (" +
                          "id_video INT(12) PRIMARY KEY," +
-                         "file_id VARCHAR(250)," +
+                         "file_id VARCHAR(2500)," +
                          "file_size INT(12)," +
                          "height INT(12)," +
                          "width INT(12)," +

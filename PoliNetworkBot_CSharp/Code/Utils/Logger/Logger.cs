@@ -137,7 +137,7 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
+    private static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
         if (fromId == null)
@@ -153,7 +153,7 @@ public static class Logger
         }
     }
 
-    public static void Unsubscribe(long? fromId)
+    private static void Unsubscribe(long? fromId)
     {
         if (fromId == null)
             return;
@@ -321,5 +321,28 @@ public static class Logger
     public static List<long?> GetLogTo(MessageEventArgs e)
     {
         return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
+    }
+
+    public static async Task<bool> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        if (e == null)
+            return false;
+
+        await Subscribe(e.Message.From?.Id, sender, e);
+        return true;
+    }
+
+    public static Task<bool> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        if (e == null)
+            return Task.FromResult(false);
+        Unsubscribe(e.Message.From?.Id);
+        return Task.FromResult(true);
+    }
+
+    public static Task GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    {
+        if (arg1 != null) GetLog(arg2, arg1);
+        return Task.CompletedTask;
     }
 }

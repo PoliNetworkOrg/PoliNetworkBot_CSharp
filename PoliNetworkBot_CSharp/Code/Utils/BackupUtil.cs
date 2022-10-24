@@ -2,7 +2,9 @@
 
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
@@ -71,5 +73,12 @@ internal static class BackupUtil
         }
 
         return JsonConvert.SerializeObject("ERROR 2");
+    }
+
+    public static async Task Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        if (e?.Message.From != null)
+            await CommandDispatcher.BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
+                e.Message.Chat.Type);
     }
 }

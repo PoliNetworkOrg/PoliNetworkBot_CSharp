@@ -28,61 +28,62 @@ internal static class NotifyUtil
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="messageEventArgs"></param>
-    internal static async Task NotifyOwnersPermittedSpam(TelegramBotAbstract? sender,
+    internal static async Task<bool> NotifyOwnersPermittedSpam(TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
-        var title = messageEventArgs?.Message?.Chat.Title;
-        if (messageEventArgs is { Message: { } })
+        var title = messageEventArgs?.Message.Chat.Title;
+        if (messageEventArgs is not { Message: { } })
+            return false;
+
+        var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
+        if (text == null)
         {
-            var text = messageEventArgs.Message.Text ?? messageEventArgs.Message.Caption;
-            if (text == null)
-            {
-                var ex = new Exception("text null and caption null in permitted spam notification");
-                await NotifyOwnerWithLog2(ex, sender, messageEventArgs);
-                return;
-            }
-
-            var hashText = HashUtils.GetHashOf(text)?[..20];
-
-            var message = "#Permitted spam in group: ";
-            message += "\n";
-            message += title;
-            message += "\n\n";
-            message += "@@@@@@@";
-            message += "\n\n";
-            message += text;
-            message += "\n\n";
-            message += "@@@@@@@";
-            message += "\n\n";
-            message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0
-                ? messageEventArgs.Message.Chat.Id.ToString()
-                : "n" + -1 * messageEventArgs.Message.Chat.Id);
-            message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
-            message += "\n\n";
-            message += "Message tag: #" + hashText;
-
-            const string? langCode = "it";
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", message }
-            });
-            Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-            await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
-                GroupsConstants.PermittedSpamGroup,
-                ChatType.Group,
-                ParseMode.Html, null, true);
+            var ex = new Exception("text null and caption null in permitted spam notification");
+            await NotifyOwnerWithLog2(ex, sender, messageEventArgs);
+            return false;
         }
+
+        var hashText = HashUtils.GetHashOf(text)?[..20];
+
+        var message = "#Permitted spam in group: ";
+        message += "\n";
+        message += title;
+        message += "\n\n";
+        message += "@@@@@@@";
+        message += "\n\n";
+        message += text;
+        message += "\n\n";
+        message += "@@@@@@@";
+        message += "\n\n";
+        message += "#IDGroup_" + (messageEventArgs.Message.Chat.Id > 0
+            ? messageEventArgs.Message.Chat.Id.ToString()
+            : "n" + -1 * messageEventArgs.Message.Chat.Id);
+        message += "\n" + "#IDUser_" + messageEventArgs.Message.From?.Id;
+        message += "\n\n";
+        message += "Message tag: #" + hashText;
+
+        const string? langCode = "it";
+        var text2 = new Language(new Dictionary<string, string?>
+        {
+            { "it", message }
+        });
+        Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
+        var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+            GroupsConstants.PermittedSpamGroup,
+            ChatType.Group,
+            ParseMode.Html, null, true);
+        return m != null && m.IsSuccess();
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
-        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extrainfo = null,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extraInfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
         if (sender == null)
             return null;
 
-        var message3 = exception.GetMessageAsText(extrainfo, messageEventArgs, false);
+        var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
         return await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
             FileTypeJsonEnum.SIMPLE_STRING);
     }
@@ -139,10 +140,10 @@ internal static class NotifyUtil
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
-        string? langCode, long? replyto, MessageEventArgs? messageEventArgs, StringJson? fileContent,
+        string? langCode, long? replyTo, MessageEventArgs? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
-        return await NotifyOwners_AnError_AndLog(text, sender, replyto, langCode, messageEventArgs, fileContent,
+        return await NotifyOwners_AnError_AndLog(text, sender, replyTo, langCode, messageEventArgs, fileContent,
             whatWeWant, sendActionEnum);
     }
 
@@ -186,12 +187,12 @@ internal static class NotifyUtil
             // ignored
         }
 
-        var (exceptionNumbereds, item2) = exceptions;
+        var (exceptionsNumbered, item2) = exceptions;
         try
         {
             var text = new Language(new Dictionary<string, string?>
             {
-                { "en", "Number of exceptions: " + item2 + " - " + exceptionNumbereds.Count }
+                { "en", "Number of exceptions: " + item2 + " - " + exceptionsNumbered.Count }
             });
             _ = await NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId, messageEventArgs, null,
                 null, SendActionEnum.SEND_FILE);
@@ -201,7 +202,7 @@ internal static class NotifyUtil
             // ignored
         }
 
-        await SendNumberedExceptionsAsFile(exceptionNumbereds, sender, messageEventArgs, filename, replyToMessageId);
+        await SendNumberedExceptionsAsFile(exceptionsNumbered, sender, messageEventArgs, filename, replyToMessageId);
 
 
         try
@@ -211,15 +212,15 @@ internal static class NotifyUtil
                 { "en", "---End---" }
             });
 
-            long? replyto = null;
+            long? replyTo = null;
 
             if (m != null)
             {
                 var messageSentResult = m.First(x => x != null);
-                replyto = messageSentResult?.GetMessageId();
+                replyTo = messageSentResult?.GetMessageId();
             }
 
-            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyto, messageEventArgs, null, null,
+            await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyTo, messageEventArgs, null, null,
                 SendActionEnum.SEND_TEXT);
         }
         catch
@@ -228,13 +229,13 @@ internal static class NotifyUtil
         }
     }
 
-    private static async Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionNumbereds,
+    private static async Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionsNumbered,
         TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs, string filename, long? replyToMessageId)
     {
         try
         {
-            var toSend = exceptionNumbereds.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
+            var toSend = exceptionsNumbered.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
                 .Select(x => x.GetFileContentStringJson()).ToList();
             var toSendString = GetSerialized(toSend);
             await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,
@@ -297,7 +298,7 @@ internal static class NotifyUtil
         var destinatari = new List<PeerAbstract> { peer };
         return await SendFiles2(
             stream, filename, caption, telegramBotAbstract,
-            messageEventArgs?.Message?.From?.Username, destinatari, parseModeCaption, replyToMessageId
+            messageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId
         );
     }
 
@@ -370,13 +371,14 @@ internal static class NotifyUtil
         }
     }
 
-    public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs,
+    public static async Task<bool> NotifyOwnersBanAction(TelegramBotAbstract? sender,
+        MessageEventArgs? messageEventArgs,
         long? target, string? username)
     {
         try
         {
             {
-                if (messageEventArgs is not { Message: { } }) return;
+                if (messageEventArgs is not { Message: { } }) return false;
                 var message = "Restrict action: " + "Simple Ban";
                 message += "\n";
                 message += "Restricted user: " + target + "[" +
@@ -391,16 +393,19 @@ internal static class NotifyUtil
                     { "it", message }
                 });
                 Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
                     GroupsConstants.BanNotificationGroup,
                     ChatType.Group,
                     ParseMode.Html, null, true);
+                return m != null && m.IsSuccess();
             }
         }
         catch (Exception? e)
         {
             Logger.Logger.WriteLine(e);
         }
+
+        return false;
     }
 
     public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
@@ -448,7 +453,7 @@ internal static class NotifyUtil
 
         var message = "#Allowed spam in groups: " + groups;
         message += "\n\n";
-        message += "Allowed by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message?.From);
+        message += "Allowed by: " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs?.Message.From);
         message += "\n\n";
         message += "Association: " + assoc;
         message += " #" + hashAssoc;
@@ -496,13 +501,13 @@ internal static class NotifyUtil
         var message = e?.Message;
         if (message != null)
         {
-            var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
+            var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
             var text = new Language(new Dictionary<string, string?>
             {
                 { "en", "" }
             });
             await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                sender, e?.Message?.From?.Username, e?.Message?.From?.LanguageCode,
+                sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
                 null, true);
         }
     }

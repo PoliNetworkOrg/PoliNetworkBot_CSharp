@@ -119,7 +119,7 @@ internal static class InviteLinks
         return lastUpdateLinkTime?.ToString("yyyy-MM-dd HH:mm:ss");
     }
 
-    internal static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    private static async Task UpdateLinksFromJsonAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         try
         {
@@ -429,5 +429,10 @@ internal static class InviteLinks
             }
 
         return gruppoTGs;
+    }
+
+    public static async Task UpdateLinksFromJsonAsync2(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        await UpdateLinksFromJsonAsync(sender, e);
     }
 }

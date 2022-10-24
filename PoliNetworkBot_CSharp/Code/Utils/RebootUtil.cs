@@ -19,7 +19,7 @@ public static class RebootUtil
         var sendTo = Logger.Logger.GetLogTo(messageEventArgs);
         var text = new Language(new Dictionary<string, string?>
         {
-            { "en", "Reboot by " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message?.From) }
+            { "en", "Reboot by " + UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.Message.From) }
         });
 
         foreach (var sendToSingle in sendTo)
@@ -34,8 +34,11 @@ public static class RebootUtil
             }
     }
 
-    public static async Task<bool> RebootWithLog(TelegramBotAbstract? sender, MessageEventArgs e)
+    public static async Task<bool> RebootWithLog(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        if (e == null)
+            return false;
+
         await AnnounceReboot(sender, e);
 
         try

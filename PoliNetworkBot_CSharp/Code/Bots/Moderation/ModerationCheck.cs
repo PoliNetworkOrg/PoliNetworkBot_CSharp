@@ -571,11 +571,11 @@ internal static class ModerationCheck
         }
     }
 
-    public static async Task AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
+    public static async Task<bool> AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType checkSpam)
     {
         if (checkSpam == SpamType.ALL_GOOD)
-            return;
+            return false;
 
         if (e?.Message?.From != null)
         {
@@ -650,7 +650,7 @@ internal static class ModerationCheck
 
                 // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                 case SpamType.ALL_GOOD:
-                    return;
+                    return true;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
@@ -658,7 +658,8 @@ internal static class ModerationCheck
         }
 
         if (telegramBotClient != null && e?.Message != null)
-            await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+            return await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+        return false;
     }
 
     public static async Task<bool> CheckUsernameAndName(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
@@ -693,9 +694,9 @@ internal static class ModerationCheck
         return donesomething;
     }
 
-    public static async Task PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
+    public static async Task<bool> PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? messageEventArgs)
     {
-        await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
+        return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
     }
 }

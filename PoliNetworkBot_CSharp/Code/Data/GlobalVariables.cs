@@ -96,7 +96,7 @@ public static class GlobalVariables
             new("tlpats"),
             new(349275135), //policreator
             new(1051414781), //polinetwork,
-            new(1087968824) //@GroupAnonymousBot (è quello di telegram per retrocompatibilità)
+            new(1087968824) //@GroupAnonymousBot (è quello di telegram per retrocompatibilità
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>

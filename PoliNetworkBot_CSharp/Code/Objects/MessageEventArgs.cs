@@ -8,13 +8,16 @@ using Telegram.Bot.Types;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
+/// <summary>
+///     A Telegram Message Wrapper
+/// </summary>
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
 public class MessageEventArgs
 {
-    public Message? Message;
+    public readonly Message Message;
 
-    public MessageEventArgs(Message? message)
+    public MessageEventArgs(Message message)
     {
         Message = message;
     }
