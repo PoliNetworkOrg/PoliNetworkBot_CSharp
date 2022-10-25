@@ -287,10 +287,11 @@ internal static class CommandDispatcher
 
         foreach (var command in Commands)
         {
-            if (sender != null)
-                command.TryTrigger(e, sender, cmd, args);
-            if (command.HasBeenTriggered())
+            if (sender == null) continue;
+            if (command.TryTrigger(e, sender, cmd, args))
+            {
                 return true;
+            }
         }
 
         return await DefaultCommand(sender, e);

@@ -32,7 +32,6 @@ public class Command
     private readonly Language _longDescription;
     private readonly Func<MessageEventArgs, bool>? _optionalConditions;
     private readonly Permission _permissionLevel;
-    private bool _hasBeenTriggered;
 
     // Trigger command
     private List<string> _trigger;
@@ -209,11 +208,6 @@ public class Command
         return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
-    public bool HasBeenTriggered()
-    {
-        return _hasBeenTriggered;
-    }
-
     public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract, string command,
         string[] args)
     {
@@ -230,7 +224,6 @@ public class Command
         _action?.Invoke(e, telegramBotAbstract, args);
         _action2?.Invoke(e, telegramBotAbstract, args);
         _action3?.Invoke(e, telegramBotAbstract);
-        _hasBeenTriggered = true;
         return true;
     }
 }
