@@ -52,7 +52,7 @@ internal static class Assoc
         return r2 != null ? l[r2] : null;
     }
 
-    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry = false)
     {
         try
         {
@@ -161,43 +161,45 @@ internal static class Assoc
                 var idChatsSentInto = Channels.Assoc.GetChannels();
                 //const long idChatSentInto = -432645805;
                 const ChatType chatTypeSendInto = ChatType.Group;
-
-                foreach (var idChat in idChatsSentInto)
+                if (!dry)
                 {
-                    if (sentDate == null) return false;
-                    var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1,
-                        e.Message.From?.Id,
-                        messageFromIdEntity, idChat, sender, chatTypeSendInto);
-
-                    switch (successQueue)
+                    foreach (var idChat in idChatsSentInto)
                     {
-                        case SuccessQueue.INVALID_ID_TO_DB:
-                            break;
+                        if (sentDate == null) return false;
+                        var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1,
+                            e.Message.From?.Id,
+                            messageFromIdEntity, idChat, sender, chatTypeSendInto);
 
-                        case SuccessQueue.INVALID_OBJECT:
+                        switch (successQueue)
                         {
-                            await Assoc_ObjectToSendNotValid(sender, e);
-                            return false;
+                            case SuccessQueue.INVALID_ID_TO_DB:
+                                break;
+
+                            case SuccessQueue.INVALID_OBJECT:
+                            {
+                                await Assoc_ObjectToSendNotValid(sender, e);
+                                return false;
+                            }
+
+                            case SuccessQueue.SUCCESS:
+                                break;
+
+                            case SuccessQueue.DATE_INVALID:
+                                break;
+
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
 
-                        case SuccessQueue.SUCCESS:
-                            break;
+                        if (successQueue == SuccessQueue.SUCCESS)
+                            continue;
 
-                        case SuccessQueue.DATE_INVALID:
-                            break;
+                        await NotifyUtil.NotifyOwnerWithLog2(
+                            new Exception("Success queue is " + successQueue + " while trying to send a message!"),
+                            sender, e);
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        return false;
                     }
-
-                    if (successQueue == SuccessQueue.SUCCESS)
-                        continue;
-
-                    await NotifyUtil.NotifyOwnerWithLog2(
-                        new Exception("Success queue is " + successQueue + " while trying to send a message!"),
-                        sender, e);
-
-                    return false;
                 }
             }
 

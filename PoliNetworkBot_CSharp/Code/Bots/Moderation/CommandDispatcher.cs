@@ -216,6 +216,11 @@ internal static class CommandDispatcher
                 "Esempio: 2020-12-31 23:59\n" +
                 "Nota bene che c'è un solo spazio fra data e orario, e non ci sono spazi da altre parti. Siate molto precisi con il formato della data/ora"),
             e => e.Message.ReplyToMessage != null),
+        new Command(new List<string> { "assoc_write_dry" }, AssocCommands.AssocWriteDry,
+            new List<ChatType> { ChatType.Private }, Permission.USER,
+            new L("en", "Insert a message in queue - DRY RUN @condition: Reply to the message to send - DRY RUN", "it",
+                "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"),
+            null, e => e.Message.ReplyToMessage != null),
         new Command(new List<string> { "assoc_publish" }, AssocCommands.AssocPublish,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "assoc publish"), null, null),
@@ -247,7 +252,7 @@ internal static class CommandDispatcher
         throw new NotImplementedException();
         //todo: complete
         //_ = BanUserHistoryAsync(sender, e, false);
-        return Task.CompletedTask;
+        //return Task.CompletedTask;
     }
 
     private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
