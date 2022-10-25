@@ -139,27 +139,7 @@ public class Command
 
     public Language HelpMessage(Permission clearance)
     {
-        var languages = new Dictionary<string, string?>();
-        if (Permissions.Compare(clearance, _permissionLevel) < 0)
-            return new Language(languages);
-
-        foreach (var lang in _helpMessage.GetLanguages())
-        {
-            var body = ParseText(_helpMessage, "body");
-            var args = ParseText(_helpMessage, "args");
-            var condition = ParseText(_helpMessage, "condition");
-            var text = "/<b>" + string.Join(" | /", _trigger.ToArray()) + "</b>:\n" + body.Select(lang);
-
-            if (!string.IsNullOrEmpty(args.Select(lang)))
-                text += "<i>\nArguments: </i>" + args.Select(lang);
-
-            if (!string.IsNullOrEmpty(condition.Select(lang)))
-                text += "<i>\nConditions: </i>" + condition.Select(lang) + "";
-
-            languages.Add(lang, text + "\n\n");
-        }
-
-        return new Language(languages);
+        return CommandsUtils.GenerateMessage(_helpMessage, clearance, _permissionLevel, _trigger);
     }
 
     public List<string> GetTriggers()
@@ -167,38 +147,14 @@ public class Command
         return _trigger;
     }
 
-    public Language GetLongDescription(Permission permission)
+    public Language GetLongDescription(Permission clearance)
     {
-        return string.IsNullOrEmpty(_longDescription.Select("")) ? HelpMessage(permission) : _longDescription;
-    }
-
-    /// <summary>
-    ///     body returns everything except the tags
-    /// </summary>
-    /// <param name="helpMessage"></param>
-    /// <param name="tag"></param>
-    /// <returns></returns>
-    private static Language ParseText(Language helpMessage, string tag)
-    {
-        var toReturn = new Dictionary<string, string?>();
-        foreach (var language in helpMessage.GetLanguages())
+        if(string.IsNullOrEmpty(_longDescription.Select("")))
         {
-            var select = helpMessage.Select(language) ?? "";
-            if (tag == "body")
-            {
-                toReturn.Add(language, select.Split(" @")[0].Replace("/@", "@"));
-            }
-            else
-            {
-                var tags = select.Split(" @").Skip(1).ToList();
-                var innerTags = tags.Where(innerTag => innerTag.Split(": ")[0] == tag)
-                    .Select(x => x.Replace(tag + ": ", "").Replace("/@", "@"));
-
-                foreach (var innerTag in innerTags) toReturn.Add(language, innerTag);
-            }
+            return HelpMessage(clearance);
         }
 
-        return new Language(toReturn);
+        return CommandsUtils.GenerateMessage(_helpMessage, clearance, _permissionLevel, _trigger);
     }
 
     private bool IsTriggered(string command)
@@ -218,7 +174,7 @@ public class Command
         if (!_chatTypes.Contains(e.Message.Chat.Type))
             return false;
         if (_optionalConditions != null && !_optionalConditions.Invoke(e))
-            return false;
+            throw new CommandConditionException(_trigger);
         if (!Permissions.CheckPermissions(_permissionLevel, e.Message.From))
             return false;
         _action?.Invoke(e, telegramBotAbstract, args);
