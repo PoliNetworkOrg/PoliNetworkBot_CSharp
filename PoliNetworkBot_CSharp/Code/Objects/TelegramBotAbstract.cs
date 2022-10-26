@@ -1745,7 +1745,6 @@ public class TelegramBotAbstract
             {
                 return await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
             }
-                break;
 
             case BotTypeApi.DISGUISED_BOT:
                 break;

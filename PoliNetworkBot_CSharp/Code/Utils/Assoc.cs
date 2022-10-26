@@ -52,7 +52,7 @@ internal static class Assoc
         return r2 != null ? l[r2] : null;
     }
 
-    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry = false)
     {
         try
         {
@@ -99,8 +99,7 @@ internal static class Assoc
 
             var languageList2 = new Language(new Dictionary<string, string?>
                 {
-                    { "it", "Data di pubblicazione?" },
-                    { "en", "Date of publication?" }
+                    { "it", "Vuoi mettere in coda o scegliere una data d'invio?" }, { "en", "You want to add it to the queue or select a date to send the message?" }
                 }
             );
 
@@ -118,86 +117,72 @@ internal static class Assoc
                 var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
                     languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
-                Tuple<DateTimeSchedule?, Exception?, string?>? sentDate = null;
-                if (Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
+                DateTime? sentDate = null;
+                
+                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
                 {
-                    sentDate = new Tuple<DateTimeSchedule?, Exception?, string?>(new DateTimeSchedule(null, false),
-                        null,
-                        null);
-                }
-                else
-                {
-                    if (e.Message.Text != null)
-                        sentDate = await AskUser.AskDateAsync(e.Message.From?.Id, e.Message.Text,
-                            e.Message.From?.LanguageCode, sender, e.Message.From?.Username);
-
-                    if (sentDate?.Item2 != null)
+                    sentDate = DateTime.Parse(await AskUser.AskAsync(e.Message.From?.Id, 
+                        new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en", "Insert a date AAAA-MM-DD HH:mm"), 
+                        sender, e.Message.From?.LanguageCode, e.Message.From?.Username) ?? "");
+                
+                    if (CheckIfDateTimeIsValid(sentDate) == false)
                     {
-                        await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(sentDate.Item2), sender, e,
-                            sentDate.Item3);
-                        return false;
-                    }
-
-                    if (sentDate?.Item1 != null)
-                    {
-                        var sdt = sentDate.Item1.GetDate();
-                        if (CheckIfDateTimeIsValid(sdt) == false)
+                        var lang4 = new Language(new Dictionary<string, string?>
                         {
-                            var lang4 = new Language(new Dictionary<string, string?>
-                            {
-                                { "en", "The date you choose is invalid!" },
-                                { "it", "La data che hai scelto non è valida!" }
-                            });
-                            if (sender != null)
-                                await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
-                                    ChatType.Private, e.Message.From?.LanguageCode,
-                                    ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                                    e.Message.From?.Username);
-                            return false;
-                        }
+                            { "en", "The date you choose is invalid!" },
+                            { "it", "La data che hai scelto non è valida!" }
+                        });
+                        if (sender != null)
+                            await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
+                                ChatType.Private, e.Message.From?.LanguageCode,
+                                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                                e.Message.From?.Username);
+                        return false;
                     }
                 }
 
                 var idChatsSentInto = Channels.Assoc.GetChannels();
                 //const long idChatSentInto = -432645805;
                 const ChatType chatTypeSendInto = ChatType.Group;
-
-                foreach (var idChat in idChatsSentInto)
+                if (!dry)
                 {
-                    if (sentDate == null) return false;
-                    var successQueue = SendMessage.PlaceMessageInQueue(replyTo, sentDate.Item1,
-                        e.Message.From?.Id,
-                        messageFromIdEntity, idChat, sender, chatTypeSendInto);
-
-                    switch (successQueue)
+                    foreach (var idChat in idChatsSentInto)
                     {
-                        case SuccessQueue.INVALID_ID_TO_DB:
-                            break;
+                        if (sentDate == null) return false;
+                        var successQueue = SendMessage.PlaceMessageInQueue(replyTo, new DateTimeSchedule(sentDate, true),
+                            e.Message.From?.Id,
+                            messageFromIdEntity, idChat, sender, chatTypeSendInto);
 
-                        case SuccessQueue.INVALID_OBJECT:
+                        switch (successQueue)
                         {
-                            await Assoc_ObjectToSendNotValid(sender, e);
-                            return false;
+                            case SuccessQueue.INVALID_ID_TO_DB:
+                                break;
+
+                            case SuccessQueue.INVALID_OBJECT:
+                            {
+                                await Assoc_ObjectToSendNotValid(sender, e);
+                                return false;
+                            }
+
+                            case SuccessQueue.SUCCESS:
+                                break;
+
+                            case SuccessQueue.DATE_INVALID:
+                                break;
+
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
 
-                        case SuccessQueue.SUCCESS:
-                            break;
+                        if (successQueue == SuccessQueue.SUCCESS)
+                            continue;
 
-                        case SuccessQueue.DATE_INVALID:
-                            break;
+                        await NotifyUtil.NotifyOwnerWithLog2(
+                            new Exception("Success queue is " + successQueue + " while trying to send a message!"),
+                            sender, e);
 
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        return false;
                     }
-
-                    if (successQueue == SuccessQueue.SUCCESS)
-                        continue;
-
-                    await NotifyUtil.NotifyOwnerWithLog2(
-                        new Exception("Success queue is " + successQueue + " while trying to send a message!"),
-                        sender, e);
-
-                    return false;
                 }
             }
 

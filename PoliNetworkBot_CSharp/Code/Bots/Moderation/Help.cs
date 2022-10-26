@@ -16,23 +16,16 @@ public class Help
         if (command == null)
             return;
 
-        var text = "<i>Descrizione del comando\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +
-                   "</b>:\n";
-
-        var textEng = "<i>Command Description\n</i> <b>/" + string.Join(" | /", command.GetTriggers().ToArray()) +
-                      " </b>:\n";
-
-
         var text2 = new Language(new Dictionary<string, string?>
         {
             {
                 "en",
-                textEng + "\n<b>Commands available:</b>\n" +
+                "\n<b>Command description:</b>\n" +
                 command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
             },
             {
                 "it",
-                text + "\n<b>Comandi disponibili:</b>\n" +
+                "\n<b>Descrizione del comando:</b>\n" +
                 command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
             }
         });
