@@ -136,7 +136,7 @@ public class ExceptionNumbered : Exception
         return new TelegramFileContent(serializeObject2, message3);
     }
 
-    public static JObject GetStackTrace(string? stackTracePar)
+    private static JObject GetStackTrace(string? stackTracePar)
     {
         var result = new JObject
         {
