@@ -28,6 +28,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
+    /*
+     * TODO verify restrict actions are still working
+     *  (they probably aren't, we changed the target from IReadOnlyList<string?>? target
+     *      to string[] containing all the targets to ban)
+    */
+    
     /// <summary>
     ///     List of commands actively listened to from the bot.
     ///     triggers are case insensitive!
@@ -39,9 +45,7 @@ internal static class CommandDispatcher
     ///     order to provide feedback to the user (and try to keep them standard)
     ///     optionalConditions are checked by the caller
     /// </summary>
-    /// TODO verify restrict actions are still working (they probably aren't, we changed the target from IReadOnlyList
-    /// \<string?>? target to string[] containing all the targets to ban)
-    public static readonly List<Command> Commands = new()
+     public static readonly List<Command> Commands = new()
     {
         new Command("start", HelpPrivate, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Initialize bot", "it", "Inizializza il bot"), null, null),
