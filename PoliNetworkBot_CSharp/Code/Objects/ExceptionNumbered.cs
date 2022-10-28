@@ -54,7 +54,7 @@ public class ExceptionNumbered : Exception
     }
 
     public TelegramFileContent GetMessageAsText(
-        string? extrainfo,
+        string? extraInfo,
         MessageEventArgs? messageEventArgs,
         bool json
     )
@@ -68,7 +68,7 @@ public class ExceptionNumbered : Exception
                 ["ExceptionToString"] = ToString(),
                 ["StackTrace"] = GetStackTrace(),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
-                ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null : extrainfo
+                ["extraInfo"] = string.IsNullOrEmpty(extraInfo) ? null : extraInfo
             };
             var s2 = new StringJson(FileTypeJsonEnum.OBJECT, jObject);
             return new TelegramFileContent(s2, null);
@@ -123,8 +123,8 @@ public class ExceptionNumbered : Exception
                     message3 += "\n\n";
                 }
 
-            if (!string.IsNullOrEmpty(extrainfo))
-                message3 += "\n\n" + extrainfo;
+            if (!string.IsNullOrEmpty(extraInfo))
+                message3 += "\n\n" + extraInfo;
         }
         catch (Exception e1)
         {
