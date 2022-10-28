@@ -305,7 +305,6 @@ internal static class CommandDispatcher
                     e.Message.MessageId);
                 return false;
             }
-        }
 
         return await DefaultCommand(sender, e);
     }
