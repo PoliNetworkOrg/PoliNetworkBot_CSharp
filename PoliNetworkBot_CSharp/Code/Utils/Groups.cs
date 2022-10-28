@@ -189,12 +189,12 @@ internal static class Groups
                 }
             }
 
-            const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
+       
             if (telegramBotClient != null)
                 if (e?.Message != null)
                 {
-                    var groups = Database.ExecuteSelect(q1, telegramBotClient.DbConfig,
-                        new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } });
+                    var groups = Database.ExecuteSelect(Data.Constants.Query.SelectGroupsTelegramWhereId, telegramBotClient.DbConfig,
+                        new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
                     if (groups != null && groups.Rows.Count == 0)
                         throw new Exception("No group found with id: " + e.Message.Chat.Id +
                                             " while running CheckForGroupTitleUpdateAsync");
@@ -248,9 +248,9 @@ internal static class Groups
             return GroupCheckAndUpdate2(group.Id, group.Title, telegramGroup.Chat.Title, sender);
         }
 
-        const string? q1 = "SELECT * FROM GroupsTelegram WHERE id = @id";
-        var groups = Database.ExecuteSelect(q1, sender?.DbConfig,
-            new Dictionary<string, object?> { { "@id", group.Id } });
+
+        var groups = Database.ExecuteSelect(Data.Constants.Query.SelectGroupsTelegramWhereId, sender?.DbConfig,
+            new Dictionary<string, object?> { { "@id", group.Id } }, ToLog.NO);
         if (groups != null && groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
                                 " while running CheckForGroupTitleUpdateAsync");
