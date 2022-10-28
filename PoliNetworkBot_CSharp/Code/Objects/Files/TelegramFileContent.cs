@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -62,5 +63,21 @@ public class TelegramFileContent
     public StringJson? GetFileContentStringJson()
     {
         return _fileContent;
+    }
+
+    public static TelegramFileContent? GetStack()
+    {
+        try
+        {
+            var stack = Environment.StackTrace;
+            var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stack);
+            return new TelegramFileContent(fileContent, null);
+        }
+        catch
+        {
+            ;
+        }
+
+        return null;
     }
 }

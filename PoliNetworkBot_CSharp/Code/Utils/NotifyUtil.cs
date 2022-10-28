@@ -83,9 +83,43 @@ internal static class NotifyUtil
         if (sender == null)
             return null;
 
+        var r = new List<MessageSentResult?>();
+        
         var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
-        return await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
+        var r1 = await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
             FileTypeJsonEnum.SIMPLE_STRING);
+        if (r1 != null) 
+            r.AddRange(r1);
+        
+        var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs);
+        if (r4 != null) 
+            r.AddRange(r4);
+        
+        return r;
+    }
+
+    private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
+        long? replyToMessageId2, MessageEventArgs? messageEventArgs)
+    {
+        try
+        {
+            var telegramFileContent = TelegramFileContent.GetStack();
+            
+            if (telegramFileContent == null) 
+                return null;
+            
+            var r4 = await telegramFileContent.SendToOwners(
+                sender, langCode, replyToMessageId2, 
+                messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
+            
+            return r4;
+        }
+        catch
+        {
+            ;
+        }
+
+        return null;
     }
 
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,

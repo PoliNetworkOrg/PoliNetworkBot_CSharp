@@ -54,7 +54,7 @@ public class ExceptionNumbered : Exception
     }
 
     public TelegramFileContent GetMessageAsText(
-        string? extrainfo,
+        string? extraInfo,
         MessageEventArgs? messageEventArgs,
         bool json
     )
@@ -66,9 +66,9 @@ public class ExceptionNumbered : Exception
                 ["number"] = GetNumberOfTimes(),
                 ["message"] = Message,
                 ["ExceptionToString"] = ToString(),
-                ["StackTrace"] = GetStackTrace(),
+                ["StackTrace"] = GetStackTrace(StackTrace),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
-                ["extraInfo"] = string.IsNullOrEmpty(extrainfo) ? null : extrainfo
+                ["extraInfo"] = string.IsNullOrEmpty(extraInfo) ? null : extraInfo
             };
             var s2 = new StringJson(FileTypeJsonEnum.OBJECT, jObject);
             return new TelegramFileContent(s2, null);
@@ -123,24 +123,24 @@ public class ExceptionNumbered : Exception
                     message3 += "\n\n";
                 }
 
-            if (!string.IsNullOrEmpty(extrainfo))
-                message3 += "\n\n" + extrainfo;
+            if (!string.IsNullOrEmpty(extraInfo))
+                message3 += "\n\n" + extraInfo;
         }
         catch (Exception e1)
         {
             message3 = "Error in sending exception: this exception occurred:\n\n" + e1.Message;
         }
 
-        var serializeObject = "StackTrace:\n" + JsonConvert.SerializeObject(GetStackTrace());
+        var serializeObject = "StackTrace:\n" + JsonConvert.SerializeObject(GetStackTrace(StackTrace));
         var serializeObject2 = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, serializeObject);
         return new TelegramFileContent(serializeObject2, message3);
     }
 
-    private JObject GetStackTrace()
+    private static JObject GetStackTrace(string? stackTracePar)
     {
         var result = new JObject
         {
-            ["eStack"] = StackTrace,
+            ["eStack"] = stackTracePar,
             ["currStack"] = Environment.StackTrace
         };
         return result;
