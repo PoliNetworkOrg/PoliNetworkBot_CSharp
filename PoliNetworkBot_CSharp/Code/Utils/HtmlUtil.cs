@@ -99,9 +99,9 @@ internal static class HtmlUtil
                         return result;
                 }
 
-                var childcollection = htmlNode.ChildNodes;
-                if (childcollection == null) continue;
-                lst.AddRange(childcollection);
+                var childCollection = htmlNode.ChildNodes;
+                if (childCollection == null) continue;
+                lst.AddRange(childCollection);
             }
 
             return result;

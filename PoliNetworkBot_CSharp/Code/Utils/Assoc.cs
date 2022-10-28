@@ -99,7 +99,8 @@ internal static class Assoc
 
             var languageList2 = new Language(new Dictionary<string, string?>
                 {
-                    { "it", "Vuoi mettere in coda o scegliere una data d'invio?" }, { "en", "You want to add it to the queue or select a date to send the message?" }
+                    { "it", "Vuoi mettere in coda o scegliere una data d'invio?" },
+                    { "en", "You want to add it to the queue or select a date to send the message?" }
                 }
             );
 
@@ -118,13 +119,14 @@ internal static class Assoc
                     languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
                 DateTime? sentDate = null;
-                
+
                 if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
                 {
-                    sentDate = DateTime.Parse(await AskUser.AskAsync(e.Message.From?.Id, 
-                        new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en", "Insert a date AAAA-MM-DD HH:mm"), 
+                    sentDate = DateTime.Parse(await AskUser.AskAsync(e.Message.From?.Id,
+                        new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
+                            "Insert a date AAAA-MM-DD HH:mm"),
                         sender, e.Message.From?.LanguageCode, e.Message.From?.Username) ?? "");
-                
+
                     if (CheckIfDateTimeIsValid(sentDate) == false)
                     {
                         var lang4 = new Language(new Dictionary<string, string?>
@@ -145,11 +147,11 @@ internal static class Assoc
                 //const long idChatSentInto = -432645805;
                 const ChatType chatTypeSendInto = ChatType.Group;
                 if (!dry)
-                {
                     foreach (var idChat in idChatsSentInto)
                     {
                         if (sentDate == null) return false;
-                        var successQueue = SendMessage.PlaceMessageInQueue(replyTo, new DateTimeSchedule(sentDate, true),
+                        var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
+                            new DateTimeSchedule(sentDate, true),
                             e.Message.From?.Id,
                             messageFromIdEntity, idChat, sender, chatTypeSendInto);
 
@@ -183,7 +185,6 @@ internal static class Assoc
 
                         return false;
                     }
-                }
             }
 
             var lang3 = new Language(new Dictionary<string, string?>

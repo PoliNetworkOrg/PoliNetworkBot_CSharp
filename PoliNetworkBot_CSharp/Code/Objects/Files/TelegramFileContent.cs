@@ -75,7 +75,7 @@ public class TelegramFileContent
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
