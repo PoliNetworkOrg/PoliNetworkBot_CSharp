@@ -218,11 +218,11 @@ internal static class UserBotFixBotAdmin
         return new IsBotPresentObject(isOurBotPresent, null);
     }
 
-    private static DateTime? GetUntilWhenWeCanMakeRequests(FloodException? eflood)
+    private static DateTime? GetUntilWhenWeCanMakeRequests(FloodException? eFlood)
     {
         Thread.Sleep(1000);
 
-        if (eflood != null) return DateTime.Now + eflood.TimeToWait;
+        if (eFlood != null) return DateTime.Now + eFlood.TimeToWait;
         return null;
     }
 

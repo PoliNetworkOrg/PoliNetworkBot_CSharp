@@ -116,7 +116,7 @@ internal static class NotifyUtil
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;

@@ -14,7 +14,7 @@ public class CommandsUtils
     /// <param name="helpMessage"></param>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public static Language ParseText(Language helpMessage, string tag)
+    private static Language ParseText(Language helpMessage, string tag)
     {
         var toReturn = new Dictionary<string, string?>();
         foreach (var language in helpMessage.GetLanguages())
@@ -77,7 +77,14 @@ public class CommandConditionException : Exception
     public new readonly Language Message;
     public CommandConditionException(List<string> trigger) : base()
     {
-        Message = new L("it", "Formattazione del messaggio errata. \nPer informazioni aggiuntive scrivi<b>\n/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>" , 
-            "en", "The message is wrongly formatted. \nFor additional info type <b>\n/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>");
+        Message = new L(
+            "it", 
+            "Formattazione del messaggio errata. \n" +
+            "Per informazioni aggiuntive scrivi<b>\n" +
+            "/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>" , 
+            "en", 
+            "The message is wrongly formatted. \n" +
+            "For additional info type <b>\n" +
+            "/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>");
     }
 }

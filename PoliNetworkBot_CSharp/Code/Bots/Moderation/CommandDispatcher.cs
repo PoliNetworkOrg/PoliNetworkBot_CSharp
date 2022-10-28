@@ -290,9 +290,11 @@ internal static class CommandDispatcher
             }
         }
 
+        if (sender == null) 
+            return await DefaultCommand(sender, e);
+        
         foreach (var command in Commands)
         {
-            if (sender == null) continue;
             try
             {
                 if (command.TryTrigger(e, sender, cmd, args))
@@ -307,7 +309,6 @@ internal static class CommandDispatcher
                     e.Message.MessageId);
                 return false;
             }
-            
         }
 
         return await DefaultCommand(sender, e);
