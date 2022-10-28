@@ -290,17 +290,13 @@ internal static class CommandDispatcher
             }
         }
 
-        if (sender == null) 
+        if (sender == null)
             return await DefaultCommand(sender, e);
-        
+
         foreach (var command in Commands)
-        {
             try
             {
-                if (command.TryTrigger(e, sender, cmd, args))
-                {
-                    return true;
-                }
+                if (command.TryTrigger(e, sender, cmd, args)) return true;
             }
             catch (CommandConditionException exception)
             {
