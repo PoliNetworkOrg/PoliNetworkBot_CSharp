@@ -158,7 +158,7 @@ internal static class Program
 
         if (!Directory.Exists("../config"))
             Directory.CreateDirectory("../config");
-        
+
         if (!Directory.Exists("../data"))
             Directory.CreateDirectory("../data");
 

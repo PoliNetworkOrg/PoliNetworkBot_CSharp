@@ -149,8 +149,8 @@ public class Command
 
     public Language GetLongDescription(Permission clearance)
     {
-        return string.IsNullOrEmpty(_longDescription.Select("")) 
-            ? HelpMessage(clearance) 
+        return string.IsNullOrEmpty(_longDescription.Select(""))
+            ? HelpMessage(clearance)
             : CommandsUtils.GenerateMessage(_helpMessage, clearance, _permissionLevel, _trigger);
     }
 

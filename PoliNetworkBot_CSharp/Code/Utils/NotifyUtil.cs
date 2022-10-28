@@ -84,17 +84,17 @@ internal static class NotifyUtil
             return null;
 
         var r = new List<MessageSentResult?>();
-        
+
         var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
         var r1 = await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
             FileTypeJsonEnum.SIMPLE_STRING);
-        if (r1 != null) 
+        if (r1 != null)
             r.AddRange(r1);
-        
+
         var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs);
-        if (r4 != null) 
+        if (r4 != null)
             r.AddRange(r4);
-        
+
         return r;
     }
 
@@ -104,14 +104,14 @@ internal static class NotifyUtil
         try
         {
             var telegramFileContent = TelegramFileContent.GetStack();
-            
-            if (telegramFileContent == null) 
+
+            if (telegramFileContent == null)
                 return null;
-            
+
             var r4 = await telegramFileContent.SendToOwners(
-                sender, langCode, replyToMessageId2, 
+                sender, langCode, replyToMessageId2,
                 messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
-            
+
             return r4;
         }
         catch

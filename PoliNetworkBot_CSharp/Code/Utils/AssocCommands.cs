@@ -10,7 +10,7 @@ public static class AssocCommands
         _ = await Assoc.Assoc_SendAsync(sender, e);
         return false;
     }
-    
+
     public static async Task<bool> AssocWriteDry(MessageEventArgs e, TelegramBotAbstract? sender)
     {
         _ = await Assoc.Assoc_SendAsync(sender, e, true);
