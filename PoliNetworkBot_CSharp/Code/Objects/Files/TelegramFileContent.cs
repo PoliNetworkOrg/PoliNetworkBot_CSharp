@@ -63,4 +63,9 @@ public class TelegramFileContent
     {
         return _fileContent;
     }
+
+    public static TelegramFileContent GetStack()
+    {
+        throw new System.NotImplementedException();
+    }
 }
