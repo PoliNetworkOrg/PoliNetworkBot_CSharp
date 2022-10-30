@@ -91,7 +91,7 @@ internal static class NotifyUtil
         if (r1 != null)
             r.AddRange(r1);
 
-        var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs);
+        var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs, extraInfo);
         if (r4 != null)
             r.AddRange(r4);
 
@@ -99,11 +99,11 @@ internal static class NotifyUtil
     }
 
     private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
-        long? replyToMessageId2, MessageEventArgs? messageEventArgs)
+        long? replyToMessageId2, MessageEventArgs? messageEventArgs, ExtraInfo? extraInfo)
     {
         try
         {
-            var telegramFileContent = TelegramFileContent.GetStack();
+            var telegramFileContent = TelegramFileContent.GetStack(extraInfo);
 
             if (telegramFileContent == null)
                 return null;
