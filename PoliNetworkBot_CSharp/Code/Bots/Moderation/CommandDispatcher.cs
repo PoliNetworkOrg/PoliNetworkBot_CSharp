@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -744,7 +745,8 @@ internal static class CommandDispatcher
             {
                 GenericInfo = s
             };
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, e, extraInfo);
+            EventArgsContainer eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
         }
@@ -914,7 +916,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, e);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
         }
 
         if (n == null)

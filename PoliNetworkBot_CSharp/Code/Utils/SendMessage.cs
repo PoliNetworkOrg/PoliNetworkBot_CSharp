@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
@@ -65,7 +66,7 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
         long? userIdToSendTo, string? langCode, string? usernameToSendTo,
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer)
     {
         var stackTrace = Environment.StackTrace;
         
@@ -80,7 +81,7 @@ internal static class SendMessage
         }
         catch (Exception e)
         {
-            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace);
+            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace, eventArgsContainer);
             return new MessageSentResult(false, null, ChatType.Private);
         }
 
@@ -114,7 +115,7 @@ internal static class SendMessage
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e1, telegramBotClient, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
         }
 
         return r1;

@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -122,7 +123,7 @@ internal static class Groups
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " +
                                                oldTitle +
                                                "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, messageEventArgs);
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
                     }
                 }
             }
@@ -131,7 +132,7 @@ internal static class Groups
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
         }
 
         return r;
@@ -156,7 +157,7 @@ internal static class Groups
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
         }
     }
 
@@ -224,7 +225,7 @@ internal static class Groups
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
         }
     }
 
@@ -433,7 +434,7 @@ internal static class Groups
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
                         e.Message.From.Id,
                         e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline),
+                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline, TODO),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
                         .SendMessageInAGroup(
                             sender,
@@ -448,7 +449,7 @@ internal static class Groups
         }
         catch (Exception? exception)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(exception, sender, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(exception, sender, EventArgsContainer.Get(e));
             return null;
         }
     }

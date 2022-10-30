@@ -6,6 +6,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -30,7 +31,7 @@ public static class RebootUtil
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwnersWithLog(e, sender);
+                await NotifyUtil.NotifyOwnersWithLog(e, sender, null, EventArgsContainer.Get(messageEventArgs));
             }
     }
 

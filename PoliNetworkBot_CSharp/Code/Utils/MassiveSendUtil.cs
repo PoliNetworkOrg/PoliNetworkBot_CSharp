@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -50,7 +51,7 @@ public static class MassiveSendUtil
         }
         catch (Exception ex)
         {
-            await NotifyUtil.NotifyOwnersWithLog(ex, sender);
+            await NotifyUtil.NotifyOwnersWithLog(ex, sender, null, EventArgsContainer.Get(e));
         }
 
         return false;

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -94,7 +95,7 @@ public class TelegramBotAbstract
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(ex, this, e);
+            await NotifyUtil.NotifyOwnerWithLog2(ex, this, EventArgsContainer.Get(e));
         }
     }
 

@@ -9,6 +9,7 @@ using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -181,7 +182,7 @@ internal static class Assoc
 
                         await NotifyUtil.NotifyOwnerWithLog2(
                             new Exception("Success queue is " + successQueue + " while trying to send a message!"),
-                            sender, e);
+                            sender, EventArgsContainer.Get(e));
 
                         return false;
                     }
@@ -203,7 +204,7 @@ internal static class Assoc
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
+            await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
             return false;
         }
     }
@@ -247,7 +248,7 @@ internal static class Assoc
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e1, sender, e);
+            await NotifyUtil.NotifyOwnerWithLog2(e1, sender, EventArgsContainer.Get(e));
             return false;
         }
     }
@@ -830,14 +831,15 @@ internal static class Assoc
                 }
                 catch (Exception? exc)
                 {
-                    await NotifyUtil.NotifyOwnersWithLog(exc, assocVetoData.Bot);
+                    var ev = EventArgsContainer.Get(callbackGenericData);
+                    await NotifyUtil.NotifyOwnersWithLog(exc, assocVetoData.Bot, null, ev);
                     await NotifyUtil.NotifyOwnersWithLog(new Exception("COUNCIL VETO ERROR ABOVE, DO NOT IGNORE!"),
-                        assocVetoData.Bot);
+                        assocVetoData.Bot, null, ev);
                 }
             }
             catch (Exception? e)
             {
-                await NotifyUtil.NotifyOwnersWithLog(e, callbackGenericData.Bot);
+                await NotifyUtil.NotifyOwnersWithLog(e, callbackGenericData.Bot, null, EventArgsContainer.Get(callbackGenericData));
             }
         }
         catch (Exception)

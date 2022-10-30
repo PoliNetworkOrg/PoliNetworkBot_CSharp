@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot;
@@ -104,7 +105,7 @@ internal static class Main
         {
             Logger.WriteLine(exception.Message);
 
-            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, e);
+            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, EventArgsContainer.Get(e));
         }
 
         return false;
@@ -126,7 +127,7 @@ internal static class Main
         }
         catch (Exception? e)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(e, sender, messageEventArgs);
+            _ = NotifyUtil.NotifyOwnerWithLog2(e, sender, EventArgsContainer.Get(messageEventArgs));
             return false;
         }
     }

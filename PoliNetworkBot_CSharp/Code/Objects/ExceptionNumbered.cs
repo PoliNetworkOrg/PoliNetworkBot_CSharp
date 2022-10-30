@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Utils;
 
@@ -44,18 +45,18 @@ public class ExceptionNumbered : Exception
     }
 
     internal static async Task<bool> SendExceptionAsync(Exception? e, TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs)
+        EventArgsContainer? eventArgsContainer)
     {
         if (telegramBotAbstract == null)
             return false;
 
-        await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, messageEventArgs);
+        await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, eventArgsContainer);
         return true;
     }
 
     public TelegramFileContent GetMessageAsText(
         ExtraInfo? extraInfo,
-        MessageEventArgs? messageEventArgs,
+        EventArgsContainer? messageEventArgs,
         bool json
     )
     {

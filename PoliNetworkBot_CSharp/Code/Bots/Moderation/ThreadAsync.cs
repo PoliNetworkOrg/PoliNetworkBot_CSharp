@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -213,7 +214,7 @@ public static class ThreadAsync
         {
             try
             {
-                await NotifyUtil.NotifyOwnerWithLog2(e, bot, messageEventArgs);
+                await NotifyUtil.NotifyOwnerWithLog2(e, bot, EventArgsContainer.Get(messageEventArgs));
             }
             catch (Exception e2)
             {

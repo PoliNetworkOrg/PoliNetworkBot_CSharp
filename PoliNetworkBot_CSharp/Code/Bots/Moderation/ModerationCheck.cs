@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types;
@@ -214,7 +215,7 @@ internal static class ModerationCheck
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
         }
 
         return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(item1, item2, item3, oldValid);
@@ -282,7 +283,7 @@ internal static class ModerationCheck
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
         }
     }
 
@@ -564,7 +565,7 @@ internal static class ModerationCheck
                     {
                         var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
                         var e3 = new Exception(e4);
-                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient, messageEventArgs);
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
                         break;
                     }
                 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
@@ -40,7 +41,7 @@ public static class FilePaths
     }
 
     public static async Task<bool> TryAdd(string? fileUniqueAndGit, TelegramBotAbstract? telegramBotAbstract,
-        string? file)
+        string? file, EventArgsContainer eventArgsContainer)
     {
         try
         {
@@ -58,7 +59,7 @@ public static class FilePaths
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotAbstract);
+            await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotAbstract, null , eventArgsContainer);
             return false;
         }
     }

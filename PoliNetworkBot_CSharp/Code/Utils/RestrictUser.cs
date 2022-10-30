@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -618,7 +619,7 @@ internal static class RestrictUser
             if (targetEmpty)
             {
                 var e2 = new Exception("Can't find userid (1)");
-                await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, e);
+                await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
                 return new SuccessWithException(false, e2);
             }
 
@@ -628,7 +629,7 @@ internal static class RestrictUser
                     false);
 
             var e3 = new Exception("Can't find userid (2)");
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, e);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
             return new SuccessWithException(false, e3);
         }
 

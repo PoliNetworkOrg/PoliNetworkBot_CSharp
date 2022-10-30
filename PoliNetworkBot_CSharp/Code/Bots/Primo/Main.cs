@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -47,7 +48,7 @@ public static class Main
         }
         catch (Exception? exception)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, e);
+            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, EventArgsContainer.Get(e));
         }
 
         return null;

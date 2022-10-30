@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
@@ -76,7 +77,7 @@ internal static class NotifyUtil
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
-        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, ExtraInfo? extraInfo = null,
+        TelegramBotAbstract? sender, EventArgsContainer? messageEventArgs, ExtraInfo? extraInfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
@@ -132,7 +133,7 @@ internal static class NotifyUtil
 
     private static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
-        long? replyToMessageId, string? langCode, MessageEventArgs? messageEventArgs, StringJson? fileContent,
+        long? replyToMessageId, string? langCode, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
@@ -166,7 +167,7 @@ internal static class NotifyUtil
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnerWithLog2(Exception? e,
         TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs)
+        EventArgsContainer? messageEventArgs)
     {
         var x = await NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
@@ -175,7 +176,7 @@ internal static class NotifyUtil
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
-        string? langCode, long? replyTo, MessageEventArgs? messageEventArgs, StringJson? fileContent,
+        string? langCode, long? replyTo, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
         return await NotifyOwners_AnError_AndLog(text, sender, replyTo, langCode, messageEventArgs, fileContent,
@@ -306,7 +307,7 @@ internal static class NotifyUtil
     }
 
     public static async Task<List<MessageSentResult?>?> SendString(StringJson? toSendString,
-        MessageEventArgs? messageEventArgs,
+        EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
     {
@@ -325,7 +326,7 @@ internal static class NotifyUtil
         return stream;
     }
 
-    private static async Task<List<MessageSentResult?>?> SendFiles(MessageEventArgs? messageEventArgs,
+    private static async Task<List<MessageSentResult?>?> SendFiles(EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -444,14 +445,14 @@ internal static class NotifyUtil
     }
 
     public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
-        string? stackTrace = null)
+        string? stackTrace, EventArgsContainer eventArgsContainer)
     {
         var extraInfo = new ExtraInfo
         {
             StackTrace = stackTrace
         };
         await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
-            null, extraInfo: extraInfo);
+            eventArgsContainer, extraInfo: extraInfo);
         Logger.Logger.WriteLine(exception);
     }
 
