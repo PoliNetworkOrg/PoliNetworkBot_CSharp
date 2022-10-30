@@ -103,7 +103,7 @@ internal static class NotifyUtil
     {
         try
         {
-            var telegramFileContent = TelegramFileContent.GetStack(extraInfo);
+            var telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs);
 
             if (telegramFileContent == null)
                 return null;
