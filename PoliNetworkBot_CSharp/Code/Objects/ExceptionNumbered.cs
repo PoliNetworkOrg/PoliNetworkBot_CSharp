@@ -39,7 +39,7 @@ public class ExceptionNumbered : Exception
         return Message == item2?.Message;
     }
 
-    private int GetNumberOfTimes()
+    public int GetNumberOfTimes()
     {
         return _v;
     }

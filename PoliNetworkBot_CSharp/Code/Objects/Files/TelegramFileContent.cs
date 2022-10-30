@@ -73,7 +73,7 @@ public class TelegramFileContent
         return _fileContent;
     }
 
-    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, EventArgsContainer? eventArgsContainer)
+    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, EventArgsContainer? eventArgsContainer, ExceptionNumbered exception)
     {
         try
         {
@@ -83,7 +83,8 @@ public class TelegramFileContent
             {
                 ["currStack"] = strings,
                 ["extraInfo"] = extraInfo?.GetJToken(),
-                ["EventArgsContainer"] = GetEventArgsContainerAsJToken(eventArgsContainer)
+                ["EventArgsContainer"] = GetEventArgsContainerAsJToken(eventArgsContainer),
+                ["exception"] = GetExceptionAsJToken(exception)
             };
             var stringToSend = JsonConvert.SerializeObject(stackJ);
             var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stringToSend);
@@ -95,6 +96,22 @@ public class TelegramFileContent
         }
 
         return null;
+    }
+
+    private static JToken? GetExceptionAsJToken(ExceptionNumbered? exception)
+    {
+        if (exception == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["toString"] = exception.ToString(),
+            ["Message"] = exception.Message,
+            ["StackTrace"] = exception.StackTrace,
+            ["NumberOfTimes"] = exception.GetNumberOfTimes()
+        };
+
+        return result;
     }
 
     private static JToken? GetEventArgsContainerAsJToken(EventArgsContainer? eventArgsContainer)
@@ -219,8 +236,11 @@ public class TelegramFileContent
         return result;
     }
 
-    private static JArray GetLines(string stack)
+    public static JArray? GetLines(string? stack)
     {
+        if (string.IsNullOrEmpty(stack))
+            return null;
+        
         var s = stack.Replace("\\n", "\n");
         var s2 = s.Split('\n');
         return new JArray() { s2 };

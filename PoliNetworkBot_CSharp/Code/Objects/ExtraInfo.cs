@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Objects.Files;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
@@ -15,7 +16,7 @@ public class ExtraInfo
     {
         var result = new JObject
         {
-            ["StackTrace"] = StackTrace,
+            ["StackTrace"] = TelegramFileContent.GetLines(StackTrace),
             ["GenericInfo"] = GenericInfo
         };
         return result;
