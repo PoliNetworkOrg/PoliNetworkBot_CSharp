@@ -155,13 +155,13 @@ public class TelegramFileContent
             ["id"] = callbackGenericData.Id,
             ["InsertedTime"] = callbackGenericData.InsertedTime,
             ["SelectedAnswer"] = callbackGenericData.SelectedAnswer,
-            ["Options"] = GetOptionsAsJToken(callbackGenericData.Options),
+            ["Options"] = GetOptionsAsJToken(callbackGenericData.Options)
         };
 
         return result;
     }
 
-    private static JToken? GetOptionsAsJToken(List<CallbackOption>? options)
+    private static JToken? GetOptionsAsJToken(IReadOnlyCollection<CallbackOption>? options)
     {
         if (options == null)
             return null;

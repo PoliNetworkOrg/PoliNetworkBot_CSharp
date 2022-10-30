@@ -746,7 +746,7 @@ internal static class CommandDispatcher
             {
                 GenericInfo = s
             };
-            EventArgsContainer eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
+            var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
             await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;

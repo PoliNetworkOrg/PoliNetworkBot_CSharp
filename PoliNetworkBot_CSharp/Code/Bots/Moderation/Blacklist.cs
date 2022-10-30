@@ -37,7 +37,7 @@ internal static class Blacklist
         List<string> splitBy = new() { " ", "\"", "'" };
         words = splitBy.Aggregate(words, SplitTextBy);
 
-        EventArgsContainer eventArgsContainer = new EventArgsContainer() { MessageEventArgs = messageEventArgs };
+        var eventArgsContainer = new EventArgsContainer() { MessageEventArgs = messageEventArgs };
         if (words is not { Count: > 0 })
             return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                    SpamType.NOT_ALLOWED_WORDS
