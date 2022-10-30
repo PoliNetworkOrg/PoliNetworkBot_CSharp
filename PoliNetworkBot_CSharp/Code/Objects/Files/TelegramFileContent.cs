@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -65,12 +67,17 @@ public class TelegramFileContent
         return _fileContent;
     }
 
-    public static TelegramFileContent? GetStack()
+    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo)
     {
         try
         {
-            var stack = Environment.StackTrace;
-            var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stack);
+            var stackJ = new JObject
+            {
+                ["currStack"] = Environment.StackTrace,
+                ["paramStack"] = extraInfo?.StackTrace
+            };
+            var stringToSend = JsonConvert.SerializeObject(stackJ);
+            var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stringToSend);
             return new TelegramFileContent(fileContent, null);
         }
         catch

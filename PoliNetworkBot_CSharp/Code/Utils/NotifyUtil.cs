@@ -76,7 +76,7 @@ internal static class NotifyUtil
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
-        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extraInfo = null,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, ExtraInfo? extraInfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
@@ -91,7 +91,7 @@ internal static class NotifyUtil
         if (r1 != null)
             r.AddRange(r1);
 
-        var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs);
+        var r4 = await SendStack(sender, langCode, replyToMessageId2, messageEventArgs, extraInfo);
         if (r4 != null)
             r.AddRange(r4);
 
@@ -99,11 +99,11 @@ internal static class NotifyUtil
     }
 
     private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
-        long? replyToMessageId2, MessageEventArgs? messageEventArgs)
+        long? replyToMessageId2, MessageEventArgs? messageEventArgs, ExtraInfo? extraInfo)
     {
         try
         {
-            var telegramFileContent = TelegramFileContent.GetStack();
+            var telegramFileContent = TelegramFileContent.GetStack(extraInfo);
 
             if (telegramFileContent == null)
                 return null;
@@ -443,9 +443,15 @@ internal static class NotifyUtil
         return false;
     }
 
-    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
+    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
+        string? stackTrace = null)
     {
-        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract, null);
+        var extraInfo = new ExtraInfo
+        {
+            StackTrace = stackTrace
+        };
+        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
+            null, extraInfo: extraInfo);
         Logger.Logger.WriteLine(exception);
     }
 

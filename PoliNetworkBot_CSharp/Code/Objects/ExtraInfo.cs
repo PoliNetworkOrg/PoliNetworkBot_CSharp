@@ -5,8 +5,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
-public class Couple<T, TS>
+public class ExtraInfo
 {
-    public T? Item1;
-    public TS? Item2;
+    public string? StackTrace;
+    public string? GenericInfo;
 }
