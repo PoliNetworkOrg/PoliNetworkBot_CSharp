@@ -74,7 +74,7 @@ public class TelegramFileContent
         try
         {
             var stack = Environment.StackTrace;
-            JArray strings = GetLines(stack);
+            var strings = GetLines(stack);
             var stackJ = new JObject
             {
                 ["currStack"] = strings,
