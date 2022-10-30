@@ -67,6 +67,8 @@ internal static class SendMessage
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
         InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
+        var stackTrace = Environment.StackTrace;
+        
         try
         {
             if (telegramBotClient != null)
@@ -78,7 +80,7 @@ internal static class SendMessage
         }
         catch (Exception e)
         {
-            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient);
+            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace);
             return new MessageSentResult(false, null, ChatType.Private);
         }
 

@@ -76,7 +76,7 @@ internal static class NotifyUtil
     }
 
     internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
-        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, string? extraInfo = null,
+        TelegramBotAbstract? sender, MessageEventArgs? messageEventArgs, ExtraInfo? extraInfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
     {
@@ -443,9 +443,15 @@ internal static class NotifyUtil
         return false;
     }
 
-    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract)
+    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
+        string? stackTrace = null)
     {
-        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract, null);
+        var extraInfo = new ExtraInfo
+        {
+            StackTrace = stackTrace
+        };
+        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
+            null, extraInfo: extraInfo);
         Logger.Logger.WriteLine(exception);
     }
 

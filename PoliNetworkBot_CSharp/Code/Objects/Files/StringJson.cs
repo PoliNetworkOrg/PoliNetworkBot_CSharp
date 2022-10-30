@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 
@@ -7,6 +8,8 @@ using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Files;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class StringJson
 {
     private readonly string? _simpleString;
