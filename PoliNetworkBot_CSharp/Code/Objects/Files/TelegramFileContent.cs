@@ -73,9 +73,11 @@ public class TelegramFileContent
     {
         try
         {
+            var stack = Environment.StackTrace;
+            JArray strings = GetLines(stack);
             var stackJ = new JObject
             {
-                ["currStack"] = Environment.StackTrace,
+                ["currStack"] = strings,
                 ["extraInfo"] = extraInfo?.GetJToken(),
                 ["messageEventArgs"] = GetMessageEventArgsAsJToken(messageEventArgs)
             };
@@ -89,6 +91,13 @@ public class TelegramFileContent
         }
 
         return null;
+    }
+
+    private static JArray GetLines(string stack)
+    {
+        var s = stack.Replace("\\n", "\n");
+        var s2 = s.Split('\n');
+        return new JArray() { s2 };
     }
 
     private static JToken? GetMessageEventArgsAsJToken(MessageEventArgs? messageEventArgs)
