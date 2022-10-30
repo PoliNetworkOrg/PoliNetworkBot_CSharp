@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using JsonPolimi_Core_nf.Tipi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -67,14 +69,15 @@ public class TelegramFileContent
         return _fileContent;
     }
 
-    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo)
+    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, MessageEventArgs? messageEventArgs)
     {
         try
         {
             var stackJ = new JObject
             {
                 ["currStack"] = Environment.StackTrace,
-                ["paramStack"] = extraInfo?.StackTrace
+                ["extraInfo"] = extraInfo?.GetJToken(),
+                ["messageEventArgs"] = GetMessageEventArgsAsJToken(messageEventArgs)
             };
             var stringToSend = JsonConvert.SerializeObject(stackJ);
             var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stringToSend);
@@ -86,5 +89,68 @@ public class TelegramFileContent
         }
 
         return null;
+    }
+
+    private static JToken? GetMessageEventArgsAsJToken(MessageEventArgs? messageEventArgs)
+    {
+        if (messageEventArgs == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["message"] = GetMessageAsJToken(messageEventArgs.Message)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetMessageAsJToken(Message? message)
+    {
+        if (message == null)
+            return null;
+        
+        var result = new JObject
+        {
+            ["text"] = message.Text,
+            ["from"] = GetUserAsJToken(message.From),
+            ["replyTo"] = GetMessageAsJToken(message.ReplyToMessage),
+            ["chat"] = GetChatAsJToken(message.Chat)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetChatAsJToken(Chat? messageChat)
+    {
+        if (messageChat == null)
+            return null;
+        
+        var result = new JObject
+        {
+            ["title"] = messageChat.Title,
+            ["bio"] = messageChat.Bio,
+            ["description"] = messageChat.Description,
+            ["id"] = messageChat.Id,
+            ["inviteLink"] = messageChat.InviteLink,
+            ["username"] = messageChat.Username,
+            ["type"] = messageChat.Type.ToString()
+        };
+        return result;
+    }
+
+    private static JToken? GetUserAsJToken(User? messageFrom)
+    {
+        if (messageFrom == null)
+            return null;
+        
+        var result = new JObject
+        {
+            ["id"] = messageFrom.Id,
+            ["username"] = messageFrom.Username,
+            ["langCode"] = messageFrom.LanguageCode,
+            ["firstName"] = messageFrom.FirstName,
+            ["lastName"] = messageFrom.LastName
+        };
+        return result;
     }
 }
