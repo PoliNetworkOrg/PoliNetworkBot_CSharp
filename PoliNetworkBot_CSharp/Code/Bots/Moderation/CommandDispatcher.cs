@@ -17,10 +17,12 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -744,7 +746,8 @@ internal static class CommandDispatcher
             {
                 GenericInfo = s
             };
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, e, extraInfo);
+            var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
         }
@@ -760,7 +763,7 @@ internal static class CommandDispatcher
         var text = new Language(dict);
         return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
             e.Message.From.LanguageCode, e.Message.From.Username,
-            text, ParseMode.Html, e.Message.MessageId);
+            text, ParseMode.Html, e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task<MessageSentResult?> Rules(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -779,7 +782,7 @@ internal static class CommandDispatcher
 
         return await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task SendRecommendedGroupsAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -807,7 +810,7 @@ internal static class CommandDispatcher
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
@@ -851,7 +854,7 @@ internal static class CommandDispatcher
             e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, text2,
             ParseMode.Html,
-            null);
+            null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return true;
     }
@@ -914,7 +917,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, e);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
         }
 
         if (n == null)
@@ -930,7 +933,7 @@ internal static class CommandDispatcher
                 e.Message.From?.LanguageCode,
                 e.Message.From?.Username, text2,
                 ParseMode.Html,
-                e.Message.MessageId);
+                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task Start(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string[]? args)
@@ -959,7 +962,7 @@ internal static class CommandDispatcher
 
     public static async Task<bool> BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        return await NotifyUtil.NotifyOwnersBanAction(telegramBotClient, e, e?.Message.LeftChatMember?.Id,
+        return await NotifyUtil.NotifyOwnersBanAction(telegramBotClient, EventArgsContainer.Get(e), e?.Message.LeftChatMember?.Id,
             e?.Message.LeftChatMember?.Username);
     }
 }

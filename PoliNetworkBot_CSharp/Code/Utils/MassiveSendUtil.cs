@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -50,7 +51,7 @@ public static class MassiveSendUtil
         }
         catch (Exception ex)
         {
-            await NotifyUtil.NotifyOwnersWithLog(ex, sender);
+            await NotifyUtil.NotifyOwnersWithLog(ex, sender, null, EventArgsContainer.Get(e));
         }
 
         return false;
@@ -62,7 +63,7 @@ public static class MassiveSendUtil
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
             "WARNING! \n A new massive send has ben authorized by " +
             UserbotPeer.GetHtmlStringWithUserLink(e?.Message.From) + " and will be sent in 1000 seconds. \n" +
-            $"The message is:\n\n{textToSend}", sender, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
+            $"The message is:\n\n{textToSend}", sender, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
 
         Thread.Sleep(1000 * 1000);
 
@@ -133,14 +134,14 @@ public static class MassiveSendUtil
 
             try
             {
-                return await SendMessage.SendMessageInAGroup(sender, "en", text, e, groupId,
+                return await SendMessage.SendMessageInAGroup(sender, "en", text, EventArgsContainer.Get(e), groupId,
                     ChatType.Supergroup, ParseMode.Html, null, default);
             }
             catch
             {
                 try
                 {
-                    return await SendMessage.SendMessageInAGroup(sender, "en", text, e,
+                    return await SendMessage.SendMessageInAGroup(sender, "en", text, EventArgsContainer.Get(e),
                         groupId,
                         ChatType.Group, ParseMode.Html, null, default);
                 }

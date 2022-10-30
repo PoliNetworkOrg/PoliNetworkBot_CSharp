@@ -10,8 +10,10 @@ using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -95,7 +97,7 @@ internal static class RestrictUser
                     e.Message.From.Username,
                     text2,
                     ParseMode.Html,
-                    e.Message.MessageId);
+                    e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
             return null;
         }
 
@@ -124,7 +126,7 @@ internal static class RestrictUser
                 e.Message.From.Username,
                 text3,
                 ParseMode.Html,
-                e.Message.MessageId);
+                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
         return null;
     }
 
@@ -139,7 +141,7 @@ internal static class RestrictUser
         LogBanAction(targetId.GetUserId(), banTarget, sender, e?.Message.From?.Id, sender);
 
         await SendFileNotify(targetId, banTarget, banUnbanAllResultComplete.Exceptions,
-            banUnbanAllResultComplete.NExceptions, sender, e);
+            banUnbanAllResultComplete.NExceptions, sender, EventArgsContainer.Get(e));
 
         return banUnbanAllResultComplete;
     }
@@ -281,7 +283,7 @@ internal static class RestrictUser
 
     private static async Task SendFileNotify(TargetUserObject? targetId, RestrictAction banTarget,
         List<ExceptionNumbered> exceptions, int nExceptions, TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs)
+        EventArgsContainer? messageEventArgs)
     {
         var targetId2 = targetId?.GetUserId();
         var filename = GetFileName(banTarget, targetId2);
@@ -289,7 +291,7 @@ internal static class RestrictUser
         var unbanAllOfUnknown = GetBanUnbanText(targetId);
         await NotifyUtil.NotifyOwnersAsync5(r6, telegramBotAbstract, messageEventArgs,
             unbanAllOfUnknown,
-            messageEventArgs?.Message.From?.LanguageCode, filename);
+            messageEventArgs?.MessageEventArgs?.Message.From?.LanguageCode, filename);
     }
 
     private static string GetBanUnbanText(TargetUserObject? targetUserObject)
@@ -382,7 +384,7 @@ internal static class RestrictUser
                 e.Message.From.Username,
                 text7,
                 ParseMode.Html,
-                e.Message.MessageId);
+                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception? item2)
@@ -585,7 +587,7 @@ internal static class RestrictUser
             await BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
         var text2 = done?.BanUnbanAllResult.GetLanguage(restrictAction, finalTarget, done.NExceptions);
 
-        NotifyUtil.NotifyOwnersBanAction(sender, e, restrictAction, done, finalTarget,
+        NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), restrictAction, done, finalTarget,
             e.Message.ReplyToMessage.Text);
 
         if (e.Message.From != null)
@@ -593,7 +595,7 @@ internal static class RestrictUser
                 e.Message.From.LanguageCode,
                 e.Message.From.Username, text2,
                 ParseMode.Html,
-                e.Message.MessageId);
+                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         await NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }
@@ -618,7 +620,7 @@ internal static class RestrictUser
             if (targetEmpty)
             {
                 var e2 = new Exception("Can't find userid (1)");
-                await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, e);
+                await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
                 return new SuccessWithException(false, e2);
             }
 
@@ -628,13 +630,13 @@ internal static class RestrictUser
                     false);
 
             var e3 = new Exception("Can't find userid (2)");
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, e);
+            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
             return new SuccessWithException(false, e3);
         }
 
         var targetInt = e.Message.ReplyToMessage.From?.Id;
 
-        await NotifyUtil.NotifyOwnersBanAction(sender, e, targetInt, e.Message.ReplyToMessage.From?.Username);
+        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt, e.Message.ReplyToMessage.From?.Username);
 
         return await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             false);

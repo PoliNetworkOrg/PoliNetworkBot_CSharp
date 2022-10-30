@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
@@ -31,7 +33,7 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     public static async Task HelpExtendedSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -69,7 +71,7 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null);
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     public static async Task HelpPrivateSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -107,6 +109,6 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
             e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, text2, ParseMode.Html, null);
+            e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -66,7 +67,7 @@ public class MessageToDelete
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e, bot, e2);
+            await NotifyUtil.NotifyOwnerWithLog2(e, bot, EventArgsContainer.Get(e2));
         }
 
         return false;

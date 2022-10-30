@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -139,7 +140,7 @@ public static class MessageDb
             catch (Exception? e)
             {
                 await NotifyUtil.NotifyOwnerWithLog2(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
-                    messageEventArgs);
+                    EventArgsContainer.Get(messageEventArgs));
             }
 
         return true;
@@ -194,7 +195,7 @@ public static class MessageDb
         s3 += "[Id3]: " + r1.ScheduleMessageSentResult + "\n";
         s3 += "CheckMessagesToSend\n\n";
         var e3 = new Exception(s3);
-        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, messageEventArgs);
+        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
     }
 
     private static async Task<MessageSendScheduled> SendMessageToSend(DataRow dr,
@@ -209,7 +210,7 @@ public static class MessageDb
         }
         catch (Exception? e3)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e3, botToReportException, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e3, botToReportException, EventArgsContainer.Get(messageEventArgs));
         }
 
         if (r1 != null) hasBeenSent = r1.Item1;
@@ -315,7 +316,7 @@ public static class MessageDb
         s3 += "\n";
         s3 += "GetHasBeenSentAsync";
         var e3 = new Exception(s3);
-        await NotifyUtil.NotifyOwnerWithLog2(e3, sender, messageEventArgs);
+        await NotifyUtil.NotifyOwnerWithLog2(e3, sender, EventArgsContainer.Get(messageEventArgs));
         return new Tuple<bool?, int, string>(null, 3, s3);
     }
 

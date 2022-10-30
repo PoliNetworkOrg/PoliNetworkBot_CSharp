@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -138,7 +139,7 @@ public class Program
                 }
                 catch (Exception ex)
                 {
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, e);
+                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
                 }
             }
         }
@@ -276,7 +277,11 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, sender);
+            var eventArgsContainer = new EventArgsContainer
+            {
+                CallbackQueryEventArgs = e
+            };
+            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, sender, null, eventArgsContainer);
         }
     }
 
@@ -318,7 +323,8 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender);
+            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null, 
+                new EventArgsContainer(){ CallbackQueryEventArgs =  callbackQueryEventArgs});
         }
     }
 
@@ -336,9 +342,10 @@ public class Program
                 if (!FilePaths.TryGetValue(callbackdata?[2], sender, out var fileNameWithPath))
                     throw new Exception("Errore nel dizionario dei Path!");
 
+                var eventArgsContainer = new EventArgsContainer() { CallbackQueryEventArgs = callbackQueryEventArgs };
                 if (callbackQueryEventArgs.CallbackQuery?.Message != null &&
                     callbackQueryEventArgs.CallbackQuery != null && !UserIsAdmin(sender, callbackQuery.From.Id,
-                        callbackQueryEventArgs.CallbackQuery.Message.Chat.Id))
+                        callbackQueryEventArgs.CallbackQuery.Message.Chat.Id, eventArgsContainer))
                 {
                     if (sender != null)
                         await sender.AnswerCallbackQueryAsync(callbackQuery.Id,
@@ -509,7 +516,8 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender);
+                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null, 
+                                    new EventArgsContainer(){ CallbackQueryEventArgs = callbackQueryEventArgs});
                             }
                         }
 
@@ -519,7 +527,7 @@ public class Program
         }
     }
 
-    private static bool UserIsAdmin(TelegramBotAbstract? bot, long userId, long chatId)
+    private static bool UserIsAdmin(TelegramBotAbstract? bot, long userId, long chatId, EventArgsContainer eventArgsContainer)
     {
         try
         {
@@ -532,7 +540,8 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot);
+            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
+               eventArgsContainer);
             return false;
         }
     }
@@ -607,7 +616,8 @@ public class Program
             var fileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
             var fileAlreadyPresent = false;
             string? oldPath = null;
-            if (!await FilePaths.TryAdd(fileUniqueAndGit, telegramBotAbstract, file))
+            var eventArgsContainer = new EventArgsContainer() { MessageEventArgs = e };
+            if (!await FilePaths.TryAdd(fileUniqueAndGit, telegramBotAbstract, file, eventArgsContainer))
             {
                 //Verifica anti-SPAM, da attivare se servisse
                 if (FilePaths.TryGetValue(fileUniqueAndGit, telegramBotAbstract, out oldPath))
@@ -902,7 +912,7 @@ public class Program
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
                         ParseMode.Html, null, null);
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
+                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
                 }
             }
         }

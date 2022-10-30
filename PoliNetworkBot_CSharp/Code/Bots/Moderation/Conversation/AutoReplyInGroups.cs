@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
@@ -70,10 +71,11 @@ public static class AutoReplyInGroups
                         "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"
                     }
                 });
+                var ev = EventArgsContainer.Get(e);
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    ev,
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -99,7 +101,7 @@ public static class AutoReplyInGroups
                     await SendMessage.SendMessageInAGroup(telegramBotClient,
                         e.Message.From?.LanguageCode,
                         text2,
-                        e,
+                        EventArgsContainer.Get(e),
                         e.Message.Chat.Id,
                         e.Message.Chat.Type,
                         ParseMode.Html,
@@ -130,7 +132,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -160,7 +162,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -187,7 +189,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -210,7 +212,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -234,7 +236,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     e.Message.Chat.Id,
                     e.Message.Chat.Type,
                     ParseMode.Html,
@@ -273,7 +275,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e?.Message?.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     message.Chat.Id,
                     message.Chat.Type,
                     ParseMode.Html,
@@ -305,7 +307,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e?.Message?.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     message.Chat.Id,
                     message.Chat.Type,
                     ParseMode.Html,
@@ -338,7 +340,7 @@ public static class AutoReplyInGroups
                 await SendMessage.SendMessageInAGroup(telegramBotClient,
                     e.Message.From?.LanguageCode,
                     text2,
-                    e,
+                    EventArgsContainer.Get(e),
                     message.Chat.Id,
                     message.Chat.Type,
                     ParseMode.Html,
@@ -373,7 +375,7 @@ public static class AutoReplyInGroups
                     await SendMessage.SendMessageInAGroup(telegramBotClient,
                         message.From?.LanguageCode,
                         text2,
-                        e,
+                        EventArgsContainer.Get(e),
                         message.Chat.Id,
                         message.Chat.Type,
                         ParseMode.Html,
@@ -400,7 +402,7 @@ public static class AutoReplyInGroups
         await SendMessage.SendMessageInAGroup(telegramBotClient,
             e.Message.From?.LanguageCode,
             text2,
-            e,
+            EventArgsContainer.Get(e),
             e.Message.Chat.Id,
             e.Message.Chat.Type,
             ParseMode.Html,

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -39,12 +41,12 @@ internal static class TimeUtils
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                     e.Message.From?.LanguageCode,
                     e.Message.From?.Username, lang, ParseMode.Html,
-                    null);
+                    null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
             return false;
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, e);
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
         }
 
         return false;
@@ -66,7 +68,7 @@ internal static class TimeUtils
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                 e.Message.From?.LanguageCode,
                 e.Message.From?.Username, lang, ParseMode.Html,
-                null);
+                null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return false;
     }

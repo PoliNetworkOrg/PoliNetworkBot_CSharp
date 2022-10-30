@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -120,7 +121,7 @@ public static class CallbackUtils
         }
         catch (Exception? exc)
         {
-            await NotifyUtil.NotifyOwnersWithLog(exc, telegramBotClient);
+            await NotifyUtil.NotifyOwnersWithLog(exc, telegramBotClient, null, EventArgsContainer.Get(callbackQueryEventArgs));
         }
 
         return false;
@@ -145,7 +146,7 @@ public static class CallbackUtils
         }
         catch (Exception? exception)
         {
-            await NotifyUtil.NotifyOwnersWithLog(exception, telegramBotClientBot);
+            await NotifyUtil.NotifyOwnersWithLog(exception, telegramBotClientBot, null, EventArgsContainer.Get(callbackQueryEventArgs));
         }
     }
 

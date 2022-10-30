@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
@@ -36,8 +37,9 @@ internal static class Blacklist
         List<string> splitBy = new() { " ", "\"", "'" };
         words = splitBy.Aggregate(words, SplitTextBy);
 
+        var eventArgsContainer = new EventArgsContainer() { MessageEventArgs = messageEventArgs };
         if (words is not { Count: > 0 })
-            return await CheckNotAllowedWords(text, groupId, telegramBotAbstract) ==
+            return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                    SpamType.NOT_ALLOWED_WORDS
                 ? SpamType.NOT_ALLOWED_WORDS
                 : CheckForFormatMistakes(text, groupId, toLogMistakes);
@@ -45,7 +47,7 @@ internal static class Blacklist
         if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
-        return await CheckNotAllowedWords(text, groupId, telegramBotAbstract) ==
+        return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                SpamType.NOT_ALLOWED_WORDS
             ? SpamType.NOT_ALLOWED_WORDS
             : CheckForFormatMistakes(text, groupId, toLogMistakes);
@@ -99,7 +101,7 @@ internal static class Blacklist
     }
 
     private static async Task<SpamType> CheckNotAllowedWords(string? text, long? groupId,
-        TelegramBotAbstract? telegramBotAbstract)
+        TelegramBotAbstract? telegramBotAbstract, EventArgsContainer eventArgsContainer)
     {
         text = text?.ToLower();
 
@@ -115,8 +117,9 @@ internal static class Blacklist
         // ReSharper disable once InvertIf
         if (ChiedoScusa(text, groupId))
         {
+
             await NotifyUtil.NotifyOwnersWithLog(new Exception("Chiedo scusa per lo spam \n\n" + text),
-                telegramBotAbstract);
+                telegramBotAbstract, null, eventArgsContainer );
             return SpamType.NOT_ALLOWED_WORDS;
         }
 

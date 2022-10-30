@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -90,7 +92,7 @@ internal static class Rooms
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, text,
             ParseMode.Html,
-            null);
+            null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task HelpAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -101,7 +103,8 @@ internal static class Rooms
             { "en", "Use /rooms to find rooms!" }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username, text, ParseMode.Html, null);
+            e?.Message.From?.LanguageCode, e?.Message.From?.Username, text, 
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task FreeClassroomAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -119,7 +122,7 @@ internal static class Rooms
                 e?.Message.From?.LanguageCode,
                 e?.Message.From?.Username,
                 text4,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
             return;
         }
 
@@ -137,7 +140,7 @@ internal static class Rooms
                 e?.Message.From?.LanguageCode,
                 e?.Message.From?.Username,
                 text3,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
             return;
         }
 
@@ -151,7 +154,7 @@ internal static class Rooms
             e?.Message.From?.LanguageCode,
             e?.Message.From?.Username,
             text2,
-            ParseMode.Html, null);
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task<Tuple<DateTime?, DateTime?>?> GetStartAndStopHoursAsync(TelegramBotAbstract? sender,
@@ -374,7 +377,7 @@ internal static class Rooms
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null);
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task RoomNotFoundAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -390,7 +393,7 @@ internal static class Rooms
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null);
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static async Task DownloadFailedAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -406,7 +409,7 @@ internal static class Rooms
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null);
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 
     private static long? FindRoomIndex(IReadOnlyList<HtmlNode?>? t3, string? sigla)
@@ -472,7 +475,7 @@ internal static class Rooms
                         e?.Message.From?.LanguageCode,
                         e?.Message.From?.Username,
                         text2,
-                        ParseMode.Html, null);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
                     return;
                 }
 
@@ -489,7 +492,7 @@ internal static class Rooms
                         e?.Message.From?.LanguageCode,
                         e?.Message.From?.Username,
                         text2,
-                        ParseMode.Html, null);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
                     return;
                 }
 
@@ -515,7 +518,7 @@ internal static class Rooms
                         e?.Message.From?.LanguageCode,
                         e?.Message.From?.Username,
                         text2,
-                        ParseMode.Html, null);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
                     return;
                 }
 
@@ -577,7 +580,7 @@ internal static class Rooms
                     e?.Message.From?.LanguageCode,
                     e?.Message.From?.Username,
                     message,
-                    ParseMode.Html, null);
+                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
                 // send the table as an html document for further info
                 var htmlResult = t4.Aggregate(
