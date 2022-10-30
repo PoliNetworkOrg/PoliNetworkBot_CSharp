@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -460,7 +461,7 @@ internal static class Assoc
         if (e?.Message != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id, e.Message.From?.LanguageCode,
                 e.Message.From?.Username,
-                text, ParseMode.Html, null);
+                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return null;
     }
@@ -637,7 +638,7 @@ internal static class Assoc
                 }
 
                 var permittedSpamMessage =
-                    await NotifyUtil.NotifyAllowedMessage(sender, e, message, groups, messageType, assocOrClub);
+                    await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups, messageType, assocOrClub);
 
                 var privateConfirmationMessage = new Language(new Dictionary<string, string?>
                 {
@@ -645,13 +646,15 @@ internal static class Assoc
                 });
 
                 await SendMessage.SendMessageInPrivate(sender,
-                    e.Message.From.Id, "uni", null, privateConfirmationMessage, ParseMode.Html, null);
+                    e.Message.From.Id, "uni", 
+                    null, privateConfirmationMessage,
+                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
                 var splitMessage = false;
 
                 if (message is { Length: > 4000 })
                 {
-                    permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(e,
+                    permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(EventArgsContainer.Get(e),
                         "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType,
                         assocOrClub);
                     splitMessage = true;

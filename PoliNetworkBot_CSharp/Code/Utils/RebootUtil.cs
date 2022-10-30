@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -27,7 +28,7 @@ public static class RebootUtil
             try
             {
                 SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                    null, text, ParseMode.Html, null).Wait();
+                    null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(messageEventArgs)).Wait();
             }
             catch (Exception e)
             {

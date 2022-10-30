@@ -2,14 +2,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -70,7 +73,7 @@ public class TelegramFileContent
         return _fileContent;
     }
 
-    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, MessageEventArgs? messageEventArgs)
+    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, EventArgsContainer? eventArgsContainer)
     {
         try
         {
@@ -80,7 +83,7 @@ public class TelegramFileContent
             {
                 ["currStack"] = strings,
                 ["extraInfo"] = extraInfo?.GetJToken(),
-                ["messageEventArgs"] = GetMessageEventArgsAsJToken(messageEventArgs)
+                ["EventArgsContainer"] = GetEventArgsContainerAsJToken(eventArgsContainer)
             };
             var stringToSend = JsonConvert.SerializeObject(stackJ);
             var fileContent = new StringJson(FileTypeJsonEnum.SIMPLE_STRING, stringToSend);
@@ -92,6 +95,128 @@ public class TelegramFileContent
         }
 
         return null;
+    }
+
+    private static JToken? GetEventArgsContainerAsJToken(EventArgsContainer? eventArgsContainer)
+    {
+        if (eventArgsContainer == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["MessageEventArgs"] = GetMessageEventArgsAsJToken(eventArgsContainer.MessageEventArgs),
+            ["CallbackGenericData"] = GetGenericCallDataAsJToken(eventArgsContainer.CallbackGenericData),
+            ["CallbackQueryEventArgs"] = GetCallbackQueryEventArgsAsJToken( eventArgsContainer.CallbackQueryEventArgs)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetCallbackQueryEventArgsAsJToken(CallbackQueryEventArgs? callbackQueryEventArgs)
+    {
+        if (callbackQueryEventArgs == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["CallbackQuery"] = GetCallbackQueryAsJToken(callbackQueryEventArgs.CallbackQuery)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetCallbackQueryAsJToken(CallbackQuery? callbackQuery)
+    {
+        if (callbackQuery == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["Data"] = callbackQuery.Data,
+            ["Id"] = callbackQuery.Id,
+            ["ChatInstance"] = callbackQuery.ChatInstance,
+            ["GameShortName"] = callbackQuery.GameShortName,
+            ["InlineMessageId"] = callbackQuery.InlineMessageId,
+            ["IsGameQuery"] = callbackQuery.IsGameQuery,
+            ["From"] = GetUserAsJToken(callbackQuery.From),
+            ["Message"] = GetMessageAsJToken(callbackQuery.Message)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetGenericCallDataAsJToken(CallbackGenericData? callbackGenericData)
+    {
+        if (callbackGenericData == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["id"] = callbackGenericData.Id,
+            ["InsertedTime"] = callbackGenericData.InsertedTime,
+            ["SelectedAnswer"] = callbackGenericData.SelectedAnswer,
+            ["Options"] = GetOptionsAsJToken(callbackGenericData.Options),
+        };
+
+        return result;
+    }
+
+    private static JToken? GetOptionsAsJToken(List<CallbackOption>? options)
+    {
+        if (options == null)
+            return null;
+
+        var result = new JArray();
+        foreach (var callbackOptionAsJToken in options.Select(GetCallbackOptionAsJToken))
+        {
+            if (callbackOptionAsJToken != null) 
+                result.Add(callbackOptionAsJToken);
+        }
+
+        return result;
+    }
+
+    private static JToken? GetCallbackOptionAsJToken(CallbackOption? callbackOption)
+    {
+        if (callbackOption == null)
+            return null;
+    
+        var result = new JObject
+        {
+            ["displayed"] = callbackOption.displayed,
+            ["id"] = callbackOption.id,
+            ["value"] = GetObjectAsJToken(callbackOption.value)
+        };
+
+        return result;
+    }
+
+    private static JToken? GetObjectAsJToken(object? callbackOptionValue)
+    {
+        if (callbackOptionValue == null)
+            return null;
+
+        var result = new JObject();
+
+        try
+        {
+            result["toString"] = callbackOptionValue.ToString();
+        }
+        catch
+        {
+            // ignored
+        }
+        
+        try
+        {
+            result["json"] = JsonConvert.SerializeObject(callbackOptionValue);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
     }
 
     private static JArray GetLines(string stack)

@@ -15,6 +15,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 
 #endregion
@@ -595,7 +596,7 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
                     break;
                 }
@@ -612,7 +613,7 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
                     break;
                 }
@@ -626,7 +627,7 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null);
+                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
                     break;
                 }
@@ -645,7 +646,7 @@ internal static class ModerationCheck
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
                         e.Message.From.Username, text2,
-                        ParseMode.Html, null);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
                     break;
                 }
 
@@ -696,7 +697,7 @@ internal static class ModerationCheck
     }
 
     public static async Task<bool> PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
-        MessageEventArgs? messageEventArgs)
+        EventArgsContainer? messageEventArgs)
     {
         return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
     }

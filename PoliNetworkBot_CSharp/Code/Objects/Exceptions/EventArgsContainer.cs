@@ -28,4 +28,9 @@ public class EventArgsContainer
     {
         return new EventArgsContainer() { CallbackQueryEventArgs = callbackQueryEventArgs };
     }
+
+    public static EventArgsContainer? Get(EventArgsContainer? paramEvent)
+    {
+        return paramEvent;
+    }
 }

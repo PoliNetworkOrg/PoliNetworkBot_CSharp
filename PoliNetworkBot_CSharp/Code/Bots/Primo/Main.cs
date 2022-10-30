@@ -112,7 +112,7 @@ public static class Main
         if (message != null)
             return await SendMessage.SendMessageInAGroup(
                 telegramBotClient, e?.Message?.From?.LanguageCode,
-                text, e,
+                text, EventArgsContainer.Get(e),
                 message.Chat.Id, message.Chat.Type,
                 ParseMode.Html, message.MessageId, true);
         return null;
@@ -171,7 +171,7 @@ public static class Main
         if (r5 != null)
             return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message?.From?.LanguageCode,
                 text,
-                e,
+                EventArgsContainer.Get(e),
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
 
         return null;
@@ -238,7 +238,7 @@ public static class Main
         var text = new Language(dict4);
         var r5 = e?.Message;
         if (r5 != null)
-            return await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text, e,
+            return await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text, EventArgsContainer.Get(e),
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
 
         return null;
@@ -327,7 +327,7 @@ public static class Main
         var m1 = e?.Message;
         if (e == null) return null;
         if (m1 == null) return null;
-        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text, e,
+        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text, EventArgsContainer.Get(e),
             m1.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
         return r;
     }

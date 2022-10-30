@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -191,7 +192,7 @@ public static class Logger
                 }
 
                 if (text is { Count: <= 1 })
-                    EmptyLog(sender, sendTo);
+                    EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
                 else
                     PrintLog2(sendTo, sender, path);
             }
@@ -236,7 +237,7 @@ public static class Logger
         }
     }
 
-    private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo)
+    private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo, EventArgsContainer eventArgsContainer)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -245,7 +246,7 @@ public static class Logger
 
         foreach (var sendToSingle in sendTo)
             SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                null, text, ParseMode.Html, null).Wait();
+                null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer).Wait();
     }
 
     internal static void Log(EventoConLog eventoLog)

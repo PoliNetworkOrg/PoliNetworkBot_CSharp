@@ -89,7 +89,7 @@ internal static class SendMessage
     }
 
     internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
-        string? lang, Language? text, MessageEventArgs? messageEventArgs,
+        string? lang, Language? text, EventArgsContainer? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
         bool disablePreviewLink, int i = 0, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
@@ -243,7 +243,7 @@ internal static class SendMessage
 
                 if (c2 != null)
                     _ = await SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
-                        text, e,
+                        text, EventArgsContainer.Get(e),
                         long.Parse(c2),
                         ChatType.Channel, ParseMode.Html, null, false);
 

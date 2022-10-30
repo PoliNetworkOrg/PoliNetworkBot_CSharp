@@ -128,7 +128,7 @@ internal static class Groups
                 }
             }
 
-            GroupsFixLog.SendLog(telegramBotAbstract, messageEventArgs);
+            GroupsFixLog.SendLog(telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
         }
         catch (Exception? e)
         {
@@ -150,7 +150,7 @@ internal static class Groups
                 var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat, telegramBotClient);
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
-                    GroupsFixLog.SendLog(telegramBotClient, e, GroupsFixLogUpdatedEnum.NEW_NAME);
+                    GroupsFixLog.SendLog(telegramBotClient, EventArgsContainer.Get(e), GroupsFixLogUpdatedEnum.NEW_NAME);
             }
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);
@@ -216,7 +216,7 @@ internal static class Groups
                             if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
                                 await NotifyUtil.NotifyOwners_AnError_AndLog3(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
-                                    telegramBotClient, e, FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
+                                    telegramBotClient, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
                         }
                     }
                 }
@@ -354,7 +354,7 @@ internal static class Groups
                             Language lang = new(dict);
 
                             await SendMessage.SendMessageInAGroup(
-                                telegramBotClient, e.Message.From?.LanguageCode, lang, e,
+                                telegramBotClient, e.Message.From?.LanguageCode, lang, EventArgsContainer.Get(e),
                                 e.Message.Chat.Id, e.Message.Chat.Type,
                                 ParseMode.Html, null, true
                             );
@@ -434,12 +434,12 @@ internal static class Groups
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
                         e.Message.From.Id,
                         e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline, TODO),
+                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline, EventArgsContainer.Get(e)),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
                         .SendMessageInAGroup(
                             sender,
                             e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                            text2, e,
+                            text2, EventArgsContainer.Get(e),
                             e.Message.Chat.Id, e.Message.Chat.Type,
                             ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, 0, inline),
                     _ => throw new ArgumentOutOfRangeException()
@@ -496,7 +496,7 @@ internal static class Groups
         if (e != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
         return false;
     }
 
@@ -507,7 +507,7 @@ internal static class Groups
         if (e != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return false;
     }
@@ -519,7 +519,7 @@ internal static class Groups
         if (e != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return false;
     }
@@ -531,7 +531,7 @@ internal static class Groups
         if (e != null)
             await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
         return false;
     }

@@ -95,7 +95,7 @@ internal static class Main
                 return await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
 
             if (checkSpam == SpamType.SPAM_PERMITTED)
-                return await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e);
+                return await ModerationCheck.PermittedSpamMeasure(telegramBotClient, EventArgsContainer.Get(e));
 
             if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);

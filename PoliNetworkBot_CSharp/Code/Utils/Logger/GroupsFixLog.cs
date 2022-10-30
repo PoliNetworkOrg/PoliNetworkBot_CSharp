@@ -7,6 +7,7 @@ using System.Web;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 
 #endregion
 
@@ -21,7 +22,7 @@ public static class GroupsFixLog
     private static int _countFixed;
     private static int _countIgnored;
 
-    public static void SendLog(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs,
+    public static void SendLog(TelegramBotAbstract? telegramBotAbstract, EventArgsContainer? messageEventArgs,
         GroupsFixLogUpdatedEnum groupsFixLogUpdatedEnum = GroupsFixLogUpdatedEnum.ALL)
     {
         var message = "Groups Fix Log:";
