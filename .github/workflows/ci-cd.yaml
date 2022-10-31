@@ -50,11 +50,16 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: polinetwork/botcsharp
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: PoliNetworkBot_CSharp/
           push: true
-          tags: latest-${GITHUB_REF##*/}
+          tags: latest-${{ steps.extract_branch.outputs.branch }}
           labels: ${{ steps.meta.outputs.labels }}
