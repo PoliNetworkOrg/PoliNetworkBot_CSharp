@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +33,7 @@ jobs:
       working-directory: PoliNetworkBot_CSharp
       
     - name: Git management
+      if: github.ref == 'ref/heads/master'
       run: |
         cd /home/runner/work/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/PoliNetworkBot_CSharp/dist/
         cp -r ../static/ ./static
