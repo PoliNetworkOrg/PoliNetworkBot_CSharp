@@ -44,22 +44,27 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: polinetwork/botcsharp
 
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+
+      - name: Docker repository name
+        shell: bash
+        run: | 
+          /bin/bash -c 'if [[ ${{ steps.extract_branch.outputs.branch }} == master ]]
+          then
+            "##[set-output name=repo;]$(echo )"
+          else
+            "##[set-output name=repo;]$(echo dev)"
+          fi
+          '
+        id: docker_repo_name
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: PoliNetworkBot_CSharp/
           push: true
-          tags: polinetwork/botcsharp:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: polinetwork/botcsharp_${{ steps.docker_repo_name.outputs.repo }}:latest
