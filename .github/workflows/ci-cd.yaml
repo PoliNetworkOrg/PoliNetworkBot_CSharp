@@ -50,17 +50,13 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - name: Docker repository name
-        shell: bash
-        run: | 
-          /bin/bash -c 'if [[ ${{ steps.extract_branch.outputs.branch }} == master ]]
-          then
-            "##[set-output name=repo;]$(echo )"
-          else
-            "##[set-output name=repo;]$(echo dev)"
-          fi
-          '
-        id: docker_repo_name
+      - name: Set env
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: echo "DOCKER_REPO=$(echo '')" >> $GITHUB_ENV
+
+      - name: Set env
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: echo "DOCKER_REPO=$(echo dev)" >> $GITHUB_ENV
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
