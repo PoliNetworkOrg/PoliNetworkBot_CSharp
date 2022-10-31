@@ -51,16 +51,22 @@ public static class NewConfig
 
     private static void Reset(string configBotsInfo, BotTypeApi b)
     {
-        BotConfig t = new()
+        try
         {
-            bots = new List<BotInfoAbstract>
+            BotConfig t = new()
             {
-                new()
-            }
-        };
-        t.bots[0].botTypeApi = b;
-        var j = JsonConvert.SerializeObject(t);
-        File.WriteAllText(configBotsInfo, j);
+                bots = new List<BotInfoAbstract>
+                {
+                    new()
+                }
+            };
+            t.bots[0].botTypeApi = b;
+            var j = JsonConvert.SerializeObject(t);
+            File.WriteAllText(configBotsInfo, j);
+        catch (Exception e)
+        {
+            Logger.WriteLine(e.Message);
+        }
     }
 
     private static void DestroyDB_And_Redo_it(bool alsoFillTablesFromJson)
