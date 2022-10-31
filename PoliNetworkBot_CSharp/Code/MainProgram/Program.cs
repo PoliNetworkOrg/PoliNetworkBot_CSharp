@@ -146,8 +146,16 @@ internal static class Program
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
-        while (true)
-            Console.ReadKey();
+        try
+        {
+            while (true)
+                Console.ReadKey();
+        }
+        catch (Exception e)
+        {
+            while (true)
+                Console.ReadKey();
+        }
     }
 
     private static ToExit FirstThingsToDo()
