@@ -53,7 +53,7 @@ public class DbConfig
         var x = JsonConvert.SerializeObject(GlobalVariables.DbConfig.GetDbConfig());
         File.WriteAllText(Paths.Info.DbConfig, x);
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
-        throw new Exception("Database failed to initialize, we generated an empty file to fill");
+        Logger.WriteLine("Database failed to initialize, we generated an empty file to fill");
     }
 
     public string GetConnectionString()
