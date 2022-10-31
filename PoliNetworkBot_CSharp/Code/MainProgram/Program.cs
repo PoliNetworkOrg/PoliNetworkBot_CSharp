@@ -154,7 +154,7 @@ internal static class Program
         catch (Exception e)
         {
             while (true)
-                Console.ReadKey();
+                Console.Read();
         }
     }
 
