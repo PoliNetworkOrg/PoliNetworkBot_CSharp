@@ -16,7 +16,7 @@ jobs:
   build:
     name: Docker Build
     runs-on: ubuntu-latest
-    if: ${{ ${GITHUB_REF##*/} != "dev" && ${GITHUB_REF##*/} != "master" }}
+    if: ${{ github.ref != 'ref/heads/dev' && github.ref != 'ref/heads/master' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    if: ${{ ${GITHUB_REF##*/} == "dev" || ${GITHUB_REF##*/} == "master" }}
+    if: ${{ github.ref == 'ref/heads/dev' || github.ref == 'ref/heads/master' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
