@@ -170,6 +170,7 @@ internal static class Program
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.WriteLine("Current TimeZone: " + currentTimeZone);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
+        return ToExit.STAY; //TODO FIX THIS IN DOCKER
         return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))
             ? ToExit.STAY
             : ToExit.EXIT;
