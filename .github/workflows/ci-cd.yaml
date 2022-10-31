@@ -13,9 +13,24 @@ on:
   push
 
 jobs:
+  build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    if: ${{ ${GITHUB_REF##*/} != "dev" && ${GITHUB_REF##*/} != "master" }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Build
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: PoliNetworkBot_CSharp/
+          push: false
+
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    if: ${{ ${GITHUB_REF##*/} == "dev" || ${GITHUB_REF##*/} == "master" }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -37,5 +52,5 @@ jobs:
         with:
           context: PoliNetworkBot_CSharp/
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: latest-${GITHUB_REF##*/}
           labels: ${{ steps.meta.outputs.labels }}
