@@ -61,5 +61,5 @@ jobs:
         with:
           context: PoliNetworkBot_CSharp/
           push: true
-          tags: latest
+          tags: polinetwork/botcsharp:latest
           labels: ${{ steps.meta.outputs.labels }}
