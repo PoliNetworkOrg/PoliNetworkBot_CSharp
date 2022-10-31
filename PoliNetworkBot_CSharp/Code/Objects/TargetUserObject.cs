@@ -19,7 +19,7 @@ public class TargetUserObject
     public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
-        var target = stringInfo?[1];
+        var target = stringInfo?[0];
         SetStartParam(target);
 
         var fromIdReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Id;
