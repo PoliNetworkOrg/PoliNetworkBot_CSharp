@@ -382,7 +382,7 @@ internal static class DateTimeClass
             return null;
 
         var s = "";
-        for (var i = 2; i < target.Count; i++) s += target[i] + " ";
+        for (var i = 1; i < target.Count; i++) s += target[i] + " ";
 
         s = s.Trim();
         return GetFromString(s);
