@@ -63,4 +63,4 @@ jobs:
         with:
           context: PoliNetworkBot_CSharp/
           push: true
-          tags: polinetwork/botcsharp_$DOCKER_REPO:latest
+          tags: polinetwork/botcsharp_${{ DOCKER_REPO }}:latest
