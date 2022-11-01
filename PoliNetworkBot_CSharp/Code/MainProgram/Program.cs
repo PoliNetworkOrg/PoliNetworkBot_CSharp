@@ -44,8 +44,7 @@ internal static class Program
             Logger.WriteLine("Program will stop.");
             return;
         }
-
-        throw new Exception("testing breaking change");
+        
         while (true)
         {
             var (item1, item2) = MainGetMenuChoice2(args);
