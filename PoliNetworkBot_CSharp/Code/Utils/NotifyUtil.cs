@@ -171,13 +171,13 @@ internal static class NotifyUtil
         return text;
     }
 
-    internal static async Task<List<MessageSentResult?>?> NotifyOwnerWithLog2(Exception? e,
+    internal static Task<List<MessageSentResult?>?> NotifyOwnerWithLog2(Exception? e,
         TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs)
     {
         var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
-        return x;
+        return Task.FromResult(x);
     }
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
@@ -189,14 +189,12 @@ internal static class NotifyUtil
             whatWeWant, sendActionEnum);
     }
 
-    internal static async Task NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
+    internal static void NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
         TelegramBotAbstract? sender)
     {
-        if (r1?.Item1 == null)
-            return;
+        if (r1?.Item1 == null) return;
 
-        if (r1.Item1.Value)
-            return;
+        if (r1.Item1.Value) return;
 
         var error = "Error (notifyIfFalse): ";
         error += "\n";
@@ -450,7 +448,7 @@ internal static class NotifyUtil
         return false;
     }
 
-    public static async Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
+    public static Task NotifyOwnersWithLog(Exception? exception, TelegramBotAbstract? telegramBotAbstract,
         string? stackTrace, EventArgsContainer? eventArgsContainer)
     {
         var extraInfo = new ExtraInfo
@@ -460,6 +458,7 @@ internal static class NotifyUtil
         NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
             eventArgsContainer, extraInfo: extraInfo);
         Logger.Logger.WriteLine(exception);
+        return Task.CompletedTask;
     }
 
     /// <summary>

@@ -620,7 +620,7 @@ internal static class RestrictUser
             if (targetEmpty)
             {
                 var e2 = new Exception("Can't find userid (1)");
-                await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
                 return new SuccessWithException(false, e2);
             }
 
@@ -630,7 +630,7 @@ internal static class RestrictUser
                     false);
 
             var e3 = new Exception("Can't find userid (2)");
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
             return new SuccessWithException(false, e3);
         }
 

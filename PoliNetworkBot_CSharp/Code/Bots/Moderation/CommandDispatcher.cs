@@ -748,7 +748,7 @@ internal static class CommandDispatcher
                 GenericInfo = s
             };
             var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
         }
@@ -918,7 +918,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
         }
 
         if (n == null)
