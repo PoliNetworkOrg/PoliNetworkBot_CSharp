@@ -45,6 +45,7 @@ internal static class Program
             return;
         }
 
+        throw new Exception("testing breaking change");
         while (true)
         {
             var (item1, item2) = MainGetMenuChoice2(args);
