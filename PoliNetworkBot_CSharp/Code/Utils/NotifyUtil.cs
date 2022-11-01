@@ -76,7 +76,7 @@ internal static class NotifyUtil
         return m != null && m.IsSuccess();
     }
 
-    internal static async Task<List<MessageSentResult?>?> NotifyOwnersClassic(ExceptionNumbered exception,
+    internal static List<MessageSentResult?>? NotifyOwnersClassic(ExceptionNumbered exception,
         TelegramBotAbstract? sender, EventArgsContainer? messageEventArgs, ExtraInfo? extraInfo = null,
         string? langCode = DefaultLang,
         long? replyToMessageId2 = null)
@@ -86,18 +86,23 @@ internal static class NotifyUtil
 
         var r = new List<MessageSentResult?>();
 
-        var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
-        var r1 = await message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
-            FileTypeJsonEnum.SIMPLE_STRING);
-        if (r1 != null)
-            r.AddRange(r1);
+        lock (Data.Variables.Locks.LockObjectExceptionGroup)
+        {
+            var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
+            var r1 = message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
+                FileTypeJsonEnum.SIMPLE_STRING);
+            r1.Wait();
+            if (r1.Result != null)
+                r.AddRange(r1.Result);
 
-        var r4 = await SendStack(sender, langCode,
-            replyToMessageId2, messageEventArgs, extraInfo, exception);
-        if (r4 != null)
-            r.AddRange(r4);
+            var r4 = SendStack(sender, langCode,
+                replyToMessageId2, messageEventArgs, extraInfo, exception);
+            r4.Wait();
+            if (r4.Result != null)
+                r.AddRange(r4.Result);
 
-        return r;
+            return r;
+        }
     }
 
     private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
@@ -170,7 +175,7 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs)
     {
-        var x = await NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+        var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
         Logger.Logger.WriteLine(e);
         return x;
     }
@@ -201,7 +206,7 @@ internal static class NotifyUtil
         error += "\n";
 
         var exception = new ExceptionNumbered(error);
-        await NotifyOwnersClassic(exception, sender, null);
+        NotifyOwnersClassic(exception, sender, null);
     }
 
     internal static async Task NotifyOwnersAsync5(Tuple<List<ExceptionNumbered>, int> exceptions,
@@ -452,7 +457,7 @@ internal static class NotifyUtil
         {
             StackTrace = stackTrace
         };
-        await NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
+        NotifyOwnersClassic(new ExceptionNumbered(exception), telegramBotAbstract,
             eventArgsContainer, extraInfo: extraInfo);
         Logger.Logger.WriteLine(exception);
     }
