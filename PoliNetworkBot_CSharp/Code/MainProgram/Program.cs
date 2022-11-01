@@ -176,7 +176,7 @@ internal static class Program
         DbConfig.InitializeDbConfig();
 
         var currentTimeZone = TimeZoneInfo.Local;
-        Logger.WriteLine("Current TimeZone: " + currentTimeZone);
+        Logger.WriteLine("Current TimeZone: " + currentTimeZone + " time: " + DateTime.Now);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
         return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))
             ? ToExit.STAY
