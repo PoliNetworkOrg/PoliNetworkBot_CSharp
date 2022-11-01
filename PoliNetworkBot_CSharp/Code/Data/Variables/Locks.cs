@@ -2,5 +2,5 @@
 
 public static class Locks
 {
-    public static object LockObjectExceptionGroup = new object();
+    public static readonly object LockObjectExceptionGroup = new();
 }
