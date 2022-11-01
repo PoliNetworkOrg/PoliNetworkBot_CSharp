@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
