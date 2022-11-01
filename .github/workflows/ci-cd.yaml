@@ -90,7 +90,7 @@ jobs:
           inlineScript: |
             $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
             $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"        image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
           azPSVersion: "latest"
       
       - name: Commit changes in manifest to repo

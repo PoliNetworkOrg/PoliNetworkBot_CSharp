@@ -63,6 +63,7 @@ public static class NewConfig
             t.bots[0].botTypeApi = b;
             var j = JsonConvert.SerializeObject(t);
             File.WriteAllText(configBotsInfo, j);
+        }
         catch (Exception e)
         {
             Logger.WriteLine(e.Message);
