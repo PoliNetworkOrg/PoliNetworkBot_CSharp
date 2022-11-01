@@ -8,9 +8,9 @@ RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
-RUN apt install tzdata
 ENV TZ=Europe/Rome
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN rm -rf /etc/localtime
+RUN ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
