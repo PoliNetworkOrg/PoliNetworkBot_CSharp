@@ -550,6 +550,12 @@ internal static class Program
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
                 }
+                catch (Telegram.Bot.Exceptions.ApiRequestException e) // Overlap in cluster to verify healthy application
+                {
+                    Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                    Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
+                    Thread.Sleep(10 * 1000);
+                }
                 catch (Exception? ex)
                 {
                     Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.EMERGENCY);
