@@ -13,6 +13,7 @@ using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -747,7 +748,7 @@ internal static class CommandDispatcher
                 GenericInfo = s
             };
             var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
         }
@@ -917,7 +918,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
         }
 
         if (n == null)

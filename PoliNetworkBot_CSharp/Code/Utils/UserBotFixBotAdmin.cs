@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using TeleSharp.TL;
@@ -77,7 +78,7 @@ internal static class UserBotFixBotAdmin
                         {
                             var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
                                 telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
+                            NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
                         }
 
                     break;
@@ -89,7 +90,7 @@ internal static class UserBotFixBotAdmin
                         {
                             var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
                                 telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
+                            NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
                         }
 
                     break;
