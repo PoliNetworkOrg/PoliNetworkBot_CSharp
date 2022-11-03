@@ -26,9 +26,6 @@ jobs:
           ${{ runner.os }}-nuget
           
     - name: Install dependencies
-      run: dotnet add package Newtonsoft.Json --version 12.0.1
-      
-    - name: Install dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
@@ -55,9 +52,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget
           
-    - name: Install dependencies
-      run: dotnet add package Newtonsoft.Json --version 12.0.1
-        
     - name: Restore dependencies
       run: dotnet restore
       working-directory: PoliNetworkBot_CSharp
