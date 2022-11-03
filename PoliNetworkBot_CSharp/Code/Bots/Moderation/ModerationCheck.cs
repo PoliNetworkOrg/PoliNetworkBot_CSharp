@@ -597,7 +597,8 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                        e.Message.From.Username, text2, ParseMode.Html, null, 
+                        InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
 
                     break;
                 }
