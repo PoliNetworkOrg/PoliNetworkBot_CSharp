@@ -66,7 +66,7 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
         long? userIdToSendTo, string? langCode, string? usernameToSendTo,
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer)
+        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, bool notifyOwners = true)
     {
         var stackTrace = Environment.StackTrace;
         
@@ -81,7 +81,9 @@ internal static class SendMessage
         }
         catch (Exception e)
         {
-            await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace, eventArgsContainer);
+            if (notifyOwners)
+                await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace, eventArgsContainer);
+            
             return new MessageSentResult(false, null, ChatType.Private);
         }
 
