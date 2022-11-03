@@ -302,17 +302,43 @@ internal static class CommandDispatcher
         foreach (var command in Commands)
             try
             {
-                if (command.TryTrigger(e, sender, cmd, args)) return true;
+                switch (command.TryTrigger(e, sender, cmd, args))
+                {
+                    case CommandExecutionState.SUCCESSFUL:
+                        return true;
+                    case CommandExecutionState.UNMET_CONDITIONS:
+                        if(e.Message.Chat.Type == ChatType.Private)
+                            await NotifyUserCommandError(new L(
+                                    "it",
+                                    "Formattazione del messaggio errata. \n" +
+                                    "Per informazioni aggiuntive scrivi<b>\n" +
+                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>",
+                                    "en",
+                                    "The message is wrongly formatted. \n" +
+                                    "For additional info type <b>\n" +
+                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>"), 
+                                sender, e);
+                        break;
+                    case CommandExecutionState.NOT_TRIGGERED:
+                    case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
+                    case CommandExecutionState.ERROR_NOT_ENABLED:
+                    default:
+                        break;  // DO NOTHING
+                }
             }
-            catch (CommandConditionException exception)
+            catch (Exception)
             {
-                await sender.SendTextMessageAsync(e.Message.From?.Id, exception.Message, ChatType.Private,
-                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                    e.Message.MessageId);
                 return false;
             }
 
         return await DefaultCommand(sender, e);
+    }
+
+    private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender, MessageEventArgs e)
+    {
+        return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
+            e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
+            e.Message.MessageId);
     }
 
 

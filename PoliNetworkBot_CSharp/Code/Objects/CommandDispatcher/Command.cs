@@ -161,22 +161,22 @@ public class Command
         return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
-    public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract, string command,
+    public virtual CommandExecutionState TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract, string command,
         string[] args)
     {
         if (!_enabled)
-            return false;
+            return CommandExecutionState.ERROR_NOT_ENABLED;
         if (!IsTriggered(command))
-            return false;
+            return CommandExecutionState.NOT_TRIGGERED;
         if (!_chatTypes.Contains(e.Message.Chat.Type))
-            return false;
+            return CommandExecutionState.NOT_TRIGGERED;
         if (_optionalConditions != null && !_optionalConditions.Invoke(e))
-            throw new CommandConditionException(_trigger);
+            return CommandExecutionState.UNMET_CONDITIONS;
         if (!Permissions.CheckPermissions(_permissionLevel, e.Message.From))
-            return false;
+            return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
         _action?.Invoke(e, telegramBotAbstract, args);
         _action2?.Invoke(e, telegramBotAbstract, args);
         _action3?.Invoke(e, telegramBotAbstract);
-        return true;
+        return CommandExecutionState.SUCCESSFUL;
     }
 }
