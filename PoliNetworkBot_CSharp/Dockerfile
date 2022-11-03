@@ -8,8 +8,10 @@ RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
+ENV TZ=Europe/Rome
+
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
-ENTRYPOINT ["dotnet", "PoliNetworkBot_CSharp.dll", "2"]
+ENTRYPOINT ["sh", "-c", "rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime; dotnet PoliNetworkBot_CSharp.dll 2"]
