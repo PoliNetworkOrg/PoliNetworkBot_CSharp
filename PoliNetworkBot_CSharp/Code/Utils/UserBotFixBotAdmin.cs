@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using TeleSharp.TL;
@@ -77,7 +78,7 @@ internal static class UserBotFixBotAdmin
                         {
                             var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
                                 telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
+                            NotifyUtil.NotifyIfFalseAsync(r1, 1.ToString(), telegramBotAbstract);
                         }
 
                     break;
@@ -89,7 +90,7 @@ internal static class UserBotFixBotAdmin
                         {
                             var r1 = await FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot3(x4, u,
                                 telegramBotAbstract);
-                            await NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
+                            NotifyUtil.NotifyIfFalseAsync(r1, 2.ToString(), telegramBotAbstract);
                         }
 
                     break;
@@ -218,11 +219,11 @@ internal static class UserBotFixBotAdmin
         return new IsBotPresentObject(isOurBotPresent, null);
     }
 
-    private static DateTime? GetUntilWhenWeCanMakeRequests(FloodException? eflood)
+    private static DateTime? GetUntilWhenWeCanMakeRequests(FloodException? eFlood)
     {
         Thread.Sleep(1000);
 
-        if (eflood != null) return DateTime.Now + eflood.TimeToWait;
+        if (eFlood != null) return DateTime.Now + eFlood.TimeToWait;
         return null;
     }
 
@@ -248,7 +249,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, r4.R2.Item2);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwnerWithLog2(e2, telegramBotAbstract, null);
 
             await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, telegramBotAbstract);
 
@@ -263,7 +264,7 @@ internal static class UserBotFixBotAdmin
         }
         catch (Exception? e5)
         {
-            await NotifyUtil.NotifyOwners(e5, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwnerWithLog2(e5, telegramBotAbstract, null);
         }
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
@@ -437,7 +438,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, e);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwnerWithLog2(e2, telegramBotAbstract, null);
 
             return new ResultF1(false, null, r, null);
         }
@@ -484,7 +485,7 @@ internal static class UserBotFixBotAdmin
             m += "\n --- end --- ";
             m += "\n";
             var e2 = new Exception(m, r4.R2.Item2);
-            await NotifyUtil.NotifyOwners(e2, telegramBotAbstract, null);
+            await NotifyUtil.NotifyOwnerWithLog2(e2, telegramBotAbstract, null);
 
             await DeleteMessageAddedAsync(r4.IdMessageAdded, x5, accessHash, telegramBotAbstract);
 

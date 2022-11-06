@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
@@ -64,8 +66,10 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
         long? userIdToSendTo, string? langCode, string? usernameToSendTo,
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, bool notifyOwners = true)
     {
+        var stackTrace = Environment.StackTrace;
+        
         try
         {
             if (telegramBotClient != null)
@@ -75,8 +79,11 @@ internal static class SendMessage
                     replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
                     replyToMessageId: messageIdToReplyTo);
         }
-        catch
+        catch (Exception e)
         {
+            if (notifyOwners)
+                await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace, eventArgsContainer);
+            
             return new MessageSentResult(false, null, ChatType.Private);
         }
 
@@ -84,7 +91,7 @@ internal static class SendMessage
     }
 
     internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
-        string? lang, Language? text, MessageEventArgs? messageEventArgs,
+        string? lang, Language? text, EventArgsContainer? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
         bool disablePreviewLink, int i = 0, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
@@ -110,7 +117,7 @@ internal static class SendMessage
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwners(e1, telegramBotClient, messageEventArgs, i + 1);
+            await NotifyUtil.NotifyOwnerWithLog2(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
         }
 
         return r1;
@@ -118,11 +125,12 @@ internal static class SendMessage
 
     internal static async Task<bool> SendFileAsync(TelegramFile file, PeerAbstract peer,
         Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
-        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink)
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        ParseMode parseModeCaption = ParseMode.Html)
     {
         return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
             username, lang,
-            replyToMessageId, disablePreviewLink);
+            replyToMessageId, disablePreviewLink, parseModeCaption);
     }
 
     public static async Task<TLAbsUpdates?> SendMessageUserBot(TelegramClient? userbotClient,
@@ -213,5 +221,40 @@ internal static class SendMessage
         }
 
         return SuccessQueue.SUCCESS;
+    }
+
+
+    public static async Task<bool> SendMessageInChannel2(MessageEventArgs? e, TelegramBotAbstract? sender,
+        string[]? cmdLines)
+    {
+        if (e != null)
+        {
+            var message = e.Message;
+            if (Owners.CheckIfOwner(e.Message.From?.Id) &&
+                message.Chat.Type == ChatType.Private)
+            {
+                if (cmdLines != null && (e.Message.ReplyToMessage == null || cmdLines.Length != 2))
+                    return false;
+                var text = new Language(new Dictionary<string, string?>
+                {
+                    { "it", e.Message.ReplyToMessage?.Text ?? e.Message.ReplyToMessage?.Caption }
+                });
+                var c2 = cmdLines?[1];
+                if (cmdLines == null)
+                    return false;
+
+                if (c2 != null)
+                    _ = await SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
+                        text, EventArgsContainer.Get(e),
+                        long.Parse(c2),
+                        ChatType.Channel, ParseMode.Html, null, false);
+
+                return false;
+            }
+        }
+
+        await CommandDispatcher.DefaultCommand(sender, e);
+
+        return false;
     }
 }

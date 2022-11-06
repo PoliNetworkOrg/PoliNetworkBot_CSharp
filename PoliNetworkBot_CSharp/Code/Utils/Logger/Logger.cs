@@ -14,8 +14,10 @@ using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -96,7 +98,7 @@ public static class Logger
                 });
             }
 
-            foreach (var subscriber in Subscribers.Where(subscriber => log1 != null))
+            foreach (var subscriber in Subscribers.Where(subscriber => subscriber.Value != null))
                 if (log1 != null)
                     Buffer.Post(
                         new MessageQueue(subscriber,
@@ -121,7 +123,7 @@ public static class Logger
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots is { Count: < 1 }) throw new Exception("No REAL_BOT to send Log");
 
-            if (bots != null) PrintLog(bots[0], new List<long?> { Data.Constants.Groups.BackupGroup }, null);
+            if (bots != null) PrintLog(bots[0], new List<long?> { GroupsConstants.BackupGroup }, null);
         }
         catch (Exception e)
         {
@@ -137,7 +139,7 @@ public static class Logger
         return DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
-    public static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
+    private static async Task Subscribe(long? fromId, TelegramBotAbstract? telegramBotAbstract,
         MessageEventArgs? messageEventArgs)
     {
         if (fromId == null)
@@ -149,11 +151,11 @@ public static class Logger
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners(e, telegramBotAbstract, messageEventArgs);
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
         }
     }
 
-    public static void Unsubscribe(long? fromId)
+    private static void Unsubscribe(long? fromId)
     {
         if (fromId == null)
             return;
@@ -168,7 +170,7 @@ public static class Logger
         }
     }
 
-    public static void PrintLog(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs)
+    private static void PrintLog(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs)
     {
         lock (PrintLogLock)
         {
@@ -190,13 +192,13 @@ public static class Logger
                 }
 
                 if (text is { Count: <= 1 })
-                    EmptyLog(sender, sendTo);
+                    EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
                 else
                     PrintLog2(sendTo, sender, path);
             }
             catch (Exception? e)
             {
-                NotifyUtil.NotifyOwners(e, sender, messageEventArgs).Wait();
+                NotifyUtil.NotifyOwnerWithLog2(e, sender, EventArgsContainer.Get(messageEventArgs)).Wait();
             }
         }
     }
@@ -235,7 +237,7 @@ public static class Logger
         }
     }
 
-    private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo)
+    private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo, EventArgsContainer eventArgsContainer)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -244,7 +246,7 @@ public static class Logger
 
         foreach (var sendToSingle in sendTo)
             SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                null, text, ParseMode.Html, null).Wait();
+                null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer).Wait();
     }
 
     internal static void Log(EventoConLog eventoLog)
@@ -309,6 +311,40 @@ public static class Logger
         var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
         if (bots == null || bots.Count == 0)
             return;
-        PrintLog(bots.First(), new List<long?> { Data.Constants.Groups.BackupGroup }, null);
+        PrintLog(bots.First(), new List<long?> { GroupsConstants.BackupGroup }, null);
+    }
+
+    public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
+    {
+        var sendTo = GetLogTo(e);
+        PrintLog(sender, sendTo, e);
+    }
+
+    public static List<long?> GetLogTo(MessageEventArgs e)
+    {
+        return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
+    }
+
+    public static async Task<bool> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        if (e == null)
+            return false;
+
+        await Subscribe(e.Message.From?.Id, sender, e);
+        return true;
+    }
+
+    public static Task<bool> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        if (e == null)
+            return Task.FromResult(false);
+        Unsubscribe(e.Message.From?.Id);
+        return Task.FromResult(true);
+    }
+
+    public static Task GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    {
+        if (arg1 != null) GetLog(arg2, arg1);
+        return Task.CompletedTask;
     }
 }

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -51,16 +52,23 @@ public static class NewConfig
 
     private static void Reset(string configBotsInfo, BotTypeApi b)
     {
-        BotConfig t = new()
+        try
         {
-            bots = new List<BotInfoAbstract>
+            BotConfig t = new()
             {
-                new()
-            }
-        };
-        t.bots[0].botTypeApi = b;
-        var j = JsonConvert.SerializeObject(t);
-        File.WriteAllText(configBotsInfo, j);
+                bots = new List<BotInfoAbstract>
+                {
+                    new()
+                }
+            };
+            t.bots[0].botTypeApi = b;
+            var j = JsonConvert.SerializeObject(t);
+            File.WriteAllText(configBotsInfo, j);
+        }
+        catch (Exception e)
+        {
+            Logger.WriteLine(e.Message);
+        }
     }
 
     private static void DestroyDB_And_Redo_it(bool alsoFillTablesFromJson)
@@ -157,7 +165,7 @@ public static class NewConfig
 
         Database.Execute("CREATE TABLE Photos (" +
                          "id_photo INT(12) PRIMARY KEY," +
-                         "file_id VARCHAR(250)," +
+                         "file_id VARCHAR(2500)," +
                          "file_size INT(12)," +
                          "height INT(12)," +
                          "width INT(12)," +
@@ -166,7 +174,7 @@ public static class NewConfig
 
         Database.Execute("CREATE TABLE Videos (" +
                          "id_video INT(12) PRIMARY KEY," +
-                         "file_id VARCHAR(250)," +
+                         "file_id VARCHAR(2500)," +
                          "file_size INT(12)," +
                          "height INT(12)," +
                          "width INT(12)," +

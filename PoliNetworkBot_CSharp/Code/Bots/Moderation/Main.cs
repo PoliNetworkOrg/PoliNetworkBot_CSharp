@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot;
@@ -26,14 +28,14 @@ internal static class Main
     {
         var t = new Thread(() =>
         {
-            if (sender != null) _ = MainMethod2(sender, e);
+            if (sender != null && e != null) _ = MainMethod2(sender, e);
         });
         t.Start();
         //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
         //t1.Start();
     }
 
-    private static async Task MainMethod2(object sender, MessageEventArgs? e)
+    private static async Task<bool> MainMethod2(object sender, MessageEventArgs? e)
     {
         TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;
@@ -43,12 +45,13 @@ internal static class Main
             if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
             if (telegramBotClientBot == null)
-                return;
+                return false;
 
             if (e?.Message == null)
-                return;
+                return false;
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+
             var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (toExit is { Item1: ToExit.EXIT })
             {
@@ -81,40 +84,32 @@ internal static class Main
             await AddedUsersUtil.DealWithAddedUsers(telegramBotClient, e);
 
             if (BanMessageDetected(e, telegramBotClient))
-            {
-                CommandDispatcher.BanMessageActions(telegramBotClient, e);
-                return;
-            }
+                return await CommandDispatcher.BanMessageActions(telegramBotClient, e);
 
             var toExitBecauseUsernameAndNameCheck =
                 await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
             if (toExitBecauseUsernameAndNameCheck)
-                return;
+                return false;
 
             var checkSpam = await ModerationCheck.CheckSpamAsync(e, telegramBotClient);
             if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
-            {
-                await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
-                return;
-            }
+                return await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
 
             if (checkSpam == SpamType.SPAM_PERMITTED)
-            {
-                await ModerationCheck.PermittedSpamMeasure(telegramBotClient, e);
-                return;
-            }
+                return await ModerationCheck.PermittedSpamMeasure(telegramBotClient, EventArgsContainer.Get(e));
 
             if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
-                await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            else
-                await TextConversation.DetectMessage(telegramBotClient, e);
+                return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+            await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
         {
             Logger.WriteLine(exception.Message);
 
-            await NotifyUtil.NotifyOwners(exception, telegramBotClient, e);
+            await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, EventArgsContainer.Get(e));
         }
+
+        return false;
     }
 
     private static bool BanMessageDetected(MessageEventArgs? messageEventArgs, TelegramBotAbstract? sender)
@@ -133,7 +128,7 @@ internal static class Main
         }
         catch (Exception? e)
         {
-            _ = NotifyUtil.NotifyOwners(e, sender, messageEventArgs);
+            _ = NotifyUtil.NotifyOwnerWithLog2(e, sender, EventArgsContainer.Get(messageEventArgs));
             return false;
         }
     }

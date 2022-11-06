@@ -1,12 +1,16 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class AnswerWithTask
 {
     private readonly Dictionary<long, Couple<AnswerTelegram, TaskCompletionSource<string?>?>> _dictionary;

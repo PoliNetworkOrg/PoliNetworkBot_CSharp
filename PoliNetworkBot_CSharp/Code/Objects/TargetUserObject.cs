@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 
 #endregion
 
@@ -18,7 +19,7 @@ public class TargetUserObject
     public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
-        var target = stringInfo?[1];
+        var target = stringInfo?[0];
         SetStartParam(target);
 
         var fromIdReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Id;
@@ -28,10 +29,17 @@ public class TargetUserObject
 
         var usernameFromReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
         var usernameFromAction = messageEventArgs?.Message?.From?.Username;
-        if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) && usernameFromAction != usernameFromReply)
+        if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) &&
+            usernameFromAction != usernameFromReply)
             _username = usernameFromReply;
 
         _ = TryGetUserId(sender);
+    }
+
+    public TargetUserObject(User stringInfo)
+    {
+        _userId = stringInfo.Id;
+        _username = stringInfo.Username;
     }
 
     private void SetStartParam(string? s)

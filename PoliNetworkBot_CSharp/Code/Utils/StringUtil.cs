@@ -15,6 +15,11 @@ public static class StringUtil
         return caption == null ? "" : caption.Select(lang);
     }
 
+    public static string NotNull(string? caption)
+    {
+        return caption ?? "";
+    }
+
     private static bool IsRoomChar(char v)
     {
         return v switch

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
@@ -49,7 +50,7 @@ public static class RamSize
                     new Dictionary<string, string?>
                     {
                         { "en", message }
-                    }), null, Data.Constants.Groups.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
         }
         catch (Exception? ex)
         {

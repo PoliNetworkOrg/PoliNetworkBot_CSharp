@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
+using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
 
 #endregion
 
@@ -93,7 +93,6 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
 
     public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract,string message)
     {
-        Logger.WriteLine("ABC");
         return _condition(e) && base.TryTrigger(e, telegramBotAbstract, message);
     }
 }

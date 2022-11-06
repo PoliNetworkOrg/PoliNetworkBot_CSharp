@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliNetworkBot_CSharp.Code.Data.Variables;
 
 public static class GlobalVariables
 {
@@ -95,7 +95,8 @@ public static class GlobalVariables
             new("eliamaggioni"),
             new("tlpats"),
             new(349275135), //policreator
-            new(1051414781) //polinetwork
+            new(1051414781), //polinetwork,
+            new(1087968824) //@GroupAnonymousBot (è quello di telegram per retrocompatibilità
         };
 
         AllowedNoUsernameFromThisUserId = new List<long>
@@ -105,7 +106,7 @@ public static class GlobalVariables
 
         AllowedTags = new List<string>
         {
-            "poligruppo", "polirules", "polibook", "poliextra"
+            "poligruppo", "polirules", "polibook", "poliextra", "askpolimi"
         };
 
         Owners = new List<TelegramUser>
@@ -155,5 +156,13 @@ public static class GlobalVariables
     internal static bool IsOwner(long id)
     {
         return Owners != null && Owners.Any(x => x.Id == id);
+    }
+
+    public static bool IsAdmin(long id)
+    {
+        return (Owners != null && Owners.Any(x => x.Id == id))
+               || (Creators != null && Creators.Any(x => x.Id == id))
+               || (SubCreators != null && SubCreators.Any(x => x.Id == id))
+               || (AllowedSpam != null && AllowedSpam.Any(x => x.Id == id));
     }
 }

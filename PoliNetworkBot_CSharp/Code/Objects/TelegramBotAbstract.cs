@@ -8,7 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -94,7 +96,7 @@ public class TelegramBotAbstract
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwners(ex, this, e);
+            await NotifyUtil.NotifyOwnerWithLog2(ex, this, EventArgsContainer.Get(e));
         }
     }
 
@@ -358,7 +360,7 @@ public class TelegramBotAbstract
                 }
                 catch (Exception? e)
                 {
-                    await NotifyUtil.NotifyOwners(e, this, null);
+                    await NotifyUtil.NotifyOwnerWithLog2(e, this, null);
                     return false;
                 }
 
@@ -379,7 +381,7 @@ public class TelegramBotAbstract
                 }
                 catch (Exception? e)
                 {
-                    await NotifyUtil.NotifyOwners(e, this, null);
+                    await NotifyUtil.NotifyOwnerWithLog2(e, this, null);
                     return false;
                 }
 
@@ -560,15 +562,17 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task EditText(ChatId chatId, int messageId, string newText,
+    internal async Task<Message?> EditText(ChatId chatId, int messageId, string newText,
         InlineKeyboardMarkup inlineKeyboardMarkup)
     {
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
             {
-                if (_botClient != null) await _botClient.EditMessageTextAsync(chatId, messageId, newText);
-                return;
+                if (_botClient != null)
+                    return await _botClient.EditMessageTextAsync(chatId, messageId, newText,
+                        replyMarkup: inlineKeyboardMarkup);
+                break;
             }
 
             case BotTypeApi.USER_BOT:
@@ -580,6 +584,8 @@ public class TelegramBotAbstract
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        return null;
     }
 
     internal async Task RemoveInlineKeyboardAsync(ChatId chatId, long messageId, InlineKeyboardMarkup replyMarkup)
@@ -1162,8 +1168,10 @@ public class TelegramBotAbstract
 
     internal async Task<bool> SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
         Language? text,
-        TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink)
+        TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        ParseMode parseModeCaption = ParseMode.Html)
     {
+        var inputMedia = GetCaptionInline(text, lang, documentInput);
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1181,7 +1189,8 @@ public class TelegramBotAbstract
                         if (text == null) return true;
                         if (inputOnlineFile != null)
                             _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                text.Select(lang));
+                                inputMedia, parseMode: parseModeCaption);
+
                         return true;
                     }
 
@@ -1193,9 +1202,10 @@ public class TelegramBotAbstract
                         var t1 = text?.Select(lang);
                         if (text != null)
                             if (t1 != null)
-                                _ = await _botClient.SendTextMessageAsync(userId, t1);
+                                _ = await _botClient.SendTextMessageAsync(userId, t1, parseModeCaption);
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                parseMode: parseModeCaption);
 
                         return true;
                     }
@@ -1204,9 +1214,10 @@ public class TelegramBotAbstract
                     {
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
-                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile);
+                            _ = await _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                                parseMode: parseModeCaption);
                         var t1 = text?.Select(lang);
-                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1);
+                        if (t1 != null) _ = await _botClient.SendTextMessageAsync(userId, t1, parseModeCaption);
 
                         return true;
                     }
@@ -1224,7 +1235,7 @@ public class TelegramBotAbstract
                         var tlFileToSend = await documentInput.GetMediaTl(UserbotClient);
                         if (tlFileToSend != null)
                         {
-                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, text, username, lang);
+                            var r = await tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, inputMedia, username);
                             return r != null;
                         }
 
@@ -1275,6 +1286,12 @@ public class TelegramBotAbstract
         }
 
         return false;
+    }
+
+    private static string? GetCaptionInline(Language? text, string? lang, TelegramFile documentInput)
+    {
+        var s = text?.Select(lang);
+        return string.IsNullOrEmpty(s) ? documentInput.GetCaption() : s;
     }
 
     internal async Task<bool> UpdateUsername(string from, string to)
@@ -1719,7 +1736,7 @@ public class TelegramBotAbstract
         return new MessageSentResult(false, null, chatTypeToSendTo);
     }
 
-    internal async Task FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync()
+    internal async Task<bool> FixTheFactThatSomeGroupsDoesNotHaveOurModerationBotAsync()
     {
         switch (_isbot)
         {
@@ -1728,13 +1745,14 @@ public class TelegramBotAbstract
 
             case BotTypeApi.USER_BOT:
             {
-                await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
+                return await UserBotFixBotAdmin.FixTheFactThatSomeGroupsDoesNotHaveOurModerationBot2(this);
             }
-                break;
 
             case BotTypeApi.DISGUISED_BOT:
                 break;
         }
+
+        return false;
     }
 
     public async Task AnswerCallbackQueryAsync(string callbackQueryId, string text)

@@ -6,9 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
+using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
 
 #endregion
 
@@ -230,7 +231,7 @@ public static class AutoReplyInGroups
         await SendMessage.SendMessageInAGroup(telegramBotClient,
             "uni",
             text,
-            e,
+            EventArgsContainer.Get(e), 
             e.Message.Chat.Id,
             e.Message.Chat.Type,
             ParseMode.Html,

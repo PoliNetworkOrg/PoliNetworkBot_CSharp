@@ -1,11 +1,14 @@
 ﻿#region
 
 using System;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class AnswerTelegram
 {
     public enum State

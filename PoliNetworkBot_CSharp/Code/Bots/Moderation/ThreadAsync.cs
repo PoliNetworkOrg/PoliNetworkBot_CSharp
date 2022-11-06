@@ -7,13 +7,14 @@ using System.Linq;
 using System.Threading;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types.Enums;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.Groups;
 
 #endregion
 
@@ -165,7 +166,7 @@ public static class ThreadAsync
             {
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
-            _ = telegramBotAbstract.SendTextMessageAsync(Groups.BackupGroup, text, ChatType.Supergroup, "en",
+            _ = telegramBotAbstract.SendTextMessageAsync(GroupsConstants.BackupGroup, text, ChatType.Supergroup, "en",
                 ParseMode.Html, null, null);
         }
         catch (Exception? ex)
@@ -205,14 +206,22 @@ public static class ThreadAsync
         {
             while (true)
             {
-                await CommandDispatcher.BackupHandler(Groups.BackupGroup, bot, null, ChatType.Group);
+                await CommandDispatcher.BackupHandler(GroupsConstants.BackupGroup, bot, null, ChatType.Group);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwners(e, bot, messageEventArgs);
+            try
+            {
+                await NotifyUtil.NotifyOwnerWithLog2(e, bot, EventArgsContainer.Get(messageEventArgs));
+            }
+            catch (Exception e2)
+            {
+                Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
+                Logger.WriteLine(e2, LogSeverityLevel.CRITICAL);
+            }
         }
     }
 
@@ -227,7 +236,7 @@ public static class ThreadAsync
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots == null || bots.Count == 0)
                 return;
-            await NotifyUtil.NotifyOwners(e, bots[0], null);
+            await NotifyUtil.NotifyOwnerWithLog2(e, bots[0], null);
         }
     }
 
@@ -277,7 +286,7 @@ public static class ThreadAsync
             }
             catch (Exception? e)
             {
-                _ = NotifyUtil.NotifyOwners(e, GetFirstBot(), null);
+                _ = NotifyUtil.NotifyOwnerWithLog2(e, GetFirstBot(), null);
             }
 
             try

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
-internal class ValueWithException<T>
+public class ValueWithException<T>
 {
     private readonly SuccessWithException _successWithException;
     private readonly T _value;

@@ -10,12 +10,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
@@ -33,9 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram;
 
 internal static class Program
 {
-    private static BotConfig? _botInfos;
-    private static BotConfig? _userBotsInfos;
-    private static BotConfig? _botDisguisedAsUserBotInfos;
+    public static readonly BotConfigAll BotConfigAll = new();
 
     private static async Task Main(string[]? args)
     {
@@ -45,7 +45,7 @@ internal static class Program
             Logger.WriteLine("Program will stop.");
             return;
         }
-
+        
         while (true)
         {
             var (item1, item2) = MainGetMenuChoice2(args);
@@ -147,8 +147,16 @@ internal static class Program
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
-        while (true)
-            Console.ReadKey();
+        try
+        {
+            while (true)
+                Console.ReadKey();
+        }
+        catch (Exception e)
+        {
+            while (true)
+                Console.Read();
+        }
     }
 
     private static ToExit FirstThingsToDo()
@@ -161,12 +169,15 @@ internal static class Program
         if (!Directory.Exists("../config"))
             Directory.CreateDirectory("../config");
 
+        if (!Directory.Exists("../data"))
+            Directory.CreateDirectory("../data");
+
         MessagesStore.InitializeMessageStore();
         CallbackUtils.InitializeCallbackDatas();
         DbConfig.InitializeDbConfig();
 
         var currentTimeZone = TimeZoneInfo.Local;
-        Logger.WriteLine("Current TimeZone: " + currentTimeZone);
+        Logger.WriteLine("Current TimeZone: " + currentTimeZone + " time: " + DateTime.Now);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
         return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))
             ? ToExit.STAY
@@ -210,7 +221,7 @@ internal static class Program
     {
         try
         {
-            _botDisguisedAsUserBotInfos =
+            BotConfigAll.BotDisguisedAsUserBotInfos =
                 JsonConvert.DeserializeObject<BotConfig>(
                     File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
         }
@@ -219,8 +230,8 @@ internal static class Program
             // ignored
         }
 
-        if (_botDisguisedAsUserBotInfos?.bots != null &&
-            _botDisguisedAsUserBotInfos.bots.Count != 0)
+        if (BotConfigAll.BotDisguisedAsUserBotInfos?.bots != null &&
+            BotConfigAll.BotDisguisedAsUserBotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -237,7 +248,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _botDisguisedAsUserBotInfos =
+                    BotConfigAll.BotDisguisedAsUserBotInfos =
                         JsonConvert.DeserializeObject<BotConfig>(
                             File.ReadAllText(Paths.Info.ConfigBotDisguisedAsUserBotsInfo));
                 }
@@ -249,7 +260,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
@@ -264,7 +275,7 @@ internal static class Program
     {
         try
         {
-            _userBotsInfos =
+            BotConfigAll.UserBotsInfos =
                 JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
         }
         catch
@@ -272,7 +283,7 @@ internal static class Program
             // ignored
         }
 
-        if (_userBotsInfos is { bots: { } } && _userBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -289,7 +300,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _userBotsInfos =
+                    BotConfigAll.UserBotsInfos =
                         JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigUserBotsInfo));
                 }
                 catch
@@ -300,7 +311,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
@@ -315,14 +326,15 @@ internal static class Program
     {
         try
         {
-            _botInfos = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
+            BotConfigAll.BotInfos =
+                JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(Paths.Info.ConfigBotsInfo));
         }
         catch (Exception? ex)
         {
             Logger.WriteLine(ex);
         }
 
-        if (_botInfos is { bots: { } } && _botInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.WriteLine(
@@ -339,7 +351,7 @@ internal static class Program
                 //ok, keep going
                 try
                 {
-                    _botInfos = JsonConvert.DeserializeObject<BotConfig>(
+                    BotConfigAll.BotInfos = JsonConvert.DeserializeObject<BotConfig>(
                         File.ReadAllText(Paths.Info.ConfigBotsInfo));
                 }
                 catch
@@ -350,7 +362,7 @@ internal static class Program
             else
             {
                 Logger.WriteLine("Ok, bye!");
-                return ToExit.SKIP;
+                return ToExit.EXIT;
             }
         }
         else
@@ -368,9 +380,9 @@ internal static class Program
         var anonBots = 0;
 
         GlobalVariables.Bots = new Dictionary<long, TelegramBotAbstract?>();
-        if (_botInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
-            if (_botInfos.bots != null)
-                foreach (var bot in _botInfos.bots)
+        if (BotConfigAll.BotInfos != null && advancedModeDebugDisguised == false && runOnlyUserBot == false)
+            if (BotConfigAll.BotInfos.bots != null)
+                foreach (var bot in BotConfigAll.BotInfos.bots)
                 {
                     var token = bot.GetToken();
                     if (string.IsNullOrEmpty(token))
@@ -421,9 +433,9 @@ internal static class Program
                         anonBots++;
                 }
 
-        if (_userBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
-            if (_userBotsInfos.bots != null)
-                foreach (var userbot in _userBotsInfos.bots)
+        if (BotConfigAll.UserBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
+            if (BotConfigAll.UserBotsInfos.bots != null)
+                foreach (var userbot in BotConfigAll.UserBotsInfos.bots)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
@@ -454,10 +466,10 @@ internal static class Program
                         }
                 }
 
-        if (_botDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
+        if (BotConfigAll.BotDisguisedAsUserBotInfos != null && advancedModeDebugDisguised && runOnlyUserBot == false &&
             runOnlyNormalBot == false)
-            if (_botDisguisedAsUserBotInfos.bots != null)
-                foreach (var userbot in _botDisguisedAsUserBotInfos.bots)
+            if (BotConfigAll.BotDisguisedAsUserBotInfos.bots != null)
+                foreach (var userbot in BotConfigAll.BotDisguisedAsUserBotInfos.bots)
                 {
                     var client = await UserbotConnect.ConnectAsync(userbot);
                     var userId = userbot.userId;
@@ -481,17 +493,18 @@ internal static class Program
     }
 
     private static void PreStartupActionsAsync(TelegramBotAbstract? telegramBotAbstract,
-        MessageEventArgs? messageEventArgs, BotInfoAbstract botInfoAbstract)
+        EventArgsContainer? messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
         if (Logger.ContainsCriticalErrors(out var critics))
         {
             var toSend = "WARNING! \n";
             toSend += "Critical errors found in log while starting up! \n" + critics;
-            NotifyUtil.NotifyOwners(toSend, telegramBotAbstract, messageEventArgs);
+            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs,
+                FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
         }
 
         using var powershell = PowerShell.Create();
-        foreach (var line in CommandDispatcher.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
+        foreach (var line in ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.WriteLine(line);
 
         if (botInfoAbstract.onMessages != BotStartMethods.Material.Item1)
             return;
@@ -537,6 +550,12 @@ internal static class Program
                 {
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
+                }
+                catch (Telegram.Bot.Exceptions.ApiRequestException e) // Overlap in cluster to verify healthy application
+                {
+                    Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                    Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
+                    Thread.Sleep(10 * 1000);
                 }
                 catch (Exception? ex)
                 {

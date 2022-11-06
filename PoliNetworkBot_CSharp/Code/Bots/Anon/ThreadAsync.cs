@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
@@ -49,7 +50,7 @@ internal static class ThreadAsync
 
         try
         {
-            await NotifyUtil.NotifyOwners(new Exception("Check anon message started."), bot, null);
+            await NotifyUtil.NotifyOwnerWithLog2(new Exception("Check anon message started."), bot, null);
         }
         catch
         {
@@ -91,7 +92,7 @@ internal static class ThreadAsync
         }
         catch (Exception? e)
         {
-            return await ExceptionNumbered.SendExceptionAsync(e, bot, messageEventArgs);
+            return await ExceptionNumbered.SendExceptionAsync(e, bot, EventArgsContainer.Get(messageEventArgs));
         }
 
         return true;

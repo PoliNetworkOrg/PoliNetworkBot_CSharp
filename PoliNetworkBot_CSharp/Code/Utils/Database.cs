@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 
@@ -41,9 +43,10 @@ public static class Database
     }
 
     public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
+        Dictionary<string, object?>? args = null, ToLog toLog = ToLog.YES)
     {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        if (toLog == ToLog.YES)
+            Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
         if (dbConfigConnection == null) return null;
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
@@ -110,5 +113,15 @@ public static class Database
         {
             return null;
         }
+    }
+
+    public static async Task QueryBotExec(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        _ = await CommandDispatcher.QueryBot(true, e, sender);
+    }
+
+    public static async Task QueryBotSelect(MessageEventArgs? e, TelegramBotAbstract? sender)
+    {
+        _ = await CommandDispatcher.QueryBot(false, e, sender);
     }
 }

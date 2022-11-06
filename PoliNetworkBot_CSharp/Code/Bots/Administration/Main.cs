@@ -113,7 +113,7 @@ internal static class Main
                 catch (Exception? e)
                 {
                     Thread.Sleep(int.Parse(Regex.Match(e.Message, @"\d+").Value) * 1000);
-                    await NotifyUtil.NotifyOwners(e, telegramBotAbstract, null);
+                    await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, null);
                 }
     }
 }

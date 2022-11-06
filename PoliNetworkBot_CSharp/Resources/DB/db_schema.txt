@@ -48,7 +48,7 @@ Table MessageTypes {
 
 Table Photos {
   id_photo int [pk]
-  file_id varchar(250)
+  file_id varchar(2500)
   file_size int
   height int
   width int

@@ -1,13 +1,11 @@
 ﻿#region
 
 using System.Collections.Generic;
-using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using Telegram.Bot;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.MainProgram;
+namespace PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 
 public class BotClientWhole
 {

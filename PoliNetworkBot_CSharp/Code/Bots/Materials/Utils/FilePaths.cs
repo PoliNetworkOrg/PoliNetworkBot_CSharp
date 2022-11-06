@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
 
@@ -15,8 +16,13 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 [JsonObject(MemberSerialization.Fields)]
 public static class FilePaths
 {
+    private static Dictionary<string, string?> _cache = new();
+
     public static bool TryGetValue(string? fileAndGit, TelegramBotAbstract? telegramBotAbstract, out string? output)
     {
+        if (fileAndGit == null)
+            throw new Exception("Exception in FilePaths!\nfileAndGit cannot be null here");
+        if (_cache.TryGetValue(fileAndGit, out output)) return true;
         const string? q1 = "SELECT location FROM FilePaths WHERE file_and_git = @v";
         var d = new Dictionary<string, object?>
         {
@@ -34,10 +40,14 @@ public static class FilePaths
         return true;
     }
 
-    public static bool TryAdd(string? fileUniqueAndGit, TelegramBotAbstract? telegramBotAbstract, string? file)
+    public static async Task<bool> TryAdd(string? fileUniqueAndGit, TelegramBotAbstract? telegramBotAbstract,
+        string? file, EventArgsContainer eventArgsContainer)
     {
         try
         {
+            if (fileUniqueAndGit == null)
+                return false;
+            _cache.Add(fileUniqueAndGit, file);
             const string? q = "INSERT INTO FilePaths (file_and_git, location) VALUES (@file_and_git, @path)";
             var keyValuePairs = new Dictionary<string, object?>
             {
@@ -49,8 +59,8 @@ public static class FilePaths
         }
         catch (Exception? ex)
         {
-            Logger.WriteLine(ex);
-            throw new Exception("Cannot add file to materialdb!");
+            await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotAbstract, null , eventArgsContainer);
+            return false;
         }
     }
 }

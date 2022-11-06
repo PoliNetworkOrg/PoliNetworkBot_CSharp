@@ -2,6 +2,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using TeleSharp.TL;
@@ -54,5 +55,20 @@ public class TelegramFile : GenericFile
             TLInputFile r2 => new TlFileToSend(r2, _mimeType, attributes),
             _ => null
         };
+    }
+
+    public static TelegramFile FromString(string json, string fileName, string caption)
+    {
+        return UtilsFileText.GenerateFileFromString(json, fileName, caption);
+    }
+
+    public static TelegramFile FromStreamJson(Stream stream, string filename, string? caption)
+    {
+        return new TelegramFile(stream, filename, caption, "application/json");
+    }
+
+    public string? GetCaption()
+    {
+        return _caption;
     }
 }

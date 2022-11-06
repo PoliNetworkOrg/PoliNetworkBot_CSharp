@@ -1,11 +1,10 @@
 ﻿#region
 
 using System;
-using PoliNetworkBot_CSharp.Code.Objects;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
 public class ActionMessageEvent
 {

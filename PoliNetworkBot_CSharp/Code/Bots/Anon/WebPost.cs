@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.MainProgram;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -167,6 +168,9 @@ internal class WebPost
         var url = "https://spottedpolimi.altervista.org/s/setapproved.php?id=" + x.AuthorId.Value + "&password=" +
                   ConfigAnon.Password + "&approved=" + approved;
         var x2 = await Web.DownloadHtmlAsync(url);
+        if (!x2.IsValid())
+            return false;
+
         if (ThreadAsync.DictionaryWebpost != null)
             ThreadAsync.DictionaryWebpost[x.AuthorId.Value].approved = approved;
         ThreadAsync.WriteDict();

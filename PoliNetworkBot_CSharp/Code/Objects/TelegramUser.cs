@@ -5,7 +5,7 @@ using Telegram.Bot.Types;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class TelegramUser
 {
@@ -41,5 +41,10 @@ public class TelegramUser
                     string.Equals(usernameParam, _username, StringComparison.CurrentCultureIgnoreCase),
             _ => Id == userIdParam
         };
+    }
+
+    public bool Matches(long userIdParam)
+    {
+        return Id == userIdParam;
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
@@ -88,6 +89,6 @@ internal static class TextConversation
         await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From?.Id,
             e.Message.From?.LanguageCode,
             e.Message.From?.Username, text2,
-            ParseMode.Html, null);
+            ParseMode.Html, null, null, EventArgsContainer.Get(e));
     }
 }
