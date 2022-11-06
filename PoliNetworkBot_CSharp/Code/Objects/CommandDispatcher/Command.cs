@@ -151,7 +151,7 @@ public class Command
     {
         return string.IsNullOrEmpty(_longDescription.Select(""))
             ? HelpMessage(clearance)
-            : CommandsUtils.GenerateMessage(_helpMessage, clearance, _permissionLevel, _trigger);
+            : CommandsUtils.GenerateMessage(_longDescription, clearance, _permissionLevel, _trigger);
     }
 
     private bool IsTriggered(string command)
