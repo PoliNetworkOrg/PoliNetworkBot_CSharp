@@ -45,7 +45,7 @@ internal static class Program
             Logger.WriteLine("Program will stop.");
             return;
         }
-
+        
         while (true)
         {
             var (item1, item2) = MainGetMenuChoice2(args);
@@ -147,8 +147,16 @@ internal static class Program
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
-        while (true)
-            Console.ReadKey();
+        try
+        {
+            while (true)
+                Console.ReadKey();
+        }
+        catch (Exception e)
+        {
+            while (true)
+                Console.Read();
+        }
     }
 
     private static ToExit FirstThingsToDo()
@@ -169,7 +177,7 @@ internal static class Program
         DbConfig.InitializeDbConfig();
 
         var currentTimeZone = TimeZoneInfo.Local;
-        Logger.WriteLine("Current TimeZone: " + currentTimeZone);
+        Logger.WriteLine("Current TimeZone: " + currentTimeZone + " time: " + DateTime.Now);
         var allowedTextTimeZone = new List<string> { "roma", "rome", "europe" };
         return allowedTextTimeZone.Any(x => currentTimeZone.DisplayName.ToLower().Contains(x))
             ? ToExit.STAY
@@ -542,6 +550,12 @@ internal static class Program
                 {
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
+                }
+                catch (Telegram.Bot.Exceptions.ApiRequestException e) // Overlap in cluster to verify healthy application
+                {
+                    Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                    Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
+                    Thread.Sleep(10 * 1000);
                 }
                 catch (Exception? ex)
                 {

@@ -71,20 +71,7 @@ public class CommandsUtils
     }
 }
 
-public class CommandConditionException : Exception
+public enum CommandExecutionState
 {
-    public new readonly Language Message;
-
-    public CommandConditionException(List<string> trigger)
-    {
-        Message = new L(
-            "it",
-            "Formattazione del messaggio errata. \n" +
-            "Per informazioni aggiuntive scrivi<b>\n" +
-            "/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>",
-            "en",
-            "The message is wrongly formatted. \n" +
-            "For additional info type <b>\n" +
-            "/help " + string.Join("</b> \n<b>/help ", trigger.ToArray()) + "</b>");
-    }
+    SUCCESSFUL, NOT_TRIGGERED, UNMET_CONDITIONS, INSUFFICIENT_PERMISSIONS, ERROR_NOT_ENABLED
 }
