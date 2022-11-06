@@ -50,7 +50,7 @@ public static class AutoReplyInGroups
             "Se non avete fatto cose strane tipo: inserito esami autonomi senza essersi accertati preventivamente che fossero ok, " +
                         "vincoli del regolamento non rispettati ecc, non vi preoccupate. Il piano prima o poi vi verrà approvato. " +
                         "In caso abbiate presentato un piano personalizzato sarà la commissione stessa a contattarvi in caso di problemi", 
-            e => e.Message.Chat.Id == Groups.PianoDiStudi), // È legale?
+            e => e.Message.Chat.Id == Groups.PianoDiStudi),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
