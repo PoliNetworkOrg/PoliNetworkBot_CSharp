@@ -32,7 +32,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 internal static class CommandDispatcher
 {
     /*
-     * TODO verify restrict actions are still working
      *  (they probably aren't, we changed the target from IReadOnlyList<string?>? target
      *      to string[] containing all the targets to ban)
     */

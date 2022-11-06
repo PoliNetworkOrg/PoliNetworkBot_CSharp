@@ -100,7 +100,7 @@ internal static class Main
 
             if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            return await TextConversation.DetectMessage(telegramBotClient, e);
+            await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
         {
