@@ -33,7 +33,8 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
     }
 
     public static async Task HelpExtendedSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -71,7 +72,8 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
     }
 
     public static async Task HelpPrivateSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -109,6 +111,7 @@ public class Help
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
             e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
     }
 }

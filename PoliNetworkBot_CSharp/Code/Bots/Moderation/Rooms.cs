@@ -103,7 +103,7 @@ internal static class Rooms
             { "en", "Use /rooms to find rooms!" }
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username, text, 
+            e?.Message.From?.LanguageCode, e?.Message.From?.Username, text,
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
 

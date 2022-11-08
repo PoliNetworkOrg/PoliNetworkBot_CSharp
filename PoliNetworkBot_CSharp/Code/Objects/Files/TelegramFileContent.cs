@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JsonPolimi_Core_nf.Tipi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
@@ -73,7 +72,8 @@ public class TelegramFileContent
         return _fileContent;
     }
 
-    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, EventArgsContainer? eventArgsContainer, ExceptionNumbered exception)
+    public static TelegramFileContent? GetStack(ExtraInfo? extraInfo, EventArgsContainer? eventArgsContainer,
+        ExceptionNumbered exception)
     {
         try
         {
@@ -102,7 +102,7 @@ public class TelegramFileContent
     {
         if (exception == null)
             return null;
-    
+
         var result = new JObject
         {
             ["toString"] = exception.ToString(),
@@ -118,12 +118,12 @@ public class TelegramFileContent
     {
         if (eventArgsContainer == null)
             return null;
-    
+
         var result = new JObject
         {
             ["MessageEventArgs"] = GetMessageEventArgsAsJToken(eventArgsContainer.MessageEventArgs),
             ["CallbackGenericData"] = GetGenericCallDataAsJToken(eventArgsContainer.CallbackGenericData),
-            ["CallbackQueryEventArgs"] = GetCallbackQueryEventArgsAsJToken( eventArgsContainer.CallbackQueryEventArgs)
+            ["CallbackQueryEventArgs"] = GetCallbackQueryEventArgsAsJToken(eventArgsContainer.CallbackQueryEventArgs)
         };
 
         return result;
@@ -133,7 +133,7 @@ public class TelegramFileContent
     {
         if (callbackQueryEventArgs == null)
             return null;
-    
+
         var result = new JObject
         {
             ["CallbackQuery"] = GetCallbackQueryAsJToken(callbackQueryEventArgs.CallbackQuery)
@@ -146,7 +146,7 @@ public class TelegramFileContent
     {
         if (callbackQuery == null)
             return null;
-    
+
         var result = new JObject
         {
             ["Data"] = callbackQuery.Data,
@@ -166,7 +166,7 @@ public class TelegramFileContent
     {
         if (callbackGenericData == null)
             return null;
-    
+
         var result = new JObject
         {
             ["id"] = callbackGenericData.Id,
@@ -185,10 +185,8 @@ public class TelegramFileContent
 
         var result = new JArray();
         foreach (var callbackOptionAsJToken in options.Select(GetCallbackOptionAsJToken))
-        {
-            if (callbackOptionAsJToken != null) 
+            if (callbackOptionAsJToken != null)
                 result.Add(callbackOptionAsJToken);
-        }
 
         return result;
     }
@@ -197,7 +195,7 @@ public class TelegramFileContent
     {
         if (callbackOption == null)
             return null;
-    
+
         var result = new JObject
         {
             ["displayed"] = callbackOption.displayed,
@@ -223,7 +221,7 @@ public class TelegramFileContent
         {
             // ignored
         }
-        
+
         try
         {
             result["json"] = JsonConvert.SerializeObject(callbackOptionValue);
@@ -240,17 +238,17 @@ public class TelegramFileContent
     {
         if (string.IsNullOrEmpty(stack))
             return null;
-        
+
         var s = stack.Replace("\\n", "\n");
         var s2 = s.Split('\n');
-        return new JArray() { s2 };
+        return new JArray { s2 };
     }
 
     private static JToken? GetMessageEventArgsAsJToken(MessageEventArgs? messageEventArgs)
     {
         if (messageEventArgs == null)
             return null;
-    
+
         var result = new JObject
         {
             ["message"] = GetMessageAsJToken(messageEventArgs.Message)
@@ -263,7 +261,7 @@ public class TelegramFileContent
     {
         if (message == null)
             return null;
-        
+
         var result = new JObject
         {
             ["text"] = message.Text,
@@ -279,7 +277,7 @@ public class TelegramFileContent
     {
         if (messageChat == null)
             return null;
-        
+
         var result = new JObject
         {
             ["title"] = messageChat.Title,
@@ -297,7 +295,7 @@ public class TelegramFileContent
     {
         if (messageFrom == null)
             return null;
-        
+
         var result = new JObject
         {
             ["id"] = messageFrom.Id,

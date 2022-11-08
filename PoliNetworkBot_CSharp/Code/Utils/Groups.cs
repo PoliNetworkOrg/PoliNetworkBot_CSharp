@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -124,7 +123,8 @@ internal static class Groups
                         var e3 = new Exception("Unexpected exception in FixAllGroupsName \n\noldTitle: " +
                                                oldTitle +
                                                "\n NewTitle: " + newTitle + "\n\n" + e2);
-                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract, EventArgsContainer.Get(messageEventArgs));
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotAbstract,
+                            EventArgsContainer.Get(messageEventArgs));
                     }
                 }
             }
@@ -151,7 +151,8 @@ internal static class Groups
                 var groupsFixLogUpdatedEnum = CheckForGroupUpdateAsync2(e.Message.Chat, telegramBotClient);
 
                 if (groupsFixLogUpdatedEnum == GroupsFixLogUpdatedEnum.NEW_NAME)
-                    GroupsFixLog.SendLog(telegramBotClient, EventArgsContainer.Get(e), GroupsFixLogUpdatedEnum.NEW_NAME);
+                    GroupsFixLog.SendLog(telegramBotClient, EventArgsContainer.Get(e),
+                        GroupsFixLogUpdatedEnum.NEW_NAME);
             }
 
             _ = CheckIfInviteIsWorking(e, telegramBotClient);
@@ -217,7 +218,8 @@ internal static class Groups
                             if (nuovoLink != null && nuovoLink.IsNuovo != SuccessoGenerazioneLink.ERRORE)
                                 await NotifyUtil.NotifyOwners_AnError_AndLog3(
                                     "Fixed link for group " + e.Message.Chat.Title + " id: " + e.Message.Chat.Id,
-                                    telegramBotClient, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
+                                    telegramBotClient, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING,
+                                    SendActionEnum.SEND_TEXT);
                         }
                     }
                 }
@@ -435,7 +437,8 @@ internal static class Groups
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
                         e.Message.From.Id,
                         e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline, EventArgsContainer.Get(e)),
+                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline,
+                        EventArgsContainer.Get(e)),
                     ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
                         .SendMessageInAGroup(
                             sender,

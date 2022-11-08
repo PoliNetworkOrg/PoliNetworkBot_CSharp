@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -567,7 +566,8 @@ internal static class ModerationCheck
                     {
                         var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
                         var e3 = new Exception(e4);
-                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
+                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient,
+                            EventArgsContainer.Get(messageEventArgs));
                         break;
                     }
                 }
@@ -597,7 +597,7 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, 
+                        e.Message.From.Username, text2, ParseMode.Html, null,
                         InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
 
                     break;
@@ -615,7 +615,8 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                        EventArgsContainer.Get(e));
 
                     break;
                 }
@@ -629,7 +630,8 @@ internal static class ModerationCheck
 
                     await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
                         e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
+                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                        EventArgsContainer.Get(e), false);
 
                     break;
                 }
