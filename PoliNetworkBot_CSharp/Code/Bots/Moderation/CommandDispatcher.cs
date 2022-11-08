@@ -318,6 +318,10 @@ internal static class CommandDispatcher
                                     "For additional info type <b>\n" +
                                     "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>"), 
                                 sender, e);
+                        else
+                        {
+                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                        }
                         return false;
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
