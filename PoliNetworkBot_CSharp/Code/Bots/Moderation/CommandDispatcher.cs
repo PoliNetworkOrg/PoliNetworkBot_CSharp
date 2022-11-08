@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
@@ -241,16 +242,33 @@ internal static class CommandDispatcher
             new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "assoc delete"), null, null),
 
-        new Command("massiveSend", MassiveSendUtil.MassiveSend,
+        new Command("massive_send", MassiveSendUtil.MassiveSend,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "massive send"), null,
             null, false),
 
-        new Command("banAllHistory", BanHistory,
+        new Command("ban_all_history", BanHistory,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "ban all history"), null,
-            null, false)
+            null, false),
+        
+        new Command("send_message", SendMessageInGroup,
+        new List<ChatType> { ChatType.Private }, Permission.OWNER,
+        new L("en", "Send message in a single group using the bot. @condition: Message to be sent. @args: Group ID"), null,
+        e => e.Message.ReplyToMessage != null, false)
     };
+
+    private static async Task SendMessageInGroup(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    {
+        if (e?.Message.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
+        {
+
+            return;
+        }
+
+        await SendMessage.ForwardMessage(sender, e, e.Message.Chat.Id, args[0], e.Message.MessageId, false, null,
+            CancellationToken.None);
+    }
 
     private static Task BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
@@ -325,12 +343,13 @@ internal static class CommandDispatcher
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
-                    default:
-                        break; // DO NOTHING
+                    case CommandExecutionState.ERROR_DEFAULT:
+                        break;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
                 return false;
             }
 
@@ -914,15 +933,16 @@ internal static class CommandDispatcher
         await Help.HelpExtendedSlave(e, sender);
     }
 
-    private static async Task HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    private static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
         if (args == null || args.Length == 0)
             await Help.HelpPrivateSlave(e, sender);
         else
             await Help.HelpSpecific(e, sender, args);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task ContactUs(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
+    private static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
     {
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
         if (telegramBotClient != null)
@@ -937,10 +957,13 @@ internal static class CommandDispatcher
                 ParseMode.Html,
                 new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e?.Message.From?.Username
             );
+            return CommandExecutionState.SUCCESSFUL;
         }
+
+        return CommandExecutionState.ERROR_DEFAULT;
     }
 
-    private static async Task ForceCheckInviteLinksAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         long? n = null;
         try
@@ -953,7 +976,7 @@ internal static class CommandDispatcher
         }
 
         if (n == null)
-            return;
+            return C;
 
         var text2 = new Language(new Dictionary<string, string?>
         {

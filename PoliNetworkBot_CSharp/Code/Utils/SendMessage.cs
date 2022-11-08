@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -9,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -256,5 +258,23 @@ internal static class SendMessage
         await CommandDispatcher.DefaultCommand(sender, e);
 
         return false;
+    }
+
+    public static async Task<SuccessWithException> ForwardMessage(TelegramBotAbstract? sender, MessageEventArgs? e, ChatId chatId, ChatId fromChatId, int messageId, 
+        bool? disableNotification = default, bool? protectContent = default, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (sender == null) return new SuccessWithException(false);
+            await sender.ForwardMessageAsync(chatId, fromChatId, messageId, disableNotification, protectContent,
+                cancellationToken);
+            return new SuccessWithException(true);
+
+        }
+        catch (Exception ex)
+        {
+            return new SuccessWithException(true, ex);
+        }
+        
     }
 }

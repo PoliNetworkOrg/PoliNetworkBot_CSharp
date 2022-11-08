@@ -5,7 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class CommandsUtils
+public static class CommandsUtils
 {
     /// <summary>
     ///     body returns everything except the tags
@@ -72,9 +72,5 @@ public class CommandsUtils
 
 public enum CommandExecutionState
 {
-    SUCCESSFUL,
-    NOT_TRIGGERED,
-    UNMET_CONDITIONS,
-    INSUFFICIENT_PERMISSIONS,
-    ERROR_NOT_ENABLED
+    SUCCESSFUL, NOT_TRIGGERED, UNMET_CONDITIONS, INSUFFICIENT_PERMISSIONS, ERROR_NOT_ENABLED, ERROR_DEFAULT
 }
