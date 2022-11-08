@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliNetworkBot_CSharp.Code.Data.Variables;
 
 public static class GlobalVariables
 {

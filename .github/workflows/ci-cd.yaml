@@ -48,7 +48,11 @@ jobs:
 
       - name: Set env
         if: ${{ github.ref == 'refs/heads/master' }}
+<<<<<<< HEAD
         run: echo "DOCKER_REPO=$(echo '')" >> $GITHUB_ENV
+=======
+        run: echo "DOCKER_REPO=$(echo prod)" >> $GITHUB_ENV
+>>>>>>> da95f72b6e970fc2200aa6f0c5994bca39d7748f
 
       - name: Set env
         if: ${{ github.ref == 'refs/heads/dev' }}
@@ -75,7 +79,11 @@ jobs:
       - name: Set stage env
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
+<<<<<<< HEAD
           echo "DOCKER_REPO=$(echo '')" >> $GITHUB_ENV
+=======
+          echo "DOCKER_REPO=$(echo 'prod')" >> $GITHUB_ENV
+>>>>>>> da95f72b6e970fc2200aa6f0c5994bca39d7748f
           echo "STAGE_ENV=$(echo 'prod')" >> $GITHUB_ENV
 
       - name: Set stage env

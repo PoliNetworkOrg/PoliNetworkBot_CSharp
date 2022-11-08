@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -99,7 +100,7 @@ internal static class Main
 
             if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            return await TextConversation.DetectMessage(telegramBotClient, e);
+            await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
         {

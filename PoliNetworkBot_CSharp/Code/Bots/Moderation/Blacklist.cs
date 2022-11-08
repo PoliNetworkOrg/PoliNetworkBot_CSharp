@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
@@ -69,9 +70,7 @@ internal static class Blacklist
     private static SpamType CheckForFormatMistakes(string? text, long? groupId, bool toLogMistakes)
     {
         var s = CheckForFormatMistakes2(text, groupId);
-
-        if (toLogMistakes) Logger.WriteLine("CheckForFormatMistakes\n\n" + s + "\n\n" + text + "\n\n" + groupId);
-
+        
         return s;
     }
 

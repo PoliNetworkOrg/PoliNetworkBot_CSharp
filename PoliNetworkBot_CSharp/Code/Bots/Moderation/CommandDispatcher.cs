@@ -13,6 +13,7 @@ using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -31,7 +32,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 internal static class CommandDispatcher
 {
     /*
-     * TODO verify restrict actions are still working
      *  (they probably aren't, we changed the target from IReadOnlyList<string?>? target
      *      to string[] containing all the targets to ban)
     */
@@ -212,7 +212,7 @@ internal static class CommandDispatcher
             new L("en", "Insert a message in queue @condition: Reply to the message to send", "it",
                 "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"),
             new L("un",
-                "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
+                "- Inviare al bot \\@polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
                 "- Rispondere al messaggio inviato al punto precedente con il messaggio /assoc_write " +
                 "(è importante rispondere al messaggio, che significa selezionare il messaggio e poi premere il tasto \"reply\" o \"rispondi\")\n" +
                 "- Il bot chiede se lo si vuole \"mettere in coda\" o di scegliere una data\n" +
@@ -318,7 +318,10 @@ internal static class CommandDispatcher
                                     "For additional info type <b>\n" +
                                     "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>"), 
                                 sender, e);
-                        break;
+                        {
+                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                        }
+                        return false;
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
@@ -773,7 +776,7 @@ internal static class CommandDispatcher
                 GenericInfo = s
             };
             var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
         }
@@ -943,7 +946,7 @@ internal static class CommandDispatcher
         }
         catch (Exception? e2)
         {
-            await NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
         }
 
         if (n == null)

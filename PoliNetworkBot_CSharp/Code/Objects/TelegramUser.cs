@@ -5,7 +5,7 @@ using Telegram.Bot.Types;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Data;
+namespace PoliNetworkBot_CSharp.Code.Objects;
 
 public class TelegramUser
 {
