@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PoliNetworkBot_CSharp.Code.Data.Constants;
+﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
 public static class GroupsConstants
 {
@@ -13,5 +11,4 @@ public static class GroupsConstants
     public const long AskPolimi = -1001251460298;
     public const long DSU = -1001241129618;
     public const long Testing = -1001436937011;
-
 }

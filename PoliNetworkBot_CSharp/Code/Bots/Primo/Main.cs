@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
@@ -239,7 +238,8 @@ public static class Main
         var text = new Language(dict4);
         var r5 = e?.Message;
         if (r5 != null)
-            return await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text, EventArgsContainer.Get(e),
+            return await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text,
+                EventArgsContainer.Get(e),
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
 
         return null;
@@ -328,7 +328,8 @@ public static class Main
         var m1 = e?.Message;
         if (e == null) return null;
         if (m1 == null) return null;
-        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text, EventArgsContainer.Get(e),
+        var r = await SendMessage.SendMessageInAGroup(telegramBotClient, m1.From?.LanguageCode, text,
+            EventArgsContainer.Get(e),
             m1.Chat.Id, m1.Chat.Type, ParseMode.Html, m1.MessageId, true);
         return r;
     }

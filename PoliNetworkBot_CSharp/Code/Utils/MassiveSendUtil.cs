@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
@@ -64,7 +63,8 @@ public static class MassiveSendUtil
         await NotifyUtil.NotifyOwners_AnError_AndLog3(
             "WARNING! \n A new massive send has ben authorized by " +
             UserbotPeer.GetHtmlStringWithUserLink(e?.Message.From) + " and will be sent in 1000 seconds. \n" +
-            $"The message is:\n\n{textToSend}", sender, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
+            $"The message is:\n\n{textToSend}", sender, EventArgsContainer.Get(e), FileTypeJsonEnum.SIMPLE_STRING,
+            SendActionEnum.SEND_TEXT);
 
         Thread.Sleep(1000 * 1000);
 

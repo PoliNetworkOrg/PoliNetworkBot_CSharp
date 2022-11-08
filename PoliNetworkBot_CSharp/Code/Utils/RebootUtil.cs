@@ -28,7 +28,8 @@ public static class RebootUtil
             try
             {
                 SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                    null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(messageEventArgs)).Wait();
+                    null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                    EventArgsContainer.Get(messageEventArgs)).Wait();
             }
             catch (Exception e)
             {

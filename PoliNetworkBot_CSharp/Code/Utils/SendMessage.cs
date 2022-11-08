@@ -69,7 +69,7 @@ internal static class SendMessage
         InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, bool notifyOwners = true)
     {
         var stackTrace = Environment.StackTrace;
-        
+
         try
         {
             if (telegramBotClient != null)
@@ -83,7 +83,7 @@ internal static class SendMessage
         {
             if (notifyOwners)
                 await NotifyUtil.NotifyOwnersWithLog(e, telegramBotClient, stackTrace, eventArgsContainer);
-            
+
             return new MessageSentResult(false, null, ChatType.Private);
         }
 

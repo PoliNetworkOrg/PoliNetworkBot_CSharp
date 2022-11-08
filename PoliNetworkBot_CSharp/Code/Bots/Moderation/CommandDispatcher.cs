@@ -11,7 +11,6 @@ using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Config;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -307,16 +306,18 @@ internal static class CommandDispatcher
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
                     case CommandExecutionState.UNMET_CONDITIONS:
-                        if(e.Message.Chat.Type == ChatType.Private)
+                        if (e.Message.Chat.Type == ChatType.Private)
                             await NotifyUserCommandError(new L(
                                     "it",
                                     "Formattazione del messaggio errata. \n" +
                                     "Per informazioni aggiuntive scrivi<b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>",
+                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                    "</b>",
                                     "en",
                                     "The message is wrongly formatted. \n" +
                                     "For additional info type <b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>"), 
+                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                    "</b>"),
                                 sender, e);
                         else
                             await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
@@ -325,7 +326,7 @@ internal static class CommandDispatcher
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     default:
-                        break;  // DO NOTHING
+                        break; // DO NOTHING
                 }
             }
             catch (Exception)
@@ -336,7 +337,8 @@ internal static class CommandDispatcher
         return await DefaultCommand(sender, e);
     }
 
-    private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender, MessageEventArgs e)
+    private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
+        MessageEventArgs e)
     {
         return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
             e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
@@ -774,7 +776,7 @@ internal static class CommandDispatcher
             {
                 GenericInfo = s
             };
-            var eventArgsContainer = new EventArgsContainer(){MessageEventArgs =  e};
+            var eventArgsContainer = new EventArgsContainer { MessageEventArgs = e };
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(exception), sender, eventArgsContainer, extraInfo);
 
             return null;
@@ -810,7 +812,8 @@ internal static class CommandDispatcher
 
         return await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
     }
 
     private static async Task SendRecommendedGroupsAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -838,7 +841,8 @@ internal static class CommandDispatcher
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
     }
 
     public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
@@ -990,7 +994,8 @@ internal static class CommandDispatcher
 
     public static async Task<bool> BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        return await NotifyUtil.NotifyOwnersBanAction(telegramBotClient, EventArgsContainer.Get(e), e?.Message.LeftChatMember?.Id,
+        return await NotifyUtil.NotifyOwnersBanAction(telegramBotClient, EventArgsContainer.Get(e),
+            e?.Message.LeftChatMember?.Id,
             e?.Message.LeftChatMember?.Username);
     }
 }

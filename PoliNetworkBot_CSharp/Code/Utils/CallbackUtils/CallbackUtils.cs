@@ -121,7 +121,8 @@ public static class CallbackUtils
         }
         catch (Exception? exc)
         {
-            await NotifyUtil.NotifyOwnersWithLog(exc, telegramBotClient, null, EventArgsContainer.Get(callbackQueryEventArgs));
+            await NotifyUtil.NotifyOwnersWithLog(exc, telegramBotClient, null,
+                EventArgsContainer.Get(callbackQueryEventArgs));
         }
 
         return false;
@@ -146,7 +147,8 @@ public static class CallbackUtils
         }
         catch (Exception? exception)
         {
-            await NotifyUtil.NotifyOwnersWithLog(exception, telegramBotClientBot, null, EventArgsContainer.Get(callbackQueryEventArgs));
+            await NotifyUtil.NotifyOwnersWithLog(exception, telegramBotClientBot, null,
+                EventArgsContainer.Get(callbackQueryEventArgs));
         }
     }
 

@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Config;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -24,6 +23,7 @@ using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Test.IG;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
@@ -45,7 +45,7 @@ internal static class Program
             Logger.WriteLine("Program will stop.");
             return;
         }
-        
+
         while (true)
         {
             var (item1, item2) = MainGetMenuChoice2(args);
@@ -551,7 +551,7 @@ internal static class Program
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
                 }
-                catch (Telegram.Bot.Exceptions.ApiRequestException e) // Overlap in cluster to verify healthy application
+                catch (ApiRequestException e) // Overlap in cluster to verify healthy application
                 {
                     Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
