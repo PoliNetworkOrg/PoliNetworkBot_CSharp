@@ -32,7 +32,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 internal static class CommandDispatcher
 {
     /*
-     * TODO verify restrict actions are still working
      *  (they probably aren't, we changed the target from IReadOnlyList<string?>? target
      *      to string[] containing all the targets to ban)
     */
@@ -213,7 +212,7 @@ internal static class CommandDispatcher
             new L("en", "Insert a message in queue @condition: Reply to the message to send", "it",
                 "Inserisci un messaggio associativo in coda @condition: Rispondi al messaggio da mandare"),
             new L("un",
-                "- Inviare al bot @polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
+                "- Inviare al bot \\@polinetwork3bot una foto con al di sotto del testo (nello stesso messaggio, come descrizione alla foto)\n " +
                 "- Rispondere al messaggio inviato al punto precedente con il messaggio /assoc_write " +
                 "(è importante rispondere al messaggio, che significa selezionare il messaggio e poi premere il tasto \"reply\" o \"rispondi\")\n" +
                 "- Il bot chiede se lo si vuole \"mettere in coda\" o di scegliere una data\n" +
@@ -319,7 +318,7 @@ internal static class CommandDispatcher
                                     "For additional info type <b>\n" +
                                     "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) + "</b>"), 
                                 sender, e);
-                        break;
+                        return false;
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
