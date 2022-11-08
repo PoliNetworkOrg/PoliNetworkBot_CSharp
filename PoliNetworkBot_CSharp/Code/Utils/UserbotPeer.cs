@@ -42,7 +42,7 @@ internal static class UserbotPeer
         return null;
     }
 
-    internal static TLAbsInputUser? GetPeerUserFromdId(long userId)
+    internal static TLAbsInputUser? GetPeerUserFromId(long userId)
     {
         try
         {
