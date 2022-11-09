@@ -244,6 +244,6 @@ public static class AutoReplyInGroups
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        foreach (var answer in AutomaticAnswers) answer.TryTrigger(e, telegramBotClient, text);
+        AutomaticAnswers.ForEach(x => x.TryTrigger(e, telegramBotClient, text));
     }
 }
