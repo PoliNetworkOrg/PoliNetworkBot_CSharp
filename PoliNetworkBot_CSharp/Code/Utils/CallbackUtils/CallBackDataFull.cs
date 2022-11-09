@@ -19,6 +19,7 @@ public class CallBackDataFull
 {
     // ReSharper disable once InconsistentNaming
     public Dictionary<string, CallbackGenericData> callbackDatas = new();
+
     // ReSharper disable once InconsistentNaming
     public BigInteger last = 0;
 

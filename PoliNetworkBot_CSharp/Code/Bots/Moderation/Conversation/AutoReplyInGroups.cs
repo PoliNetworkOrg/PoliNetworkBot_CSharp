@@ -245,9 +245,9 @@ public static class AutoReplyInGroups
     {
         foreach (var answer in _automaticAnswers)
         {
-            if (e == null ) continue;
+            if (e == null) continue;
             if (telegramBotClient == null) continue;
-            
+
             answer.TryTrigger(e, telegramBotClient, text);
         }
     }

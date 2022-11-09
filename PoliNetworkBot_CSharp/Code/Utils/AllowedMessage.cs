@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types.Enums;
@@ -59,9 +58,9 @@ public static class AllowedMessage
         if (message == null ||
             e == null ||
             !Owners.CheckIfOwner(e.Message.From?.Id) ||
-            message.Chat.Type != ChatType.Private) 
+            message.Chat.Type != ChatType.Private)
             return CommandExecutionState.UNMET_CONDITIONS;
-        
+
         if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
         {
             var text = new Language(new Dictionary<string, string?>
@@ -82,6 +81,5 @@ public static class AllowedMessage
 
         MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
         return CommandExecutionState.SUCCESSFUL;
-
     }
 }

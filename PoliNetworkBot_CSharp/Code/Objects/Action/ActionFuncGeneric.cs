@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGeneric
 {
     private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>>? _action;
@@ -13,22 +16,23 @@ public class ActionFuncGeneric
 
     public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract?, string[]?, CommandExecutionState> action)
     {
-        this._action2 = action;
+        _action2 = action;
     }
 
-    public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action)
+    public ActionFuncGeneric(
+        Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action)
     {
-        this._action = action;
+        _action = action;
     }
 
     public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract?, CommandExecutionState> action)
     {
-        this._action3 = action;
+        _action3 = action;
     }
 
     public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>> action)
     {
-        this._action4 = action;
+        _action4 = action;
     }
 
     public CommandExecutionState Invoke(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract, string[] args)
