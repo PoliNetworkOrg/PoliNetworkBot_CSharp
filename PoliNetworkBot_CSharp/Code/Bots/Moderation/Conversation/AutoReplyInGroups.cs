@@ -101,23 +101,25 @@ public static class AutoReplyInGroups
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/askPolimi'>click here</a>!"),
 
-        new AutomaticAnswer(new List<List<string>>
+        new AutomaticAnswerRestricted(new List<List<string>>
             {
                 new() { "diritto studio universitario", "diritto allo studio", "dsu" }
             }, Reply,
             new List<long> { Groups.DSU, Groups.AskPolimi },
             "Ciao 👋 sembra tu stia facendo domande in merito al DSU. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!"),
+            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!",
+            e => e.Message.From?.LanguageCode == "it"),
 
-        new AutomaticAnswer(new List<List<string>>
+        new AutomaticAnswerRestricted(new List<List<string>>
             {
                 new() { "scholarship", "dsu" }
             }, Reply,
             new List<long> { Groups.DSU, Groups.AskPolimi },
             "Hi 👋 it seems you are asking questions about 'DSU'. " +
             "PoliNetwork advices you to write in the dedicated group, " +
-            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"),
+            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!",
+            e => e.Message.From?.LanguageCode != "it"),
 
         new AutomaticAnswer(new List<List<string>>
             {
@@ -144,7 +146,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Controlla i messaggi fissati",
-            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  areWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -154,7 +156,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Check the pinned messages",
-            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  areWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
