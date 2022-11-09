@@ -15,8 +15,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 
 public static class AutoReplyInGroups
 {
-    private static readonly DateTime DsuLimit = new(2022, 11, 30);
     private const bool AreWhatsappLinksPublic = false;
+    private static readonly DateTime DsuLimit = new(2022, 11, 30);
 
     private static readonly List<AutomaticAnswer> AutomaticAnswers = new()
     {
@@ -244,9 +244,6 @@ public static class AutoReplyInGroups
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        foreach (var answer in AutomaticAnswers)
-        {
-            answer.TryTrigger(e, telegramBotClient, text);
-        }
+        foreach (var answer in AutomaticAnswers) answer.TryTrigger(e, telegramBotClient, text);
     }
 }
