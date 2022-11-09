@@ -130,7 +130,7 @@ public class TelegramBotAbstract
                     }
                     else
                     {
-                        users.Add(UserbotPeer.GetPeerUserFromdId(Convert.ToInt64(userId)));
+                        users.Add(UserbotPeer.GetPeerUserFromId(Convert.ToInt64(userId)));
                     }
 
                     var tLInputChannel = new TLInputChannel { ChannelId = channel.Id };
@@ -1364,7 +1364,7 @@ public class TelegramBotAbstract
                     {
                         var r = await UserbotClient.ChannelsGetParticipant(
                             UserbotPeer.GetPeerChannelFromIdAndType(chatId, null),
-                            UserbotPeer.GetPeerUserFromdId(userId));
+                            UserbotPeer.GetPeerUserFromId(userId));
 
                         var b2 = r.Participant is TLChannelParticipantModerator or TLChannelParticipantCreator;
                         return new SuccessWithException(b2);
