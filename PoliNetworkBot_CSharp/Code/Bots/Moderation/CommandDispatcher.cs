@@ -574,11 +574,11 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var message = e?.Message.ReplyToMessage;
         if (message == null)
-            return;
+            return CommandExecutionState.UNMET_CONDITIONS;
         if (e?.Message != null)
         {
             var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
@@ -601,9 +601,11 @@ internal static class CommandDispatcher
             }
             catch
             {
-                // ignored
+                return CommandExecutionState.ERROR_DEFAULT;
             }
         }
+
+        return CommandExecutionState.SUCCESSFUL;
     }
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
@@ -835,7 +837,7 @@ internal static class CommandDispatcher
             EventArgsContainer.Get(e));
     }
 
-    private static async Task SendRecommendedGroupsAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
@@ -860,8 +862,8 @@ internal static class CommandDispatcher
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
@@ -928,9 +930,10 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Help.HelpExtendedSlave(e, sender);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)

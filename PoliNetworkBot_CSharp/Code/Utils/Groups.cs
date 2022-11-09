@@ -391,11 +391,12 @@ internal static class Groups
     }
 
 
-    public static async Task<MessageSentResult?> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? args)
     {
-        if (args is { Length: < 1 }) return null;
-        return args != null ? await SendGroupsByTitle(string.Join(" ", args), sender, e, 6) : null;
+        if (args is { Length: < 1 } or null) return CommandExecutionState.UNMET_CONDITIONS;
+        await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task<MessageSentResult?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
@@ -486,11 +487,13 @@ internal static class Groups
         };
     }
 
-    public static async Task<bool> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return e != null && await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+        return await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
-            e.Message.Chat.Type);
+            e.Message.Chat.Type) ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 
     public static async Task<bool> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
