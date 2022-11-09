@@ -5,7 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class CommandsUtils
+public static class CommandsUtils
 {
     /// <summary>
     ///     body returns everything except the tags
