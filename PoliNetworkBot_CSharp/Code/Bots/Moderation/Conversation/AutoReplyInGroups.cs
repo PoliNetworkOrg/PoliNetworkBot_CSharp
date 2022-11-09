@@ -146,7 +146,8 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Controlla i messaggi fissati",
-            e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null &&
+                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  areWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -156,7 +157,8 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Check the pinned messages",
-            e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null &&
+                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  areWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
