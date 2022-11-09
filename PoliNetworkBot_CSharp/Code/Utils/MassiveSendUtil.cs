@@ -160,37 +160,35 @@ public static class MassiveSendUtil
         return null;
     }
 
-    public static async Task<bool> MassiveGeneralSendAsyncCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> MassiveGeneralSendAsyncCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return sender != null && await MassiveGeneralSendAsync(e, sender, false);
+        return sender == null ? CommandExecutionState.UNMET_CONDITIONS : await MassiveGeneralSendAsync(e, sender, false) ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> MassiveGeneralSendAsyncTestCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> MassiveGeneralSendAsyncTestCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return sender != null && await MassiveGeneralSendAsync(e, sender, true);
+        return sender == null ? CommandExecutionState.UNMET_CONDITIONS : await MassiveGeneralSendAsync(e, sender, true) ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task MassiveSend(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? cmdLines)
+    public static async Task<CommandExecutionState> MassiveSend(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? cmdLines)
     {
         try
         {
             if (e != null && Matches(GlobalVariables.AllowedBanAll, e.Message.From))
             {
-                if (e.Message.From != null)
-                    if (e.Message.ReplyToMessage != null)
-                        if (sender != null)
-                            if (e.Message.ReplyToMessage.Text != null)
-                                _ = CommandDispatcher.MassiveSendAsync(sender, e, e.Message.ReplyToMessage.Text);
+                if (sender == null || e.Message.ReplyToMessage?.Text == null || e.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
+                await CommandDispatcher.MassiveSendAsync(sender, e, e.Message.ReplyToMessage.Text);
+                return CommandExecutionState.SUCCESSFUL;
+
             }
-            else
-            {
-                await CommandDispatcher.DefaultCommand(sender, e);
-            }
+            await CommandDispatcher.DefaultCommand(sender, e);
         }
         catch (Exception ex)
         {
             Logger.Logger.WriteLine(ex);
         }
+
+        return CommandExecutionState.ERROR_DEFAULT;
     }
 
     private static bool Matches(IReadOnlyCollection<TelegramUser>? allowedBanAll, User? user)

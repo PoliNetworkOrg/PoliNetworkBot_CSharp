@@ -10,7 +10,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class AllowedMessage
 {
-    public static async Task<bool> GetAllowedMessages(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetAllowedMessages(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -18,7 +18,7 @@ public static class AllowedMessage
             { "en", "List of messages: " }
         });
         if (sender == null)
-            return false;
+            return CommandExecutionState.UNMET_CONDITIONS;
 
 
         if (e != null)
@@ -35,7 +35,7 @@ public static class AllowedMessage
         var messages = MessagesStore.GetAllMessages(x =>
             x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
         if (messages == null)
-            return false;
+            return CommandExecutionState.UNMET_CONDITIONS;
 
         foreach (var m2 in messages.Select(message => message?.message)
                      .Where(m2 => m2 != null))
@@ -50,10 +50,10 @@ public static class AllowedMessage
         }
 
 
-        return false;
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> UnAllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UnAllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var message = e?.Message;
         if (message != null &&
@@ -68,7 +68,7 @@ public static class AllowedMessage
                     { "en", "You have to reply to a message containing the message" }
                 });
                 if (sender == null)
-                    return false;
+                    return CommandExecutionState.UNMET_CONDITIONS;
                 var o = e.Message;
                 await sender.SendTextMessageAsync(e.Message.From?.Id, text,
                     ChatType.Private,
@@ -76,15 +76,13 @@ public static class AllowedMessage
                     e.Message.From?.Username,
                     o.MessageId);
 
-                return false;
+                return CommandExecutionState.UNMET_CONDITIONS;
             }
 
             MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
-            return false;
+            return CommandExecutionState.SUCCESSFUL;
         }
-
-        await CommandDispatcher.DefaultCommand(sender, e);
-
-        return false;
+        
+        return CommandExecutionState.UNMET_CONDITIONS;
     }
 }

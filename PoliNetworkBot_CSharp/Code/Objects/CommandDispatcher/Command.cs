@@ -128,6 +128,18 @@ public class Command
         _enabled = enabled;
     }
 
+    public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>> action, List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
+    {
+        _trigger = trigger;
+        _action4 = action;
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
     public static Command CreateInstance(IEnumerable<string> trigger,
         Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,

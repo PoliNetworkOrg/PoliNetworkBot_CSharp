@@ -31,11 +31,6 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
 internal static class CommandDispatcher
 {
-    /*
-     *  (they probably aren't, we changed the target from IReadOnlyList<string?>? target
-     *      to string[] containing all the targets to ban)
-    */
-
     /// <summary>
     ///     List of commands actively listened to from the bot.
     ///     triggers are case insensitive!
@@ -258,19 +253,20 @@ internal static class CommandDispatcher
         e => e.Message.ReplyToMessage != null, false)
     };
 
-    private static async Task SendMessageInGroup(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    private static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
         if (e?.Message.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
         {
 
-            return;
+            return CommandExecutionState.UNMET_CONDITIONS;
         }
 
         await SendMessage.ForwardMessage(sender, e, e.Message.Chat.Id, args[0], e.Message.MessageId, false, null,
             CancellationToken.None);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static Task BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static Task<CommandExecutionState> BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         throw new NotImplementedException();
         //todo: complete
@@ -278,14 +274,16 @@ internal static class CommandDispatcher
         //return Task.CompletedTask;
     }
 
-    private static async Task GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Rooms.RoomsMainAsync(sender, e);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         _ = await Rules(sender, e);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
@@ -345,6 +343,8 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.ERROR_DEFAULT:
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             catch (Exception ex)
@@ -365,38 +365,30 @@ internal static class CommandDispatcher
     }
 
 
-    private static async Task AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e != null)
+        if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
+        if (e.Message.ReplyToMessage != null && (!string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) ||
+                                                 !string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
+            return CommandExecutionState.UNMET_CONDITIONS;
+        var text = new Language(new Dictionary<string, string?>
         {
-            if (e.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                                     string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
-            {
-                var text = new Language(new Dictionary<string, string?>
-                {
-                    { "en", "You have to reply to a message containing the message" },
-                    { "it", "You have to reply to a message containing the message" }
-                });
+            { "en", "You have to reply to a message containing the message" },
+            { "it", "You have to reply to a message containing the message" }
+        });
 
-                if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
-                        e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                        e.Message.MessageId);
-            }
-            else
-            {
-                MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Text);
-                MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Caption);
-                Logger.WriteLine(
-                    e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ??
-                    "Error in allowmessage, both caption and text are null");
-            }
-        }
+        if (sender != null)
+            await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
+                e.Message.MessageId);
+        return CommandExecutionState.SUCCESSFUL;
+
     }
 
-    private static async Task AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Assoc.AllowMessage(e, sender);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<string?> GetRunningTime()
@@ -979,7 +971,7 @@ internal static class CommandDispatcher
         }
 
         if (n == null)
-            return C;
+            return CommandExecutionState.ERROR_DEFAULT;
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -992,6 +984,7 @@ internal static class CommandDispatcher
                 e.Message.From?.Username, text2,
                 ParseMode.Html,
                 e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task Start(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string[]? args)
