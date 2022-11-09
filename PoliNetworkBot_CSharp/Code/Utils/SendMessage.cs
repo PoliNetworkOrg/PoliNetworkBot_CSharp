@@ -4,13 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -226,12 +224,14 @@ internal static class SendMessage
     }
 
 
-    public static async Task<CommandExecutionState> SendMessageInChannel2(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> SendMessageInChannel2(MessageEventArgs? e,
+        TelegramBotAbstract? sender,
         string[]? cmdLines)
     {
         if (e == null || cmdLines == null) return CommandExecutionState.UNMET_CONDITIONS;
         var message = e.Message;
-        if (!Owners.CheckIfOwner(e.Message.From?.Id) || message.Chat.Type != ChatType.Private) return CommandExecutionState.UNMET_CONDITIONS;
+        if (!Owners.CheckIfOwner(e.Message.From?.Id) || message.Chat.Type != ChatType.Private)
+            return CommandExecutionState.UNMET_CONDITIONS;
         if (e.Message.ReplyToMessage == null || cmdLines.Length != 2)
             return CommandExecutionState.UNMET_CONDITIONS;
         var text = new Language(new Dictionary<string, string?>
@@ -239,18 +239,19 @@ internal static class SendMessage
             { "it", e.Message.ReplyToMessage?.Text ?? e.Message.ReplyToMessage?.Caption }
         });
         var c2 = cmdLines[1];
-        
+
         await SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
             text, EventArgsContainer.Get(e),
             long.Parse(c2),
             ChatType.Channel, ParseMode.Html, null, false);
 
         return CommandExecutionState.SUCCESSFUL;
-
     }
 
-    public static async Task<SuccessWithException> ForwardMessage(TelegramBotAbstract? sender, MessageEventArgs? e, ChatId chatId, ChatId fromChatId, int messageId, 
-        bool? disableNotification = default, bool? protectContent = default, CancellationToken cancellationToken = default)
+    public static async Task<SuccessWithException> ForwardMessage(TelegramBotAbstract? sender, MessageEventArgs? e,
+        ChatId chatId, ChatId fromChatId, int messageId,
+        bool? disableNotification = default, bool? protectContent = default,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -258,12 +259,10 @@ internal static class SendMessage
             await sender.ForwardMessageAsync(chatId, fromChatId, messageId, disableNotification, protectContent,
                 cancellationToken);
             return new SuccessWithException(true);
-
         }
         catch (Exception ex)
         {
             return new SuccessWithException(true, ex);
         }
-        
     }
 }

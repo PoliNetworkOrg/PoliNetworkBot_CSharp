@@ -25,6 +25,8 @@ public class BotConfig
             return CommandExecutionState.UNMET_CONDITIONS;
         return await ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
-            e.Message.Chat.Type)? CommandExecutionState.SUCCESSFUL : CommandExecutionState.UNMET_CONDITIONS;
+            e.Message.Chat.Type)
+            ? CommandExecutionState.SUCCESSFUL
+            : CommandExecutionState.UNMET_CONDITIONS;
     }
 }

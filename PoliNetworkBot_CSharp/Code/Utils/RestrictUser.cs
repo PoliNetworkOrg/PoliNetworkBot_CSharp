@@ -9,7 +9,6 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
-using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -521,7 +520,8 @@ internal static class RestrictUser
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> DeleteMessageFromUser(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    public static async Task<CommandExecutionState> DeleteMessageFromUser(MessageEventArgs? e,
+        TelegramBotAbstract? sender, string[]? args)
     {
         if (e?.Message.ReplyToMessage?.Chat.Id == null || sender == null) return CommandExecutionState.UNMET_CONDITIONS;
         await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
@@ -671,7 +671,6 @@ internal static class RestrictUser
             e?.Message.From?.Username, RestrictAction.MUTE,
             false);
         return CommandExecutionState.SUCCESSFUL;
-
     }
 
     public static async Task<CommandExecutionState> UnMuteAllAsync(
