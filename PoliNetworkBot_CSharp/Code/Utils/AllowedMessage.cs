@@ -56,33 +56,32 @@ public static class AllowedMessage
     public static async Task<CommandExecutionState> UnAllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var message = e?.Message;
-        if (message != null &&
-            e != null &&
-            Owners.CheckIfOwner(e.Message.From?.Id) &&
-            message.Chat.Type == ChatType.Private)
-        {
-            if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
-            {
-                var text = new Language(new Dictionary<string, string?>
-                {
-                    { "en", "You have to reply to a message containing the message" }
-                });
-                if (sender == null)
-                    return CommandExecutionState.UNMET_CONDITIONS;
-                var o = e.Message;
-                await sender.SendTextMessageAsync(e.Message.From?.Id, text,
-                    ChatType.Private,
-                    e.Message.From?.LanguageCode, ParseMode.Html, null,
-                    e.Message.From?.Username,
-                    o.MessageId);
-
-                return CommandExecutionState.UNMET_CONDITIONS;
-            }
-
-            MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
-            return CommandExecutionState.SUCCESSFUL;
-        }
+        if (message == null ||
+            e == null ||
+            !Owners.CheckIfOwner(e.Message.From?.Id) ||
+            message.Chat.Type != ChatType.Private) 
+            return CommandExecutionState.UNMET_CONDITIONS;
         
-        return CommandExecutionState.UNMET_CONDITIONS;
+        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+        {
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "en", "You have to reply to a message containing the message" }
+            });
+            if (sender == null)
+                return CommandExecutionState.UNMET_CONDITIONS;
+            var o = e.Message;
+            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
+                ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null,
+                e.Message.From?.Username,
+                o.MessageId);
+
+            return CommandExecutionState.UNMET_CONDITIONS;
+        }
+
+        MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
+        return CommandExecutionState.SUCCESSFUL;
+
     }
 }

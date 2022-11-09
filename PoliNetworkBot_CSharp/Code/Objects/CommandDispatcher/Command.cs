@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
@@ -23,10 +24,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 [JsonObject(MemberSerialization.Fields)]
 public class Command
 {
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>>? _action;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, CommandExecutionState>? _action2;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, CommandExecutionState>? _action3;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>>? _action4;
+    private readonly ActionFuncGeneric? _actionFuncGeneric;
     private readonly List<ChatType> _chatTypes;
     private readonly bool _enabled;
     private readonly Language _helpMessage;
@@ -44,7 +42,7 @@ public class Command
     {
         _optionalConditions = optionalConditions;
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action2 = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -57,7 +55,7 @@ public class Command
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -72,7 +70,7 @@ public class Command
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action3 = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -86,7 +84,7 @@ public class Command
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = new List<string> { trigger.ToLower() };
-        _action = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -101,7 +99,7 @@ public class Command
     {
         _optionalConditions = optionalConditions;
         _trigger = new List<string> { trigger.ToLower() };
-        _action2 = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -119,7 +117,7 @@ public class Command
     )
     {
         _trigger = new List<string> { trigger.ToLower() };
-        _action4 = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -131,7 +129,7 @@ public class Command
     public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>> action, List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger;
-        _action4 = action;
+        _actionFuncGeneric = new ActionFuncGeneric( action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -188,14 +186,8 @@ public class Command
             return CommandExecutionState.UNMET_CONDITIONS;
         if (!Permissions.CheckPermissions(_permissionLevel, e.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
-        if (_action != null)
-            return _action.Invoke(e, telegramBotAbstract, args).Result;
-        if (_action2 != null)
-            return _action2.Invoke(e, telegramBotAbstract, args);
-        if (_action3 != null)
-            return _action3.Invoke(e, telegramBotAbstract);
-        if (_action4 != null)
-            return _action4.Invoke(e, telegramBotAbstract).Result;
+        if (_actionFuncGeneric != null)
+            return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
         throw new Exception("Illegal state exception!");
     }
 }
