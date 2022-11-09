@@ -9,24 +9,24 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 [JsonObject(MemberSerialization.Fields)]
 public class EventArgsContainer
 {
+    public CallbackGenericData? CallbackGenericData;
     public CallbackQueryEventArgs? CallbackQueryEventArgs;
     public MessageEventArgs? MessageEventArgs;
-    public CallbackGenericData? CallbackGenericData;
- 
+
     public static EventArgsContainer Get(MessageEventArgs? messageEventArgs)
     {
-        return new EventArgsContainer() { MessageEventArgs = messageEventArgs };
+        return new EventArgsContainer { MessageEventArgs = messageEventArgs };
     }
 
     public static EventArgsContainer Get(CallbackGenericData callbackGenericData)
     {
-        return new EventArgsContainer() { CallbackGenericData = callbackGenericData };
+        return new EventArgsContainer { CallbackGenericData = callbackGenericData };
     }
 
 
     public static EventArgsContainer Get(CallbackQueryEventArgs callbackQueryEventArgs)
     {
-        return new EventArgsContainer() { CallbackQueryEventArgs = callbackQueryEventArgs };
+        return new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs };
     }
 
     public static EventArgsContainer? Get(EventArgsContainer? paramEvent)

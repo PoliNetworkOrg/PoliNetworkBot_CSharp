@@ -9,8 +9,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public class ExtraInfo
 {
-    public string? StackTrace;
     public string? GenericInfo;
+    public string? StackTrace;
 
     public JToken GetJToken()
     {

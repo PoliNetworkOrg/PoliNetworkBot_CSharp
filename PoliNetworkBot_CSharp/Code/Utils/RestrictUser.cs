@@ -636,7 +636,8 @@ internal static class RestrictUser
 
         var targetInt = e.Message.ReplyToMessage.From?.Id;
 
-        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt, e.Message.ReplyToMessage.From?.Username);
+        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt,
+            e.Message.ReplyToMessage.From?.Username);
 
         return await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             false);

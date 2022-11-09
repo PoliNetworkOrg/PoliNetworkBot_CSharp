@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 
@@ -38,7 +36,7 @@ internal static class Blacklist
         List<string> splitBy = new() { " ", "\"", "'" };
         words = splitBy.Aggregate(words, SplitTextBy);
 
-        var eventArgsContainer = new EventArgsContainer() { MessageEventArgs = messageEventArgs };
+        var eventArgsContainer = new EventArgsContainer { MessageEventArgs = messageEventArgs };
         if (words is not { Count: > 0 })
             return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                    SpamType.NOT_ALLOWED_WORDS
@@ -70,7 +68,7 @@ internal static class Blacklist
     private static SpamType CheckForFormatMistakes(string? text, long? groupId, bool toLogMistakes)
     {
         var s = CheckForFormatMistakes2(text, groupId);
-        
+
         return s;
     }
 
@@ -116,9 +114,8 @@ internal static class Blacklist
         // ReSharper disable once InvertIf
         if (ChiedoScusa(text, groupId))
         {
-
             await NotifyUtil.NotifyOwnersWithLog(new Exception("Chiedo scusa per lo spam \n\n" + text),
-                telegramBotAbstract, null, eventArgsContainer );
+                telegramBotAbstract, null, eventArgsContainer);
             return SpamType.NOT_ALLOWED_WORDS;
         }
 

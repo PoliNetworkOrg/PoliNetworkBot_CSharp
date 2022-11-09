@@ -59,7 +59,7 @@ public static class FilePaths
         }
         catch (Exception? ex)
         {
-            await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotAbstract, null , eventArgsContainer);
+            await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotAbstract, null, eventArgsContainer);
             return false;
         }
     }

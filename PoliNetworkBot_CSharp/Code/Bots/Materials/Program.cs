@@ -323,8 +323,8 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null, 
-                new EventArgsContainer(){ CallbackQueryEventArgs =  callbackQueryEventArgs});
+            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+                new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
         }
     }
 
@@ -342,7 +342,7 @@ public class Program
                 if (!FilePaths.TryGetValue(callbackdata?[2], sender, out var fileNameWithPath))
                     throw new Exception("Errore nel dizionario dei Path!");
 
-                var eventArgsContainer = new EventArgsContainer() { CallbackQueryEventArgs = callbackQueryEventArgs };
+                var eventArgsContainer = new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs };
                 if (callbackQueryEventArgs.CallbackQuery?.Message != null &&
                     callbackQueryEventArgs.CallbackQuery != null && !UserIsAdmin(sender, callbackQuery.From.Id,
                         callbackQueryEventArgs.CallbackQuery.Message.Chat.Id, eventArgsContainer))
@@ -516,8 +516,8 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null, 
-                                    new EventArgsContainer(){ CallbackQueryEventArgs = callbackQueryEventArgs});
+                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+                                    new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
                             }
                         }
 
@@ -527,7 +527,8 @@ public class Program
         }
     }
 
-    private static bool UserIsAdmin(TelegramBotAbstract? bot, long userId, long chatId, EventArgsContainer eventArgsContainer)
+    private static bool UserIsAdmin(TelegramBotAbstract? bot, long userId, long chatId,
+        EventArgsContainer eventArgsContainer)
     {
         try
         {
@@ -541,7 +542,7 @@ public class Program
         catch (Exception ex)
         {
             _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
-               eventArgsContainer);
+                eventArgsContainer);
             return false;
         }
     }
@@ -616,7 +617,7 @@ public class Program
             var fileUniqueAndGit = e.Message.Document.FileUniqueId + GetGit(file);
             var fileAlreadyPresent = false;
             string? oldPath = null;
-            var eventArgsContainer = new EventArgsContainer() { MessageEventArgs = e };
+            var eventArgsContainer = new EventArgsContainer { MessageEventArgs = e };
             if (!await FilePaths.TryAdd(fileUniqueAndGit, telegramBotAbstract, file, eventArgsContainer))
             {
                 //Verifica anti-SPAM, da attivare se servisse

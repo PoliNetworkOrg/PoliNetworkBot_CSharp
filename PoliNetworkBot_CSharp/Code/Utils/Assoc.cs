@@ -638,7 +638,8 @@ internal static class Assoc
                 }
 
                 var permittedSpamMessage =
-                    await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups, messageType, assocOrClub);
+                    await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups,
+                        messageType, assocOrClub);
 
                 var privateConfirmationMessage = new Language(new Dictionary<string, string?>
                 {
@@ -646,7 +647,7 @@ internal static class Assoc
                 });
 
                 await SendMessage.SendMessageInPrivate(sender,
-                    e.Message.From.Id, "uni", 
+                    e.Message.From.Id, "uni",
                     null, privateConfirmationMessage,
                     ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
@@ -842,7 +843,8 @@ internal static class Assoc
             }
             catch (Exception? e)
             {
-                await NotifyUtil.NotifyOwnersWithLog(e, callbackGenericData.Bot, null, EventArgsContainer.Get(callbackGenericData));
+                await NotifyUtil.NotifyOwnersWithLog(e, callbackGenericData.Bot, null,
+                    EventArgsContainer.Get(callbackGenericData));
             }
         }
         catch (Exception)

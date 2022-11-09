@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -73,5 +72,9 @@ public class CommandsUtils
 
 public enum CommandExecutionState
 {
-    SUCCESSFUL, NOT_TRIGGERED, UNMET_CONDITIONS, INSUFFICIENT_PERMISSIONS, ERROR_NOT_ENABLED
+    SUCCESSFUL,
+    NOT_TRIGGERED,
+    UNMET_CONDITIONS,
+    INSUFFICIENT_PERMISSIONS,
+    ERROR_NOT_ENABLED
 }

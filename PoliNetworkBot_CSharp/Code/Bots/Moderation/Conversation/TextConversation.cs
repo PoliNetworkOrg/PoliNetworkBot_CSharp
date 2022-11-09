@@ -30,7 +30,7 @@ internal static class TextConversation
                 case ChatType.Group:
                 case ChatType.Supergroup:
                 {
-                    await MessageInGroup(telegramBotClient, e);
+                    MessageInGroup(telegramBotClient, e);
                     break;
                 }
                 case ChatType.Sender:
@@ -41,7 +41,7 @@ internal static class TextConversation
             }
     }
 
-    private static async Task MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static void MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (e?.Message == null)
             return;
