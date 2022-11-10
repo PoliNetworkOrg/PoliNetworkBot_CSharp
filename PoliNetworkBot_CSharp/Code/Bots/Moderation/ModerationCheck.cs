@@ -352,8 +352,8 @@ internal static class ModerationCheck
         if (string.IsNullOrEmpty(e?.Message?.Text))
         {
             var s1 = SpamTypeUtil.Merge(
-                await Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat.Id, telegramBotClient, false, e),
-                Blacklist.IsSpam(e?.Message?.Photo));
+                await Blacklist.Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat.Id, telegramBotClient, false, e),
+                Blacklist.Blacklist.IsSpam(e?.Message?.Photo));
             if (s1 != null)
                 return s1.Value;
         }
@@ -366,9 +366,9 @@ internal static class ModerationCheck
         if (isForeign)
             return SpamType.FOREIGN;
 
-        var spamType1 = await Blacklist.IsSpam(e?.Message?.Text,
+        var spamType1 = await Blacklist.Blacklist.IsSpam(e?.Message?.Text,
             e?.Message?.Chat.Id, telegramBotClient, false, e);
-        var spamType2 = Blacklist.IsSpam(e?.Message?.Photo);
+        var spamType2 = Blacklist.Blacklist.IsSpam(e?.Message?.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;
     }
