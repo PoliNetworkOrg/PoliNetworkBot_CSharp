@@ -48,9 +48,7 @@ internal static class Blacklist
 
         var forwardedFrom = messageEventArgs?.Message.ForwardFrom;
         if (forwardedFrom != null && ForwardBlock.BlockForwardMessageFrom.Contains(forwardedFrom.Id))
-        {
             return SpamType.SPAM_LINK;
-        }
 
         return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                SpamType.NOT_ALLOWED_WORDS
