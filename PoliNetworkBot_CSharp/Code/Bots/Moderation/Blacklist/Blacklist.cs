@@ -15,7 +15,7 @@ using Telegram.Bot.Types;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Blacklist;
 
 internal static class Blacklist
 {
@@ -46,6 +46,10 @@ internal static class Blacklist
         if (words2.Any(word => word != null && CheckSpamLink(word, groupId, telegramBotAbstract) == SpamType.SPAM_LINK))
             return SpamType.SPAM_LINK;
 
+        var forwardedFrom = messageEventArgs?.Message.ForwardFrom;
+        if (forwardedFrom != null && ForwardBlock.BlockForwardMessageFrom.Contains(forwardedFrom.Id))
+            return SpamType.SPAM_LINK;
+
         return await CheckNotAllowedWords(text, groupId, telegramBotAbstract, eventArgsContainer) ==
                SpamType.NOT_ALLOWED_WORDS
             ? SpamType.NOT_ALLOWED_WORDS
@@ -68,7 +72,6 @@ internal static class Blacklist
     private static SpamType CheckForFormatMistakes(string? text, long? groupId, bool toLogMistakes)
     {
         var s = CheckForFormatMistakes2(text, groupId);
-
         return s;
     }
 
