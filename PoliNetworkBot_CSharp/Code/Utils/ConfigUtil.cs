@@ -24,7 +24,7 @@ public static class ConfigUtil
 
         var peer = new PeerAbstract(fromId, chatType.Value);
         var text = new Language(new Dictionary<string, string?>());
-        return  SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION, sender, fromUsername,
+        return SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION, sender, fromUsername,
             fromLanguageCode, null, true);
     }
 }

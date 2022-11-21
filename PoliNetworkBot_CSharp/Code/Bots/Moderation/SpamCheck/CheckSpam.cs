@@ -11,9 +11,8 @@ public static class CheckSpam
     public static async Task<bool?> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
     {
         var checkSpam = await CheckSpamAsync(e, telegramBotClient);
-        
 
-        
+
         return checkSpam switch
         {
             SpamType.SPAM_LINK => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
@@ -63,5 +62,4 @@ public static class CheckSpam
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;
     }
-
 }

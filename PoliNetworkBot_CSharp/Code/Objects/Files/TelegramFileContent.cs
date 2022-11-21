@@ -29,7 +29,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public  List<MessageSentResult>? SendToOwners(TelegramBotAbstract sender, string? langCode,
+    public List<MessageSentResult>? SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant)
     {
         if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;

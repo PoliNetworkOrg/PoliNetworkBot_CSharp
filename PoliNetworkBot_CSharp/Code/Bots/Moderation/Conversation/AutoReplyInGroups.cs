@@ -247,18 +247,15 @@ public static class AutoReplyInGroups
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        foreach (var answer in _automaticAnswers)
-        {
-            MessageInGroup3Async(answer, telegramBotClient,e, text);
-        }
+        foreach (var answer in _automaticAnswers) MessageInGroup3Async(answer, telegramBotClient, e, text);
     }
 
     private static void MessageInGroup3Async(AutomaticAnswer answer, TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e, string text)
     {
-        if (e == null || telegramBotClient == null) 
+        if (e == null || telegramBotClient == null)
             return;
-        
+
         answer.TryTrigger(e, telegramBotClient, text);
     }
 }

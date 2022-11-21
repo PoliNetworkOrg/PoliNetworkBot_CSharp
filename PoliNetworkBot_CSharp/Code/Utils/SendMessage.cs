@@ -99,7 +99,7 @@ internal static class SendMessage
         MessageSentResult? r1 = null;
 
         if (telegramBotClient == null) return null;
-        
+
 
         try
         {

@@ -545,7 +545,7 @@ internal static class CommandDispatcher
 
             var peer = new PeerAbstract(sendTo, chatType);
 
-             SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
+            SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
                     null, "application/json"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
                 botAbstract, username, "it", null, true);
@@ -754,7 +754,7 @@ internal static class CommandDispatcher
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v =  sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
+        var v = sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
             e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
         return v ? 1 : 0;
     }
@@ -863,7 +863,7 @@ internal static class CommandDispatcher
             { "en", "Here are all groups:" },
             { "it", "Ecco tutti i gruppi:" }
         });
-        return  Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
+        return Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                 null, "application/octet-stream"), peer,
             text2, TextAsCaption.BEFORE_FILE,
             sender, username, lang, null, true));
