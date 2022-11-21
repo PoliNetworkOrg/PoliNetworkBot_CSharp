@@ -391,6 +391,8 @@ internal static class Program
                     var botClient = new TelegramBotClient(token);
                     if (botClient.BotId == null) continue;
 
+                    await PrintBotInfo(botClient);
+
                     var x2 = bot.DbConfig;
                     DbConfigConnection? x1 = null;
                     if (x2 != null)
@@ -489,6 +491,21 @@ internal static class Program
         {
             var t = new Thread(Bots.Anon.ThreadAsync.DoThingsAsyncBotAsync);
             t.Start();
+        }
+    }
+
+    private static async Task PrintBotInfo(ITelegramBotClient botClient)
+    {
+        try
+        {
+            Console.WriteLine("Started #####START#####");
+            Console.WriteLine("Started id " + botClient.BotId);
+            Console.WriteLine("Started username " + (await botClient.GetMeAsync()).Username);
+            Console.WriteLine("Started #####END#####");
+        }
+        catch
+        {
+            ;
         }
     }
 

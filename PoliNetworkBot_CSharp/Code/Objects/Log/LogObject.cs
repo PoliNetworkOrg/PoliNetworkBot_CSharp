@@ -3,33 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Log;
 
 public class LogObject
 {
-    private List<object?> _values;
-    private readonly string _stackTrace;
-    private readonly IDictionary _enviromentVariables;
-    private JObject toLog;
+
+    private readonly JObject _toLog;
 
     public LogObject(List<object?> values)
     {
-        this._values = values;
-        this._stackTrace = Environment.StackTrace;
-        this._enviromentVariables = Environment.GetEnvironmentVariables();
-        this.toLog = new JObject
+        var enviromentVariables = Environment.GetEnvironmentVariables();
+        var stackTrace = Environment.StackTrace;
+        this._toLog = new JObject
         {
-            ["stackTrace"] = _stackTrace,
-            ["enviromentVariables"] = GetJObject( this._enviromentVariables),
-            ["values"] = GetJObject(_values)
+            ["stackTrace"] = stackTrace,
+            ["enviromentVariables"] = GetJObject( enviromentVariables),
+            ["values"] = GetJObject(values)
         };
     }
 
-    public string getStringToLog()
+    public string GetStringToLog()
     {
-        return JsonConvert.SerializeObject(this.toLog);
+        return JsonConvert.SerializeObject(this._toLog);
     }
 
     private static JToken GetJObject(List<object?> list)

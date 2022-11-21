@@ -354,6 +354,6 @@ public static class Logger
         var objects = new List<object?>();
         objects.AddRange(values);
         var x = new LogObject(objects);
-        WriteLine(x.getStringToLog());
+        WriteLine(x.GetStringToLog());
     }
 }
