@@ -35,48 +35,45 @@ internal static class ModerationCheck
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e == null) return null;
-        if (e.Message != null)
+        switch (e.Message.Chat.Type)
         {
-            switch (e.Message.Chat.Type)
-            {
-                case ChatType.Private:
-                    return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
-                        new List<int> { 13 },
-                        "private");
-
-                case ChatType.Group:
-                    break;
-
-                case ChatType.Channel:
-                    break;
-
-                case ChatType.Supergroup:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            //start | exclude groups, bot will not operate in them
-            if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
+            case ChatType.Private:
                 return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
-                    new List<int> { 30 },
-                    null);
-            //end | exclude groups
-            lock (Lock)
-            {
-                const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
-                var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
-                    new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
-                    r1?.Item3?.Insert(0, 11);
-                    return r1;
-                }
+                    new List<int> { 13 },
+                    "private");
 
-                InsertGroup(sender, e);
+            case ChatType.Group:
+                break;
+
+            case ChatType.Channel:
+                break;
+
+            case ChatType.Supergroup:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        //start | exclude groups, bot will not operate in them
+        if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
+            return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
+                new List<int> { 30 },
+                null);
+        //end | exclude groups
+        lock (Lock)
+        {
+            const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
+            var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
+                new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
+                r1?.Item3?.Insert(0, 11);
+                return r1;
             }
+
+            InsertGroup(sender, e);
         }
 
         var (item1, item2, list2, item4) = await CheckIfToExit(sender, e, null) ??
@@ -95,7 +92,7 @@ internal static class ModerationCheck
         if (e == null || telegramBotClient == null)
             return null;
 
-        if (e.Message?.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
+        if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
             return null;
 
         var notAuthorizedBot =
@@ -211,7 +208,7 @@ internal static class ModerationCheck
             if (messageEventArgs is { Message.Chat.Title: { } })
                 name = messageEventArgs.Message.Chat.Title;
 
-            Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat.Id + ", name:" + name +
+            Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message.Chat.Id + ", name:" + name +
                              " to valid");
         }
         catch (Exception? e)
@@ -249,7 +246,7 @@ internal static class ModerationCheck
     private static async Task<Tuple<ToExit?, ChatMember[]?, List<int>?>?> CheckIfToExit_NullValue2Async(
         TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        var idChat = e?.Message?.Chat.Id;
+        var idChat = e?.Message.Chat.Id;
         if (idChat == null) return null;
         if (telegramBotClient == null) return null;
         var r = await telegramBotClient.GetChatAdministratorsAsync(idChat);
@@ -271,15 +268,14 @@ internal static class ModerationCheck
                 "INSERT INTO GroupsTelegram (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
 
             if (e == null) return;
-            if (e.Message != null)
-                if (sender != null)
-                    Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
-                    {
-                        { "@id", e.Message.Chat.Id },
-                        { "@botid", sender.GetId() },
-                        { "@type", e.Message.Chat.Type.ToString() },
-                        { "@title", e.Message.Chat.Title }
-                    });
+            if (sender != null)
+                Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                {
+                    { "@id", e.Message.Chat.Id },
+                    { "@botid", sender.GetId() },
+                    { "@type", e.Message.Chat.Type.ToString() },
+                    { "@title", e.Message.Chat.Title }
+                });
             _ = CreateInviteLinkAsync(sender, e);
         }
         catch (Exception? ex)
@@ -309,13 +305,13 @@ internal static class ModerationCheck
         if (message == null) return null;
         var r = new List<UsernameAndNameCheckResult>
         {
-            CheckUsername2(e?.Message?.From?.Username, e?.Message?.From?.FirstName,
-                lastName: e?.Message?.From?.LastName, language: e?.Message?.From?.LanguageCode,
-                userId: e?.Message?.From?.Id, messageId: message.MessageId)
+            CheckUsername2(e?.Message.From?.Username, e?.Message.From?.FirstName,
+                lastName: e?.Message.From?.LastName, language: e?.Message.From?.LanguageCode,
+                userId: e?.Message.From?.Id, messageId: message.MessageId)
         };
 
         var newChatMembers = message1?.NewChatMembers;
-        if (e?.Message?.NewChatMembers == null || newChatMembers == null || newChatMembers.Length == 0)
+        if (e?.Message.NewChatMembers == null || newChatMembers == null || newChatMembers.Length == 0)
             return r;
 
         r.AddRange(from user in newChatMembers
@@ -349,16 +345,16 @@ internal static class ModerationCheck
             return isSpamStored.Value;
 
 
-        if (string.IsNullOrEmpty(e?.Message?.Text))
+        if (string.IsNullOrEmpty(e?.Message.Text))
         {
             var s1 = SpamTypeUtil.Merge(
-                await Blacklist.Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat.Id, telegramBotClient, false, e),
-                Blacklist.Blacklist.IsSpam(e?.Message?.Photo));
+                await Blacklist.Blacklist.IsSpam(e?.Message.Caption, e?.Message.Chat.Id, telegramBotClient, false, e),
+                Blacklist.Blacklist.IsSpam(e?.Message.Photo));
             if (s1 != null)
                 return s1.Value;
         }
 
-        if (e?.Message?.Text != null && e.Message != null && e.Message.Text.StartsWith("/"))
+        if (e?.Message.Text != null && e.Message.Text.StartsWith("/"))
             return SpamType.ALL_GOOD;
 
         var isForeign = DetectForeignLanguage(e);
@@ -366,9 +362,9 @@ internal static class ModerationCheck
         if (isForeign)
             return SpamType.FOREIGN;
 
-        var spamType1 = await Blacklist.Blacklist.IsSpam(e?.Message?.Text,
-            e?.Message?.Chat.Id, telegramBotClient, false, e);
-        var spamType2 = Blacklist.Blacklist.IsSpam(e?.Message?.Photo);
+        var spamType1 = await Blacklist.Blacklist.IsSpam(e?.Message.Text,
+            e?.Message.Chat.Id, telegramBotClient, false, e);
+        var spamType2 = Blacklist.Blacklist.IsSpam(e?.Message.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;
     }
@@ -445,7 +441,7 @@ internal static class ModerationCheck
         if (e?.Message != null && WhitelistForeignGroups.Contains(e.Message.Chat.Id))
             return false;
 
-        if (e?.Message?.Text == null)
+        if (e?.Message.Text == null)
             return false;
 
         var koreanCharactersCount = Regex.Matches(e.Message.Text, @"[\uac00-\ud7a3]").Count;
@@ -580,7 +576,7 @@ internal static class ModerationCheck
         if (checkSpam == SpamType.ALL_GOOD)
             return false;
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
                 e.Message.Chat.Type, RestrictAction.MUTE);
