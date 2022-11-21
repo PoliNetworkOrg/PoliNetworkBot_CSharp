@@ -3,7 +3,6 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 

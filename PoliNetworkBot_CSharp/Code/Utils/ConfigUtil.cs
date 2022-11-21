@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.MainProgram;

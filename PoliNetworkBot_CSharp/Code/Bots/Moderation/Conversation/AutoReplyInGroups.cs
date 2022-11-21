@@ -249,8 +249,16 @@ public static class AutoReplyInGroups
     {
         foreach (var answer in _automaticAnswers)
         {
-            if (e == null || telegramBotClient == null) continue;
-            answer.TryTrigger(e, telegramBotClient, text);
+            MessageInGroup3Async(answer, telegramBotClient,e, text);
         }
+    }
+
+    private static void MessageInGroup3Async(AutomaticAnswer answer, TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? e, string text)
+    {
+        if (e == null || telegramBotClient == null) 
+            return;
+        
+        answer.TryTrigger(e, telegramBotClient, text);
     }
 }

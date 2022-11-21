@@ -374,7 +374,7 @@ internal static class InviteLinks
                     Logger.Logger.WriteLine(ex3);
                     var ex3M = "3" + "\n\n" + ex3.Message;
                     if (sender != null)
-                        if (e?.Message?.From != null)
+                        if (e?.Message.From != null)
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                                 new Language(
                                     new Dictionary<string, string?>

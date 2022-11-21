@@ -115,7 +115,7 @@ internal static class NotifyUtil
         return null;
     }
 
-    private static Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
+    private static Task<List<MessageSentResult>?> SendStack(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? messageEventArgs, ExtraInfo? extraInfo,
         ExceptionNumbered exception)
     {
@@ -124,7 +124,7 @@ internal static class NotifyUtil
             var telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs, exception);
 
             if (telegramFileContent == null)
-                return Task.FromResult<List<MessageSentResult?>?>(null);
+                return Task.FromResult<List<MessageSentResult>?>(null);
 
             var r4 = telegramFileContent.SendToOwners(
                 sender, langCode, replyToMessageId2,
@@ -137,7 +137,7 @@ internal static class NotifyUtil
             // ignored
         }
 
-        return Task.FromResult<List<MessageSentResult?>?>(null);
+        return Task.FromResult<List<MessageSentResult>?>(null);
     }
 
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
@@ -148,7 +148,7 @@ internal static class NotifyUtil
             null, null, messageEventArgs, null, whatWeWant, sendActionEnum);
     }
 
-    private static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog(Language text2,
+    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
@@ -160,14 +160,14 @@ internal static class NotifyUtil
         switch (sendActionEnum)
         {
             case SendActionEnum.SEND_FILE:
-                return  SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
+                return SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
                     replyToMessageId, ParseMode.Html, whatWeWant);
+            
             case SendActionEnum.SEND_TEXT:
-
                 var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
                     GroupsConstants.GroupException,
                     ChatType.Group, ParseMode.Html, replyToMessageId, true);
-                return new List<MessageSentResult?> { x };
+                return x != null ? new List<MessageSentResult> { x } : new List<MessageSentResult>();
         }
 
         return null;
@@ -228,7 +228,7 @@ internal static class NotifyUtil
     }
 
 
-    public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
+    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
         string? langCode, long? replyTo, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
@@ -260,7 +260,7 @@ internal static class NotifyUtil
         string filename,
         long? replyToMessageId = null)
     {
-        List<MessageSentResult?>? m = null;
+        List<MessageSentResult>? m = null;
         try
         {
             var text = new Language(new Dictionary<string, string?>
@@ -360,7 +360,7 @@ internal static class NotifyUtil
         return new StringJson(FileTypeJsonEnum.STRING_JSONED, r);
     }
 
-    public static List<MessageSentResult?> SendString(StringJson? toSendString,
+    public static List<MessageSentResult> SendString(StringJson? toSendString,
         EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
@@ -380,7 +380,7 @@ internal static class NotifyUtil
         return stream;
     }
 
-    private static  List<MessageSentResult?> SendFiles(EventArgsContainer? messageEventArgs,
+    private static  List<MessageSentResult> SendFiles(EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -392,7 +392,7 @@ internal static class NotifyUtil
         );
     }
 
-    private static List<MessageSentResult?> SendFiles2(Stream stream, string filename, string? caption,
+    private static List<MessageSentResult> SendFiles2(Stream stream, string filename, string? caption,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -405,17 +405,17 @@ internal static class NotifyUtil
             { "en", caption }
         });
 
-        var done = new List<MessageSentResult?>();
+        return peerAbstracts.Select(peer => SendFiles3(peer, file, text, telegramBotAbstract, fromUsername, replyToMessageId, parseModeCaption)).ToList();
+    }
 
-        foreach (var peer in peerAbstracts)
-        {
-            var b = SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                telegramBotAbstract, fromUsername, "en",
-                replyToMessageId, true, parseModeCaption);
-            done.Add(new MessageSentResult(b, null, peer.Type));
-        }
-
-        return done;
+    private static MessageSentResult SendFiles3(PeerAbstract peer, TelegramFile file, Language text,
+        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, long? replyToMessageId,
+        ParseMode parseModeCaption)
+    {
+        var b = SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+            telegramBotAbstract, fromUsername, "en",
+            replyToMessageId, true, parseModeCaption);
+        return new MessageSentResult(b, null, peer.Type);
     }
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, EventArgsContainer? messageEventArgs,
