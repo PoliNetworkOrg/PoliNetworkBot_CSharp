@@ -188,9 +188,18 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs)
     {
-        var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
-        Logger.Logger.WriteLine(e);
-        return Task.FromResult(x);
+        try
+        {
+            List<MessageSentResult?>? x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+            Logger.Logger.WriteLine(e);
+            return Task.FromResult(x);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return Task.FromResult<List<MessageSentResult?>?>(null);
     }
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
