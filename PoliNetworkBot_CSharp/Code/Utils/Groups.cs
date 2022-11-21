@@ -446,7 +446,7 @@ internal static class Groups
                             e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
                             text2, EventArgsContainer.Get(e),
                             e.Message.Chat.Id, e.Message.Chat.Type,
-                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true,  inline),
+                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, inline),
                     _ => throw new ArgumentOutOfRangeException()
                 };
 

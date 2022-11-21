@@ -16,9 +16,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 public static class AutoReplyInGroups
 {
     private static readonly DateTime DsuLimit = new(2022, 11, 30);
-    private static readonly bool areWhatsappLinksPublic = false;
+    private const bool AreWhatsappLinksPublic = false;
 
-    private static readonly List<AutomaticAnswer> _automaticAnswers = new()
+    private static readonly List<AutomaticAnswer> AutomaticAnswers = new()
     {
         new AutomaticAnswer(new List<List<string>>
             {
@@ -148,7 +148,7 @@ public static class AutoReplyInGroups
             "Controlla i messaggi fissati",
             e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null &&
                  e.Message.Chat.Title.ToLower().Contains("matricole") &&
-                 areWhatsappLinksPublic),
+                 AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -159,7 +159,7 @@ public static class AutoReplyInGroups
             "Check the pinned messages",
             e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null &&
                  e.Message.Chat.Title.ToLower().Contains("matricole") &&
-                 areWhatsappLinksPublic),
+                 AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -171,7 +171,7 @@ public static class AutoReplyInGroups
             "Se non l'hai ancora fatto, leggi la guida in merito, " +
             "<a href='https://docs.polinetwork.org/#/it/about/groups/whatsapp'>clicca qui</a>!",
             e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
-                 !areWhatsappLinksPublic),
+                 !AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -183,7 +183,7 @@ public static class AutoReplyInGroups
             "If you haven't already, we advice you to read the relative guide, " +
             "<a href='https://docs.polinetwork.org/#/en/about/groups/whatsapp'>click here</a>!",
             e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
-                 !areWhatsappLinksPublic),
+                 !AreWhatsappLinksPublic),
 
         new AutomaticAnswer(new List<List<string>>
             {
@@ -247,10 +247,15 @@ public static class AutoReplyInGroups
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        foreach (var answer in _automaticAnswers)
-        {
-            if (e == null || telegramBotClient == null) continue;
-            answer.TryTrigger(e, telegramBotClient, text);
-        }
+        foreach (var answer in AutomaticAnswers) MessageInGroup3Async(answer, telegramBotClient, e, text);
+    }
+
+    private static void MessageInGroup3Async(AutomaticAnswer answer, TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? e, string text)
+    {
+        if (e == null || telegramBotClient == null)
+            return;
+
+        answer.TryTrigger(e, telegramBotClient, text);
     }
 }

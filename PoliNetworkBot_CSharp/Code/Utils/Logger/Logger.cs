@@ -223,7 +223,6 @@ public static class Logger
 
         var done = 0;
         foreach (var sendToSingle in sendTo)
-        {
             try
             {
                 var peer = new PeerAbstract(sendToSingle, ChatType.Private);
@@ -241,11 +240,10 @@ public static class Logger
             {
                 WriteLine(ex);
             }
-        }
 
-        if (done <= 0 || sendTo.Count <= 0) 
+        if (done <= 0 || sendTo.Count <= 0)
             return;
-        
+
         lock (LogFileLock)
         {
             File.WriteAllText(path, "\n");

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Exceptions;
@@ -60,7 +61,7 @@ internal static class Main
                 var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
                 var itemToPrintFull = itemToPrint + "\n" + e.Message.Chat.Title;
                 itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                itemToPrintFull += "\n----\n" + (e.Message.Chat.Id);
+                itemToPrintFull += "\n----\n" + e.Message.Chat.Id;
                 itemToPrintFull += "\n@@@@@@";
 
                 await Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
@@ -90,10 +91,10 @@ internal static class Main
             if (toExitBecauseUsernameAndNameCheck)
                 return false;
 
-            var result = await SpamCheck.CheckSpam.CheckSpamMethod(e, telegramBotClient);
+            var result = await CheckSpam.CheckSpamMethod(e, telegramBotClient);
             if (result != null)
                 return result.Value;
-            
+
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             await TextConversation.DetectMessage(telegramBotClient, e);

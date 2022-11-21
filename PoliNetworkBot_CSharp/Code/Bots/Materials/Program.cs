@@ -550,7 +550,7 @@ public class Program
 
     private static async Task HandleNewFolderAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.Text != null && e.Message != null &&
+        if (e?.Message?.Text != null &&
             (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
         {
             GenerateStart(e);
@@ -690,7 +690,7 @@ public class Program
 
     private static void GenerateStart(MessageEventArgs? e)
     {
-        if (e?.Message?.From != null && e.Message != null && !UsersConversations.ContainsKey(e.Message.From.Id))
+        if (e?.Message?.From != null && !UsersConversations.ContainsKey(e.Message.From.Id))
         {
             var conv = new Conversation();
             UsersConversations.TryAdd(e.Message.From.Id, conv);

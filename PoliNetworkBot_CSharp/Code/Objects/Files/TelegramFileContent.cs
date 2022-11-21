@@ -3,14 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
@@ -31,7 +29,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public  List<MessageSentResult?>? SendToOwners(TelegramBotAbstract sender, string? langCode,
+    public List<MessageSentResult>? SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant)
     {
         if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;

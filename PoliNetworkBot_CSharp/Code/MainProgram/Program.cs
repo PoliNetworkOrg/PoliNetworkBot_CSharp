@@ -504,9 +504,9 @@ internal static class Program
             Console.WriteLine("Started username " + (await botClient.GetMeAsync()).Username);
             Console.WriteLine("Started #####END#####");
         }
-        catch
+        catch (Exception ex)
         {
-            ;
+            Console.WriteLine(ex);
         }
     }
 

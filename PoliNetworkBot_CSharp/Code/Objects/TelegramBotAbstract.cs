@@ -307,7 +307,7 @@ public class TelegramBotAbstract
     internal async Task<bool> DeleteMessageAsync(long chatId, long messageId, long? accessHash)
     {
         Logger.WriteLogComplete(chatId, messageId, accessHash);
-      
+
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1168,7 +1168,7 @@ public class TelegramBotAbstract
         return maxPos;
     }
 
-    internal  bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
+    internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
         Language? text,
         TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
@@ -1191,9 +1191,9 @@ public class TelegramBotAbstract
                         if (text == null) return true;
                         if (inputOnlineFile == null) return true;
 
-                        _ =  _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
                             inputMedia, parseMode: parseModeCaption).Result;
-                    
+
 
                         return true;
                     }
@@ -1206,13 +1206,13 @@ public class TelegramBotAbstract
                         var t1 = text?.Select(lang);
                         if (text != null)
                             if (t1 != null)
-                                _ =  _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
+                                _ = _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
 
-                             
+
                         if (inputOnlineFile != null)
-                            _ =  _botClient.SendDocumentAsync(userId, inputOnlineFile,
+                            _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
                                 parseMode: parseModeCaption).Result;
-                           
+
 
                         return true;
                     }
@@ -1221,10 +1221,11 @@ public class TelegramBotAbstract
                     {
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
-                            _ =  _botClient.SendDocumentAsync(userId, inputOnlineFile,parseMode: parseModeCaption).Result;
+                            _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode: parseModeCaption)
+                                .Result;
 
                         var t1 = text?.Select(lang);
-                        if (t1 != null) _ =  _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
+                        if (t1 != null) _ = _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
 
 
                         return true;
@@ -1255,10 +1256,10 @@ public class TelegramBotAbstract
                         var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
                             username,
                             new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
-                        var tlFileToSend =  documentInput.GetMediaTl(UserbotClient).Result;
+                        var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r =  tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang).Result;
+                            var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang).Result;
                             return r != null && r2 != null;
                         }
 
@@ -1267,11 +1268,11 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.AFTER_FILE:
                     {
-                        var tlFileToSend =  documentInput.GetMediaTl(UserbotClient).Result;
+                        var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
                             var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang).Result;
-                            var r2 =  SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
+                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
                                 username,
                                 new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
                             return r != null && r2 != null;
@@ -1295,8 +1296,8 @@ public class TelegramBotAbstract
 
         return false;
     }
- 
-  
+
+
     private static string? GetCaptionInline(Language? text, string? lang, TelegramFile documentInput)
     {
         var s = text?.Select(lang);

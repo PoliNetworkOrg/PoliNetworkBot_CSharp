@@ -21,7 +21,7 @@ public class BotConfig
 
     public static bool GetConfig(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return e != null &&  ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
+        return e != null && ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
             e.Message.Chat.Type);
     }

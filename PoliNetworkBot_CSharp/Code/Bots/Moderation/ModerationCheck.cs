@@ -542,15 +542,15 @@ internal static class ModerationCheck
         Logger.WriteLogComplete(checkSpam.ToString(),
             e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
             e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title);
-        
-        
+
+
         if (checkSpam == SpamType.ALL_GOOD)
             return false;
 
         if (e?.Message.From == null)
             return telegramBotClient != null && e?.Message != null &&
                    await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-        
+
         await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
             e.Message.Chat.Type, RestrictAction.MUTE);
 
@@ -670,10 +670,12 @@ internal static class ModerationCheck
     public static async Task<bool> PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
         EventArgsContainer? e)
     {
-        Logger.WriteLogComplete( 
-            e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id, e?.MessageEventArgs?.Message.From?.Username,
-            e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId, e?.MessageEventArgs?.Message.Chat.Title);
-        
+        Logger.WriteLogComplete(
+            e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
+            e?.MessageEventArgs?.Message.From?.Username,
+            e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
+            e?.MessageEventArgs?.Message.Chat.Title);
+
         return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, e);
     }
 }
