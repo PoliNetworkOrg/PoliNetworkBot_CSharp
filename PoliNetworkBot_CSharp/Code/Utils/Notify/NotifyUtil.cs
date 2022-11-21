@@ -204,8 +204,6 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs)
     {
-        ;
-
         try
         {
             Logger.Logger.WriteLine(e);
@@ -362,7 +360,7 @@ internal static class NotifyUtil
         return new StringJson(FileTypeJsonEnum.STRING_JSONED, r);
     }
 
-    public static List<MessageSentResult?>? SendString(StringJson? toSendString,
+    public static List<MessageSentResult?> SendString(StringJson? toSendString,
         EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
@@ -382,7 +380,7 @@ internal static class NotifyUtil
         return stream;
     }
 
-    private static  List<MessageSentResult?>? SendFiles(EventArgsContainer? messageEventArgs,
+    private static  List<MessageSentResult?> SendFiles(EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
@@ -394,7 +392,7 @@ internal static class NotifyUtil
         );
     }
 
-    private static List<MessageSentResult?>? SendFiles2(Stream stream, string filename, string? caption,
+    private static List<MessageSentResult?> SendFiles2(Stream stream, string filename, string? caption,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
