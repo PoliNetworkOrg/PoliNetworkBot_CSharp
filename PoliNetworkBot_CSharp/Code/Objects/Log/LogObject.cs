@@ -37,7 +37,14 @@ public class LogObject
         var x = new JArray();
         foreach (var x2 in list)
         {
-            x.Add(x2);
+            try
+            {
+                x.Add(x2);
+            }
+            catch
+            {
+                x.Add(x2?.ToString());
+            }
         }
         return x;
     }
@@ -56,6 +63,13 @@ public class LogObject
 
     private static string? GetJToken(object? item)
     {
-        return item == null ? null : JsonConvert.SerializeObject(item);
+        try
+        {
+            return item == null ? null : JsonConvert.SerializeObject(item);
+        }
+        catch
+        {
+            return item?.ToString();
+        }
     }
 }
