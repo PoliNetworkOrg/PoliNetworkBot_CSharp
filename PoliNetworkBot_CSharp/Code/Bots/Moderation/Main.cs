@@ -57,9 +57,9 @@ internal static class Main
                 var itemToPrint = MemberListToString(toExit.Item2);
                 var itemToPrint2 = ListIntToString(toExit.Item3);
                 var itemToPrint3 = StringToStringToBePrinted(toExit.Item4);
-                var itemToPrintFull = itemToPrint + "\n" + e.Message?.Chat.Title;
+                var itemToPrintFull = itemToPrint + "\n" + e.Message.Chat.Title;
                 itemToPrintFull += "\n----\n" + itemToPrint2 + "\n----\nS:" + itemToPrint3;
-                itemToPrintFull += "\n----\n" + e.Message?.Chat.Id;
+                itemToPrintFull += "\n----\n" + (e.Message.Chat.Id);
                 itemToPrintFull += "\n@@@@@@";
 
                 await Groups.SendMessageExitingAndThenExit(telegramBotClient, e);
@@ -72,13 +72,12 @@ internal static class Main
             var notAuthorizedBotHasBeenAddedBool =
                 await ModerationCheck.CheckIfNotAuthorizedBotHasBeenAdded(e, telegramBotClient);
             if (notAuthorizedBotHasBeenAddedBool is { Count: > 0 })
-                if (e.Message != null)
-                {
-                    foreach (var bot in notAuthorizedBotHasBeenAddedBool)
-                        await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
+            {
+                foreach (var bot in notAuthorizedBotHasBeenAddedBool)
+                    await RestrictUser.BanUserFromGroup(telegramBotClient, bot, e.Message.Chat.Id, null, true);
 
-                    Console.WriteLine("todo: send message \"Bots not allowed here!\"");
-                }
+                Console.WriteLine("todo: send message \"Bots not allowed here!\"");
+            }
 
             await AddedUsersUtil.DealWithAddedUsers(telegramBotClient, e);
 
@@ -90,14 +89,11 @@ internal static class Main
             if (toExitBecauseUsernameAndNameCheck)
                 return false;
 
-            var checkSpam = await ModerationCheck.CheckSpamAsync(e, telegramBotClient);
-            if (checkSpam != SpamType.ALL_GOOD && checkSpam != SpamType.SPAM_PERMITTED)
-                return await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
-
-            if (checkSpam == SpamType.SPAM_PERMITTED)
-                return await ModerationCheck.PermittedSpamMeasure(telegramBotClient, EventArgsContainer.Get(e));
-
-            if (e.Message?.Text != null && e.Message.Text.StartsWith("/"))
+            var result = await SpamCheck.CheckSpam.CheckSpamMethod(e, telegramBotClient);
+            if (result != null)
+                return result.Value;
+            
+            if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
             await TextConversation.DetectMessage(telegramBotClient, e);
         }

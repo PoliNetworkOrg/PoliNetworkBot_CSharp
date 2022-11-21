@@ -15,6 +15,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -322,7 +323,7 @@ public static class Logger
 
     public static List<long?> GetLogTo(MessageEventArgs e)
     {
-        return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
+        return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup };
     }
 
     public static async Task<bool> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -346,5 +347,13 @@ public static class Logger
     {
         if (arg1 != null) GetLog(arg2, arg1);
         return Task.CompletedTask;
+    }
+
+    public static void WriteLogComplete(params object?[] values)
+    {
+        var objects = new List<object?>();
+        objects.AddRange(values);
+        var x = new LogObject(objects);
+        WriteLine(x.getStringToLog());
     }
 }
