@@ -363,9 +363,13 @@ public static class Logger
 
     public static void WriteLogComplete(params object?[] values)
     {
+        return;
+        
+        
         var objects = new List<object?>();
         objects.AddRange(values);
         var x = new LogObject(objects);
         WriteLine(x.GetStringToLog());
+        
     }
 }
