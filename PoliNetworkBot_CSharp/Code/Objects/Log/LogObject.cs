@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -49,29 +48,5 @@ public class LogObject
             }
 
         return x;
-    }
-
-    private static JToken GetJObject(IDictionary dictionary)
-    {
-        var r = new JObject();
-        foreach (var x in dictionary.Keys)
-        {
-            var item = dictionary[x];
-            r[x] = GetJToken(item);
-        }
-
-        return r;
-    }
-
-    private static string? GetJToken(object? item)
-    {
-        try
-        {
-            return item == null ? null : JsonConvert.SerializeObject(item);
-        }
-        catch
-        {
-            return item?.ToString();
-        }
     }
 }

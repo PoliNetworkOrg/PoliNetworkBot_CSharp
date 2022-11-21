@@ -304,8 +304,8 @@ internal static class NotifyUtil
 
             if (m != null)
             {
-                var messageSentResult = m.First(x => x != null);
-                replyTo = messageSentResult?.GetMessageId();
+                var messageSentResult = m.First();
+                replyTo = messageSentResult.GetMessageId();
             }
 
             await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyTo, messageEventArgs, null, null,
