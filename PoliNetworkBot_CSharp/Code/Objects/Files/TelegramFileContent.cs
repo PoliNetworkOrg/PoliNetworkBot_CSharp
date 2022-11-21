@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -30,7 +31,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public async Task<List<MessageSentResult?>?> SendToOwners(TelegramBotAbstract sender, string? langCode,
+    public  List<MessageSentResult?>? SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant)
     {
         if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;
@@ -43,15 +44,15 @@ public class TelegramFileContent
                 { "en", "Exception! " + _caption }
             });
 
-            var r11 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
+            var r11 = NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
                 eventArgsContainer,
-                _fileContent, whatWeWant, SendActionEnum.SEND_TEXT);
+                _fileContent, whatWeWant, SendActionEnum.SEND_TEXT).Result;
             return r11;
         }
 
 
         if (string.IsNullOrEmpty(_caption))
-            await NotifyUtil.SendString(
+            NotifyUtil.SendString(
                 _fileContent, eventArgsContainer, sender,
                 "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
 
@@ -61,9 +62,9 @@ public class TelegramFileContent
             { "en", "Exception! " + _caption }
         });
 
-        var r1 = await NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
+        var r1 = NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
             eventArgsContainer, null,
-            null, SendActionEnum.SEND_TEXT);
+            null, SendActionEnum.SEND_TEXT).Result;
         return r1;
     }
 

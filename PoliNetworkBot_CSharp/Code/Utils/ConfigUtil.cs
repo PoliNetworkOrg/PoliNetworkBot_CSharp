@@ -15,7 +15,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class ConfigUtil
 {
-    public static async Task<bool> GetConfig(long? fromId, string? fromUsername, TelegramBotAbstract? sender,
+    public static bool GetConfig(long? fromId, string? fromUsername, TelegramBotAbstract? sender,
         string? fromLanguageCode, ChatType? chatType)
     {
         var json = JsonConvert.SerializeObject(Program.BotConfigAll);
@@ -25,7 +25,7 @@ public static class ConfigUtil
 
         var peer = new PeerAbstract(fromId, chatType.Value);
         var text = new Language(new Dictionary<string, string?>());
-        return await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION, sender, fromUsername,
+        return  SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION, sender, fromUsername,
             fromLanguageCode, null, true);
     }
 }

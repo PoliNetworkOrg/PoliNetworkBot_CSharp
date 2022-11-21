@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -220,18 +221,31 @@ public static class Logger
             { "it", "LOG:" }
         });
 
+        var done = 0;
         foreach (var sendToSingle in sendTo)
         {
-            var peer = new PeerAbstract(sendToSingle, ChatType.Private);
+            try
+            {
+                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
-            var stream = new MemoryStream(encoding.GetBytes(file));
+                var stream = new MemoryStream(encoding.GetBytes(file));
 
-            SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true).Wait();
+                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    sender, null, "it", null, true);
+
+                done++;
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex);
+            }
         }
 
+        if (done <= 0 || sendTo.Count <= 0) 
+            return;
+        
         lock (LogFileLock)
         {
             File.WriteAllText(path, "\n");
@@ -354,6 +368,6 @@ public static class Logger
         var objects = new List<object?>();
         objects.AddRange(values);
         var x = new LogObject(objects);
-        WriteLine(x.getStringToLog());
+        WriteLine(x.GetStringToLog());
     }
 }

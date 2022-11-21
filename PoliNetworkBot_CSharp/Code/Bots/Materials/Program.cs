@@ -19,6 +19,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -139,7 +140,7 @@ public class Program
                 }
                 catch (Exception ex)
                 {
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
+                    await NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
                 }
             }
         }
@@ -281,7 +282,7 @@ public class Program
             {
                 CallbackQueryEventArgs = e
             };
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, sender, null, eventArgsContainer);
+            _ = NotifyUtil.NotifyOwnersWithLog(ex, sender, null, eventArgsContainer);
         }
     }
 
@@ -323,7 +324,7 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+            await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                 new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
         }
     }
@@ -516,7 +517,7 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+                                await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                                     new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
                             }
                         }
@@ -541,7 +542,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
+            _ = NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
                 eventArgsContainer);
             return false;
         }
@@ -913,7 +914,7 @@ public class Program
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
                         ParseMode.Html, null, null);
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
+                    await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
                 }
             }
         }

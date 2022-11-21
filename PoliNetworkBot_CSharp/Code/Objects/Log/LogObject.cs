@@ -1,35 +1,43 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PoliNetworkBot_CSharp.Code.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Log;
 
 public class LogObject
 {
-    private List<object?> _values;
-    private readonly string _stackTrace;
-    private readonly IDictionary _enviromentVariables;
-    private JObject toLog;
+
+    private readonly JObject _toLog;
 
     public LogObject(List<object?> values)
     {
-        this._values = values;
-        this._stackTrace = Environment.StackTrace;
-        this._enviromentVariables = Environment.GetEnvironmentVariables();
-        this.toLog = new JObject
+   
+        var stackTrace = Environment.StackTrace;
+        this._toLog = new JObject
         {
-            ["stackTrace"] = _stackTrace,
-            ["enviromentVariables"] = GetJObject( this._enviromentVariables),
-            ["values"] = GetJObject(_values)
+            ["stackTrace"] = GetJArray(stackTrace),
+            ["values"] = GetJObject(values)
         };
     }
 
-    public string getStringToLog()
+    private static JToken GetJArray(string stackTrace)
     {
-        return JsonConvert.SerializeObject(this.toLog);
+        var jArray = new JArray();
+        var s = stackTrace.Split("\n").Select(x => x.Trim()).ToList();
+        foreach (var s2 in s)
+        {
+            jArray.Add(s2);
+        }
+
+        return jArray;
+    }
+
+    public string GetStringToLog()
+    {
+        return JsonConvert.SerializeObject(this._toLog);
     }
 
     private static JToken GetJObject(List<object?> list)
