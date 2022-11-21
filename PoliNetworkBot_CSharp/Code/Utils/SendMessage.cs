@@ -94,14 +94,12 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
         string? lang, Language? text, EventArgsContainer? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-        bool disablePreviewLink, int i = 0, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        bool disablePreviewLink, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         MessageSentResult? r1 = null;
 
         if (telegramBotClient == null) return null;
-
-        if (i > 5)
-            return null;
+        
 
         try
         {
@@ -118,7 +116,7 @@ internal static class SendMessage
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
+            await NotifyUtil.NotifyOwnerWithLog25(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
         }
 
         return r1;

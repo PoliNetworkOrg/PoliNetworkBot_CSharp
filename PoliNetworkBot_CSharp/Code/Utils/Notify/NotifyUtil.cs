@@ -201,6 +201,36 @@ internal static class NotifyUtil
 
         return Task.FromResult<List<MessageSentResult?>?>(null);
     }
+    
+    internal static Task<List<MessageSentResult?>?> NotifyOwnerWithLog25(Exception? e,
+        TelegramBotAbstract? telegramBotAbstract,
+        EventArgsContainer? messageEventArgs)
+    {
+        ;
+
+        try
+        {
+            Logger.Logger.WriteLine(e);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        try
+        {
+            Console.WriteLine(e);
+            Console.WriteLine(messageEventArgs);
+            Console.WriteLine(telegramBotAbstract);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return Task.FromResult<List<MessageSentResult?>?>(null);
+    }
+
 
     public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
