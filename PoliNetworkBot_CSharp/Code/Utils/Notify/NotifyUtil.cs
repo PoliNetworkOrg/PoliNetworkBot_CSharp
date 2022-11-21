@@ -188,7 +188,7 @@ internal static class NotifyUtil
     {
         try
         {
-            List<MessageSentResult?>? x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+            var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
             Logger.Logger.WriteLine(e);
             return Task.FromResult(x);
         }
@@ -393,7 +393,7 @@ internal static class NotifyUtil
     }
 
     private static List<MessageSentResult> SendFiles2(Stream stream, string filename, string? caption,
-        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
+        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, IEnumerable<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
         var file = TelegramFile.FromStreamJson(stream, filename, caption);
@@ -577,16 +577,16 @@ internal static class NotifyUtil
     {
         try
         {
-            if (done != null)
-            {
-                var (banUnbanAllResult, _) = done;
-                 SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                    "success.bin", sender, e);
-                 SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                    "failed.bin", sender, e);
-            }
+            if (done == null)
+                return;
+            
+            var (banUnbanAllResult, _) = done;
+            SendReportOfSuccessAndFailures2(
+                StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
+                "success.bin", sender, e);
+            SendReportOfSuccessAndFailures2(
+                StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
+                "failed.bin", sender, e);
         }
         catch
         {
