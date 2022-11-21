@@ -117,7 +117,7 @@ internal static class NotifyUtil
         return null;
     }
 
-    private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
+    private static Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? messageEventArgs, ExtraInfo? extraInfo,
         ExceptionNumbered exception)
     {
@@ -126,20 +126,20 @@ internal static class NotifyUtil
             var telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs, exception);
 
             if (telegramFileContent == null)
-                return null;
+                return Task.FromResult<List<MessageSentResult?>?>(null);
 
             var r4 = telegramFileContent.SendToOwners(
                 sender, langCode, replyToMessageId2,
                 messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
 
-            return r4;
+            return Task.FromResult(r4);
         }
         catch
         {
             // ignored
         }
 
-        return null;
+        return Task.FromResult<List<MessageSentResult?>?>(null);
     }
 
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
@@ -282,7 +282,7 @@ internal static class NotifyUtil
         }
     }
 
-    private static async Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionsNumbered,
+    private static Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionsNumbered,
         TelegramBotAbstract? sender,
         EventArgsContainer? messageEventArgs, string filename, long? replyToMessageId)
     {
@@ -305,6 +305,8 @@ internal static class NotifyUtil
                 //ignored
             }
         }
+
+        return Task.CompletedTask;
     }
 
     private static StringJson GetSerialized(IEnumerable<StringJson?> toSend)

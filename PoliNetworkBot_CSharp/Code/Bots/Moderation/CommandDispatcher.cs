@@ -845,7 +845,7 @@ internal static class CommandDispatcher
             EventArgsContainer.Get(e));
     }
 
-    public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
+    public static Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
         string? lang, ChatType? chatType)
     {
         var groups = Groups.GetAllGroups(sender);
@@ -853,7 +853,7 @@ internal static class CommandDispatcher
         FileSerialization.SerializeFile(groups, ref stream);
 
         if (chatType == null)
-            return false;
+            return Task.FromResult(false);
 
         var peer = new PeerAbstract(chatId, chatType.Value);
 
@@ -862,10 +862,10 @@ internal static class CommandDispatcher
             { "en", "Here are all groups:" },
             { "it", "Ecco tutti i gruppi:" }
         });
-        return  SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
+        return  Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                 null, "application/octet-stream"), peer,
             text2, TextAsCaption.BEFORE_FILE,
-            sender, username, lang, null, true);
+            sender, username, lang, null, true));
     }
 
 
