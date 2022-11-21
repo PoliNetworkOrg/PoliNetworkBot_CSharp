@@ -19,10 +19,16 @@ public class BotConfig
     // ReSharper disable once InconsistentNaming
     public List<BotInfoAbstract>? bots;
 
-    public static async Task<bool> GetConfig(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static bool GetConfig(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return e != null && await ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
+        return e != null &&  ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
             e.Message.Chat.Type);
+    }
+
+    public static Task GetConfig2(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
+    {
+        GetConfig(arg1, arg2);
+        return Task.CompletedTask;
     }
 }

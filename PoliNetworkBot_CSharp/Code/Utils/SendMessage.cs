@@ -123,12 +123,12 @@ internal static class SendMessage
         return r1;
     }
 
-    internal static async Task<bool> SendFileAsync(TelegramFile file, PeerAbstract peer,
+    internal static bool SendFileAsync(TelegramFile file, PeerAbstract peer,
         Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
+        return telegramBotAbstract != null && telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
             username, lang,
             replyToMessageId, disablePreviewLink, parseModeCaption);
     }

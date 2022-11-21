@@ -597,7 +597,7 @@ internal static class RestrictUser
                 ParseMode.Html,
                 e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
-        await NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
+        NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }
 
 

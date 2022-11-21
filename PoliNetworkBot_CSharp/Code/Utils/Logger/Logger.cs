@@ -229,7 +229,7 @@ public static class Logger
             SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                     null, "application/octet-stream"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true).Wait();
+                sender, null, "it", null, true);
         }
 
         lock (LogFileLock)
