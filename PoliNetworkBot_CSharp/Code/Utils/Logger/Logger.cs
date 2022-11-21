@@ -223,14 +223,21 @@ public static class Logger
 
         foreach (var sendToSingle in sendTo)
         {
-            var peer = new PeerAbstract(sendToSingle, ChatType.Private);
+            try
+            {
+                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
-            var stream = new MemoryStream(encoding.GetBytes(file));
+                var stream = new MemoryStream(encoding.GetBytes(file));
 
-            SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true);
+                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    sender, null, "it", null, true);
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex);
+            }
         }
 
         lock (LogFileLock)
