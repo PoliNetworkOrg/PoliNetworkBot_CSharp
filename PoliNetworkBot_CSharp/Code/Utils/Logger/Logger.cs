@@ -221,6 +221,7 @@ public static class Logger
             { "it", "LOG:" }
         });
 
+        var done = 0;
         foreach (var sendToSingle in sendTo)
         {
             try
@@ -233,6 +234,8 @@ public static class Logger
                         null, "application/octet-stream"), peer,
                     text2, TextAsCaption.BEFORE_FILE,
                     sender, null, "it", null, true);
+
+                done++;
             }
             catch (Exception ex)
             {
@@ -240,6 +243,9 @@ public static class Logger
             }
         }
 
+        if (done <= 0 || sendTo.Count <= 0) 
+            return;
+        
         lock (LogFileLock)
         {
             File.WriteAllText(path, "\n");
