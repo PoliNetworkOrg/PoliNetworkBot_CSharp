@@ -99,12 +99,10 @@ internal static class NotifyUtil
                     r.AddRange(r1);
 
                 var r4 = SendStack(sender, langCode,
-                    replyToMessageId2, messageEventArgs, extraInfo, exception);
-                r4.RunSynchronously();
-                r4.Start();
-                r4.Wait();
-                if (r4.Result != null)
-                    r.AddRange(r4.Result);
+                    replyToMessageId2, messageEventArgs, extraInfo, exception).Result;
+           
+                if (r4 != null)
+                    r.AddRange(r4);
 
                 return r;
             }

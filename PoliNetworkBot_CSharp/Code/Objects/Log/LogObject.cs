@@ -18,7 +18,7 @@ public class LogObject
         this._toLog = new JObject
         {
             ["stackTrace"] = stackTrace,
-            ["enviromentVariables"] = GetJObject( enviromentVariables),
+            //["enviromentVariables"] = GetJObject( enviromentVariables),
             ["values"] = GetJObject(values)
         };
     }
