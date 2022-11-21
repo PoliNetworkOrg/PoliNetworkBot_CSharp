@@ -539,6 +539,11 @@ internal static class ModerationCheck
     public static async Task<bool> AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType checkSpam)
     {
+        Logger.WriteLogComplete(checkSpam.ToString(),
+            e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
+            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title);
+        
+        
         if (checkSpam == SpamType.ALL_GOOD)
             return false;
 
@@ -663,8 +668,12 @@ internal static class ModerationCheck
     }
 
     public static async Task<bool> PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
-        EventArgsContainer? messageEventArgs)
+        EventArgsContainer? e)
     {
-        return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
+        Logger.WriteLogComplete( 
+            e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id, e?.MessageEventArgs?.Message.From?.Username,
+            e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId, e?.MessageEventArgs?.Message.Chat.Title);
+        
+        return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, e);
     }
 }

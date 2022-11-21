@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,14 +14,25 @@ public class LogObject
 
     public LogObject(List<object?> values)
     {
-        var enviromentVariables = Environment.GetEnvironmentVariables();
+   
         var stackTrace = Environment.StackTrace;
         this._toLog = new JObject
         {
-            ["stackTrace"] = stackTrace,
-            //["enviromentVariables"] = GetJObject( enviromentVariables),
+            ["stackTrace"] = GetJArray(stackTrace),
             ["values"] = GetJObject(values)
         };
+    }
+
+    private static JToken GetJArray(string stackTrace)
+    {
+        var jArray = new JArray();
+        var s = stackTrace.Split("\n").Select(x => x.Trim()).ToList();
+        foreach (var s2 in s)
+        {
+            jArray.Add(s2);
+        }
+
+        return jArray;
     }
 
     public string GetStringToLog()

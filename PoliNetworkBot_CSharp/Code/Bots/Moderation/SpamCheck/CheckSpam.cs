@@ -12,7 +12,9 @@ public static class CheckSpam
     public static async Task<bool?> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
     {
         var checkSpam = await CheckSpamAsync(e, telegramBotClient);
-        Logger.WriteLogComplete(checkSpam, e);
+        
+
+        
         return checkSpam switch
         {
             SpamType.SPAM_LINK => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
