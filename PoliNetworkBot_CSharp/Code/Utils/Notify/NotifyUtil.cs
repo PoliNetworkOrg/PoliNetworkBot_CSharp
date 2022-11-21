@@ -19,7 +19,7 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils;
+namespace PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 internal static class NotifyUtil
 {
