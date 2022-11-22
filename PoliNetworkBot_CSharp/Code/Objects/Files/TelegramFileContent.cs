@@ -89,9 +89,16 @@ public class TelegramFileContent
     public void SendToOwners3(EventArgsContainer? eventArgsContainer, TelegramBotAbstract sender,
         LogFileInfo logFileInfo, long? replyToMessageId2, FileTypeJsonEnum whatWeWant)
     {
-        NotifyUtil.SendString(
-            _fileContent, eventArgsContainer, sender,
-            logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
+        try
+        {
+            NotifyUtil.SendString(
+                _fileContent, eventArgsContainer, sender,
+                logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     public StringJson? GetFileContentStringJson()
