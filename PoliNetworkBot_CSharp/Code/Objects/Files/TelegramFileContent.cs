@@ -57,15 +57,13 @@ public class TelegramFileContent
     }
 
     private List<MessageSentResult>? SendToOwners2(EventArgsContainer? eventArgsContainer,
-        TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant, string? langCode, 
+        TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant, string? langCode,
         LogFileInfo logFileInfo)
     {
         try
         {
             if (string.IsNullOrEmpty(_caption))
-            {
                 SendToOwners3(eventArgsContainer, sender, logFileInfo, replyToMessageId2, whatWeWant);
-            }
 
             var text = logFileInfo.text ?? new Language(new Dictionary<string, string?>
             {

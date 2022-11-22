@@ -2,11 +2,6 @@
 
 public class LogFileInfo
 {
-    public Language? text;
     public string? filename;
-
-    public LogFileInfo()
-    {
-       
-    }
+    public Language? text;
 }

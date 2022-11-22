@@ -13,11 +13,10 @@ public static class NotifyLog
         {
             var x = logObject.ToTelegramFileContent(caption);
             if (telegramBotAbstract != null)
-            {
                 x?.SendToOwners3(
                     null,
                     telegramBotAbstract,
-                    new LogFileInfo()
+                    new LogFileInfo
                     {
                         filename = "notifyLog.json",
                         text = new L("it", "notifyLog")
@@ -25,7 +24,6 @@ public static class NotifyLog
                     null,
                     FileTypeJsonEnum.STRING_JSONED
                 );
-            }
         }
         catch (Exception ex)
         {
