@@ -62,42 +62,42 @@ public static class RamSize
 internal class RamUsedCollection
 {
     private const int Limit = 100;
-    private readonly List<RamUsed> _ramUseds;
+    private readonly List<RamUsed> _listRamUsed;
 
     public RamUsedCollection()
     {
-        _ramUseds = new List<RamUsed>();
+        _listRamUsed = new List<RamUsed>();
     }
 
     public bool InferioreDi(RamUsed ramUsed)
     {
-        return _ramUseds.Count == 0 || _ramUseds[^1].InferioreDi(ramUsed) || MediaInferiore(ramUsed);
+        return _listRamUsed.Count == 0 || _listRamUsed[^1].InferioreDi(ramUsed) || MediaInferiore(ramUsed);
     }
 
     private bool MediaInferiore(RamUsed ramUsed)
     {
-        if (_ramUseds.Count == 0)
+        if (_listRamUsed.Count == 0)
             return true;
 
-        var last = _ramUseds[^1];
+        var last = _listRamUsed[^1];
         var media = new RamUsed(last.Ram1, last.Ram2);
-        for (var i = 0; i < _ramUseds.Count - 1; i++)
+        for (var i = 0; i < _listRamUsed.Count - 1; i++)
         {
-            media.Ram1 += _ramUseds[i].Ram1;
-            media.Ram2 += _ramUseds[i].Ram2;
+            media.Ram1 += _listRamUsed[i].Ram1;
+            media.Ram2 += _listRamUsed[i].Ram2;
         }
 
-        media.Ram1 /= _ramUseds.Count;
-        media.Ram2 /= _ramUseds.Count;
+        media.Ram1 /= _listRamUsed.Count;
+        media.Ram2 /= _listRamUsed.Count;
 
         return media.InferioreDi(ramUsed);
     }
 
     public void Append(RamUsed ramUsed)
     {
-        if (_ramUseds.Count >= Limit) _ramUseds.RemoveAt(0);
+        if (_listRamUsed.Count >= Limit) _listRamUsed.RemoveAt(0);
 
-        _ramUseds.Add(ramUsed);
+        _listRamUsed.Add(ramUsed);
     }
 }
 

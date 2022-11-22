@@ -21,6 +21,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -133,7 +134,7 @@ internal static class CommandDispatcher
             Permission.OWNER,
             new L("en", "Send message in channel", "it", "Invia messaggio in canale"),
             null, e => e.Message.ReplyToMessage != null),
-        new Command("get_config", BotConfig.GetConfig, new List<ChatType> { ChatType.Private },
+        new Command("get_config", BotConfig.GetConfig2, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot config"), null, null),
         new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot groups"), null, null),
@@ -544,7 +545,7 @@ internal static class CommandDispatcher
 
             var peer = new PeerAbstract(sendTo, chatType);
 
-            await SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
+            SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
                     null, "application/json"), peer,
                 text2, TextAsCaption.BEFORE_FILE,
                 botAbstract, username, "it", null, true);
@@ -565,7 +566,7 @@ internal static class CommandDispatcher
             var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
             if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-                r2 = await Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
+                r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
 
             var dict = new Dictionary<string, string?>
             {
@@ -753,7 +754,7 @@ internal static class CommandDispatcher
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v = await sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
+        var v = sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
             e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
         return v ? 1 : 0;
     }
@@ -845,7 +846,7 @@ internal static class CommandDispatcher
             EventArgsContainer.Get(e));
     }
 
-    public static async Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
+    public static Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
         string? lang, ChatType? chatType)
     {
         var groups = Groups.GetAllGroups(sender);
@@ -853,7 +854,7 @@ internal static class CommandDispatcher
         FileSerialization.SerializeFile(groups, ref stream);
 
         if (chatType == null)
-            return false;
+            return Task.FromResult(false);
 
         var peer = new PeerAbstract(chatId, chatType.Value);
 
@@ -862,10 +863,10 @@ internal static class CommandDispatcher
             { "en", "Here are all groups:" },
             { "it", "Ecco tutti i gruppi:" }
         });
-        return await SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
+        return Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                 null, "application/octet-stream"), peer,
             text2, TextAsCaption.BEFORE_FILE,
-            sender, username, lang, null, true);
+            sender, username, lang, null, true));
     }
 
 

@@ -19,7 +19,7 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils;
+namespace PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 internal static class NotifyUtil
 {
@@ -89,24 +89,33 @@ internal static class NotifyUtil
 
         lock (Locks.LockObjectExceptionGroup)
         {
-            var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
-            var r1 = message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
-                FileTypeJsonEnum.SIMPLE_STRING);
-            r1.Wait();
-            if (r1.Result != null)
-                r.AddRange(r1.Result);
+            try
+            {
+                var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
+                var r1 = message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
+                    FileTypeJsonEnum.SIMPLE_STRING);
 
-            var r4 = SendStack(sender, langCode,
-                replyToMessageId2, messageEventArgs, extraInfo, exception);
-            r4.Wait();
-            if (r4.Result != null)
-                r.AddRange(r4.Result);
+                if (r1 != null)
+                    r.AddRange(r1);
 
-            return r;
+                var r4 = SendStack(sender, langCode,
+                    replyToMessageId2, messageEventArgs, extraInfo, exception).Result;
+
+                if (r4 != null)
+                    r.AddRange(r4);
+
+                return r;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
+
+        return null;
     }
 
-    private static async Task<List<MessageSentResult?>?> SendStack(TelegramBotAbstract sender, string? langCode,
+    private static Task<List<MessageSentResult>?> SendStack(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? messageEventArgs, ExtraInfo? extraInfo,
         ExceptionNumbered exception)
     {
@@ -115,20 +124,20 @@ internal static class NotifyUtil
             var telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs, exception);
 
             if (telegramFileContent == null)
-                return null;
+                return Task.FromResult<List<MessageSentResult>?>(null);
 
-            var r4 = await telegramFileContent.SendToOwners(
+            var r4 = telegramFileContent.SendToOwners(
                 sender, langCode, replyToMessageId2,
                 messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
 
-            return r4;
+            return Task.FromResult(r4);
         }
         catch
         {
             // ignored
         }
 
-        return null;
+        return Task.FromResult<List<MessageSentResult>?>(null);
     }
 
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
@@ -139,7 +148,7 @@ internal static class NotifyUtil
             null, null, messageEventArgs, null, whatWeWant, sendActionEnum);
     }
 
-    private static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog(Language text2,
+    private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
@@ -151,14 +160,14 @@ internal static class NotifyUtil
         switch (sendActionEnum)
         {
             case SendActionEnum.SEND_FILE:
-                return await SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
+                return SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
                     replyToMessageId, ParseMode.Html, whatWeWant);
-            case SendActionEnum.SEND_TEXT:
 
+            case SendActionEnum.SEND_TEXT:
                 var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
                     GroupsConstants.GroupException,
                     ChatType.Group, ParseMode.Html, replyToMessageId, true);
-                return new List<MessageSentResult?> { x };
+                return x != null ? new List<MessageSentResult> { x } : new List<MessageSentResult>();
         }
 
         return null;
@@ -177,12 +186,49 @@ internal static class NotifyUtil
         TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs)
     {
-        var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
-        Logger.Logger.WriteLine(e);
-        return Task.FromResult(x);
+        try
+        {
+            var x = NotifyOwnersClassic(new ExceptionNumbered(e), telegramBotAbstract, messageEventArgs);
+            Logger.Logger.WriteLine(e);
+            return Task.FromResult(x);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return Task.FromResult<List<MessageSentResult?>?>(null);
     }
 
-    public static async Task<List<MessageSentResult?>?> NotifyOwners_AnError_AndLog2(Language text,
+    internal static Task<List<MessageSentResult?>?> NotifyOwnerWithLog25(Exception? e,
+        TelegramBotAbstract? telegramBotAbstract,
+        EventArgsContainer? messageEventArgs)
+    {
+        try
+        {
+            Logger.Logger.WriteLine(e);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        try
+        {
+            Console.WriteLine(e);
+            Console.WriteLine(messageEventArgs);
+            Console.WriteLine(telegramBotAbstract);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return Task.FromResult<List<MessageSentResult?>?>(null);
+    }
+
+
+    public static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog2(Language text,
         TelegramBotAbstract? sender,
         string? langCode, long? replyTo, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
@@ -214,7 +260,7 @@ internal static class NotifyUtil
         string filename,
         long? replyToMessageId = null)
     {
-        List<MessageSentResult?>? m = null;
+        List<MessageSentResult>? m = null;
         try
         {
             var text = new Language(new Dictionary<string, string?>
@@ -258,8 +304,8 @@ internal static class NotifyUtil
 
             if (m != null)
             {
-                var messageSentResult = m.First(x => x != null);
-                replyTo = messageSentResult?.GetMessageId();
+                var messageSentResult = m.First();
+                replyTo = messageSentResult.GetMessageId();
             }
 
             await NotifyOwners_AnError_AndLog2(text2, sender, langCode, replyTo, messageEventArgs, null, null,
@@ -271,7 +317,7 @@ internal static class NotifyUtil
         }
     }
 
-    private static async Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionsNumbered,
+    private static Task SendNumberedExceptionsAsFile(IEnumerable<ExceptionNumbered> exceptionsNumbered,
         TelegramBotAbstract? sender,
         EventArgsContainer? messageEventArgs, string filename, long? replyToMessageId)
     {
@@ -280,7 +326,7 @@ internal static class NotifyUtil
             var toSend = exceptionsNumbered.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
                 .Select(x => x.GetFileContentStringJson()).ToList();
             var toSendString = GetSerialized(toSend);
-            await SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,
+            SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,
                 FileTypeJsonEnum.STRING_JSONED);
         }
         catch (Exception e)
@@ -294,6 +340,8 @@ internal static class NotifyUtil
                 //ignored
             }
         }
+
+        return Task.CompletedTask;
     }
 
     private static StringJson GetSerialized(IEnumerable<StringJson?> toSend)
@@ -312,13 +360,13 @@ internal static class NotifyUtil
         return new StringJson(FileTypeJsonEnum.STRING_JSONED, r);
     }
 
-    public static async Task<List<MessageSentResult?>?> SendString(StringJson? toSendString,
+    public static List<MessageSentResult> SendString(StringJson? toSendString,
         EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
     {
         var stream = GenerateStreamFromString(toSendString, whatWeWant);
-        return await SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId);
+        return SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId);
     }
 
     private static Stream GenerateStreamFromString(StringJson? s, FileTypeJsonEnum? whatWeWant)
@@ -332,20 +380,20 @@ internal static class NotifyUtil
         return stream;
     }
 
-    private static async Task<List<MessageSentResult?>?> SendFiles(EventArgsContainer? messageEventArgs,
+    private static List<MessageSentResult> SendFiles(EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
         string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
     {
         var peer = new PeerAbstract(GroupsConstants.GroupException, ChatType.Group);
         var destinatari = new List<PeerAbstract> { peer };
-        return await SendFiles2(
+        return SendFiles2(
             stream, filename, caption, telegramBotAbstract,
             messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId
         );
     }
 
-    private static async Task<List<MessageSentResult?>?> SendFiles2(Stream stream, string filename, string? caption,
-        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, List<PeerAbstract> peerAbstracts,
+    private static List<MessageSentResult> SendFiles2(Stream stream, string filename, string? caption,
+        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, IEnumerable<PeerAbstract> peerAbstracts,
         ParseMode parseModeCaption, long? replyToMessageId)
     {
         var file = TelegramFile.FromStreamJson(stream, filename, caption);
@@ -357,17 +405,19 @@ internal static class NotifyUtil
             { "en", caption }
         });
 
-        var done = new List<MessageSentResult?>();
+        return peerAbstracts.Select(peer =>
+                SendFiles3(peer, file, text, telegramBotAbstract, fromUsername, replyToMessageId, parseModeCaption))
+            .ToList();
+    }
 
-        foreach (var peer in peerAbstracts)
-        {
-            var b = await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                telegramBotAbstract, fromUsername, "en",
-                replyToMessageId, true, parseModeCaption);
-            done.Add(new MessageSentResult(b, null, peer.Type));
-        }
-
-        return done;
+    private static MessageSentResult SendFiles3(PeerAbstract peer, TelegramFile file, Language text,
+        TelegramBotAbstract? telegramBotAbstract, string? fromUsername, long? replyToMessageId,
+        ParseMode parseModeCaption)
+    {
+        var b = SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+            telegramBotAbstract, fromUsername, "en",
+            replyToMessageId, true, parseModeCaption);
+        return new MessageSentResult(b, null, peer.Type);
     }
 
     public static async void NotifyOwnersBanAction(TelegramBotAbstract? sender, EventArgsContainer? messageEventArgs,
@@ -524,21 +574,21 @@ internal static class NotifyUtil
     }
 
 
-    public static async Task SendReportOfSuccessAndFailures(TelegramBotAbstract? sender, MessageEventArgs? e,
+    public static void SendReportOfSuccessAndFailures(TelegramBotAbstract? sender, MessageEventArgs? e,
         BanUnbanAllResultComplete? done)
     {
         try
         {
-            if (done != null)
-            {
-                var (banUnbanAllResult, _) = done;
-                await SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                    "success.bin", sender, e);
-                await SendReportOfSuccessAndFailures2(
-                    StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                    "failed.bin", sender, e);
-            }
+            if (done == null)
+                return;
+
+            var (banUnbanAllResult, _) = done;
+            SendReportOfSuccessAndFailures2(
+                StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
+                "success.bin", sender, e);
+            SendReportOfSuccessAndFailures2(
+                StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
+                "failed.bin", sender, e);
         }
         catch
         {
@@ -547,21 +597,21 @@ internal static class NotifyUtil
     }
 
 
-    private static async Task SendReportOfSuccessAndFailures2(Stream? stream, string filename,
+    private static void SendReportOfSuccessAndFailures2(Stream? stream, string filename,
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var file = new TelegramFile(stream, filename, "", "application/octet-stream");
         var message = e?.Message;
-        if (message != null)
+        if (message == null)
+            return;
+
+        var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
+        var text = new Language(new Dictionary<string, string?>
         {
-            var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
-            var text = new Language(new Dictionary<string, string?>
-            {
-                { "en", "" }
-            });
-            await SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
-                sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
-                null, true);
-        }
+            { "en", "" }
+        });
+        SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+            sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
+            null, true);
     }
 }

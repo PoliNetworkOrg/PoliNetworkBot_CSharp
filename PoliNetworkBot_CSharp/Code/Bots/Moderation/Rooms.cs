@@ -596,11 +596,10 @@ internal static class Rooms
                 var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
                     roomName, "text/html");
 
-                if (sender != null)
-                    await sender.SendFileAsync(document,
-                        peer, message,
-                        TextAsCaption.AS_CAPTION,
-                        e?.Message.From?.Username, e?.Message.From?.LanguageCode, null, true);
+                sender?.SendFileAsync(document,
+                    peer, message,
+                    TextAsCaption.AS_CAPTION,
+                    e?.Message.From?.Username, e?.Message.From?.LanguageCode, null, true);
             }
         }
     }

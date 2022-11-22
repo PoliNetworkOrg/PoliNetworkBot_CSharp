@@ -15,7 +15,9 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -219,17 +221,28 @@ public static class Logger
             { "it", "LOG:" }
         });
 
+        var done = 0;
         foreach (var sendToSingle in sendTo)
-        {
-            var peer = new PeerAbstract(sendToSingle, ChatType.Private);
+            try
+            {
+                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
-            var stream = new MemoryStream(encoding.GetBytes(file));
+                var stream = new MemoryStream(encoding.GetBytes(file));
 
-            SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                    null, "application/octet-stream"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                sender, null, "it", null, true).Wait();
-        }
+                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                        null, "application/octet-stream"), peer,
+                    text2, TextAsCaption.BEFORE_FILE,
+                    sender, null, "it", null, true);
+
+                done++;
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex);
+            }
+
+        if (done <= 0 || sendTo.Count <= 0)
+            return;
 
         lock (LogFileLock)
         {
@@ -322,7 +335,7 @@ public static class Logger
 
     public static List<long?> GetLogTo(MessageEventArgs e)
     {
-        return new List<long?> { e.Message?.From?.Id, GroupsConstants.BackupGroup };
+        return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup };
     }
 
     public static async Task<bool> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -346,5 +359,17 @@ public static class Logger
     {
         if (arg1 != null) GetLog(arg2, arg1);
         return Task.CompletedTask;
+    }
+
+    public static void WriteLogComplete(params object?[] values)
+    {
+        return;
+        
+        
+        var objects = new List<object?>();
+        objects.AddRange(values);
+        var x = new LogObject(objects);
+        WriteLine(x.GetStringToLog());
+        
     }
 }

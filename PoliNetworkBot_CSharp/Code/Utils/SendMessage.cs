@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -93,14 +94,12 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
         string? lang, Language? text, EventArgsContainer? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-        bool disablePreviewLink, int i = 0, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        bool disablePreviewLink, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         MessageSentResult? r1 = null;
 
         if (telegramBotClient == null) return null;
 
-        if (i > 5)
-            return null;
 
         try
         {
@@ -117,18 +116,18 @@ internal static class SendMessage
         }
         catch (Exception? e1)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
+            await NotifyUtil.NotifyOwnerWithLog25(e1, telegramBotClient, EventArgsContainer.Get(messageEventArgs));
         }
 
         return r1;
     }
 
-    internal static async Task<bool> SendFileAsync(TelegramFile file, PeerAbstract peer,
+    internal static bool SendFileAsync(TelegramFile file, PeerAbstract peer,
         Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        return telegramBotAbstract != null && await telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
+        return telegramBotAbstract != null && telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
             username, lang,
             replyToMessageId, disablePreviewLink, parseModeCaption);
     }
