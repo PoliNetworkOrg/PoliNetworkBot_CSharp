@@ -1,6 +1,8 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants;
+﻿using PoliNetworkBot_CSharp.Code.Enums.Log;
+
+namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
 public abstract class LogCostants
 {
-    public static readonly bool LogComplete = false;
+    public static readonly LogCompleteModeEnum LogComplete = LogCompleteModeEnum.GROUP ;
 }

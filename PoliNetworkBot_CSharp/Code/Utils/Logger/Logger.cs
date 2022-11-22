@@ -13,6 +13,7 @@ using System.Web;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
@@ -363,12 +364,48 @@ public static class Logger
 
     public static void WriteLogComplete(params object?[] values)
     {
-        if (!LogCostants.LogComplete)
-            return;
         
-        var objects = new List<object?>();
-        objects.AddRange(values);
-        var x = new LogObject(objects);
-        WriteLine(x.GetStringToLog());
+        
+        switch (LogCostants.LogComplete)
+        {
+            case LogCompleteModeEnum.FILE:
+            case LogCompleteModeEnum.GROUP:
+            {
+                var objects = new List<object?>();
+                objects.AddRange(values);
+                var x = new LogObject(objects);
+                WriteLogComplete2(x);
+                break;
+            }
+            case LogCompleteModeEnum.NONE:
+                break;
+            
+            default:
+                return;
+        }
+    }
+
+    private static void WriteLogComplete2(LogObject logObject)
+    {
+        switch (LogCostants.LogComplete)
+        {
+            case LogCompleteModeEnum.FILE:
+                WriteLogCompleteFile(logObject);
+                break;
+            case LogCompleteModeEnum.GROUP:
+                NotifyLog.SendInGroup(logObject);
+                break;
+            case LogCompleteModeEnum.NONE:
+                break;
+         
+            default:
+                return;
+        }
+    }
+
+
+    private static void WriteLogCompleteFile(LogObject logObject)
+    {
+        WriteLine(logObject.GetStringToLog());
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Enums.Log;
 
-public enum ToLog
+public enum LogCompleteModeEnum
 {
-    YES,
-    NO
+    FILE, NONE, GROUP
 }
