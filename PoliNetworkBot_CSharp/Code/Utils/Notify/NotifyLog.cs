@@ -14,14 +14,15 @@ public static class NotifyLog
             var x = logObject.ToTelegramFileContent(caption);
             if (telegramBotAbstract != null)
             {
-                x?.SendToOwners(
-                    telegramBotAbstract, null,
-                    null, null,
-                    FileTypeJsonEnum.STRING_JSONED,
+                x?.SendToOwners3(
+                    null,
+                    telegramBotAbstract,
                     new LogFileInfo()
                     {
                         filename = "notifyLog.json"
-                    }
+                    },
+                    null,
+                    FileTypeJsonEnum.STRING_JSONED
                 );
             }
         }

@@ -63,9 +63,9 @@ public class TelegramFileContent
         try
         {
             if (string.IsNullOrEmpty(_caption))
-                NotifyUtil.SendString(
-                    _fileContent, eventArgsContainer, sender,
-                    logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
+            {
+                SendToOwners3(eventArgsContainer, sender, logFileInfo, replyToMessageId2, whatWeWant);
+            }
 
             var text = logFileInfo.text ?? new Language(new Dictionary<string, string?>
             {
@@ -84,6 +84,14 @@ public class TelegramFileContent
         }
 
         return null;
+    }
+
+    public void SendToOwners3(EventArgsContainer? eventArgsContainer, TelegramBotAbstract sender,
+        LogFileInfo logFileInfo, long? replyToMessageId2, FileTypeJsonEnum whatWeWant)
+    {
+        NotifyUtil.SendString(
+            _fileContent, eventArgsContainer, sender,
+            logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
     }
 
     public StringJson? GetFileContentStringJson()
