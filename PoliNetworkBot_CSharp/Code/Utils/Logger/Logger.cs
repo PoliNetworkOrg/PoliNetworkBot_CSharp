@@ -362,7 +362,7 @@ public static class Logger
         return Task.CompletedTask;
     }
 
-    public static void WriteLogComplete(params object?[] values)
+    public static void WriteLogComplete(List<object?> values, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
         
         
@@ -371,10 +371,8 @@ public static class Logger
             case LogCompleteModeEnum.FILE:
             case LogCompleteModeEnum.GROUP:
             {
-                var objects = new List<object?>();
-                objects.AddRange(values);
-                var x = new LogObject(objects);
-                WriteLogComplete2(x);
+                var x = new LogObject(values);
+                WriteLogComplete2(x, telegramBotAbstract, caption);
                 break;
             }
             case LogCompleteModeEnum.NONE:
@@ -385,7 +383,7 @@ public static class Logger
         }
     }
 
-    private static void WriteLogComplete2(LogObject logObject)
+    private static void WriteLogComplete2(LogObject logObject, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
         switch (LogCostants.LogComplete)
         {
@@ -393,7 +391,7 @@ public static class Logger
                 WriteLogCompleteFile(logObject);
                 break;
             case LogCompleteModeEnum.GROUP:
-                NotifyLog.SendInGroup(logObject);
+                NotifyLog.SendInGroup(logObject, telegramBotAbstract, caption);
                 break;
             case LogCompleteModeEnum.NONE:
                 break;
