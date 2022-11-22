@@ -33,6 +33,7 @@ public static class Logger
     private static readonly Dictionary<long, TelegramBotAbstract?> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
     private static readonly object LogFileLock = new();
+    private static int _linesCount;
 
     private static readonly object PrintLogLock = new();
 
@@ -109,7 +110,9 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            _ = SendLogIfOversize();
+
+            _linesCount++;
+            SendLogIfOversize();
         }
         catch (Exception e)
         {
@@ -117,10 +120,12 @@ public static class Logger
         }
     }
 
-    private static Task SendLogIfOversize()
+    private static void SendLogIfOversize()
     {
-        var size = new FileInfo(DataLogPath).Length;
-        if (!(size > 50e6)) return Task.CompletedTask;
+        var toSendLogOversize = GetIfLogOversize();
+        if (!toSendLogOversize)
+            return;
+
         try
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
@@ -134,7 +139,14 @@ public static class Logger
             throw;
         }
 
-        return Task.CompletedTask;
+  
+    }
+
+    
+    private static bool GetIfLogOversize()
+    {
+        var size = new FileInfo(DataLogPath).Length;
+        return size > 50e6 || _linesCount > 500;
     }
 
     private static string GetTime()
@@ -194,10 +206,7 @@ public static class Logger
                     WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
 
-                if (text is { Count: <= 1 })
-                    EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
-                else
-                    PrintLog2(sendTo, sender, path);
+                PrintLog3(text, sender, sendTo, messageEventArgs, path);
             }
             catch (Exception? e)
             {
@@ -205,6 +214,19 @@ public static class Logger
             }
         }
     }
+
+    private static void PrintLog3(List<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
+        MessageEventArgs? messageEventArgs, string path)
+    {
+        if (text is { Count: <= 1 })
+            EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
+        else
+            PrintLog2(sendTo, sender, path);
+
+        Logger._linesCount = 0;
+    }
+
+
 
     private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path)
     {
