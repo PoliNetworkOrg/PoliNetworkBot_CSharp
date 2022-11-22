@@ -641,25 +641,27 @@ internal static class ModerationCheck
         if (usernameCheck == null)
             return false;
 
+        if (e?.Message == null)
+            return false;
+
         var donesomething = false;
 
         foreach (var usernameCheck2 in usernameCheck
                      .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
         {
-            if (e?.Message != null)
                 await SendUsernameWarning(telegramBotClient,
-                    usernameCheck2.UsernameBool,
-                    usernameCheck2.Name,
-                    usernameCheck2.GetLanguage(),
-                    usernameCheck2.GetUsername(),
-                    e.Message.Chat.Id,
-                    usernameCheck2.GetUserId(),
-                    usernameCheck2.GetMessageId(),
-                    e.Message.Chat.Type,
-                    usernameCheck2.GetFirstName(),
-                    usernameCheck2.GetLastName(),
-                    e.Message.NewChatMembers,
-                    e);
+                usernameCheck2.UsernameBool,
+                usernameCheck2.Name,
+                usernameCheck2.GetLanguage(),
+                usernameCheck2.GetUsername(),
+                e.Message.Chat.Id,
+                usernameCheck2.GetUserId(),
+                usernameCheck2.GetMessageId(),
+                e.Message.Chat.Type,
+                usernameCheck2.GetFirstName(),
+                usernameCheck2.GetLastName(),
+                e.Message.NewChatMembers,
+                e);
 
             donesomething = true;
         }
