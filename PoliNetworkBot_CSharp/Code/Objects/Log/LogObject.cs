@@ -52,10 +52,19 @@ public class LogObject
         return x;
     }
 
-    public TelegramFileContent ToTelegramFileContent(string caption)
+    public TelegramFileContent? ToTelegramFileContent(string caption)
     {
-        var stringJson = new StringJson(FileTypeJsonEnum.OBJECT, _toLog);
-        var x = new TelegramFileContent(stringJson, caption);
-        return x;
+        try
+        {
+            var stringJson = new StringJson(FileTypeJsonEnum.OBJECT, _toLog);
+            var x = new TelegramFileContent(stringJson, caption);
+            return x;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return null;
     }
 }
