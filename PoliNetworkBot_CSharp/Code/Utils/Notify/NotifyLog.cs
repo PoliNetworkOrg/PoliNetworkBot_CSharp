@@ -19,7 +19,8 @@ public static class NotifyLog
                     telegramBotAbstract,
                     new LogFileInfo()
                     {
-                        filename = "notifyLog.json"
+                        filename = "notifyLog.json",
+                        text = new L("it", "notifyLog")
                     },
                     null,
                     FileTypeJsonEnum.STRING_JSONED
