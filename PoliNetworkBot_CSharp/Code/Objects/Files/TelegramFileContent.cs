@@ -9,6 +9,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
@@ -30,31 +31,41 @@ public class TelegramFileContent
     }
 
     public List<MessageSentResult>? SendToOwners(TelegramBotAbstract sender, string? langCode,
-        long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant)
+        long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant,
+        LogFileInfo logFileInfo)
     {
-        if ((_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)) return null;
+        return (_fileContent == null || _fileContent.IsEmpty()) && string.IsNullOrEmpty(_caption)
+            ? null
+            : _fileContent != null && !_fileContent.IsEmpty()
+                ? SendToOwners2(eventArgsContainer, sender, replyToMessageId2, whatWeWant, langCode, logFileInfo)
+                : SendToOwnersEmpty(eventArgsContainer, sender, langCode, replyToMessageId2, whatWeWant);
+    }
 
-        if (_fileContent == null || _fileContent.IsEmpty())
+    private List<MessageSentResult>? SendToOwnersEmpty(EventArgsContainer? eventArgsContainer,
+        TelegramBotAbstract sender, string? langCode, long? replyToMessageId2, FileTypeJsonEnum whatWeWant)
+    {
+        var text1 = new Language(new Dictionary<string, string?>
         {
-            var text1 = new Language(new Dictionary<string, string?>
-            {
-                { "it", "Eccezione! " + _caption },
-                { "en", "Exception! " + _caption }
-            });
+            { "it", "Eccezione! " + _caption },
+            { "en", "Exception! " + _caption }
+        });
 
-            var r11 = NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
-                eventArgsContainer,
-                _fileContent, whatWeWant, SendActionEnum.SEND_TEXT).Result;
-            return r11;
-        }
+        var r11 = NotifyUtil.NotifyOwners_AnError_AndLog2(text1, sender, langCode, replyToMessageId2,
+            eventArgsContainer,
+            _fileContent, whatWeWant, SendActionEnum.SEND_TEXT).Result;
+        return r11;
+    }
 
-
+    private List<MessageSentResult>? SendToOwners2(EventArgsContainer? eventArgsContainer,
+        TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant, string? langCode, 
+        LogFileInfo logFileInfo)
+    {
         if (string.IsNullOrEmpty(_caption))
             NotifyUtil.SendString(
                 _fileContent, eventArgsContainer, sender,
-                "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
+                logFileInfo.filename ??"ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
 
-        var text = new Language(new Dictionary<string, string?>
+        var text = logFileInfo.text ?? new Language(new Dictionary<string, string?>
         {
             { "it", "Eccezione! " + _caption },
             { "en", "Exception! " + _caption }
