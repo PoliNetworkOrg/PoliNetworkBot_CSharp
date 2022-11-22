@@ -60,21 +60,30 @@ public class TelegramFileContent
         TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant, string? langCode, 
         LogFileInfo logFileInfo)
     {
-        if (string.IsNullOrEmpty(_caption))
-            NotifyUtil.SendString(
-                _fileContent, eventArgsContainer, sender,
-                logFileInfo.filename ??"ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
-
-        var text = logFileInfo.text ?? new Language(new Dictionary<string, string?>
+        try
         {
-            { "it", "Eccezione! " + _caption },
-            { "en", "Exception! " + _caption }
-        });
+            if (string.IsNullOrEmpty(_caption))
+                NotifyUtil.SendString(
+                    _fileContent, eventArgsContainer, sender,
+                    logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
 
-        var r1 = NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
-            eventArgsContainer, null,
-            null, SendActionEnum.SEND_TEXT).Result;
-        return r1;
+            var text = logFileInfo.text ?? new Language(new Dictionary<string, string?>
+            {
+                { "it", "Eccezione! " + _caption },
+                { "en", "Exception! " + _caption }
+            });
+
+            var r1 = NotifyUtil.NotifyOwners_AnError_AndLog2(text, sender, langCode, replyToMessageId2,
+                eventArgsContainer, null,
+                null, SendActionEnum.SEND_TEXT).Result;
+            return r1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return null;
     }
 
     public StringJson? GetFileContentStringJson()
