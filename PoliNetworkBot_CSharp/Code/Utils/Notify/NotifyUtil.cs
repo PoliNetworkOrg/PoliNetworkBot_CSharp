@@ -94,7 +94,7 @@ internal static class NotifyUtil
             {
                 var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
                 var r1 = message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
-                    FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo(){ filename =  "ex.json"});
+                    FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo { filename = "ex.json" });
 
                 if (r1 != null)
                     r.AddRange(r1);
@@ -129,7 +129,7 @@ internal static class NotifyUtil
 
             var r4 = telegramFileContent.SendToOwners(
                 sender, langCode, replyToMessageId2,
-                messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo(){ filename = "stack.json"});
+                messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo { filename = "stack.json" });
 
             return Task.FromResult(r4);
         }
