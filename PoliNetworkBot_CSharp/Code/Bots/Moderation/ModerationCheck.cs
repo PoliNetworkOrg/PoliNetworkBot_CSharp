@@ -540,9 +540,12 @@ internal static class ModerationCheck
     public static async Task<bool> AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType checkSpam)
     {
-        Logger.WriteLogComplete( new List<object?>(){checkSpam.ToString(),
+        Logger.WriteLogComplete(new List<object?>
+        {
+            checkSpam.ToString(),
             e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
-            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title}, telegramBotClient, "AntiSpamMeasure");
+            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title
+        }, telegramBotClient, "AntiSpamMeasure");
 
 
         if (checkSpam == SpamType.ALL_GOOD)
@@ -650,7 +653,7 @@ internal static class ModerationCheck
         foreach (var usernameCheck2 in usernameCheck
                      .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
         {
-                await SendUsernameWarning(telegramBotClient,
+            await SendUsernameWarning(telegramBotClient,
                 usernameCheck2.UsernameBool,
                 usernameCheck2.Name,
                 usernameCheck2.GetLanguage(),
@@ -674,13 +677,14 @@ internal static class ModerationCheck
         EventArgsContainer? e)
     {
         Logger.WriteLogComplete(
-            new List<object?>(){
-            e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
-            e?.MessageEventArgs?.Message.From?.Username,
-            e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
-            e?.MessageEventArgs?.Message.Chat.Title
+            new List<object?>
+            {
+                e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
+                e?.MessageEventArgs?.Message.From?.Username,
+                e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
+                e?.MessageEventArgs?.Message.Chat.Title
             }, telegramBotClient, "PermittedSpamMeasure"
-            );
+        );
 
         return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, e);
     }

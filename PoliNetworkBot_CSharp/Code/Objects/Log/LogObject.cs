@@ -54,8 +54,8 @@ public class LogObject
 
     public TelegramFileContent ToTelegramFileContent(string caption)
     {
-        StringJson stringJson = new StringJson(FileTypeJsonEnum.OBJECT, _toLog);
-        TelegramFileContent x = new TelegramFileContent(stringJson, caption);
+        var stringJson = new StringJson(FileTypeJsonEnum.OBJECT, _toLog);
+        var x = new TelegramFileContent(stringJson, caption);
         return x;
     }
 }

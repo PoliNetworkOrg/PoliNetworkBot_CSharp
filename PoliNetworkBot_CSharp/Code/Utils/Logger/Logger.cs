@@ -138,11 +138,9 @@ public static class Logger
             Console.WriteLine(e);
             throw;
         }
-
-  
     }
 
-    
+
     private static bool GetIfLogOversize()
     {
         var size = new FileInfo(DataLogPath).Length;
@@ -223,9 +221,8 @@ public static class Logger
         else
             PrintLog2(sendTo, sender, path);
 
-        Logger._linesCount = 0;
+        _linesCount = 0;
     }
-
 
 
     private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path)
@@ -386,8 +383,6 @@ public static class Logger
 
     public static void WriteLogComplete(List<object?> values, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
-        
-        
         switch (LogCostants.LogComplete)
         {
             case LogCompleteModeEnum.FILE:
@@ -399,7 +394,7 @@ public static class Logger
             }
             case LogCompleteModeEnum.NONE:
                 break;
-            
+
             default:
                 return;
         }
@@ -417,7 +412,7 @@ public static class Logger
                 break;
             case LogCompleteModeEnum.NONE:
                 break;
-         
+
             default:
                 return;
         }

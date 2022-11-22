@@ -2,5 +2,7 @@
 
 public enum LogCompleteModeEnum
 {
-    FILE, NONE, GROUP
+    FILE,
+    NONE,
+    GROUP
 }

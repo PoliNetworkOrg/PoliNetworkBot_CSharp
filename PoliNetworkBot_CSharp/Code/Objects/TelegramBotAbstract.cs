@@ -306,7 +306,7 @@ public class TelegramBotAbstract
 
     internal async Task<bool> DeleteMessageAsync(long chatId, long messageId, long? accessHash)
     {
-        Logger.WriteLogComplete(new List<object?>(){ chatId, messageId, accessHash}, this, "DeleteMessageAsync");
+        Logger.WriteLogComplete(new List<object?> { chatId, messageId, accessHash }, this, "DeleteMessageAsync");
 
         switch (_isbot)
         {

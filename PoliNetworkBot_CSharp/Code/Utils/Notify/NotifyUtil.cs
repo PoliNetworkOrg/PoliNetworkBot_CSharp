@@ -121,7 +121,7 @@ internal static class NotifyUtil
     {
         try
         {
-            TelegramFileContent? telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs, exception);
+            var telegramFileContent = TelegramFileContent.GetStack(extraInfo, messageEventArgs, exception);
 
             if (telegramFileContent == null)
                 return Task.FromResult<List<MessageSentResult>?>(null);
