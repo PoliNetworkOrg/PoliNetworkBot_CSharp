@@ -26,7 +26,7 @@ using File = Telegram.Bot.Types.File;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 public class TelegramBotAbstract
 {

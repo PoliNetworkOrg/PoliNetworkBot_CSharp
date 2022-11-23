@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
