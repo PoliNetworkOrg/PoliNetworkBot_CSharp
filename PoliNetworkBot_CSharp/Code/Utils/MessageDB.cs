@@ -270,7 +270,7 @@ public static class MessageDb
         return null;
     }
 
-    private static async Task< HasBeenSent > GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
+    private static async Task<HasBeenSent> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
         try
@@ -282,7 +282,7 @@ public static class MessageDb
             s1 += "GetHasBeenSentAsync";
             //var e1 = new Exception(s1);
             //await NotifyUtil.NotifyOwners(e1, sender, messageEventArgs);
-            return new HasBeenSent(b1, 1, s1); 
+            return new HasBeenSent(b1, 1, s1);
         }
         catch
         {

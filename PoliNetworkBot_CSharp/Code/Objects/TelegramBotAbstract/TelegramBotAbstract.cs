@@ -1671,11 +1671,11 @@ public class TelegramBotAbstract
 
                                 try
                                 {
-                                    var tlChannel = new TLChannel() { Id = c2.Id };
+                                    var tlChannel = new TLChannel { Id = c2.Id };
                                     var result = UserbotClient.Channels_EditDescription(tlChannel, description).Result;
                                     //todo: non mi convince, probabilmente non va
                                 }
-                                catch(Exception ex)
+                                catch (Exception ex)
                                 {
                                     Console.WriteLine(ex);
                                 }

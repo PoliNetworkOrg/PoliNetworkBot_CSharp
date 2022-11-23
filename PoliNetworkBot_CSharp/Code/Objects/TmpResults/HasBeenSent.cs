@@ -2,9 +2,9 @@
 
 public class HasBeenSent
 {
-    public bool? B;
     public readonly int I;
     public readonly string? S;
+    public bool? B;
 
     public HasBeenSent(bool? b1, int i, string s1)
     {
