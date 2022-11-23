@@ -30,7 +30,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Main;
 public static class ProgramUtil
 {
     public static readonly BotConfigAll BotConfigAll = new();
-    
+
     internal static Tuple<char, bool> MainGetMenuChoice2(IReadOnlyList<string>? args)
     {
         if (args == null || args.Count == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
@@ -466,7 +466,8 @@ public static class ProgramUtil
             }
             catch (Exception)
             {
-                Logger.Logger.WriteLine("Execution cannot continue, database not reachable.", LogSeverityLevel.EMERGENCY);
+                Logger.Logger.WriteLine("Execution cannot continue, database not reachable.",
+                    LogSeverityLevel.EMERGENCY);
                 Environment.Exit(1);
             }
         }
