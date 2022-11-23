@@ -42,7 +42,8 @@ public class TelegramFileContent
     }
 
     private List<MessageSentResult>? SendToOwnersEmpty(EventArgsContainer? eventArgsContainer,
-        TelegramBotAbstract.TelegramBotAbstract sender, string? langCode, long? replyToMessageId2, FileTypeJsonEnum whatWeWant)
+        TelegramBotAbstract.TelegramBotAbstract sender, string? langCode, long? replyToMessageId2,
+        FileTypeJsonEnum whatWeWant)
     {
         var text1 = new Language(new Dictionary<string, string?>
         {
@@ -57,7 +58,8 @@ public class TelegramFileContent
     }
 
     private List<MessageSentResult>? SendToOwners2(EventArgsContainer? eventArgsContainer,
-        TelegramBotAbstract.TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant, string? langCode,
+        TelegramBotAbstract.TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant,
+        string? langCode,
         LogFileInfo logFileInfo)
     {
         try
