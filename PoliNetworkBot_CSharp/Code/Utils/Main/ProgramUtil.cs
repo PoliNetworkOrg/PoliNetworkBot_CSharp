@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
@@ -22,7 +23,6 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Main;
 
@@ -403,13 +403,13 @@ public static class ProgramUtil
 
         if (GlobalVariables.Bots.Keys.Count > 0 && moderationBots > 0)
         {
-            var t = new Thread(ThreadAsync.DoThingsAsyncBot);
+            var t = new Thread(ThreadAsyncModeration.DoThingsAsyncBot);
             t.Start();
         }
 
         if (GlobalVariables.Bots.Keys.Count > 0 && anonBots > 0)
         {
-            var t = new Thread(Bots.Anon.ThreadAsync.DoThingsAsyncBot5Async);
+            var t = new Thread(ThreadAsyncAnon.DoThingsAsyncBot_Anon_First_Async);
             t.Start();
         }
     }

@@ -170,9 +170,9 @@ internal class WebPost
         if (!x2.IsValid())
             return false;
 
-        if (ThreadAsync.DictionaryWebpost != null)
-            ThreadAsync.DictionaryWebpost[x.AuthorId.Value].approved = approved;
-        ThreadAsync.WriteDict();
+        if (ThreadAsyncAnon.DictionaryWebpost != null)
+            ThreadAsyncAnon.DictionaryWebpost[x.AuthorId.Value].approved = approved;
+        ThreadAsyncAnon.WriteDict();
         return true;
     }
 

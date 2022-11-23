@@ -16,7 +16,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-internal static class ThreadAsync
+internal static class ThreadAsyncAnon
 {
     private const int Timesleep = 1000 * 30;
 
@@ -40,7 +40,7 @@ internal static class ThreadAsync
         return r;
     }
 
-    public static async void DoThingsAsyncBot5Async(object? obj)
+    public static async void DoThingsAsyncBot_Anon_First_Async(object? obj)
     {
         var bot = await WebPost.GetAnonBotAsync();
         if (bot == null)
@@ -202,10 +202,5 @@ internal static class ThreadAsync
 
         WriteDict();
         return DictionaryWebpost;
-    }
-
-    public static void DoThingsAsyncBot(object? obj)
-    {
-        DoThingsAsyncBot5Async(obj);
     }
 }
