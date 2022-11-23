@@ -16,7 +16,7 @@ public class TargetUserObject
     private long? _userId;
     private string? _username;
 
-    public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract? sender,
+    public TargetUserObject(IReadOnlyList<string?>? stringInfo, TelegramBotAbstract.TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
         var target = stringInfo?[0];
@@ -84,7 +84,7 @@ public class TargetUserObject
             _username.StartsWith("@") ? _username : "@" + _username;
     }
 
-    public async Task<bool> UserIdEmpty(TelegramBotAbstract? telegramBotAbstract)
+    public async Task<bool> UserIdEmpty(TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract)
     {
         if (_userId == null && string.IsNullOrEmpty(_username))
             return true;
@@ -94,7 +94,7 @@ public class TargetUserObject
         return _userId == null;
     }
 
-    private async Task TryGetUserId(TelegramBotAbstract? telegramBotAbstract)
+    private async Task TryGetUserId(TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract)
     {
         if (_userId != null)
             return;
@@ -104,7 +104,7 @@ public class TargetUserObject
         if (idFound != null) _userId = idFound;
     }
 
-    public async Task<TargetUserObject> GetTargetUserId(TelegramBotAbstract? telegramBotAbstract)
+    public async Task<TargetUserObject> GetTargetUserId(TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract)
     {
         if ((string.IsNullOrEmpty(_username) && _userId == null) || _userId != null || string.IsNullOrEmpty(_username))
             return this;

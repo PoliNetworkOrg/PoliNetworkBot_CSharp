@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot.Types.Enums;
 
 #endregion

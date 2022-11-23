@@ -221,7 +221,7 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
             return;
@@ -348,7 +348,7 @@ public static class MessagesStore
         return storedMessage?.AllowedStatus.GetAllowedTime();
     }
 
-    public static async Task GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
     }
