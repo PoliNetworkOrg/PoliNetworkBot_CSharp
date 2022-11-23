@@ -26,7 +26,8 @@ public class AutomaticAnswer
     // CONJUNCTIVE NORMAL FORM: conjunction of disjunctions
     private List<List<string>> _trigger;
 
-    public AutomaticAnswer(List<List<string>> trigger, Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
+    public AutomaticAnswer(List<List<string>> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
         List<long> except)
     {
         _trigger = trigger;
@@ -35,7 +36,8 @@ public class AutomaticAnswer
     }
 
     public AutomaticAnswer(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except, string response)
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
+        string response)
     {
         _trigger = trigger;
         _actionMessage = action;
@@ -56,7 +58,8 @@ public class AutomaticAnswer
         return _except.All(group => !group.Equals(id));
     }
 
-    public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract, string message)
+    public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
+        string message)
     {
         if (!IsTriggered(message) || !GroupAllowed(e.Message.Chat.Id)) return false;
         if (_response != null)
@@ -81,13 +84,15 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
     }
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except, string response,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
+        string response,
         Func<MessageEventArgs, bool> condition) : base(trigger, action, except, response)
     {
         _condition = condition;
     }
 
-    public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract, string message)
+    public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
+        string message)
     {
         return _condition(e) && base.TryTrigger(e, telegramBotAbstract, message);
     }
