@@ -7,10 +7,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
-using PoliNetworkBot_CSharp.Code.MainProgram;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Main;
 
 #endregion
 
@@ -133,7 +132,7 @@ internal class WebPost
                 select bots[key]).FirstOrDefault();
         try
         {
-            await Utils.Main.ProgramUtil.StartBotsAsync(false, false, true);
+            await ProgramUtil.StartBotsAsync(false, false, true);
         }
         catch
         {
