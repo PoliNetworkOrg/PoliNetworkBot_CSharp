@@ -35,8 +35,6 @@ namespace PoliNetworkBot_CSharp.Code.MainProgram;
 
 internal static class Program
 {
-
-
     private static async Task Main(string[]? args)
     {
         var toExit = Utils.Main.ProgramUtil.FirstThingsToDo();
