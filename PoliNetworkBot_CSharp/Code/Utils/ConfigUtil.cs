@@ -17,7 +17,7 @@ public static class ConfigUtil
     public static bool GetConfig(long? fromId, string? fromUsername, TelegramBotAbstract? sender,
         string? fromLanguageCode, ChatType? chatType)
     {
-        var json = JsonConvert.SerializeObject(Program.BotConfigAll);
+        var json = JsonConvert.SerializeObject(Utils.Main.ProgramUtil.BotConfigAll);
         var file = TelegramFile.FromString(json, "config.json", "");
         if (chatType == null)
             return false;

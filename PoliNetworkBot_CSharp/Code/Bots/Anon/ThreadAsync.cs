@@ -40,7 +40,7 @@ internal static class ThreadAsync
         return r;
     }
 
-    internal static async void DoThingsAsyncBotAsync(object? obj)
+    public static async void DoThingsAsyncBot5Async(object? obj)
     {
         var bot = await WebPost.GetAnonBotAsync();
         if (bot == null)
@@ -202,5 +202,10 @@ internal static class ThreadAsync
 
         WriteDict();
         return DictionaryWebpost;
+    }
+
+    public static void DoThingsAsyncBot(object? obj)
+    {
+        DoThingsAsyncBot5Async(obj);
     }
 }

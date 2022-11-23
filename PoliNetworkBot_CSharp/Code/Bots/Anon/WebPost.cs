@@ -132,7 +132,7 @@ internal class WebPost
                 select bots[key]).FirstOrDefault();
         try
         {
-            await Program.StartBotsAsync(false, false, true);
+            await Utils.Main.ProgramUtil.StartBotsAsync(false, false, true);
         }
         catch
         {
