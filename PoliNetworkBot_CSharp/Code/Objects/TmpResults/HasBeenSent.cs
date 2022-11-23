@@ -2,14 +2,14 @@
 
 public class HasBeenSent
 {
-    public bool? _b;
-    public int _i;
-    public string? _s;
+    public bool? B;
+    public readonly int I;
+    public readonly string? S;
 
     public HasBeenSent(bool? b1, int i, string s1)
     {
-        this._b = b1;
-        this._i = i;
-        this._s = s1;
+        B = b1;
+        I = i;
+        S = s1;
     }
 }

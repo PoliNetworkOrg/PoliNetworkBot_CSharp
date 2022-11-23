@@ -189,11 +189,11 @@ public static class MessageDb
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
         var s3 = r1.ToString();
-        var s4 = r1.R1?._i.ToString();
+        var s4 = r1.R1?.I.ToString();
         if (string.IsNullOrEmpty(s4))
             s4 = "[NULL(1)]";
         s3 += "\n[Id1]: " + s4 + "\n";
-        var s5 = r1.R1?._s;
+        var s5 = r1.R1?.S;
         if (string.IsNullOrEmpty(s5)) s5 = "[NULL(2)]";
         s3 += "[Id2]: " + s5 + "\n";
         s3 += "[Id3]: " + r1.ScheduleMessageSentResult + "\n";
@@ -217,7 +217,7 @@ public static class MessageDb
             await NotifyUtil.NotifyOwnerWithLog2(e3, botToReportException, EventArgsContainer.Get(messageEventArgs));
         }
 
-        if (r1 != null) hasBeenSent = r1._b;
+        if (r1 != null) hasBeenSent = r1.B;
 
         if (hasBeenSent == null)
             return new MessageSendScheduled(ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null,
