@@ -558,7 +558,7 @@ public class Program
             return;
         }
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].PathDroppedOneLevel(e.Message.Text);
             await GenerateFolderKeyboard(e, telegramBotAbstract);
@@ -568,7 +568,7 @@ public class Program
 
     private static async Task GenerateFolderKeyboard(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
             await SendFolderAsync(e, replyKeyboard, telegramBotAbstract);
@@ -593,7 +593,7 @@ public class Program
             return;
         }
 
-        if (e?.Message?.Document == null)
+        if (e?.Message.Document == null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -691,7 +691,7 @@ public class Program
 
     private static void GenerateStart(MessageEventArgs? e)
     {
-        if (e?.Message?.From != null && !UsersConversations.ContainsKey(e.Message.From.Id))
+        if (e?.Message.From != null && !UsersConversations.ContainsKey(e.Message.From.Id))
         {
             var conv = new Conversation();
             UsersConversations.TryAdd(e.Message.From.Id, conv);
@@ -810,7 +810,7 @@ public class Program
 
     private static async Task GenerateFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
             var dict = new Dictionary<string, string?>
@@ -829,7 +829,7 @@ public class Program
 
     private static async Task HandleStartAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].SetState(UserState.SCHOOL);
             var replyKeyboard = Keyboards.GetKeyboardSchools();
@@ -973,7 +973,7 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e.Message?.Chat.Id, text, ChatType.Private,
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                 e.Message?.From.LanguageCode,
                 ParseMode.Html, null, null);
 
@@ -982,7 +982,7 @@ public class Program
             return;
         }
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetSchool());
             var optionsStringToKeyboard =

@@ -596,7 +596,7 @@ internal static class CommandDispatcher
     public static async Task<bool> MassiveSendAsync(TelegramBotAbstract sender, MessageEventArgs e,
         string textToSend)
     {
-        var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender?.DbConfig);
+        var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender.DbConfig);
 
         return sender != null && await MassiveSendUtil.MassiveSendSlaveAsync(sender, e, groups, textToSend, false);
     }

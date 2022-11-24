@@ -110,7 +110,7 @@ public static class Help
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
+        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message?.From?.LanguageCode,
             e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             EventArgsContainer.Get(e));

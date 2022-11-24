@@ -59,7 +59,7 @@ public static class Main
     private static async Task<MessageSentResult?> HandleMessageAsync(TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e)
     {
-        return e?.Message?.Chat.Id is 1001129635578 or -1001129635578
+        return e?.Message.Chat.Id is 1001129635578 or -1001129635578
             ? await HandleMessage2Async(telegramBotClient, e)
             : null;
     }
@@ -113,7 +113,7 @@ public static class Main
         var message = e?.Message;
         if (message != null)
             return await SendMessage.SendMessageInAGroup(
-                telegramBotClient, e?.Message?.From?.LanguageCode,
+                telegramBotClient, e?.Message.From?.LanguageCode,
                 text, EventArgsContainer.Get(e),
                 message.Chat.Id, message.Chat.Type,
                 ParseMode.Html, message.MessageId, true);
@@ -171,7 +171,7 @@ public static class Main
         var text = new Language(dict4);
         var r5 = e?.Message;
         if (r5 != null)
-            return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message?.From?.LanguageCode,
+            return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message.From?.LanguageCode,
                 text,
                 EventArgsContainer.Get(e),
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
@@ -221,7 +221,7 @@ public static class Main
                 {
                     { "@t", t },
                     { "@fn", e?.Message.From?.FirstName },
-                    { "@ln", e?.Message?.From?.LastName },
+                    { "@ln", e?.Message.From?.LastName },
                     { "@wk", DateTime.Now },
                     { "@ki", m1.From?.Id }
                 };

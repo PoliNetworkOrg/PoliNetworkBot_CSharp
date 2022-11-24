@@ -102,7 +102,7 @@ internal static class AskUser
             { "it", "In che sede?" },
             { "en", "In which territorial pole?" }
         });
-        var reply = await AskBetweenRangeAsync(e?.Message?.From?.Id,
+        var reply = await AskBetweenRangeAsync(e?.Message.From?.Id,
             sender: sender,
             lang: e?.Message?.From?.LanguageCode,
             options: options,

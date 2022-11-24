@@ -51,7 +51,7 @@ internal static class TextConversation
             return;
 
         var text = e.Message.Text.ToLower();
-        var title = e.Message?.Chat.Title?.ToLower();
+        var title = e.Message.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
             AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
     }
@@ -62,7 +62,7 @@ internal static class TextConversation
         {
             var botId = telegramBotClient.GetId();
 
-            if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
+            if (AskUser.UserAnswers.ContainsUser(e?.Message.From?.Id, botId))
                 if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) ==
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
