@@ -8,6 +8,7 @@ using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
@@ -596,11 +597,10 @@ internal static class Rooms
                 var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
                     roomName, "text/html");
 
-                if (sender != null)
-                    await sender.SendFileAsync(document,
-                        peer, message,
-                        TextAsCaption.AS_CAPTION,
-                        e?.Message.From?.Username, e?.Message.From?.LanguageCode, null, true);
+                sender?.SendFileAsync(document,
+                    peer, message,
+                    TextAsCaption.AS_CAPTION,
+                    e?.Message.From?.Username, e?.Message.From?.LanguageCode, null, true);
             }
         }
     }

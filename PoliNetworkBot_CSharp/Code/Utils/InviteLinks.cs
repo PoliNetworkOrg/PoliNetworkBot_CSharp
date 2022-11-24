@@ -12,7 +12,9 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -127,7 +129,7 @@ internal static class InviteLinks
             if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 return;
 
-            if (e?.Message?.From == null)
+            if (e?.Message.From == null)
                 return;
 
             if (!Owners.CheckIfOwner(e.Message.From.Id))
@@ -231,7 +233,7 @@ internal static class InviteLinks
                         };
                         var stream = UtilsFileText.GenerateStreamFromString(st);
                         var tf = new TelegramFile(stream, "groups.txt", "Gruppi con link rigenerati", "text/plain");
-                        await sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
+                        sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
                             new Language(dict),
                             TextAsCaption.AFTER_FILE, e.Message.From.Username, e.Message.From.LanguageCode, null,
                             false);
@@ -373,7 +375,7 @@ internal static class InviteLinks
                     Logger.Logger.WriteLine(ex3);
                     var ex3M = "3" + "\n\n" + ex3.Message;
                     if (sender != null)
-                        if (e?.Message?.From != null)
+                        if (e?.Message.From != null)
                             await sender.SendTextMessageAsync(e.Message.From.Id,
                                 new Language(
                                     new Dictionary<string, string?>

@@ -11,9 +11,12 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -446,7 +449,7 @@ internal static class Groups
                             e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
                             text2, EventArgsContainer.Get(e),
                             e.Message.Chat.Id, e.Message.Chat.Type,
-                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, 0, inline),
+                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, inline),
                     _ => throw new ArgumentOutOfRangeException()
                 };
 

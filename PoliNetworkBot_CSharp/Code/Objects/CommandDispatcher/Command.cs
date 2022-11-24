@@ -24,10 +24,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 [JsonObject(MemberSerialization.Fields)]
 public class Command
 {
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>>? _action;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, CommandExecutionState>? _action2;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, CommandExecutionState>? _action3;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>>? _action4;
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task>? _action;
+    private readonly Action<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?>? _action2;
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action3;
     private readonly List<ChatType> _chatTypes;
     private readonly bool _enabled;
     private readonly Language _helpMessage;
@@ -39,7 +38,8 @@ public class Command
     private List<string> _trigger;
 
 
-    public Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, CommandExecutionState> action,
+    public Command(IEnumerable<string> trigger,
+        Action<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -53,7 +53,8 @@ public class Command
         _enabled = enabled;
     }
 
-    private Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
+    private Command(IEnumerable<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -67,7 +68,8 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, CommandExecutionState> action,
+    public Command(IEnumerable<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
         List<ChatType> chatTypes,
         Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
@@ -82,7 +84,8 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(string trigger, Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
+    public Command(string trigger,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -96,7 +99,8 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(string trigger, Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, CommandExecutionState> action,
+    public Command(string trigger,
+        Action<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -111,7 +115,7 @@ public class Command
     }
 
     public Command(string trigger,
-        Func<MessageEventArgs?, TelegramBotAbstract?, Task<CommandExecutionState>> action,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
         List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage,
         Language? longDescription,
@@ -142,7 +146,7 @@ public class Command
     }
 
     public static Command CreateInstance(IEnumerable<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -175,7 +179,8 @@ public class Command
         return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
-    public virtual CommandExecutionState TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract,
+    public virtual CommandExecutionState TryTrigger(MessageEventArgs e,
+        TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string command,
         string[] args)
     {

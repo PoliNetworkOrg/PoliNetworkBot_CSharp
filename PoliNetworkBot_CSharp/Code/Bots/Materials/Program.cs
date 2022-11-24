@@ -18,7 +18,9 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -139,7 +141,7 @@ public class Program
                 }
                 catch (Exception ex)
                 {
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
+                    await NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotClient, EventArgsContainer.Get(e));
                 }
             }
         }
@@ -281,7 +283,7 @@ public class Program
             {
                 CallbackQueryEventArgs = e
             };
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, sender, null, eventArgsContainer);
+            _ = NotifyUtil.NotifyOwnersWithLog(ex, sender, null, eventArgsContainer);
         }
     }
 
@@ -323,7 +325,7 @@ public class Program
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+            await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                 new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
         }
     }
@@ -516,7 +518,7 @@ public class Program
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
                                     ParseMode.Html, null, null);
-                                await BotUtils.NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
+                                await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                                     new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
                             }
                         }
@@ -541,7 +543,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            _ = BotUtils.NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
+            _ = NotifyUtil.NotifyOwnersWithLog(ex, bot, null,
                 eventArgsContainer);
             return false;
         }
@@ -549,14 +551,14 @@ public class Program
 
     private static async Task HandleNewFolderAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.Text != null && e.Message != null &&
+        if (e?.Message.Text != null &&
             (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
         {
             GenerateStart(e);
             return;
         }
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].PathDroppedOneLevel(e.Message.Text);
             await GenerateFolderKeyboard(e, telegramBotAbstract);
@@ -566,7 +568,7 @@ public class Program
 
     private static async Task GenerateFolderKeyboard(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var replyKeyboard = Keyboards.GetPathsKeyboard(e.Message.From.Id);
             await SendFolderAsync(e, replyKeyboard, telegramBotAbstract);
@@ -576,7 +578,7 @@ public class Program
     private static async Task HandleFileAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
         //gestisce l'arrivo del messaggio dall'utente
-        if (e?.Message?.Photo != null)
+        if (e?.Message.Photo != null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -591,7 +593,7 @@ public class Program
             return;
         }
 
-        if (e?.Message?.Document == null)
+        if (e?.Message.Document == null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -600,8 +602,8 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e?.Message?.From?.Id, text, ChatType.Private,
-                e?.Message?.From?.LanguageCode,
+            await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, text, ChatType.Private,
+                e?.Message.From?.LanguageCode,
                 ParseMode.Html, null, null);
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
@@ -689,14 +691,14 @@ public class Program
 
     private static void GenerateStart(MessageEventArgs? e)
     {
-        if (e?.Message?.From != null && e.Message != null && !UsersConversations.ContainsKey(e.Message.From.Id))
+        if (e?.Message.From != null && !UsersConversations.ContainsKey(e.Message.From.Id))
         {
             var conv = new Conversation();
             UsersConversations.TryAdd(e.Message.From.Id, conv);
         }
         else
         {
-            if (e?.Message?.From == null) return;
+            if (e?.Message.From == null) return;
             UsersConversations[e.Message.From.Id].SetState(UserState.START);
             UsersConversations[e.Message.From.Id].ResetPath();
         }
@@ -704,7 +706,7 @@ public class Program
 
     private static async Task HandleFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.Text == null)
+        if (e?.Message.Text == null)
         {
             await GenerateStartOnBackAndNull(e, sender);
             return;
@@ -797,7 +799,7 @@ public class Program
 
     private static bool VerifySubfolder(MessageEventArgs? e)
     {
-        if (e?.Message?.From == null)
+        if (e?.Message.From == null)
             return false;
 
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);
@@ -808,7 +810,7 @@ public class Program
 
     private static async Task GenerateFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].SetState(UserState.NEW_FOLDER);
             var dict = new Dictionary<string, string?>
@@ -827,7 +829,7 @@ public class Program
 
     private static async Task HandleStartAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].SetState(UserState.SCHOOL);
             var replyKeyboard = Keyboards.GetKeyboardSchools();
@@ -856,7 +858,7 @@ public class Program
 
     private static async Task HandleCourseAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].ResetPath();
             if (e.Message.Text == null
@@ -913,7 +915,7 @@ public class Program
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
                         ParseMode.Html, null, null);
-                    await BotUtils.NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
+                    await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
                 }
             }
         }
@@ -936,7 +938,7 @@ public class Program
             { "it", "Seleziona un percorso" }
         };
         var text = new Language(dict);
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var optionsStringToKeyboard =
                 BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
@@ -957,9 +959,9 @@ public class Program
 
     private static async Task HandleSchoolAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null && (e.Message?.Text == null ||
-                                         !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
-                                             e.Message.Text)))
+        if (e?.Message.From != null && (e.Message.Text == null ||
+                                        !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
+                                            e.Message.Text)))
         {
             var dict = new Dictionary<string, string?>
             {
@@ -971,8 +973,8 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e.Message?.Chat.Id, text, ChatType.Private,
-                e.Message?.From.LanguageCode,
+            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
+                e.Message.From.LanguageCode,
                 ParseMode.Html, null, null);
 
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
@@ -980,7 +982,7 @@ public class Program
             return;
         }
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var replyKeyboard = Keyboards.GetKeyboardCorsi(UsersConversations[e.Message.From.Id].GetSchool());
             var optionsStringToKeyboard =

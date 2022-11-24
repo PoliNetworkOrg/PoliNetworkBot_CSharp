@@ -9,10 +9,13 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -35,48 +38,45 @@ internal static class ModerationCheck
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         if (e == null) return null;
-        if (e.Message != null)
+        switch (e.Message.Chat.Type)
         {
-            switch (e.Message.Chat.Type)
-            {
-                case ChatType.Private:
-                    return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
-                        new List<int> { 13 },
-                        "private");
-
-                case ChatType.Group:
-                    break;
-
-                case ChatType.Channel:
-                    break;
-
-                case ChatType.Supergroup:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            //start | exclude groups, bot will not operate in them
-            if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
+            case ChatType.Private:
                 return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
-                    new List<int> { 30 },
-                    null);
-            //end | exclude groups
-            lock (Lock)
-            {
-                const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
-                var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
-                    new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
-                    r1?.Item3?.Insert(0, 11);
-                    return r1;
-                }
+                    new List<int> { 13 },
+                    "private");
 
-                InsertGroup(sender, e);
+            case ChatType.Group:
+                break;
+
+            case ChatType.Channel:
+                break;
+
+            case ChatType.Supergroup:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        //start | exclude groups, bot will not operate in them
+        if (e.Message.Chat.Id == ConfigAnon.ModAnonCheckGroup)
+            return new Tuple<ToExit?, ChatMember[]?, List<int>?, string?>(ToExit.STAY, null,
+                new List<int> { 30 },
+                null);
+        //end | exclude groups
+        lock (Lock)
+        {
+            const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
+            var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
+                new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
+                r1?.Item3?.Insert(0, 11);
+                return r1;
             }
+
+            InsertGroup(sender, e);
         }
 
         var (item1, item2, list2, item4) = await CheckIfToExit(sender, e, null) ??
@@ -95,7 +95,7 @@ internal static class ModerationCheck
         if (e == null || telegramBotClient == null)
             return null;
 
-        if (e.Message?.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
+        if (e.Message.NewChatMembers == null || e.Message.NewChatMembers.Length == 0)
             return null;
 
         var notAuthorizedBot =
@@ -211,7 +211,7 @@ internal static class ModerationCheck
             if (messageEventArgs is { Message.Chat.Title: { } })
                 name = messageEventArgs.Message.Chat.Title;
 
-            Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message?.Chat.Id + ", name:" + name +
+            Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message.Chat.Id + ", name:" + name +
                              " to valid");
         }
         catch (Exception? e)
@@ -249,7 +249,7 @@ internal static class ModerationCheck
     private static async Task<Tuple<ToExit?, ChatMember[]?, List<int>?>?> CheckIfToExit_NullValue2Async(
         TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        var idChat = e?.Message?.Chat.Id;
+        var idChat = e?.Message.Chat.Id;
         if (idChat == null) return null;
         if (telegramBotClient == null) return null;
         var r = await telegramBotClient.GetChatAdministratorsAsync(idChat);
@@ -271,15 +271,14 @@ internal static class ModerationCheck
                 "INSERT INTO GroupsTelegram (id, bot_id, type, title) VALUES (@id, @botid, @type, @title)";
 
             if (e == null) return;
-            if (e.Message != null)
-                if (sender != null)
-                    Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
-                    {
-                        { "@id", e.Message.Chat.Id },
-                        { "@botid", sender.GetId() },
-                        { "@type", e.Message.Chat.Type.ToString() },
-                        { "@title", e.Message.Chat.Title }
-                    });
+            if (sender != null)
+                Database.Execute(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                {
+                    { "@id", e.Message.Chat.Id },
+                    { "@botid", sender.GetId() },
+                    { "@type", e.Message.Chat.Type.ToString() },
+                    { "@title", e.Message.Chat.Title }
+                });
             _ = CreateInviteLinkAsync(sender, e);
         }
         catch (Exception? ex)
@@ -309,13 +308,13 @@ internal static class ModerationCheck
         if (message == null) return null;
         var r = new List<UsernameAndNameCheckResult>
         {
-            CheckUsername2(e?.Message?.From?.Username, e?.Message?.From?.FirstName,
-                lastName: e?.Message?.From?.LastName, language: e?.Message?.From?.LanguageCode,
-                userId: e?.Message?.From?.Id, messageId: message.MessageId)
+            CheckUsername2(e?.Message.From?.Username, e?.Message.From?.FirstName,
+                lastName: e?.Message.From?.LastName, language: e?.Message.From?.LanguageCode,
+                userId: e?.Message.From?.Id, messageId: message.MessageId)
         };
 
         var newChatMembers = message1?.NewChatMembers;
-        if (e?.Message?.NewChatMembers == null || newChatMembers == null || newChatMembers.Length == 0)
+        if (e?.Message.NewChatMembers == null || newChatMembers == null || newChatMembers.Length == 0)
             return r;
 
         r.AddRange(from user in newChatMembers
@@ -338,42 +337,7 @@ internal static class ModerationCheck
             fromUsername, userId, fromFirstName, lastName, messageId);
     }
 
-    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
-    {
-        var checkIfHeIsAllowedResult = CheckIfHeIsAllowedSpam(e);
-        if (checkIfHeIsAllowedResult)
-            return SpamType.ALL_GOOD;
-
-        var isSpamStored = CheckIfSpamStored(e, telegramBotClient);
-        if (isSpamStored != null)
-            return isSpamStored.Value;
-
-
-        if (string.IsNullOrEmpty(e?.Message?.Text))
-        {
-            var s1 = SpamTypeUtil.Merge(
-                await Blacklist.IsSpam(e?.Message?.Caption, e?.Message?.Chat.Id, telegramBotClient, false, e),
-                Blacklist.IsSpam(e?.Message?.Photo));
-            if (s1 != null)
-                return s1.Value;
-        }
-
-        if (e?.Message?.Text != null && e.Message != null && e.Message.Text.StartsWith("/"))
-            return SpamType.ALL_GOOD;
-
-        var isForeign = DetectForeignLanguage(e);
-
-        if (isForeign)
-            return SpamType.FOREIGN;
-
-        var spamType1 = await Blacklist.IsSpam(e?.Message?.Text,
-            e?.Message?.Chat.Id, telegramBotClient, false, e);
-        var spamType2 = Blacklist.IsSpam(e?.Message?.Photo);
-        var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
-        return s2 ?? SpamType.ALL_GOOD;
-    }
-
-    private static bool CheckIfHeIsAllowedSpam(MessageEventArgs? e)
+    internal static bool CheckIfHeIsAllowedSpam(MessageEventArgs? e)
     {
         var message = e?.Message;
         if (message == null)
@@ -393,7 +357,7 @@ internal static class ModerationCheck
                CheckIfIsInList(GlobalVariables.Owners, from1);
     }
 
-    private static SpamType? CheckIfSpamStored(MessageEventArgs? e,
+    internal static SpamType? CheckIfSpamStored(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotAbstract)
     {
         var eMessage = e?.Message;
@@ -440,12 +404,12 @@ internal static class ModerationCheck
         return a != null && a.Any(x => x.Matches(from));
     }
 
-    private static bool DetectForeignLanguage(MessageEventArgs? e)
+    internal static bool DetectForeignLanguage(MessageEventArgs? e)
     {
         if (e?.Message != null && WhitelistForeignGroups.Contains(e.Message.Chat.Id))
             return false;
 
-        if (e?.Message?.Text == null)
+        if (e?.Message.Text == null)
             return false;
 
         var koreanCharactersCount = Regex.Matches(e.Message.Text, @"[\uac00-\ud7a3]").Count;
@@ -577,95 +541,103 @@ internal static class ModerationCheck
     public static async Task<bool> AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType checkSpam)
     {
+        Logger.WriteLogComplete(new List<object?>
+        {
+            checkSpam.ToString(),
+            e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
+            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title
+        }, telegramBotClient, "AntiSpamMeasure");
+
+
         if (checkSpam == SpamType.ALL_GOOD)
             return false;
 
-        if (e?.Message?.From != null)
+        if (e?.Message.From == null)
+            return telegramBotClient != null && e?.Message != null &&
+                   await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+
+        await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
+            e.Message.Chat.Type, RestrictAction.MUTE);
+
+        switch (checkSpam)
         {
-            await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
-                e.Message.Chat.Type, RestrictAction.MUTE);
-
-            switch (checkSpam)
+            case SpamType.SPAM_LINK:
             {
-                case SpamType.SPAM_LINK:
+                var text2 = new Language(new Dictionary<string, string?>
                 {
-                    var text2 = new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "You sent a message with spam, and you were muted for 5 minutes" },
-                        { "it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti" }
-                    });
+                    { "en", "You sent a message with spam, and you were muted for 5 minutes" },
+                    { "it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti" }
+                });
 
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null,
-                        InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
+                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, text2, ParseMode.Html, null,
+                    InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
 
-                    break;
-                }
-                case SpamType.NOT_ALLOWED_WORDS:
-                {
-                    var text2 = new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "You sent a message with banned words, and you were muted for 5 minutes" },
-                        {
-                            "it",
-                            "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"
-                        }
-                    });
-
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                        EventArgsContainer.Get(e));
-
-                    break;
-                }
-                case SpamType.FORMAT_INCORRECT:
-                {
-                    var text2 = new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "You have sent a message that does not follow the group format" },
-                        { "it", "Hai inviato un messaggio che non rispetta il format del gruppo" }
-                    });
-
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                        EventArgsContainer.Get(e), false);
-
-                    break;
-                }
-
-                case SpamType.FOREIGN:
-                {
-                    var text2 = new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "You sent a message with banned characters, and you were muted for 5 minutes" },
-                        {
-                            "it",
-                            "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
-                        }
-                    });
-
-                    await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-                    break;
-                }
-
-                // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
-                case SpamType.ALL_GOOD:
-                    return true;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
+                break;
             }
+            case SpamType.NOT_ALLOWED_WORDS:
+            {
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "You sent a message with banned words, and you were muted for 5 minutes" },
+                    {
+                        "it",
+                        "Hai inviato un messaggio con parole bandite, e quindi il bot ti ha mutato per 5 minuti"
+                    }
+                });
+
+                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                    EventArgsContainer.Get(e));
+
+                break;
+            }
+            case SpamType.FORMAT_INCORRECT:
+            {
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "You have sent a message that does not follow the group format" },
+                    { "it", "Hai inviato un messaggio che non rispetta il format del gruppo" }
+                });
+
+                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                    EventArgsContainer.Get(e), false);
+
+                break;
+            }
+
+            case SpamType.FOREIGN:
+            {
+                var text2 = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "You sent a message with banned characters, and you were muted for 5 minutes" },
+                    {
+                        "it",
+                        "Hai inviato un messaggio con caratteri banditi, e quindi il bot ti ha mutato per 5 minuti"
+                    }
+                });
+
+                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
+                    e.Message.From.LanguageCode,
+                    e.Message.From.Username, text2,
+                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                break;
+            }
+
+            // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
+            case SpamType.ALL_GOOD:
+                return true;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(checkSpam), checkSpam, null);
         }
 
-        if (telegramBotClient != null && e?.Message != null)
-            return await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-        return false;
+        return telegramBotClient != null &&
+               await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
     }
 
     public static async Task<bool> CheckUsernameAndName(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
@@ -674,25 +646,27 @@ internal static class ModerationCheck
         if (usernameCheck == null)
             return false;
 
+        if (e?.Message == null)
+            return false;
+
         var donesomething = false;
 
         foreach (var usernameCheck2 in usernameCheck
                      .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
         {
-            if (e?.Message != null)
-                await SendUsernameWarning(telegramBotClient,
-                    usernameCheck2.UsernameBool,
-                    usernameCheck2.Name,
-                    usernameCheck2.GetLanguage(),
-                    usernameCheck2.GetUsername(),
-                    e.Message.Chat.Id,
-                    usernameCheck2.GetUserId(),
-                    usernameCheck2.GetMessageId(),
-                    e.Message.Chat.Type,
-                    usernameCheck2.GetFirstName(),
-                    usernameCheck2.GetLastName(),
-                    e.Message.NewChatMembers,
-                    e);
+            await SendUsernameWarning(telegramBotClient,
+                usernameCheck2.UsernameBool,
+                usernameCheck2.Name,
+                usernameCheck2.GetLanguage(),
+                usernameCheck2.GetUsername(),
+                e.Message.Chat.Id,
+                usernameCheck2.GetUserId(),
+                usernameCheck2.GetMessageId(),
+                e.Message.Chat.Type,
+                usernameCheck2.GetFirstName(),
+                usernameCheck2.GetLastName(),
+                e.Message.NewChatMembers,
+                e);
 
             donesomething = true;
         }
@@ -701,8 +675,18 @@ internal static class ModerationCheck
     }
 
     public static async Task<bool> PermittedSpamMeasure(TelegramBotAbstract? telegramBotClient,
-        EventArgsContainer? messageEventArgs)
+        EventArgsContainer? e)
     {
-        return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, messageEventArgs);
+        Logger.WriteLogComplete(
+            new List<object?>
+            {
+                e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
+                e?.MessageEventArgs?.Message.From?.Username,
+                e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
+                e?.MessageEventArgs?.Message.Chat.Title
+            }, telegramBotClient, "PermittedSpamMeasure"
+        );
+
+        return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, e);
     }
 }

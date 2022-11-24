@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -130,9 +131,9 @@ public static class Help
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
+            e?.Message.From?.LanguageCode,
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             EventArgsContainer.Get(e));
     }
 }

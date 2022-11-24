@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 
@@ -50,7 +51,7 @@ internal static class TextConversation
             return;
 
         var text = e.Message.Text.ToLower();
-        var title = e.Message?.Chat.Title?.ToLower();
+        var title = e.Message.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
             AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
     }
@@ -61,17 +62,17 @@ internal static class TextConversation
         {
             var botId = telegramBotClient.GetId();
 
-            if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
-                if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) ==
+            if (AskUser.UserAnswers.ContainsUser(e?.Message.From?.Id, botId))
+                if (AskUser.UserAnswers.GetState(e?.Message.From?.Id, botId) ==
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId,
-                        e?.Message?.Text ?? e?.Message?.Caption);
+                    AskUser.UserAnswers.RecordAnswer(e?.Message.From?.Id, botId,
+                        e?.Message.Text ?? e?.Message.Caption);
                     return;
                 }
         }
 
-        if (string.IsNullOrEmpty(e?.Message?.Text)) return;
+        if (string.IsNullOrEmpty(e?.Message.Text)) return;
 
         var text2 = new Language(new Dictionary<string, string?>
         {

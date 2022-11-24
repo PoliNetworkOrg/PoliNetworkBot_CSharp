@@ -11,6 +11,8 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -602,7 +604,7 @@ internal static class RestrictUser
                 ParseMode.Html,
                 e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
-        await NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
+        NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }
 
 

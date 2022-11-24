@@ -222,9 +222,10 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
+    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
+        MessageEventArgs? e)
     {
-        if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+        if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
             return;
 
         if (Store != null && !Store.ContainsKey(e.Message.ReplyToMessage.Text))
@@ -263,9 +264,8 @@ public static class MessagesStore
                 var stream = UtilsFileText.GenerateStreamFromString(json);
                 var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
                 PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
-                if (sender != null)
-                    await sender.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
-                        e.Message.From?.LanguageCode, null, true);
+                sender?.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
+                    e.Message.From?.LanguageCode, null, true);
             }
         }
     }
@@ -350,7 +350,7 @@ public static class MessagesStore
         return storedMessage?.AllowedStatus.GetAllowedTime();
     }
 
-    public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;

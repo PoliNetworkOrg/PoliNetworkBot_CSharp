@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
