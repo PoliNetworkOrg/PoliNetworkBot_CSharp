@@ -76,8 +76,10 @@ public class ActionFuncGeneric
         {
             if (e != null)
                 if (telegramBotAbstract != null)
+                {
                     _action5.Invoke(e, telegramBotAbstract, args).Wait();
-            return CommandExecutionState.SUCCESSFUL;
+                    return CommandExecutionState.SUCCESSFUL;
+                }
         }
 
         if (_action6 != null)
