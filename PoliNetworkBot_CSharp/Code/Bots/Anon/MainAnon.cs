@@ -83,7 +83,7 @@ internal static class MainAnon
                 {
                     var text = e?.Message.Text;
                     if (text != null)
-                        AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId, text);
+                        AskUser.UserAnswers.RecordAnswer(e?.Message.From?.Id, botId, text);
                     return;
                 }
         }
@@ -108,7 +108,7 @@ internal static class MainAnon
         if (m1 != null)
         {
             var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
-                e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username, true, m1.MessageId);
+                e?.Message.From?.LanguageCode, options, e?.Message?.From?.Username, true, m1.MessageId);
             if (l1.Matches(r))
             {
                 //yes
@@ -155,7 +155,7 @@ internal static class MainAnon
         {
             var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
                 e?.Message.From?.LanguageCode, options,
-                e?.Message != null ? e.Message.From?.Username : null, true, m1.MessageId);
+                e?.Message?.From?.Username, true, m1.MessageId);
 
             if (l1.Matches(r))
             {
@@ -222,7 +222,7 @@ internal static class MainAnon
 
             if (telegramBotAbstract != null)
                 await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l2, ChatType.Private,
-                    e?.Message?.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
+                    e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
         }
     }
 

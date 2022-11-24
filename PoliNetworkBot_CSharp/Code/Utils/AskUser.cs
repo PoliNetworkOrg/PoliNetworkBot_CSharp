@@ -106,7 +106,7 @@ internal static class AskUser
             sender: sender,
             lang: e?.Message.From?.LanguageCode,
             options: options,
-            username: e?.Message?.From?.Username,
+            username: e?.Message.From?.Username,
             sendMessageConfirmationChoice: true,
             question: question);
 

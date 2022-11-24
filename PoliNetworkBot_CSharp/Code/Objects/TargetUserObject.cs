@@ -27,7 +27,7 @@ public class TargetUserObject
         if (fromIdReply != null && fromIdAction != null && fromIdAction != fromIdReply)
             _userId = fromIdReply;
 
-        var usernameFromReply = messageEventArgs?.Message?.ReplyToMessage?.From?.Username;
+        var usernameFromReply = messageEventArgs?.Message.ReplyToMessage?.From?.Username;
         var usernameFromAction = messageEventArgs?.Message?.From?.Username;
         if (!string.IsNullOrEmpty(usernameFromReply) && !string.IsNullOrEmpty(usernameFromAction) &&
             usernameFromAction != usernameFromReply)

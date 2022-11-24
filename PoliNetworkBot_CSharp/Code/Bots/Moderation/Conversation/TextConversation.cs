@@ -66,13 +66,13 @@ internal static class TextConversation
                 if (AskUser.UserAnswers.GetState(e?.Message.From?.Id, botId) ==
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    AskUser.UserAnswers.RecordAnswer(e?.Message?.From?.Id, botId,
+                    AskUser.UserAnswers.RecordAnswer(e?.Message.From?.Id, botId,
                         e?.Message?.Text ?? e?.Message?.Caption);
                     return;
                 }
         }
 
-        if (string.IsNullOrEmpty(e?.Message?.Text)) return;
+        if (string.IsNullOrEmpty(e?.Message.Text)) return;
 
         var text2 = new Language(new Dictionary<string, string?>
         {

@@ -603,7 +603,7 @@ public class Program
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
             await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, text, ChatType.Private,
-                e?.Message?.From?.LanguageCode,
+                e?.Message.From?.LanguageCode,
                 ParseMode.Html, null, null);
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
