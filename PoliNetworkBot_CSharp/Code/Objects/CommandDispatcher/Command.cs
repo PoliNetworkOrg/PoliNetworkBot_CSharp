@@ -213,7 +213,7 @@ public class Command
         return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
-    public virtual CommandExecutionState TryTrigger(MessageEventArgs e,
+    public virtual CommandExecutionState TryTrigger(MessageEventArgs? e,
         TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
         string command,
         string[]? args)
