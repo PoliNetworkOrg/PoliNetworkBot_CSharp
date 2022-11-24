@@ -76,10 +76,11 @@ internal static class BackupUtil
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    public static async Task Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message.From != null)
-            await CommandDispatcher.BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
-                e.Message.Chat.Type);
+        if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
+        await CommandDispatcher.BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
+            e.Message.Chat.Type);
+        return CommandExecutionState.SUCCESSFUL;
     }
 }

@@ -394,11 +394,12 @@ internal static class Groups
     }
 
 
-    public static async Task<MessageSentResult?> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? args)
     {
-        if (args is { Length: < 1 }) return null;
-        return args != null ? await SendGroupsByTitle(string.Join(" ", args), sender, e, 6) : null;
+        if (args is { Length: < 1 } or null) return CommandExecutionState.UNMET_CONDITIONS;
+        await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task<MessageSentResult?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
@@ -489,37 +490,42 @@ internal static class Groups
         };
     }
 
-    public static async Task<bool> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return e != null && await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+        return await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
-            e.Message.Chat.Type);
+            e.Message.Chat.Type)
+            ? CommandExecutionState.SUCCESSFUL
+            : CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static async Task<bool> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
 
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-        return false;
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
 
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-
-        return false;
+        if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
+        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> UpdateGroupsAndFixNames(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroupsAndFixNames(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
 
@@ -528,10 +534,11 @@ internal static class Groups
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                 ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
-        return false;
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> UpdateGroupsAndFixNamesDry(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroupsAndFixNamesDry(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
 
@@ -540,6 +547,6 @@ internal static class Groups
                 e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
                 ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
-        return false;
+        return CommandExecutionState.SUCCESSFUL;
     }
 }

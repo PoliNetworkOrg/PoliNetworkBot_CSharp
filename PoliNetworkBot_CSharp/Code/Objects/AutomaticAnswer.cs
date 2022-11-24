@@ -26,6 +26,7 @@ public class AutomaticAnswer
     // CONJUNCTIVE NORMAL FORM: conjunction of disjunctions
     private List<List<string>> _trigger;
 
+
     public AutomaticAnswer(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
         List<long> except)
@@ -38,7 +39,7 @@ public class AutomaticAnswer
     public AutomaticAnswer(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
         string response)
-    {
+        {
         _trigger = trigger;
         _actionMessage = action;
         _except = except;
@@ -53,19 +54,21 @@ public class AutomaticAnswer
             .All(satisfied => satisfied);
     }
 
-    private bool GroupAllowed(long id)
+    private bool GroupAllowed(long? id)
     {
-        return _except.All(group => !group.Equals(id));
+        return id != null && _except.All(group => !group.Equals(id));
     }
-
+    
     public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
     {
-        if (!IsTriggered(message) || !GroupAllowed(e.Message.Chat.Id)) return false;
+        if (!IsTriggered(message) || !GroupAllowed(e?.Message.Chat.Id)) return false;
         if (_response != null)
-            _actionMessage?.Invoke(e, telegramBotAbstract, _response);
-        else
-            _action?.Invoke(e, telegramBotAbstract);
+        {
+            if (e != null) _actionMessage?.Invoke(e, telegramBotAbstract, _response);
+        }
+        else if (e != null) _action?.Invoke(e, telegramBotAbstract);
+
         return true;
     }
 }
@@ -74,11 +77,11 @@ public class AutomaticAnswer
 [JsonObject(MemberSerialization.Fields)]
 public class AutomaticAnswerRestricted : AutomaticAnswer
 {
-    private Func<MessageEventArgs, bool> _condition;
+    private Func<MessageEventArgs?, bool> _condition;
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action, List<long> except,
-        Func<MessageEventArgs, bool> condition) : base(trigger, action, except)
+        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except)
     {
         _condition = condition;
     }
@@ -86,11 +89,11 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
     public AutomaticAnswerRestricted(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
         string response,
-        Func<MessageEventArgs, bool> condition) : base(trigger, action, except, response)
+        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except, response)
     {
         _condition = condition;
     }
-
+    
     public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
     {

@@ -1818,4 +1818,26 @@ public class TelegramBotAbstract
                 break;
         }
     }
+
+    public async Task ForwardMessageAsync(ChatId messageId, ChatId idChatMessageFrom, int idChatMessageTo,
+        bool? disableNotification, bool? protectContent, CancellationToken cancellationToken)
+    {
+        switch (_isbot)
+        {
+            case BotTypeApi.REAL_BOT:
+                if (_botClient != null)
+                    await _botClient.ForwardMessageAsync(messageId, idChatMessageFrom, idChatMessageTo,
+                        disableNotification,
+                        protectContent, cancellationToken);
+                break;
+
+            case BotTypeApi.USER_BOT:
+            {
+            }
+                break;
+
+            case BotTypeApi.DISGUISED_BOT:
+                break;
+        }
+    }
 }

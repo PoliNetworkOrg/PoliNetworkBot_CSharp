@@ -14,27 +14,48 @@ public static class Help
 {
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        var command = CommandDispatcher.Commands.Find(x => x.GetTriggers().Contains(args[0]));
+        var command = CommandDispatcher.Commands.Find(x => x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
 
-        if (command == null)
-            return;
-
-        var text2 = new Language(new Dictionary<string, string?>
+        Language text;
+        if (command != null)
         {
+
+            text = new Language(new Dictionary<string, string?>
             {
-                "en",
-                "\n<b>Command description:</b>\n" +
-                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
-            },
+                {
+                    "en",
+                    "\n<b>Command description:</b>\n" +
+                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
+                },
+                {
+                    "it",
+                    "\n<b>Descrizione del comando:</b>\n" +
+                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
+                }
+            });
+        }
+        else
+        {
+            text = new Language(new Dictionary<string, string?>
             {
-                "it",
-                "\n<b>Descrizione del comando:</b>\n" +
-                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
-            }
-        });
+                {
+                    "en",
+                    "\n<b>Command not found</b>!" +
+                    "\nType /help_all\n" +
+                    "to list all commands"
+                },
+                {
+                    "it",
+                    "\n<b>Comando non trovato</b>! " +
+                    "\nType /help_all\n" +
+                    "per la lista completa"
+                }
+            });
+        }
+
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            e?.Message.From?.Username, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             EventArgsContainer.Get(e));
     }
 
