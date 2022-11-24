@@ -600,7 +600,7 @@ internal static class CommandDispatcher
 
         var dict = new Dictionary<string, string?>
         {
-<<<<<<< HEAD
+
             { "en", r2.ToString() }
         };
         var text = new Language(dict);
@@ -611,30 +611,7 @@ internal static class CommandDispatcher
                     await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
                         ParseMode.Html,
                         null, null);
-=======
-            var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
-            if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-                r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
-
-            var dict = new Dictionary<string, string?>
-            {
-                { "en", r2.ToString() }
-            };
-            var text = new Language(dict);
-            try
-            {
-                if (e.Message.From != null)
-                    if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                            ParseMode.Html,
-                            null, null);
-            }
-            catch
-            {
-                // ignored
-            }
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
         }
         catch
         {
