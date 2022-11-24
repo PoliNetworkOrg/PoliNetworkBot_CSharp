@@ -496,7 +496,9 @@ internal static class Groups
             return CommandExecutionState.UNMET_CONDITIONS;
         return await CommandDispatcher.GetAllGroups(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
-            e.Message.Chat.Type) ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
+            e.Message.Chat.Type)
+            ? CommandExecutionState.SUCCESSFUL
+            : CommandExecutionState.ERROR_DEFAULT;
     }
 
     public static async Task<CommandExecutionState> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -506,8 +508,8 @@ internal static class Groups
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;
         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -522,7 +524,8 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNames(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroupsAndFixNames(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
 
@@ -534,7 +537,8 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNamesDry(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> UpdateGroupsAndFixNamesDry(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
 

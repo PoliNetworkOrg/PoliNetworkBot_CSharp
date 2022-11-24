@@ -49,7 +49,7 @@ public static class AutoReplyInGroups
             "Se non avete fatto cose strane tipo: inserito esami autonomi senza essersi accertati preventivamente che fossero ok, " +
             "vincoli del regolamento non rispettati ecc, non vi preoccupate. Il piano prima o poi vi verrà approvato. " +
             "In caso abbiate presentato un piano personalizzato sarà la commissione stessa a contattarvi in caso di problemi",
-            e => e.Message.Chat.Id == Groups.PianoDiStudi),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -58,7 +58,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Ciao, forse la risposta è <a href='https://faq.polinetwork.org/?id=2&cat=1'>qui</a>!",
-            e => e.Message.Chat.Id == Groups.PianoDiStudi),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -70,7 +70,7 @@ public static class AutoReplyInGroups
             "Per sapere se idoneo = beneficiario si dovrà attendere il CdA di novembre. " +
             "Finché non viene stabilita la graduatoria definitiva è difficile " +
             "sapere quanti soldi serviranno per attuare la manovra",
-            e => e.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -82,7 +82,7 @@ public static class AutoReplyInGroups
             "To find out if eligible = beneficiary you will have to wait for the November Board of Directors. " +
             "Until the final ranking is established, it is difficult " +
             "to know how much money will be needed to implement the policy",
-            e => e.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
 
         new AutomaticAnswer(new List<List<string>>
             {
@@ -147,8 +147,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Controlla i messaggi fissati",
-            e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null &&
-                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -158,8 +157,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Check the pinned messages",
-            e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null &&
-                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -171,7 +169,7 @@ public static class AutoReplyInGroups
             "Ciao 👋 sembra tu stia facendo domande in merito ai gruppi Whatsapp. " +
             "Se non l'hai ancora fatto, leggi la guida in merito, " +
             "<a href='https://docs.polinetwork.org/#/it/about/groups/whatsapp'>clicca qui</a>!",
-            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  !AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -183,7 +181,7 @@ public static class AutoReplyInGroups
             "Hi 👋 it seems you are asking questions about Whatsapp groups. " +
             "If you haven't already, we advice you to read the relative guide, " +
             "<a href='https://docs.polinetwork.org/#/en/about/groups/whatsapp'>click here</a>!",
-            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+            e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
                  !AreWhatsappLinksPublic),
 
         new AutomaticAnswer(new List<List<string>>
@@ -201,7 +199,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Hi 👋 it seems you are asking questions about groups. " +
-            "PoliNetwork advices you to visit the gropus section of our website, " +
+            "PoliNetwork advices you to visit the groups section of our website, " +
             "<a href='https://polinetwork.org/groups/'>click here</a>!"),
 
         new AutomaticAnswer(new List<List<string>>
@@ -225,7 +223,7 @@ public static class AutoReplyInGroups
             "<a href='https://rankings.polinetwork.org/'>click here</a>!")
     };
 
-    private static async Task Reply(MessageEventArgs e, TelegramBotAbstract? telegramBotClient, string message)
+    private static async Task Reply(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string message)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -234,21 +232,22 @@ public static class AutoReplyInGroups
                 message
             }
         });
-        await SendMessage.SendMessageInAGroup(telegramBotClient,
-            "uni",
-            text,
-            EventArgsContainer.Get(e),
-            e.Message.Chat.Id,
-            e.Message.Chat.Type,
-            ParseMode.Html,
-            e.Message.MessageId,
-            true);
+        if (e != null)
+            await SendMessage.SendMessageInAGroup(telegramBotClient,
+                "uni",
+                text,
+                EventArgsContainer.Get(e),
+                e.Message.Chat.Id,
+                e.Message.Chat.Type,
+                ParseMode.Html,
+                e.Message.MessageId,
+                true);
     }
 
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
-        foreach (var answer in AutomaticAnswers) MessageInGroup3Async(answer, telegramBotClient, e, text);
+        AutomaticAnswers.ForEach(x => x.TryTrigger(e, telegramBotClient, text));
     }
 
     private static void MessageInGroup3Async(AutomaticAnswer answer, TelegramBotAbstract? telegramBotClient,

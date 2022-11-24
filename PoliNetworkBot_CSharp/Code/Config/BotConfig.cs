@@ -24,7 +24,9 @@ public class BotConfig
     {
         return e != null && ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
             e.Message.From?.LanguageCode,
-            e.Message.Chat.Type)? CommandExecutionState.SUCCESSFUL : CommandExecutionState.UNMET_CONDITIONS;
+            e.Message.Chat.Type)
+            ? CommandExecutionState.SUCCESSFUL
+            : CommandExecutionState.UNMET_CONDITIONS;
     }
 
     public static Task GetConfig2(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
