@@ -124,7 +124,7 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
             await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l3, ChatType.Private,
-                e?.Message?.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
+                e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
     }
 
     private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract? telegramBotAbstract,
