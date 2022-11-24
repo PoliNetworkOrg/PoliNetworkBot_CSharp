@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -16,7 +17,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Anon;
 
-internal static class ThreadAsync
+internal static class ThreadAsyncAnon
 {
     private const int Timesleep = 1000 * 30;
 
@@ -40,7 +41,7 @@ internal static class ThreadAsync
         return r;
     }
 
-    internal static async void DoThingsAsyncBotAsync(object? obj)
+    public static async void DoThingsAsyncBot_Anon_First_Async(object? obj)
     {
         var bot = await WebPost.GetAnonBotAsync();
         if (bot == null)

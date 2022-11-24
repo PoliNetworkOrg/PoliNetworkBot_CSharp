@@ -26,7 +26,7 @@ using File = Telegram.Bot.Types.File;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 public class TelegramBotAbstract
 {
@@ -1666,8 +1666,19 @@ public class TelegramBotAbstract
                             var c1 = r2.Chats[0];
                             if (c1 is TLChat c2)
                             {
-                                //todo add description
+                                //aggiorna la descrizione del gruppo appena creato
                                 Logger.WriteLine(description);
+
+                                try
+                                {
+                                    var tlChannel = new TLChannel { Id = c2.Id };
+                                    var result = UserbotClient.Channels_EditDescription(tlChannel, description).Result;
+                                    //todo: non mi convince, probabilmente non va
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
 
                                 return c2.Id;
                             }

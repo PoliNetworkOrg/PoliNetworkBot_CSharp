@@ -22,7 +22,7 @@ public class MessageList
         Messages = new List<Message?>();
     }
 
-    public void TryDeleteMessagesAsync(TelegramBotAbstract telegramBotClient)
+    public void TryDeleteMessagesAsync(TelegramBotAbstract.TelegramBotAbstract telegramBotClient)
     {
         lock (this)
         {
