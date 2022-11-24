@@ -350,7 +350,7 @@ public static class MessagesStore
         return storedMessage?.AllowedStatus.GetAllowedTime();
     }
 
-    public static async Task GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;
