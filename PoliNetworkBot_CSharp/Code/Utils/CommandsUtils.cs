@@ -21,13 +21,13 @@ public static class CommandsUtils
             var select = helpMessage.Select(language) ?? "";
             if (tag == "body")
             {
-                toReturn.Add(language, select.Split(" @")[0].Replace("/@", "@"));
+                toReturn.Add(language, select.Split(" @")[0].Replace("\\@", "@"));
             }
             else
             {
                 var tags = select.Split(" @").Skip(1).ToList();
                 var innerTags = tags.Where(innerTag => innerTag.Split(": ")[0] == tag)
-                    .Select(x => x.Replace(tag + ": ", "").Replace("/@", "@"));
+                    .Select(x => x.Replace(tag + ": ", "").Replace("\\@", "@"));
 
                 foreach (var innerTag in innerTags) toReturn.Add(language, innerTag);
             }

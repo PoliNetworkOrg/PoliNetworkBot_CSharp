@@ -117,7 +117,7 @@ internal static class CommandDispatcher
         new Command("groups", SendRecommendedGroupsAsync, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Get suggested groups for you.", "it", "Ricevi i gruppi consigliati per te."), null, null),
         new Command("search", Groups.SendGroupsByTitle, new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "Search for a group by title.", "it", "Cerca gruppi per titolo."), null, null),
+            new L("en", "Search for a group by title.", "it", "Cerca gruppi per titolo. @condition: you need to reply to a message"), null, null),
         new Command("search", Groups.SendGroupsByTitle,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER,
             new L("en", "Search for a group by title. @condition: you need to reply to a message", "it",
@@ -139,15 +139,15 @@ internal static class CommandDispatcher
         new Command("qs", Database.QueryBotSelect, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query select"), null, null),
 
-        new Command("allowmessage", AllowMessageAsync, new List<ChatType> { ChatType.Private }, Permission.HEAD_ADMIN,
+        new Command("allow_message", AllowMessageAsync, new List<ChatType> { ChatType.Private }, Permission.HEAD_ADMIN,
             new L("en", "allow a message"), null, null),
-        new Command("allowmessageowner", AllowMessageOwnerAsync, new List<ChatType> { ChatType.Private },
+        new Command("allow_message_owner", AllowMessageOwnerAsync, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "allow a message owner"), null, null),
-        new Command("allowedmessages", AllowedMessage.GetAllowedMessages, new List<ChatType> { ChatType.Private },
+        new Command("allowed_messages", AllowedMessage.GetAllowedMessages, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "get allowed messages"), null, null),
-        new Command("unallowmessage", AllowedMessage.UnAllowMessage, new List<ChatType> { ChatType.Private },
+        new Command("unallow_message", AllowedMessage.UnAllowMessage, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "unallow a message"), null, null),
 
@@ -365,22 +365,31 @@ internal static class CommandDispatcher
     }
 
 
-    private static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
-        if (e.Message.ReplyToMessage != null && (!string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) ||
-                                                 !string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
-            return CommandExecutionState.UNMET_CONDITIONS;
-        var text = new Language(new Dictionary<string, string?>
+        if (e.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                                 string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
         {
-            { "en", "You have to reply to a message containing the message" },
-            { "it", "You have to reply to a message containing the message" }
-        });
+            var text = new Language(new Dictionary<string, string?>
+            {
+                { "en", "You have to reply to a message containing the message" },
+                { "it", "You have to reply to a message containing the message" }
+            });
 
-        if (sender != null)
-            await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                e.Message.MessageId);
+            if (sender != null)
+                await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
+                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
+                    e.Message.MessageId);
+            return CommandExecutionState.UNMET_CONDITIONS;
+        }
+            
+        MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Text);
+        MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Caption);
+        Logger.WriteLine(
+            e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ??
+            "Error in allowmessage, both caption and text are null");
         return CommandExecutionState.SUCCESSFUL;
 
     }

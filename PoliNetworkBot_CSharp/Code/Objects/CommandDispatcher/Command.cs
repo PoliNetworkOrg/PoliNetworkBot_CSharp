@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -186,7 +187,7 @@ public class Command
             return CommandExecutionState.NOT_TRIGGERED;
         if (_optionalConditions != null && !_optionalConditions.Invoke(e))
             return CommandExecutionState.UNMET_CONDITIONS;
-        if (!Permissions.CheckPermissions(_permissionLevel, e.Message.From))
+        if (!CheckPermissions(e.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
         if (_action != null)
             return _action.Invoke(e, telegramBotAbstract, args).Result;
@@ -197,5 +198,10 @@ public class Command
         if (_action4 != null)
             return _action4.Invoke(e, telegramBotAbstract).Result;
         throw new Exception("Illegal state exception!");
+    }
+
+    public bool CheckPermissions(User? messageFrom)
+    {
+        return Permissions.CheckPermissions(_permissionLevel, messageFrom);
     }
 }
