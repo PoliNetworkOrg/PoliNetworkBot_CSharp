@@ -290,82 +290,90 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs e)
+    public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        if (string.IsNullOrEmpty(e.Message.Text)) return false;
+        if (e != null && string.IsNullOrEmpty(e.Message.Text)) return false;
 
-        var cmdLines = e.Message.Text.Split(' ');
-        var cmd = cmdLines[0].Trim();
-        var args = cmdLines.Skip(1).ToArray();
-
-        if (string.IsNullOrEmpty(cmd))
+        if (e != null)
         {
-            await DefaultCommand(sender, e);
-            return false;
-        }
-
-        if (cmd.Contains('@'))
-        {
-            var cmd2 = cmd.Split("@");
-            if (sender != null)
+            if (e.Message.Text != null)
             {
-                var botUsername = await sender.GetBotUsernameAsync();
-                if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase))
-                    return false;
-            }
-        }
+                var cmdLines = e.Message.Text.Split(' ');
+                var cmd = cmdLines[0].Trim();
+                var args = cmdLines.Skip(1).ToArray();
 
-        if (sender == null)
-            return await DefaultCommand(sender, e);
-
-        foreach (var command in Commands)
-            try
-            {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                if (string.IsNullOrEmpty(cmd))
                 {
-                    case CommandExecutionState.SUCCESSFUL:
-                        return true;
-                    case CommandExecutionState.UNMET_CONDITIONS:
-                        if (e.Message.Chat.Type == ChatType.Private)
-                            await NotifyUserCommandError(new L(
-                                    "it",
-                                    "Formattazione del messaggio errata. \n" +
-                                    "Per informazioni aggiuntive scrivi<b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>",
-                                    "en",
-                                    "The message is wrongly formatted. \n" +
-                                    "For additional info type <b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>"),
-                                sender, e);
-                        else
-                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-                        return false;
-                    case CommandExecutionState.NOT_TRIGGERED:
-                    case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
-                    case CommandExecutionState.ERROR_NOT_ENABLED:
-                    case CommandExecutionState.ERROR_DEFAULT:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    await DefaultCommand(sender, e);
+                    return false;
                 }
+
+                if (cmd.Contains('@'))
+                {
+                    var cmd2 = cmd.Split("@");
+                    if (sender != null)
+                    {
+                        var botUsername = await sender.GetBotUsernameAsync();
+                        if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase))
+                            return false;
+                    }
+                }
+
+                if (sender == null)
+                    return await DefaultCommand(sender, e);
+
+                foreach (var command in Commands)
+                    try
+                    {
+                        switch (command.TryTrigger(e, sender, cmd, args))
+                        {
+                            case CommandExecutionState.SUCCESSFUL:
+                                return true;
+                            case CommandExecutionState.UNMET_CONDITIONS:
+                                if (e.Message.Chat.Type == ChatType.Private)
+                                    await NotifyUserCommandError(new L(
+                                            "it",
+                                            "Formattazione del messaggio errata. \n" +
+                                            "Per informazioni aggiuntive scrivi<b>\n" +
+                                            "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                            "</b>",
+                                            "en",
+                                            "The message is wrongly formatted. \n" +
+                                            "For additional info type <b>\n" +
+                                            "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                            "</b>"),
+                                        sender, e);
+                                else
+                                    await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                                return false;
+                            case CommandExecutionState.NOT_TRIGGERED:
+                            case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
+                            case CommandExecutionState.ERROR_NOT_ENABLED:
+                            case CommandExecutionState.ERROR_DEFAULT:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
+                        return false;
+                    }
             }
-            catch (Exception ex)
-            {
-                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
-                return false;
-            }
+        }
 
         return await DefaultCommand(sender, e);
     }
 
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
-        MessageEventArgs e)
+        MessageEventArgs? e)
     {
-        return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
-            e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-            e.Message.MessageId);
+        if (e != null)
+            return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
+                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
+                e.Message.MessageId);
+        return null;
     }
 
 

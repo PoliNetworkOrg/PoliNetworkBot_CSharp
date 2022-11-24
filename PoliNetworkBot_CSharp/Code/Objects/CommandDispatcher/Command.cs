@@ -36,6 +36,7 @@ public class Command
 
     // Trigger command
     private List<string> _trigger;
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action4;
 
 
     public Command(IEnumerable<string> trigger,
@@ -115,7 +116,7 @@ public class Command
     }
 
     public Command(string trigger,
-        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task>? action,
         List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage,
         Language? longDescription,
@@ -133,7 +134,7 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>> action, List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
+    public Command(List<string> trigger, Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? action, List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger;
         _action4 = action;
@@ -180,28 +181,48 @@ public class Command
     }
 
     public virtual CommandExecutionState TryTrigger(MessageEventArgs e,
-        TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
+        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
         string command,
-        string[] args)
+        string[]? args)
     {
         if (!_enabled)
             return CommandExecutionState.ERROR_NOT_ENABLED;
         if (!IsTriggered(command))
             return CommandExecutionState.NOT_TRIGGERED;
-        if (!_chatTypes.Contains(e.Message.Chat.Type))
+        if (e != null && !_chatTypes.Contains(e.Message.Chat.Type))
             return CommandExecutionState.NOT_TRIGGERED;
-        if (_optionalConditions != null && !_optionalConditions.Invoke(e))
+        if (e != null && _optionalConditions != null && !_optionalConditions.Invoke(e))
             return CommandExecutionState.UNMET_CONDITIONS;
-        if (!CheckPermissions(e.Message.From))
+        if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
         if (_action != null)
-            return _action.Invoke(e, telegramBotAbstract, args).Result;
+            if (e != null)
+            {
+                _action.Invoke(e, telegramBotAbstract, args).Wait();
+                return CommandExecutionState.SUCCESSFUL;
+            }
+        
+
         if (_action2 != null)
-            return _action2.Invoke(e, telegramBotAbstract, args);
+            if (e != null)
+            {
+                _action2.Invoke(e, telegramBotAbstract, args);
+                return CommandExecutionState.SUCCESSFUL;
+            }
+
         if (_action3 != null)
-            return _action3.Invoke(e, telegramBotAbstract);
+            if (e != null)
+            {
+                 _action3.Invoke(e, telegramBotAbstract);
+                 return CommandExecutionState.SUCCESSFUL;
+            }
+
         if (_action4 != null)
-            return _action4.Invoke(e, telegramBotAbstract).Result;
+        {
+            if (e != null) _action4.Invoke(e, telegramBotAbstract).Wait();
+            return CommandExecutionState.SUCCESSFUL;
+        }
+
         throw new Exception("Illegal state exception!");
     }
 
