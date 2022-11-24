@@ -23,7 +23,7 @@ public class TargetUserObject
         SetStartParam(target);
 
         var fromIdReply = messageEventArgs?.Message.ReplyToMessage?.From?.Id;
-        var fromIdAction = messageEventArgs?.Message?.From?.Id;
+        var fromIdAction = messageEventArgs?.Message.From?.Id;
         if (fromIdReply != null && fromIdAction != null && fromIdAction != fromIdReply)
             _userId = fromIdReply;
 

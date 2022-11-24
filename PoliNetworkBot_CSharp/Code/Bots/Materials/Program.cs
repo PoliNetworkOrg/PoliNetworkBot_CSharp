@@ -602,7 +602,7 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e?.Message?.From?.Id, text, ChatType.Private,
+            await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, text, ChatType.Private,
                 e?.Message?.From?.LanguageCode,
                 ParseMode.Html, null, null);
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
@@ -698,7 +698,7 @@ public class Program
         }
         else
         {
-            if (e?.Message?.From == null) return;
+            if (e?.Message.From == null) return;
             UsersConversations[e.Message.From.Id].SetState(UserState.START);
             UsersConversations[e.Message.From.Id].ResetPath();
         }
@@ -974,7 +974,7 @@ public class Program
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
             await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                e.Message?.From.LanguageCode,
+                e.Message.From.LanguageCode,
                 ParseMode.Html, null, null);
 
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);

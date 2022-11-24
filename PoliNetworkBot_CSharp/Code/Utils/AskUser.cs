@@ -104,7 +104,7 @@ internal static class AskUser
         });
         var reply = await AskBetweenRangeAsync(e?.Message.From?.Id,
             sender: sender,
-            lang: e?.Message?.From?.LanguageCode,
+            lang: e?.Message.From?.LanguageCode,
             options: options,
             username: e?.Message?.From?.Username,
             sendMessageConfirmationChoice: true,

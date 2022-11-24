@@ -598,7 +598,7 @@ internal static class CommandDispatcher
     {
         var groups = Database.ExecuteSelect("Select id FROM GroupsTelegram", sender.DbConfig);
 
-        return sender != null && await MassiveSendUtil.MassiveSendSlaveAsync(sender, e, groups, textToSend, false);
+        return await MassiveSendUtil.MassiveSendSlaveAsync(sender, e, groups, textToSend, false);
     }
 
 
