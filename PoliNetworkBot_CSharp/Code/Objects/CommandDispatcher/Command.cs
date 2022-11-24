@@ -34,12 +34,11 @@ public class Command
     private readonly Permission _permissionLevel;
 
     // Trigger command
-    private List<string> _trigger;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action4;
+    private List<string> _trigger; 
 
 
     public Command(IEnumerable<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, string[]?, CommandExecutionState> action,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -54,7 +53,7 @@ public class Command
     }
 
     private Command(IEnumerable<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -69,7 +68,7 @@ public class Command
     }
 
     public Command(IEnumerable<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, CommandExecutionState> action,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, CommandExecutionState> action,
         List<ChatType> chatTypes,
         Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
@@ -85,7 +84,7 @@ public class Command
     }
 
     public Command(string trigger,
-        Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
         List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -100,7 +99,7 @@ public class Command
     }
 
     public Command(string trigger,
-        Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, CommandExecutionState> action,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -134,11 +133,36 @@ public class Command
     }
 
     public Command(List<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, Task<CommandExecutionState>> action, List<ChatType> chatTypes,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>> action, List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions,
         bool enabled = true)
     {
         _trigger = trigger;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
+    public Command(string getConfig, Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract, string[]?, Task>? action, 
+        List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
+    {
+        _trigger = new List<string>(){getConfig};
+        _actionFuncGeneric = new ActionFuncGeneric(action);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
+    private Command(IEnumerable<string> getConfig, Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action, List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription, Func<MessageEventArgs, bool>? optionalConditions, bool enabled)
+    {
+        _trigger = getConfig.ToList();
         _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
@@ -198,7 +222,10 @@ public class Command
         if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
         if (_actionFuncGeneric != null)
-            return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
+            if (e != null)
+                if (telegramBotAbstract != null)
+                    if (args != null)
+                        return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
         throw new Exception("Illegal state exception!");
     }
 

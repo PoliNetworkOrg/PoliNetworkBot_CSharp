@@ -110,7 +110,7 @@ public static class AutoReplyInGroups
             "Ciao 👋 sembra tu stia facendo domande in merito al DSU. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!",
-            e => e.Message.From?.LanguageCode == "it"),
+            e => e?.Message.From?.LanguageCode == "it"),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -120,7 +120,7 @@ public static class AutoReplyInGroups
             "Hi 👋 it seems you are asking questions about 'DSU'. " +
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!",
-            e => e.Message.From?.LanguageCode != "it"),
+            e => e?.Message.From?.LanguageCode != "it"),
 
         new AutomaticAnswer(new List<List<string>>
             {
