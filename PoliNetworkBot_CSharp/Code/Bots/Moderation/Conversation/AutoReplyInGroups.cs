@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
@@ -101,23 +102,25 @@ public static class AutoReplyInGroups
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/askPolimi'>click here</a>!"),
 
-        new AutomaticAnswer(new List<List<string>>
+        new AutomaticAnswerRestricted(new List<List<string>>
             {
                 new() { "diritto studio universitario", "diritto allo studio", "dsu" }
             }, Reply,
             new List<long> { Groups.DSU, Groups.AskPolimi },
             "Ciao 👋 sembra tu stia facendo domande in merito al DSU. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
-            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!"),
+            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!",
+            e => e.Message.From?.LanguageCode == "it"),
 
-        new AutomaticAnswer(new List<List<string>>
+        new AutomaticAnswerRestricted(new List<List<string>>
             {
                 new() { "scholarship", "dsu" }
             }, Reply,
             new List<long> { Groups.DSU, Groups.AskPolimi },
             "Hi 👋 it seems you are asking questions about 'DSU'. " +
             "PoliNetwork advices you to write in the dedicated group, " +
-            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!"),
+            "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!",
+            e => e.Message.From?.LanguageCode != "it"),
 
         new AutomaticAnswer(new List<List<string>>
             {
@@ -144,7 +147,12 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Controlla i messaggi fissati",
+<<<<<<< HEAD
             e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+=======
+            e => e.Message.From?.LanguageCode == "it" && e.Message.Chat.Title != null &&
+                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
+>>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
                  AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -154,7 +162,12 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Check the pinned messages",
+<<<<<<< HEAD
             e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+=======
+            e => e.Message.From?.LanguageCode != "it" && e.Message.Chat.Title != null &&
+                 e.Message.Chat.Title.ToLower().Contains("matricole") &&
+>>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
                  AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -166,7 +179,11 @@ public static class AutoReplyInGroups
             "Ciao 👋 sembra tu stia facendo domande in merito ai gruppi Whatsapp. " +
             "Se non l'hai ancora fatto, leggi la guida in merito, " +
             "<a href='https://docs.polinetwork.org/#/it/about/groups/whatsapp'>clicca qui</a>!",
+<<<<<<< HEAD
             e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+=======
+            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+>>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
                  !AreWhatsappLinksPublic),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -178,7 +195,11 @@ public static class AutoReplyInGroups
             "Hi 👋 it seems you are asking questions about Whatsapp groups. " +
             "If you haven't already, we advice you to read the relative guide, " +
             "<a href='https://docs.polinetwork.org/#/en/about/groups/whatsapp'>click here</a>!",
+<<<<<<< HEAD
             e => e?.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+=======
+            e => e.Message.Chat.Title != null && e.Message.Chat.Title.ToLower().Contains("matricole") &&
+>>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
                  !AreWhatsappLinksPublic),
 
         new AutomaticAnswer(new List<List<string>>
@@ -244,6 +265,19 @@ public static class AutoReplyInGroups
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         string text)
     {
+<<<<<<< HEAD
         AutomaticAnswers.ForEach(x => x.TryTrigger(e, telegramBotClient, text));
+=======
+        foreach (var answer in AutomaticAnswers) MessageInGroup3Async(answer, telegramBotClient, e, text);
+    }
+
+    private static void MessageInGroup3Async(AutomaticAnswer answer, TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? e, string text)
+    {
+        if (e == null || telegramBotClient == null)
+            return;
+
+        answer.TryTrigger(e, telegramBotClient, text);
+>>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
     }
 }
