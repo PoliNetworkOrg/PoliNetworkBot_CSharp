@@ -14,12 +14,11 @@ public static class Help
 {
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        var command = CommandDispatcher.Commands.Find(x => x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
+        var command = CommandDispatcher.Commands.Find(x =>
+            x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
 
         Language text;
         if (command != null)
-        {
-
             text = new Language(new Dictionary<string, string?>
             {
                 {
@@ -33,9 +32,7 @@ public static class Help
                     command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
                 }
             });
-        }
         else
-        {
             text = new Language(new Dictionary<string, string?>
             {
                 {
@@ -51,7 +48,6 @@ public static class Help
                     "per la lista completa"
                 }
             });
-        }
 
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,

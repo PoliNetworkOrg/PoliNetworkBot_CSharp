@@ -9,14 +9,22 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 [JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGeneric
 {
-    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task<CommandExecutionState>>? _action;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState>? _action2;
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?,
+        Task<CommandExecutionState>>? _action;
+
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState>?
+        _action2;
+
     private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, CommandExecutionState>? _action3;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>>? _action4;
+
+    private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>>?
+        _action4;
+
     private readonly Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract, string[]?, Task>? _action5;
     private readonly Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action6;
 
-    public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action)
+    public ActionFuncGeneric(
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action)
     {
         _action2 = action;
     }
@@ -27,12 +35,14 @@ public class ActionFuncGeneric
         _action = action;
     }
 
-    public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, CommandExecutionState> action)
+    public ActionFuncGeneric(
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, CommandExecutionState> action)
     {
         _action3 = action;
     }
 
-    public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>> action)
+    public ActionFuncGeneric(
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>> action)
     {
         _action4 = action;
     }
@@ -47,7 +57,8 @@ public class ActionFuncGeneric
         _action6 = action;
     }
 
-    public CommandExecutionState Invoke(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract, string[] args)
+    public CommandExecutionState Invoke(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
+        string[] args)
     {
         if (_action != null)
             return _action.Invoke(e, telegramBotAbstract, args).Result;
@@ -62,6 +73,7 @@ public class ActionFuncGeneric
             _action5.Invoke(e, telegramBotAbstract, args).Wait();
             return CommandExecutionState.SUCCESSFUL;
         }
+
         if (_action6 != null)
         {
             _action6.Invoke(e, telegramBotAbstract).Wait();

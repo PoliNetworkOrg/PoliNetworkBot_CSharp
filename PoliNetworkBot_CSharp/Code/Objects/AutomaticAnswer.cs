@@ -39,7 +39,7 @@ public class AutomaticAnswer
     public AutomaticAnswer(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
         string response)
-        {
+    {
         _trigger = trigger;
         _actionMessage = action;
         _except = except;
@@ -58,7 +58,7 @@ public class AutomaticAnswer
     {
         return id != null && _except.All(group => !group.Equals(id));
     }
-    
+
     public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
     {
@@ -67,7 +67,10 @@ public class AutomaticAnswer
         {
             if (e != null) _actionMessage?.Invoke(e, telegramBotAbstract, _response);
         }
-        else if (e != null) _action?.Invoke(e, telegramBotAbstract);
+        else if (e != null)
+        {
+            _action?.Invoke(e, telegramBotAbstract);
+        }
 
         return true;
     }
@@ -93,7 +96,7 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
     {
         _condition = condition;
     }
-    
+
     public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
     {

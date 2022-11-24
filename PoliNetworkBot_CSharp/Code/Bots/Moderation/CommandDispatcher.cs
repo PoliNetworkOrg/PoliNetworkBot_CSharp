@@ -119,7 +119,8 @@ internal static class CommandDispatcher
         new Command("groups", SendRecommendedGroupsAsync, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Get suggested groups for you.", "it", "Ricevi i gruppi consigliati per te."), null, null),
         new Command("search", Groups.SendGroupsByTitle, new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "Search for a group by title.", "it", "Cerca gruppi per titolo. @condition: you need to reply to a message"), null, null),
+            new L("en", "Search for a group by title.", "it",
+                "Cerca gruppi per titolo. @condition: you need to reply to a message"), null, null),
         new Command("search", Groups.SendGroupsByTitle,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER,
             new L("en", "Search for a group by title. @condition: you need to reply to a message", "it",
@@ -392,7 +393,7 @@ internal static class CommandDispatcher
                     e.Message.MessageId);
             return CommandExecutionState.UNMET_CONDITIONS;
         }
-            
+
         MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Text);
         MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Caption);
         Logger.WriteLine(
@@ -595,12 +596,13 @@ internal static class CommandDispatcher
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
             r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
 
-        try{
+        try
+        {
             var dict = new Dictionary<string, string?>
             {
                 { "en", r2.ToString() }
             };
-            
+
             var text = new Language(dict);
             try
             {
