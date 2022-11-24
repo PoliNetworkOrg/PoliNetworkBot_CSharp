@@ -37,9 +37,12 @@ public static class ConfigUtil
 
     public static bool GetDbConfig(MessageEventArgs? messageEventArgs, TelegramBotAbstract? telegramBotAbstract)
     {
-        var objectToSend = new ObjectToSend(){ Value = null, FileName = "dbconfig.json"};
+        var dbConfigConnection = telegramBotAbstract?.DbConfig;
+        if (dbConfigConnection == null) return false;
+        var objectToSend = new ObjectToSend(){ Value = dbConfigConnection.GetDbConfig(), FileName = "dbconfig.json"};
         return messageEventArgs?.Message.From != null && GetFile(objectToSend, messageEventArgs.Message.From.Id, messageEventArgs.Message.From.Username,
             telegramBotAbstract, messageEventArgs.Message.From.LanguageCode, ChatType.Private);
+
     }
 
     
