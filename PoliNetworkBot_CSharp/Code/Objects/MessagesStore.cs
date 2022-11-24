@@ -224,7 +224,7 @@ public static class MessagesStore
     internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
-        if (e?.Message?.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+        if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
             return;
 
         if (Store != null && !Store.ContainsKey(e.Message.ReplyToMessage.Text))

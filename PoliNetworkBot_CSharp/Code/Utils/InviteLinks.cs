@@ -129,7 +129,7 @@ internal static class InviteLinks
             if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
                 return;
 
-            if (e?.Message?.From == null)
+            if (e?.Message.From == null)
                 return;
 
             if (!Owners.CheckIfOwner(e.Message.From.Id))

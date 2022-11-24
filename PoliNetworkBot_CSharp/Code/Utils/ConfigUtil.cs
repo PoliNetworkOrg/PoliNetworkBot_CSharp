@@ -8,9 +8,6 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
-
-using PoliNetworkBot_CSharp.Code.Utils.Main;
-
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -22,7 +19,7 @@ public static class ConfigUtil
     public static bool GetConfig(long? fromId, string? fromUsername, TelegramBotAbstract? sender,
         string? fromLanguageCode, ChatType? chatType)
     {
-        var objectToSend = new ObjectToSend(){ FileName = "config.json", Value = Utils.Main.ProgramUtil.BotConfigAll};
+        var objectToSend = new ObjectToSend { FileName = "config.json", Value = Main.ProgramUtil.BotConfigAll};
         return GetFile(objectToSend, fromId, fromUsername, sender, fromLanguageCode, chatType);
     }
 
@@ -44,7 +41,7 @@ public static class ConfigUtil
     {
         var dbConfigConnection = telegramBotAbstract?.DbConfig;
         if (dbConfigConnection == null) return false;
-        var objectToSend = new ObjectToSend(){ Value = dbConfigConnection.GetDbConfig(), FileName = "dbconfig.json"};
+        var objectToSend = new ObjectToSend { Value = dbConfigConnection.GetDbConfig(), FileName = "dbconfig.json"};
         return messageEventArgs?.Message.From != null && GetFile(objectToSend, messageEventArgs.Message.From.Id, messageEventArgs.Message.From.Username,
             telegramBotAbstract, messageEventArgs.Message.From.LanguageCode, ChatType.Private);
 

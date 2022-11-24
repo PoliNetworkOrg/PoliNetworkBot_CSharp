@@ -48,12 +48,12 @@ internal class MessageAnonToSendInQueue
 
     internal long? GetFromUserId()
     {
-        return _e?.Message?.From?.Id;
+        return _e?.Message.From?.Id;
     }
 
     internal long? GetFromUserIdOrPostId()
     {
-        return _e != null ? _e.Message?.From?.Id : _e2?.postid;
+        return _e != null ? _e.Message.From?.Id : _e2?.postid;
     }
 
     internal async Task<MessageSentResult?> SendMessageInQueueAsync(TelegramBotAbstract? telegramBotAbstract)

@@ -220,7 +220,7 @@ public static class Main
                 var dict3 = new Dictionary<string, object?>
                 {
                     { "@t", t },
-                    { "@fn", e?.Message?.From?.FirstName },
+                    { "@fn", e?.Message.From?.FirstName },
                     { "@ln", e?.Message?.From?.LastName },
                     { "@wk", DateTime.Now },
                     { "@ki", m1.From?.Id }

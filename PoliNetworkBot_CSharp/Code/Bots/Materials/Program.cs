@@ -799,7 +799,7 @@ public class Program
 
     private static bool VerifySubfolder(MessageEventArgs? e)
     {
-        if (e?.Message?.From == null)
+        if (e?.Message.From == null)
             return false;
 
         var sottoCartelle = Keyboards.GetDir(e.Message.From.Id);

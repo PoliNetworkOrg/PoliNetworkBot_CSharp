@@ -201,7 +201,7 @@ internal static class MainAnon
         {
             { "it", "Inserisci il link del messaggio a cui vuoi rispondere" }
         });
-        var r = await AskUser.AskAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+        var r = await AskUser.AskAsync(e?.Message.From?.Id, question, telegramBotAbstract,
             e?.Message?.From?.LanguageCode, e?.Message?.From?.Username);
         if (r != null)
         {
