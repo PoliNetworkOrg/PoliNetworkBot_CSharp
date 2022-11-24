@@ -18,25 +18,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public class AutomaticAnswer
 {
-<<<<<<< HEAD
-    private Func<MessageEventArgs?, TelegramBotAbstract?, Task>? _action;
-    private Func<MessageEventArgs?, TelegramBotAbstract?, string, Task>? _actionMessage;
-=======
     private Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action;
     private Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task>? _actionMessage;
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
     private List<long> _except;
     private string? _response;
 
     // CONJUNCTIVE NORMAL FORM: conjunction of disjunctions
     private List<List<string>> _trigger;
 
-<<<<<<< HEAD
-    public AutomaticAnswer(List<List<string>> trigger, Func<MessageEventArgs?, TelegramBotAbstract?, Task> action,
-=======
+
     public AutomaticAnswer(List<List<string>> trigger,
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action,
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
         List<long> except)
     {
         _trigger = trigger;
@@ -45,13 +37,9 @@ public class AutomaticAnswer
     }
 
     public AutomaticAnswer(List<List<string>> trigger,
-<<<<<<< HEAD
-        Func<MessageEventArgs?, TelegramBotAbstract?, string, Task> action, List<long> except, string response)
-=======
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
         string response)
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
-    {
+        {
         _trigger = trigger;
         _actionMessage = action;
         _except = except;
@@ -70,13 +58,9 @@ public class AutomaticAnswer
     {
         return id != null && _except.All(group => !group.Equals(id));
     }
-
-<<<<<<< HEAD
-    public virtual bool TryTrigger(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract, string message)
-=======
+    
     public virtual bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
     {
         if (!IsTriggered(message) || !GroupAllowed(e?.Message.Chat.Id)) return false;
         if (_response != null)
@@ -94,36 +78,22 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
     private Func<MessageEventArgs?, bool> _condition;
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
-<<<<<<< HEAD
-        Func<MessageEventArgs?, TelegramBotAbstract?, Task> action, List<long> except,
-        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except)
-=======
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task> action, List<long> except,
-        Func<MessageEventArgs, bool> condition) : base(trigger, action, except)
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
+        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except)
     {
         _condition = condition;
     }
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
-<<<<<<< HEAD
-        Func<MessageEventArgs?, TelegramBotAbstract?, string, Task> action, List<long> except, string response,
-        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except, response)
-=======
         Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task> action, List<long> except,
         string response,
-        Func<MessageEventArgs, bool> condition) : base(trigger, action, except, response)
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
+        Func<MessageEventArgs?, bool> condition) : base(trigger, action, except, response)
     {
         _condition = condition;
     }
-
-<<<<<<< HEAD
-    public override bool TryTrigger(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract, string message)
-=======
+    
     public override bool TryTrigger(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract,
         string message)
->>>>>>> 64c252f368a18ccab709c2e01f0d14fcf4812465
     {
         return _condition(e) && base.TryTrigger(e, telegramBotAbstract, message);
     }
