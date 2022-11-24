@@ -77,7 +77,7 @@ internal static class MainAnon
         {
             var botId = telegramBotAbstract.GetId();
 
-            if (AskUser.UserAnswers.ContainsUser(e?.Message?.From?.Id, botId))
+            if (AskUser.UserAnswers.ContainsUser(e?.Message.From?.Id, botId))
                 if (AskUser.UserAnswers.GetState(e?.Message?.From?.Id, botId) ==
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
@@ -153,7 +153,7 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (m1 != null)
         {
-            var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+            var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
                 e?.Message?.From?.LanguageCode, options,
                 e?.Message?.From?.Username, true, m1.MessageId);
 
@@ -202,7 +202,7 @@ internal static class MainAnon
             { "it", "Inserisci il link del messaggio a cui vuoi rispondere" }
         });
         var r = await AskUser.AskAsync(e?.Message.From?.Id, question, telegramBotAbstract,
-            e?.Message?.From?.LanguageCode, e?.Message?.From?.Username);
+            e?.Message.From?.LanguageCode, e?.Message?.From?.Username);
         if (r != null)
         {
             var tuple = GetMessageReply(r);
@@ -293,7 +293,7 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (m1 != null)
         {
-            var r = await AskUser.AskBetweenRangeAsync(e?.Message?.From?.Id, question, telegramBotAbstract,
+            var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
                 e?.Message?.From?.LanguageCode, options, e?.Message?.From?.Username,
                 true, m1.MessageId);
 
@@ -614,6 +614,6 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (sender != null)
             await sender.SendTextMessageAsync(m1?.From?.Id, text, ChatType.Private,
-                e?.Message?.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
+                e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message?.From?.Username);
     }
 }

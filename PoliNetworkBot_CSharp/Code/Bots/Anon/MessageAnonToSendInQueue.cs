@@ -28,12 +28,12 @@ internal class MessageAnonToSendInQueue
 
     internal string? GetUsername()
     {
-        return _e?.Message?.From?.Username;
+        return _e?.Message.From?.Username;
     }
 
     internal string? GetLanguageCode()
     {
-        return _e?.Message?.From?.LanguageCode;
+        return _e?.Message.From?.LanguageCode;
     }
 
     internal bool FromTelegram()

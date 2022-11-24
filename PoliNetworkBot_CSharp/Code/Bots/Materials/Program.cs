@@ -551,7 +551,7 @@ public class Program
 
     private static async Task HandleNewFolderAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.Text != null &&
+        if (e?.Message.Text != null &&
             (e.Message.Text.Contains('/') || e.Message.Text.Contains('\\')))
         {
             GenerateStart(e);
@@ -578,7 +578,7 @@ public class Program
     private static async Task HandleFileAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
         //gestisce l'arrivo del messaggio dall'utente
-        if (e?.Message?.Photo != null)
+        if (e?.Message.Photo != null)
         {
             var dict = new Dictionary<string, string?>
             {
@@ -706,7 +706,7 @@ public class Program
 
     private static async Task HandleFolderAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.Text == null)
+        if (e?.Message.Text == null)
         {
             await GenerateStartOnBackAndNull(e, sender);
             return;
@@ -858,7 +858,7 @@ public class Program
 
     private static async Task HandleCourseAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             UsersConversations[e.Message.From.Id].ResetPath();
             if (e.Message.Text == null
@@ -938,7 +938,7 @@ public class Program
             { "it", "Seleziona un percorso" }
         };
         var text = new Language(dict);
-        if (e?.Message?.From != null)
+        if (e?.Message.From != null)
         {
             var optionsStringToKeyboard =
                 BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
@@ -959,9 +959,9 @@ public class Program
 
     private static async Task HandleSchoolAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotAbstract)
     {
-        if (e?.Message?.From != null && (e.Message?.Text == null ||
-                                         !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
-                                             e.Message.Text)))
+        if (e?.Message.From != null && (e.Message.Text == null ||
+                                        !Navigator.SchoolHandler(UsersConversations[e.Message.From.Id],
+                                            e.Message.Text)))
         {
             var dict = new Dictionary<string, string?>
             {

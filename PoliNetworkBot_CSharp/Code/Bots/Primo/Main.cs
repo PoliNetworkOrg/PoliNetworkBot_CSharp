@@ -67,7 +67,7 @@ public static class Main
     private static async Task<MessageSentResult?> HandleMessage2Async(TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e)
     {
-        var t = e?.Message?.Text?.ToLower();
+        var t = e?.Message.Text?.ToLower();
 
         if (string.IsNullOrEmpty(t))
             return null;
