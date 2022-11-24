@@ -21,7 +21,6 @@ public static class AssocCommands
     {
         _ = await Assoc.Assoc_Publish(sender, e);
         return CommandExecutionState.SUCCESSFUL;
-
     }
 
     public static async Task<CommandExecutionState> AssocRead(MessageEventArgs e, TelegramBotAbstract? sender)

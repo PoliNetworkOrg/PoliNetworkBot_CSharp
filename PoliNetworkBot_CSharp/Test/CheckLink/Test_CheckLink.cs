@@ -4,6 +4,7 @@ public static class TestCheckLink
 {
     public static void Test_CheckLink2()
     {
+        // ReSharper disable once CommentTypo
         /*
         var r1 = Blacklist.IsSpam("https://t.me/Doctor", null);
         ;

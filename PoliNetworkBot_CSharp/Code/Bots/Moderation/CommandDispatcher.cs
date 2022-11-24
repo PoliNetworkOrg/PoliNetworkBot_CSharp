@@ -246,20 +246,19 @@ internal static class CommandDispatcher
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "ban all history"), null,
             null, false),
-        
+
         new Command("send_message", SendMessageInGroup,
-        new List<ChatType> { ChatType.Private }, Permission.OWNER,
-        new L("en", "Send message in a single group using the bot. @condition: Message to be sent. @args: Group ID"), null,
-        e => e.Message.ReplyToMessage != null, false)
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en",
+                "Send message in a single group using the bot. @condition: Message to be sent. @args: Group ID"), null,
+            e => e.Message.ReplyToMessage != null, false)
     };
 
-    private static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    private static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e,
+        TelegramBotAbstract? sender, string[]? args)
     {
         if (e?.Message.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
-        {
-
             return CommandExecutionState.UNMET_CONDITIONS;
-        }
 
         await SendMessage.ForwardMessage(sender, e, e.Message.Chat.Id, args[0], e.Message.MessageId, false, null,
             CancellationToken.None);
@@ -391,7 +390,6 @@ internal static class CommandDispatcher
             e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ??
             "Error in allowmessage, both caption and text are null");
         return CommandExecutionState.SUCCESSFUL;
-
     }
 
     private static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -580,30 +578,30 @@ internal static class CommandDispatcher
         var message = e?.Message.ReplyToMessage;
         if (message == null)
             return CommandExecutionState.UNMET_CONDITIONS;
-        if (e?.Message != null)
+        if (e?.Message == null)
+            return CommandExecutionState.SUCCESSFUL;
+
+        var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
+
+        if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
+            r2 = await Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
+
+        var dict = new Dictionary<string, string?>
         {
-            var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
-
-            if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-                r2 = await Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
-
-            var dict = new Dictionary<string, string?>
-            {
-                { "en", r2.ToString() }
-            };
-            var text = new Language(dict);
-            try
-            {
-                if (e.Message.From != null)
-                    if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                            ParseMode.Html,
-                            null, null);
-            }
-            catch
-            {
-                return CommandExecutionState.ERROR_DEFAULT;
-            }
+            { "en", r2.ToString() }
+        };
+        var text = new Language(dict);
+        try
+        {
+            if (e.Message.From != null)
+                if (sender != null)
+                    await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
+                        ParseMode.Html,
+                        null, null);
+        }
+        catch
+        {
+            return CommandExecutionState.ERROR_DEFAULT;
         }
 
         return CommandExecutionState.SUCCESSFUL;
@@ -838,7 +836,8 @@ internal static class CommandDispatcher
             EventArgsContainer.Get(e));
     }
 
-    private static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
@@ -863,7 +862,8 @@ internal static class CommandDispatcher
         });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            EventArgsContainer.Get(e));
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -937,7 +937,8 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    private static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender,
+        string[]? args)
     {
         if (args == null || args.Length == 0)
             await Help.HelpPrivateSlave(e, sender);
@@ -946,28 +947,28 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
+    private static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
+        TelegramBotAbstract? telegramBotClient)
     {
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
-        if (telegramBotClient != null)
-        {
-            var lang2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", telegramBotClient.GetContactString() },
-                { "en", telegramBotClient.GetContactString() }
-            });
-            await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
-                lang2, e?.Message.Chat.Type, e?.Message.From?.LanguageCode,
-                ParseMode.Html,
-                new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e?.Message.From?.Username
-            );
-            return CommandExecutionState.SUCCESSFUL;
-        }
+        if (telegramBotClient == null)
+            return CommandExecutionState.ERROR_DEFAULT;
 
-        return CommandExecutionState.ERROR_DEFAULT;
+        var lang2 = new Language(new Dictionary<string, string?>
+        {
+            { "it", telegramBotClient.GetContactString() },
+            { "en", telegramBotClient.GetContactString() }
+        });
+        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
+            lang2, e?.Message.Chat.Type, e?.Message.From?.LanguageCode,
+            ParseMode.Html,
+            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e?.Message.From?.Username
+        );
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    private static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e,
+        TelegramBotAbstract? sender)
     {
         long? n = null;
         try

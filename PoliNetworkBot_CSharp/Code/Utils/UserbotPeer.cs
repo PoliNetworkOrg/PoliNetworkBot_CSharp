@@ -25,14 +25,14 @@ internal static class UserbotPeer
         };
     }
 
-    internal static TLAbsInputChannel? GetPeerChannelFromIdAndType(long? chatid, long? accessHash)
+    internal static TLAbsInputChannel? GetPeerChannelFromIdAndType(long? chatId, long? accessHash)
     {
         try
         {
-            if (chatid != null)
+            if (chatId != null)
                 return accessHash != null
-                    ? new TLInputChannel { ChannelId = (int)chatid, AccessHash = accessHash.Value }
-                    : new TLInputChannel { ChannelId = (int)chatid };
+                    ? new TLInputChannel { ChannelId = (int)chatId, AccessHash = accessHash.Value }
+                    : new TLInputChannel { ChannelId = (int)chatId };
         }
         catch
         {

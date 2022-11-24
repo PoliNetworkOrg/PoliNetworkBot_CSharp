@@ -81,6 +81,5 @@ internal static class BackupUtil
         await CommandDispatcher.BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
             e.Message.Chat.Type);
         return CommandExecutionState.SUCCESSFUL;
-
     }
 }
