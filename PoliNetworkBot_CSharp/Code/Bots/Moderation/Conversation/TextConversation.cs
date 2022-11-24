@@ -67,7 +67,7 @@ internal static class TextConversation
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
                     AskUser.UserAnswers.RecordAnswer(e?.Message.From?.Id, botId,
-                        e?.Message?.Text ?? e?.Message?.Caption);
+                        e?.Message.Text ?? e?.Message.Caption);
                     return;
                 }
         }
