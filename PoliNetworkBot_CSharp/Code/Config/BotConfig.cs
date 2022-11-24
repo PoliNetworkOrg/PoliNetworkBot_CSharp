@@ -31,4 +31,10 @@ public class BotConfig
         GetConfig(arg1, arg2);
         return Task.CompletedTask;
     }
+
+    public static Task GetDbConfig(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    {
+        ConfigUtil.GetDbConfig(arg1, arg2);
+        return Task.CompletedTask;
+    }
 }

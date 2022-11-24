@@ -136,6 +136,8 @@ internal static class CommandDispatcher
             null, e => e.Message.ReplyToMessage != null),
         new Command("get_config", BotConfig.GetConfig2, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot config"), null, null),
+        new Command("get_db_config", BotConfig.GetDbConfig, new List<ChatType> { ChatType.Private },
+            Permission.OWNER, new L("en", "Get bot db config"), null, null),
         new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot groups"), null, null),
 
