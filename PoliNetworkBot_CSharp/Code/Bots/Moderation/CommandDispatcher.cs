@@ -293,73 +293,70 @@ internal static class CommandDispatcher
     {
         if (e != null && string.IsNullOrEmpty(e.Message.Text)) return false;
 
-        if (e != null)
+        if (e?.Message.Text != null)
         {
-            if (e.Message.Text != null)
-            {
-                var cmdLines = e.Message.Text.Split(' ');
-                var cmd = cmdLines[0].Trim();
-                var args = cmdLines.Skip(1).ToArray();
+            var cmdLines = e.Message.Text.Split(' ');
+            var cmd = cmdLines[0].Trim();
+            var args = cmdLines.Skip(1).ToArray();
 
-                if (string.IsNullOrEmpty(cmd))
+            if (string.IsNullOrEmpty(cmd))
+            {
+                await DefaultCommand(sender, e);
+                return false;
+            }
+
+            if (cmd.Contains('@'))
+            {
+                var cmd2 = cmd.Split("@");
+                if (sender != null)
                 {
-                    await DefaultCommand(sender, e);
+                    var botUsername = await sender.GetBotUsernameAsync();
+                    if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase))
+                        return false;
+                }
+            }
+
+            if (sender == null)
+                return await DefaultCommand(sender, e);
+
+            foreach (var command in Commands)
+                try
+                {
+                    switch (command.TryTrigger(e, sender, cmd, args))
+                    {
+                        case CommandExecutionState.SUCCESSFUL:
+                            return true;
+                        case CommandExecutionState.UNMET_CONDITIONS:
+                            if (e.Message.Chat.Type == ChatType.Private)
+                                await NotifyUserCommandError(new L(
+                                        "it",
+                                        "Formattazione del messaggio errata. \n" +
+                                        "Per informazioni aggiuntive scrivi<b>\n" +
+                                        "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                        "</b>",
+                                        "en",
+                                        "The message is wrongly formatted. \n" +
+                                        "For additional info type <b>\n" +
+                                        "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                        "</b>"),
+                                    sender, e);
+                            else
+                                await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                            return false;
+                        case CommandExecutionState.NOT_TRIGGERED:
+                        case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
+                        case CommandExecutionState.ERROR_NOT_ENABLED:
+                        case CommandExecutionState.ERROR_DEFAULT:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
                     return false;
                 }
-
-                if (cmd.Contains('@'))
-                {
-                    var cmd2 = cmd.Split("@");
-                    if (sender != null)
-                    {
-                        var botUsername = await sender.GetBotUsernameAsync();
-                        if (!string.Equals(cmd2[1], botUsername, StringComparison.CurrentCultureIgnoreCase))
-                            return false;
-                    }
-                }
-
-                if (sender == null)
-                    return await DefaultCommand(sender, e);
-
-                foreach (var command in Commands)
-                    try
-                    {
-                        switch (command.TryTrigger(e, sender, cmd, args))
-                        {
-                            case CommandExecutionState.SUCCESSFUL:
-                                return true;
-                            case CommandExecutionState.UNMET_CONDITIONS:
-                                if (e.Message.Chat.Type == ChatType.Private)
-                                    await NotifyUserCommandError(new L(
-                                            "it",
-                                            "Formattazione del messaggio errata. \n" +
-                                            "Per informazioni aggiuntive scrivi<b>\n" +
-                                            "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                            "</b>",
-                                            "en",
-                                            "The message is wrongly formatted. \n" +
-                                            "For additional info type <b>\n" +
-                                            "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                            "</b>"),
-                                        sender, e);
-                                else
-                                    await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-                                return false;
-                            case CommandExecutionState.NOT_TRIGGERED:
-                            case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
-                            case CommandExecutionState.ERROR_NOT_ENABLED:
-                            case CommandExecutionState.ERROR_DEFAULT:
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
-                        return false;
-                    }
-            }
         }
 
         return await DefaultCommand(sender, e);
@@ -598,8 +595,8 @@ internal static class CommandDispatcher
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
             r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
 
-     try{
-         var dict = new Dictionary<string, string?>
+        try{
+            var dict = new Dictionary<string, string?>
             {
                 { "en", r2.ToString() }
             };

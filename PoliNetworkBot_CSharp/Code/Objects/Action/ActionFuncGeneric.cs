@@ -39,12 +39,12 @@ public class ActionFuncGeneric
 
     public ActionFuncGeneric(Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract, string[]?, Task>? action)
     {
-        this._action5 = action;
+        _action5 = action;
     }
 
     public ActionFuncGeneric(Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task>? action)
     {
-        this._action6 = action;
+        _action6 = action;
     }
 
     public CommandExecutionState Invoke(MessageEventArgs e, TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract, string[] args)
