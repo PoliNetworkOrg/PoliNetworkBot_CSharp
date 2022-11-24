@@ -64,9 +64,11 @@ public class AutomaticAnswer
     {
         if (!IsTriggered(message) || !GroupAllowed(e?.Message.Chat.Id)) return false;
         if (_response != null)
-            _actionMessage?.Invoke(e, telegramBotAbstract, _response);
-        else
-            _action?.Invoke(e, telegramBotAbstract);
+        {
+            if (e != null) _actionMessage?.Invoke(e, telegramBotAbstract, _response);
+        }
+        else if (e != null) _action?.Invoke(e, telegramBotAbstract);
+
         return true;
     }
 }
