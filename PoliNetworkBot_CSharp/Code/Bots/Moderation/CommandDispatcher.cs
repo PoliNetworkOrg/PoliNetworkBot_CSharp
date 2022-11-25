@@ -296,7 +296,7 @@ internal static class CommandDispatcher
 
         if (e?.Message.Text == null)
             return await DefaultCommand(sender, e);
-        
+
         var cmdLines = e.Message.Text.Split(' ');
         var cmd = cmdLines[0].Trim();
         var args = cmdLines.Skip(1).ToArray();
@@ -598,26 +598,23 @@ internal static class CommandDispatcher
 
         try
         {
-           
-            
-                var dict = new Dictionary<string, string?>
-                {
-                    { "en", r2.ToString() }
-                };
-                var text = new Language(dict);
-                try
-                {
-                    if (e.Message.From != null)
-                        if (sender != null)
-                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                                ParseMode.Html,
-                                null, null);
-                }
-                catch
-                {
-                    // ignored
-                }
-            
+            var dict = new Dictionary<string, string?>
+            {
+                { "en", r2.ToString() }
+            };
+            var text = new Language(dict);
+            try
+            {
+                if (e.Message.From != null)
+                    if (sender != null)
+                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
+                            ParseMode.Html,
+                            null, null);
+            }
+            catch
+            {
+                // ignored
+            }
         }
         catch
         {
