@@ -29,7 +29,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 
 internal static class CommandDispatcher
 {
