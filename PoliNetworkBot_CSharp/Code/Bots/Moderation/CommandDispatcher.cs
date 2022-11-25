@@ -568,27 +568,33 @@ internal static class CommandDispatcher
             if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
                 r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
 
-        if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-            r2 = await Blacklist.Blacklist.IsSpam(message.Text ?? message.Caption, message.Chat.Id, sender, true, e);
+            if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
+                r2 = await Blacklist.Blacklist.IsSpam(message.Text ?? message.Caption, message.Chat.Id, sender, true,
+                    e);
 
-        try
-        {
-            var dict = new Dictionary<string, string?>
-            {
-                { "en", r2.ToString() }
-            };
-            var text = new Language(dict);
             try
             {
-                if (e.Message.From != null)
-                    if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                            ParseMode.Html,
-                            null, null);
+                var dict = new Dictionary<string, string?>
+                {
+                    { "en", r2.ToString() }
+                };
+                var text = new Language(dict);
+                try
+                {
+                    if (e.Message.From != null)
+                        if (sender != null)
+                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
+                                ParseMode.Html,
+                                null, null);
+                }
+                catch
+                {
+                    // ignored
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine(ex);
             }
         }
     }
