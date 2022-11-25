@@ -7,6 +7,7 @@ COPY . ./
 RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
+RUN TZ='Europe/Rome' date > ./static/build-date.txt
 
 ENV TZ=Europe/Rome
 
