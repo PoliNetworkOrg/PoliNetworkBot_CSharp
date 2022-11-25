@@ -10,7 +10,7 @@ public static class CheckSpam
 {
     public static async Task<bool?> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
     {
-        var checkSpam = await CheckSpamAsync(e, telegramBotClient);
+        var checkSpam = await CheckSpamAsync(e, telegramBotClient, true);
 
 
         return checkSpam switch
@@ -28,11 +28,14 @@ public static class CheckSpam
     }
 
 
-    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
+    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, bool checkSender)
     {
-        var checkIfHeIsAllowedResult = ModerationCheck.CheckIfHeIsAllowedSpam(e);
-        if (checkIfHeIsAllowedResult)
-            return SpamType.ALL_GOOD;
+        if (checkSender)
+        {
+            var checkIfHeIsAllowedResult = ModerationCheck.CheckIfHeIsAllowedSpam(e);
+            if (checkIfHeIsAllowedResult)
+                return SpamType.ALL_GOOD;
+        }
 
         var isSpamStored = ModerationCheck.CheckIfSpamStored(e, telegramBotClient);
         if (isSpamStored != null)
