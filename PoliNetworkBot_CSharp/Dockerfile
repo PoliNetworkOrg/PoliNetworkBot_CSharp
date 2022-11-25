@@ -13,5 +13,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 RUN mkdir static && TZ='Europe/Rome' date > ./static/build-date.txt
-RUN ls -la
 ENTRYPOINT ["sh", "-c", "rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime; dotnet PoliNetworkBot_CSharp.dll 2"]
