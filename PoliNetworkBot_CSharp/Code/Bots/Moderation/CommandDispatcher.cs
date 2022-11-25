@@ -568,6 +568,11 @@ internal static class CommandDispatcher
             if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
                 r2 = await Blacklist.Blacklist.IsSpam(message.Text, message.Chat.Id, sender, true, e);
 
+        if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
+            r2 = await Blacklist.Blacklist.IsSpam(message.Text ?? message.Caption, message.Chat.Id, sender, true, e);
+
+        try
+        {
             var dict = new Dictionary<string, string?>
             {
                 { "en", r2.ToString() }
