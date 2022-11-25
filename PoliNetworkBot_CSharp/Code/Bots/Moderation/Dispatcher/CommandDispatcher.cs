@@ -367,7 +367,7 @@ internal static class CommandDispatcher
         var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
 
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
-            r2 = await Blacklist.Blacklist.IsSpam(message.Text ?? message.Caption, message.Chat.Id, sender, true, e);
+            r2 = await Moderation.SpamCheck.CheckSpam.CheckSpamAsync(e,sender);
 
         try
         {

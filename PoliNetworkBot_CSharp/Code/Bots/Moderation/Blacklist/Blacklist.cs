@@ -272,4 +272,12 @@ internal static class Blacklist
         // ReSharper disable once ConditionalTernaryEqualBranch
         return biggerphoto == null ? SpamType.ALL_GOOD : SpamType.ALL_GOOD; //todo: analizzare la foto con un ocr
     }
+
+    public static SpamType? CheckCaptionElements(Message? eMessage, TelegramBotAbstract? bot)
+    {
+        return eMessage?.CaptionEntities == null || eMessage.CaptionEntities.Length == 0
+            ? null
+            : eMessage.CaptionEntities.Select(x => CheckSpamLink(x.Url ?? "", eMessage.Chat.Id, bot))
+                .Aggregate<SpamType, SpamType?>(null, (current, y) => SpamTypeUtil.Merge(y, current));
+    }
 }
