@@ -26,7 +26,7 @@ using File = Telegram.Bot.Types.File;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 public class TelegramBotAbstract
 {
@@ -1666,8 +1666,19 @@ public class TelegramBotAbstract
                             var c1 = r2.Chats[0];
                             if (c1 is TLChat c2)
                             {
-                                //todo add description
+                                //aggiorna la descrizione del gruppo appena creato
                                 Logger.WriteLine(description);
+
+                                try
+                                {
+                                    var tlChannel = new TLChannel { Id = c2.Id };
+                                    var result = UserbotClient.Channels_EditDescription(tlChannel, description).Result;
+                                    //todo: non mi convince, probabilmente non va
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
 
                                 return c2.Id;
                             }
@@ -1796,6 +1807,28 @@ public class TelegramBotAbstract
                         await _botClient.EditMessageTextAsync(chatId,
                             messageMessageId, text,
                             parseMode);
+                break;
+
+            case BotTypeApi.USER_BOT:
+            {
+            }
+                break;
+
+            case BotTypeApi.DISGUISED_BOT:
+                break;
+        }
+    }
+
+    public async Task ForwardMessageAsync(ChatId messageId, ChatId idChatMessageFrom, int idChatMessageTo,
+        bool? disableNotification, bool? protectContent, CancellationToken cancellationToken)
+    {
+        switch (_isbot)
+        {
+            case BotTypeApi.REAL_BOT:
+                if (_botClient != null)
+                    await _botClient.ForwardMessageAsync(messageId, idChatMessageFrom, idChatMessageTo,
+                        disableNotification,
+                        protectContent, cancellationToken);
                 break;
 
             case BotTypeApi.USER_BOT:

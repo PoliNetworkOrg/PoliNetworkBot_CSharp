@@ -3,8 +3,8 @@
 using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot;
 using TeleSharp.TL;
 using TLSharp.Core;

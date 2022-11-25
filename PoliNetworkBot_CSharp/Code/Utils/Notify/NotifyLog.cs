@@ -2,6 +2,7 @@
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Notify;
 
@@ -13,9 +14,17 @@ public static class NotifyLog
         {
             var x = logObject.ToTelegramFileContent(caption);
             if (telegramBotAbstract != null)
-            {
-                x?.SendToOwners(telegramBotAbstract, null, null, null, FileTypeJsonEnum.STRING_JSONED);
-            }
+                x?.SendToOwners3(
+                    null,
+                    telegramBotAbstract,
+                    new LogFileInfo
+                    {
+                        filename = "notifyLog.json",
+                        text = new L("it", "notifyLog")
+                    },
+                    null,
+                    FileTypeJsonEnum.STRING_JSONED
+                );
         }
         catch (Exception ex)
         {

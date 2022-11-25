@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
@@ -58,7 +59,7 @@ public static class Main
     private static async Task<MessageSentResult?> HandleMessageAsync(TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e)
     {
-        return e?.Message?.Chat.Id is 1001129635578 or -1001129635578
+        return e?.Message.Chat.Id is 1001129635578 or -1001129635578
             ? await HandleMessage2Async(telegramBotClient, e)
             : null;
     }
@@ -66,7 +67,7 @@ public static class Main
     private static async Task<MessageSentResult?> HandleMessage2Async(TelegramBotAbstract? telegramBotClient,
         MessageEventArgs? e)
     {
-        var t = e?.Message?.Text?.ToLower();
+        var t = e?.Message.Text?.ToLower();
 
         if (string.IsNullOrEmpty(t))
             return null;
@@ -112,7 +113,7 @@ public static class Main
         var message = e?.Message;
         if (message != null)
             return await SendMessage.SendMessageInAGroup(
-                telegramBotClient, e?.Message?.From?.LanguageCode,
+                telegramBotClient, e?.Message.From?.LanguageCode,
                 text, EventArgsContainer.Get(e),
                 message.Chat.Id, message.Chat.Type,
                 ParseMode.Html, message.MessageId, true);
@@ -170,7 +171,7 @@ public static class Main
         var text = new Language(dict4);
         var r5 = e?.Message;
         if (r5 != null)
-            return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message?.From?.LanguageCode,
+            return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message.From?.LanguageCode,
                 text,
                 EventArgsContainer.Get(e),
                 r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true);
@@ -219,8 +220,8 @@ public static class Main
                 var dict3 = new Dictionary<string, object?>
                 {
                     { "@t", t },
-                    { "@fn", e?.Message?.From?.FirstName },
-                    { "@ln", e?.Message?.From?.LastName },
+                    { "@fn", e?.Message.From?.FirstName },
+                    { "@ln", e?.Message.From?.LastName },
                     { "@wk", DateTime.Now },
                     { "@ki", m1.From?.Id }
                 };
