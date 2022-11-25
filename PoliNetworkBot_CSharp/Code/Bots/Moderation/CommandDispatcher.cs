@@ -598,13 +598,7 @@ internal static class CommandDispatcher
 
         try
         {
-            var dict = new Dictionary<string, string?>
-            {
-                { "en", r2.ToString() }
-            };
-            var text = new Language(dict);
-            try
-            {
+      
                 var dict = new Dictionary<string, string?>
                 {
                     { "en", r2.ToString() }
@@ -622,11 +616,7 @@ internal static class CommandDispatcher
                 {
                     // ignored
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+           
         }
         catch
         {
