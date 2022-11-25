@@ -598,25 +598,23 @@ internal static class CommandDispatcher
 
         try
         {
-      
-                var dict = new Dictionary<string, string?>
-                {
-                    { "en", r2.ToString() }
-                };
-                var text = new Language(dict);
-                try
-                {
-                    if (e.Message.From != null)
-                        if (sender != null)
-                            await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                                ParseMode.Html,
-                                null, null);
-                }
-                catch
-                {
-                    // ignored
-                }
-           
+            var dict = new Dictionary<string, string?>
+            {
+                { "en", r2.ToString() }
+            };
+            var text = new Language(dict);
+            try
+            {
+                if (e.Message.From != null)
+                    if (sender != null)
+                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
+                            ParseMode.Html,
+                            null, null);
+            }
+            catch
+            {
+                // ignored
+            }
         }
         catch
         {
