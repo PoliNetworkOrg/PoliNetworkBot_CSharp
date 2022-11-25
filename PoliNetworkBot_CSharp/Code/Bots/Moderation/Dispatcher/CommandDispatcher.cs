@@ -32,9 +32,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 
 internal static class CommandDispatcher
 {
-    
-
-    private static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e,
+    public static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e,
         TelegramBotAbstract? sender, string[]? args)
     {
         if (e?.Message.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
@@ -45,7 +43,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static Task<CommandExecutionState> BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static Task<CommandExecutionState> BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         throw new NotImplementedException();
         //todo: complete
@@ -53,13 +51,13 @@ internal static class CommandDispatcher
         //return Task.CompletedTask;
     }
 
-    private static async Task<CommandExecutionState> GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Rooms.RoomsMainAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         _ = await Rules(sender, e);
         return CommandExecutionState.SUCCESSFUL;
@@ -149,7 +147,7 @@ internal static class CommandDispatcher
     }
 
 
-    private static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e,
+    public static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e,
         TelegramBotAbstract? sender)
     {
         if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
@@ -177,7 +175,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Assoc.AllowMessage(e, sender);
         return CommandExecutionState.SUCCESSFUL;
@@ -358,7 +356,7 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var message = e?.Message.ReplyToMessage;
         if (message == null)
@@ -628,7 +626,7 @@ internal static class CommandDispatcher
             EventArgsContainer.Get(e));
     }
 
-    private static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
+    public static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
         TelegramBotAbstract? sender)
     {
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
@@ -723,13 +721,13 @@ internal static class CommandDispatcher
         }
     }
 
-    private static async Task<CommandExecutionState> HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         await Help.HelpExtendedSlave(e, sender);
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? args)
     {
         if (args == null || args.Length == 0)
@@ -739,7 +737,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
+    public static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotClient)
     {
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
@@ -759,7 +757,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e,
+    public static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e,
         TelegramBotAbstract? sender)
     {
         long? n = null;
