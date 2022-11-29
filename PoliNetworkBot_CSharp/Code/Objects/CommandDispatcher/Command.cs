@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -23,9 +25,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 [JsonObject(MemberSerialization.Fields)]
 public class Command
 {
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task>? _action;
-    private readonly Action<MessageEventArgs, TelegramBotAbstract?, string[]?>? _action2;
-    private readonly Func<MessageEventArgs, TelegramBotAbstract?, Task>? _action3;
+    private readonly ActionFuncGeneric? _actionFuncGeneric;
     private readonly List<ChatType> _chatTypes;
     private readonly bool _enabled;
     private readonly Language _helpMessage;
@@ -37,13 +37,14 @@ public class Command
     private List<string> _trigger;
 
 
-    public Command(IEnumerable<string> trigger, Action<MessageEventArgs, TelegramBotAbstract?, string[]?> action,
+    public Command(IEnumerable<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _optionalConditions = optionalConditions;
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action2 = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -51,12 +52,13 @@ public class Command
         _enabled = enabled;
     }
 
-    private Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
+    private Command(IEnumerable<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task<CommandExecutionState>> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -65,13 +67,14 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(IEnumerable<string> trigger, Func<MessageEventArgs, TelegramBotAbstract?, Task> action,
+    public Command(IEnumerable<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, CommandExecutionState> action,
         List<ChatType> chatTypes,
         Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = trigger.Select(x => x.ToLower()).ToList();
-        _action3 = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -80,12 +83,14 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(string trigger, Func<MessageEventArgs?, TelegramBotAbstract?, string[]?, Task> action,
+    public Command(string trigger,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task<CommandExecutionState>>
+            action,
         List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _trigger = new List<string> { trigger.ToLower() };
-        _action = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -94,13 +99,14 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(string trigger, Action<MessageEventArgs?, TelegramBotAbstract?, string[]?> action,
+    public Command(string trigger,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, string[]?, CommandExecutionState> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
         _optionalConditions = optionalConditions;
         _trigger = new List<string> { trigger.ToLower() };
-        _action2 = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -109,7 +115,7 @@ public class Command
     }
 
     public Command(string trigger,
-        Func<MessageEventArgs?, TelegramBotAbstract?, Task> action,
+        Func<MessageEventArgs?, TelegramBotAbstract.TelegramBotAbstract?, Task>? action,
         List<ChatType> chatTypes,
         Permission permissionLevel, L helpMessage,
         Language? longDescription,
@@ -118,7 +124,53 @@ public class Command
     )
     {
         _trigger = new List<string> { trigger.ToLower() };
-        _action3 = action;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
+    public Command(List<string> trigger,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task<CommandExecutionState>> action,
+        List<ChatType> chatTypes,
+        Permission permissionLevel, L helpMessage, L? longDescription, Func<MessageEventArgs, bool>? optionalConditions,
+        bool enabled = true)
+    {
+        _trigger = trigger;
+        _actionFuncGeneric = new ActionFuncGeneric(action);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
+    public Command(string getConfig,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract, string[]?, Task>? action,
+        List<ChatType> chatTypes, Permission permissionLevel, L helpMessage, Language? longDescription,
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
+    {
+        _trigger = new List<string> { getConfig };
+        _actionFuncGeneric = new ActionFuncGeneric(action);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _optionalConditions = optionalConditions;
+        _longDescription = longDescription ?? helpMessage;
+        _enabled = enabled;
+    }
+
+    private Command(IEnumerable<string> getConfig,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action,
+        List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
+        Func<MessageEventArgs, bool>? optionalConditions, bool enabled)
+    {
+        _trigger = getConfig.ToList();
+        _actionFuncGeneric = new ActionFuncGeneric(action);
         _chatTypes = chatTypes;
         _permissionLevel = permissionLevel;
         _helpMessage = helpMessage;
@@ -128,7 +180,7 @@ public class Command
     }
 
     public static Command CreateInstance(IEnumerable<string> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract?, string[]?, Task> action,
+        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string[]?, Task> action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions, bool enabled = true)
     {
@@ -161,23 +213,31 @@ public class Command
         return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
-    public virtual CommandExecutionState TryTrigger(MessageEventArgs e, TelegramBotAbstract telegramBotAbstract,
+    public virtual CommandExecutionState TryTrigger(MessageEventArgs? e,
+        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
         string command,
-        string[] args)
+        string[]? args)
     {
         if (!_enabled)
             return CommandExecutionState.ERROR_NOT_ENABLED;
         if (!IsTriggered(command))
             return CommandExecutionState.NOT_TRIGGERED;
-        if (!_chatTypes.Contains(e.Message.Chat.Type))
+        if (e != null && !_chatTypes.Contains(e.Message.Chat.Type))
             return CommandExecutionState.NOT_TRIGGERED;
-        if (_optionalConditions != null && !_optionalConditions.Invoke(e))
+        if (e != null && _optionalConditions != null && !_optionalConditions.Invoke(e))
             return CommandExecutionState.UNMET_CONDITIONS;
-        if (!Permissions.CheckPermissions(_permissionLevel, e.Message.From))
+        if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
-        _action?.Invoke(e, telegramBotAbstract, args);
-        _action2?.Invoke(e, telegramBotAbstract, args);
-        _action3?.Invoke(e, telegramBotAbstract);
-        return CommandExecutionState.SUCCESSFUL;
+        if (_actionFuncGeneric != null)
+            if (e != null)
+                if (telegramBotAbstract != null)
+                    if (args != null)
+                        return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
+        throw new Exception("Illegal state exception!");
+    }
+
+    public bool CheckPermissions(User? messageFrom)
+    {
+        return Permissions.CheckPermissions(_permissionLevel, messageFrom);
     }
 }

@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
@@ -186,11 +189,11 @@ public static class MessageDb
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
         var s3 = r1.ToString();
-        var s4 = r1.R1?.Item2.ToString();
+        var s4 = r1.R1?.I.ToString();
         if (string.IsNullOrEmpty(s4))
             s4 = "[NULL(1)]";
         s3 += "\n[Id1]: " + s4 + "\n";
-        var s5 = r1.R1?.Item3;
+        var s5 = r1.R1?.S;
         if (string.IsNullOrEmpty(s5)) s5 = "[NULL(2)]";
         s3 += "[Id2]: " + s5 + "\n";
         s3 += "[Id3]: " + r1.ScheduleMessageSentResult + "\n";
@@ -204,7 +207,7 @@ public static class MessageDb
         bool schedule, TelegramBotAbstract? botToReportException, MessageEventArgs? messageEventArgs)
     {
         bool? hasBeenSent = null;
-        Tuple<bool?, int, string>? r1 = null;
+        HasBeenSent? r1 = null;
         try
         {
             r1 = await GetHasBeenSentAsync(dr, telegramBotAbstract, messageEventArgs);
@@ -214,7 +217,7 @@ public static class MessageDb
             await NotifyUtil.NotifyOwnerWithLog2(e3, botToReportException, EventArgsContainer.Get(messageEventArgs));
         }
 
-        if (r1 != null) hasBeenSent = r1.Item1;
+        if (r1 != null) hasBeenSent = r1.B;
 
         if (hasBeenSent == null)
             return new MessageSendScheduled(ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT, null, null,
@@ -267,7 +270,7 @@ public static class MessageDb
         return null;
     }
 
-    private static async Task<Tuple<bool?, int, string>?> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
+    private static async Task<HasBeenSent> GetHasBeenSentAsync(DataRow dr, TelegramBotAbstract? sender,
         MessageEventArgs? messageEventArgs)
     {
         try
@@ -279,7 +282,7 @@ public static class MessageDb
             s1 += "GetHasBeenSentAsync";
             //var e1 = new Exception(s1);
             //await NotifyUtil.NotifyOwners(e1, sender, messageEventArgs);
-            return new Tuple<bool?, int, string>(b1, 1, s1); //todo: change to "return b1"
+            return new HasBeenSent(b1, 1, s1);
         }
         catch
         {
@@ -296,7 +299,7 @@ public static class MessageDb
             s2 += "GetHasBeenSentAsync";
             //var e2 = new Exception(s2);
             //await NotifyUtil.NotifyOwners(e2, sender, messageEventArgs);
-            return new Tuple<bool?, int, string>(b2, 2, s2); //todo: change to "return b2"
+            return new HasBeenSent(b2, 2, s2); //todo: change to "return b2"
         }
         catch
         {
@@ -318,7 +321,7 @@ public static class MessageDb
         s3 += "GetHasBeenSentAsync";
         var e3 = new Exception(s3);
         await NotifyUtil.NotifyOwnerWithLog2(e3, sender, EventArgsContainer.Get(messageEventArgs));
-        return new Tuple<bool?, int, string>(null, 3, s3);
+        return new HasBeenSent(null, 3, s3);
     }
 
     public static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
