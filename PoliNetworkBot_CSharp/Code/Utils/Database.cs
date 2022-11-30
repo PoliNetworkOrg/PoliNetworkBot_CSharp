@@ -124,4 +124,40 @@ public static class Database
     {
         _ = await CommandDispatcher.QueryBot(false, e, sender);
     }
+
+    
+    public static int BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
+    {
+      
+        if (dbConfigConnection == null)
+            return 0;
+        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
+        var connection = connectionWithLock.Conn;
+        int numberOfRowsAffected;
+        lock (connectionWithLock.Lock)
+        {
+            OpenConnection(connection);
+
+            using MySqlTransaction tran = connection.BeginTransaction(IsolationLevel.Serializable);
+            using MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Transaction = tran;
+            cmd.CommandText = $"SELECT * FROM " + tableName + " limit 0";
+
+            using MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+            adapter.UpdateBatchSize = 10000;
+            using MySqlCommandBuilder cb = new MySqlCommandBuilder(adapter);
+            cb.SetAllValues = true;
+            numberOfRowsAffected = adapter.Update(table);
+            tran.Commit();
+
+            
+        }
+
+        dbConfigConnection.ReleaseConn(connectionWithLock);
+
+        return numberOfRowsAffected;
+
+
+    }
 }
