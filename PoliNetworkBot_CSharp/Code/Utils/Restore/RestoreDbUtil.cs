@@ -22,7 +22,7 @@ public static class RestoreDbUtil
         DbConfig.InitializeDbConfig();
         foreach (var y in x.tables)
         {
-            Utils.Database.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig );
+            Database.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig );
         }
     }
 }
