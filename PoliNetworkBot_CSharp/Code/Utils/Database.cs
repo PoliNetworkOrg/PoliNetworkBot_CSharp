@@ -131,6 +131,7 @@ public static class Database
       
         if (dbConfigConnection == null)
             return 0;
+        
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;
         int numberOfRowsAffected;
