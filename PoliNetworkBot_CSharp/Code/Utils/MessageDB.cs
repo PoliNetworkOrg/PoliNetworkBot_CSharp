@@ -106,9 +106,9 @@ public static class MessageDb
         const string? q = "SELECT * " +
                           "FROM Messages ";
 
-        var dt = Database.ExecuteSelect(
+        var dt = Database.ExecuteSelectUnlogged(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig,
-            null, ToLog.NO
+            null
         );
 
         if (dt == null || dt.Rows.Count == 0)

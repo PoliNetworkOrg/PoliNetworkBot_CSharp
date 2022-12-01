@@ -12,6 +12,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Web;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -111,7 +112,18 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-
+            
+            const string? q1 =
+                "CALL `insert_log`(@id, @severity, @content, @stacktrace)";
+            
+            Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+            {
+                { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
+                { "@severity", logSeverityLevel },
+                { "@content", log1 },
+                { "@stacktrace", null }
+            });
+            
             _linesCount++;
             SendLogIfOversize();
         }
@@ -203,6 +215,23 @@ public static class Logger
                 catch (Exception? e)
                 {
                     WriteLine(e, LogSeverityLevel.CRITICAL);
+                }
+                
+                const string q1 = "SELECT * FROM LogTable";
+                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig);
+
+                if (data?.Rows is { })
+                {
+                    List<string>? dataRow = null;
+                    foreach (var row in data.Rows)
+                    {
+                        var rowString = row.ToString();
+                        dataRow ??= new List<string>();
+                        if (rowString is { })
+                            dataRow.Add(rowString);
+                    }
+
+                    PrintLog3(dataRow, sender, sendTo, messageEventArgs, path);
                 }
 
                 PrintLog3(text, sender, sendTo, messageEventArgs, path);

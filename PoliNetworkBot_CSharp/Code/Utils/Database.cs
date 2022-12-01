@@ -22,6 +22,18 @@ public static class Database
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
+        return ExecuteSlave(query, dbConfigConnection, args);
+    }
+    
+    public static int ExecuteUnlogged(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
+    {
+        return ExecuteSlave(query, dbConfigConnection, args);
+    }
+
+    private static int ExecuteSlave(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
+    {
         if (dbConfigConnection == null)
             return 0;
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
@@ -45,11 +57,22 @@ public static class Database
     }
 
     public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null, ToLog toLog = ToLog.YES)
+        Dictionary<string, object?>? args = null)
     {
-        if (toLog == ToLog.YES)
-            Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
+        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
 
+        return ExecuteSelectSlave(query, dbConfigConnection, args);
+    }
+
+
+    public static DataTable? ExecuteSelectUnlogged(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
+    {
+        return ExecuteSelectSlave(query ,dbConfigConnection, args);
+    }
+
+    private static DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
+    {
         if (dbConfigConnection == null) return null;
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;

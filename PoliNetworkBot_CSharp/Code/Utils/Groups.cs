@@ -200,8 +200,8 @@ internal static class Groups
             if (telegramBotClient != null)
                 if (e?.Message != null)
                 {
-                    var groups = Database.ExecuteSelect(Query.SelectGroupsTelegramWhereId, telegramBotClient.DbConfig,
-                        new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
+                    var groups = Database.ExecuteSelectUnlogged(Query.SelectGroupsTelegramWhereId, telegramBotClient.DbConfig,
+                        new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } });
                     if (groups != null && groups.Rows.Count == 0)
                         throw new Exception("No group found with id: " + e.Message.Chat.Id +
                                             " while running CheckForGroupTitleUpdateAsync");
@@ -257,8 +257,8 @@ internal static class Groups
         }
 
 
-        var groups = Database.ExecuteSelect(Query.SelectGroupsTelegramWhereId, sender?.DbConfig,
-            new Dictionary<string, object?> { { "@id", group.Id } }, ToLog.NO);
+        var groups = Database.ExecuteSelectUnlogged(Query.SelectGroupsTelegramWhereId, sender?.DbConfig,
+            new Dictionary<string, object?> { { "@id", group.Id } });
         if (groups != null && groups.Rows.Count == 0)
             throw new Exception("No group found with id: " + group.Id +
                                 " while running CheckForGroupTitleUpdateAsync");
