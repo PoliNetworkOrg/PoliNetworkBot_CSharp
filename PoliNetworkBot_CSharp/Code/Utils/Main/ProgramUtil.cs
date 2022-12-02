@@ -127,6 +127,7 @@ public static class ProgramUtil
                                     "8) Run only userbots\n" +
                                     "9) Run only normal bots\n" +
                                     "t) Test\n" +
+                                    "r) Reset db and do 2\n" +
                                     "\n");
 
             var reply = Console.ReadLine();
