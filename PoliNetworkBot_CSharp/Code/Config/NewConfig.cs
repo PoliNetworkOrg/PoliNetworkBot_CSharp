@@ -85,7 +85,15 @@ public static class NewConfig
             // ignored
         }
 
-        CleanDb();
+        try
+        {
+            CleanDb();
+        }
+        catch (Exception e)
+        {
+            Logger.WriteLine(e);
+            Logger.WriteLine("Skipping CleanDB");
+        }
 
         Redo_DB(alsoFillTablesFromJson);
     }
@@ -141,7 +149,7 @@ public static class NewConfig
                          "id INT(12) PRIMARY KEY," +
                          "from_id_person INT(12)," +
                          "from_id_entity INT(12)," +
-                         "type int INT(12)," +
+                         "type INT(12)," +
                          "id_photo INT(12)," +
                          "id_video INT(12)," +
                          "id_file INT(12)," +
@@ -181,6 +189,64 @@ public static class NewConfig
                          "duration INT," +
                          "mime VARCHAR(250)" +
                          ");", GlobalVariables.DbConfig);
+
+        Database.Execute(@"CREATE TABLE IF NOT EXISTS `LogTable` (
+  `log_id` int NOT NULL,
+  `bot_id` bigint NOT NULL,
+  `when_insert` datetime NOT NULL,
+  `severity` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `stacktrace` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`log_id`,`bot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+", GlobalVariables.DbConfig);
+
+
+        Database.Execute(@"
+DELIMITER //
+CREATE PROCEDURE `insert_log`(
+	IN `in_bot_id` BIGINT,
+	IN `in_severity` VARCHAR(50),
+	IN `in_content` TEXT,
+	IN `in_stracktrace` TEXT
+)
+    MODIFIES SQL DATA
+BEGIN
+	SELECT COUNT(*)
+	INTO @num_rows
+	FROM Bot b 
+	WHERE b.bot_id = in_bot_id;
+	
+	IF @num_rows IS NULL OR @num_rows < 1 THEN
+		INSERT INTO Bot (bot_id, log_row) VALUES (in_bot_id, 0);
+	END IF;
+	
+	SELECT MOD((b.log_row +1),10000)
+	INTO @curr_count
+	FROM Bot b 
+	WHERE b.bot_id = in_bot_id;
+	
+	UPDATE Bot b
+		SET b.log_row = @curr_count
+		WHERE b.bot_id = in_bot_id;
+	
+	REPLACE INTO LogTable (bot_id, log_id, content, when_insert, severity, stacktrace) 
+		VALUES (in_bot_id, @curr_count, in_content, NOW(), in_severity, in_stracktrace);
+	
+
+END//
+DELIMITER ;
+
+
+", GlobalVariables.DbConfig);
+
+        Database.Execute(@"CREATE TABLE IF NOT EXISTS `Bot` (
+  `bot_id` bigint NOT NULL,
+  `log_row` int DEFAULT NULL,
+  PRIMARY KEY (`bot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+", GlobalVariables.DbConfig);
     }
 
     private static List<GroupAddedResult>? FillGroups(int botIdWhoInsertedThem)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Files;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Log;
 
@@ -48,5 +50,21 @@ public class LogObject
             }
 
         return x;
+    }
+
+    public TelegramFileContent? ToTelegramFileContent(string caption)
+    {
+        try
+        {
+            var stringJson = new StringJson(FileTypeJsonEnum.OBJECT, _toLog);
+            var x = new TelegramFileContent(stringJson, caption);
+            return x;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+        return null;
     }
 }

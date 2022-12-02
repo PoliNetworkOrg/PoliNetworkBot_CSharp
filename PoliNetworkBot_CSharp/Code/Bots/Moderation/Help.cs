@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -13,27 +15,44 @@ public static class Help
 {
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        var command = CommandDispatcher.Commands.Find(x => x.GetTriggers().Contains(args[0]));
+        var command = SwitchDispatcher.Commands.Find(x =>
+            x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
 
-        if (command == null)
-            return;
+        Language text;
+        if (command != null)
+            text = new Language(new Dictionary<string, string?>
+            {
+                {
+                    "en",
+                    "\n<b>Command description:</b>\n" +
+                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
+                },
+                {
+                    "it",
+                    "\n<b>Descrizione del comando:</b>\n" +
+                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
+                }
+            });
+        else
+            text = new Language(new Dictionary<string, string?>
+            {
+                {
+                    "en",
+                    "\n<b>Command not found</b>!" +
+                    "\nType /help_all\n" +
+                    "to list all commands"
+                },
+                {
+                    "it",
+                    "\n<b>Comando non trovato</b>! " +
+                    "\nType /help_all\n" +
+                    "per la lista completa"
+                }
+            });
 
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            {
-                "en",
-                "\n<b>Command description:</b>\n" +
-                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
-            },
-            {
-                "it",
-                "\n<b>Descrizione del comando:</b>\n" +
-                command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
-            }
-        });
         await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
             e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            e?.Message.From?.Username, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             EventArgsContainer.Get(e));
     }
 
@@ -59,14 +78,14 @@ public static class Help
                 "en",
                 textEng + "\n<b>Commands available:</b>\n" +
                 string.Join("",
-                    CommandDispatcher.Commands.Select(x =>
+                    SwitchDispatcher.Commands.Select(x =>
                         x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
             },
             {
                 "it",
                 text + "\n<b>Comandi disponibili:</b>\n" +
                 string.Join("",
-                    CommandDispatcher.Commands.Select(x =>
+                    SwitchDispatcher.Commands.Select(x =>
                         x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
             }
         });
@@ -109,9 +128,9 @@ public static class Help
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message?.From?.Id,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
+            e?.Message.From?.LanguageCode,
+            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             EventArgsContainer.Get(e));
     }
 }

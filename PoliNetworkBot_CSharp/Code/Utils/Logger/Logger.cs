@@ -13,9 +13,11 @@ using System.Web;
 using JsonPolimi_Core_nf.Tipi;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
@@ -32,6 +34,7 @@ public static class Logger
     private static readonly Dictionary<long, TelegramBotAbstract?> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
     private static readonly object LogFileLock = new();
+    private static int _linesCount;
 
     private static readonly object PrintLogLock = new();
 
@@ -108,7 +111,9 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            _ = SendLogIfOversize();
+
+            _linesCount++;
+            SendLogIfOversize();
         }
         catch (Exception e)
         {
@@ -116,10 +121,12 @@ public static class Logger
         }
     }
 
-    private static Task SendLogIfOversize()
+    private static void SendLogIfOversize()
     {
-        var size = new FileInfo(DataLogPath).Length;
-        if (!(size > 50e6)) return Task.CompletedTask;
+        var toSendLogOversize = GetIfLogOversize();
+        if (!toSendLogOversize)
+            return;
+
         try
         {
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
@@ -132,8 +139,13 @@ public static class Logger
             Console.WriteLine(e);
             throw;
         }
+    }
 
-        return Task.CompletedTask;
+
+    private static bool GetIfLogOversize()
+    {
+        var size = new FileInfo(DataLogPath).Length;
+        return size > 50e6 || _linesCount > 500;
     }
 
     private static string GetTime()
@@ -193,10 +205,7 @@ public static class Logger
                     WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
 
-                if (text is { Count: <= 1 })
-                    EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
-                else
-                    PrintLog2(sendTo, sender, path);
+                PrintLog3(text, sender, sendTo, messageEventArgs, path);
             }
             catch (Exception? e)
             {
@@ -204,6 +213,18 @@ public static class Logger
             }
         }
     }
+
+    private static void PrintLog3(List<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
+        MessageEventArgs? messageEventArgs, string path)
+    {
+        if (text is { Count: <= 1 })
+            EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
+        else
+            PrintLog2(sendTo, sender, path);
+
+        _linesCount = 0;
+    }
+
 
     private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path)
     {
@@ -338,38 +359,69 @@ public static class Logger
         return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup };
     }
 
-    public static async Task<bool> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e == null)
-            return false;
+            return CommandExecutionState.ERROR_DEFAULT;
 
         await Subscribe(e.Message.From?.Id, sender, e);
-        return true;
+        return CommandExecutionState.UNMET_CONDITIONS;
     }
 
-    public static Task<bool> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static Task<CommandExecutionState> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e == null)
-            return Task.FromResult(false);
+            return Task.FromResult(CommandExecutionState.ERROR_DEFAULT);
         Unsubscribe(e.Message.From?.Id);
-        return Task.FromResult(true);
+        return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }
 
-    public static Task GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    public static Task<CommandExecutionState> GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
     {
         if (arg1 != null) GetLog(arg2, arg1);
-        return Task.CompletedTask;
+        return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }
 
-    public static void WriteLogComplete(params object?[] values)
+    public static void WriteLogComplete(List<object?> values, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
-        return;
-        
-        
-        var objects = new List<object?>();
-        objects.AddRange(values);
-        var x = new LogObject(objects);
-        WriteLine(x.GetStringToLog());
-        
+        switch (LogCostants.LogComplete)
+        {
+            case LogCompleteModeEnum.FILE:
+            case LogCompleteModeEnum.GROUP:
+            {
+                var x = new LogObject(values);
+                WriteLogComplete2(x, telegramBotAbstract, caption);
+                break;
+            }
+            case LogCompleteModeEnum.NONE:
+                break;
+
+            default:
+                return;
+        }
+    }
+
+    private static void WriteLogComplete2(LogObject logObject, TelegramBotAbstract? telegramBotAbstract, string caption)
+    {
+        switch (LogCostants.LogComplete)
+        {
+            case LogCompleteModeEnum.FILE:
+                WriteLogCompleteFile(logObject);
+                break;
+            case LogCompleteModeEnum.GROUP:
+                NotifyLog.SendInGroup(logObject, telegramBotAbstract, caption);
+                break;
+            case LogCompleteModeEnum.NONE:
+                break;
+
+            default:
+                return;
+        }
+    }
+
+
+    private static void WriteLogCompleteFile(LogObject logObject)
+    {
+        WriteLine(logObject.GetStringToLog());
     }
 }

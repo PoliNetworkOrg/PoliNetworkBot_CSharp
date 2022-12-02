@@ -9,8 +9,8 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
-using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -502,26 +502,32 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException> BanAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> BanAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+        if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
+        await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
             false);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<SuccessWithException> BanDeleteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> BanDeleteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+        if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
+        await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
             true);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task DeleteMessageFromUser(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    public static async Task<CommandExecutionState> DeleteMessageFromUser(MessageEventArgs? e,
+        TelegramBotAbstract? sender, string[]? args)
     {
-        if (e?.Message.ReplyToMessage?.Chat.Id != null && sender != null)
-            await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
+        if (e?.Message.ReplyToMessage?.Chat.Id == null || sender == null) return CommandExecutionState.UNMET_CONDITIONS;
+        await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
 
@@ -602,7 +608,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<SuccessWithException?> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
+    public static async Task<CommandExecutionState> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? stringInfo)
     {
         if (e?.Message.From != null)
@@ -610,7 +616,7 @@ internal static class RestrictUser
             var r =
                 await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
                     sender);
-            if (r != null && !r.IsSuccess()) return r;
+            if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
         }
 
         if (e?.Message.ReplyToMessage == null)
@@ -622,17 +628,19 @@ internal static class RestrictUser
             {
                 var e2 = new Exception("Can't find userid (1)");
                 NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
-                return new SuccessWithException(false, e2);
+                return CommandExecutionState.ERROR_DEFAULT;
             }
 
             var targetId = userIdFound.GetUserId();
             if (targetId != null && e?.Message != null)
-                return await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null,
-                    false);
+            {
+                await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null, false);
+                return CommandExecutionState.SUCCESSFUL;
+            }
 
             var e3 = new Exception("Can't find userid (2)");
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
-            return new SuccessWithException(false, e3);
+            return CommandExecutionState.ERROR_DEFAULT;
         }
 
         var targetInt = e.Message.ReplyToMessage.From?.Id;
@@ -640,41 +648,40 @@ internal static class RestrictUser
         await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt,
             e.Message.ReplyToMessage.From?.Username);
 
-        return await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
+        await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             false);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
 
-    public static async Task<SuccessWithException> UnbanAllAsync(
-        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? target)
-    {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, target, e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username,
-            RestrictAction.UNBAN, false);
-    }
-
-
-    public static async Task<SuccessWithException> MuteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
-    {
-        if (args is { Length: >= 1 })
-            return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
-                e?.Message.From?.Username, RestrictAction.MUTE,
-                false);
-
-        var text = new Language(new Dictionary<string, string?>
-        {
-            { "en", "You need to insert the ID of the users to mute as arguments" },
-            { "it", "Devi inserire gli ID delle persone da mutare come argomenti" }
-        });
-        throw new NotEnoughArgumentsException(text);
-    }
-
-    public static async Task<SuccessWithException> UnMuteAllAsync(
+    public static async Task<CommandExecutionState> UnbanAllAsync(
         MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
-        return await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+        if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
+        await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+            e?.Message.From?.Username,
+            RestrictAction.UNBAN, false);
+        return CommandExecutionState.SUCCESSFUL;
+    }
+
+
+    public static async Task<CommandExecutionState> MuteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
+        string[]? args)
+    {
+        if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
+        await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+            e?.Message.From?.Username, RestrictAction.MUTE,
+            false);
+        return CommandExecutionState.SUCCESSFUL;
+    }
+
+    public static async Task<CommandExecutionState> UnMuteAllAsync(
+        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    {
+        if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
+        await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.UNMUTE,
             false);
+        return CommandExecutionState.SUCCESSFUL;
     }
 }
