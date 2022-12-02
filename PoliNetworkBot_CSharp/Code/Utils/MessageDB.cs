@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -106,9 +105,8 @@ public static class MessageDb
         const string? q = "SELECT * " +
                           "FROM Messages ";
 
-        var dt = Database.ExecuteSelect(
-            q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig,
-            null, ToLog.NO
+        var dt = Database.ExecuteSelectUnlogged(
+            q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
         );
 
         if (dt == null || dt.Rows.Count == 0)
