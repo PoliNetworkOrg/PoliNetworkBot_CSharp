@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
-using PoliNetworkBot_CSharp.Code.MainProgram;
-using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Main;
 
 #endregion
 
@@ -132,7 +132,7 @@ internal class WebPost
                 select bots[key]).FirstOrDefault();
         try
         {
-            await Program.StartBotsAsync(false, false, true);
+            await ProgramUtil.StartBotsAsync(false, false, true);
         }
         catch
         {
@@ -170,9 +170,9 @@ internal class WebPost
         if (!x2.IsValid())
             return false;
 
-        if (ThreadAsync.DictionaryWebpost != null)
-            ThreadAsync.DictionaryWebpost[x.AuthorId.Value].approved = approved;
-        ThreadAsync.WriteDict();
+        if (ThreadAsyncAnon.DictionaryWebpost != null)
+            ThreadAsyncAnon.DictionaryWebpost[x.AuthorId.Value].approved = approved;
+        ThreadAsyncAnon.WriteDict();
         return true;
     }
 

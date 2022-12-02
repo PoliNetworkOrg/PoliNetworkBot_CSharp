@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -101,11 +102,11 @@ internal static class AskUser
             { "it", "In che sede?" },
             { "en", "In which territorial pole?" }
         });
-        var reply = await AskBetweenRangeAsync(e?.Message?.From?.Id,
+        var reply = await AskBetweenRangeAsync(e?.Message.From?.Id,
             sender: sender,
-            lang: e?.Message?.From?.LanguageCode,
+            lang: e?.Message.From?.LanguageCode,
             options: options,
-            username: e?.Message?.From?.Username,
+            username: e?.Message.From?.Username,
             sendMessageConfirmationChoice: true,
             question: question);
 

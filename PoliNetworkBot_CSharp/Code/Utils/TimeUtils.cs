@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -30,7 +31,7 @@ internal static class TimeUtils
         }
     }
 
-    public static async Task<bool> GetRunningTime(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetRunningTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         try
         {
@@ -43,23 +44,24 @@ internal static class TimeUtils
                     e.Message.From?.LanguageCode,
                     e.Message.From?.Username, lang, ParseMode.Html,
                     null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-            return false;
+            return CommandExecutionState.SUCCESSFUL;
         }
         catch (Exception? ex)
         {
             _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
         }
 
-        return false;
+        return CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static async Task TestTime(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> TestTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var time = await CommandDispatcher.TestTime(sender, e);
-        Console.WriteLine(time);
+        Logger.Logger.WriteLine(time);
+        return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<bool> GetTime(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> GetTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var lang = new Language(new Dictionary<string, string?>
         {
@@ -71,6 +73,6 @@ internal static class TimeUtils
                 e.Message.From?.Username, lang, ParseMode.Html,
                 null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
 
-        return false;
+        return CommandExecutionState.SUCCESSFUL;
     }
 }

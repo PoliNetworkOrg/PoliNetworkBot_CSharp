@@ -51,7 +51,7 @@ public class Language
             return null;
 
         for (var i = 0; i < options2.Count; i++)
-            if (languageCode != null && options2[i]._dict?[languageCode] == r)
+            if (languageCode != null && options2[i]._dict[languageCode] == r)
                 return i;
 
         return null;
