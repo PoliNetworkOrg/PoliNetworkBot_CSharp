@@ -85,8 +85,16 @@ public static class NewConfig
             // ignored
         }
 
-        CleanDb();
-
+        try
+        {
+            CleanDb();
+        }
+        catch (Exception e)
+        {
+            Logger.WriteLine(e);
+            Logger.WriteLine("Skipping CleanDB");
+        }
+        
         Redo_DB(alsoFillTablesFromJson);
     }
 
@@ -141,7 +149,7 @@ public static class NewConfig
                          "id INT(12) PRIMARY KEY," +
                          "from_id_person INT(12)," +
                          "from_id_entity INT(12)," +
-                         "type int INT(12)," +
+                         "type INT(12)," +
                          "id_photo INT(12)," +
                          "id_video INT(12)," +
                          "id_file INT(12)," +
