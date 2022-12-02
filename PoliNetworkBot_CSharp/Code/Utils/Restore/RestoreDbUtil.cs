@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
@@ -17,12 +20,28 @@ public static class RestoreDbUtil
         var x = Newtonsoft.Json.JsonConvert.DeserializeObject<DB_Backup?>(s);
         if (x == null)
             return;
-
         
         DbConfig.InitializeDbConfig();
         foreach (var y in x.tables)
         {
-            Utils.Database.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig );
+            TryRestoreTable(y);
         }
+
+        ;
+    }
+
+    private static void TryRestoreTable(KeyValuePair<string, DataTable> y)
+    {
+        try
+        {
+            Database.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Console.WriteLine("Failed import db table named '" + y.Key + "'");
+        }
+
+        ;
     }
 }
