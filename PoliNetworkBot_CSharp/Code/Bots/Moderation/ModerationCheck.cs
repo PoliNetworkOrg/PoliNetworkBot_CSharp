@@ -9,8 +9,10 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -539,9 +541,12 @@ internal static class ModerationCheck
     public static async Task<bool> AntiSpamMeasure(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
         SpamType checkSpam)
     {
-        Logger.WriteLogComplete(checkSpam.ToString(),
+        Logger.WriteLogComplete(new List<object?>
+        {
+            checkSpam.ToString(),
             e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
-            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title);
+            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title
+        }, telegramBotClient, "AntiSpamMeasure");
 
 
         if (checkSpam == SpamType.ALL_GOOD)
@@ -641,25 +646,27 @@ internal static class ModerationCheck
         if (usernameCheck == null)
             return false;
 
+        if (e?.Message == null)
+            return false;
+
         var donesomething = false;
 
         foreach (var usernameCheck2 in usernameCheck
                      .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
         {
-            if (e?.Message != null)
-                await SendUsernameWarning(telegramBotClient,
-                    usernameCheck2.UsernameBool,
-                    usernameCheck2.Name,
-                    usernameCheck2.GetLanguage(),
-                    usernameCheck2.GetUsername(),
-                    e.Message.Chat.Id,
-                    usernameCheck2.GetUserId(),
-                    usernameCheck2.GetMessageId(),
-                    e.Message.Chat.Type,
-                    usernameCheck2.GetFirstName(),
-                    usernameCheck2.GetLastName(),
-                    e.Message.NewChatMembers,
-                    e);
+            await SendUsernameWarning(telegramBotClient,
+                usernameCheck2.UsernameBool,
+                usernameCheck2.Name,
+                usernameCheck2.GetLanguage(),
+                usernameCheck2.GetUsername(),
+                e.Message.Chat.Id,
+                usernameCheck2.GetUserId(),
+                usernameCheck2.GetMessageId(),
+                e.Message.Chat.Type,
+                usernameCheck2.GetFirstName(),
+                usernameCheck2.GetLastName(),
+                e.Message.NewChatMembers,
+                e);
 
             donesomething = true;
         }
@@ -671,10 +678,14 @@ internal static class ModerationCheck
         EventArgsContainer? e)
     {
         Logger.WriteLogComplete(
-            e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
-            e?.MessageEventArgs?.Message.From?.Username,
-            e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
-            e?.MessageEventArgs?.Message.Chat.Title);
+            new List<object?>
+            {
+                e?.MessageEventArgs?.Message.Chat.Id, e?.MessageEventArgs?.Message.From?.Id,
+                e?.MessageEventArgs?.Message.From?.Username,
+                e?.MessageEventArgs?.Message.From?.FirstName, e?.MessageEventArgs?.Message.MessageId,
+                e?.MessageEventArgs?.Message.Chat.Title
+            }, telegramBotClient, "PermittedSpamMeasure"
+        );
 
         return await NotifyUtil.NotifyOwnersPermittedSpam(telegramBotClient, e);
     }

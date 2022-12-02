@@ -7,6 +7,7 @@ using System.Management.Automation;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -38,10 +39,10 @@ public static class RebootUtil
             }
     }
 
-    public static async Task<bool> RebootWithLog(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task<CommandExecutionState> RebootWithLog(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e == null)
-            return false;
+            return CommandExecutionState.UNMET_CONDITIONS;
 
         await AnnounceReboot(sender, e);
 
@@ -54,7 +55,7 @@ public static class RebootUtil
             // ignored
         }
 
-        return Reboot();
+        return Reboot() ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 
     private static bool Reboot()

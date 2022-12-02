@@ -14,6 +14,8 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
+using PoliNetworkBot_CSharp.Code.Objects.Log;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -93,7 +95,7 @@ internal static class NotifyUtil
             {
                 var message3 = exception.GetMessageAsText(extraInfo, messageEventArgs, false);
                 var r1 = message3.SendToOwners(sender, langCode, replyToMessageId2, messageEventArgs,
-                    FileTypeJsonEnum.SIMPLE_STRING);
+                    FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo { filename = "ex.json" });
 
                 if (r1 != null)
                     r.AddRange(r1);
@@ -128,7 +130,7 @@ internal static class NotifyUtil
 
             var r4 = telegramFileContent.SendToOwners(
                 sender, langCode, replyToMessageId2,
-                messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING);
+                messageEventArgs, FileTypeJsonEnum.SIMPLE_STRING, new LogFileInfo { filename = "stack.json" });
 
             return Task.FromResult(r4);
         }
