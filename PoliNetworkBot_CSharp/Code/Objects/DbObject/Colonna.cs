@@ -10,7 +10,7 @@ public class Colonna
 
     public Colonna(string name, Type dataType)
     {
-        this.Name = name;
-        this.DataType = dataType;
+        Name = name;
+        DataType = dataType;
     }
 }

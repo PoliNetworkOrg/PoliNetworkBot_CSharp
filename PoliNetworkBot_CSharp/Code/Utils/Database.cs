@@ -159,7 +159,7 @@ public static class Database
 
     }
 
-    private static DataTable FixDataTable(DataTable table, List<Colonna> colonne)
+    private static DataTable FixDataTable(DataTable table, IReadOnlyList<Colonna> colonne)
     {
         var dt = new DataTable();
         for (var i = 0; i < table.Columns.Count; i++)
@@ -176,7 +176,7 @@ public static class Database
         return dt;
     }
 
-    private static object?[] FixDataRow(DataRow dr, List<Colonna> colonne)
+    private static object?[] FixDataRow(DataRow dr, IReadOnlyList<Colonna> colonne)
     {
         var r = new object?[dr.ItemArray.Length];
         for (var i = 0; i < dr.ItemArray.Length; i++)
@@ -275,7 +275,7 @@ public static class Database
     {
         var r = "CREATE TABLE " + tableName + "(";
         var rC = new List<Colonna>();
-        for (int i = 0; i < table.Columns.Count; i++)
+        for (var i = 0; i < table.Columns.Count; i++)
         {
             var x = table.Columns[i];
             r += x.ColumnName;
@@ -335,9 +335,9 @@ public static class Database
         }
         else if (typeof(long) == xDataType)
         {
-            if (AllYN(strings))
-                return new Tuple<string?, Colonna>("CHAR", new Colonna(xDataColumn.ColumnName, typeof(char)));
-            return new Tuple<string?, Colonna>("BIGINT", new Colonna(xDataColumn.ColumnName, typeof(long)));
+            return AllYn(strings) 
+                ? new Tuple<string?, Colonna>("CHAR", new Colonna(xDataColumn.ColumnName, typeof(char))) 
+                : new Tuple<string?, Colonna>("BIGINT", new Colonna(xDataColumn.ColumnName, typeof(long)));
         }
 
         var enumerable = strings.ToList();
@@ -367,27 +367,22 @@ public static class Database
         return new Tuple<string?, Colonna>(null, new Colonna(xDataColumn.ColumnName, typeof(object)));
     }
 
-    private static bool AllYN(IEnumerable<string> strings)
+    private static bool AllYn(IEnumerable<string> strings)
     {
-        char _cy = 'Y';
-        char _cs = 'S';
-        char _cn = 'N';
-        int _iy = (int)_cy;
-        int _is = (int)_cs;
-        int _in = (int)_cn;
+        var _cy = 'Y';
+        var _cs = 'S';
+        var _cn = 'N';
+        var _iy = (int)_cy;
+        var _is = (int)_cs;
+        var _in = (int)_cn;
         return strings.All(x =>
         {
             try
             {
              
 
-                    int xc = int.Parse(x);
-                    if (xc == _in || xc == _is || xc == _iy)
-                        return true;
-
-                
-
-                return false;
+                    var xc = int.Parse(x);
+                    return xc == _in || xc == _is || xc == _iy;
             }
             catch
             {
