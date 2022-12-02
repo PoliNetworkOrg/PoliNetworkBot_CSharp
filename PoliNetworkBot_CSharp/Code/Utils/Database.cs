@@ -155,8 +155,6 @@ public static class Database
         dbConfigConnection.ReleaseConn(connectionWithLock);
 
         return numberOfRowsAffected;
-
-
     }
 
     private static DataTable FixDataTable(DataTable table, IReadOnlyList<Colonna> colonne)

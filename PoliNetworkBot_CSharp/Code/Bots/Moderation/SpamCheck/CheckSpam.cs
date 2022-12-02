@@ -29,7 +29,8 @@ public static class CheckSpam
     }
 
 
-    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, bool checkSender)
+    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient,
+        bool checkSender)
     {
         if (checkSender)
         {

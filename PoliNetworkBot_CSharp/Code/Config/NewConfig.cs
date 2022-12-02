@@ -94,7 +94,7 @@ public static class NewConfig
             Logger.WriteLine(e);
             Logger.WriteLine("Skipping CleanDB");
         }
-        
+
         Redo_DB(alsoFillTablesFromJson);
     }
 
