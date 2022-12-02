@@ -183,39 +183,53 @@ public static class Database
 
     private static object? FixDataCell(object? source, Colonna colonna)
     {
-        if (source == null)
-            return null;
-        
-        var s = source.ToString() ?? "";
-        
-        if (colonna.DataType == typeof(int))
+        try
         {
-            return int.Parse(s);
-        }
+            if (source == null)
+                return null;
 
-        if (colonna.DataType == typeof(long))
-        {
-            return long.Parse(s); 
-        }
-        
-        if (colonna.DataType == typeof(bool))
-        {
-            return s == "1";
-        }
-        
-        if (colonna.DataType == typeof(char))
-        {
-            var x = int.Parse(s);
-            return (char)x;
-        }
+            var s = source.ToString() ?? "";
 
-        if (colonna.DataType == typeof(DateTime))
+            if (string.IsNullOrEmpty(s))
+                return null;
+
+            if (colonna.DataType == typeof(int))
+            {
+                return int.Parse(s);
+            }
+
+            if (colonna.DataType == typeof(long))
+            {
+                return long.Parse(s);
+            }
+
+            if (colonna.DataType == typeof(bool))
+            {
+                return s == "1";
+            }
+
+            if (colonna.DataType == typeof(char))
+            {
+                var x = int.Parse(s);
+                return (char)x;
+            }
+
+            if (colonna.DataType == typeof(DateTime))
+            {
+                return DateTime.Parse(s);
+            }
+
+            ;
+
+            return s;
+        }
+        catch (Exception ex)
         {
-            return DateTime.Parse(s);
+            ;
+            Console.WriteLine(ex);
         }
 
         ;
-
         return null;
     }
 
