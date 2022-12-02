@@ -73,7 +73,8 @@ internal static class Program
                     {
                         //SpamTest.Main2();
                         //Test_CheckLink.Test_CheckLink2();
-                        await TestIg.MainIgAsync();
+                        //await TestIg.MainIgAsync();
+                        await PoliNetworkBot_CSharp.Test.Test.MainTest();
                         return;
                     }
                     catch

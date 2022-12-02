@@ -11,7 +11,7 @@ public static class CheckSpam
 {
     public static async Task<bool?> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
     {
-        var checkSpam = await CheckSpamAsync(e, telegramBotClient);
+        var checkSpam = await CheckSpamAsync(e, telegramBotClient, true);
 
 
         return checkSpam switch
@@ -29,11 +29,15 @@ public static class CheckSpam
     }
 
 
-    private static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
+    public static async Task<SpamType> CheckSpamAsync(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient,
+        bool checkSender)
     {
-        var checkIfHeIsAllowedResult = ModerationCheck.CheckIfHeIsAllowedSpam(e);
-        if (checkIfHeIsAllowedResult)
-            return SpamType.ALL_GOOD;
+        if (checkSender)
+        {
+            var checkIfHeIsAllowedResult = ModerationCheck.CheckIfHeIsAllowedSpam(e);
+            if (checkIfHeIsAllowedResult)
+                return SpamType.ALL_GOOD;
+        }
 
         var isSpamStored = ModerationCheck.CheckIfSpamStored(e, telegramBotClient);
         if (isSpamStored != null)
@@ -45,8 +49,9 @@ public static class CheckSpam
             var s1 = SpamTypeUtil.Merge(
                 await Blacklist.Blacklist.IsSpam(e?.Message.Caption, e?.Message.Chat.Id, telegramBotClient, false, e),
                 Blacklist.Blacklist.IsSpam(e?.Message.Photo));
-            if (s1 != null)
-                return s1.Value;
+            var s3 = SpamTypeUtil.Merge(s1, Blacklist.Blacklist.CheckCaptionElements(e?.Message, telegramBotClient));
+            if (s3 != null)
+                return s3.Value;
         }
 
         if (e?.Message.Text != null && e.Message.Text.StartsWith("/"))

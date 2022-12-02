@@ -57,7 +57,8 @@ public class ActionFuncGeneric
         _action6 = action;
     }
 
-    public CommandExecutionState Invoke(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
+    public CommandExecutionState Invoke(MessageEventArgs? e,
+        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
         string[]? args)
     {
         if (_action != null)
@@ -73,14 +74,12 @@ public class ActionFuncGeneric
             if (e != null)
                 return _action4.Invoke(e, telegramBotAbstract).Result;
         if (_action5 != null)
-        {
             if (e != null)
                 if (telegramBotAbstract != null)
                 {
                     _action5.Invoke(e, telegramBotAbstract, args).Wait();
                     return CommandExecutionState.SUCCESSFUL;
                 }
-        }
 
         if (_action6 != null)
         {

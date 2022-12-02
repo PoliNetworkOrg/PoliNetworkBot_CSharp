@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -14,7 +15,7 @@ public static class Help
 {
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
-        var command = CommandDispatcher.Commands.Find(x =>
+        var command = SwitchDispatcher.Commands.Find(x =>
             x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
 
         Language text;
@@ -77,14 +78,14 @@ public static class Help
                 "en",
                 textEng + "\n<b>Commands available:</b>\n" +
                 string.Join("",
-                    CommandDispatcher.Commands.Select(x =>
+                    SwitchDispatcher.Commands.Select(x =>
                         x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
             },
             {
                 "it",
                 text + "\n<b>Comandi disponibili:</b>\n" +
                 string.Join("",
-                    CommandDispatcher.Commands.Select(x =>
+                    SwitchDispatcher.Commands.Select(x =>
                         x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
             }
         });
