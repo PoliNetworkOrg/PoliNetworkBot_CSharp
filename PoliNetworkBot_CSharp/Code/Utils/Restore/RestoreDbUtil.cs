@@ -24,8 +24,6 @@ public static class RestoreDbUtil
 
         DbConfig.InitializeDbConfig();
         foreach (var y in x.tables) TryRestoreTable(y);
-
-        ;
     }
 
     private static void TryRestoreTable(KeyValuePair<string, DataTable> y)
@@ -39,7 +37,5 @@ public static class RestoreDbUtil
             Console.WriteLine(ex);
             Console.WriteLine("Failed import db table named '" + y.Key + "'");
         }
-
-        ;
     }
 }

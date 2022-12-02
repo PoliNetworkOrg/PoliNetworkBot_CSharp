@@ -112,18 +112,25 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            
-            const string? q1 =
-                "CALL `insert_log`(@id, @severity, @content, @stacktrace)";
-            
-            Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+
+            try
             {
-                { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
-                { "@severity", logSeverityLevel },
-                { "@content", log1 },
-                { "@stacktrace", null }
-            });
-            
+                const string? q1 =
+                    "CALL `insert_log`(@id, @severity, @content, @stacktrace)";
+
+                Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                {
+                    { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
+                    { "@severity", logSeverityLevel },
+                    { "@content", log1 },
+                    { "@stacktrace", Environment.StackTrace }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
             _linesCount++;
             SendLogIfOversize();
         }
