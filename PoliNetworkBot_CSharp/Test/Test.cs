@@ -6,7 +6,7 @@ internal static class Test
 {
     public static async Task MainTest()
     {
-        const string path = @"C:\Users\eliam\OneDrive - Politecnico di Milano\ssh\db.json";
+        const string path = @"C:\Users\User\Downloads\Telegram Desktop\db (129).json";
         await Code.Utils.Restore.RestoreDbUtil.RestoreDbMethod(path);
     }
 }

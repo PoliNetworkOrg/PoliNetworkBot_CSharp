@@ -135,10 +135,12 @@ public static class Database
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;
         int numberOfRowsAffected;
+        
+        CreateTable_DestroyIfExist(table, tableName, dbConfigConnection);
+
         lock (connectionWithLock.Lock)
         {
             OpenConnection(connection);
-
             numberOfRowsAffected = BulkInsertMySql2(connection, tableName, table);
         }
 
@@ -149,17 +151,49 @@ public static class Database
 
     }
 
+    /// <summary>
+    /// Destroy the table if exists and recreate it
+    /// </summary>
+    /// <param name="table">DataTable of new table</param>
+    /// <param name="tableName">Name of new table</param>
+    /// <param name="dbConfigConnection">Connessione </param>
+    private static void CreateTable_DestroyIfExist(DataTable table, string tableName,
+        DbConfigConnection dbConfigConnection)
+    {
+        Execute("DROP TABLE " + tableName, dbConfigConnection);
+        CreateTable_As_It_Doesnt_Exist(table, tableName, dbConfigConnection);
+    }
+
+    private static void CreateTable_As_It_Doesnt_Exist(DataTable table, string tableName, DbConfigConnection dbConfigConnection)
+    {
+        var q = GenerateCreateTableQuery(table, tableName);
+        Execute(q, dbConfigConnection);
+    }
+
+    private static string GenerateCreateTableQuery(DataTable table, string tableName)
+    {
+        string r = "CREATE TABLE " + tableName + "(";
+        for (int i = 0; i < table.Columns.Count; i++)
+        {
+            var x = table.Columns[i];
+            r += x.Caption;
+            r += ",\n";
+        }
+        r += ");";
+        return r;
+    }
+
     private static int BulkInsertMySql2(MySqlConnection connection, string tableName, DataTable table)
     {
-        using MySqlTransaction tran = connection.BeginTransaction(IsolationLevel.Serializable);
-        using MySqlCommand cmd = new MySqlCommand();
+        using var tran = connection.BeginTransaction(IsolationLevel.Serializable);
+        using var cmd = new MySqlCommand();
         cmd.Connection = connection;
         cmd.Transaction = tran;
         cmd.CommandText = $"SELECT * FROM " + tableName + " limit 0";
 
-        using MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+        using var adapter = new MySqlDataAdapter(cmd);
         adapter.UpdateBatchSize = 10000;
-        using MySqlCommandBuilder cb = new MySqlCommandBuilder(adapter);
+        using var cb = new MySqlCommandBuilder(adapter);
         cb.SetAllValues = true;
         var numberOfRowsAffected = adapter.Update(table);
         tran.Commit();
