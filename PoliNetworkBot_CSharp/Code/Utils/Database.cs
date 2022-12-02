@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -26,7 +25,7 @@ public static class Database
 
         return ExecuteSlave(query, dbConfigConnection, args);
     }
-    
+
     public static int ExecuteUnlogged(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
@@ -67,9 +66,10 @@ public static class Database
     }
 
 
-    public static DataTable? ExecuteSelectUnlogged(string? query, DbConfigConnection? dbConfigConnection, Dictionary<string, object?>? args = null)
+    public static DataTable? ExecuteSelectUnlogged(string? query, DbConfigConnection? dbConfigConnection,
+        Dictionary<string, object?>? args = null)
     {
-        return ExecuteSelectSlave(query ,dbConfigConnection, args);
+        return ExecuteSelectSlave(query, dbConfigConnection, args);
     }
 
     private static DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,

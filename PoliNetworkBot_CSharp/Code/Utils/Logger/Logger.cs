@@ -223,7 +223,7 @@ public static class Logger
                 {
                     WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
-                
+
                 const string q1 = "SELECT * FROM LogTable";
                 var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig);
 
