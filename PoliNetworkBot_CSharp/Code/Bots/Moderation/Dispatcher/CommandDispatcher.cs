@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
@@ -94,7 +95,7 @@ internal static class CommandDispatcher
         if (sender == null)
             return await DefaultCommand(sender, e);
 
-        foreach (var command in Moderation.Dispatcher.SwitchDispatcher.Commands)
+        foreach (var command in SwitchDispatcher.Commands)
             try
             {
                 switch (command.TryTrigger(e, sender, cmd, args))
@@ -369,9 +370,9 @@ internal static class CommandDispatcher
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
         {
             var e2 = new MessageEventArgs(e.Message.ReplyToMessage ?? e.Message);
-            r2 = await Moderation.SpamCheck.CheckSpam.CheckSpamAsync(e2, sender, false);
+            r2 = await CheckSpam.CheckSpamAsync(e2, sender, false);
         }
-        
+
 
         try
         {

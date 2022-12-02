@@ -6,13 +6,12 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 #endregion
 
@@ -132,20 +131,19 @@ public static class Database
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    
+
     public static int BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
     {
-      
         if (dbConfigConnection == null)
             return 0;
-        
+
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;
         int numberOfRowsAffected;
-        
-        var colonne =  CreateTable_DestroyIfExist(table, tableName, dbConfigConnection);
+
+        var colonne = CreateTable_DestroyIfExist(table, tableName, dbConfigConnection);
         var table2 = FixDataTable(table, colonne);
-        
+
         lock (connectionWithLock.Lock)
         {
             OpenConnection(connection);
@@ -155,8 +153,6 @@ public static class Database
         dbConfigConnection.ReleaseConn(connectionWithLock);
 
         return numberOfRowsAffected;
-
-
     }
 
     private static DataTable FixDataTable(DataTable table, IReadOnlyList<Colonna> colonne)
@@ -173,16 +169,14 @@ public static class Database
             var objects = FixDataRow(dr, colonne);
             dt.Rows.Add(objects);
         }
+
         return dt;
     }
 
     private static object?[] FixDataRow(DataRow dr, IReadOnlyList<Colonna> colonne)
     {
         var r = new object?[dr.ItemArray.Length];
-        for (var i = 0; i < dr.ItemArray.Length; i++)
-        {
-            r[i] = FixDataCell(dr.ItemArray[i], colonne[i]);
-        }
+        for (var i = 0; i < dr.ItemArray.Length; i++) r[i] = FixDataCell(dr.ItemArray[i], colonne[i]);
         return r;
     }
 
@@ -198,20 +192,11 @@ public static class Database
             if (string.IsNullOrEmpty(s))
                 return null;
 
-            if (colonna.DataType == typeof(int))
-            {
-                return int.Parse(s);
-            }
+            if (colonna.DataType == typeof(int)) return int.Parse(s);
 
-            if (colonna.DataType == typeof(long))
-            {
-                return long.Parse(s);
-            }
+            if (colonna.DataType == typeof(long)) return long.Parse(s);
 
-            if (colonna.DataType == typeof(bool))
-            {
-                return s == "1";
-            }
+            if (colonna.DataType == typeof(bool)) return s == "1";
 
             if (colonna.DataType == typeof(char))
             {
@@ -219,10 +204,7 @@ public static class Database
                 return (char)x;
             }
 
-            if (colonna.DataType == typeof(DateTime))
-            {
-                return DateTime.Parse(s);
-            }
+            if (colonna.DataType == typeof(DateTime)) return DateTime.Parse(s);
 
             ;
 
@@ -239,7 +221,7 @@ public static class Database
     }
 
     /// <summary>
-    /// Destroy the table if exists and recreate it
+    ///     Destroy the table if exists and recreate it
     /// </summary>
     /// <param name="table">DataTable of new table</param>
     /// <param name="tableName">Name of new table</param>
@@ -264,7 +246,8 @@ public static class Database
         }
     }
 
-    private static List<Colonna> CreateTable_As_It_Doesnt_Exist(DataTable table, string tableName, DbConfigConnection dbConfigConnection)
+    private static List<Colonna> CreateTable_As_It_Doesnt_Exist(DataTable table, string tableName,
+        DbConfigConnection dbConfigConnection)
     {
         var q = GenerateCreateTableQuery(table, tableName);
         Execute(q.Item1, dbConfigConnection);
@@ -284,12 +267,13 @@ public static class Database
 
             r += c.Item1;
             rC.Add(c.Item2);
-            
-            if (i != table.Columns.Count -1)
+
+            if (i != table.Columns.Count - 1)
                 r += ",\n";
         }
+
         r += ");";
-        return new Tuple<string, List<Colonna>>(r,rC);
+        return new Tuple<string, List<Colonna>>(r, rC);
     }
 
     private static List<object> TryGetNonNullValueAsExample(DataTable table, int i)
@@ -298,13 +282,12 @@ public static class Database
         try
         {
             foreach (DataRow dr in table.Rows)
-            {
                 try
                 {
                     var x = dr.ItemArray[i];
-                    if (x == null) 
+                    if (x == null)
                         continue;
-                    
+
                     var s = x.ToString();
                     if (!string.IsNullOrEmpty(s))
                         r.Add(x);
@@ -313,7 +296,6 @@ public static class Database
                 {
                     ;
                 }
-            }
         }
         catch
         {
@@ -323,22 +305,19 @@ public static class Database
         return r;
     }
 
-    private static Tuple<string?, Colonna> MySqlStringTypeFromDataType(DataColumn xDataColumn, List<object> exampleValue)
+    private static Tuple<string?, Colonna> MySqlStringTypeFromDataType(DataColumn xDataColumn,
+        List<object> exampleValue)
     {
         var xDataType = xDataColumn.DataType;
-        
+
         var strings = GetStrings(exampleValue);
-        
+
         if (typeof(int) == xDataType)
-        {
-            return new Tuple<string?, Colonna>( "INT", new Colonna(xDataColumn.ColumnName, typeof(int)));
-        }
-        else if (typeof(long) == xDataType)
-        {
-            return AllYn(strings) 
-                ? new Tuple<string?, Colonna>("CHAR", new Colonna(xDataColumn.ColumnName, typeof(char))) 
+            return new Tuple<string?, Colonna>("INT", new Colonna(xDataColumn.ColumnName, typeof(int)));
+        if (typeof(long) == xDataType)
+            return AllYn(strings)
+                ? new Tuple<string?, Colonna>("CHAR", new Colonna(xDataColumn.ColumnName, typeof(char)))
                 : new Tuple<string?, Colonna>("BIGINT", new Colonna(xDataColumn.ColumnName, typeof(long)));
-        }
 
         var enumerable = strings.ToList();
         if (enumerable.All(x => x is "0" or "1"))
@@ -348,19 +327,17 @@ public static class Database
         ;
 
         if (dateTime != null)
-        {
             return new Tuple<string?, Colonna>("DATETIME", new Colonna(xDataColumn.ColumnName, typeof(DateTime)));
-        }
 
         ;
 
         var maxLength = GetMaxLength(enumerable);
-  
+
         if (maxLength != null)
         {
             var length = maxLength.Value * 10;
-            return length > 500 
-                ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string))) 
+            return length > 500
+                ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string)))
                 : new Tuple<string?, Colonna>("VARCHAR(500)", new Colonna(xDataColumn.ColumnName, typeof(string)));
         }
 
@@ -379,10 +356,8 @@ public static class Database
         {
             try
             {
-             
-
-                    var xc = int.Parse(x);
-                    return xc == _in || xc == _is || xc == _iy;
+                var xc = int.Parse(x);
+                return xc == _in || xc == _is || xc == _iy;
             }
             catch
             {
@@ -390,7 +365,6 @@ public static class Database
             }
 
             return false;
-
         });
     }
 
@@ -405,9 +379,10 @@ public static class Database
         foreach (var item in exampleValue)
         {
             var s = item.ToString();
-            if (s != null) 
+            if (s != null)
                 r.Add(s);
         }
+
         return r;
     }
 
@@ -436,7 +411,7 @@ public static class Database
         using var cmd = new MySqlCommand();
         cmd.Connection = connection;
         cmd.Transaction = tran;
-        cmd.CommandText = $"SELECT * FROM " + tableName + " limit 0";
+        cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
 
         using var adapter = new MySqlDataAdapter(cmd);
         adapter.UpdateBatchSize = 10000;
