@@ -261,9 +261,10 @@ public static class Database
             var x = table.Columns[i];
             r += x.ColumnName;
             r += " ";
-            Tuple<string?> c = MySqlStringTypeFromDataType(x, TryGetNonNullValueAsExample(table, i));
+            var c = MySqlStringTypeFromDataType(x, TryGetNonNullValueAsExample(table, i));
 
             r += c.Item1;
+            rC.Add(c.Item2);
             
             if (i != table.Columns.Count -1)
                 r += ",\n";
@@ -303,7 +304,7 @@ public static class Database
         return r;
     }
 
-    private static Tuple<string?> MySqlStringTypeFromDataType(DataColumn xDataColumn, List<object> exampleValue)
+    private static Tuple<string?, Colonna> MySqlStringTypeFromDataType(DataColumn xDataColumn, List<object> exampleValue)
     {
         var xDataType = xDataColumn.DataType;
         
@@ -311,25 +312,25 @@ public static class Database
         
         if (typeof(int) == xDataType)
         {
-            return new Tuple<string?>( "INT");
+            return new Tuple<string?, Colonna>( "INT", new Colonna(xDataColumn.ColumnName, typeof(int)));
         }
         else if (typeof(long) == xDataType)
         {
             if (AllYN(strings))
-                return new Tuple<string?>("CHAR");
-            return new Tuple<string?>("BIGINT");
+                return new Tuple<string?, Colonna>("CHAR", new Colonna(xDataColumn.ColumnName, typeof(char)));
+            return new Tuple<string?, Colonna>("BIGINT", new Colonna(xDataColumn.ColumnName, typeof(long)));
         }
 
         var enumerable = strings.ToList();
         if (enumerable.All(x => x is "0" or "1"))
-            return new Tuple<string?>("BOOLEAN");
+            return new Tuple<string?, Colonna>("BOOLEAN", new Colonna(xDataColumn.ColumnName, typeof(bool)));
 
         var dateTime = TryGetDateTime(exampleValue.First());
         ;
 
         if (dateTime != null)
         {
-            return new Tuple<string?>("DATETIME");
+            return new Tuple<string?, Colonna>("DATETIME", new Colonna(xDataColumn.ColumnName, typeof(DateTime)));
         }
 
         ;
@@ -339,10 +340,12 @@ public static class Database
         if (maxLength != null)
         {
             var length = maxLength.Value * 10;
-            return length > 500 ? new Tuple<string?>("TEXT") : new Tuple<string?>("VARCHAR(500)");
+            return length > 500 
+                ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string))) 
+                : new Tuple<string?, Colonna>("VARCHAR(500)", new Colonna(xDataColumn.ColumnName, typeof(string)));
         }
 
-        return new Tuple<string?>(null);
+        return new Tuple<string?, Colonna>(null, new Colonna(xDataColumn.ColumnName, typeof(object)));
     }
 
     private static bool AllYN(IEnumerable<string> strings)
