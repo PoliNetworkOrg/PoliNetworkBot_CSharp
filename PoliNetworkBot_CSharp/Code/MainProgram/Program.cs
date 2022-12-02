@@ -6,6 +6,7 @@ using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Main;
+using PoliNetworkBot_CSharp.Code.Utils.Restore;
 using PoliNetworkBot_CSharp.Test.IG;
 
 #endregion
@@ -83,6 +84,14 @@ internal static class Program
                     }
 
                     break;
+                }
+
+                case 'r':
+                {
+                    await RestoreDbUtil.RestoreDb();
+                    ProgramUtil.MainBot(item1, item2);
+                    break;
+                    
                 }
             }
         }

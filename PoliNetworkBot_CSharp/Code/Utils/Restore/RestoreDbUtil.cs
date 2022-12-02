@@ -12,8 +12,14 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
 public static class RestoreDbUtil
 {
-    public static async Task RestoreDbMethod(string path)
+    private static async Task RestoreDbMethod(string? path)
     {
+        if (path == null)
+        {
+            Console.WriteLine("Restore db failed. 'db.json' is missing");
+            return;
+        }
+
         var s = await File.ReadAllTextAsync(path);
         if (string.IsNullOrEmpty(s))
             return;
@@ -37,5 +43,11 @@ public static class RestoreDbUtil
             Console.WriteLine(ex);
             Console.WriteLine("Failed import db table named '" + y.Key + "'");
         }
+    }
+
+    public static async Task RestoreDb()
+    {
+        var path = FileUtils.FileUtil.FindFile("db.json");
+        await RestoreDbMethod(path);
     }
 }
