@@ -139,20 +139,7 @@ public static class Database
         {
             OpenConnection(connection);
 
-            using MySqlTransaction tran = connection.BeginTransaction(IsolationLevel.Serializable);
-            using MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = connection;
-            cmd.Transaction = tran;
-            cmd.CommandText = $"SELECT * FROM " + tableName + " limit 0";
-
-            using MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-            adapter.UpdateBatchSize = 10000;
-            using MySqlCommandBuilder cb = new MySqlCommandBuilder(adapter);
-            cb.SetAllValues = true;
-            numberOfRowsAffected = adapter.Update(table);
-            tran.Commit();
-
-            
+            numberOfRowsAffected = BulkInsertMySql2(connection, tableName, table);
         }
 
         dbConfigConnection.ReleaseConn(connectionWithLock);
@@ -160,5 +147,22 @@ public static class Database
         return numberOfRowsAffected;
 
 
+    }
+
+    private static int BulkInsertMySql2(MySqlConnection connection, string tableName, DataTable table)
+    {
+        using MySqlTransaction tran = connection.BeginTransaction(IsolationLevel.Serializable);
+        using MySqlCommand cmd = new MySqlCommand();
+        cmd.Connection = connection;
+        cmd.Transaction = tran;
+        cmd.CommandText = $"SELECT * FROM " + tableName + " limit 0";
+
+        using MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+        adapter.UpdateBatchSize = 10000;
+        using MySqlCommandBuilder cb = new MySqlCommandBuilder(adapter);
+        cb.SetAllValues = true;
+        var numberOfRowsAffected = adapter.Update(table);
+        tran.Commit();
+        return numberOfRowsAffected;
     }
 }
