@@ -91,7 +91,6 @@ internal static class Program
                     await RestoreDbUtil.RestoreDb();
                     ProgramUtil.MainBot(item1, item2);
                     break;
-                    
                 }
             }
         }
