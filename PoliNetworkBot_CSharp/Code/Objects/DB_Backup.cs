@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Newtonsoft.Json;
 
 #endregion
@@ -14,8 +15,10 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 // ReSharper disable once InconsistentNaming
 internal class DB_Backup
 {
+    public Dictionary<string, string>? Procedures;
+
     // ReSharper disable once InconsistentNaming
-    public List<string> tableNames;
+    public List<string>? tableNames;
 
     // ReSharper disable once InconsistentNaming
     public Dictionary<string, DataTable> tables; //indexed by names
@@ -24,5 +27,26 @@ internal class DB_Backup
     {
         tableNames = new List<string>();
         tables = new Dictionary<string, DataTable>();
+        Procedures = new Dictionary<string, string>();
+    }
+
+    public void UpdateProcedure(string name, string create)
+    {
+        Procedures ??= new Dictionary<string, string>();
+        Procedures[name] = create;
+    }
+
+    public void AddTables(IEnumerable<string?> c1)
+    {
+        tableNames ??= new List<string>();
+        foreach (var c3 in c1)
+            if (!string.IsNullOrEmpty(c3))
+                tableNames.Add(c3);
+    }
+
+    public IEnumerable<string> GetTableNames()
+    {
+        tableNames ??= new List<string>();
+        return tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false);
     }
 }

@@ -326,37 +326,6 @@ internal static class CommandDispatcher
         ScriptUtil.DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
     }
 
-
-    public static async Task BackupHandler(long sendTo, TelegramBotAbstract? botAbstract, string? username,
-        ChatType chatType)
-    {
-        try
-        {
-            var jsonDb = BackupUtil.GetDB_AsJson(botAbstract);
-
-            if (string.IsNullOrEmpty(jsonDb)) return;
-
-            var bytes = Encoding.UTF8.GetBytes(jsonDb);
-            var stream = new MemoryStream(bytes);
-
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", "Backup:" }
-            });
-
-            var peer = new PeerAbstract(sendTo, chatType);
-
-            SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
-                    null, "application/json"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                botAbstract, username, "it", null, true);
-        }
-        catch (Exception? ex)
-        {
-            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, null);
-        }
-    }
-
     public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var message = e?.Message.ReplyToMessage;
