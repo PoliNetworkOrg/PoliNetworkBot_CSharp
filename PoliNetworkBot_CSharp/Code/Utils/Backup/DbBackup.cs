@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -26,9 +27,55 @@ public static class DbBackup
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    private static void FillProcedures(DB_Backup db, DbConfigConnection? dbConfig)
+    private static void FillProcedures(DB_Backup db, DbConfigConnection dbConfig)
     {
-        ; //todo
+        try
+        {
+            const string q = @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ";
+            var dt = Database.ExecuteSelect(q, dbConfig);
+            if (dt == null)
+                return;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var name = dr["Name"].ToString() ?? "";
+                if (!string.IsNullOrEmpty(name))
+                {
+                    FillProcedure(db, dbConfig, name);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private static void FillProcedure(DB_Backup db, DbConfigConnection dbConfig, string name)
+    {
+        try
+        {
+            var q = "SHOW CREATE PROCEDURE polinetwork." + name;
+            var dt = Database.ExecuteSelect(q, dbConfig);
+            if (dt == null)
+                return;
+
+            if (dt.Rows.Count < 1)
+                return;
+
+            var dr = dt.Rows[0];
+
+            var create = dr["Create Procedure"].ToString() ?? "";
+
+            if (!string.IsNullOrEmpty(create))
+            {
+                db.UpdateProcedure(name, create);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
@@ -50,12 +97,10 @@ public static class DbBackup
                     return argItem != null ? argItem.ToString() : "";
                 });
 
-            foreach (var c3 in c1)
-                if (!string.IsNullOrEmpty(c3))
-                    db.tableNames.Add(c3);
+            db.AddTables(c1);
 
-            foreach (var tableName in
-                     db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
+            var tables = db.GetTableNames();
+            foreach (var tableName in tables)
                 try
                 {
                     var q2 = "SELECT * FROM " + tableName;
