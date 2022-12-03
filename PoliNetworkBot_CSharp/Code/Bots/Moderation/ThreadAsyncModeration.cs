@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -208,7 +209,7 @@ public static class ThreadAsyncModeration
         {
             while (true)
             {
-                await CommandDispatcher.BackupHandler(GroupsConstants.BackupGroup, bot, null, ChatType.Group);
+                await BackupUtil.BackupHandler(GroupsConstants.BackupGroup, bot, null, ChatType.Group);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }

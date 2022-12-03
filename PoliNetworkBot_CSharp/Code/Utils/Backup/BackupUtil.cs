@@ -1,16 +1,23 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Utils;
+namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 internal static class BackupUtil
 {
@@ -21,7 +28,38 @@ internal static class BackupUtil
             CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
 
-    internal static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
+
+    public static async Task BackupHandler(long sendTo, TelegramBotAbstract? botAbstract, string? username,
+        ChatType chatType)
+    {
+        try
+        {
+            var jsonDb = BackupUtil.GetDB_AsJson(botAbstract);
+
+            if (string.IsNullOrEmpty(jsonDb)) return;
+
+            var bytes = Encoding.UTF8.GetBytes(jsonDb);
+            var stream = new MemoryStream(bytes);
+
+            var text2 = new Language(new Dictionary<string, string?>
+            {
+                { "it", "Backup:" }
+            });
+
+            var peer = new PeerAbstract(sendTo, chatType);
+
+            SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
+                    null, "application/json"), peer,
+                text2, TextAsCaption.BEFORE_FILE,
+                botAbstract, username, "it", null, true);
+        }
+        catch (Exception? ex)
+        {
+            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, null);
+        }
+    }
+
+    private static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
     {
         try
         {
@@ -79,7 +117,7 @@ internal static class BackupUtil
     public static async Task<CommandExecutionState> Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
-        await CommandDispatcher.BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
+        await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
             e.Message.Chat.Type);
         return CommandExecutionState.SUCCESSFUL;
     }
