@@ -2,12 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -29,29 +26,15 @@ internal static class BackupUtil
     }
 
 
-    public static async Task BackupHandler(long sendTo, TelegramBotAbstract? botAbstract, string? username,
+    public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
+        
         try
         {
-            var jsonDb = BackupUtil.GetDB_AsJson(botAbstract);
-
-            if (string.IsNullOrEmpty(jsonDb)) return;
-
-            var bytes = Encoding.UTF8.GetBytes(jsonDb);
-            var stream = new MemoryStream(bytes);
-
-            var text2 = new Language(new Dictionary<string, string?>
-            {
-                { "it", "Backup:" }
-            });
-
-            var peer = new PeerAbstract(sendTo, chatType);
-
-            SendMessage.SendFileAsync(new TelegramFile(stream, "db.json",
-                    null, "application/json"), peer,
-                text2, TextAsCaption.BEFORE_FILE,
-                botAbstract, username, "it", null, true);
+            var jsonDb = DbBackup.GetDB_AsJson(botAbstract);
+            SendFile(jsonDb, sendTo, botAbstract, username,
+                chatType, "Backup:", "db.json");
         }
         catch (Exception? ex)
         {
@@ -59,64 +42,36 @@ internal static class BackupUtil
         }
     }
 
-    private static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
+    private static void SendFile(string jsonDb, long sendTo, TelegramBotAbstract botAbstract, string? username,
+        ChatType chatType, string? contentMessage, string fileName)
     {
-        try
+        if (string.IsNullOrEmpty(jsonDb)) return;
+
+        var bytes = Encoding.UTF8.GetBytes(jsonDb);
+        var stream = new MemoryStream(bytes);
+
+      
+        var text2 = new Language(new Dictionary<string, string?>
         {
-            DB_Backup db = new();
+            { "it", contentMessage }
+        });
 
-            const string? q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
-            if (telegramBotAbstract == null) return JsonConvert.SerializeObject(db);
-            var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
-            if (r == null)
-                return JsonConvert.SerializeObject("ERROR 1");
+        var peer = new PeerAbstract(sendTo, chatType);
 
-            try
-            {
-                var tableNames = r.Rows.Cast<DataRow>().ToList();
-
-                var c1 = tableNames.Where(row => row is { ItemArray.Length: > 0 } && row.ItemArray[0] != null)
-                    .Select(row =>
-                    {
-                        var argItem = row.ItemArray[0];
-                        return argItem != null ? argItem.ToString() : "";
-                    });
-
-                foreach (var c3 in c1)
-                    if (!string.IsNullOrEmpty(c3))
-                        db.tableNames.Add(c3);
-
-                foreach (var tableName in
-                         db.tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false))
-                    try
-                    {
-                        var q2 = "SELECT * FROM " + tableName;
-                        var r2 = Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
-                        if (r2 != null) db.tables[tableName] = r2;
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return JsonConvert.SerializeObject(db);
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return JsonConvert.SerializeObject("ERROR 2");
+  
+        SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
+                null, "application/json"), peer,
+            text2, TextAsCaption.BEFORE_FILE,
+            botAbstract, username, "it", null, true);
     }
+
 
     public static async Task<CommandExecutionState> Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
+        if (sender == null) 
+            return CommandExecutionState.NOT_TRIGGERED;
+        
         await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
             e.Message.Chat.Type);
         return CommandExecutionState.SUCCESSFUL;
