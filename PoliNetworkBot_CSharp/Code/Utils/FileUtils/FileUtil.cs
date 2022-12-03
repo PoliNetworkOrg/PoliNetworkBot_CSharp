@@ -9,11 +9,8 @@ public static class FileUtil
     {
         while (count < 10)
         {
-            var files = FindFiles(startingPath,  dbJson);
-            if (!string.IsNullOrEmpty(files))
-            {
-                return files;
-            }
+            var files = FindFiles(startingPath, dbJson);
+            if (!string.IsNullOrEmpty(files)) return files;
 
             startingPath += "../";
             count += 1;
@@ -39,7 +36,6 @@ public static class FileUtil
         {
             var folders = Directory.EnumerateDirectories(startingPath);
             foreach (var f in folders)
-            {
                 try
                 {
                     var x2 = FindFiles(f, dbJson);
@@ -50,7 +46,6 @@ public static class FileUtil
                 {
                     ;
                 }
-            }
         }
         catch
         {

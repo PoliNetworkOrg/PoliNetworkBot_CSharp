@@ -9,7 +9,6 @@ using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -67,8 +66,8 @@ internal static class ModerationCheck
         lock (Lock)
         {
             const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
-            var dt = Database.ExecuteSelect(q1, GlobalVariables.DbConfig,
-                new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } }, ToLog.NO);
+            var dt = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+                new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } });
             if (dt != null && dt.Rows.Count > 0)
             {
                 var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;

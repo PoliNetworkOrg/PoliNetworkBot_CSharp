@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
@@ -30,8 +31,6 @@ public static class RestoreDbUtil
 
         DbConfig.InitializeDbConfig();
         foreach (var y in x.tables) TryRestoreTable(y);
-
-        ;
     }
 
     private static void TryRestoreTable(KeyValuePair<string, DataTable> y)
@@ -45,13 +44,11 @@ public static class RestoreDbUtil
             Console.WriteLine(ex);
             Console.WriteLine("Failed import db table named '" + y.Key + "'");
         }
-
-        ;
     }
 
     public static async Task RestoreDb()
     {
-        var path = FileUtils.FileUtil.FindFile("db.json");
+        var path = FileUtil.FindFile("db.json");
         await RestoreDbMethod(path);
     }
 }
