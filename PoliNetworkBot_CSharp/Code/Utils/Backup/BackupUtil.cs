@@ -29,7 +29,6 @@ internal static class BackupUtil
     public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
-        
         try
         {
             if (botAbstract.DbConfig != null)
@@ -53,7 +52,7 @@ internal static class BackupUtil
         var bytes = Encoding.UTF8.GetBytes(jsonDb);
         var stream = new MemoryStream(bytes);
 
-      
+
         var text2 = new Language(new Dictionary<string, string?>
         {
             { "it", contentMessage }
@@ -61,7 +60,7 @@ internal static class BackupUtil
 
         var peer = new PeerAbstract(sendTo, chatType);
 
-  
+
         SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
                 null, "application/json"), peer,
             text2, TextAsCaption.BEFORE_FILE,
@@ -72,9 +71,9 @@ internal static class BackupUtil
     public static async Task<CommandExecutionState> Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
-        if (sender == null) 
+        if (sender == null)
             return CommandExecutionState.NOT_TRIGGERED;
-        
+
         await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
             e.Message.Chat.Type);
         return CommandExecutionState.SUCCESSFUL;

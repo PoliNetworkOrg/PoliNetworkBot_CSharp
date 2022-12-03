@@ -16,7 +16,7 @@ public static class DbBackup
 
             FillTables(db, dbConfig);
             FillProcedures(db, dbConfig);
-            
+
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -39,10 +39,7 @@ public static class DbBackup
             foreach (DataRow dr in dt.Rows)
             {
                 var name = dr["Name"].ToString() ?? "";
-                if (!string.IsNullOrEmpty(name))
-                {
-                    FillProcedure(db, dbConfig, name);
-                }
+                if (!string.IsNullOrEmpty(name)) FillProcedure(db, dbConfig, name);
             }
         }
         catch (Exception ex)
@@ -67,10 +64,7 @@ public static class DbBackup
 
             var create = dr["Create Procedure"].ToString() ?? "";
 
-            if (!string.IsNullOrEmpty(create))
-            {
-                db.UpdateProcedure(name, create);
-            }
+            if (!string.IsNullOrEmpty(create)) db.UpdateProcedure(name, create);
         }
         catch (Exception ex)
         {
