@@ -32,9 +32,12 @@ internal static class BackupUtil
         
         try
         {
-            var jsonDb = DbBackup.GetDB_AsJson(botAbstract);
-            SendFile(jsonDb, sendTo, botAbstract, username,
-                chatType, "Backup:", "db.json");
+            if (botAbstract.DbConfig != null)
+            {
+                var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
+                SendFile(jsonDb, sendTo, botAbstract, username,
+                    chatType, "Backup:", "db.json");
+            }
         }
         catch (Exception? ex)
         {

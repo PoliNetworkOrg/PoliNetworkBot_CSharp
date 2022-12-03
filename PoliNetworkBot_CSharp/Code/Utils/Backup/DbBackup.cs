@@ -2,20 +2,20 @@
 using System.Linq;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 public static class DbBackup
 {
-    public static string GetDB_AsJson(TelegramBotAbstract? telegramBotAbstract)
+    public static string GetDB_AsJson(DbConfigConnection dbConfig)
     {
         try
         {
             DB_Backup db = new();
 
-            FillTables(db, telegramBotAbstract);
-
+            FillTables(db, dbConfig);
+            FillProcedures(db, dbConfig);
+            
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -26,12 +26,17 @@ public static class DbBackup
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    private static void FillTables(DB_Backup db, TelegramBotAbstract? telegramBotAbstract)
+    private static void FillProcedures(DB_Backup db, DbConfigConnection? dbConfig)
+    {
+        ; //todo
+    }
+
+    private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
         const string? q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
-        if (telegramBotAbstract == null) return;
+        if (dbConfigConnection == null) return;
 
-        var r = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig);
+        var r = Database.ExecuteSelect(q, dbConfigConnection);
         if (r == null) return;
 
         try
@@ -54,7 +59,7 @@ public static class DbBackup
                 try
                 {
                     var q2 = "SELECT * FROM " + tableName;
-                    var r2 = Database.ExecuteSelect(q2, telegramBotAbstract.DbConfig);
+                    var r2 = Database.ExecuteSelect(q2, dbConfigConnection);
                     if (r2 != null) db.tables[tableName] = r2;
                 }
                 catch
