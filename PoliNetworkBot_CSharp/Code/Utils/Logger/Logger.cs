@@ -116,7 +116,7 @@ public static class Logger
             try
             {
                 const string? q1 =
-                    "CALL `insert_log`(@id, @severity, @content, @stacktrace)";
+                    "CALL `insert_log`(@id, @severity, @stacktrace, @content)";
 
                 Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
