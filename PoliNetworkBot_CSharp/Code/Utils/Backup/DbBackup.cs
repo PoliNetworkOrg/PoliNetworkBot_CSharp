@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
@@ -15,8 +17,7 @@ public static class DbBackup
             DB_Backup db = new();
 
             FillTables(db, dbConfig);
-            FillProcedures(db, dbConfig);
-
+            FillDdl(db, dbConfig);
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -27,20 +28,44 @@ public static class DbBackup
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    private static void FillProcedures(DB_Backup db, DbConfigConnection dbConfig)
+    private static void FillDdl(DB_Backup db, DbConfigConnection dbConfig)
+    {
+        var x = new List<BackupObjectDescription>
+        {
+            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ",
+                db.DbBackupDdl.Procedures),
+            new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
+        };
+        foreach (var backupObjectDescription in x)
+            try
+            {
+                FillGenericObjects(dbConfig, backupObjectDescription);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+    }
+
+    private static void FillGenericObjects(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
     {
         try
         {
-            const string q = @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ";
-            var dt = Database.ExecuteSelect(q, dbConfig);
+            var dt = Database.ExecuteSelect(backupObjectDescription.Query, dbConfig);
             if (dt == null)
                 return;
 
             foreach (DataRow dr in dt.Rows)
-            {
-                var name = dr["Name"].ToString() ?? "";
-                if (!string.IsNullOrEmpty(name)) FillProcedure(db, dbConfig, name);
-            }
+                try
+                {
+                    var name = dr["Name"].ToString() ?? "";
+                    if (!string.IsNullOrEmpty(name))
+                        FillGenericDbObject(dbConfig, name, backupObjectDescription);
+                }
+                catch (Exception ex2)
+                {
+                    Console.WriteLine(ex2);
+                }
         }
         catch (Exception ex)
         {
@@ -48,11 +73,12 @@ public static class DbBackup
         }
     }
 
-    private static void FillProcedure(DB_Backup db, DbConfigConnection dbConfig, string name)
+    private static void FillGenericDbObject(DbConfigConnection dbConfig, string name,
+        BackupObjectDescription backupObjectDescription)
     {
         try
         {
-            var q = "SHOW CREATE PROCEDURE polinetwork." + name;
+            var q = "SHOW CREATE " + backupObjectDescription.ObjectName + " " + dbConfig.GetDbName() + "." + name;
             var dt = Database.ExecuteSelect(q, dbConfig);
             if (dt == null)
                 return;
@@ -62,9 +88,9 @@ public static class DbBackup
 
             var dr = dt.Rows[0];
 
-            var create = dr["Create Procedure"].ToString() ?? "";
+            var create = dr.ItemArray[1]?.ToString() ?? "";
 
-            if (!string.IsNullOrEmpty(create)) db.UpdateProcedure(name, create);
+            if (!string.IsNullOrEmpty(create)) backupObjectDescription.dict[name] = create;
         }
         catch (Exception ex)
         {

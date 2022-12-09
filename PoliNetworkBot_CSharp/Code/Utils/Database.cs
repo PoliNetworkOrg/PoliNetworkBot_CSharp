@@ -229,17 +229,13 @@ public static class Database
 
             if (colonna.DataType == typeof(DateTime)) return DateTime.Parse(s);
 
-            ;
-
             return s;
         }
         catch (Exception ex)
         {
-            ;
             Console.WriteLine(ex);
         }
 
-        ;
         return null;
     }
 
@@ -347,12 +343,9 @@ public static class Database
             return new Tuple<string?, Colonna>("BOOLEAN", new Colonna(xDataColumn.ColumnName, typeof(bool)));
 
         var dateTime = TryGetDateTime(exampleValue.First());
-        ;
 
         if (dateTime != null)
             return new Tuple<string?, Colonna>("DATETIME", new Colonna(xDataColumn.ColumnName, typeof(DateTime)));
-
-        ;
 
         var maxLength = GetMaxLength(enumerable);
 
@@ -384,7 +377,7 @@ public static class Database
             }
             catch
             {
-                ;
+                // ignored
             }
 
             return false;
