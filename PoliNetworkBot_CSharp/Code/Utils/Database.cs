@@ -317,12 +317,12 @@ public static class Database
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return r;
@@ -422,7 +422,7 @@ public static class Database
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
