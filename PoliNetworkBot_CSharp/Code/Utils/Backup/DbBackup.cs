@@ -80,17 +80,10 @@ public static class DbBackup
         {
             var q = "SHOW CREATE " + backupObjectDescription.ObjectName + " " + dbConfig.GetDbName() + "." + name;
             var dt = Database.ExecuteSelect(q, dbConfig);
-            if (dt == null)
+            if (dt == null || dt.Rows.Count < 1)
                 return;
-
-            if (dt.Rows.Count < 1)
-                return;
-
-            var dr = dt.Rows[0];
-
-            var create = dr.ItemArray[1]?.ToString() ?? "";
-
-            if (!string.IsNullOrEmpty(create)) backupObjectDescription.dict[name] = create;
+ 
+            backupObjectDescription.Dict[name] = dt.Rows[0];
         }
         catch (Exception ex)
         {
@@ -100,7 +93,7 @@ public static class DbBackup
 
     private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
-        const string? q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='polinetwork';";
+        string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='"+dbConfigConnection?.GetDbName()+"';";
         if (dbConfigConnection == null) return;
 
         var r = Database.ExecuteSelect(q, dbConfigConnection);
