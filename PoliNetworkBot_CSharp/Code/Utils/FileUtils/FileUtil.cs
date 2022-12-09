@@ -44,12 +44,12 @@ public static class FileUtil
                 }
                 catch
                 {
-                    ;
+                    // ignored
                 }
         }
         catch
         {
-            ;
+            // ignored
         }
 
         return null;
