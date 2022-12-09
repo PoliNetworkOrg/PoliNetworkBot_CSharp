@@ -14,8 +14,8 @@ public class BackupObjectDescription
 
     public BackupObjectDescription(string objectName, string query, Dictionary<string, string> dict)
     {
-        this.ObjectName = objectName;
-        this.Query = query;
+        ObjectName = objectName;
+        Query = query;
         this.dict = dict;
     }
 }

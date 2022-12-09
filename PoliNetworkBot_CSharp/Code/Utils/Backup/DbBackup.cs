@@ -32,11 +32,11 @@ public static class DbBackup
     {
         var x = new List<BackupObjectDescription>
         {
-            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ", db.DbBackupDdl.Procedures),
+            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ",
+                db.DbBackupDdl.Procedures),
             new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
         };
         foreach (var backupObjectDescription in x)
-        {
             try
             {
                 FillGenericObjects(dbConfig, backupObjectDescription);
@@ -45,7 +45,6 @@ public static class DbBackup
             {
                 Console.WriteLine(ex);
             }
-        }
     }
 
     private static void FillGenericObjects(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
@@ -57,7 +56,6 @@ public static class DbBackup
                 return;
 
             foreach (DataRow dr in dt.Rows)
-            {
                 try
                 {
                     var name = dr["Name"].ToString() ?? "";
@@ -68,7 +66,6 @@ public static class DbBackup
                 {
                     Console.WriteLine(ex2);
                 }
-            }
         }
         catch (Exception ex)
         {
@@ -81,7 +78,7 @@ public static class DbBackup
     {
         try
         {
-            var q = "SHOW CREATE "+backupObjectDescription.ObjectName+" "+dbConfig.GetDbName()+"." + name;
+            var q = "SHOW CREATE " + backupObjectDescription.ObjectName + " " + dbConfig.GetDbName() + "." + name;
             var dt = Database.ExecuteSelect(q, dbConfig);
             if (dt == null)
                 return;
@@ -93,10 +90,7 @@ public static class DbBackup
 
             var create = dr.ItemArray[1]?.ToString() ?? "";
 
-            if (!string.IsNullOrEmpty(create))
-            {
-                backupObjectDescription.dict[name] = create;
-            }
+            if (!string.IsNullOrEmpty(create)) backupObjectDescription.dict[name] = create;
         }
         catch (Exception ex)
         {

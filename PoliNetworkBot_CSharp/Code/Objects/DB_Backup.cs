@@ -16,7 +16,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 // ReSharper disable once InconsistentNaming
 internal class DB_Backup
 {
-
     public DbBackupDdl DbBackupDdl;
 
     // ReSharper disable once InconsistentNaming
@@ -30,10 +29,9 @@ internal class DB_Backup
     {
         tableNames = new List<string>();
         tables = new Dictionary<string, DataTable>();
-        this.DbBackupDdl = new DbBackupDdl();
+        DbBackupDdl = new DbBackupDdl();
     }
 
-   
 
     public void AddTables(IEnumerable<string?> c1)
     {

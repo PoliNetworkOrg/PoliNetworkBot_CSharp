@@ -13,7 +13,7 @@ public class DbBackupDdl
 
     public DbBackupDdl()
     {
-        this.Procedures = new Dictionary<string, string>();
-        this.TablesDdl = new Dictionary<string, string>();
+        Procedures = new Dictionary<string, string>();
+        TablesDdl = new Dictionary<string, string>();
     }
 }
