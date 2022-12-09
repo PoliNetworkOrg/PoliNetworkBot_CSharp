@@ -327,11 +327,10 @@ internal static class MainAnon
             var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
             var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-            if (dataAnon.CallBackQueryFromTelegram is { Message: { } })
-                if (dataAnon.Bot != null)
-                    await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
-                        dataAnon.CallBackQueryFromTelegram.Message.MessageId,
-                        "Hai scelto [" + dataAnon.GetResultEnum() + "]", replyMarkup);
+            if (dataAnon is { CallBackQueryFromTelegram.Message: { }, Bot: { } })
+                await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
+                    dataAnon.CallBackQueryFromTelegram.Message.MessageId,
+                    "Hai scelto [" + dataAnon.GetResultEnum() + "]", replyMarkup);
         }
         catch (Exception e1)
         {

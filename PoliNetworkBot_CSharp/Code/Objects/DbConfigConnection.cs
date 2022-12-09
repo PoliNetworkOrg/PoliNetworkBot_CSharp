@@ -36,4 +36,9 @@ public class DbConfigConnection
     {
         _mySqlConnection?.ReleaseConn(connectionWithLock);
     }
+
+    public string? GetDbName()
+    {
+        return _dbConfig.Database;
+    }
 }

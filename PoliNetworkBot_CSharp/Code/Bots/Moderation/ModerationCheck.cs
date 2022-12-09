@@ -68,7 +68,7 @@ internal static class ModerationCheck
             const string? q1 = "SELECT id, valid FROM GroupsTelegram WHERE id = @id";
             var dt = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
                 new Dictionary<string, object?> { { "@id", e.Message.Chat.Id } });
-            if (dt != null && dt.Rows.Count > 0)
+            if (dt is { Rows.Count: > 0 })
             {
                 var r1 = CheckIfToExit(sender, e, dt.Rows[0].ItemArray[1]).Result;
                 r1?.Item3?.Insert(0, 11);

@@ -15,7 +15,7 @@ internal static class DeleteMessage
     public static async Task DeleteIfMessageIsNotInPrivate(TelegramBotAbstract? telegramBotClient,
         Message? e)
     {
-        if (e != null && e.Chat.Type == ChatType.Private)
+        if (e is { Chat.Type: ChatType.Private })
             return;
 
         try
