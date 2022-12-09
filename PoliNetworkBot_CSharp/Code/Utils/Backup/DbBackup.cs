@@ -17,11 +17,7 @@ public static class DbBackup
             DB_Backup db = new();
 
             FillTables(db, dbConfig);
-
             FillDdl(db, dbConfig);
-            
-    
-
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -39,13 +35,20 @@ public static class DbBackup
             new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ", db.DbBackupDdl.Procedures),
             new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
         };
-        foreach (var x2 in x)
+        foreach (var backupObjectDescription in x)
         {
-            FillProcedures(dbConfig, x2);
+            try
+            {
+                FillGenericObjects(dbConfig, backupObjectDescription);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 
-    private static void FillProcedures(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
+    private static void FillGenericObjects(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
     {
         try
         {
