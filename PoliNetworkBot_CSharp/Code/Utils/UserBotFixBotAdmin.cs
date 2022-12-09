@@ -270,7 +270,7 @@ internal static class UserBotFixBotAdmin
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4.R2 != null && r4.R != null && r4.R2.Item1 != null;
+        return r4 is { R2.Item1: { }, R: { } };
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChannel? x5,
@@ -499,7 +499,7 @@ internal static class UserBotFixBotAdmin
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4.R2 != null && r4.R != null && r4.R2.Item1 != null;
+        return r4 is { R2.Item1: { }, R: { } };
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat? x5, long? accessHash,
