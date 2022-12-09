@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Newtonsoft.Json;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
@@ -10,12 +11,12 @@ public class BackupObjectDescription
 {
     public readonly string ObjectName;
     public readonly string Query;
-    public Dictionary<string, string> dict;
+    public Dictionary<string, DataRow> Dict;
 
-    public BackupObjectDescription(string objectName, string query, Dictionary<string, string> dict)
+    public BackupObjectDescription(string objectName, string query, Dictionary<string, DataRow> dict)
     {
         ObjectName = objectName;
         Query = query;
-        this.dict = dict;
+        this.Dict = dict;
     }
 }

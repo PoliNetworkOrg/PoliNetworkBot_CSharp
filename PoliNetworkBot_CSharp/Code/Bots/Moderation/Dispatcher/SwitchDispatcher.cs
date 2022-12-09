@@ -10,7 +10,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 
-public class SwitchDispatcher
+public static class SwitchDispatcher
 {
     /// <summary>
     ///     List of commands actively listened to from the bot.
