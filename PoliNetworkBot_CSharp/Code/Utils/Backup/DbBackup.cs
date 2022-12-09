@@ -93,9 +93,10 @@ public static class DbBackup
 
     private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
-        string q = "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='"+dbConfigConnection?.GetDbName()+"';";
         if (dbConfigConnection == null) return;
-
+        
+        var dbName = dbConfigConnection.GetDbName();
+        var q = $"SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='{dbName}';";
         var r = Database.ExecuteSelect(q, dbConfigConnection);
         if (r == null) return;
 
