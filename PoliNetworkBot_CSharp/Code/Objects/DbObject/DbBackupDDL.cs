@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Newtonsoft.Json;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
@@ -8,12 +9,12 @@ namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
 [JsonObject(MemberSerialization.Fields)]
 public class DbBackupDdl
 {
-    public Dictionary<string, string> Procedures;
-    public Dictionary<string, string> TablesDdl;
+    public Dictionary<string, DataRow> Procedures;
+    public Dictionary<string, DataRow> TablesDdl;
 
     public DbBackupDdl()
     {
-        Procedures = new Dictionary<string, string>();
-        TablesDdl = new Dictionary<string, string>();
+        Procedures = new Dictionary<string, DataRow>();
+        TablesDdl = new Dictionary<string, DataRow>();
     }
 }
