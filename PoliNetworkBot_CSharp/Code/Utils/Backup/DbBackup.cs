@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
@@ -33,22 +34,22 @@ public static class DbBackup
 
     private static void FillDdl(DB_Backup db, DbConfigConnection dbConfig)
     {
-        var x = new List<Tuple<string, string>>
+        var x = new List<BackupObjectDescription>
         {
-            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; "),
-            new("TABLE", "SHOW TABLE STATUS;")
+            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ", db.DbBackupDdl.Procedures),
+            new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
         };
         foreach (var x2 in x)
         {
-            FillProcedures(db, dbConfig, x2.Item1, x2.Item2);
+            FillProcedures(dbConfig, x2);
         }
     }
 
-    private static void FillProcedures(DB_Backup db, DbConfigConnection dbConfig, string procedure, string q)
+    private static void FillProcedures(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
     {
         try
         {
-            var dt = Database.ExecuteSelect(q, dbConfig);
+            var dt = Database.ExecuteSelect(backupObjectDescription.Query, dbConfig);
             if (dt == null)
                 return;
 
@@ -58,7 +59,7 @@ public static class DbBackup
                 {
                     var name = dr["Name"].ToString() ?? "";
                     if (!string.IsNullOrEmpty(name))
-                        FillGenericDbObject(db, dbConfig, name, db.Procedures, procedure);
+                        FillGenericDbObject(dbConfig, name, backupObjectDescription);
                 }
                 catch (Exception ex2)
                 {
@@ -72,12 +73,12 @@ public static class DbBackup
         }
     }
 
-    private static void FillGenericDbObject(DB_Backup db, DbConfigConnection dbConfig, string name,
-        IDictionary<string, string> dbProcedures, string procedure)
+    private static void FillGenericDbObject(DbConfigConnection dbConfig, string name,
+        BackupObjectDescription backupObjectDescription)
     {
         try
         {
-            var q = "SHOW CREATE "+procedure+" "+dbConfig.GetDbName()+"." + name;
+            var q = "SHOW CREATE "+backupObjectDescription.ObjectName+" "+dbConfig.GetDbName()+"." + name;
             var dt = Database.ExecuteSelect(q, dbConfig);
             if (dt == null)
                 return;
@@ -91,7 +92,7 @@ public static class DbBackup
 
             if (!string.IsNullOrEmpty(create))
             {
-                dbProcedures[name] = create;
+                backupObjectDescription.dict[name] = create;
             }
         }
         catch (Exception ex)
