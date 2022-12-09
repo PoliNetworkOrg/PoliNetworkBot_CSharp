@@ -32,7 +32,7 @@ public static class DbBackup
     {
         var x = new List<BackupObjectDescription>
         {
-            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = 'polinetwork' AND type = 'PROCEDURE'; ",
+            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = '"+dbConfig.GetDbName()+"' AND type = 'PROCEDURE'; ",
                 db.DbBackupDdl.Procedures),
             new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
         };
