@@ -54,6 +54,18 @@ public class AllowMessageCheck
                 false
             )
         );
+        
+        _tuples.Add(
+            new Tuple<Message, ActionDoneObject, bool>(
+                new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
+                new ActionDoneObject(
+                    ActionDoneEnum.CHECK_SPAM,
+                    null,
+                    SpamType.SPAM_LINK
+                ),
+                true
+            )
+        );
     }
 
     [Test]
@@ -74,7 +86,11 @@ public class AllowMessageCheck
 
         var e2 = new MessageEventArgs(tMessage);
         var actionDone = await Main.MainMethod2(new TelegramBotParam(null, true), e2);
+        
         Console.WriteLine(tMessage.Text);
+        Console.WriteLine("Allowed " + (toAllow ? "true" : "false"));
+        Console.WriteLine(actionDoneObject.ToString());
+        
         Assert.That(actionDone, Is.EqualTo(actionDoneObject));
     }
 }
