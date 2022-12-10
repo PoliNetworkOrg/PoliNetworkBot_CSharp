@@ -253,15 +253,20 @@ public static class Logger
         }
     }
 
-    private static void PrintLog3(List<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
+    private static void PrintLog3(IReadOnlyCollection<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
         MessageEventArgs? messageEventArgs, string path)
     {
-        if (text is { Count: <= 1 })
+        if (DetectEmptyLog(text))
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
             PrintLog2(sendTo, sender, path);
 
         _linesCount = 0;
+    }
+
+    private static bool DetectEmptyLog(IReadOnlyCollection<string>? text)
+    {
+        return text == null || text.All(x => string.IsNullOrEmpty(x.Trim()));
     }
 
 
