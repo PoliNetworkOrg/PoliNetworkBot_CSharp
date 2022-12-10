@@ -59,21 +59,22 @@ public static class MessagesStore
 
         if (string.IsNullOrEmpty(message))
             return false;
+        
+        Store ??= new Dictionary<string, StoredMessage?>();
 
-        if (Store != null && Store.ContainsKey(message))
+        if (Store.ContainsKey(message))
             Store.Remove(message);
 
         if ((timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING)
             || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING))
             throw new Exception("TimeLater and status mismatch");
 
-        if (Store == null) return true;
+
         lock (Store)
         {
             Store.Add(message,
                 new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
         }
-
         return true;
     }
 
@@ -132,9 +133,13 @@ public static class MessagesStore
         if (message == null)
             return SpamType.UNDEFINED;
 
-        if (!string.IsNullOrEmpty(message.Text))
-            return StoreAndCheck2(message, message.Text);
-        return !string.IsNullOrEmpty(message.Caption) ? StoreAndCheck2(message, message.Caption) : SpamType.UNDEFINED;
+        var text = GetText(message);
+        return !string.IsNullOrEmpty(text) ? StoreAndCheck2(message, message.Text) : SpamType.UNDEFINED;
+    }
+
+    private static string? GetText(Message message)
+    {
+        return string.IsNullOrEmpty(message.Text) ? message.Caption : message.Text;
     }
 
     private static SpamType StoreAndCheck2(Message? message, string? text)

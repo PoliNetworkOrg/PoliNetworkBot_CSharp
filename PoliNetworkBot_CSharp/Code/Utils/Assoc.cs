@@ -21,7 +21,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal static class Assoc
+public static class Assoc
 {
     private static async Task<long?> GetIdEntityFromPersonAsync(long? id, Language? question,
         TelegramBotAbstract? sender, string? lang, string? username)
@@ -548,7 +548,7 @@ internal static class Assoc
     /// </summary>
     /// <param name="e"></param>
     /// <param name="sender"></param>
-    public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender, TimeSpan timeSpan)
     {
         string? message = null;
 
@@ -606,66 +606,70 @@ internal static class Assoc
             { "it", "Club Dipartimentale" }
         });
 
-        if (assocList != null)
+        if (assocList == null)
         {
-            var assocAndClub = assocList.Select(a =>
-                new Language(
-                    new Dictionary<string, string?>
-                    {
-                        { "uni", a }
-                    })
-            ).ToList();
-
-            assocAndClub.Add(depClub);
-
-            var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
-
-            if (e?.Message?.From != null)
-            {
-                var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion,
-                    lang: e.Message.From.LanguageCode,
-                    options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
-                    sender: sender);
-
-                if (assocOrClub is "Departmental Club" or "Club Dipartimentale")
-                {
-                    depClub = new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "What is the name of the departimental club?" },
-                        { "it", "Qual è il nome del club dipartimentale?" }
-                    });
-                    assocOrClub = await AskUser.AskAsync(e.Message.From.Id, depClub, sender,
-                        e.Message.From.LanguageCode,
-                        e.Message.From.Username, true);
-                }
-
-                var permittedSpamMessage =
-                    await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups,
-                        messageType, assocOrClub);
-
-                var privateConfirmationMessage = new Language(new Dictionary<string, string?>
-                {
-                    { "uni", permittedSpamMessage }
-                });
-
-                await SendMessage.SendMessageInPrivate(sender,
-                    e.Message.From.Id, "uni",
-                    null, privateConfirmationMessage,
-                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-
-                var splitMessage = false;
-
-                if (message is { Length: > 4000 })
-                {
-                    permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(EventArgsContainer.Get(e),
-                        "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType,
-                        assocOrClub);
-                    splitMessage = true;
-                }
-
-                await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
-            }
+            return;
         }
+
+        var assocAndClub = assocList.Select(a =>
+            new Language(
+                new Dictionary<string, string?>
+                {
+                    { "uni", a }
+                })
+        ).ToList();
+
+        assocAndClub.Add(depClub);
+
+        var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
+
+        if (e?.Message?.From == null)
+        {
+            return;
+        }
+
+        var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion,
+            lang: e.Message.From.LanguageCode,
+            options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
+            sender: sender);
+
+        if (assocOrClub is "Departmental Club" or "Club Dipartimentale")
+        {
+            depClub = new Language(new Dictionary<string, string?>
+            {
+                { "en", "What is the name of the departimental club?" },
+                { "it", "Qual è il nome del club dipartimentale?" }
+            });
+            assocOrClub = await AskUser.AskAsync(e.Message.From.Id, depClub, sender,
+                e.Message.From.LanguageCode,
+                e.Message.From.Username, true);
+        }
+
+        var permittedSpamMessage =
+            await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups,
+                messageType, assocOrClub);
+
+        var privateConfirmationMessage = new Language(new Dictionary<string, string?>
+        {
+            { "uni", permittedSpamMessage }
+        });
+
+        await SendMessage.SendMessageInPrivate(sender,
+            e.Message.From.Id, "uni",
+            null, privateConfirmationMessage,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+
+        var splitMessage = false;
+
+        if (message is { Length: > 4000 })
+        {
+            permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(EventArgsContainer.Get(e),
+                "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType,
+                assocOrClub);
+            splitMessage = true;
+        }
+
+        await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage, timeSpan);
     }
 
     private static async void NotifyMessageIsAllowed(MessageEventArgs? eventArgs, TelegramBotAbstract? sender,
@@ -716,11 +720,9 @@ internal static class Assoc
     }
 
     private static async Task HandleVetoAnd4HoursAsync(string? message, MessageEventArgs? messageEventArgs,
-        TelegramBotAbstract? sender, string? permittedSpamMessage, bool splitMessage)
+        TelegramBotAbstract? sender, string? permittedSpamMessage, bool splitMessage, TimeSpan timeSpan)
     {
-        var fourHours = new TimeSpan(4, 0, 0);
-
-        MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
+        MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, timeSpan);
 
         var allowedTime = MessagesStore.GetAllowedTime(message);
         if (allowedTime.HasValue)
