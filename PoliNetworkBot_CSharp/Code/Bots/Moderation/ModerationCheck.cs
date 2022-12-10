@@ -343,7 +343,7 @@ internal static class ModerationCheck
             return false;
 
         var from1 = message.From;
-        Chat? chat = message.Chat;
+        var chat = message.Chat;
 
         var b = chat?.Type == ChatType.Private;
         return b || (from1 != null && Innocuo(from1, chat));

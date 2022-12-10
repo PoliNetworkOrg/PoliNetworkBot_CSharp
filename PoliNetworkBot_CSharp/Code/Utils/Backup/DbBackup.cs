@@ -32,7 +32,8 @@ public static class DbBackup
     {
         var x = new List<BackupObjectDescription>
         {
-            new("PROCEDURE", @"SHOW PROCEDURE STATUS WHERE db = '"+dbConfig.GetDbName()+"' AND type = 'PROCEDURE'; ",
+            new("PROCEDURE",
+                @"SHOW PROCEDURE STATUS WHERE db = '" + dbConfig.GetDbName() + "' AND type = 'PROCEDURE'; ",
                 db.DbBackupDdl.Procedures),
             new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
         };
@@ -82,7 +83,7 @@ public static class DbBackup
             var dt = Database.ExecuteSelect(q, dbConfig);
             if (dt == null || dt.Rows.Count < 1)
                 return;
- 
+
             backupObjectDescription.Dict[name] = dt.Rows[0];
         }
         catch (Exception ex)
@@ -94,7 +95,7 @@ public static class DbBackup
     private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null) return;
-        
+
         var dbName = dbConfigConnection.GetDbName();
         var q = $"SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='{dbName}';";
         var r = Database.ExecuteSelect(q, dbConfigConnection);
