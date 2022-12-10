@@ -23,9 +23,9 @@ public class AllowMessageCheck
             new Tuple<Message, ActionDoneObject, bool>(
                 new Message(){Text = "test 1", From =from, Chat = chat},
                 new ActionDoneObject(
-                    ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE,
-                    null,
-                    SpamType.ALL_GOOD),
+                    ActionDoneEnum.CHECK_SPAM,
+                    false,
+                    SpamType.SPAM_PERMITTED),
                 true
             )
         );
@@ -60,8 +60,8 @@ public class AllowMessageCheck
                 new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
                 new ActionDoneObject(
                     ActionDoneEnum.CHECK_SPAM,
-                    null,
-                    SpamType.SPAM_LINK
+                    false,
+                    SpamType.SPAM_PERMITTED
                 ),
                 true
             )
