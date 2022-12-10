@@ -59,21 +59,22 @@ public static class MessagesStore
 
         if (string.IsNullOrEmpty(message))
             return false;
+        
+        Store ??= new Dictionary<string, StoredMessage?>();
 
-        if (Store != null && Store.ContainsKey(message))
+        if (Store.ContainsKey(message))
             Store.Remove(message);
 
         if ((timeLater != null && messageAllowedStatus != MessageAllowedStatusEnum.PENDING)
             || (timeLater == null && messageAllowedStatus == MessageAllowedStatusEnum.PENDING))
             throw new Exception("TimeLater and status mismatch");
 
-        if (Store == null) return true;
+
         lock (Store)
         {
             Store.Add(message,
                 new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
         }
-
         return true;
     }
 

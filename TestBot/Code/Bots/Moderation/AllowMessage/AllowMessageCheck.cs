@@ -14,9 +14,10 @@ public class AllowMessageCheck
     [SetUp]
     public void Setup()
     {
+        var from =  new User() { Id = 123456 };
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){Text = "test 1", From = new User(){Id = 123456}},
+                new Message(){Text = "test 1", From =from},
                 new ActionDoneObject(
                     ActionDoneEnum.NONE,
                     null,
@@ -27,7 +28,7 @@ public class AllowMessageCheck
 
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){ Text = "test 2", From = new User(){Id = 123456}},
+                new Message(){ Text = "test 2", From = from},
                 new ActionDoneObject(
                     ActionDoneEnum.NONE,
                     null,
@@ -47,11 +48,10 @@ public class AllowMessageCheck
 
     private static async Task TestSingleAllowMessage(Message tMessage, ActionDoneObject actionDoneObject, bool toAllow)
     {
- 
-
+        
         if (toAllow)
         {
-            var message = new Message { ReplyToMessage = tMessage };
+            var message = new Message { ReplyToMessage = tMessage, From = tMessage.From};
             var e = new MessageEventArgs(message);
             await Assoc.AllowMessage(e, null);
         }
