@@ -5,7 +5,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
@@ -34,7 +33,7 @@ public static class CheckSpam
                 catch (Exception ex)
                 {
                     await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotClient, null,
-                        new EventArgsContainer() { MessageEventArgs = e });
+                        new EventArgsContainer { MessageEventArgs = e });
 
                     x = true;
                 }

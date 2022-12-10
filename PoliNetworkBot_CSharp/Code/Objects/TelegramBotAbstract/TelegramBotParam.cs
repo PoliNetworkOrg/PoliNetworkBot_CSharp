@@ -1,6 +1,4 @@
-﻿using PoliNetworkBot_CSharp.Code.Enums.Action;
-using PoliNetworkBot_CSharp.Code.Objects.Action;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
@@ -8,14 +6,14 @@ public class TelegramBotParam
 {
     private readonly object? _sender;
     private readonly bool _test;
-    
-    
+
+
     public TelegramBotParam(object? sender, bool test)
     {
-        this._sender = sender;
-        this._test = test;
+        _sender = sender;
+        _test = test;
     }
-    
+
     public TelegramBotAbstract? GetTelegramBot()
     {
         TelegramBotClient? telegramBotClientBot = null;
@@ -23,9 +21,9 @@ public class TelegramBotParam
 
         if (telegramBotClientBot == null)
         {
-            if (!_test) 
+            if (!_test)
                 return null;
-            
+
             var botClient = new TelegramBotClient("");
             return new TelegramBotAbstract(botClient);
         }

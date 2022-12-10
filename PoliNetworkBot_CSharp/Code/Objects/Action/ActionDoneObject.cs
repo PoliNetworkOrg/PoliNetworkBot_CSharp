@@ -39,6 +39,6 @@ public class ActionDoneObject
 
     public void SetSpamType(SpamType resultItem1)
     {
-        this._spamType = resultItem1;
+        _spamType = resultItem1;
     }
 }

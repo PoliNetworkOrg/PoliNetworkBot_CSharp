@@ -23,6 +23,7 @@ public class MessageAllowedStatus
     private MessageAllowedStatusEnum _messageAllowedStatus;
     private DateTime? allowedTime;
 
+
     public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, TimeSpan? timeSpan)
     {
         _messageAllowedStatus = allowedSpam;
