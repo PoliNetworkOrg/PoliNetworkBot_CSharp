@@ -17,11 +17,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 
 internal static class TextConversation
 {
-    internal static async Task<ActionDoneObject> DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    internal static async Task<ActionDoneObject> DetectMessage(TelegramBotAbstract? telegramBotClient,
+        MessageEventArgs? e)
     {
-        if (e?.Message == null) 
+        if (e?.Message == null)
             return new ActionDoneObject(ActionDoneEnum.NONE, false, null);
-        
+
         switch (e.Message.Chat.Type)
         {
             case ChatType.Private:

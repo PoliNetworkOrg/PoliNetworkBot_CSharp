@@ -10,7 +10,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 
 public static class CheckSpam
 {
-    public static async Task<Tuple<SpamType, bool?>> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
+    public static async Task<Tuple<SpamType, bool?>> CheckSpamMethod(MessageEventArgs e,
+        TelegramBotAbstract? telegramBotClient)
     {
         var checkSpam = await CheckSpamAsync(e, telegramBotClient, true);
 

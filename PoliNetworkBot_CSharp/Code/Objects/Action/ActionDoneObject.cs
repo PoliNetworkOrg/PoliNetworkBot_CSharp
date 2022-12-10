@@ -12,9 +12,9 @@ public class ActionDoneObject
 
     public ActionDoneObject(ActionDoneEnum actionDone, bool? done, SpamType? spamType)
     {
-        this._actionDoneEnum = actionDone;
-        this._done = done;
-        this._spamType = spamType;
+        _actionDoneEnum = actionDone;
+        _done = done;
+        _spamType = spamType;
     }
 
     public override bool Equals(object? obj)
@@ -34,6 +34,6 @@ public class ActionDoneObject
 
     public override string ToString()
     {
-        return this._actionDoneEnum + " | " + this._done + " | " + this._spamType;
+        return _actionDoneEnum + " | " + _done + " | " + _spamType;
     }
 }

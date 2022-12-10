@@ -2,7 +2,8 @@
 
 public enum ActionDoneEnum
 {
-    DELETED, ANSWERED,
+    DELETED,
+    ANSWERED,
     NONE,
     BANNED,
     USERNAME_WARNING,

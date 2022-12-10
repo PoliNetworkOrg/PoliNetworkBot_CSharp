@@ -29,7 +29,6 @@ public class CheckSpam
     {
         if (_tuples != null)
             foreach (var (message, item2) in _tuples)
-            {
                 try
                 {
                     var e = new MessageEventArgs(message);
@@ -41,6 +40,5 @@ public class CheckSpam
                 {
                     Assert.Fail(ex.Message, ex);
                 }
-            }
     }
 }

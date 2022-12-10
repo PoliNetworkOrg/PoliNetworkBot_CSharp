@@ -87,7 +87,7 @@ public static class Main
             if (BanMessageDetected(e, telegramBotClient))
             {
                 var b = await CommandDispatcher.BanMessageActions(telegramBotClient, e);
-                return new ActionDoneObject(ActionDoneEnum.BANNED,b, null);
+                return new ActionDoneObject(ActionDoneEnum.BANNED, b, null);
             }
 
             var toExitBecauseUsernameAndNameCheck =
@@ -97,16 +97,14 @@ public static class Main
 
             var result = await CheckSpam.CheckSpamMethod(e, telegramBotClient);
             if (result.Item2 != null)
-            {
                 return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
-            }
 
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
             {
                 var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                 return new ActionDoneObject(ActionDoneEnum.COMMAND, x, null);
             }
-            
+
             return await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
