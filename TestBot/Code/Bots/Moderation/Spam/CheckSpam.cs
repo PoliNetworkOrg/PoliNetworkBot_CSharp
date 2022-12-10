@@ -25,15 +25,22 @@ public class CheckSpam
     }
 
     [Test]
-    public async Task Test1()
+    public async Task TestSpam()
     {
         if (_tuples != null)
             foreach (var (message, item2) in _tuples)
             {
-                var e = new MessageEventArgs(message);
-                var b = await PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck.CheckSpam.CheckSpamAsync(e, null,
-                    true);
-                Assert.That(b, Is.EqualTo(item2));
+                try
+                {
+                    var e = new MessageEventArgs(message);
+                    var b = await PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck.CheckSpam.CheckSpamAsync(e, null,
+                        true);
+                    Assert.That(b, Is.EqualTo(item2));
+                }
+                catch (Exception ex)
+                {
+                    Assert.Fail(ex.Message, ex);
+                }
             }
     }
 }
