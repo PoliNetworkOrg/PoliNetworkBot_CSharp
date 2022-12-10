@@ -548,7 +548,7 @@ public static class Assoc
     /// </summary>
     /// <param name="e"></param>
     /// <param name="sender"></param>
-    public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender, TimeSpan timeSpan)
     {
         string? message = null;
 
@@ -669,7 +669,7 @@ public static class Assoc
             splitMessage = true;
         }
 
-        await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage);
+        await HandleVetoAnd4HoursAsync(message, e, sender, permittedSpamMessage, splitMessage, timeSpan);
     }
 
     private static async void NotifyMessageIsAllowed(MessageEventArgs? eventArgs, TelegramBotAbstract? sender,
@@ -720,11 +720,9 @@ public static class Assoc
     }
 
     private static async Task HandleVetoAnd4HoursAsync(string? message, MessageEventArgs? messageEventArgs,
-        TelegramBotAbstract? sender, string? permittedSpamMessage, bool splitMessage)
+        TelegramBotAbstract? sender, string? permittedSpamMessage, bool splitMessage, TimeSpan timeSpan)
     {
-        var fourHours = new TimeSpan(4, 0, 0);
-
-        MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, fourHours);
+        MessagesStore.AddMessage(message, MessageAllowedStatusEnum.PENDING, timeSpan);
 
         var allowedTime = MessagesStore.GetAllowedTime(message);
         if (allowedTime.HasValue)

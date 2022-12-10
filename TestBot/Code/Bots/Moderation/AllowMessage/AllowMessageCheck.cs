@@ -81,7 +81,7 @@ public class AllowMessageCheck
         {
             var message = new Message { ReplyToMessage = tMessage, From = tMessage.From};
             var e = new MessageEventArgs(message);
-            await Assoc.AllowMessage(e, null);
+            await Assoc.AllowMessage(e, null, TimeSpan.Zero);
         }
 
         var e2 = new MessageEventArgs(tMessage);
