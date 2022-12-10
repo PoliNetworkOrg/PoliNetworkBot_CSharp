@@ -51,7 +51,6 @@ public class AllowMessageCheck
 
     private static async Task TestSingleAllowMessage(Message tMessage, ActionDoneObject actionDoneObject, bool toAllow)
     {
-        
         if (toAllow)
         {
             var message = new Message { ReplyToMessage = tMessage, From = tMessage.From};
