@@ -9,30 +9,55 @@ namespace TestBot.Code.Bots.Moderation.AllowMessage;
 
 public class AllowMessageCheck
 {
-    private readonly List<Tuple<string, ActionDoneObject>> _tuples = new();
+    private readonly List<Tuple<Message, ActionDoneObject, bool>> _tuples = new();
 
     [SetUp]
     public void Setup()
     {
-        _tuples.Add(new Tuple<string, ActionDoneObject>("to be allowed",
-            new ActionDoneObject(ActionDoneEnum.NONE, null, null)));
+        _tuples.Add(
+            new Tuple<Message, ActionDoneObject, bool>(
+                new Message(){Text = "test 1", From = new User(){Id = 123456}},
+                new ActionDoneObject(
+                    ActionDoneEnum.NONE,
+                    null,
+                    null),
+                true
+            )
+        );
+
+        _tuples.Add(
+            new Tuple<Message, ActionDoneObject, bool>(
+                new Message(){ Text = "test 2", From = new User(){Id = 123456}},
+                new ActionDoneObject(
+                    ActionDoneEnum.NONE,
+                    null,
+                    null
+                ),
+                false
+            )
+        );
     }
 
     [Test]
     public async Task TestAllowMessage()
     {
-        foreach (var (text, item2) in _tuples) await TestSingleAllowMessage(text, item2);
+        foreach (var (text, item2, toAllow) in _tuples)
+            await TestSingleAllowMessage(text, item2, toAllow);
     }
 
-    private static async Task TestSingleAllowMessage(string text, ActionDoneObject item2)
+    private static async Task TestSingleAllowMessage(Message tMessage, ActionDoneObject actionDoneObject, bool toAllow)
     {
-        var message = new Message { ReplyToMessage = new Message { Text = text } };
-        var message2 = new Message { Text = text };
-        var e = new MessageEventArgs(message);
-        await Assoc.AllowMessage(e, null);
+ 
 
-        var e2 = new MessageEventArgs(message2);
+        if (toAllow)
+        {
+            var message = new Message { ReplyToMessage = tMessage };
+            var e = new MessageEventArgs(message);
+            await Assoc.AllowMessage(e, null);
+        }
+
+        var e2 = new MessageEventArgs(tMessage);
         var actionDone = await Main.MainMethod2(new object(), e2);
-        Assert.That(actionDone, Is.EqualTo(item2));
+        Assert.That(actionDone, Is.EqualTo(actionDoneObject));
     }
 }
