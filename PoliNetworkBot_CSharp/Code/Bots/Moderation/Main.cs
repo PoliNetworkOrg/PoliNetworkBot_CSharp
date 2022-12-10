@@ -33,26 +33,25 @@ public static class Main
     {
         var t = new Thread(() =>
         {
-            if (sender != null && e != null) _ = MainMethod2(sender, e);
+            if (sender != null && e != null) _ = MainMethod2(new TelegramBotParam(sender, false), e);
         });
         t.Start();
         //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
         //t1.Start();
     }
 
-    public static async Task<ActionDoneObject> MainMethod2(object sender, MessageEventArgs? e)
+    public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
     {
-        TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;
 
         try
         {
-            if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
-
-            if (telegramBotClientBot == null || e?.Message == null)
+            telegramBotClient = sender.GetTelegramBot();
+            
+            if (telegramBotClient == null || e?.Message == null)
                 return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
-            telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+       
 
             var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
             if (toExit is { Item1: ToExit.EXIT })

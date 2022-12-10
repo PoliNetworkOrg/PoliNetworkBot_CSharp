@@ -2,6 +2,7 @@
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 
@@ -57,7 +58,7 @@ public class AllowMessageCheck
         }
 
         var e2 = new MessageEventArgs(tMessage);
-        var actionDone = await Main.MainMethod2(new object(), e2);
+        var actionDone = await Main.MainMethod2(new TelegramBotParam(null, true), e2);
         Assert.That(actionDone, Is.EqualTo(actionDoneObject));
     }
 }
