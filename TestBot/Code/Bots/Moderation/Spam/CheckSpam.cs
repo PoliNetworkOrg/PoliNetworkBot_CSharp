@@ -14,11 +14,11 @@ public class CheckSpam
     {
         _tuples = new List<Tuple<Message, SpamType>>
         {
-            new(new Message() { Chat = new Chat() { Type = ChatType.Private, Id = 123456 } }, SpamType.ALL_GOOD),
+            new(new Message { Chat = new Chat { Type = ChatType.Private, Id = 123456 } }, SpamType.ALL_GOOD),
             new(
-                new Message()
+                new Message
                 {
-                    Text = "https://web.whatsapp.com/", Chat = new Chat() { Type = ChatType.Supergroup, Id = 123456 }
+                    Text = "https://web.whatsapp.com/", Chat = new Chat { Type = ChatType.Supergroup, Id = 123456 }
                 },
                 SpamType.SPAM_LINK)
         };
