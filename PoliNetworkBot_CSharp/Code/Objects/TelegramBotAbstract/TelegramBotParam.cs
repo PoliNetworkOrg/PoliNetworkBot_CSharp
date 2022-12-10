@@ -6,11 +6,11 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 public class TelegramBotParam
 {
-    private readonly object _sender;
+    private readonly object? _sender;
     private readonly bool _test;
     
     
-    public TelegramBotParam(object sender, bool test)
+    public TelegramBotParam(object? sender, bool test)
     {
         this._sender = sender;
         this._test = test;
