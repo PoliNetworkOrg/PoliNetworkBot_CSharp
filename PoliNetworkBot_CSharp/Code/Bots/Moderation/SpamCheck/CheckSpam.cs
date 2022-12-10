@@ -5,26 +5,40 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 
 public static class CheckSpam
 {
-    public static async Task<Tuple<SpamType, bool?>> CheckSpamMethod(MessageEventArgs e,
+    public static async Task<Tuple<SpamType, bool?>?> CheckSpamMethod(MessageEventArgs e,
         TelegramBotAbstract? telegramBotClient)
     {
         var checkSpam = await CheckSpamAsync(e, telegramBotClient, true);
 
 
-        bool? x;
+        bool? x = null;
         switch (checkSpam)
         {
             case SpamType.SPAM_LINK:
             case SpamType.NOT_ALLOWED_WORDS:
             case SpamType.FOREIGN:
             case SpamType.FORMAT_INCORRECT:
-                x = await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+            {
+                ;
+                try
+                {
+                    x = await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                }
+                catch (Exception ex)
+                {
+                    await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotClient, null,
+                        new EventArgsContainer() { MessageEventArgs = e });
+                }
+
                 break;
+            }
             case SpamType.SPAM_PERMITTED:
                 x = await ModerationCheck.PermittedSpamMeasure(telegramBotClient, EventArgsContainer.Get(e));
                 break;

@@ -103,8 +103,20 @@ public static class Main
             if (toExitBecauseUsernameAndNameCheck)
                 return new ActionDoneObject(ActionDoneEnum.USERNAME_WARNING, null, null);
 
-            var result = await CheckSpam.CheckSpamMethod(e, telegramBotClient);
-            if (result.Item2 != null)
+            Tuple<SpamType, bool?>? result = null;
+            try
+            {
+                result = await CheckSpam.CheckSpamMethod(e, telegramBotClient);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
+
+            if (result == null) 
+                return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
+            
+            if (result is { Item2: { } })
                 return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
 
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
