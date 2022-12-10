@@ -36,8 +36,8 @@ internal static class TextConversation
             case ChatType.Group:
             case ChatType.Supergroup:
             {
-                MessageInGroup(telegramBotClient, e);
-                return new ActionDoneObject(ActionDoneEnum.GROUP_MESSAGE_HANDLED, null, null);
+                var x = MessageInGroup(telegramBotClient, e);
+                return new ActionDoneObject(x, null, null);
             }
             case ChatType.Sender:
                 break;
@@ -49,18 +49,25 @@ internal static class TextConversation
         return new ActionDoneObject(ActionDoneEnum.NONE, false, null);
     }
 
-    private static void MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    private static ActionDoneEnum MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
         if (e?.Message == null)
-            return;
+            return ActionDoneEnum.NONE;
 
         if (string.IsNullOrEmpty(e.Message.Text))
-            return;
+            return ActionDoneEnum.NONE;
 
         var text = e.Message.Text.ToLower();
         var title = e.Message.Chat.Title?.ToLower();
         if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
+        {
             AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
+            return ActionDoneEnum.GROUP_MESSAGE_HANDLED_AUTOREPLY;
+        }
+        else
+        {
+            return ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE;
+        }
     }
 
     private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
