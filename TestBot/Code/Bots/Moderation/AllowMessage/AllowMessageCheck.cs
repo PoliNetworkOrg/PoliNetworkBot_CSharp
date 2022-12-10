@@ -1,4 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
@@ -22,9 +23,9 @@ public class AllowMessageCheck
             new Tuple<Message, ActionDoneObject, bool>(
                 new Message(){Text = "test 1", From =from, Chat = chat},
                 new ActionDoneObject(
-                    ActionDoneEnum.NONE,
+                    ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE,
                     null,
-                    null),
+                    SpamType.ALL_GOOD),
                 true
             )
         );
@@ -33,9 +34,22 @@ public class AllowMessageCheck
             new Tuple<Message, ActionDoneObject, bool>(
                 new Message(){ Text = "test 2", From = from, Chat = chat},
                 new ActionDoneObject(
-                    ActionDoneEnum.NONE,
+                    ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE,
                     null,
-                    null
+                    SpamType.ALL_GOOD
+                ),
+                false
+            )
+        );
+        
+        
+        _tuples.Add(
+            new Tuple<Message, ActionDoneObject, bool>(
+                new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
+                new ActionDoneObject(
+                    ActionDoneEnum.CHECK_SPAM,
+                    null,
+                    SpamType.SPAM_LINK
                 ),
                 false
             )
@@ -60,6 +74,7 @@ public class AllowMessageCheck
 
         var e2 = new MessageEventArgs(tMessage);
         var actionDone = await Main.MainMethod2(new TelegramBotParam(null, true), e2);
+        Console.WriteLine(tMessage.Text);
         Assert.That(actionDone, Is.EqualTo(actionDoneObject));
     }
 }

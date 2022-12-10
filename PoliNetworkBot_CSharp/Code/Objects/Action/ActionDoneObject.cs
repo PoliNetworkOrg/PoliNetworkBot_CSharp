@@ -8,7 +8,7 @@ public class ActionDoneObject
 {
     private readonly ActionDoneEnum _actionDoneEnum;
     private readonly bool? _done;
-    private readonly SpamType? _spamType;
+    private SpamType? _spamType;
 
     public ActionDoneObject(ActionDoneEnum actionDone, bool? done, SpamType? spamType)
     {
@@ -35,5 +35,10 @@ public class ActionDoneObject
     public override string ToString()
     {
         return _actionDoneEnum + " | " + _done + " | " + _spamType;
+    }
+
+    public void SetSpamType(SpamType resultItem1)
+    {
+        this._spamType = resultItem1;
     }
 }

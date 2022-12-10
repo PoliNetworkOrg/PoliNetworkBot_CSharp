@@ -110,10 +110,12 @@ public static class Main
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
             {
                 var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-                return new ActionDoneObject(ActionDoneEnum.COMMAND, x, null);
+                return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
             }
 
-            return await TextConversation.DetectMessage(telegramBotClient, e);
+            var y = await TextConversation.DetectMessage(telegramBotClient, e);
+            y.SetSpamType(result.Item1);
+            return y;
         }
         catch (Exception? exception)
         {
