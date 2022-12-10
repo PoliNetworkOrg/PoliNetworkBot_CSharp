@@ -51,9 +51,18 @@ public static class Main
             if (telegramBotClient == null || e?.Message == null)
                 return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
-       
 
-            var toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+
+            Tuple<ToExit?, ChatMember[]?, List<int>?, string?>? toExit = null;
+            try
+            {
+                toExit = await ModerationCheck.CheckIfToExitAndUpdateGroupList(telegramBotClient, e);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(ex);
+            }
+
             if (toExit is { Item1: ToExit.EXIT })
             {
                 var itemToPrint = MemberListToString(toExit.Item2);

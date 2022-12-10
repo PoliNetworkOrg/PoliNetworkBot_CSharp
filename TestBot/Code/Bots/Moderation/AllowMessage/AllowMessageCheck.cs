@@ -5,6 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace TestBot.Code.Bots.Moderation.AllowMessage;
 
@@ -16,9 +17,10 @@ public class AllowMessageCheck
     public void Setup()
     {
         var from =  new User() { Id = 123456 };
+        var chat = new Chat() { Type = ChatType.Supergroup };
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){Text = "test 1", From =from},
+                new Message(){Text = "test 1", From =from, Chat = chat},
                 new ActionDoneObject(
                     ActionDoneEnum.NONE,
                     null,
@@ -29,7 +31,7 @@ public class AllowMessageCheck
 
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){ Text = "test 2", From = from},
+                new Message(){ Text = "test 2", From = from, Chat = chat},
                 new ActionDoneObject(
                     ActionDoneEnum.NONE,
                     null,
