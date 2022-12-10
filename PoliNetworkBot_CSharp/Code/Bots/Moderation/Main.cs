@@ -106,7 +106,7 @@ public static class Main
                 var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                 return new ActionDoneObject(ActionDoneEnum.COMMAND, x, null);
             }
-
+            
             return await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
