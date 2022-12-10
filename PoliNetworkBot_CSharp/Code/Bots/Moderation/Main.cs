@@ -19,7 +19,6 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -47,10 +46,9 @@ public static class Main
         try
         {
             telegramBotClient = sender.GetTelegramBot();
-            
+
             if (telegramBotClient == null || e?.Message == null)
                 return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
-
 
 
             Tuple<ToExit?, ChatMember[]?, List<int>?, string?>? toExit = null;
@@ -113,9 +111,9 @@ public static class Main
                 Logger.WriteLine(ex);
             }
 
-            if (result == null) 
+            if (result == null)
                 return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
-            
+
             if (result is { Item2: { } })
                 return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
 

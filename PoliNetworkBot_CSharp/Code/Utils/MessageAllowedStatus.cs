@@ -22,7 +22,7 @@ public class MessageAllowedStatus
     private readonly DateTime insertedTime = DateTime.Now;
     private MessageAllowedStatusEnum _messageAllowedStatus;
     private DateTime? allowedTime;
-    
+
 
     public MessageAllowedStatus(MessageAllowedStatusEnum allowedSpam, TimeSpan? timeSpan)
     {

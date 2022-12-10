@@ -59,7 +59,7 @@ public static class MessagesStore
 
         if (string.IsNullOrEmpty(message))
             return false;
-        
+
         Store ??= new Dictionary<string, StoredMessage?>();
 
         if (Store.ContainsKey(message))
@@ -75,6 +75,7 @@ public static class MessagesStore
             Store.Add(message,
                 new StoredMessage(message, allowedSpam: messageAllowedStatus, timeLater: timeLater));
         }
+
         return true;
     }
 
