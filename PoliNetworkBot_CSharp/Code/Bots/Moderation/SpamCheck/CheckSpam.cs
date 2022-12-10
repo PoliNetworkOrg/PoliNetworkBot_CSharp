@@ -35,6 +35,8 @@ public static class CheckSpam
                 {
                     await NotifyUtil.NotifyOwnersWithLog(ex, telegramBotClient, null,
                         new EventArgsContainer() { MessageEventArgs = e });
+
+                    x = true;
                 }
 
                 break;
