@@ -17,11 +17,11 @@ public class AllowMessageCheck
     [SetUp]
     public void Setup()
     {
-        var from =  new User() { Id = 123456 };
-        var chat = new Chat() { Type = ChatType.Supergroup };
+        var from = new User { Id = 123456 };
+        var chat = new Chat { Type = ChatType.Supergroup };
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){Text = "test 1", From =from, Chat = chat},
+                new Message { Text = "test 1", From = from, Chat = chat },
                 new ActionDoneObject(
                     ActionDoneEnum.CHECK_SPAM,
                     false,
@@ -32,7 +32,7 @@ public class AllowMessageCheck
 
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){ Text = "test 2", From = from, Chat = chat},
+                new Message { Text = "test 2", From = from, Chat = chat },
                 new ActionDoneObject(
                     ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE,
                     null,
@@ -41,11 +41,11 @@ public class AllowMessageCheck
                 false
             )
         );
-        
-        
+
+
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
+                new Message { Text = "https://docs.google.com/", From = from, Chat = chat },
                 new ActionDoneObject(
                     ActionDoneEnum.CHECK_SPAM,
                     true,
@@ -54,10 +54,10 @@ public class AllowMessageCheck
                 false
             )
         );
-        
+
         _tuples.Add(
             new Tuple<Message, ActionDoneObject, bool>(
-                new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
+                new Message { Text = "https://docs.google.com/", From = from, Chat = chat },
                 new ActionDoneObject(
                     ActionDoneEnum.CHECK_SPAM,
                     false,
@@ -79,18 +79,18 @@ public class AllowMessageCheck
     {
         if (toAllow)
         {
-            var message = new Message { ReplyToMessage = tMessage, From = tMessage.From};
+            var message = new Message { ReplyToMessage = tMessage, From = tMessage.From };
             var e = new MessageEventArgs(message);
             await Assoc.AllowMessage(e, null, TimeSpan.Zero);
         }
 
         var e2 = new MessageEventArgs(tMessage);
         var actionDone = await Main.MainMethod2(new TelegramBotParam(null, true), e2);
-        
+
         Console.WriteLine(tMessage.Text);
         Console.WriteLine("Allowed " + (toAllow ? "true" : "false"));
         Console.WriteLine(actionDoneObject.ToString());
-        
+
         Assert.That(actionDone, Is.EqualTo(actionDoneObject));
     }
 }

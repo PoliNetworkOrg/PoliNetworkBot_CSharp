@@ -62,6 +62,8 @@ public static class MessagesStore
         
         Store ??= new Dictionary<string, StoredMessage?>();
 
+        Store ??= new Dictionary<string, StoredMessage?>();
+
         if (Store.ContainsKey(message))
             Store.Remove(message);
 

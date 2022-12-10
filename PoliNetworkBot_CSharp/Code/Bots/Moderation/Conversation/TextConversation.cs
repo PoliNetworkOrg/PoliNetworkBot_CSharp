@@ -64,10 +64,8 @@ internal static class TextConversation
             AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
             return ActionDoneEnum.GROUP_MESSAGE_HANDLED_AUTOREPLY;
         }
-        else
-        {
-            return ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE;
-        }
+
+        return ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE;
     }
 
     private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
