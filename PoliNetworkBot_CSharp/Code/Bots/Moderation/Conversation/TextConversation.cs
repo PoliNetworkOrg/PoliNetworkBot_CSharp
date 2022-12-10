@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -15,31 +17,35 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 
 internal static class TextConversation
 {
-    internal static async Task DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
+    internal static async Task<ActionDoneObject> DetectMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
     {
-        if (e?.Message != null)
-            switch (e.Message.Chat.Type)
+        if (e?.Message == null) 
+            return new ActionDoneObject(ActionDoneEnum.NONE, false, null);
+        
+        switch (e.Message.Chat.Type)
+        {
+            case ChatType.Private:
             {
-                case ChatType.Private:
-                {
-                    await PrivateMessage(telegramBotClient, e);
-                    break;
-                }
-                case ChatType.Channel:
-                    break;
-
-                case ChatType.Group:
-                case ChatType.Supergroup:
-                {
-                    MessageInGroup(telegramBotClient, e);
-                    break;
-                }
-                case ChatType.Sender:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await PrivateMessage(telegramBotClient, e);
+                return new ActionDoneObject(ActionDoneEnum.PRIVATE_MESSAGE_ANSWERED, null, null);
             }
+            case ChatType.Channel:
+                break;
+
+            case ChatType.Group:
+            case ChatType.Supergroup:
+            {
+                MessageInGroup(telegramBotClient, e);
+                return new ActionDoneObject(ActionDoneEnum.GROUP_MESSAGE_HANDLED, null, null);
+            }
+            case ChatType.Sender:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        return new ActionDoneObject(ActionDoneEnum.NONE, false, null);
     }
 
     private static void MessageInGroup(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)

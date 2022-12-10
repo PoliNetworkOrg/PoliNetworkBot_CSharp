@@ -10,8 +10,10 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -25,7 +27,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
 
-internal static class Main
+public static class Main
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
@@ -38,7 +40,7 @@ internal static class Main
         //t1.Start();
     }
 
-    private static async Task<bool> MainMethod2(object sender, MessageEventArgs? e)
+    public static async Task<ActionDoneObject> MainMethod2(object sender, MessageEventArgs? e)
     {
         TelegramBotClient? telegramBotClientBot = null;
         TelegramBotAbstract? telegramBotClient = null;
@@ -47,11 +49,8 @@ internal static class Main
         {
             if (sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
 
-            if (telegramBotClientBot == null)
-                return false;
-
-            if (e?.Message == null)
-                return false;
+            if (telegramBotClientBot == null || e?.Message == null)
+                return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
             telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
 
@@ -86,20 +85,29 @@ internal static class Main
             await AddedUsersUtil.DealWithAddedUsers(telegramBotClient, e);
 
             if (BanMessageDetected(e, telegramBotClient))
-                return await CommandDispatcher.BanMessageActions(telegramBotClient, e);
+            {
+                var b = await CommandDispatcher.BanMessageActions(telegramBotClient, e);
+                return new ActionDoneObject(ActionDoneEnum.BANNED,b, null);
+            }
 
             var toExitBecauseUsernameAndNameCheck =
                 await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
             if (toExitBecauseUsernameAndNameCheck)
-                return false;
+                return new ActionDoneObject(ActionDoneEnum.USERNAME_WARNING, null, null);
 
             var result = await CheckSpam.CheckSpamMethod(e, telegramBotClient);
-            if (result != null)
-                return result.Value;
+            if (result.Item2 != null)
+            {
+                return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
+            }
 
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
-                return await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-            await TextConversation.DetectMessage(telegramBotClient, e);
+            {
+                var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+                return new ActionDoneObject(ActionDoneEnum.COMMAND, x, null);
+            }
+
+            return await TextConversation.DetectMessage(telegramBotClient, e);
         }
         catch (Exception? exception)
         {
@@ -108,7 +116,7 @@ internal static class Main
             await NotifyUtil.NotifyOwnerWithLog2(exception, telegramBotClient, EventArgsContainer.Get(e));
         }
 
-        return false;
+        return new ActionDoneObject(ActionDoneEnum.NONE, false, null);
     }
 
     private static bool BanMessageDetected(MessageEventArgs? messageEventArgs, TelegramBotAbstract? sender)

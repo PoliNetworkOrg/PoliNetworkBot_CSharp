@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
@@ -9,23 +10,31 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 
 public static class CheckSpam
 {
-    public static async Task<bool?> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
+    public static async Task<Tuple<SpamType, bool?>> CheckSpamMethod(MessageEventArgs e, TelegramBotAbstract? telegramBotClient)
     {
         var checkSpam = await CheckSpamAsync(e, telegramBotClient, true);
 
 
-        return checkSpam switch
+        bool? x;
+        switch (checkSpam)
         {
-            SpamType.SPAM_LINK => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
-            SpamType.NOT_ALLOWED_WORDS => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
-            SpamType.FOREIGN => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
-            SpamType.FORMAT_INCORRECT => await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam),
-            SpamType.SPAM_PERMITTED => await ModerationCheck.PermittedSpamMeasure(telegramBotClient,
-                EventArgsContainer.Get(e)),
-            SpamType.UNDEFINED => null,
-            SpamType.ALL_GOOD => null,
-            _ => null
-        };
+            case SpamType.SPAM_LINK:
+            case SpamType.NOT_ALLOWED_WORDS:
+            case SpamType.FOREIGN:
+            case SpamType.FORMAT_INCORRECT:
+                x = await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
+                break;
+            case SpamType.SPAM_PERMITTED:
+                x = await ModerationCheck.PermittedSpamMeasure(telegramBotClient, EventArgsContainer.Get(e));
+                break;
+            case SpamType.UNDEFINED:
+            case SpamType.ALL_GOOD:
+            default:
+                x = null;
+                break;
+        }
+
+        return new Tuple<SpamType, bool?>(checkSpam, x);
     }
 
 

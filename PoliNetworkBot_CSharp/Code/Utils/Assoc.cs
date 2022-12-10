@@ -21,7 +21,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-internal static class Assoc
+public static class Assoc
 {
     private static async Task<long?> GetIdEntityFromPersonAsync(long? id, Language? question,
         TelegramBotAbstract? sender, string? lang, string? username)
