@@ -178,7 +178,8 @@ internal static class CommandDispatcher
 
     public static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        await Assoc.AllowMessage(e, sender);
+        var fourHours = new TimeSpan(4, 0, 0);
+        await Assoc.AllowMessage(e, sender, fourHours);
         return CommandExecutionState.SUCCESSFUL;
     }
 

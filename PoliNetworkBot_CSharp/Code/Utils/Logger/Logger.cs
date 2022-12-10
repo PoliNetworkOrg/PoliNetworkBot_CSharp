@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,8 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+
+#pragma warning disable CS0162
 
 #endregion
 
@@ -418,6 +421,7 @@ public static class Logger
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }
 
+    [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
     public static void WriteLogComplete(List<object?> values, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
         switch (LogCostants.LogComplete)
@@ -437,6 +441,7 @@ public static class Logger
         }
     }
 
+    [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
     private static void WriteLogComplete2(LogObject logObject, TelegramBotAbstract? telegramBotAbstract, string caption)
     {
         switch (LogCostants.LogComplete)

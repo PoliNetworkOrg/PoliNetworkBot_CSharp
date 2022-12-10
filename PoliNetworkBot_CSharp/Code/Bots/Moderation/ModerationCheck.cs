@@ -344,12 +344,14 @@ internal static class ModerationCheck
 
         var from1 = message.From;
         var chat = message.Chat;
-        return chat.Type == ChatType.Private || (from1 != null && Innocuo(from1, chat));
+
+        var b = chat?.Type == ChatType.Private;
+        return b || (from1 != null && Innocuo(from1, chat));
     }
 
-    private static bool Innocuo(User from1, Chat chat)
+    private static bool Innocuo(User from1, Chat? chat)
     {
-        return from1.Id == 777000 || from1.Id == chat.Id ||
+        return from1.Id == 777000 || from1.Id == chat?.Id ||
                CheckIfIsInList(GlobalVariables.AllowedSpam, from1) ||
                CheckIfIsInList(GlobalVariables.Creators, from1) ||
                CheckIfIsInList(GlobalVariables.SubCreators, from1) ||

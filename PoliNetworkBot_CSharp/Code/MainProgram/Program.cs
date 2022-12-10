@@ -2,12 +2,12 @@
 
 using System;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Beta.IG;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Main;
 using PoliNetworkBot_CSharp.Code.Utils.Restore;
-using PoliNetworkBot_CSharp.Test.IG;
 
 #endregion
 
@@ -75,7 +75,7 @@ internal static class Program
                         //SpamTest.Main2();
                         //Test_CheckLink.Test_CheckLink2();
                         //await TestIg.MainIgAsync();
-                        await PoliNetworkBot_CSharp.Test.Test.MainTest();
+                        await Test.Test.MainTest();
                         return;
                     }
                     catch

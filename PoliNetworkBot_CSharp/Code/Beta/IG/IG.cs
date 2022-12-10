@@ -14,7 +14,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Test.IG;
+namespace PoliNetworkBot_CSharp.Code.Beta.IG;
 
 internal static class TestIg
 {
