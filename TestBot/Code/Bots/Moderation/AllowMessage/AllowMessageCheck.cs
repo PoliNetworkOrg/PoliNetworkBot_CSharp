@@ -48,7 +48,7 @@ public class AllowMessageCheck
                 new Message(){ Text = "https://docs.google.com/", From = from, Chat = chat},
                 new ActionDoneObject(
                     ActionDoneEnum.CHECK_SPAM,
-                    null,
+                    true,
                     SpamType.SPAM_LINK
                 ),
                 false
