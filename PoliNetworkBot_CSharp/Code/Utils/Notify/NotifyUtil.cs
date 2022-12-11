@@ -147,13 +147,13 @@ internal static class NotifyUtil
     {
         return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }),
             telegramBotAbstract,
-            null, null, messageEventArgs, null, whatWeWant, sendActionEnum);
+            null, null, messageEventArgs, null, whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION);
     }
 
     private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, EventArgsContainer? messageEventArgs, StringJson? fileContent,
-        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
+        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum, TextAsCaption textAsCaptionParam)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
@@ -162,8 +162,8 @@ internal static class NotifyUtil
         switch (sendActionEnum)
         {
             case SendActionEnum.SEND_FILE:
-                return SendString(fileContent, messageEventArgs, sender, "stack.json", text.Select(langCode),
-                    replyToMessageId, ParseMode.Html, whatWeWant);
+                return SendString(fileContent, messageEventArgs, sender, "stack.json", text,
+                    replyToMessageId, ParseMode.Html, whatWeWant, textAsCaptionParam);
 
             case SendActionEnum.SEND_TEXT:
                 var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
@@ -236,7 +236,7 @@ internal static class NotifyUtil
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
         return await NotifyOwners_AnError_AndLog(text, sender, replyTo, langCode, messageEventArgs, fileContent,
-            whatWeWant, sendActionEnum);
+            whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION);
     }
 
     internal static void NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -328,8 +328,8 @@ internal static class NotifyUtil
             var toSend = exceptionsNumbered.Select(variable => variable.GetMessageAsText(null, messageEventArgs, true))
                 .Select(x => x.GetFileContentStringJson()).ToList();
             var toSendString = GetSerialized(toSend);
-            SendString(toSendString, messageEventArgs, sender, filename, "", replyToMessageId, ParseMode.Html,
-                FileTypeJsonEnum.STRING_JSONED);
+            SendString(toSendString, messageEventArgs, sender, filename, new L(), replyToMessageId, ParseMode.Html,
+                FileTypeJsonEnum.STRING_JSONED, TextAsCaption.AS_CAPTION);
         }
         catch (Exception e)
         {
@@ -364,11 +364,11 @@ internal static class NotifyUtil
 
     public static List<MessageSentResult> SendString(StringJson? toSendString,
         EventArgsContainer? messageEventArgs,
-        TelegramBotAbstract? sender, string filename, string? caption, long? replyToMessageId,
-        ParseMode parseMode, FileTypeJsonEnum? whatWeWant)
+        TelegramBotAbstract? sender, string filename, Language? caption, long? replyToMessageId,
+        ParseMode parseMode, FileTypeJsonEnum? whatWeWant, TextAsCaption textAsCaptionParam)
     {
         var stream = GenerateStreamFromString(toSendString, whatWeWant);
-        return SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId);
+        return SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId, textAsCaptionParam);
     }
 
     private static Stream GenerateStreamFromString(StringJson? s, FileTypeJsonEnum? whatWeWant)
@@ -384,39 +384,36 @@ internal static class NotifyUtil
 
     private static List<MessageSentResult> SendFiles(EventArgsContainer? messageEventArgs,
         TelegramBotAbstract? telegramBotAbstract,
-        string filename, Stream stream, string? caption, ParseMode parseModeCaption, long? replyToMessageId)
+        string filename, Stream stream, Language? caption, ParseMode parseModeCaption, long? replyToMessageId,
+        TextAsCaption textAsCaptionParam)
     {
         var peer = new PeerAbstract(GroupsConstants.GroupException, ChatType.Group);
         var destinatari = new List<PeerAbstract> { peer };
         return SendFiles2(
             stream, filename, caption, telegramBotAbstract,
-            messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId
-        );
+            messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId, textAsCaptionParam);
     }
 
-    private static List<MessageSentResult> SendFiles2(Stream stream, string filename, string? caption,
+    private static List<MessageSentResult> SendFiles2(Stream stream, string filename, Language? caption,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, IEnumerable<PeerAbstract> peerAbstracts,
-        ParseMode parseModeCaption, long? replyToMessageId)
+        ParseMode parseModeCaption, long? replyToMessageId, TextAsCaption textAsCaptionParam)
     {
-        var file = TelegramFile.FromStreamJson(stream, filename, caption);
+        var file = TelegramFile.FromStreamJson(stream, filename, caption, textAsCaptionParam);
 
 
         //var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
-        var text = new Language(new Dictionary<string, string?>
-        {
-            { "en", caption }
-        });
+
 
         return peerAbstracts.Select(peer =>
-                SendFiles3(peer, file, text, telegramBotAbstract, fromUsername, replyToMessageId, parseModeCaption))
+                SendFiles3(peer, file, telegramBotAbstract, fromUsername, replyToMessageId, parseModeCaption))
             .ToList();
     }
 
-    private static MessageSentResult SendFiles3(PeerAbstract peer, TelegramFile file, Language text,
+    private static MessageSentResult SendFiles3(PeerAbstract peer, TelegramFile file,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, long? replyToMessageId,
         ParseMode parseModeCaption)
     {
-        var b = SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+        var b = SendMessage.SendFileAsync(file, peer,
             telegramBotAbstract, fromUsername, "en",
             replyToMessageId, true, parseModeCaption);
         return new MessageSentResult(b, null, peer.Type);
@@ -602,17 +599,13 @@ internal static class NotifyUtil
     private static void SendReportOfSuccessAndFailures2(Stream? stream, string filename,
         TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        var file = new TelegramFile(stream, filename, "", "application/octet-stream");
+        var file = new TelegramFile(stream, filename, new L(), "application/octet-stream", TextAsCaption.AS_CAPTION);
         var message = e?.Message;
         if (message == null)
             return;
 
         var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
-        var text = new Language(new Dictionary<string, string?>
-        {
-            { "en", "" }
-        });
-        SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION,
+        SendMessage.SendFileAsync(file, peer,
             sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
             null, true);
     }

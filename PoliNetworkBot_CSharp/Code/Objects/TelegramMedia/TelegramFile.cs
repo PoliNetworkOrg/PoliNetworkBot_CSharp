@@ -2,6 +2,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
@@ -15,17 +16,19 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 public class TelegramFile : GenericFile
 {
-    private readonly string? _caption;
+    private readonly Language? _caption;
     private readonly string _fileName;
     private readonly string? _mimeType;
     private readonly Stream? _stream;
+    public readonly TextAsCaption TextAsCaption;
 
-    public TelegramFile(Stream? stream, string fileName, string? caption, string? mimeType)
+    public TelegramFile(Stream? stream, string fileName, Language? caption, string? mimeType, TextAsCaption textAsCaption)
     {
         _stream = stream;
         _fileName = fileName;
         _caption = caption;
         _mimeType = mimeType;
+        this.TextAsCaption = textAsCaption;
     }
 
     internal InputOnlineFile? GetOnlineFile()
@@ -57,18 +60,20 @@ public class TelegramFile : GenericFile
         };
     }
 
-    public static TelegramFile FromString(string json, string fileName, string caption)
+    public static TelegramFile FromString(string json, string fileName, Language caption,
+        TextAsCaption textAsCaptionParam)
     {
-        return UtilsFileText.GenerateFileFromString(json, fileName, caption);
+        return UtilsFileText.GenerateFileFromString(json, fileName, caption, textAsCaptionParam);
     }
 
-    public static TelegramFile FromStreamJson(Stream stream, string filename, string? caption)
+    public static TelegramFile FromStreamJson(Stream stream, string filename, Language? caption,
+        TextAsCaption textAsCaptionParam)
     {
-        return new TelegramFile(stream, filename, caption, "application/json");
+        return new TelegramFile(stream, filename, caption,  "application/json" ,textAsCaptionParam);
     }
 
-    public string? GetCaption()
+    public string? GetText(string? lang)
     {
-        return _caption;
+        return this._caption?.Select(lang);
     }
 }
