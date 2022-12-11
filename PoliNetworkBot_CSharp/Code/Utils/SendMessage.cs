@@ -128,9 +128,14 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        return telegramBotAbstract != null && telegramBotAbstract.SendFileAsync(file, peer, text, textAsCaption,
-            username, lang,
-            replyToMessageId, disablePreviewLink, parseModeCaption);
+        return telegramBotAbstract != null &&
+               telegramBotAbstract.SendFileAsync(
+                   file, peer,
+                   text, textAsCaption,
+                   username, lang,
+                   replyToMessageId, disablePreviewLink,
+                   parseModeCaption
+               );
     }
 
     public static async Task<TLAbsUpdates?> SendMessageUserBot(TelegramClient? userbotClient,
