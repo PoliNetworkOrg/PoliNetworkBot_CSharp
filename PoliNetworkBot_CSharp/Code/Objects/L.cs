@@ -27,4 +27,8 @@ public class L : Language
     public L() : base(new Dictionary<string, string?>())
     {
     }
+
+    public L(string? text) : base(new Dictionary<string, string?>(){{"uni", text}})
+    {
+    }
 }

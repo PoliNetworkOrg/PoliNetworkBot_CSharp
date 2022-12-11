@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -28,12 +27,11 @@ public static class ConfigUtil
         TelegramBotAbstract? sender, string? fromLanguageCode, ChatType? chatType)
     {
         var json = JsonConvert.SerializeObject(configJson.Value);
-        var file = TelegramFile.FromString(json, configJson.FileName ?? "file.json", "");
+        var file = TelegramFile.FromString(json, configJson.FileName ?? "file.json", new L(), TextAsCaption.AS_CAPTION);
         chatType ??= ChatType.Private;
 
         var peer = new PeerAbstract(fromId, chatType.Value);
-        var text = new Language(new Dictionary<string, string?>());
-        return SendMessage.SendFileAsync(file, peer, text, TextAsCaption.AS_CAPTION, sender, fromUsername,
+        return SendMessage.SendFileAsync(file, peer,  sender, fromUsername,
             fromLanguageCode, null, true);
     }
 

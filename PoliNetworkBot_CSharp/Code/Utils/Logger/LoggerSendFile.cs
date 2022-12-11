@@ -40,12 +40,13 @@ public static class LoggerSendFile
     {
         try
         {
+            const string lang = "uni";
             var encoding = Encoding.UTF8;
             var done = 0;
 
             var text2 = new Language(new Dictionary<string, string?>
             {
-                { "uni", textToSendBefore }
+                { lang, textToSendBefore }
             });
 
             foreach (var sendToSingle in sendTo)
@@ -57,9 +58,8 @@ public static class LoggerSendFile
 
 
                     SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
-                            textToSendBefore, fileMimeType), peer,
-                        null, TextAsCaption.AS_CAPTION,
-                        sender, null, "it", null, true);
+                            text2, fileMimeType, TextAsCaption.AS_CAPTION), peer,
+                        sender, null, lang, null, true);
 
                     done++;
                 }

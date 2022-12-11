@@ -93,7 +93,7 @@ public class TelegramFileContent
         {
             NotifyUtil.SendString(
                 _fileContent, eventArgsContainer, sender,
-                logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant);
+                logFileInfo.filename ?? "ex.json", "", replyToMessageId2, ParseMode.Html, whatWeWant, TODO);
         }
         catch (Exception ex)
         {
