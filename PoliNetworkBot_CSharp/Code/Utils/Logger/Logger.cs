@@ -242,7 +242,8 @@ public static class Logger
                     dbLogFileContent = dbLogFileContent.Trim();
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
-                        SendFiles(sendTo, dbLogFileContent, sender, "LOG from db:");
+                        var textToSendBefore = "LOG (bot "+sender?.GetId()+") from db:";
+                        SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore);
                     }
                 }
 
