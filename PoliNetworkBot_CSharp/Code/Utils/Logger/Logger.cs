@@ -289,7 +289,7 @@ public static class Logger
         return drItem switch
         {
             null => null,
-            DateTime dt => dt.ToString("dd/MM/yyyy hh:mm:ss tt zz"),
+            DateTime dt => dt.ToString("dd/MM/yyyy hh:mm:ss zz"),
             _ => drItem.ToString()
         };
     }
@@ -302,7 +302,7 @@ public static class Logger
         else
             PrintLog2(sendTo, sender, path, textToSendBefore);
 
-        
+
         _linesCount = 0;
     }
 
