@@ -6,9 +6,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
 public class ActionDoneObject
 {
+    private readonly SpamType? _spamType;
     public readonly ActionDoneEnum ActionDoneEnum;
     public readonly bool? Done;
-    private readonly SpamType? _spamType;
 
     public ActionDoneObject(ActionDoneEnum actionDone, bool? done, SpamType? spamType)
     {
@@ -36,6 +36,4 @@ public class ActionDoneObject
     {
         return ActionDoneEnum + " | " + Done + " | " + _spamType;
     }
-
-   
 }
