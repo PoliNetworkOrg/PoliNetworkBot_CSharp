@@ -21,7 +21,7 @@ public class Language
         return new List<string>(_dict.Keys);
     }
 
-    public string? Select(string? lang)
+    public string? Select(string? lang = null)
     {
         if (_dict.Keys.Count == 0)
             return null;
