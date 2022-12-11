@@ -263,7 +263,7 @@ public static class Logger
             return null;
 
         List<string> r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
-        return r.Aggregate((x, y) => x + "\n\n" + y).Trim();
+        return r.Aggregate((x, y) => x + "\n--------------------\n" + y).Trim();
     }
 
     private static string GetDbLogRow(DataRow dr)
@@ -273,10 +273,8 @@ public static class Logger
         for (var i = 0; i < cols.Count; i++)
         {
             var text = cols[i].Caption;
-            var content = dr.ItemArray[i]?.ToString();
+            var content = ContentToString(dr.ItemArray[i]) ?? "[null]";
 
-            if (content == null)
-                content = "[null]";
             if (content == "")
                 content = "[empty]";
 
@@ -286,6 +284,16 @@ public static class Logger
         return r.Trim();
     }
 
+    private static string? ContentToString(object? drItem)
+    {
+        return drItem switch
+        {
+            null => null,
+            DateTime dt => dt.ToString("dd/MM/yyyy hh:mm:ss zz"),
+            _ => drItem.ToString()
+        };
+    }
+
     private static void PrintLog3(IReadOnlyCollection<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
         MessageEventArgs? messageEventArgs, string path, string textToSendBefore)
     {
@@ -293,6 +301,7 @@ public static class Logger
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
             PrintLog2(sendTo, sender, path, textToSendBefore);
+
 
         _linesCount = 0;
     }

@@ -573,7 +573,7 @@ internal static class CommandDispatcher
 
         var dict = new Dictionary<string, string?>
         {
-            { "en", DateTimeClass.DateTimeToItalianFormat(sentDate2) }
+            { "en", DateTimeClass.DateTimeToAmericanFormat(sentDate2) }
         };
         var text = new Language(dict);
         return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
