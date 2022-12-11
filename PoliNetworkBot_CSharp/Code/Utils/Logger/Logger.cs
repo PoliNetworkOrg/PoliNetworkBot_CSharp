@@ -123,7 +123,7 @@ public static class Logger
                 Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
                     { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
-                    { "@severity", logSeverityLevel },
+                    { "@severity", Enum.GetName(typeof(LogSeverityLevel), logSeverityLevel)  },
                     { "@content", log1 },
                     { "@stacktrace", Environment.StackTrace }
                 });
