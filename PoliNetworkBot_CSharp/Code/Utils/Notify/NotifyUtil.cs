@@ -368,7 +368,8 @@ internal static class NotifyUtil
         ParseMode parseMode, FileTypeJsonEnum? whatWeWant, TextAsCaption textAsCaptionParam)
     {
         var stream = GenerateStreamFromString(toSendString, whatWeWant);
-        return SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId, textAsCaptionParam);
+        return SendFiles(messageEventArgs, sender, filename, stream, caption, parseMode, replyToMessageId,
+            textAsCaptionParam);
     }
 
     private static Stream GenerateStreamFromString(StringJson? s, FileTypeJsonEnum? whatWeWant)
@@ -391,7 +392,8 @@ internal static class NotifyUtil
         var destinatari = new List<PeerAbstract> { peer };
         return SendFiles2(
             stream, filename, caption, telegramBotAbstract,
-            messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId, textAsCaptionParam);
+            messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId,
+            textAsCaptionParam);
     }
 
     private static List<MessageSentResult> SendFiles2(Stream stream, string filename, Language? caption,

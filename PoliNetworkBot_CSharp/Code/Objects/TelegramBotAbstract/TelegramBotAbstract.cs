@@ -1170,7 +1170,7 @@ public class TelegramBotAbstract
     }
 
     internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
-      string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
         var inputMedia = GetTextToSend(lang, documentInput);
@@ -1221,7 +1221,7 @@ public class TelegramBotAbstract
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode: parseModeCaption)
                                 .Result;
 
-                        if (inputMedia != null) 
+                        if (inputMedia != null)
                             _ = _botClient.SendTextMessageAsync(userId, inputMedia, parseModeCaption).Result;
 
 
@@ -1229,7 +1229,8 @@ public class TelegramBotAbstract
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption), documentInput.TextAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption),
+                            documentInput.TextAsCaption, null);
                 }
             }
 
@@ -1279,7 +1280,8 @@ public class TelegramBotAbstract
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption), documentInput.TextAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption),
+                            documentInput.TextAsCaption, null);
                 }
 
                 break;

@@ -31,7 +31,7 @@ public static class ConfigUtil
         chatType ??= ChatType.Private;
 
         var peer = new PeerAbstract(fromId, chatType.Value);
-        return SendMessage.SendFileAsync(file, peer,  sender, fromUsername,
+        return SendMessage.SendFileAsync(file, peer, sender, fromUsername,
             fromLanguageCode, null, true);
     }
 

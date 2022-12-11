@@ -528,13 +528,14 @@ internal static class CommandDispatcher
         var x = Database.ExecuteSelect(query, sender.DbConfig);
         var x2 = StreamSerialization.SerializeToStream(x);
         var documentInput =
-            new TelegramFile(x2, "table.bin", new L("Query result"), "application/octet-stream", TextAsCaption.AS_CAPTION);
+            new TelegramFile(x2, "table.bin", new L("Query result"), "application/octet-stream",
+                TextAsCaption.AS_CAPTION);
 
         if (e.Message.From == null)
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v = sender.SendFileAsync(documentInput, peer, e.Message.From.Username, 
+        var v = sender.SendFileAsync(documentInput, peer, e.Message.From.Username,
             e.Message.From.LanguageCode, e.Message.MessageId, false);
         return v ? 1 : 0;
     }

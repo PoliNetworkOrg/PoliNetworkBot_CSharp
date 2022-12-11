@@ -22,13 +22,14 @@ public class TelegramFile : GenericFile
     private readonly Stream? _stream;
     public readonly TextAsCaption TextAsCaption;
 
-    public TelegramFile(Stream? stream, string fileName, Language? captionOrText, string? mimeType, TextAsCaption textAsCaption)
+    public TelegramFile(Stream? stream, string fileName, Language? captionOrText, string? mimeType,
+        TextAsCaption textAsCaption)
     {
         _stream = stream;
         _fileName = fileName;
-        this._captionOrText = captionOrText;
+        _captionOrText = captionOrText;
         _mimeType = mimeType;
-        this.TextAsCaption = textAsCaption;
+        TextAsCaption = textAsCaption;
     }
 
     internal InputOnlineFile? GetOnlineFile()
@@ -69,11 +70,11 @@ public class TelegramFile : GenericFile
     public static TelegramFile FromStreamJson(Stream stream, string filename, Language? caption,
         TextAsCaption textAsCaptionParam)
     {
-        return new TelegramFile(stream, filename, caption,  "application/json" ,textAsCaptionParam);
+        return new TelegramFile(stream, filename, caption, "application/json", textAsCaptionParam);
     }
 
     public string? GetText(string? lang)
     {
-        return this._captionOrText?.Select(lang);
+        return _captionOrText?.Select(lang);
     }
 }

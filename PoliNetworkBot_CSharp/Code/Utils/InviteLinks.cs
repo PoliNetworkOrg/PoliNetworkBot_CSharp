@@ -228,9 +228,10 @@ internal static class InviteLinks
                         var st = l.GetStringList();
 
                         var stream = UtilsFileText.GenerateStreamFromString(st);
-                        var tf = new TelegramFile(stream, "groups.txt", new L("Gruppi con link rigenerati"), "text/plain", TextAsCaption.AFTER_FILE);
+                        var tf = new TelegramFile(stream, "groups.txt", new L("Gruppi con link rigenerati"),
+                            "text/plain", TextAsCaption.AFTER_FILE);
                         sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
-                              e.Message.From.Username, e.Message.From.LanguageCode, null,
+                            e.Message.From.Username, e.Message.From.LanguageCode, null,
                             false);
                     }
                 }
