@@ -16,17 +16,17 @@ namespace PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 
 public class TelegramFile : GenericFile
 {
-    private readonly Language? _caption;
+    private readonly Language? _captionOrText;
     private readonly string _fileName;
     private readonly string? _mimeType;
     private readonly Stream? _stream;
     public readonly TextAsCaption TextAsCaption;
 
-    public TelegramFile(Stream? stream, string fileName, Language? caption, string? mimeType, TextAsCaption textAsCaption)
+    public TelegramFile(Stream? stream, string fileName, Language? captionOrText, string? mimeType, TextAsCaption textAsCaption)
     {
         _stream = stream;
         _fileName = fileName;
-        _caption = caption;
+        this._captionOrText = captionOrText;
         _mimeType = mimeType;
         this.TextAsCaption = textAsCaption;
     }
@@ -74,6 +74,6 @@ public class TelegramFile : GenericFile
 
     public string? GetText(string? lang)
     {
-        return this._caption?.Select(lang);
+        return this._captionOrText?.Select(lang);
     }
 }

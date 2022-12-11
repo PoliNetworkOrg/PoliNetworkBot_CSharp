@@ -270,9 +270,9 @@ public static class MessagesStore
             if (json != null)
             {
                 var stream = UtilsFileText.GenerateStreamFromString(json);
-                var tf = new TelegramFile(stream, "messagesSent.json", "Messages", "text/plain");
+                var tf = new TelegramFile(stream, "messagesSent.json", language2 , "text/plain", TextAsCaption.AS_CAPTION);
                 PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
-                sender?.SendFileAsync(tf, peer, language2, TextAsCaption.AS_CAPTION, e.Message.From?.Username,
+                sender?.SendFileAsync(tf, peer,  e.Message.From?.Username,
                     e.Message.From?.LanguageCode, null, true);
             }
         }
