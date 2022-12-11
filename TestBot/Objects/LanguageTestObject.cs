@@ -5,12 +5,13 @@ namespace TestBot.Objects;
 public class LanguageTestObject
 {
     public readonly Language? Language;
-    public readonly string? Text;
     public readonly string? SelectedLang;
+    public readonly string? Text;
+
     public LanguageTestObject(Language l, string text, string? selectedLang)
     {
-        this.Language = l;
-        this.Text = text;
-        this.SelectedLang = selectedLang;
+        Language = l;
+        Text = text;
+        SelectedLang = selectedLang;
     }
 }

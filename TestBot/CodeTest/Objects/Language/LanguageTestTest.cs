@@ -1,14 +1,13 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects;
+using TestBot.Objects;
 
 namespace TestBot.CodeTest.Objects.Language;
 
 public class LanguageTestTest
 {
-
     [SetUp]
     public void Setup()
     {
-        
     }
 
     [Test]
@@ -18,11 +17,11 @@ public class LanguageTestTest
         const string langx = "langx";
         const string langy = "langy";
         var tuples =
-            new List<TestBot.Objects.LanguageTestObject>
+            new List<LanguageTestObject>
             {
                 new(new L(text), text, null),
                 new(new L(langx, text), text, null),
-                new(new L(langx, text), text, langy )
+                new(new L(langx, text), text, langy)
             };
         foreach (var item in tuples)
         {

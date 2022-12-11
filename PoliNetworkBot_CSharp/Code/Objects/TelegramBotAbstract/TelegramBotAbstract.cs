@@ -1173,7 +1173,7 @@ public class TelegramBotAbstract
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        var inputMedia = GetTextToSend(lang, documentInput);
+        var textToSend = GetTextToSend(lang, documentInput);
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1191,10 +1191,9 @@ public class TelegramBotAbstract
                         if (inputOnlineFile == null) return true;
 
 
-                        var inputMedia2 = new InputMedia(inputMedia ?? "");
-                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                            inputMedia2, parseMode: parseModeCaption).Result;
-                        
+                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null,
+                            textToSend, parseModeCaption).Result;
+
                         return true;
                     }
 
@@ -1203,8 +1202,8 @@ public class TelegramBotAbstract
                         if (_botClient == null)
                             return true;
 
-                        if (inputMedia != null)
-                            _ = _botClient.SendTextMessageAsync(userId, inputMedia, parseModeCaption).Result;
+                        if (textToSend != null)
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
 
 
                         if (inputOnlineFile != null)
@@ -1222,8 +1221,8 @@ public class TelegramBotAbstract
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode: parseModeCaption)
                                 .Result;
 
-                        if (inputMedia != null)
-                            _ = _botClient.SendTextMessageAsync(userId, inputMedia, parseModeCaption).Result;
+                        if (textToSend != null)
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
 
 
                         return true;
@@ -1243,7 +1242,7 @@ public class TelegramBotAbstract
                         var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, inputMedia, username).Result;
+                            var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, textToSend, username).Result;
                             return r != null;
                         }
 
@@ -1252,7 +1251,7 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.BEFORE_FILE:
                     {
-                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(inputMedia),
+                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(textToSend),
                             username,
                             new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
                         var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
@@ -1271,7 +1270,7 @@ public class TelegramBotAbstract
                         if (tlFileToSend != null)
                         {
                             var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang).Result;
-                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(inputMedia),
+                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(textToSend),
                                 username,
                                 new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
                             return r != null && r2 != null;
