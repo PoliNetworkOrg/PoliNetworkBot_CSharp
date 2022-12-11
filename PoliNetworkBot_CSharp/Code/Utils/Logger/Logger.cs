@@ -302,6 +302,7 @@ public static class Logger
         else
             PrintLog2(sendTo, sender, path, textToSendBefore);
 
+        
         _linesCount = 0;
     }
 
