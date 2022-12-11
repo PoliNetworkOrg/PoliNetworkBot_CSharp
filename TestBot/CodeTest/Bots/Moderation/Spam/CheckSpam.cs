@@ -3,7 +3,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace TestBot.Code.Bots.Moderation.Spam;
+namespace TestBot.CodeTest.Bots.Moderation.Spam;
 
 public class CheckSpam
 {

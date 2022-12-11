@@ -8,7 +8,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace TestBot.Code.Bots.Moderation.AllowMessage;
+namespace TestBot.CodeTest.Bots.Moderation.AllowMessage;
 
 public class AllowMessageCheck
 {
