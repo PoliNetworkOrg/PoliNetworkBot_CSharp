@@ -244,7 +244,7 @@ public static class Logger
                     {
                         var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
                         const string applicationOctetStream = "application/octet-stream";
-                        SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore, applicationOctetStream);
+                        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore, applicationOctetStream);
                     }
                 }
 
@@ -323,8 +323,8 @@ public static class Logger
 
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
-        var applicationOctetStream = "application/octet-stream";
-        var done = SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream);
+        const string applicationOctetStream = "application/octet-stream";
+        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -332,42 +332,6 @@ public static class Logger
         {
             File.WriteAllText(path, "\n");
         }
-    }
-
-    public static int SendFiles(List<long?> sendTo,
-        string fileContent,
-        TelegramBotAbstract? sender,
-        string textToSendBefore, string applicationOctetStream)
-    {
-        var encoding = Encoding.UTF8;
-        var done = 0;
-
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            { "uni", textToSendBefore }
-        });
-
-        foreach (var sendToSingle in sendTo)
-            try
-            {
-                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
-
-                var stream = new MemoryStream(encoding.GetBytes(fileContent));
-
-            
-                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                        null, applicationOctetStream), peer,
-                    text2, TextAsCaption.BEFORE_FILE,
-                    sender, null, "it", null, true);
-
-                done++;
-            }
-            catch (Exception ex)
-            {
-                WriteLine(ex);
-            }
-
-        return done;
     }
 
     private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo, EventArgsContainer eventArgsContainer)

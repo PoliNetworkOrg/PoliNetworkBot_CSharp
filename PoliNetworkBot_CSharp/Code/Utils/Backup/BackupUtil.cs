@@ -32,7 +32,7 @@ internal static class BackupUtil
                 const string applicationJson = "application/json";
                 var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
                 var sendToList = new List<long?>(){sendTo};
-                Logger.Logger.SendFiles(sendToList, jsonDb, botAbstract, "Backup:", applicationJson);
+                Logger.LoggerSendFile.SendFiles(sendToList, jsonDb, botAbstract, "Backup:", applicationJson);
             }
         }
         catch (Exception? ex)
