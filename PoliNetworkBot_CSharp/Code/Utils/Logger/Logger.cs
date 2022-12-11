@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -21,7 +20,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -244,7 +242,8 @@ public static class Logger
                     {
                         var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
                         const string applicationOctetStream = "application/octet-stream";
-                        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore, applicationOctetStream);
+                        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
+                            applicationOctetStream);
                     }
                 }
 

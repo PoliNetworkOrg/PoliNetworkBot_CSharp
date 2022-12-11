@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 
@@ -31,8 +32,8 @@ internal static class BackupUtil
             {
                 const string applicationJson = "application/json";
                 var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
-                var sendToList = new List<long?>(){sendTo};
-                Logger.LoggerSendFile.SendFiles(sendToList, jsonDb, botAbstract, "Backup:", applicationJson);
+                var sendToList = new List<long?> { sendTo };
+                LoggerSendFile.SendFiles(sendToList, jsonDb, botAbstract, "Backup:", applicationJson);
             }
         }
         catch (Exception? ex)

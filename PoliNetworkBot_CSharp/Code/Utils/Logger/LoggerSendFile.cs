@@ -10,9 +10,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Logger;
 
-public class LoggerSendFile
+public static class LoggerSendFile
 {
-    
     public static int SendFiles(List<long?> sendTo,
         string fileContent,
         TelegramBotAbstract? sender,
@@ -33,7 +32,7 @@ public class LoggerSendFile
 
                 var stream = new MemoryStream(encoding.GetBytes(fileContent));
 
-            
+
                 SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                         null, applicationOctetStream), peer,
                     text2, TextAsCaption.BEFORE_FILE,
@@ -48,5 +47,4 @@ public class LoggerSendFile
 
         return done;
     }
-
 }
