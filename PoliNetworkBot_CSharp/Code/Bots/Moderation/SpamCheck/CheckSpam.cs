@@ -25,7 +25,6 @@ public static class CheckSpam
             case SpamType.FOREIGN:
             case SpamType.FORMAT_INCORRECT:
             {
-                ;
                 try
                 {
                     x = await ModerationCheck.AntiSpamMeasure(telegramBotClient, e, checkSpam);
