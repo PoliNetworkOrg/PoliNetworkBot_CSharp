@@ -230,25 +230,29 @@ public static class Logger
                                   "FROM LogTable X " +
                                   "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
                                   "ORDER BY X.when_insert ASC";
-                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                var botId = sender?.GetId();
+                if (botId != null)
                 {
-                    { "@bot_id", sender?.GetId() }
-                });
-                var dbLogFileContent = GetFileContentFromDataTable(data);
-                if (!string.IsNullOrEmpty(dbLogFileContent))
-                {
-                    dbLogFileContent = dbLogFileContent.Trim();
+                    var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+                        new Dictionary<string, object?>
+                        {
+                            { "@bot_id", botId }
+                        });
+                    var dbLogFileContent = GetFileContentFromDataTable(data);
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
-                        var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
-                        const string applicationOctetStream = "application/octet-stream";
-                        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-                            applicationOctetStream);
+                        dbLogFileContent = dbLogFileContent.Trim();
+                        if (!string.IsNullOrEmpty(dbLogFileContent))
+                        {
+                            var textToSendBefore = "LOG (bot " + botId + ") from db:";
+                            const string applicationOctetStream = "application/octet-stream";
+                            LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
+                                applicationOctetStream, "log_db_"+botId+".log");
+                        }
                     }
                 }
-
-
-                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:");
+                
+                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
             }
             catch (Exception? e)
             {
@@ -295,12 +299,12 @@ public static class Logger
     }
 
     private static void PrintLog3(IReadOnlyCollection<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
-        MessageEventArgs? messageEventArgs, string path, string textToSendBefore)
+        MessageEventArgs? messageEventArgs, string path, string textToSendBefore, string fileName)
     {
         if (DetectEmptyLog(text))
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
-            PrintLog2(sendTo, sender, path, textToSendBefore);
+            PrintLog2(sendTo, sender, path, textToSendBefore, fileName);
 
 
         _linesCount = 0;
@@ -312,7 +316,8 @@ public static class Logger
     }
 
 
-    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore)
+    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore,
+        string fileName)
     {
         string file;
         lock (LogFileLock)
@@ -323,7 +328,7 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream);
+        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
