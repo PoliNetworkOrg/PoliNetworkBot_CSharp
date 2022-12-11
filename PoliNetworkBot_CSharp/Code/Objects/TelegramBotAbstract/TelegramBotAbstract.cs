@@ -1170,11 +1170,10 @@ public class TelegramBotAbstract
     }
 
     internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
-        Language? text,
-        TextAsCaption textAsCaption, string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        var inputMedia = GetCaptionInline(text, lang, documentInput);
+        var textToSend = GetTextToSend(lang, documentInput);
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1184,17 +1183,16 @@ public class TelegramBotAbstract
                 if (userId == null)
                     return false;
 
-                switch (textAsCaption)
+                switch (documentInput.TextAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
                         if (_botClient == null) return true;
-                        if (text == null) return true;
                         if (inputOnlineFile == null) return true;
 
-                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                            inputMedia, parseMode: parseModeCaption).Result;
 
+                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null,
+                            textToSend, parseModeCaption).Result;
 
                         return true;
                     }
@@ -1204,10 +1202,8 @@ public class TelegramBotAbstract
                         if (_botClient == null)
                             return true;
 
-                        var t1 = text?.Select(lang);
-                        if (text != null)
-                            if (t1 != null)
-                                _ = _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
+                        if (textToSend != null)
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
 
 
                         if (inputOnlineFile != null)
@@ -1225,27 +1221,28 @@ public class TelegramBotAbstract
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, parseMode: parseModeCaption)
                                 .Result;
 
-                        var t1 = text?.Select(lang);
-                        if (t1 != null) _ = _botClient.SendTextMessageAsync(userId, t1, parseModeCaption).Result;
+                        if (textToSend != null)
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
 
 
                         return true;
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption),
+                            documentInput.TextAsCaption, null);
                 }
             }
 
             case BotTypeApi.USER_BOT:
-                switch (textAsCaption)
+                switch (documentInput.TextAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
                         var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, inputMedia, username).Result;
+                            var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, textToSend, username).Result;
                             return r != null;
                         }
 
@@ -1254,7 +1251,7 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.BEFORE_FILE:
                     {
-                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
+                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(textToSend),
                             username,
                             new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
                         var tlFileToSend = documentInput.GetMediaTl(UserbotClient).Result;
@@ -1273,7 +1270,7 @@ public class TelegramBotAbstract
                         if (tlFileToSend != null)
                         {
                             var r = tlFileToSend.SendMedia(peer.GetPeer(), UserbotClient, null, username, lang).Result;
-                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), text,
+                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, peer.GetPeer(), new L(textToSend),
                                 username,
                                 new TLReplyKeyboardHide(), lang, replyToMessageId, disablePreviewLink).Result;
                             return r != null && r2 != null;
@@ -1283,7 +1280,8 @@ public class TelegramBotAbstract
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(textAsCaption), textAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(documentInput.TextAsCaption),
+                            documentInput.TextAsCaption, null);
                 }
 
                 break;
@@ -1299,10 +1297,9 @@ public class TelegramBotAbstract
     }
 
 
-    private static string? GetCaptionInline(Language? text, string? lang, TelegramFile documentInput)
+    private static string? GetTextToSend(string? lang, TelegramFile documentInput)
     {
-        var s = text?.Select(lang);
-        return string.IsNullOrEmpty(s) ? documentInput.GetCaption() : s;
+        return documentInput.GetText(lang);
     }
 
     internal async Task<bool> UpdateUsername(string from, string to)

@@ -595,12 +595,11 @@ internal static class Rooms
                     { "en", roomName }
                 });
                 var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
-                    roomName, "text/html");
+                    message, TextAsCaption.AS_CAPTION, "text/html");
 
                 sender?.SendFileAsync(document,
-                    peer, message,
-                    TextAsCaption.AS_CAPTION,
-                    e?.Message.From?.Username, e?.Message.From?.LanguageCode, null, true);
+                    peer, e?.Message.From?.Username,
+                    e?.Message.From?.LanguageCode, null, true);
             }
         }
     }

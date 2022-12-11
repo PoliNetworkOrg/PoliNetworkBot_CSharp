@@ -528,18 +528,15 @@ internal static class CommandDispatcher
         var x = Database.ExecuteSelect(query, sender.DbConfig);
         var x2 = StreamSerialization.SerializeToStream(x);
         var documentInput =
-            new TelegramFile(x2, "table.bin", "Query result", "application/octet-stream");
+            new TelegramFile(x2, "table.bin", new L("Query result"), "application/octet-stream",
+                TextAsCaption.AS_CAPTION);
 
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            { "en", "Query result" }
-        });
         if (e.Message.From == null)
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v = sender.SendFileAsync(documentInput, peer, text2, TextAsCaption.AS_CAPTION,
-            e.Message.From.Username, e.Message.From.LanguageCode, e.Message.MessageId, false);
+        var v = sender.SendFileAsync(documentInput, peer, e.Message.From.Username,
+            e.Message.From.LanguageCode, e.Message.MessageId, false);
         return v ? 1 : 0;
     }
 
@@ -650,8 +647,7 @@ internal static class CommandDispatcher
             { "it", "Ecco tutti i gruppi:" }
         });
         return Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
-                null, "application/octet-stream"), peer,
-            text2, TextAsCaption.BEFORE_FILE,
+                text2, "application/octet-stream", TextAsCaption.BEFORE_FILE), peer,
             sender, username, lang, null, true));
     }
 

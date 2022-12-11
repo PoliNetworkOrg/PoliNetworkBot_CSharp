@@ -124,14 +124,13 @@ internal static class SendMessage
     }
 
     internal static bool SendFileAsync(TelegramFile file, PeerAbstract peer,
-        Language? text, TextAsCaption textAsCaption, TelegramBotAbstract? telegramBotAbstract,
+        TelegramBotAbstract? telegramBotAbstract,
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
         return telegramBotAbstract != null &&
                telegramBotAbstract.SendFileAsync(
                    file, peer,
-                   text, textAsCaption,
                    username, lang,
                    replyToMessageId, disablePreviewLink,
                    parseModeCaption
