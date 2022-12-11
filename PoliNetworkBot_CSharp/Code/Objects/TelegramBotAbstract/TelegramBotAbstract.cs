@@ -1190,10 +1190,11 @@ public class TelegramBotAbstract
                         if (_botClient == null) return true;
                         if (inputOnlineFile == null) return true;
 
+
+                        var inputMedia2 = new InputMedia(inputMedia ?? "");
                         _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                            inputMedia, parseMode: parseModeCaption).Result;
-
-
+                            inputMedia2, parseMode: parseModeCaption).Result;
+                        
                         return true;
                     }
 
