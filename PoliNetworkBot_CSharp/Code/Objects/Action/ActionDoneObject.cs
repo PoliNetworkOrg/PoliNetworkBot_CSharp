@@ -6,14 +6,14 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
 public class ActionDoneObject
 {
-    private readonly ActionDoneEnum _actionDoneEnum;
-    private readonly bool? _done;
-    private SpamType? _spamType;
+    public readonly ActionDoneEnum ActionDoneEnum;
+    public readonly bool? Done;
+    private readonly SpamType? _spamType;
 
     public ActionDoneObject(ActionDoneEnum actionDone, bool? done, SpamType? spamType)
     {
-        _actionDoneEnum = actionDone;
-        _done = done;
+        ActionDoneEnum = actionDone;
+        Done = done;
         _spamType = spamType;
     }
 
@@ -24,21 +24,18 @@ public class ActionDoneObject
 
     private bool Equals(ActionDoneObject other)
     {
-        return _actionDoneEnum == other._actionDoneEnum && _done == other._done && _spamType == other._spamType;
+        return ActionDoneEnum == other.ActionDoneEnum && Done == other.Done && _spamType == other._spamType;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine((int)_actionDoneEnum, _done, _spamType);
+        return HashCode.Combine((int)ActionDoneEnum, Done, _spamType);
     }
 
     public override string ToString()
     {
-        return _actionDoneEnum + " | " + _done + " | " + _spamType;
+        return ActionDoneEnum + " | " + Done + " | " + _spamType;
     }
 
-    public void SetSpamType(SpamType resultItem1)
-    {
-        _spamType = resultItem1;
-    }
+   
 }

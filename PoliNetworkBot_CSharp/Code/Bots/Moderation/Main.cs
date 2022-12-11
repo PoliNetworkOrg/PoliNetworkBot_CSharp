@@ -111,11 +111,13 @@ public static class Main
                 Logger.WriteLine(ex);
             }
 
-            if (result == null)
-                return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
-
-            if (result is { Item2: { } })
-                return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
+            switch (result)
+            {
+                case null:
+                    return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
+                case { Item2: { } }:
+                    return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
+            }
 
             if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
             {
@@ -124,8 +126,7 @@ public static class Main
             }
 
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
-            y.SetSpamType(result.Item1);
-            return y;
+            return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);
         }
         catch (Exception? exception)
         {
