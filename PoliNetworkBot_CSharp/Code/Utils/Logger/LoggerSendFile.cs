@@ -12,39 +12,69 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 public static class LoggerSendFile
 {
+    private static readonly Dictionary<long, object> DictLock = new();
+
     public static int SendFiles(List<long?> sendTo,
         string fileContent,
         TelegramBotAbstract? sender,
         string textToSendBefore, string applicationOctetStream)
     {
-        var encoding = Encoding.UTF8;
-        var done = 0;
-
-        var text2 = new Language(new Dictionary<string, string?>
+        var id = sender?.GetId();
+        if (id == null)
         {
-            { "uni", textToSendBefore }
-        });
+            Console.WriteLine("Failed PoliNetworkBot_CSharp.Code.Utils.Logger.SendFiles BOT ID NULL");
+            return -1;
+        }
 
-        foreach (var sendToSingle in sendTo)
-            try
+        if (!DictLock.ContainsKey(id.Value))
+            DictLock[id.Value] = new object();
+
+        lock (DictLock[id.Value])
+        {
+            return SendFilesBehindLock(textToSendBefore, sendTo, fileContent, applicationOctetStream, sender);
+        }
+    }
+
+    private static int SendFilesBehindLock(string textToSendBefore, List<long?> sendTo, string fileContent,
+        string fileMimeType, TelegramBotAbstract? sender)
+    {
+        try
+        {
+            var encoding = Encoding.UTF8;
+            var done = 0;
+
+            var text2 = new Language(new Dictionary<string, string?>
             {
-                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
+                { "uni", textToSendBefore }
+            });
 
-                var stream = new MemoryStream(encoding.GetBytes(fileContent));
+            foreach (var sendToSingle in sendTo)
+                try
+                {
+                    var peer = new PeerAbstract(sendToSingle, ChatType.Private);
+
+                    var stream = new MemoryStream(encoding.GetBytes(fileContent));
 
 
-                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                        null, applicationOctetStream), peer,
-                    text2, TextAsCaption.BEFORE_FILE,
-                    sender, null, "it", null, true);
+                    SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
+                            null, fileMimeType), peer,
+                        text2, TextAsCaption.BEFORE_FILE,
+                        sender, null, "it", null, true);
 
-                done++;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(ex);
-            }
+                    done++;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(ex);
+                }
 
-        return done;
+            return done;
+        }
+        catch (Exception ex2)
+        {
+            Logger.WriteLine(ex2);
+        }
+
+        return -1;
     }
 }
