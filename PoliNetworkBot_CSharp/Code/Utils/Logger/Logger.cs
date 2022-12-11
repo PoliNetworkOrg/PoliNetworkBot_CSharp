@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -21,7 +20,6 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -232,23 +230,29 @@ public static class Logger
                                   "FROM LogTable X " +
                                   "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
                                   "ORDER BY X.when_insert ASC";
-                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
+                var botId = sender?.GetId();
+                if (botId != null)
                 {
-                    { "@bot_id", sender?.GetId() }
-                });
-                var dbLogFileContent = GetFileContentFromDataTable(data);
-                if (!string.IsNullOrEmpty(dbLogFileContent))
-                {
-                    dbLogFileContent = dbLogFileContent.Trim();
+                    var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+                        new Dictionary<string, object?>
+                        {
+                            { "@bot_id", botId }
+                        });
+                    var dbLogFileContent = GetFileContentFromDataTable(data);
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
-                        var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
-                        SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore);
+                        dbLogFileContent = dbLogFileContent.Trim();
+                        if (!string.IsNullOrEmpty(dbLogFileContent))
+                        {
+                            var textToSendBefore = "LOG (bot " + botId + ") from db:";
+                            const string applicationOctetStream = "application/octet-stream";
+                            LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
+                                applicationOctetStream, "log_db_" + botId + ".log");
+                        }
                     }
                 }
 
-
-                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:");
+                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
             }
             catch (Exception? e)
             {
@@ -289,18 +293,18 @@ public static class Logger
         return drItem switch
         {
             null => null,
-            DateTime dt => dt.ToString("dd/MM/yyyy hh:mm:ss zz"),
+            DateTime dt => dt.ToString("dd/MM/yyyy HH:mm:ss zz"),
             _ => drItem.ToString()
         };
     }
 
     private static void PrintLog3(IReadOnlyCollection<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
-        MessageEventArgs? messageEventArgs, string path, string textToSendBefore)
+        MessageEventArgs? messageEventArgs, string path, string textToSendBefore, string fileName)
     {
         if (DetectEmptyLog(text))
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
-            PrintLog2(sendTo, sender, path, textToSendBefore);
+            PrintLog2(sendTo, sender, path, textToSendBefore, fileName);
 
 
         _linesCount = 0;
@@ -312,7 +316,8 @@ public static class Logger
     }
 
 
-    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore)
+    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore,
+        string fileName)
     {
         string file;
         lock (LogFileLock)
@@ -322,8 +327,8 @@ public static class Logger
 
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
-
-        var done = SendFiles(sendTo, file, sender, textToSendBefore);
+        const string applicationOctetStream = "application/octet-stream";
+        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -331,43 +336,6 @@ public static class Logger
         {
             File.WriteAllText(path, "\n");
         }
-    }
-
-    private static int SendFiles(
-        List<long?> sendTo,
-        string fileContent,
-        TelegramBotAbstract? sender,
-        string textToSendBefore
-    )
-    {
-        var encoding = Encoding.UTF8;
-        var done = 0;
-
-        var text2 = new Language(new Dictionary<string, string?>
-        {
-            { "uni", textToSendBefore }
-        });
-
-        foreach (var sendToSingle in sendTo)
-            try
-            {
-                var peer = new PeerAbstract(sendToSingle, ChatType.Private);
-
-                var stream = new MemoryStream(encoding.GetBytes(fileContent));
-
-                SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                        null, "application/octet-stream"), peer,
-                    text2, TextAsCaption.BEFORE_FILE,
-                    sender, null, "it", null, true);
-
-                done++;
-            }
-            catch (Exception ex)
-            {
-                WriteLine(ex);
-            }
-
-        return done;
     }
 
     private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo, EventArgsContainer eventArgsContainer)
