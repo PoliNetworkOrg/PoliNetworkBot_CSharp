@@ -243,7 +243,8 @@ public static class Logger
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
                         var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
-                        SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore);
+                        const string applicationOctetStream = "application/octet-stream";
+                        SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore, applicationOctetStream);
                     }
                 }
 
@@ -322,8 +323,8 @@ public static class Logger
 
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
-
-        var done = SendFiles(sendTo, file, sender, textToSendBefore);
+        var applicationOctetStream = "application/octet-stream";
+        var done = SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -333,12 +334,10 @@ public static class Logger
         }
     }
 
-    private static int SendFiles(
-        List<long?> sendTo,
+    public static int SendFiles(List<long?> sendTo,
         string fileContent,
         TelegramBotAbstract? sender,
-        string textToSendBefore
-    )
+        string textToSendBefore, string applicationOctetStream)
     {
         var encoding = Encoding.UTF8;
         var done = 0;
@@ -355,8 +354,9 @@ public static class Logger
 
                 var stream = new MemoryStream(encoding.GetBytes(fileContent));
 
+            
                 SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
-                        null, "application/octet-stream"), peer,
+                        null, applicationOctetStream), peer,
                     text2, TextAsCaption.BEFORE_FILE,
                     sender, null, "it", null, true);
 
