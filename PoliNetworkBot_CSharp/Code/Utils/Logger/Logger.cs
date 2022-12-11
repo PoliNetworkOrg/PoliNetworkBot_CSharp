@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -227,24 +228,26 @@ public static class Logger
                     WriteLine(e, LogSeverityLevel.CRITICAL);
                 }
 
-                const string q1 = "SELECT * FROM LogTable";
-                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig);
-
-                if (data?.Rows is { })
+                const string q1 = "SELECT * " +
+                                  "FROM LogTable X " +
+                                  "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
+                                  "ORDER BY X.when_insert ASC";
+                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>()
                 {
-                    List<string>? dataRow = null;
-                    foreach (var row in data.Rows)
+                    {"@bot_id", sender?.GetId()}
+                });
+                var dbLogFileContent = GetFileContentFromDataTable(data);
+                if (!string.IsNullOrEmpty(dbLogFileContent))
+                {
+                    dbLogFileContent = dbLogFileContent.Trim();
+                    if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
-                        var rowString = row.ToString();
-                        dataRow ??= new List<string>();
-                        if (rowString is { })
-                            dataRow.Add(rowString);
+                        SendFiles(sendTo, dbLogFileContent, sender, "LOG from db:");
                     }
-
-                    PrintLog3(dataRow, sender, sendTo, messageEventArgs, path);
                 }
 
-                PrintLog3(text, sender, sendTo, messageEventArgs, path);
+
+                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:");
             }
             catch (Exception? e)
             {
@@ -253,13 +256,42 @@ public static class Logger
         }
     }
 
+    private static string? GetFileContentFromDataTable(DataTable? data)
+    {
+        if (data == null)
+            return null;
+
+        List<string> r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
+        return r.Aggregate((x, y) => x + "\n\n" + y).Trim();
+    }
+
+    private static string GetDbLogRow(DataRow dr)
+    {
+        var r = "";
+        var cols = dr.Table.Columns;
+        for (var i = 0; i < cols.Count; i++)
+        {
+            var text = cols[i].Caption;
+            var content = dr.ItemArray[i]?.ToString();
+            
+            if (content == null)
+                content = "[null]";
+            if (content == "")
+                content = "[empty]";
+            
+            r += text + ": " + content + "\n";
+        }
+
+        return r.Trim();
+    }
+
     private static void PrintLog3(IReadOnlyCollection<string>? text, TelegramBotAbstract? sender, List<long?> sendTo,
-        MessageEventArgs? messageEventArgs, string path)
+        MessageEventArgs? messageEventArgs, string path, string textToSendBefore)
     {
         if (DetectEmptyLog(text))
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
-            PrintLog2(sendTo, sender, path);
+            PrintLog2(sendTo, sender, path, textToSendBefore);
 
         _linesCount = 0;
     }
@@ -270,7 +302,7 @@ public static class Logger
     }
 
 
-    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path)
+    private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore)
     {
         string file;
         lock (LogFileLock)
@@ -279,20 +311,39 @@ public static class Logger
         }
 
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
-        var encoding = Encoding.UTF8;
+        
 
+        var done = SendFiles(sendTo, file, sender, textToSendBefore);
+        if (done <= 0 || sendTo.Count <= 0)
+            return;
+
+        lock (LogFileLock)
+        {
+            File.WriteAllText(path, "\n");
+        }
+    }
+
+    private static int SendFiles(
+        List<long?> sendTo, 
+        string fileContent, 
+        TelegramBotAbstract? sender,
+        string textToSendBefore
+        )
+    {
+        var encoding = Encoding.UTF8;
+        var done = 0;
+        
         var text2 = new Language(new Dictionary<string, string?>
         {
-            { "it", "LOG:" }
+            { "uni", textToSendBefore }
         });
-
-        var done = 0;
+        
         foreach (var sendToSingle in sendTo)
             try
             {
                 var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
-                var stream = new MemoryStream(encoding.GetBytes(file));
+                var stream = new MemoryStream(encoding.GetBytes(fileContent));
 
                 SendMessage.SendFileAsync(new TelegramFile(stream, "log.log",
                         null, "application/octet-stream"), peer,
@@ -306,13 +357,7 @@ public static class Logger
                 WriteLine(ex);
             }
 
-        if (done <= 0 || sendTo.Count <= 0)
-            return;
-
-        lock (LogFileLock)
-        {
-            File.WriteAllText(path, "\n");
-        }
+        return done;
     }
 
     private static void EmptyLog(TelegramBotAbstract? sender, List<long?> sendTo, EventArgsContainer eventArgsContainer)
