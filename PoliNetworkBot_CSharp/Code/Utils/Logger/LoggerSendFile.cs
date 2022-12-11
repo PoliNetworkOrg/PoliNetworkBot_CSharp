@@ -57,8 +57,8 @@ public static class LoggerSendFile
 
 
                     SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
-                            null, fileMimeType), peer,
-                        text2, TextAsCaption.BEFORE_FILE,
+                            textToSendBefore, fileMimeType), peer,
+                        null, TextAsCaption.AS_CAPTION,
                         sender, null, "it", null, true);
 
                     done++;
