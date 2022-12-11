@@ -261,7 +261,7 @@ internal static class DateTimeClass
         return dt?.Item1;
     }
 
-    internal static string? DateTimeToItalianFormat(DateTime? dt)
+    internal static string? DateTimeToAmericanFormat(DateTime? dt)
     {
         if (dt == null)
             return null;
