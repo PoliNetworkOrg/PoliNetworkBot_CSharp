@@ -232,9 +232,9 @@ public static class Logger
                                   "FROM LogTable X " +
                                   "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
                                   "ORDER BY X.when_insert ASC";
-                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>()
+                var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
-                    {"@bot_id", sender?.GetId()}
+                    { "@bot_id", sender?.GetId() }
                 });
                 var dbLogFileContent = GetFileContentFromDataTable(data);
                 if (!string.IsNullOrEmpty(dbLogFileContent))
@@ -242,7 +242,7 @@ public static class Logger
                     dbLogFileContent = dbLogFileContent.Trim();
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {
-                        var textToSendBefore = "LOG (bot "+sender?.GetId()+") from db:";
+                        var textToSendBefore = "LOG (bot " + sender?.GetId() + ") from db:";
                         SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore);
                     }
                 }
@@ -274,12 +274,12 @@ public static class Logger
         {
             var text = cols[i].Caption;
             var content = dr.ItemArray[i]?.ToString();
-            
+
             if (content == null)
                 content = "[null]";
             if (content == "")
                 content = "[empty]";
-            
+
             r += text + ": " + content + "\n";
         }
 
@@ -312,7 +312,7 @@ public static class Logger
         }
 
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
-        
+
 
         var done = SendFiles(sendTo, file, sender, textToSendBefore);
         if (done <= 0 || sendTo.Count <= 0)
@@ -325,20 +325,20 @@ public static class Logger
     }
 
     private static int SendFiles(
-        List<long?> sendTo, 
-        string fileContent, 
+        List<long?> sendTo,
+        string fileContent,
         TelegramBotAbstract? sender,
         string textToSendBefore
-        )
+    )
     {
         var encoding = Encoding.UTF8;
         var done = 0;
-        
+
         var text2 = new Language(new Dictionary<string, string?>
         {
             { "uni", textToSendBefore }
         });
-        
+
         foreach (var sendToSingle in sendTo)
             try
             {

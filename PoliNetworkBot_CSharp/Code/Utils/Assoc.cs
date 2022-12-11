@@ -606,10 +606,7 @@ public static class Assoc
             { "it", "Club Dipartimentale" }
         });
 
-        if (assocList == null)
-        {
-            return;
-        }
+        if (assocList == null) return;
 
         var assocAndClub = assocList.Select(a =>
             new Language(
@@ -623,10 +620,7 @@ public static class Assoc
 
         var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
 
-        if (e?.Message?.From == null)
-        {
-            return;
-        }
+        if (e?.Message?.From == null) return;
 
         var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion,
             lang: e.Message.From.LanguageCode,
