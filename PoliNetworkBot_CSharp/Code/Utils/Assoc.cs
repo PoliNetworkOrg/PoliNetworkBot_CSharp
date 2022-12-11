@@ -544,10 +544,11 @@ public static class Assoc
     }
 
     /// <summary>
-    ///     Schedules a message to be allowed if nobody objects in the next 4 hours
+    ///     Schedules a message to be allowed if nobody objects in the next {timeSpan}
     /// </summary>
     /// <param name="e"></param>
     /// <param name="sender"></param>
+    /// <param name="timeSpan"></param>
     public static async Task AllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender, TimeSpan timeSpan)
     {
         string? message = null;
