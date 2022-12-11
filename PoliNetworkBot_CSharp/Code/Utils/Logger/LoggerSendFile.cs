@@ -56,7 +56,6 @@ public static class LoggerSendFile
                     var stream = new MemoryStream(encoding.GetBytes(fileContent));
 
 
-                   
                     SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
                             null, fileMimeType), peer,
                         text2, TextAsCaption.BEFORE_FILE,

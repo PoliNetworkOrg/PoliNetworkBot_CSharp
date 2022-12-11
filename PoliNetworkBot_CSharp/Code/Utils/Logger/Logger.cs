@@ -247,11 +247,11 @@ public static class Logger
                             var textToSendBefore = "LOG (bot " + botId + ") from db:";
                             const string applicationOctetStream = "application/octet-stream";
                             LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-                                applicationOctetStream, "log_db_"+botId+".log");
+                                applicationOctetStream, "log_db_" + botId + ".log");
                         }
                     }
                 }
-                
+
                 PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
             }
             catch (Exception? e)
