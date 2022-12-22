@@ -61,8 +61,6 @@ public static class RestoreDbUtil
     public static async Task RestoreDb()
     {
         var path = FileUtil.FindFile("db.json");
-        ;
-        path = @"C:\Users\User\Downloads\Telegram Desktop\db (210).json";
         var x = await RestoreDbMethod(path);
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }
