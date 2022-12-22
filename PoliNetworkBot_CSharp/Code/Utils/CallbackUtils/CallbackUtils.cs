@@ -162,7 +162,7 @@ public static class CallbackUtils
             {
                 CallBackDataFull = JsonConvert.DeserializeObject<CallBackDataFull>(
                     File.ReadAllText(Paths.Data.CallbackData));
-                Logger.Logger.WriteLine("Callbackdata file is empty");
+                Logger.Logger.WriteLine("Callbackdata file is empty", default);
             }
             catch (Exception ex)
             {

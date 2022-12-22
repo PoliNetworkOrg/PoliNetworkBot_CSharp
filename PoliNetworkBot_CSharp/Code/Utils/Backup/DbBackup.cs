@@ -31,6 +31,8 @@ public static class DbBackup
 
     private static void FillDdl(DB_Backup db, DbConfigConnection dbConfig)
     {
+        db.DbBackupDdl ??= new DbBackupDdl();
+
         var x = new List<BackupObjectDescription>
         {
             new("PROCEDURE",
@@ -78,6 +80,8 @@ public static class DbBackup
     private static void FillGenericDbObject(DbConfigConnection dbConfig, string name,
         BackupObjectDescription backupObjectDescription)
     {
+        backupObjectDescription.Dict ??= new Dictionary<string, DataTable>();
+
         try
         {
             var q = "SHOW CREATE " + backupObjectDescription.ObjectName + " " + dbConfig.GetDbName() + "." + name;
@@ -85,7 +89,7 @@ public static class DbBackup
             if (dt == null || dt.Rows.Count < 1)
                 return;
 
-            backupObjectDescription.Dict[name] = dt.Rows[0];
+            backupObjectDescription.Dict[name] = dt;
         }
         catch (Exception ex)
         {
@@ -116,6 +120,7 @@ public static class DbBackup
             db.AddTables(c1);
 
             var tables = db.GetTableNames();
+            db.tables ??= new Dictionary<string, DataTable>();
             foreach (var tableName in tables)
                 try
                 {

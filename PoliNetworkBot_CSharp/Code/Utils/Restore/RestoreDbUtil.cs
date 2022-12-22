@@ -39,6 +39,7 @@ public static class RestoreDbUtil
 
         DbConfig.InitializeDbConfig();
 
+        x.tables ??= new Dictionary<string, DataTable>();
         return x.tables.Sum(y => TryRestoreTable(y) ?? 0);
     }
 
@@ -60,6 +61,8 @@ public static class RestoreDbUtil
     public static async Task RestoreDb()
     {
         var path = FileUtil.FindFile("db.json");
+        ;
+        path = @"C:\Users\User\Downloads\Telegram Desktop\db (210).json";
         var x = await RestoreDbMethod(path);
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }
