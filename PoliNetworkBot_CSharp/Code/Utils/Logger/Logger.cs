@@ -86,7 +86,7 @@ public static class Logger
         }
     }
 
-    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO, bool ignoreDbErrors = false)
+    public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
