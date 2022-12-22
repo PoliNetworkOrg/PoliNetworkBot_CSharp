@@ -2,53 +2,64 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
 public static class RestoreDbUtil
 {
-    private static async Task RestoreDbMethod(string? path)
+    private static async Task<int?> RestoreDbMethod(string? path)
     {
         if (path == null)
         {
             Console.WriteLine("Restore db failed. 'db.json' is missing");
-            return;
+            return null;
         }
 
         var s = await File.ReadAllTextAsync(path);
+        return RestoreDb_FromFileContent(s);
+    }
+
+    private static int? RestoreDb_FromFileContent(string s)
+    {
         if (string.IsNullOrEmpty(s))
-            return;
+            return null;
 
         var x = JsonConvert.DeserializeObject<DB_Backup?>(s);
         if (x == null)
-            return;
+            return null;
 
         DbConfig.InitializeDbConfig();
-        foreach (var y in x.tables) TryRestoreTable(y);
+
+        return x.tables.Sum(y => TryRestoreTable(y) ?? 0);
     }
 
-    private static void TryRestoreTable(KeyValuePair<string, DataTable> y)
+    private static int? TryRestoreTable(KeyValuePair<string, DataTable> y)
     {
         try
         {
-            Database.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
+            return BulkInsert.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             Console.WriteLine("Failed import db table named '" + y.Key + "'");
         }
+
+        return null;
     }
 
     public static async Task RestoreDb()
     {
         var path = FileUtil.FindFile("db.json");
-        await RestoreDbMethod(path);
+        var x = await RestoreDbMethod(path);
+        Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }
 }

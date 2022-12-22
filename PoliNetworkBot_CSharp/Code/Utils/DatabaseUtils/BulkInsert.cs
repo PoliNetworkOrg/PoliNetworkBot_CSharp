@@ -1,160 +1,15 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
-using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
-#endregion
+namespace PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
-namespace PoliNetworkBot_CSharp.Code.Utils;
-
-public static class Database
+public static class BulkInsert
 {
-    public static int Execute(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
-
-        return ExecuteSlave(query, dbConfigConnection, args);
-    }
-
-    public static int ExecuteUnlogged(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        return ExecuteSlave(query, dbConfigConnection, args);
-    }
-
-    private static int ExecuteSlave(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        if (dbConfigConnection == null)
-            return 0;
-        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        int numberOfRowsAffected;
-        lock (connectionWithLock.Lock)
-        {
-            var cmd = new MySqlCommand(query, connection);
-
-            OpenConnection(connection);
-
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
-
-            numberOfRowsAffected = cmd.ExecuteNonQuery();
-        }
-
-        dbConfigConnection.ReleaseConn(connectionWithLock);
-        return numberOfRowsAffected;
-    }
-
-    public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
-
-        return ExecuteSelectSlave(query, dbConfigConnection, args);
-    }
-
-
-    public static DataTable? ExecuteSelectUnlogged(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        return ExecuteSelectSlave(query, dbConfigConnection, args);
-    }
-
-    private static DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,
-        Dictionary<string, object?>? args = null)
-    {
-        if (dbConfigConnection == null) return null;
-        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        var ret = new DataSet();
-        lock (connectionWithLock.Lock)
-        {
-            var cmd = new MySqlCommand(query, connection);
-
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
-
-            OpenConnection(connection);
-
-            var adapter = new MySqlDataAdapter
-            {
-                SelectCommand = cmd
-            };
-
-
-            adapter.Fill(ret);
-
-            adapter.Dispose();
-        }
-
-
-        dbConfigConnection.ReleaseConn(connectionWithLock);
-        return ret.Tables[0];
-    }
-
-    private static void OpenConnection(IDbConnection connection)
-    {
-        if (connection.State != ConnectionState.Open)
-            connection.Open();
-    }
-
-    internal static object? GetFirstValueFromDataTable(DataTable? dt)
-    {
-        if (dt == null)
-            return null;
-
-        try
-        {
-            return dt.Rows[0].ItemArray[0];
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    public static long? GetIntFromColumn(DataRow dr, string columnName)
-    {
-        var o = dr[columnName];
-        if (o is null or DBNull)
-            return null;
-
-        try
-        {
-            return Convert.ToInt64(o);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    public static async Task<CommandExecutionState> QueryBotExec(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        _ = await CommandDispatcher.QueryBot(true, e, sender);
-        return CommandExecutionState.SUCCESSFUL;
-    }
-
-    public static async Task<CommandExecutionState> QueryBotSelect(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        _ = await CommandDispatcher.QueryBot(false, e, sender);
-        return CommandExecutionState.SUCCESSFUL;
-    }
-
-
     public static int BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null)
@@ -169,7 +24,7 @@ public static class Database
 
         lock (connectionWithLock.Lock)
         {
-            OpenConnection(connection);
+            Database.OpenConnection(connection);
             numberOfRowsAffected = BulkInsertMySql2(connection, tableName, table2);
         }
 
@@ -177,6 +32,7 @@ public static class Database
 
         return numberOfRowsAffected;
     }
+
 
     private static DataTable FixDataTable(DataTable table, IReadOnlyList<Colonna> colonne)
     {
@@ -202,6 +58,7 @@ public static class Database
         for (var i = 0; i < dr.ItemArray.Length; i++) r[i] = FixDataCell(dr.ItemArray[i], colonne[i]);
         return r;
     }
+
 
     private static object? FixDataCell(object? source, Colonna colonna)
     {
@@ -239,6 +96,7 @@ public static class Database
         return null;
     }
 
+
     /// <summary>
     ///     Destroy the table if exists and recreate it
     /// </summary>
@@ -256,7 +114,7 @@ public static class Database
     {
         try
         {
-            Execute("DROP TABLE " + tableName, dbConfigConnection);
+            Database.Execute("DROP TABLE " + tableName, dbConfigConnection);
         }
         catch (Exception ex)
         {
@@ -269,9 +127,10 @@ public static class Database
         DbConfigConnection dbConfigConnection)
     {
         var q = GenerateCreateTableQuery(table, tableName);
-        Execute(q.Item1, dbConfigConnection);
+        Database.Execute(q.Item1, dbConfigConnection);
         return q.Item2;
     }
+
 
     private static Tuple<string, List<Colonna>> GenerateCreateTableQuery(DataTable table, string tableName)
     {
@@ -294,6 +153,7 @@ public static class Database
         r += ");";
         return new Tuple<string, List<Colonna>>(r, rC);
     }
+
 
     private static List<object> TryGetNonNullValueAsExample(DataTable table, int i)
     {
@@ -362,18 +222,18 @@ public static class Database
 
     private static bool AllYn(IEnumerable<string> strings)
     {
-        var _cy = 'Y';
-        var _cs = 'S';
-        var _cn = 'N';
-        var _iy = (int)_cy;
-        var _is = (int)_cs;
-        var _in = (int)_cn;
+        const char _cy = 'Y';
+        const char _cs = 'S';
+        const char _cn = 'N';
+        const int _iy = _cy;
+        const int _is = _cs;
+        const int _in = _cn;
         return strings.All(x =>
         {
             try
             {
                 var xc = int.Parse(x);
-                return xc == _in || xc == _is || xc == _iy;
+                return xc is _in or _is or _iy;
             }
             catch
             {
