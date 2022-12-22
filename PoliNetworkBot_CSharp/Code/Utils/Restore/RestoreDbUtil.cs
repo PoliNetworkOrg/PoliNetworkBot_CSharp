@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 
@@ -61,5 +62,26 @@ public static class RestoreDbUtil
         var path = FileUtil.FindFile("db.json");
         var x = await RestoreDbMethod(path);
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
+    }
+
+    public static async Task<CommandExecutionState> RestoreDbFromTelegram(MessageEventArgs? arg1,
+        TelegramBotAbstract? arg2, string[]? arg3)
+    {
+        var m = arg1?.Message.ReplyToMessage?.Document;
+        if (m == null || arg2 == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+
+
+        var f = await arg2.DownloadFileAsync(m);
+        var stream = f?.Item2;
+        if (stream == null) return CommandExecutionState.ERROR_DEFAULT;
+
+        stream.Seek(0, SeekOrigin.Begin);
+        var reader = new StreamReader(stream);
+        var text = await reader.ReadToEndAsync();
+        var x = RestoreDb_FromFileContent(text);
+        Logger.Logger.WriteLine("RestoreDbFromTelegram [" + x + "]");
+
+        return CommandExecutionState.SUCCESSFUL;
     }
 }
