@@ -18,7 +18,6 @@ public static class DbBackup
             DB_Backup db = new();
 
             FillTables(db, dbConfig);
-            FillDdl(db, dbConfig);
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -29,16 +28,33 @@ public static class DbBackup
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    private static void FillDdl(DB_Backup db, DbConfigConnection dbConfig)
+    public static string GetDB_ddl_AsJson(DbConfigConnection dbConfig)
     {
-        db.DbBackupDdl ??= new DbBackupDdl();
+        try
+        {
+            var db = FillDdl(dbConfig);
+            return JsonConvert.SerializeObject(db);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return JsonConvert.SerializeObject("ERROR 3");
+    }
+
+    private static DbBackupDdl FillDdl(DbConfigConnection dbConfig)
+    {
+        var dbBackupDdl = new DbBackupDdl();
+        dbBackupDdl.Procedures ??= new Dictionary<string, DataTable>();
+        dbBackupDdl.TablesDdl ??= new Dictionary<string, DataTable>();
 
         var x = new List<BackupObjectDescription>
         {
             new("PROCEDURE",
                 @"SHOW PROCEDURE STATUS WHERE db = '" + dbConfig.GetDbName() + "' AND type = 'PROCEDURE'; ",
-                db.DbBackupDdl.Procedures),
-            new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
+                dbBackupDdl.Procedures),
+            new("TABLE", "SHOW TABLE STATUS;", dbBackupDdl.TablesDdl)
         };
         foreach (var backupObjectDescription in x)
             try
@@ -49,6 +65,8 @@ public static class DbBackup
             {
                 Console.WriteLine(ex);
             }
+
+        return dbBackupDdl;
     }
 
     private static void FillGenericObjects(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)

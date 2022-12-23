@@ -34,7 +34,11 @@ internal static class BackupUtil
                 var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
                 var sendToList = new List<long?> { sendTo };
                 LoggerSendFile.SendFiles(sendToList, jsonDb, botAbstract,
-                    "Backup:", applicationJson, "db.json");
+                    "Backup DB", applicationJson, "db_table.json");
+
+                var jsonDb2 = DbBackup.GetDB_ddl_AsJson(botAbstract.DbConfig);
+                LoggerSendFile.SendFiles(sendToList, jsonDb2, botAbstract,
+                    "Backup DDL", applicationJson, "db_ddl.json");
             }
         }
         catch (Exception? ex)
