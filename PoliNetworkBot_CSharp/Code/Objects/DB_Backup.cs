@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 #endregion
 
@@ -16,8 +15,6 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 // ReSharper disable once InconsistentNaming
 internal class DB_Backup
 {
-    public DbBackupDdl? DbBackupDdl;
-
     // ReSharper disable once InconsistentNaming
     public List<string>? tableNames;
 
