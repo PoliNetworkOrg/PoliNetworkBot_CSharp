@@ -11,9 +11,9 @@ public class BackupObjectDescription
 {
     public readonly string ObjectName;
     public readonly string Query;
-    public Dictionary<string, DataRow> Dict;
+    public Dictionary<string, DataTable>? Dict;
 
-    public BackupObjectDescription(string objectName, string query, Dictionary<string, DataRow> dict)
+    public BackupObjectDescription(string objectName, string query, Dictionary<string, DataTable>? dict)
     {
         ObjectName = objectName;
         Query = query;

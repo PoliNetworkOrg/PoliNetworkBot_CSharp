@@ -5,7 +5,9 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
+using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Restore;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
@@ -246,6 +248,17 @@ public static class SwitchDispatcher
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en",
                 "Send message in a single group using the bot. @condition: Message to be sent. @args: Group ID"), null,
-            e => e.Message.ReplyToMessage != null, false)
+            e => e.Message.ReplyToMessage != null, false),
+
+
+        new Command("restore_db", RestoreDbUtil.RestoreDbFromTelegram,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "Restore db"), null,
+            e => e.Message.ReplyToMessage != null),
+
+        new Command("restore_db_ddl", RestoreDbUtil.RestoreDb_Ddl_FromTelegram,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "Restore db ddl"), null,
+            e => e.Message.ReplyToMessage != null)
     };
 }

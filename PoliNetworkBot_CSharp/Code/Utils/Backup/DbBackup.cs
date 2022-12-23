@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
+using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
@@ -17,7 +18,6 @@ public static class DbBackup
             DB_Backup db = new();
 
             FillTables(db, dbConfig);
-            FillDdl(db, dbConfig);
             return JsonConvert.SerializeObject(db);
         }
         catch
@@ -28,14 +28,33 @@ public static class DbBackup
         return JsonConvert.SerializeObject("ERROR 2");
     }
 
-    private static void FillDdl(DB_Backup db, DbConfigConnection dbConfig)
+    public static string GetDB_ddl_AsJson(DbConfigConnection dbConfig)
     {
+        try
+        {
+            var db = FillDdl(dbConfig);
+            return JsonConvert.SerializeObject(db);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return JsonConvert.SerializeObject("ERROR 3");
+    }
+
+    private static DbBackupDdl FillDdl(DbConfigConnection dbConfig)
+    {
+        var dbBackupDdl = new DbBackupDdl();
+        dbBackupDdl.Procedures ??= new Dictionary<string, DataTable>();
+        dbBackupDdl.TablesDdl ??= new Dictionary<string, DataTable>();
+
         var x = new List<BackupObjectDescription>
         {
             new("PROCEDURE",
                 @"SHOW PROCEDURE STATUS WHERE db = '" + dbConfig.GetDbName() + "' AND type = 'PROCEDURE'; ",
-                db.DbBackupDdl.Procedures),
-            new("TABLE", "SHOW TABLE STATUS;", db.DbBackupDdl.TablesDdl)
+                dbBackupDdl.Procedures),
+            new("TABLE", "SHOW TABLE STATUS;", dbBackupDdl.TablesDdl)
         };
         foreach (var backupObjectDescription in x)
             try
@@ -46,6 +65,8 @@ public static class DbBackup
             {
                 Console.WriteLine(ex);
             }
+
+        return dbBackupDdl;
     }
 
     private static void FillGenericObjects(DbConfigConnection dbConfig, BackupObjectDescription backupObjectDescription)
@@ -77,6 +98,8 @@ public static class DbBackup
     private static void FillGenericDbObject(DbConfigConnection dbConfig, string name,
         BackupObjectDescription backupObjectDescription)
     {
+        backupObjectDescription.Dict ??= new Dictionary<string, DataTable>();
+
         try
         {
             var q = "SHOW CREATE " + backupObjectDescription.ObjectName + " " + dbConfig.GetDbName() + "." + name;
@@ -84,7 +107,7 @@ public static class DbBackup
             if (dt == null || dt.Rows.Count < 1)
                 return;
 
-            backupObjectDescription.Dict[name] = dt.Rows[0];
+            backupObjectDescription.Dict[name] = dt;
         }
         catch (Exception ex)
         {
@@ -115,6 +138,7 @@ public static class DbBackup
             db.AddTables(c1);
 
             var tables = db.GetTableNames();
+            db.tables ??= new Dictionary<string, DataTable>();
             foreach (var tableName in tables)
                 try
                 {

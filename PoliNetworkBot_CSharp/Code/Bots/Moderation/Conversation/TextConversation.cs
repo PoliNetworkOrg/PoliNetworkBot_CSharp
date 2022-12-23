@@ -59,13 +59,11 @@ internal static class TextConversation
 
         var text = e.Message.Text.ToLower();
         var title = e.Message.Chat.Title?.ToLower();
-        if (string.IsNullOrEmpty(title) == false && title.Contains("polimi"))
-        {
-            AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
-            return ActionDoneEnum.GROUP_MESSAGE_HANDLED_AUTOREPLY;
-        }
+        if (string.IsNullOrEmpty(title) || !title.Contains("polimi"))
+            return ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE;
 
-        return ActionDoneEnum.GROUP_MESSAGE_HANDLED_NONE;
+        AutoReplyInGroups.MessageInGroup2Async(telegramBotClient, e, text);
+        return ActionDoneEnum.GROUP_MESSAGE_HANDLED_AUTOREPLY;
     }
 
     private static async Task PrivateMessage(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
