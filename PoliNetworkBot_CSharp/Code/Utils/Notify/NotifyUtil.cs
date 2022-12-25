@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -610,5 +612,55 @@ internal static class NotifyUtil
         SendMessage.SendFileAsync(file, peer,
             sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
             null, true);
+    }
+
+    public static bool SendReportOfExecution(
+        MessageEventArgs? messageEventArgs,
+        TelegramBotAbstract telegramBotAbstract,
+        List<long?> longs,
+        string s)
+    {
+        var stack = Environment.StackTrace;
+        var x = new JObject
+        {
+            ["messageEventArgs"] = TelegramFileContent.GetMessageEventArgsAsJToken(messageEventArgs),
+            ["telegramBotAbstract"] = telegramBotAbstract.GetId(),
+            ["sendTo"] = ToJArray(longs),
+            ["message"] = s,
+            ["stacktrace"] = LogObject.GetJArray(stack)
+        };
+        var sTosend = JsonConvert.SerializeObject(x);
+
+        var r = new List<bool>();
+        foreach (var toSend in longs)
+            try
+            {
+                var r2 = SendReportSingle(sTosend, toSend, telegramBotAbstract);
+                r.Add(r2);
+            }
+            catch
+            {
+                r.Add(false);
+            }
+
+        return r.All(b => b);
+    }
+
+    private static bool SendReportSingle(string sTosend, long? toSendUser, TelegramBotAbstract telegramBotAbstract)
+    {
+        var language = sTosend.Length < 1024 ? new L(sTosend) : new L();
+        var documentInput =
+            TelegramFile.FromString(sTosend, "report_execution.json", language, TextAsCaption.AS_CAPTION);
+        var peer = new PeerAbstract(toSendUser, ChatType.Private);
+        var r2 = telegramBotAbstract.SendFileAsync(documentInput, peer, null, null, null, false);
+        return r2;
+    }
+
+    private static JArray ToJArray(List<long?> longs)
+    {
+        var x = new JArray();
+        foreach (var i in longs) x.Add(i);
+
+        return x;
     }
 }

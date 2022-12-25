@@ -6,12 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Config;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
+using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
@@ -82,7 +84,11 @@ public static class RestoreDbUtil
         var reader = new StreamReader(stream);
         var text = await reader.ReadToEndAsync();
         var x = RestoreDb_FromFileContent(text);
-        Logger.Logger.WriteLine("RestoreDbFromTelegram [" + x + "]");
+
+        var r = "RestoreDbFromTelegram [" + x + "]";
+        var b = NotifyUtil.SendReportOfExecution(arg1, arg2,
+            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup }, r);
+        Logger.Logger.WriteLine(r + " " + b);
 
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -103,7 +109,11 @@ public static class RestoreDbUtil
         var reader = new StreamReader(stream);
         var text = await reader.ReadToEndAsync();
         var x = RestoreDb_ddl_FromFileContent(text);
-        Logger.Logger.WriteLine("RestoreDb_Ddl_FromTelegram [" + (x ?? "[null]") + "]");
+
+        var r = "RestoreDb_Ddl_FromTelegram [" + (x ?? "[null]") + "]";
+        var b = NotifyUtil.SendReportOfExecution(arg1, arg2,
+            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup }, r);
+        Logger.Logger.WriteLine(r + " " + b);
 
         return CommandExecutionState.SUCCESSFUL;
     }
