@@ -547,7 +547,9 @@ internal static class ModerationCheck
         {
             checkSpam.ToString(),
             e?.Message.Chat.Id, e?.Message.From?.Id, e?.Message.From?.Username,
-            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title
+            e?.Message.From?.FirstName, e?.Message.MessageId, e?.Message.Chat.Title,
+            e?.Message.Text, e?.Message.Caption, e?.Message.Date, e?.Message.Type,
+            e?.Message.AuthorSignature, e?.Message.ViaBot?.Username
         }, telegramBotClient, "AntiSpamMeasure");
 
 
