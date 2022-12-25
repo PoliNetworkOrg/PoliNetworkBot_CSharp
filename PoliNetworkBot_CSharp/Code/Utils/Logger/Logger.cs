@@ -58,7 +58,7 @@ public static class Logger
                 if (messageToBeSent.Key.Value != null)
                     await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
                         messageToBeSent.ChatType, "un", ParseMode.Html,
-                        null, null, null, splitMessage: true);
+                        null, null, splitMessage: true);
             }
             catch (Exception e)
             {

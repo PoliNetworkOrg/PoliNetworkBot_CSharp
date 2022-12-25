@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -23,7 +24,7 @@ internal static class BackupUtil
     }
 
 
-    public static async Task BackupHandler(long sendTo, TelegramBotAbstract botAbstract, string? username,
+    public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
         try
@@ -32,12 +33,12 @@ internal static class BackupUtil
             {
                 const string applicationJson = "application/json";
                 var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
-                var sendToList = new List<long?> { sendTo };
-                LoggerSendFile.SendFiles(sendToList, jsonDb, botAbstract,
+
+                LoggerSendFile.SendFiles(sendTo, jsonDb, botAbstract,
                     "Backup DB", applicationJson, "db_table.json");
 
                 var jsonDb2 = DbBackup.GetDB_ddl_AsJson(botAbstract.DbConfig);
-                LoggerSendFile.SendFiles(sendToList, jsonDb2, botAbstract,
+                LoggerSendFile.SendFiles(sendTo, jsonDb2, botAbstract,
                     "Backup DDL", applicationJson, "db_ddl.json");
             }
         }
@@ -54,7 +55,8 @@ internal static class BackupUtil
         if (sender == null)
             return CommandExecutionState.NOT_TRIGGERED;
 
-        await BackupHandler(e.Message.From.Id, sender, e.Message.From.Username,
+        var fromId = e.Message.From.Id;
+        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, e.Message.From.Username,
             e.Message.Chat.Type);
 
         return CommandExecutionState.SUCCESSFUL;
