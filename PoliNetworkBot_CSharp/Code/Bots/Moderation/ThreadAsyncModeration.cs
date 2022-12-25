@@ -209,7 +209,8 @@ public static class ThreadAsyncModeration
         {
             while (true)
             {
-                await BackupUtil.BackupHandler(GroupsConstants.BackupGroup, bot, null, ChatType.Group);
+                await BackupUtil.BackupHandler(new List<long?> { GroupsConstants.BackupGroup }, bot, null,
+                    ChatType.Group);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }

@@ -22,7 +22,7 @@ public class LogObject
         };
     }
 
-    private static JToken GetJArray(string stackTrace)
+    public static JToken GetJArray(string stackTrace)
     {
         var jArray = new JArray();
         var s = stackTrace.Split("\n").Select(x => x.Trim()).ToList();

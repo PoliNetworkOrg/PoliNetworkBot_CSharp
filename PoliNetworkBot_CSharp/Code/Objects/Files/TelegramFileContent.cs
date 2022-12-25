@@ -279,7 +279,7 @@ public class TelegramFileContent
         return new JArray { s2 };
     }
 
-    private static JToken? GetMessageEventArgsAsJToken(MessageEventArgs? messageEventArgs)
+    public static JToken? GetMessageEventArgsAsJToken(MessageEventArgs? messageEventArgs)
     {
         if (messageEventArgs == null)
             return null;
