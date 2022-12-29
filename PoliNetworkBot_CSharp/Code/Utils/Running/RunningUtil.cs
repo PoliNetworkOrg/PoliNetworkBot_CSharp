@@ -7,7 +7,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Running;
 
 public static class RunningUtil
 {
-    public static Task<CommandExecutionState> KillYourself(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
+    public static Task<CommandExecutionState> KillYourself(MessageEventArgs? arg1, TelegramBotAbstract? arg2,
+        string[]? arg3)
     {
         try
         {
