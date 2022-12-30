@@ -46,22 +46,33 @@ public static class RestoreDbUtil
         DbConfig.InitializeDbConfig();
 
         x.tables ??= new Dictionary<string, DataTable>();
-        return x.tables.Sum(y => TryRestoreTable(y) ?? 0);
+        return x.tables.Sum(y =>
+        {
+            var xx = TryRestoreTable(y);
+            return xx.howManyDone ?? 0;
+        });
     }
 
-    private static int? TryRestoreTable(KeyValuePair<string, DataTable> y)
+    private static ActionDoneReport TryRestoreTable(KeyValuePair<string, DataTable> y)
     {
+        Exception? exception;
         try
         {
-            return BulkInsert.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
+            var r = BulkInsert.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
+            return new ActionDoneReport("TryRestoreTable " + y.Key + " done", new JObject() { ["r"] = r }, r > 0, r);
         }
         catch (Exception ex)
         {
+            exception = ex;
             Console.WriteLine(ex);
             Console.WriteLine("Failed import db table named '" + y.Key + "'");
         }
 
-        return null;
+        return new ActionDoneReport(
+            "TryRestoreTable " + y.Key + " exception",
+            new JObject() { ["ex"] = exception.ToString() },
+            false,
+            0);
     }
 
     public static async Task RestoreDb()
@@ -145,13 +156,15 @@ public static class RestoreDbUtil
                 ["n"] = doneProcedures.Item1,
                 ["info"] = doneProcedures.Item2
             },
-            ["tables"] = new JObject()
+            ["tables"] = new JObject
             {
                 ["n"] = doneTables.Item1,
                 ["info"] = doneTables.Item2
             }
         };
-        return new ActionDoneReport(y, jObject, true);
+
+        var doneProceduresItem1 = (doneProcedures.Item1) + (doneTables.Item1);
+        return new ActionDoneReport(y, jObject, true, doneProceduresItem1);
     }
 
     private static Tuple<int, JToken?> RestoreTables(Dictionary<string, DataTable>? xTablesDdl)
@@ -160,14 +173,14 @@ public static class RestoreDbUtil
         var jobjects = new List<JObject>();
         if (xTablesDdl != null)
         {
-            DB_Backup backup = new DB_Backup();
+            var backup = new DB_Backup();
             DbBackup.FillTables(backup, GlobalVariables.DbConfig);
             foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
             {
                 if (y.done)
                     done++;
 
-                jobjects.Add(new JObject()
+                jobjects.Add(new JObject
                 {
                     ["done"] = y.done,
                     ["info"] = y.Extra,
@@ -186,29 +199,30 @@ public static class RestoreDbUtil
         try
         {
             if (backup.TableExists(keyValuePair.Key))
-                return new ActionDoneReport("skipped " + keyValuePair.Key, null, false);
+                return new ActionDoneReport("skipped " + keyValuePair.Key, null, false, null);
 
             var z = TryRestoreTable(keyValuePair);
 
-            var done = z is > 0;
-            return new ActionDoneReport("done return " + keyValuePair.Key, new JObject()
+            return new ActionDoneReport("done return " + keyValuePair.Key, new JObject
             {
                 ["name"] = keyValuePair.Key,
                 ["ex"] = exception?.ToString(),
-                ["z"] = z,
-                ["done"] = done
-            }, done);
+                ["done"] = z.done,
+                ["howManyDone"] = z.howManyDone,
+                ["Message"] = z.Message,
+                ["Extra"] = z.Extra
+            }, z.done, z.howManyDone);
         }
         catch (Exception e)
         {
             exception = e;
         }
 
-        return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject()
+        return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject
         {
             ["name"] = keyValuePair.Key,
             ["ex"] = exception.ToString()
-        }, true);
+        }, false, null);
     }
 
     private static Tuple<int, JToken?> RestoreProcedures(Dictionary<string, DataTable>? xProcedures)
@@ -224,7 +238,7 @@ public static class RestoreDbUtil
             if (b.Item1)
                 done++;
 
-            exceptions.Add(new JObject()
+            exceptions.Add(new JObject
             {
                 ["b"] = b.Item1,
                 ["qc"] = b.Item2,
