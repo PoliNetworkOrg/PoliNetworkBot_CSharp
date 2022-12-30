@@ -127,8 +127,41 @@ public static class RestoreDbUtil
         if (x == null)
             return null;
 
-        var y = "Procedures " + (x.Procedures?.Count ?? 0) + " " + ", tables " + (x.TablesDdl?.Count ?? 0);
+        var doneProcedures = RestoreProcedures(x.Procedures);
+
+        var sProcedures = doneProcedures + "/" + (x.Procedures?.Count ?? 0);
+        var sTables = x.TablesDdl?.Count ?? 0;
+        var y = "Procedures " + sProcedures + " , tables " + sTables;
         Logger.Logger.WriteLine(y);
         return y;
+    }
+
+    private static int RestoreProcedures(Dictionary<string, DataTable>? xProcedures)
+    {
+        if (xProcedures == null)
+            return 0;
+
+        int done = 0;
+        foreach (var procedure in xProcedures)
+            try
+            {
+                var b = RestoreProcedure(procedure);
+                if (b)
+                    done++;
+            }
+            catch (Exception ex)
+            {
+                Logger.Logger.WriteLine(ex);
+            }
+
+        return done;
+    }
+
+    private static bool RestoreProcedure(KeyValuePair<string, DataTable> procedure)
+    {
+        DbConfig.InitializeDbConfig();
+        var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
+        Database.Execute(create, GlobalVariables.DbConfig);
+        return true;
     }
 }
