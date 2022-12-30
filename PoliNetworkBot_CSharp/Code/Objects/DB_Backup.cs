@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
 // ReSharper disable once InconsistentNaming
-internal class DB_Backup
+public class DB_Backup
 {
     // ReSharper disable once InconsistentNaming
     public List<string>? tableNames;
@@ -34,5 +34,10 @@ internal class DB_Backup
     {
         tableNames ??= new List<string>();
         return tableNames.Where(tableName => string.IsNullOrEmpty(tableName) == false);
+    }
+
+    public bool TableExists(string key)
+    {
+        return tableNames != null && tableNames.ToList().Select(x => x.ToLower()).Contains(key.ToLower());
     }
 }
