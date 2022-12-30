@@ -618,7 +618,8 @@ internal static class NotifyUtil
         MessageEventArgs? messageEventArgs,
         TelegramBotAbstract telegramBotAbstract,
         List<long?> longs,
-        string s)
+        string s, 
+        JToken? extraValues = null)
     {
         var stack = Environment.StackTrace;
         var x = new JObject
@@ -627,7 +628,8 @@ internal static class NotifyUtil
             ["telegramBotAbstract"] = telegramBotAbstract.GetId(),
             ["sendTo"] = ToJArray(longs),
             ["message"] = s,
-            ["stacktrace"] = LogObject.GetJArray(stack)
+            ["stacktrace"] = LogObject.GetJArray(stack),
+            ["extra"] = extraValues
         };
         var sTosend = JsonConvert.SerializeObject(x);
 

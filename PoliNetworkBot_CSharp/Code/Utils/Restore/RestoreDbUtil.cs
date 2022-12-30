@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
@@ -86,8 +88,10 @@ public static class RestoreDbUtil
         var x = RestoreDb_FromFileContent(text);
 
         var r = "RestoreDbFromTelegram [" + x + "]";
-        var b = NotifyUtil.SendReportOfExecution(arg1, arg2,
-            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup }, r);
+        var b = NotifyUtil.SendReportOfExecution(
+            arg1, arg2,
+            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup },
+            r);
         Logger.Logger.WriteLine(r + " " + b);
 
         return CommandExecutionState.SUCCESSFUL;
@@ -110,15 +114,15 @@ public static class RestoreDbUtil
         var text = await reader.ReadToEndAsync();
         var x = RestoreDb_ddl_FromFileContent(text);
 
-        var r = "RestoreDb_Ddl_FromTelegram [" + (x ?? "[null]") + "]";
-        var b = NotifyUtil.SendReportOfExecution(arg1, arg2,
-            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup }, r);
+        var r = "RestoreDb_Ddl_FromTelegram [" + (x?.Message ?? "[null]") + "]";
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, x?.Extra);
         Logger.Logger.WriteLine(r + " " + b);
 
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static string? RestoreDb_ddl_FromFileContent(string s)
+    private static ActionDoneReport? RestoreDb_ddl_FromFileContent(string s)
     {
         if (string.IsNullOrEmpty(s))
             return null;
@@ -129,19 +133,30 @@ public static class RestoreDbUtil
 
         var doneProcedures = RestoreProcedures(x.Procedures);
 
-        var sProcedures = doneProcedures + "/" + (x.Procedures?.Count ?? 0);
+        var sProcedures = doneProcedures.Item1 + "/" + (x.Procedures?.Count ?? 0);
         var sTables = x.TablesDdl?.Count ?? 0;
         var y = "Procedures " + sProcedures + " , tables " + sTables;
         Logger.Logger.WriteLine(y);
-        return y;
+
+        var jObject = new JObject
+        {
+            ["procedures"] = new JObject()
+            {
+                
+                ["n"] = doneProcedures.Item1,
+                ["ex"] = doneProcedures.Item2
+            }
+        };
+        return new ActionDoneReport(y, jObject);
     }
 
-    private static int RestoreProcedures(Dictionary<string, DataTable>? xProcedures)
+    private static Tuple<int, JToken?> RestoreProcedures(Dictionary<string, DataTable>? xProcedures)
     {
         if (xProcedures == null)
-            return 0;
+            return new Tuple<int, JToken?>(0, null);
 
-        int done = 0;
+        var done = 0;
+        var exceptions = new List<Exception>();
         foreach (var procedure in xProcedures)
             try
             {
@@ -152,9 +167,11 @@ public static class RestoreDbUtil
             catch (Exception ex)
             {
                 Logger.Logger.WriteLine(ex);
+                exceptions.Add(ex);
             }
 
-        return done;
+        var jArray = ActionDoneReport.GetJArrayOfExceptions(exceptions);
+        return new Tuple<int,JToken?>(done, jArray);
     }
 
     private static bool RestoreProcedure(KeyValuePair<string, DataTable> procedure)
