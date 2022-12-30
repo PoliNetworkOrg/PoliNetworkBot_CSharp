@@ -145,7 +145,7 @@ public static class RestoreDbUtil
                 ["n"] = doneProcedures.Item1,
                 ["info"] = doneProcedures.Item2
             },
-            ["tables"] = new JObject()
+            ["tables"] = new JObject
             {
                 ["n"] = doneTables.Item1,
                 ["info"] = doneTables.Item2
@@ -160,14 +160,14 @@ public static class RestoreDbUtil
         var jobjects = new List<JObject>();
         if (xTablesDdl != null)
         {
-            DB_Backup backup = new DB_Backup();
+            var backup = new DB_Backup();
             DbBackup.FillTables(backup, GlobalVariables.DbConfig);
             foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
             {
                 if (y.done)
                     done++;
 
-                jobjects.Add(new JObject()
+                jobjects.Add(new JObject
                 {
                     ["done"] = y.done,
                     ["info"] = y.Extra,
@@ -191,7 +191,7 @@ public static class RestoreDbUtil
             var z = TryRestoreTable(keyValuePair);
 
             var done = z is > 0;
-            return new ActionDoneReport("done return " + keyValuePair.Key, new JObject()
+            return new ActionDoneReport("done return " + keyValuePair.Key, new JObject
             {
                 ["name"] = keyValuePair.Key,
                 ["ex"] = exception?.ToString(),
@@ -204,7 +204,7 @@ public static class RestoreDbUtil
             exception = e;
         }
 
-        return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject()
+        return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject
         {
             ["name"] = keyValuePair.Key,
             ["ex"] = exception.ToString()
@@ -224,7 +224,7 @@ public static class RestoreDbUtil
             if (b.Item1)
                 done++;
 
-            exceptions.Add(new JObject()
+            exceptions.Add(new JObject
             {
                 ["b"] = b.Item1,
                 ["qc"] = b.Item2,

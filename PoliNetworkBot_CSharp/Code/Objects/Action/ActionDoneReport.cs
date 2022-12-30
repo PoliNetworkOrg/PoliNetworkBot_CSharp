@@ -29,10 +29,7 @@ public class ActionDoneReport
     public static JArray GetJarrayOfListOfJObjects(List<JObject> exceptions)
     {
         var r = new JArray();
-        foreach (var variable in exceptions)
-        {
-            r.Add(variable);
-        }
+        foreach (var variable in exceptions) r.Add(variable);
         return r;
     }
 }
