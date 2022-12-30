@@ -262,8 +262,10 @@ public static class RestoreDbUtil
         try
         {
             DbConfig.InitializeDbConfig();
+            var procedureName = procedure.Value.Rows[0]["Procedure"].ToString();
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-            create = create?.Replace("`", "'");
+            create = create?.Replace("`", "");
+            create = FixFirstLineProcedure(create, procedureName);
             c2 = "DELIMITER " + delimiter + "\r\n" + create + delimiter + "\r\nDELIMITER ;";
             Database.Execute(c2, GlobalVariables.DbConfig);
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
@@ -275,5 +277,16 @@ public static class RestoreDbUtil
         }
 
         return new Tuple<bool, string?, string?, Exception?>(false, create, c2, ex);
+    }
+
+    private static string? FixFirstLineProcedure(string? create, string? name)
+    {
+        if (string.IsNullOrEmpty(create) || string.IsNullOrEmpty(name))
+            return null;
+
+        var s = create.Split('\n').ToList().Select(x => x.Trim()).ToList();
+        s[0] = "CREATE  PROCEDURE "+name+" (";
+        var s2 = s.Aggregate((x, y) => x + "\r\n" + y);
+        return s2;
     }
 }
