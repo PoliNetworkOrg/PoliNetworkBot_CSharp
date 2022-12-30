@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
+using PoliNetworkBot_CSharp.Code.Objects.BackupObj;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
@@ -22,7 +23,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
 public static class RestoreDbUtil
 {
-    private static async Task<int?> RestoreDbMethod(string? path)
+    private static async Task<ActionDoneReport?> RestoreDbMethod(string? path)
     {
         if (path == null)
         {
@@ -34,23 +35,29 @@ public static class RestoreDbUtil
         return RestoreDb_FromFileContent(s);
     }
 
-    private static int? RestoreDb_FromFileContent(string s)
+    private static ActionDoneReport? RestoreDb_FromFileContent(string s)
     {
         if (string.IsNullOrEmpty(s))
             return null;
 
         var x = JsonConvert.DeserializeObject<DB_Backup?>(s);
+        return RestoreDb_FromData(x);
+    }
+
+    private static ActionDoneReport? RestoreDb_FromData(DB_Backup? x)
+    {
         if (x == null)
             return null;
 
         DbConfig.InitializeDbConfig();
 
         x.tables ??= new Dictionary<string, DataTable>();
-        return x.tables.Sum(y =>
+        var done = x.tables.Sum(y =>
         {
             var xx = TryRestoreTable(y);
-            return xx.howManyDone ?? 0;
+            return xx.HowManyDone ?? 0;
         });
+        return new ActionDoneReport("RestoreDb_FromData done", null, true, done);
     }
 
     private static ActionDoneReport TryRestoreTable(KeyValuePair<string, DataTable> y)
@@ -59,7 +66,7 @@ public static class RestoreDbUtil
         try
         {
             var r = BulkInsert.BulkInsertMySql(y.Value, y.Key, GlobalVariables.DbConfig);
-            return new ActionDoneReport("TryRestoreTable " + y.Key + " done", new JObject() { ["r"] = r }, r > 0, r);
+            return new ActionDoneReport("TryRestoreTable " + y.Key + " done", new JObject { ["r"] = r }, r > 0, r);
         }
         catch (Exception ex)
         {
@@ -70,7 +77,7 @@ public static class RestoreDbUtil
 
         return new ActionDoneReport(
             "TryRestoreTable " + y.Key + " exception",
-            new JObject() { ["ex"] = exception.ToString() },
+            new JObject { ["ex"] = exception.ToString() },
             false,
             0);
     }
@@ -100,7 +107,7 @@ public static class RestoreDbUtil
 
         var r = "RestoreDbFromTelegram [" + x + "]";
         var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
-        var extraValues = new JObject { ["done"] = x };
+        var extraValues = new JObject { ["done"] = x?.GetJObject() };
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
         Logger.Logger.WriteLine(r + " " + b);
 
@@ -141,6 +148,14 @@ public static class RestoreDbUtil
         if (x == null)
             return null;
 
+        return restoredb_ddl_FromData(x);
+    }
+
+    private static ActionDoneReport restoredb_ddl_FromData(DbBackupDdl? x)
+    {
+        if (x == null)
+            return new ActionDoneReport("DbBackupDdl==null", null, false, null);
+
         var doneProcedures = RestoreProcedures(x.Procedures);
         var doneTables = RestoreTables(x.TablesDdl);
 
@@ -163,7 +178,7 @@ public static class RestoreDbUtil
             }
         };
 
-        var doneProceduresItem1 = (doneProcedures.Item1) + (doneTables.Item1);
+        var doneProceduresItem1 = doneProcedures.Item1 + doneTables.Item1;
         return new ActionDoneReport(y, jObject, true, doneProceduresItem1);
     }
 
@@ -177,12 +192,12 @@ public static class RestoreDbUtil
             DbBackup.FillTables(backup, GlobalVariables.DbConfig);
             foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
             {
-                if (y.done)
+                if (y.Done)
                     done++;
 
                 jobjects.Add(new JObject
                 {
-                    ["done"] = y.done,
+                    ["done"] = y.Done,
                     ["info"] = y.Extra,
                     ["message"] = y.Message
                 });
@@ -207,11 +222,11 @@ public static class RestoreDbUtil
             {
                 ["name"] = keyValuePair.Key,
                 ["ex"] = exception?.ToString(),
-                ["done"] = z.done,
-                ["howManyDone"] = z.howManyDone,
+                ["done"] = z.Done,
+                ["howManyDone"] = z.HowManyDone,
                 ["Message"] = z.Message,
                 ["Extra"] = z.Extra
-            }, z.done, z.howManyDone);
+            }, z.Done, z.HowManyDone);
         }
         catch (Exception e)
         {
@@ -267,9 +282,9 @@ public static class RestoreDbUtil
             create = create?.Replace("`", "");
             create = FixFirstLineProcedure(create, procedureName);
             c2 = "DELIMITER " + delimiter + "\r\n" + create + delimiter + "\r\nDELIMITER ;";
-            
+
             Database.Execute(create, GlobalVariables.DbConfig);
-            
+
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
         catch (Exception ex2)
@@ -287,8 +302,54 @@ public static class RestoreDbUtil
             return null;
 
         var s = create.Split('\n').ToList().Select(x => x.Trim()).ToList();
-        s[0] = "CREATE  PROCEDURE "+name+" (";
+        s[0] = "CREATE  PROCEDURE " + name + " (";
         var s2 = s.Aggregate((x, y) => x + "\r\n" + y);
         return s2;
+    }
+
+    public static async Task<CommandExecutionState> RestoreDb_Full_FromTelegram(MessageEventArgs? arg1,
+        TelegramBotAbstract? arg2, string[]? arg3)
+    {
+        var m = arg1?.Message.ReplyToMessage?.Document;
+        if (m == null || arg2 == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+
+        var f = await arg2.DownloadFileAsync(m);
+        var stream = f?.Item2;
+        if (stream == null) return CommandExecutionState.ERROR_DEFAULT;
+
+        stream.Seek(0, SeekOrigin.Begin);
+        var reader = new StreamReader(stream);
+        var text = await reader.ReadToEndAsync();
+        var x = RestoreDb_full_FromFileContent(text);
+
+        var r = "RestoreDb_Full_FromTelegram [" + x + "]";
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var extraValues = new JObject { ["done"] = ActionDoneReport.GetObject(x) };
+        var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
+        Logger.Logger.WriteLine(r + " " + b);
+
+        return CommandExecutionState.SUCCESSFUL;
+    }
+
+    private static List<ActionDoneReport?> RestoreDb_full_FromFileContent(string text)
+    {
+        Exception? exception = null;
+        try
+        {
+            var x = JsonConvert.DeserializeObject<BackupFull>(text);
+            var x1 = RestoreDb_FromData(x?.DbFull);
+            var x2 = restoredb_ddl_FromData(x?.DbFullDdl);
+            return new List<ActionDoneReport?> { x1, x2 };
+        }
+        catch (Exception ex)
+        {
+            exception = ex;
+        }
+
+        var jObject = new JObject { ["ex"] = exception.ToString() };
+        var actionDoneReport = new ActionDoneReport(
+            "RestoreDb_full_FromFileContent exception", jObject, false, null);
+        return new List<ActionDoneReport?> { actionDoneReport };
     }
 }

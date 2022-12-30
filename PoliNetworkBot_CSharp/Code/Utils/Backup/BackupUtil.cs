@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.BackupObj;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -32,14 +34,13 @@ internal static class BackupUtil
             if (botAbstract.DbConfig != null)
             {
                 const string applicationJson = "application/json";
-                var jsonDb = DbBackup.GetDB_AsJson(botAbstract.DbConfig);
+                var dbFull = DbBackup.GetDb_Full(botAbstract.DbConfig);
+                var dbFullDdl = DbBackup.Get_DB_DDL_Full(botAbstract.DbConfig);
+                var backupFull = new BackupFull(dbFull, dbFullDdl);
 
+                var jsonDb = JsonConvert.SerializeObject(backupFull);
                 LoggerSendFile.SendFiles(sendTo, jsonDb, botAbstract,
-                    "Backup DB", applicationJson, "db_table.json");
-
-                var jsonDb2 = DbBackup.GetDB_ddl_AsJson(botAbstract.DbConfig);
-                LoggerSendFile.SendFiles(sendTo, jsonDb2, botAbstract,
-                    "Backup DDL", applicationJson, "db_ddl.json");
+                    "Backup DB", applicationJson, "db_full.json");
             }
         }
         catch (Exception? ex)

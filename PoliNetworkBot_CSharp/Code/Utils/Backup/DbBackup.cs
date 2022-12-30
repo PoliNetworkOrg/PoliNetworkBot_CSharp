@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
@@ -11,39 +10,40 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 public static class DbBackup
 {
-    public static string GetDB_AsJson(DbConfigConnection dbConfig)
+    public static DB_Backup? GetDb_Full(DbConfigConnection dbConfig)
     {
         try
         {
             DB_Backup db = new();
 
             FillTables(db, dbConfig);
-            return JsonConvert.SerializeObject(db);
+            return db;
         }
         catch
         {
             // ignored
         }
 
-        return JsonConvert.SerializeObject("ERROR 2");
+        return null;
     }
 
-    public static string GetDB_ddl_AsJson(DbConfigConnection dbConfig)
+    public static DbBackupDdl? Get_DB_DDL_Full(DbConfigConnection dbConfig)
     {
         try
         {
             var db = FillDdl(dbConfig);
-            return JsonConvert.SerializeObject(db);
+
+            return db;
         }
         catch
         {
             // ignored
         }
 
-        return JsonConvert.SerializeObject("ERROR 3");
+        return null;
     }
 
-    private static DbBackupDdl FillDdl(DbConfigConnection dbConfig)
+    private static DbBackupDdl? FillDdl(DbConfigConnection dbConfig)
     {
         var dbBackupDdl = new DbBackupDdl();
         dbBackupDdl.Procedures ??= new Dictionary<string, DataTable>();

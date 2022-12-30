@@ -41,7 +41,7 @@ public static class Database
         lock (connectionWithLock.Lock)
         {
             var cmd = new MySqlCommand(query, connection);
-            
+
 
             OpenConnection(connection);
 

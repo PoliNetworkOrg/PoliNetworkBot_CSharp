@@ -59,7 +59,8 @@ public class DbConfig
     public string GetConnectionString()
     {
         if (string.IsNullOrEmpty(Password))
-            return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";Allow User Variables=True";
+            return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port +
+                   ";Allow User Variables=True";
 
         return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
                Password + "'" + ";Allow User Variables=True";
