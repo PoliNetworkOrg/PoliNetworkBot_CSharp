@@ -255,6 +255,7 @@ public static class RestoreDbUtil
 
     private static Tuple<bool, string?, string?, Exception?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
     {
+        const string delimiter = "$$";
         Exception? ex;
         string? create = null;
         string? c2 = null;
@@ -262,7 +263,8 @@ public static class RestoreDbUtil
         {
             DbConfig.InitializeDbConfig();
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-            c2 = "DELIMITER //\r\n" + create + "//\r\nDELIMITER ;";
+            create = create?.Replace("`", "'");
+            c2 = "DELIMITER " + delimiter + "\r\n" + create + delimiter + "\r\nDELIMITER ;";
             Database.Execute(c2, GlobalVariables.DbConfig);
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
