@@ -9,11 +9,13 @@ public class ActionDoneReport
 {
     public readonly JToken? Extra;
     public readonly string? Message;
+    public bool done;
 
-    public ActionDoneReport(string message, JToken? extra)
+    public ActionDoneReport(string message, JToken? extra, bool done)
     {
         Message = message;
         Extra = extra;
+        this.done = done;
     }
 
     public static JArray GetJArrayOfExceptions(IEnumerable<Exception> exceptions)
