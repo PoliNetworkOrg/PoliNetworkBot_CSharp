@@ -262,6 +262,11 @@ public static class SwitchDispatcher
             new L("en", "Restore db ddl"), null,
             e => e.Message.ReplyToMessage != null),
 
+        new Command("restore_db_full", RestoreDbUtil.RestoreDb_Full_FromTelegram,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "Restore db full"), null,
+            e => e.Message.ReplyToMessage != null),
+
         new Command("kill_yourself", RunningUtil.KillYourself,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Kill bot"), null,
