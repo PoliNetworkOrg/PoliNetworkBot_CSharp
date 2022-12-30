@@ -262,7 +262,7 @@ public static class RestoreDbUtil
         {
             DbConfig.InitializeDbConfig();
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-            c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
+            c2 = "DELIMITER //\r\n" + create + "//\r\nDELIMITER ;";
             Database.Execute(c2, GlobalVariables.DbConfig);
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
