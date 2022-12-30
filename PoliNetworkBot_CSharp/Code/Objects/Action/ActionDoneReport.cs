@@ -7,8 +7,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
 public class ActionDoneReport
 {
-    public readonly string? Message;
     public readonly JToken? Extra;
+    public readonly string? Message;
 
     public ActionDoneReport(string message, JToken? extra)
     {
@@ -19,10 +19,7 @@ public class ActionDoneReport
     public static JArray GetJArrayOfExceptions(IEnumerable<Exception> exceptions)
     {
         var r = new JArray();
-        foreach (var jToken in exceptions.Select(variable => variable.ToString()))
-        {
-            r.Add(jToken);
-        }
+        foreach (var jToken in exceptions.Select(variable => variable.ToString())) r.Add(jToken);
 
         return r;
     }
