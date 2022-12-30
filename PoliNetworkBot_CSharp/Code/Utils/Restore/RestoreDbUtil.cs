@@ -165,7 +165,8 @@ public static class RestoreDbUtil
                 ["b"] = b.Item1,
                 ["qc"] = b.Item2,
                 ["qcd"] = b.Item3,
-                ["name"] = procedure.Key
+                ["name"] = procedure.Key,
+                ["ex"] = b.Item4?.ToString()
             });
         }
 
@@ -174,21 +175,23 @@ public static class RestoreDbUtil
         return new Tuple<int, JToken?>(done, jArray);
     }
 
-    private static Tuple<bool, string?, string?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
+    private static Tuple<bool, string?, string?, Exception?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
     {
+        Exception? ex;
         try
         {
             DbConfig.InitializeDbConfig();
             var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
             var c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
             Database.Execute(c2, GlobalVariables.DbConfig);
-            return new Tuple<bool, string?, string?>(true, create, c2);
+            return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
-        catch (Exception ex)
+        catch (Exception ex2)
         {
-            Logger.Logger.WriteLine(ex);
+            ex = ex2;
+            Logger.Logger.WriteLine(ex2);
         }
 
-        return new Tuple<bool, string?, string?>(false, null, null);
+        return new Tuple<bool, string?, string?, Exception?>(false, null, null, ex);
     }
 }
