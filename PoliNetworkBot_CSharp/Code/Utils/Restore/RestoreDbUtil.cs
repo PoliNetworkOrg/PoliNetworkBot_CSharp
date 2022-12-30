@@ -256,10 +256,9 @@ public static class RestoreDbUtil
             exceptions.Add(new JObject
             {
                 ["b"] = b.Item1,
-                ["qc"] = b.Item2,
-                ["qcd"] = b.Item3,
+                ["query_create"] = b.Item2,
                 ["name"] = procedure.Key,
-                ["ex"] = b.Item4?.ToString()
+                ["ex"] = b.Item3?.ToString()
             });
         }
 
@@ -268,12 +267,11 @@ public static class RestoreDbUtil
         return new Tuple<int, JToken?>(done, jArray);
     }
 
-    private static Tuple<bool, string?, string?, Exception?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
+    private static Tuple<bool, string?, Exception?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
     {
-        const string delimiter = "$$";
         Exception? ex;
         string? create = null;
-        string? c2 = null;
+
         try
         {
             DbConfig.InitializeDbConfig();
@@ -281,11 +279,10 @@ public static class RestoreDbUtil
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
             create = create?.Replace("`", "");
             create = FixFirstLineProcedure(create, procedureName);
-            c2 = "DELIMITER " + delimiter + "\r\n" + create + delimiter + "\r\nDELIMITER ;";
 
             Database.Execute(create, GlobalVariables.DbConfig);
 
-            return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
+            return new Tuple<bool, string?, Exception?>(true, create, null);
         }
         catch (Exception ex2)
         {
@@ -293,7 +290,7 @@ public static class RestoreDbUtil
             Logger.Logger.WriteLine(ex2);
         }
 
-        return new Tuple<bool, string?, string?, Exception?>(false, create, c2, ex);
+        return new Tuple<bool, string?, Exception?>(false, create, ex);
     }
 
     private static string? FixFirstLineProcedure(string? create, string? name)
@@ -334,7 +331,7 @@ public static class RestoreDbUtil
 
     private static List<ActionDoneReport?> RestoreDb_full_FromFileContent(string text)
     {
-        Exception? exception = null;
+        Exception? exception;
         try
         {
             var x = JsonConvert.DeserializeObject<BackupFull>(text);
