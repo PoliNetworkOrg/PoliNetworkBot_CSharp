@@ -178,11 +178,13 @@ public static class RestoreDbUtil
     private static Tuple<bool, string?, string?, Exception?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
     {
         Exception? ex;
+        string? create = null;
+        string? c2 = null;
         try
         {
             DbConfig.InitializeDbConfig();
-            var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-            var c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
+            create = procedure.Value.Rows[0]["Create Procedure"].ToString();
+            c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
             Database.Execute(c2, GlobalVariables.DbConfig);
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
@@ -192,6 +194,6 @@ public static class RestoreDbUtil
             Logger.Logger.WriteLine(ex2);
         }
 
-        return new Tuple<bool, string?, string?, Exception?>(false, null, null, ex);
+        return new Tuple<bool, string?, string?, Exception?>(false, create, c2, ex);
     }
 }
