@@ -175,7 +175,8 @@ public static class RestoreDbUtil
     {
         DbConfig.InitializeDbConfig();
         var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-        Database.Execute(create, GlobalVariables.DbConfig);
+        var c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
+        Database.Execute(c2, GlobalVariables.DbConfig);
         return true;
     }
 }
