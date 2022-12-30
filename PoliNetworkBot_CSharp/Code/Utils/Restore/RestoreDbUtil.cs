@@ -141,7 +141,7 @@ public static class RestoreDbUtil
             ["procedures"] = new JObject
             {
                 ["n"] = doneProcedures.Item1,
-                ["ex"] = doneProcedures.Item2
+                ["info"] = doneProcedures.Item2
             }
         };
         return new ActionDoneReport(y, jObject);
@@ -153,30 +153,42 @@ public static class RestoreDbUtil
             return new Tuple<int, JToken?>(0, null);
 
         var done = 0;
-        var exceptions = new List<Exception>();
+        var exceptions = new List<JObject>();
         foreach (var procedure in xProcedures)
-            try
-            {
-                var b = RestoreProcedure(procedure);
-                if (b)
-                    done++;
-            }
-            catch (Exception ex)
-            {
-                Logger.Logger.WriteLine(ex);
-                exceptions.Add(ex);
-            }
+        {
+            var b = RestoreProcedure(procedure);
+            if (b.Item1)
+                done++;
 
-        var jArray = ActionDoneReport.GetJArrayOfExceptions(exceptions);
+            exceptions.Add(new JObject()
+            {
+                ["b"] = b.Item1,
+                ["qc"] = b.Item2,
+                ["qcd"] = b.Item3,
+                ["name"] = procedure.Key
+            });
+        }
+
+
+        var jArray = ActionDoneReport.GetJarrayOfListOfJObjects(exceptions);
         return new Tuple<int, JToken?>(done, jArray);
     }
 
-    private static bool RestoreProcedure(KeyValuePair<string, DataTable> procedure)
+    private static Tuple<bool, string?, string?> RestoreProcedure(KeyValuePair<string, DataTable> procedure)
     {
-        DbConfig.InitializeDbConfig();
-        var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
-        var c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
-        Database.Execute(c2, GlobalVariables.DbConfig);
-        return true;
+        try
+        {
+            DbConfig.InitializeDbConfig();
+            var create = procedure.Value.Rows[0]["Create Procedure"].ToString();
+            var c2 = "DELIMITER //\n" + create + "//\nDELIMITER ;";
+            Database.Execute(c2, GlobalVariables.DbConfig);
+            return new Tuple<bool, string?, string?>(true, create, c2);
+        }
+        catch (Exception ex)
+        {
+            Logger.Logger.WriteLine(ex);
+        }
+
+        return new Tuple<bool, string?, string?>(false, null, null);
     }
 }
