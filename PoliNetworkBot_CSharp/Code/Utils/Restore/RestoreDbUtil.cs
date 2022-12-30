@@ -166,7 +166,7 @@ public static class RestoreDbUtil
             {
                 if (y.done)
                     done++;
-                
+
                 jobjects.Add(new JObject()
                 {
                     ["done"] = y.done,
@@ -203,7 +203,7 @@ public static class RestoreDbUtil
         {
             exception = e;
         }
-        
+
         return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject()
         {
             ["name"] = keyValuePair.Key,
