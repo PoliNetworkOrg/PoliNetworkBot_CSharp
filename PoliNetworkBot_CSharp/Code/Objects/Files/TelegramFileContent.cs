@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -302,7 +303,13 @@ public class TelegramFileContent
             ["text"] = message.Text,
             ["from"] = GetUserAsJToken(message.From),
             ["replyTo"] = GetMessageAsJToken(message.ReplyToMessage),
-            ["chat"] = GetChatAsJToken(message.Chat)
+            ["chat"] = GetChatAsJToken(message.Chat),
+            ["date"] = message.Date.ToString(CultureInfo.InvariantCulture),
+            ["MessageId"] = message.MessageId,
+            ["Caption"] = message.Caption,
+            ["AuthorSignature"] = message.AuthorSignature,
+            ["ForwardDate"] = message.ForwardDate?.ToString(CultureInfo.InvariantCulture),
+            ["Type"] = message.Type.ToString()
         };
 
         return result;
