@@ -77,7 +77,6 @@ public static class RestoreDbUtil
         if (m == null || arg2 == null)
             return CommandExecutionState.UNMET_CONDITIONS;
 
-
         var f = await arg2.DownloadFileAsync(m);
         var stream = f?.Item2;
         if (stream == null) return CommandExecutionState.ERROR_DEFAULT;
@@ -88,10 +87,9 @@ public static class RestoreDbUtil
         var x = RestoreDb_FromFileContent(text);
 
         var r = "RestoreDbFromTelegram [" + x + "]";
-        var b = NotifyUtil.SendReportOfExecution(
-            arg1, arg2,
-            new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup },
-            r);
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var extraValues = new JObject { ["done"] = x };
+        var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
         Logger.Logger.WriteLine(r + " " + b);
 
         return CommandExecutionState.SUCCESSFUL;
@@ -140,9 +138,8 @@ public static class RestoreDbUtil
 
         var jObject = new JObject
         {
-            ["procedures"] = new JObject()
+            ["procedures"] = new JObject
             {
-                
                 ["n"] = doneProcedures.Item1,
                 ["ex"] = doneProcedures.Item2
             }
@@ -171,7 +168,7 @@ public static class RestoreDbUtil
             }
 
         var jArray = ActionDoneReport.GetJArrayOfExceptions(exceptions);
-        return new Tuple<int,JToken?>(done, jArray);
+        return new Tuple<int, JToken?>(done, jArray);
     }
 
     private static bool RestoreProcedure(KeyValuePair<string, DataTable> procedure)

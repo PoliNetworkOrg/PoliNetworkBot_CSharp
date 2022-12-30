@@ -618,7 +618,7 @@ internal static class NotifyUtil
         MessageEventArgs? messageEventArgs,
         TelegramBotAbstract telegramBotAbstract,
         List<long?> longs,
-        string s, 
+        string s,
         JToken? extraValues = null)
     {
         var stack = Environment.StackTrace;
