@@ -115,7 +115,7 @@ public static class DbBackup
         }
     }
 
-    private static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
+    public static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null) return;
 

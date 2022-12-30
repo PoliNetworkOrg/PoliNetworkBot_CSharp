@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -130,9 +131,10 @@ public static class RestoreDbUtil
             return null;
 
         var doneProcedures = RestoreProcedures(x.Procedures);
+        var doneTables = RestoreTables(x.TablesDdl);
 
         var sProcedures = doneProcedures.Item1 + "/" + (x.Procedures?.Count ?? 0);
-        var sTables = x.TablesDdl?.Count ?? 0;
+        var sTables = doneTables.Item1 + "/" + (x.TablesDdl?.Count ?? 0);
         var y = "Procedures " + sProcedures + " , tables " + sTables;
         Logger.Logger.WriteLine(y);
 
@@ -142,9 +144,71 @@ public static class RestoreDbUtil
             {
                 ["n"] = doneProcedures.Item1,
                 ["info"] = doneProcedures.Item2
+            },
+            ["tables"] = new JObject()
+            {
+                ["n"] = doneTables.Item1,
+                ["info"] = doneTables.Item2
             }
         };
-        return new ActionDoneReport(y, jObject);
+        return new ActionDoneReport(y, jObject, true);
+    }
+
+    private static Tuple<int, JToken?> RestoreTables(Dictionary<string, DataTable>? xTablesDdl)
+    {
+        var done = 0;
+        var jobjects = new List<JObject>();
+        if (xTablesDdl != null)
+        {
+            DB_Backup backup = new DB_Backup();
+            DbBackup.FillTables(backup, GlobalVariables.DbConfig);
+            foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
+            {
+                if (y.done)
+                    done++;
+
+                jobjects.Add(new JObject()
+                {
+                    ["done"] = y.done,
+                    ["info"] = y.Extra,
+                    ["message"] = y.Message
+                });
+            }
+        }
+
+        var jArray = ActionDoneReport.GetJarrayOfListOfJObjects(jobjects);
+        return new Tuple<int, JToken?>(done, jArray);
+    }
+
+    private static ActionDoneReport RestoreSingleTable(KeyValuePair<string, DataTable> keyValuePair, DB_Backup backup)
+    {
+        Exception? exception = null;
+        try
+        {
+            if (backup.TableExists(keyValuePair.Key))
+                return new ActionDoneReport("skipped " + keyValuePair.Key, null, false);
+
+            var z = TryRestoreTable(keyValuePair);
+
+            var done = z is > 0;
+            return new ActionDoneReport("done return " + keyValuePair.Key, new JObject()
+            {
+                ["name"] = keyValuePair.Key,
+                ["ex"] = exception?.ToString(),
+                ["z"] = z,
+                ["done"] = done
+            }, done);
+        }
+        catch (Exception e)
+        {
+            exception = e;
+        }
+
+        return new ActionDoneReport("exception return " + keyValuePair.Key, new JObject()
+        {
+            ["name"] = keyValuePair.Key,
+            ["ex"] = exception.ToString()
+        }, true);
     }
 
     private static Tuple<int, JToken?> RestoreProcedures(Dictionary<string, DataTable>? xProcedures)
