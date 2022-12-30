@@ -267,7 +267,9 @@ public static class RestoreDbUtil
             create = create?.Replace("`", "");
             create = FixFirstLineProcedure(create, procedureName);
             c2 = "DELIMITER " + delimiter + "\r\n" + create + delimiter + "\r\nDELIMITER ;";
-            Database.Execute(c2, GlobalVariables.DbConfig);
+            
+            Database.Execute(create, GlobalVariables.DbConfig);
+            
             return new Tuple<bool, string?, string?, Exception?>(true, create, c2, null);
         }
         catch (Exception ex2)
