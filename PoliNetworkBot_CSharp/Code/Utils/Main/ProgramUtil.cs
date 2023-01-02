@@ -91,8 +91,8 @@ public static class ProgramUtil
         if (!Directory.Exists("../config"))
             Directory.CreateDirectory("../config");
 
-        if (!Directory.Exists("../data"))
-            Directory.CreateDirectory("../data");
+        if (!Directory.Exists("./data"))
+            Directory.CreateDirectory("./data");
 
         MessagesStore.InitializeMessageStore();
         CallbackUtils.CallbackUtils.InitializeCallbackDatas();

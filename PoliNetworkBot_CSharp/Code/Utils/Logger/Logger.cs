@@ -94,7 +94,7 @@ public static class Logger
         {
             Console.WriteLine(logSeverityLevel + " | " + log);
             var log1 = log.ToString();
-            if (Directory.Exists("../data/") == false) Directory.CreateDirectory("../data/");
+            if (Directory.Exists("./data/") == false) Directory.CreateDirectory("./data/");
 
             if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
 
