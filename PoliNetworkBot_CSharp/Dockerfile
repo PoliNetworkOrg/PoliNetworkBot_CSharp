@@ -14,5 +14,14 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
-RUN mkdir static && TZ='Europe/Rome' date > ./static/build-date.txt
-ENTRYPOINT ["sh", "-c", "rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime; dotnet PoliNetworkBot_CSharp.dll 2"]
+
+# Set timezone to Italy
+RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
+RUN date
+
+# Change executer to non user
+RUN useradd -u 7999 botexecuter
+RUN chown -R botexecuter .
+USER botexecuter
+
+ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
