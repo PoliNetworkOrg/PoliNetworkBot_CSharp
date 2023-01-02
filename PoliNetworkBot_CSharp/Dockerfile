@@ -21,6 +21,7 @@ RUN date
 
 # Change executer to non user
 RUN useradd -u 7999 botexecuter
+RUN chown -R botexecuter .
 USER botexecuter
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
