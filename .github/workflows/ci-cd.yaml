@@ -115,6 +115,6 @@ jobs:
         run: | 
           git config user.name "GitHub Actions Bot"
           git config user.email ""
-          git add ${{ env.STAGE_ENV }}/bot-deployment.yaml
+          git add **/bot-deployment.yaml
           git commit -m "Update image version in K8s Deployment manifests file"
           git push origin
