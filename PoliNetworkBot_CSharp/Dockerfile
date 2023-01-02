@@ -20,7 +20,7 @@ RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/loc
 RUN date
 
 # Change executer to non user
-RUN useradd -u 7999 -g 7999 botexecuter
+RUN useradd -u 7999 botexecuter
 RUN chown -R botexecuter .
 USER botexecuter
 
