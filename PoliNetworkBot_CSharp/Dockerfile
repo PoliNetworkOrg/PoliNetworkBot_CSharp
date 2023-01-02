@@ -5,6 +5,8 @@ WORKDIR /App
 COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
+# Install git
+RUN apt install git -y
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
