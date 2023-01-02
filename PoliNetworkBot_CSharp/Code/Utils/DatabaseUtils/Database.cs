@@ -42,6 +42,7 @@ public static class Database
         {
             var cmd = new MySqlCommand(query, connection);
 
+
             OpenConnection(connection);
 
             if (args != null)

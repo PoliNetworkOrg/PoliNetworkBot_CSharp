@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Restore;
+using PoliNetworkBot_CSharp.Code.Utils.Running;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
@@ -260,8 +261,13 @@ public static class SwitchDispatcher
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Restore db ddl"), null,
             e => e.Message.ReplyToMessage != null),
-        
-        new Command("kill_yourself", Utils.Running.RunningUtil.KillYourself,
+
+        new Command("restore_db_full", RestoreDbUtil.RestoreDb_Full_FromTelegram,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("en", "Restore db full"), null,
+            e => e.Message.ReplyToMessage != null),
+
+        new Command("kill_yourself", RunningUtil.KillYourself,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Kill bot"), null,
             null)
