@@ -72,20 +72,12 @@ jobs:
           repository: polinetworkorg/polinetwork-cd
           ssh-key: ${{ secrets.CD_DEPLOY_KEY }}
 
-      - name: Set stage env
-        if: ${{ github.ref == 'refs/heads/master' }}
-        run: |
-          echo "DOCKER_REPO=$(echo 'prod')" >> $GITHUB_ENV
-          echo "STAGE_ENV=$(echo 'prod')" >> $GITHUB_ENV
-
-      - name: Set stage env
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        run: |
-          echo "DOCKER_REPO=$(echo 'dev')" >> $GITHUB_ENV
-          echo "STAGE_ENV=$(echo 'dev')" >> $GITHUB_ENV
-
       - name: Update image name in manifest file
+        if: ${{ github.ref == 'refs/heads/dev' }}
         uses: azure/powershell@v1
+        env:
+          DOCKER_REPO: 'dev'
+          STAGE_ENV: 'dev'
         with:
           inlineScript: |
             $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
@@ -95,12 +87,28 @@ jobs:
           
       - name: Update image name in manifest file
         if: ${{ github.ref == 'refs/heads/master' }}
+        env:
+          DOCKER_REPO: 'prod'
+          STAGE_ENV: 'prod'
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $line = Get-Content bot-mat/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content bot-mat/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content bot-mat/bot-deployment.yaml
+            $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+          azPSVersion: "latest"
+
+      - name: Update image name in manifest file
+        if: ${{ github.ref == 'refs/heads/master' }}
+        env:
+          DOCKER_REPO: 'dev'
+          STAGE_ENV: 'mat-bot'
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
           azPSVersion: "latest"
       
       - name: Commit changes in manifest to repo
