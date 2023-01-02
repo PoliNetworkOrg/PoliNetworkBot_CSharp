@@ -20,7 +20,7 @@ RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/loc
 RUN date
 
 # Change executer to non user
-RUN useradd botexecuter
+RUN useradd -u 7999 botexecuter
 USER botexecuter
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
