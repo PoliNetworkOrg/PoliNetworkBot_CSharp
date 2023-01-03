@@ -7,7 +7,7 @@ COPY . ./
 RUN dotnet restore
 # Install git
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y PACKAGE && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y git && rm -rf /var/lib/apt/lists/*
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
