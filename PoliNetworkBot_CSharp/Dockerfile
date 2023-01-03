@@ -6,7 +6,8 @@ COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
 # Install git
-RUN apt install git -y
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y git && rm -rf /var/lib/apt/lists/*
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
