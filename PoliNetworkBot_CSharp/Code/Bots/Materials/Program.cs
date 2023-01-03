@@ -35,6 +35,8 @@ public class Program
 {
     private const long LogGroup = -1001399914655;
 
+    private const bool DISABLED = true;
+
     public static Dictionary<long, Conversation>
         UsersConversations = new(); //inizializzazione del dizionario <utente, Conversation>
 
@@ -92,6 +94,14 @@ public class Program
             {
                 try
                 {
+                    if (DISABLED)
+                    {
+                        if (telegramBotClient == null) return;
+                        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id, new L("The Bot is DOWN for MAINTENANCE. Try again tomorrow\n"), ChatType.Private,
+                            e?.Message?.From?.LanguageCode,
+                            ParseMode.Html, null, null);
+                        return;
+                    }
                     switch (e)
                     {
                         case { Message: { } } when e.Message.Chat.Type != ChatType.Private:
