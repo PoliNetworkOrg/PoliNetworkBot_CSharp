@@ -71,6 +71,11 @@ jobs:
         with:
           repository: polinetworkorg/polinetwork-cd
           ssh-key: ${{ secrets.CD_DEPLOY_KEY }}
+          
+      - name: Debug
+        run: |
+          sudo apt install tree
+          tree -L 2
 
       - name: Update image name in manifest file
         if: ${{ github.ref == 'refs/heads/dev' }}
@@ -115,6 +120,6 @@ jobs:
         run: | 
           git config user.name "GitHub Actions Bot"
           git config user.email ""
-          git add **/bot-deployment.yaml
+          git add */bot-deployment.yaml
           git commit -m "Update image version in K8s Deployment manifests file"
           git push origin
