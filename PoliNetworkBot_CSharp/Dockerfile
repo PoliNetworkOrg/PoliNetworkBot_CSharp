@@ -5,9 +5,6 @@ WORKDIR /App
 COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
-# Install git
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y git && rm -rf /var/lib/apt/lists/*
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
@@ -15,6 +12,10 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
+
+# Install git
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y git && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Italy
 RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
