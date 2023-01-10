@@ -85,9 +85,9 @@ jobs:
           STAGE_ENV: 'dev'
         with:
           inlineScript: |
-            $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $line = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
           azPSVersion: "latest"
           
       - name: Update image name in manifest file
@@ -98,9 +98,9 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $line = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
           azPSVersion: "latest"
 
       - name: Update image name in manifest file
@@ -111,9 +111,9 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $line = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
-            $content = Get-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
-            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content ${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $line = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml | Select-String image: | Select-Object -ExpandProperty Line
+            $content = Get-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
+            $content | ForEach-Object {$_ -replace $line,"          image: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}"} | Set-Content bot-${{ env.STAGE_ENV }}/bot-deployment.yaml
           azPSVersion: "latest"
       
       - name: Commit changes in manifest to repo
