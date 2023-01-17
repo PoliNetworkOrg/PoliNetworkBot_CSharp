@@ -259,6 +259,14 @@ public class Program
 
                     diff = diff.Replace("\"", "'");
 
+                    var config_email = "git config user.email \"polinetwork2@gmail.com\"";
+
+                    DoScript(powershell, config_email , true);
+
+                    var config_name = "git config user.name \"PoliBot\"";
+
+                    DoScript(powershell, config_name , true);
+
                     var commit = "git commit -m \"[Bot] files changed:  " + diff +
                                  "\" --author=\"PoliBot <polinetwork2@gmail.com>\"";
 
