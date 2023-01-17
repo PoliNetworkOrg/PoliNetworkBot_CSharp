@@ -35,7 +35,7 @@ public class Program
 {
     private const long LogGroup = -1001399914655;
 
-    private const bool DISABLED = true;
+    private const bool DISABLED = false;
 
     public static Dictionary<long, Conversation>
         UsersConversations = new(); //inizializzazione del dizionario <utente, Conversation>
