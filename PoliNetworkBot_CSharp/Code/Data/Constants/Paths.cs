@@ -23,7 +23,7 @@ public static class Paths
     public static class Info
     {
         public const string ConfigBotsInfo = "../config/bots_info.json";
-        public const string GitHubConfigInfo = "../config/git_info.json";
+        public const string GitHubConfigInfo = "../git/git_info.json";
         public const string ConfigUserBotsInfo = "../config/userbots_info.json";
         public const string ConfigBotDisguisedAsUserBotsInfo = "../config/botdisguisedasuserbots_info.json";
         public const string DbConfig = "../config/dbconfig.json";
