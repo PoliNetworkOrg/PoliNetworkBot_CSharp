@@ -323,9 +323,9 @@ internal static class CommandDispatcher
         Logger.WriteLine("Init websitedata repository");
         using var powershell = PowerShell.Create();
         ScriptUtil.DoScript(powershell, "cd ./data/", true);
-        ScriptUtil.DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
+        ScriptUtil.DoScript(powershell, "git clone " + GitHubConfig.GetRepo(), true);
         ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-        ScriptUtil.DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
+        ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
     }
 
     public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
