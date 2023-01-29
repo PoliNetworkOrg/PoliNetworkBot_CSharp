@@ -26,10 +26,6 @@ RUN useradd -u 7999 -m botexecuter
 RUN chown -R botexecuter .
 USER botexecuter
 
-RUN echo $'export SSH_AUTH_SOCK=~/.ssh/ssh-agent.$HOSTNAME.sock \n\
-ssh-add -l 2>/dev/null >/dev/null \n\
-if [ $? -ge 2 ]; then \n\
-  ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null \n\
-fi' >> /home/botexecuter/.profile
+RUN cat ./static/ssh-agent >> /home/botexecuter/.bashrc
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
