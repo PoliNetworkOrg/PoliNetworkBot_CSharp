@@ -26,6 +26,8 @@ jobs:
         with:
           context: PoliNetworkBot_CSharp/
           push: false
+        env:
+          DOCKER_BUILDKIT: 1
 
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -60,6 +62,8 @@ jobs:
           context: PoliNetworkBot_CSharp/
           push: true
           tags: polinetwork/botcsharp_${{ env.DOCKER_REPO }}:${{ github.sha }}
+        env:
+          DOCKER_BUILDKIT: 1
 
   Update-K8s-Manifests:
     name: Update K8s Deployment Manifest with Image Version
