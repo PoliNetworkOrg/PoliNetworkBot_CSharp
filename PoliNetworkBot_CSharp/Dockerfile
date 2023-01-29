@@ -12,6 +12,7 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
+COPY --from=build-env /App/static .
 
 # Install git
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,6 +27,6 @@ RUN useradd -u 7999 -m botexecuter
 RUN chown -R botexecuter .
 USER botexecuter
 
-RUN cat ../static/ssh-agent >> /home/botexecuter/.bashrc
+RUN cat ./static/ssh-agent >> /home/botexecuter/.bashrc
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
