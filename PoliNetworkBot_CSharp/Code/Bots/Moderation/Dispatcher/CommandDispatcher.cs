@@ -321,7 +321,7 @@ internal static class CommandDispatcher
         Logger.WriteLine("Init websitedata repository");
         using var powershell = PowerShell.Create();
         ScriptUtil.DoScript(powershell, "cd ./data/", true);
-        ScriptUtil.DoScript(powershell, "eval \"$(ssh-agent -s)\" && ssh-add /git/ssh-key && git clone " + GitHubConfig.GetRepo(), true); //todo: add /git/ssh-key to GitHubConfig
+        ScriptUtil.DoScript(powershell, "/bin/bash -c \"ssh-add /git/ssh-key && git clone " + GitHubConfig.GetRepo() + "\"", true); //todo: add /git/ssh-key to GitHubConfig
         ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
         ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
     }
