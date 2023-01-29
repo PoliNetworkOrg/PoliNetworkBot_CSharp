@@ -26,6 +26,6 @@ RUN useradd -u 7999 -m botexecuter
 RUN chown -R botexecuter .
 USER botexecuter
 
-RUN cat ./static/ssh-agent >> /home/botexecuter/.bashrc
+RUN cat ../static/ssh-agent >> /home/botexecuter/.bashrc
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
