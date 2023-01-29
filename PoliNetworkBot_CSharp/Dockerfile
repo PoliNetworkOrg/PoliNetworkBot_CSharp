@@ -27,11 +27,11 @@ RUN chown -R botexecuter .
 USER botexecuter
 
 RUN <<EOF
-echo "export SSH_AUTH_SOCK=~/.ssh/ssh-agent.$HOSTNAME.sock
+echo 'export SSH_AUTH_SOCK=~/.ssh/ssh-agent.$HOSTNAME.sock
 ssh-add -l 2>/dev/null >/dev/null
 if [ $? -ge 2 ]; then
   ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
-fi" >> /home/botexecuter/.bashrc
+fi' >> /home/botexecuter/.bashrc
 EOF
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
