@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -319,11 +320,38 @@ internal static class CommandDispatcher
     private static void InitGithubRepo()
     {
         Logger.WriteLine("Init websitedata repository");
-        using var powershell = PowerShell.Create();
-        ScriptUtil.DoScript(powershell, "cd ./data/", true);
-        ScriptUtil.DoScript(powershell, "/bin/bash -c \"ssh-add /git/ssh-key && git clone " + GitHubConfig.GetRepo() + "\"", true); //todo: add /git/ssh-key to GitHubConfig
-        ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-        ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
+        // using var powershell = PowerShell.Create();
+        // ScriptUtil.DoScript(powershell, "cd ./data/", true);
+        // ScriptUtil.DoScript(powershell, "/bin/bash -c \"ssh-add /git/ssh-key && git clone " + GitHubConfig.GetRepo() + "\"", true); //todo: add /git/ssh-key to GitHubConfig
+        // ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
+        // ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
+        var output = ExecuteBashCommand("./static/github_cloner.sh");
+
+        Console.WriteLine(output);
+    }
+    
+    private static string ExecuteBashCommand(string command)
+    {
+        // according to: https://stackoverflow.com/a/15262019/637142
+        // thans to this we will pass everything as one command
+        command = command.Replace("\"","\"\"");
+
+        var proc = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \""+ command + "\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+
+        proc.Start();
+        proc.WaitForExit();
+
+        return proc.StandardOutput.ReadToEnd();
     }
 
     public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
