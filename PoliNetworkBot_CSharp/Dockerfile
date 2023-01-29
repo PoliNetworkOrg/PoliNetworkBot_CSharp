@@ -35,9 +35,6 @@ fi' >> /home/botexecuter/.bashrc
 EOF
 
 RUN echo $'export SSH_AUTH_SOCK=~/.ssh/ssh-agent.$HOSTNAME.sock \n\
-ssh-add -l 2>/dev/null >/dev/null \n\
-if [ $? -ge 2 ]; then \n\
-  ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null \n\
-fi' >> /home/botexecuter/.bashrc
+ssh-add -l 2>/dev/null >/dev/null' >> /home/botexecuter/.bashrc
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]
