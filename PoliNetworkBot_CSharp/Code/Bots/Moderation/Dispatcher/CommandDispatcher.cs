@@ -266,9 +266,7 @@ internal static class CommandDispatcher
                      @">""";
         ScriptUtil.DoScript(powershell, commit, debug);
 
-        var push = @"git push https://" + GitHubConfig.GetUser() + ":" +
-                   GitHubConfig.GetPassword() + "@" +
-                   GitHubConfig.GetRepo() + @" --all -f";
+        var push = @"git push -u origin main --all -f";
         ScriptUtil.DoScript(powershell, push, debug);
 
         const string hubPr =
