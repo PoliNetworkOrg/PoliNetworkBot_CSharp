@@ -16,7 +16,7 @@ COPY --from=build-env /App/static ./static
 
 # Install git
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y git wget unzip && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y git hub wget unzip && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Italy
 RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'

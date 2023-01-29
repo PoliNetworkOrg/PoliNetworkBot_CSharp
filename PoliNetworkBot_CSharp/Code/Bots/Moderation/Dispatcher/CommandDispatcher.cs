@@ -255,7 +255,7 @@ internal static class CommandDispatcher
             return new UpdateGroupsResult(l, x1);
         }
 
-        var output = ExecuteBashCommand("./static/github_cloner.sh");
+        var output = ExecuteBashCommand("./static/github_pusher.sh");
 
         Logger.WriteLine(output);
         
