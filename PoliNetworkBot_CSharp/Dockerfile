@@ -12,7 +12,7 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
-COPY --from=build-env /App/static .
+COPY --from=build-env /App/static ./static
 
 # Install git
 ENV DEBIAN_FRONTEND=noninteractive
