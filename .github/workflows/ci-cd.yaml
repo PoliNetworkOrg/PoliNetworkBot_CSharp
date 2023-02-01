@@ -107,7 +107,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           DOCKER_REPO: 'prod'
-          STAGE_ENV: 'bot-mat'
+          STAGE_ENV: 'mat'
         uses: azure/powershell@v1
         with:
           inlineScript: |

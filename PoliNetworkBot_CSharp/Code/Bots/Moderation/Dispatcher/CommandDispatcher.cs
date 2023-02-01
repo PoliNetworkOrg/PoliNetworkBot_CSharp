@@ -266,9 +266,7 @@ internal static class CommandDispatcher
                      @">""";
         ScriptUtil.DoScript(powershell, commit, debug);
 
-        var push = @"git push https://" + GitHubConfig.GetUser() + ":" +
-                   GitHubConfig.GetPassword() + "@" +
-                   GitHubConfig.GetRepo() + @" --all -f";
+        var push = @"git push -u origin main --all -f";
         ScriptUtil.DoScript(powershell, push, debug);
 
         const string hubPr =
@@ -323,9 +321,10 @@ internal static class CommandDispatcher
         Logger.WriteLine("Init websitedata repository");
         using var powershell = PowerShell.Create();
         ScriptUtil.DoScript(powershell, "cd ./data/", true);
-        ScriptUtil.DoScript(powershell, "git clone https://" + GitHubConfig.GetRepo(), true);
+        ScriptUtil.DoScript(powershell, "eval \"$(ssh-agent -s)\" && ssh-add /git/ssh-key", true); //todo: add /git/ssh-key to GitHubConfig
+        ScriptUtil.DoScript(powershell, "git clone " + GitHubConfig.GetRepo(), true);
         ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-        ScriptUtil.DoScript(powershell, "git remote add org https://" + GitHubConfig.GetRemote(), true);
+        ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
     }
 
     public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)

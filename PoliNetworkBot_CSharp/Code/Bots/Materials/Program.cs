@@ -35,7 +35,7 @@ public class Program
 {
     private const long LogGroup = -1001399914655;
 
-    private const bool DISABLED = true;
+    private const bool DISABLED = false;
 
     public static Dictionary<long, Conversation>
         UsersConversations = new(); //inizializzazione del dizionario <utente, Conversation>
@@ -258,6 +258,14 @@ public class Program
                     ModifiedFilesInGitFolder.Remove(git);
 
                     diff = diff.Replace("\"", "'");
+
+                    var config_email = "git config user.email \"polinetwork2@gmail.com\"";
+
+                    DoScript(powershell, config_email , true);
+
+                    var config_name = "git config user.name \"PoliBot\"";
+
+                    DoScript(powershell, config_name , true);
 
                     var commit = "git commit -m \"[Bot] files changed:  " + diff +
                                  "\" --author=\"PoliBot <polinetwork2@gmail.com>\"";
