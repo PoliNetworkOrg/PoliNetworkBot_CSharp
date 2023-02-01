@@ -12,10 +12,11 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
+COPY --from=build-env /App/static ./static
 
 # Install git
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y git wget unzip && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y git hub wget unzip && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Italy
 RUN sh -c 'rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime;'
@@ -25,5 +26,7 @@ RUN date
 RUN useradd -u 7999 -m botexecuter
 RUN chown -R botexecuter .
 USER botexecuter
+
+RUN cat ./static/ssh-agent >> /home/botexecuter/.bashrc
 
 ENTRYPOINT ["sh", "-c", "dotnet PoliNetworkBot_CSharp.dll 2"]

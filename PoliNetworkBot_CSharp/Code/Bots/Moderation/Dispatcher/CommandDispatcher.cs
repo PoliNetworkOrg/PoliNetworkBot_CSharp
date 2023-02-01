@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -254,35 +255,15 @@ internal static class CommandDispatcher
             return new UpdateGroupsResult(l, x1);
         }
 
-        using var powershell = PowerShell.Create();
-        const string cd = Paths.Data.PoliNetworkWebsiteData;
-        ScriptUtil.DoScript(powershell, "cd " + cd, debug);
-        ScriptUtil.DoScript(powershell, "git fetch org", debug);
-        ScriptUtil.DoScript(powershell, "git pull --force", debug);
-        ScriptUtil.DoScript(powershell, "git add . --ignore-errors", debug);
+        var output = ExecuteBashCommand("./static/github_pusher.sh");
 
-        var commit = @"git commit -m ""[Automatic Commit] Updated Group List""" +
-                     @" --author=""" + GitHubConfig.GetUser() + "<" + GitHubConfig.GetEmail() +
-                     @">""";
-        ScriptUtil.DoScript(powershell, commit, debug);
-
-        var push = @"git push -u origin main --all -f";
-        ScriptUtil.DoScript(powershell, push, debug);
-
-        const string hubPr =
-            @"hub pull-request -m ""[AutoCommit] Groups Update"" -b PoliNetworkOrg:main -h PoliNetworkDev:main -l bot -f";
-
-        var result = ScriptUtil.DoScript(powershell, hubPr, debug);
-
-        powershell.Stop();
-
-        var toBeSent = result.Aggregate("", (current, s) => current + s + "\n");
-
-        var text = result.Count > 0
+        Logger.WriteLine(output);
+        
+        var text = output.Length > 0
             ? new Dictionary<string, string?>
             {
-                { "it", "Done \n" + toBeSent },
-                { "en", "Done \n" + toBeSent }
+                { "it", "Done \n" },
+                { "en", "Done \n" }
             }
             : new Dictionary<string, string?>
             {
@@ -291,7 +272,7 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(toBeSent) ? "No PR created" : toBeSent), sender, null,
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"), sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
@@ -319,12 +300,38 @@ internal static class CommandDispatcher
     private static void InitGithubRepo()
     {
         Logger.WriteLine("Init websitedata repository");
-        using var powershell = PowerShell.Create();
-        ScriptUtil.DoScript(powershell, "cd ./data/", true);
-        ScriptUtil.DoScript(powershell, "eval \"$(ssh-agent -s)\" && ssh-add /git/ssh-key", true); //todo: add /git/ssh-key to GitHubConfig
-        ScriptUtil.DoScript(powershell, "git clone " + GitHubConfig.GetRepo(), true);
-        ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
-        ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
+        // using var powershell = PowerShell.Create();
+        // ScriptUtil.DoScript(powershell, "cd ./data/", true);
+        // ScriptUtil.DoScript(powershell, "/bin/bash -c \"ssh-add /git/ssh-key && git clone " + GitHubConfig.GetRepo() + "\"", true); //todo: add /git/ssh-key to GitHubConfig
+        // ScriptUtil.DoScript(powershell, "cd ./polinetworkWebsiteData", true);
+        // ScriptUtil.DoScript(powershell, "git remote add org " + GitHubConfig.GetRemote(), true);
+        var output = ExecuteBashCommand("./static/github_cloner.sh");
+
+        Logger.WriteLine(output);
+    }
+    
+    private static string ExecuteBashCommand(string command)
+    {
+        // according to: https://stackoverflow.com/a/15262019/637142
+        // thans to this we will pass everything as one command
+        command = command.Replace("\"","\"\"");
+
+        var proc = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \""+ command + "\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+
+        proc.Start();
+        proc.WaitForExit();
+
+        return proc.StandardOutput.ReadToEnd();
     }
 
     public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
