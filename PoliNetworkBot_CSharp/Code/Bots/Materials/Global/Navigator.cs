@@ -25,9 +25,13 @@ public static class Navigator
             "Chimica",
             "Elettrica",
             "Meccanica",
-            "Energetica"
+            "Energetica",
+            "Gestionale"
         },
-        ["AUIC"] = Array.Empty<string>(),
+        ["AUIC"] = new[]
+        {
+            "Architettura"
+        },
         ["ICAT"] = Array.Empty<string>(),
         ["Design"] = Array.Empty<string>()
     };
