@@ -26,7 +26,8 @@ public static class Navigator
             "Elettrica",
             "Mechanical",
             "Energetica",
-            "Management"
+            "Management",
+            "BioInformatics"
         },
         ["AUIC"] = new[]
         {
