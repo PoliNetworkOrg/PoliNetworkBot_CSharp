@@ -275,7 +275,7 @@ public class Program
                     var push = @"git push https://polibot:" + Config.Password +
                                "@gitlab.com/polinetwork/" + git + @".git --all";
 
-                    Logger.WriteLine(DoScript(powershell, push, true));
+                    Logger.WriteLine(DoScript(powershell, push, false));
                 }
 
                 logMessage += "Push Executed";
