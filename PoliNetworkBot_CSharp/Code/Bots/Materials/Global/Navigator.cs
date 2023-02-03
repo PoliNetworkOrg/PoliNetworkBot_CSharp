@@ -35,10 +35,7 @@ public static class Navigator
         ["ICAT"] = Array.Empty<string>(),
         ["Design"] = new []
         {
-            "DES-Comm",  
-            "DES-Interni",  
-            "DES-Moda",  
-            "DES-Prod"
+            "Design"
         }
     };
 
