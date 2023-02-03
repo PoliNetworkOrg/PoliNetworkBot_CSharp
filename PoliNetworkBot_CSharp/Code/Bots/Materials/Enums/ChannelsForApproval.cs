@@ -32,9 +32,11 @@ internal static class ChannelsForApproval
                 "chimica" => ChimicaChannel,
                 "elettrica" => ElectronicsChannel,
                 "energetica" => AesChannel,
-                "meccanica" => AesChannel,
-                "gestionale" => ManagementChannel,
+                "mechanical" => AesChannel,
+                "management" => ManagementChannel,
                 "architettura" => ArchitectureChannel,
+                "bioinformatics" => InfoChannel,
+                "design" => ArchitectureChannel,
                 _ => throw new Exception("No such channel: " + v)
             };
         return null;

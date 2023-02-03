@@ -24,16 +24,22 @@ public static class Navigator
             "Automazione",
             "Chimica",
             "Elettrica",
-            "Meccanica",
+            "Mechanical",
             "Energetica",
-            "Gestionale"
+            "Management"
         },
         ["AUIC"] = new[]
         {
             "Architettura"
         },
         ["ICAT"] = Array.Empty<string>(),
-        ["Design"] = Array.Empty<string>()
+        ["Design"] = new []
+        {
+            "DES-Comm",  
+            "DES-Interni",  
+            "DES-Moda",  
+            "DES-Prod"
+        }
     };
 
     public static bool CourseHandler(Conversation conversation, string messageText)
