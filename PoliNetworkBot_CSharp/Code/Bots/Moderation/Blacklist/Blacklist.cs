@@ -26,7 +26,7 @@ internal static class Blacklist
 
     private static readonly List<string> BannedWords = new()
     {
-        "porcodio", "dioporco", "diocane", "negro", "negri", "negra", "negre"
+        "porcodio", "dioporco", "diocane"
     };
 
     internal static async Task<SpamType> IsSpam(string? text, long? groupId, TelegramBotAbstract? telegramBotAbstract,
