@@ -642,10 +642,11 @@ public static class MessageDb
             chatIdFromIdPerson,
             ChatType.Private, botClass);
 
-        if (botClass != null)
-            return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode, typeOfChatSentInto.Value);
-        return null;
+        if (botClass == null)
+            return null;
+        
+        return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
+            caption, parseMode, typeOfChatSentInto.Value);
     }
 
     internal static async Task CheckMessageToDelete(MessageEventArgs? messageEventArgs)
