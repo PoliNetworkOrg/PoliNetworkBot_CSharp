@@ -70,7 +70,7 @@ public static class AssocGeneric
             if (sqLiteException.Message.Contains(noSuchTable))
             {
                 var x = sqLiteException.Message.IndexOf(noSuchTable, StringComparison.Ordinal);
-                var s = sqLiteException.Message.Substring(x + noSuchTable.Length).Trim();
+                var s = sqLiteException.Message[(x + noSuchTable.Length)..].Trim();
                 ;
 
                 try
