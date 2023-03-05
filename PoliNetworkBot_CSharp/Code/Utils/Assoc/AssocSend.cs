@@ -147,41 +147,7 @@ public static class AssocSend
         if (!dry)
             foreach (var idChat in idChatsSentInto)
             {
-                if (sentDate == null) return false;
-                var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
-                    new DateTimeSchedule(sentDate, true),
-                    e.Message.From?.Id,
-                    messageFromIdEntity, idChat, sender, chatTypeSendInto);
-
-                switch (successQueue)
-                {
-                    case SuccessQueue.INVALID_ID_TO_DB:
-                        break;
-
-                    case SuccessQueue.INVALID_OBJECT:
-                    {
-                        await AssocGeneric.Assoc_ObjectToSendNotValid(sender, e);
-                        return false;
-                    }
-
-                    case SuccessQueue.SUCCESS:
-                        break;
-
-                    case SuccessQueue.DATE_INVALID:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                if (successQueue == SuccessQueue.SUCCESS)
-                    continue;
-
-                await NotifyUtil.NotifyOwnerWithLog2(
-                    new Exception("Success queue is " + successQueue + " while trying to send a message!"),
-                    sender, EventArgsContainer.Get(e));
-
-                return false;
+                await QueueMessage(sender, e, replyTo, messageFromIdEntity, sentDate, idChat, chatTypeSendInto);
             }
 
         
@@ -199,5 +165,44 @@ public static class AssocSend
             e.Message.From?.Username);
 
         return true;
+    }
+
+    private static async Task QueueMessage(TelegramBotAbstract? sender, MessageEventArgs e, Message replyTo,
+        long? messageFromIdEntity, DateTime? sentDate, long idChat, ChatType chatTypeSendInto)
+    {
+        sentDate ??= DateTime.Now.AddMinutes(-1);
+        
+        var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
+            new DateTimeSchedule(sentDate, true),
+            e.Message.From?.Id,
+            messageFromIdEntity, idChat, sender, chatTypeSendInto);
+
+        switch (successQueue)
+        {
+            case SuccessQueue.INVALID_ID_TO_DB:
+                break;
+
+            case SuccessQueue.INVALID_OBJECT:
+            {
+                await AssocGeneric.Assoc_ObjectToSendNotValid(sender, e);
+                return;
+            }
+
+            case SuccessQueue.SUCCESS:
+                break;
+
+            case SuccessQueue.DATE_INVALID:
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        if (successQueue == SuccessQueue.SUCCESS) 
+            return;
+
+        await NotifyUtil.NotifyOwnerWithLog2(
+            new Exception("Success queue is " + successQueue + " while trying to send a message!"),
+            sender, EventArgsContainer.Get(e));
     }
 }
