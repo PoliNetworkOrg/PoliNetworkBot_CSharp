@@ -14,7 +14,7 @@ public class MySqlConnectionWithLock
 {
     private readonly MySqlConnection? _conn;
     public readonly object Lock;
-    public SQLiteConnection? ConnectionTemp;
+    private SQLiteConnection? _connectionTemp;
     
     public MySqlConnectionWithLock(string getConnectionString)
     {
@@ -25,14 +25,14 @@ public class MySqlConnectionWithLock
 
     public int? BulkInsert(string tableName, DataTable table)
     {
-        if (ConnectionTemp != null)
+        if (_connectionTemp != null)
         {         
             lock (Lock)
             {
-                using var tran = ConnectionTemp.BeginTransaction(IsolationLevel.Serializable);
+                using var tran = _connectionTemp.BeginTransaction(IsolationLevel.Serializable);
                 using var cmd = new SQLiteCommand();
 
-                cmd.Connection = ConnectionTemp;
+                cmd.Connection = _connectionTemp;
                 cmd.Transaction = tran;
                 cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
                 
@@ -74,12 +74,12 @@ public class MySqlConnectionWithLock
 
     public int? ExecuteSlave(string? query, DbConfigConnection dbConfigConnection, Dictionary<string, object?>? args)
     {
-        if (ConnectionTemp != null)
+        if (_connectionTemp != null)
         {
             int numberOfRowsAffected;
             lock (Lock)
             {
-                var cmd = new SQLiteCommand(query, this.ConnectionTemp);
+                var cmd = new SQLiteCommand(query, this._connectionTemp);
 
 
                 OpenConnection();
@@ -121,7 +121,7 @@ public class MySqlConnectionWithLock
 
     private void OpenConnection()
     {
-        if (this is { _conn.State: ConnectionState.Open } or { ConnectionTemp.State: ConnectionState.Open })
+        if (this is { _conn.State: ConnectionState.Open } or { _connectionTemp.State: ConnectionState.Open })
             return;
 
         try
@@ -132,7 +132,7 @@ public class MySqlConnectionWithLock
         {
             var connectionTemp = new SQLiteConnection("Data Source=temp.db");
             connectionTemp.Open();
-            this.ConnectionTemp = connectionTemp;
+            this._connectionTemp = connectionTemp;
         }
     }
     
@@ -141,12 +141,12 @@ public class MySqlConnectionWithLock
         if (dbConfigConnection == null)
             return null;
         
-        if (ConnectionTemp != null)
+        if (_connectionTemp != null)
         {
             var ret = new DataSet();
             lock (Lock)
             {
-                var cmd = new SQLiteCommand(query, this.ConnectionTemp);
+                var cmd = new SQLiteCommand(query, this._connectionTemp);
 
                 if (args != null)
                     foreach (var (key, value) in args)
