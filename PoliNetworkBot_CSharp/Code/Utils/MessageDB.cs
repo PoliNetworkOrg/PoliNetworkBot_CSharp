@@ -380,7 +380,7 @@ public static class MessageDb
         if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToAmericanFormat(dt) + "\n";
         if (fromIdEntity != null)
         {
-            var entityName = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
+            var entityName = Assoc.AssocGeneric.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
             text1 += "👥 " + entityName + "\n";
         }
 

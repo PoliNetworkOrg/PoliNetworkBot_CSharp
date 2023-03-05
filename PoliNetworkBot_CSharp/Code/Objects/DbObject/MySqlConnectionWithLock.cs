@@ -137,6 +137,9 @@ public class MySqlConnectionWithLock
         if (this is { _conn.State: ConnectionState.Open } or { _connectionTemp.State: ConnectionState.Open })
             return;
 
+        if (this._connectionTemp is { State: ConnectionState.Open }) 
+            return;
+
         var done = false;
         try
         {
@@ -149,15 +152,21 @@ public class MySqlConnectionWithLock
         }
         catch (Exception e)
         {
-            Logger.WriteLine(e);
+            Console.WriteLine(e);
         }
 
         if (done) return;
-        
+
+        ConnectToSqliteDb();
+
+
+    }
+
+    private void ConnectToSqliteDb()
+    {
         var connectionTemp = new SQLiteConnection("Data Source=temp.db");
         connectionTemp.Open();
         _connectionTemp = connectionTemp;
-
     }
 
     public DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,

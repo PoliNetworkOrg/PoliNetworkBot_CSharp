@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -131,8 +132,9 @@ public static class Logger
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-            }
+                MaybeLogThis(ex);
+  
+           }
 
             _linesCount++;
             SendLogIfOversize();
@@ -143,6 +145,32 @@ public static class Logger
         }
 
         Console.WriteLine(" ");
+    }
+
+    private static void MaybeLogThis(Exception ex)
+    {
+        ;
+        if (ex is SQLiteException ex2)
+        {
+            switch (ex2.ErrorCode)
+            {
+                case 1:
+                {
+                    Console.WriteLine(ex2.Message);
+                    return;
+                }
+
+                default:
+                {
+                    Console.WriteLine(ex2);
+                    return;
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private static void SendLogIfOversize()

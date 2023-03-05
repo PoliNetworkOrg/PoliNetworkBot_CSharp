@@ -18,10 +18,12 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Assoc;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -99,26 +101,13 @@ internal static class CommandDispatcher
         foreach (var command in SwitchDispatcher.Commands)
             try
             {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                var commandExecutionState = command.TryTrigger(e, sender, cmd, args);
+                switch (commandExecutionState)
                 {
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
                     case CommandExecutionState.UNMET_CONDITIONS:
-                        if (e.Message.Chat.Type == ChatType.Private)
-                            await NotifyUserCommandError(new L(
-                                    "it",
-                                    "Formattazione del messaggio errata. \n" +
-                                    "Per informazioni aggiuntive scrivi<b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>",
-                                    "en",
-                                    "The message is wrongly formatted. \n" +
-                                    "For additional info type <b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>"),
-                                sender, e);
-                        else
-                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                        await UnmetConditions(sender, e, command);
                         return false;
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
@@ -136,6 +125,25 @@ internal static class CommandDispatcher
             }
 
         return await DefaultCommand(sender, e);
+    }
+
+    private static async Task UnmetConditions(TelegramBotAbstract sender, MessageEventArgs e, Command command)
+    {
+        if (e.Message.Chat.Type == ChatType.Private)
+            await NotifyUserCommandError(new L(
+                    "it",
+                    "Formattazione del messaggio errata. \n" +
+                    "Per informazioni aggiuntive scrivi<b>\n" +
+                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                    "</b>",
+                    "en",
+                    "The message is wrongly formatted. \n" +
+                    "For additional info type <b>\n" +
+                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                    "</b>"),
+                sender, e);
+        else
+            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
     }
 
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
@@ -180,7 +188,7 @@ internal static class CommandDispatcher
     public static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var fourHours = new TimeSpan(4, 0, 0);
-        await Assoc.AllowMessage(e, sender, fourHours);
+        await AssocGeneric.AllowMessage(e, sender, fourHours);
         return CommandExecutionState.SUCCESSFUL;
     }
 
