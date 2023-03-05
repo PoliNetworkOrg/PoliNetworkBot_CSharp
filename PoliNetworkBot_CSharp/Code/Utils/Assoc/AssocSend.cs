@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -113,14 +114,15 @@ public static class AssocSend
     private static async Task<bool> AssocSend2Async(TelegramBotAbstract? sender, MessageEventArgs e, bool dry,
         Language languageList2, IReadOnlyList<List<Language>> options, Message replyTo, long? messageFromIdEntity)
     {
-        var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
+        var fromId = e.Message.From?.Id;
+        var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(fromId,
             languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
         DateTime? sentDate = null;
 
         if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
         {
-            sentDate = DateTime.Parse(await AskUser.AskAsync(e.Message.From?.Id,
+            sentDate = DateTime.Parse(await AskUser.AskAsync(fromId,
                 new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                     "Insert a date AAAA-MM-DD HH:mm"),
                 sender, e.Message.From?.LanguageCode, e.Message.From?.Username) ?? "");
@@ -133,7 +135,7 @@ public static class AssocSend
                     { "it", "La data che hai scelto non è valida!" }
                 });
                 if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
+                    await sender.SendTextMessageAsync(fromId, lang4,
                         ChatType.Private, e.Message.From?.LanguageCode,
                         ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                         e.Message.From?.Username);
@@ -141,7 +143,12 @@ public static class AssocSend
             }
         }
 
-        var idChatsSentInto = Channels.Assoc.GetChannels();
+        var idChatsSentInto = Channels.Assoc.GetChannels().ToList();
+        if (fromId != null)
+        {
+            idChatsSentInto.Add(fromId.Value);
+        }
+
         //const long idChatSentInto = -432645805;
         const ChatType chatTypeSendInto = ChatType.Group;
         if (!dry)
@@ -150,19 +157,20 @@ public static class AssocSend
                 await QueueMessage(sender, e, replyTo, messageFromIdEntity, sentDate, idChat, chatTypeSendInto);
             }
 
-        
+
         var lang3 = new Language(new Dictionary<string, string?>
         {
             { "en", "The message has been submitted correctly" },
             { "it", "Il messaggio è stato inviato correttamente" }
         });
-        if (sender == null) 
+        if (sender == null)
             return true;
-        
-        await sender.SendTextMessageAsync(e.Message.From?.Id, lang3,
+
+        await sender.SendTextMessageAsync(fromId, lang3,
             ChatType.Private, e.Message.From?.LanguageCode,
             ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
             e.Message.From?.Username);
+        
 
         return true;
     }
