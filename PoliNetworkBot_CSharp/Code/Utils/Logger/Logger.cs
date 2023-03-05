@@ -133,8 +133,7 @@ public static class Logger
             catch (Exception ex)
             {
                 MaybeLogThis(ex);
-  
-           }
+            }
 
             _linesCount++;
             SendLogIfOversize();
@@ -151,7 +150,6 @@ public static class Logger
     {
         ;
         if (ex is SQLiteException ex2)
-        {
             switch (ex2.ErrorCode)
             {
                 case 1:
@@ -166,11 +164,8 @@ public static class Logger
                     return;
                 }
             }
-        }
-        else
-        {
-            Console.WriteLine(ex);
-        }
+
+        Console.WriteLine(ex);
     }
 
     private static void SendLogIfOversize()

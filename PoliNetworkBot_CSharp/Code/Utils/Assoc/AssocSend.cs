@@ -15,7 +15,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Assoc;
 
 public static class AssocSend
 {
-    
     public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry = false)
     {
         try
@@ -37,14 +36,15 @@ public static class AssocSend
             var messageFromIdEntity = await AssocGeneric.GetIdEntityFromPersonAsync(e?.Message.From?.Id, languageList,
                 sender, e?.Message.From?.LanguageCode, e?.Message.From?.Username);
 
-            if (messageFromIdEntity == null && !Owners.CheckIfOwner(e?.Message.From?.Id) )
+            if (messageFromIdEntity == null && !Owners.CheckIfOwner(e?.Message.From?.Id))
             {
                 await AssocGeneric.EntityNotFoundAsync(sender, e);
                 return false;
             }
 
             var hasThisEntityAlreadyReachedItsLimit =
-                AssocGeneric.CheckIfEntityReachedItsMaxLimit(messageFromIdEntity, sender, true, e?.Message.From?.Id) ?? true;
+                AssocGeneric.CheckIfEntityReachedItsMaxLimit(messageFromIdEntity, sender, true, e?.Message.From?.Id) ??
+                true;
 
             return !hasThisEntityAlreadyReachedItsLimit
                 ? await AssocSend3Async(sender, e, dry, replyTo, messageFromIdEntity)
@@ -73,7 +73,8 @@ public static class AssocSend
         return false;
     }
 
-    private static async Task<bool> AssocSend3Async(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry, Message replyTo,
+    private static async Task<bool> AssocSend3Async(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry,
+        Message replyTo,
         long? messageFromIdEntity)
     {
         var languageList2 = new Language(new Dictionary<string, string?>
@@ -144,15 +145,12 @@ public static class AssocSend
         }
 
         var idChatsSentInto = Channels.Assoc.GetChannels().ToList();
-        if (fromId != null)
-        {
-            idChatsSentInto.Add(fromId.Value);
-        }
+        if (fromId != null) idChatsSentInto.Add(fromId.Value);
 
         const ChatType chatTypeSendInto = ChatType.Group;
-        if (!dry) 
+        if (!dry)
             await QueueMessages(sender, e, replyTo, messageFromIdEntity, idChatsSentInto, sentDate, chatTypeSendInto);
-        
+
         return await NotifySuccessQueue(sender, e, fromId);
     }
 
@@ -179,16 +177,14 @@ public static class AssocSend
         long? messageFromIdEntity, List<long> idChatsSentInto, DateTime? sentDate, ChatType chatTypeSendInto)
     {
         foreach (var idChat in idChatsSentInto)
-        {
             await QueueMessage(sender, e, replyTo, messageFromIdEntity, sentDate, idChat, chatTypeSendInto);
-        }
     }
 
     private static async Task QueueMessage(TelegramBotAbstract? sender, MessageEventArgs e, Message replyTo,
         long? messageFromIdEntity, DateTime? sentDate, long idChat, ChatType chatTypeSendInto)
     {
         sentDate ??= DateTime.Now.AddMinutes(-1);
-        
+
         var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
             new DateTimeSchedule(sentDate, true),
             e.Message.From?.Id,
@@ -215,7 +211,7 @@ public static class AssocSend
                 throw new ArgumentOutOfRangeException();
         }
 
-        if (successQueue == SuccessQueue.SUCCESS) 
+        if (successQueue == SuccessQueue.SUCCESS)
             return;
 
         await NotifyUtil.NotifyOwnerWithLog2(

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -87,7 +86,6 @@ public static class AssocGeneric
         else
         {
             await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
-
         }
     }
 
@@ -288,7 +286,8 @@ public static class AssocGeneric
         });
         if (sender != null)
             if (e?.Message.From != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private, e.Message.From.LanguageCode,
+                await sender.SendTextMessageAsync(e.Message.From.Id, languageList3, ChatType.Private,
+                    e.Message.From.LanguageCode,
                     ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From.Username);
     }
 
@@ -364,12 +363,11 @@ public static class AssocGeneric
     {
         const int polinetworkEntity = 2;
 
-        if (Utils.Owners.CheckIfOwner(fromId))
+        if (Owners.CheckIfOwner(fromId))
             return false;
-        
+
         if (messageFromIdEntity == null)
             return null;
-
 
 
         var disable = messageFromIdEntity == polinetworkEntity || tempDisable;

@@ -3,8 +3,9 @@
 public class Single<T>
 {
     public T? Obj;
+
     public Single(T? obj)
     {
-        this.Obj = obj;
+        Obj = obj;
     }
 }
