@@ -141,7 +141,7 @@ public static class Logger
         {
             CriticalError(e, log);
         }
-        
+
         Console.WriteLine(" ");
     }
 

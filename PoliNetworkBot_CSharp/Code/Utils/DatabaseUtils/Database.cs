@@ -4,11 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 #endregion
@@ -61,7 +59,6 @@ public static class Database
         var connectionWithLock = dbConfigConnection?.GetMySqlConnection();
         return connectionWithLock?.ExecuteSelectSlave(query, dbConfigConnection, args);
     }
-
 
 
     internal static object? GetFirstValueFromDataTable(DataTable? dt)
