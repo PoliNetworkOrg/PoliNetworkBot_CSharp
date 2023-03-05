@@ -149,15 +149,15 @@ public static class AssocSend
             idChatsSentInto.Add(fromId.Value);
         }
 
-        //const long idChatSentInto = -432645805;
         const ChatType chatTypeSendInto = ChatType.Group;
-        if (!dry)
-            foreach (var idChat in idChatsSentInto)
-            {
-                await QueueMessage(sender, e, replyTo, messageFromIdEntity, sentDate, idChat, chatTypeSendInto);
-            }
+        if (!dry) 
+            await QueueMessages(sender, e, replyTo, messageFromIdEntity, idChatsSentInto, sentDate, chatTypeSendInto);
+        
+        return await NotifySuccessQueue(sender, e, fromId);
+    }
 
-
+    private static async Task<bool> NotifySuccessQueue(TelegramBotAbstract? sender, MessageEventArgs e, long? fromId)
+    {
         var lang3 = new Language(new Dictionary<string, string?>
         {
             { "en", "The message has been submitted correctly" },
@@ -170,9 +170,18 @@ public static class AssocSend
             ChatType.Private, e.Message.From?.LanguageCode,
             ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
             e.Message.From?.Username);
-        
+
 
         return true;
+    }
+
+    private static async Task QueueMessages(TelegramBotAbstract? sender, MessageEventArgs e, Message replyTo,
+        long? messageFromIdEntity, List<long> idChatsSentInto, DateTime? sentDate, ChatType chatTypeSendInto)
+    {
+        foreach (var idChat in idChatsSentInto)
+        {
+            await QueueMessage(sender, e, replyTo, messageFromIdEntity, sentDate, idChat, chatTypeSendInto);
+        }
     }
 
     private static async Task QueueMessage(TelegramBotAbstract? sender, MessageEventArgs e, Message replyTo,
