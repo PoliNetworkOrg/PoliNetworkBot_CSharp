@@ -18,7 +18,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
 public static class Database
 {
-    public static int Execute(string? query, DbConfigConnection? dbConfigConnection,
+    public static int? Execute(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
         Logger.Logger.WriteLine(query, LogSeverityLevel.DATABASE_QUERY); //todo metti gli args
@@ -26,36 +26,19 @@ public static class Database
         return ExecuteSlave(query, dbConfigConnection, args);
     }
 
-    public static int ExecuteUnlogged(string? query, DbConfigConnection? dbConfigConnection,
+    public static int? ExecuteUnlogged(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
         return ExecuteSlave(query, dbConfigConnection, args);
     }
 
-    private static int ExecuteSlave(string? query, DbConfigConnection? dbConfigConnection,
+    private static int? ExecuteSlave(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
         if (dbConfigConnection == null)
             return 0;
-        MySqlConnectionWithLock connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        int numberOfRowsAffected;
-        lock (connectionWithLock.Lock)
-        {
-            var cmd = new MySqlCommand(query, connection);
-
-
-            OpenConnection(connectionWithLock);
-
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
-
-            numberOfRowsAffected = cmd.ExecuteNonQuery();
-        }
-
-        dbConfigConnection.ReleaseConn(connectionWithLock);
-        return numberOfRowsAffected;
+        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
+        return connectionWithLock.ExecuteSlave(query, dbConfigConnection, args);
     }
 
     public static DataTable? ExecuteSelect(string? query, DbConfigConnection? dbConfigConnection,
@@ -76,52 +59,11 @@ public static class Database
     private static DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
-        if (dbConfigConnection == null) return null;
-        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        var ret = new DataSet();
-        lock (connectionWithLock.Lock)
-        {
-            var cmd = new MySqlCommand(query, connection);
-
-            if (args != null)
-                foreach (var (key, value) in args)
-                    cmd.Parameters.AddWithValue(key, value);
-
-            OpenConnection(connectionWithLock);
-
-            var adapter = new MySqlDataAdapter
-            {
-                SelectCommand = cmd
-            };
-
-
-            adapter.Fill(ret);
-
-            adapter.Dispose();
-        }
-
-
-        dbConfigConnection.ReleaseConn(connectionWithLock);
-        return ret.Tables[0];
+        var connectionWithLock = dbConfigConnection?.GetMySqlConnection();
+        return connectionWithLock?.ExecuteSelectSlave(query, dbConfigConnection, args);
     }
 
-    public static void OpenConnection(MySqlConnectionWithLock connection)
-    {
-        if (connection is { Conn.State: ConnectionState.Open } or { ConnectionTemp.State: ConnectionState.Open })
-            return;
 
-        try
-        {
-            connection.Conn?.Open();
-        }
-        catch
-        {
-            var connectionTemp = new SQLiteConnection("Data Source=temp.db");
-            connectionTemp.Open();
-            connection.ConnectionTemp = connectionTemp;
-        }
-    }
 
     internal static object? GetFirstValueFromDataTable(DataTable? dt)
     {

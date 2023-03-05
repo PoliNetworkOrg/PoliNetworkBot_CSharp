@@ -23,7 +23,6 @@ public static class BulkInsert
 
         lock (connectionWithLock.Lock)
         {
-            Database.OpenConnection(connectionWithLock);
             numberOfRowsAffected = BulkInsertMySql2(connectionWithLock, tableName, table2);
         }
 
