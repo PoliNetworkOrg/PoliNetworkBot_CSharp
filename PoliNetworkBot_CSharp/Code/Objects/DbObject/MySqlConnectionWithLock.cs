@@ -1,8 +1,8 @@
 ﻿#region
 
 using System.Collections.Generic;
-using System.Data; 
-using Devart.Data.SQLite; 
+using System.Data;
+using System.Data.SQLite;
 using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
