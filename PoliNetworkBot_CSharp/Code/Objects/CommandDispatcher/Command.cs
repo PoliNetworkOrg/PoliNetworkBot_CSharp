@@ -228,6 +228,7 @@ public class Command
             return CommandExecutionState.UNMET_CONDITIONS;
         if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
+        // ReSharper disable once InvertIf
         if (_actionFuncGeneric != null)
             if (e != null)
                 if (telegramBotAbstract != null)
