@@ -229,7 +229,7 @@ public class Command
         if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
         // ReSharper disable once InvertIf
-        if (_actionFuncGeneric != null && e != null && telegramBotAbstract != null && args != null) 
+        if (_actionFuncGeneric != null && e != null && telegramBotAbstract != null && args != null)
             return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
         throw new Exception("Illegal state exception!");
     }
