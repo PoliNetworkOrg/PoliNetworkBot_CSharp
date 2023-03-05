@@ -12,7 +12,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Assoc;
 
-public class AssocSend
+public static class AssocSend
 {
     
     public static async Task<bool> Assoc_SendAsync(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry = false)
@@ -23,7 +23,7 @@ public class AssocSend
 
             if (replyTo == null)
             {
-                await Utils.Assoc.AssocGeneric.Assoc_ObjectToSendNotValid(sender, e);
+                await AssocGeneric.Assoc_ObjectToSendNotValid(sender, e);
                 return false;
             }
 
@@ -36,7 +36,7 @@ public class AssocSend
             var messageFromIdEntity = await AssocGeneric.GetIdEntityFromPersonAsync(e?.Message.From?.Id, languageList,
                 sender, e?.Message.From?.LanguageCode, e?.Message.From?.Username);
 
-            if (messageFromIdEntity == null && !Utils.Owners.CheckIfOwner(e?.Message.From?.Id) )
+            if (messageFromIdEntity == null && !Owners.CheckIfOwner(e?.Message.From?.Id) )
             {
                 await AssocGeneric.EntityNotFoundAsync(sender, e);
                 return false;
@@ -44,30 +44,32 @@ public class AssocSend
 
             var hasThisEntityAlreadyReachedItsLimit =
                 AssocGeneric.CheckIfEntityReachedItsMaxLimit(messageFromIdEntity, sender, true, e?.Message.From?.Id) ?? true;
-            
-            if (hasThisEntityAlreadyReachedItsLimit)
-            {
-                var languageList4 = new Language(new Dictionary<string, string?>
-                {
-                    { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
-                    { "en", "I'm sorry! In this period you have sent too many messages" }
-                });
-                if (e?.Message == null)
-                    return false;
 
-                if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, languageList4, ChatType.Private, default,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
-                return false;
-            }
-
-            return await AssocSend3Async(sender, e, dry, replyTo, messageFromIdEntity);
+            return !hasThisEntityAlreadyReachedItsLimit
+                ? await AssocSend3Async(sender, e, dry, replyTo, messageFromIdEntity)
+                : await AssocSendTooManyMessages(sender, e);
         }
         catch (Exception? ex)
         {
             await AssocGeneric.HandleException(ex, sender, e);
             return false;
         }
+    }
+
+    private static async Task<bool> AssocSendTooManyMessages(TelegramBotAbstract? sender, MessageEventArgs? e)
+    {
+        var languageList4 = new Language(new Dictionary<string, string?>
+        {
+            { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
+            { "en", "I'm sorry! In this period you have sent too many messages" }
+        });
+        if (e?.Message == null)
+            return false;
+
+        if (sender != null)
+            await sender.SendTextMessageAsync(e.Message.From?.Id, languageList4, ChatType.Private, default,
+                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
+        return false;
     }
 
     private static async Task<bool> AssocSend3Async(TelegramBotAbstract? sender, MessageEventArgs? e, bool dry, Message replyTo,
@@ -182,17 +184,19 @@ public class AssocSend
                 return false;
             }
 
+        
         var lang3 = new Language(new Dictionary<string, string?>
         {
             { "en", "The message has been submitted correctly" },
             { "it", "Il messaggio è stato inviato correttamente" }
         });
-        if (sender == null) return true;
-        if (e?.Message != null)
-            await sender.SendTextMessageAsync(e.Message.From?.Id, lang3,
-                ChatType.Private, e.Message.From?.LanguageCode,
-                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                e.Message.From?.Username);
+        if (sender == null) 
+            return true;
+        
+        await sender.SendTextMessageAsync(e.Message.From?.Id, lang3,
+            ChatType.Private, e.Message.From?.LanguageCode,
+            ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+            e.Message.From?.Username);
 
         return true;
     }

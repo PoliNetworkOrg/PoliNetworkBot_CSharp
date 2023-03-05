@@ -364,11 +364,13 @@ public static class AssocGeneric
     {
         const int polinetworkEntity = 2;
 
+        if (Utils.Owners.CheckIfOwner(fromId))
+            return false;
+        
         if (messageFromIdEntity == null)
             return null;
 
-        if (Utils.Owners.CheckIfOwner(fromId))
-            return false;
+
 
         var disable = messageFromIdEntity == polinetworkEntity || tempDisable;
         return disable
