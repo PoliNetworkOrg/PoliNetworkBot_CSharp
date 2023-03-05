@@ -211,12 +211,11 @@ public static class BulkInsert
 
         if (maxLength == null)
             return new Tuple<string?, Colonna>(null, new Colonna(xDataColumn.ColumnName, typeof(object)));
-        
+
         var length = maxLength.Value * 10;
         return length > 500
             ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string)))
             : new Tuple<string?, Colonna>("VARCHAR(500)", new Colonna(xDataColumn.ColumnName, typeof(string)));
-
     }
 
     private static bool AllYn(IEnumerable<string> strings)
