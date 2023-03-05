@@ -344,6 +344,7 @@ public static class MessageDb
     public static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract? telegramBotAbstract, int count)
     {
+        ;
         var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract);
 
         if (!extraInfo) return r1;
