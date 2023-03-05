@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Devart.Data.SQLite;
 using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 #endregion
@@ -35,7 +37,7 @@ public static class Database
     {
         if (dbConfigConnection == null)
             return 0;
-        var connectionWithLock = dbConfigConnection.GetMySqlConnection();
+        MySqlConnectionWithLock connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;
         int numberOfRowsAffected;
         lock (connectionWithLock.Lock)
@@ -43,7 +45,7 @@ public static class Database
             var cmd = new MySqlCommand(query, connection);
 
 
-            OpenConnection(connection);
+            OpenConnection(connectionWithLock);
 
             if (args != null)
                 foreach (var (key, value) in args)
@@ -86,7 +88,7 @@ public static class Database
                 foreach (var (key, value) in args)
                     cmd.Parameters.AddWithValue(key, value);
 
-            OpenConnection(connection);
+            OpenConnection(connectionWithLock);
 
             var adapter = new MySqlDataAdapter
             {
@@ -104,10 +106,21 @@ public static class Database
         return ret.Tables[0];
     }
 
-    public static void OpenConnection(IDbConnection connection)
+    public static void OpenConnection(MySqlConnectionWithLock connection)
     {
-        if (connection.State != ConnectionState.Open)
-            connection.Open();
+        if (connection is { Conn.State: ConnectionState.Open } or { ConnectionTemp.State: ConnectionState.Open })
+            return;
+
+        try
+        {
+            connection.Conn?.Open();
+        }
+        catch
+        {
+            var connectionTemp = new SQLiteConnection("Data Source=temp.db");
+            connectionTemp.Open();
+            connection.ConnectionTemp = connectionTemp;
+        }
     }
 
     internal static object? GetFirstValueFromDataTable(DataTable? dt)

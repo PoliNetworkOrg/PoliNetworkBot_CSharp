@@ -141,6 +141,8 @@ public static class Logger
         {
             CriticalError(e, log);
         }
+        
+        Console.WriteLine(" ");
     }
 
     private static void SendLogIfOversize()

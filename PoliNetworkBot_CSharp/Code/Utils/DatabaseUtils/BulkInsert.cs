@@ -10,22 +10,21 @@ namespace PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
 public static class BulkInsert
 {
-    public static int BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
+    public static int? BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null)
             return 0;
 
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        int numberOfRowsAffected;
+        int? numberOfRowsAffected;
 
         var colonne = CreateTable_DestroyIfExist(table, tableName, dbConfigConnection);
         var table2 = FixDataTable(table, colonne);
 
         lock (connectionWithLock.Lock)
         {
-            Database.OpenConnection(connection);
-            numberOfRowsAffected = BulkInsertMySql2(connection, tableName, table2);
+            Database.OpenConnection(connectionWithLock);
+            numberOfRowsAffected = BulkInsertMySql2(connectionWithLock, tableName, table2);
         }
 
         dbConfigConnection.ReleaseConn(connectionWithLock);
@@ -279,20 +278,8 @@ public static class BulkInsert
         return null;
     }
 
-    private static int BulkInsertMySql2(MySqlConnection connection, string tableName, DataTable table)
+    private static int? BulkInsertMySql2(MySqlConnectionWithLock connection, string tableName, DataTable table)
     {
-        using var tran = connection.BeginTransaction(IsolationLevel.Serializable);
-        using var cmd = new MySqlCommand();
-        cmd.Connection = connection;
-        cmd.Transaction = tran;
-        cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
-
-        using var adapter = new MySqlDataAdapter(cmd);
-        adapter.UpdateBatchSize = 10000;
-        using var cb = new MySqlCommandBuilder(adapter);
-        cb.SetAllValues = true;
-        var numberOfRowsAffected = adapter.Update(table);
-        tran.Commit();
-        return numberOfRowsAffected;
+        return connection.BulkInsert(tableName, table);
     }
 }
