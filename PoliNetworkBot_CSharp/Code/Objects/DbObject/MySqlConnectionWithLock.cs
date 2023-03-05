@@ -1,9 +1,11 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using MySql.Data.MySqlClient;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
 
@@ -11,19 +13,23 @@ namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 public class MySqlConnectionWithLock
 {
-    private readonly MySqlConnection? _conn;
+    private MySqlConnection? _conn;
     public readonly object Lock;
     private SQLiteConnection? _connectionTemp;
+    private string? _connectionStringMysql;
 
     public MySqlConnectionWithLock(string getConnectionString)
     {
-        _conn = new MySqlConnection(getConnectionString);
+        this._connectionStringMysql = getConnectionString;
         Lock = new object();
     }
 
 
     public int? BulkInsert(string tableName, DataTable table)
     {
+        
+        OpenConnection();
+        
         if (_connectionTemp != null)
             lock (Lock)
             {
@@ -34,7 +40,6 @@ public class MySqlConnectionWithLock
                 cmd.Transaction = tran;
                 cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
 
-                OpenConnection();
 
 
                 //DbDataAdapter, IDbDataAdapter, IDataAdapter
@@ -57,7 +62,7 @@ public class MySqlConnectionWithLock
                 cmd.Transaction = tran;
                 cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
 
-                OpenConnection();
+  
 
                 using var adapter = new MySqlDataAdapter(cmd);
                 adapter.UpdateBatchSize = 10000;
@@ -74,6 +79,9 @@ public class MySqlConnectionWithLock
 
     public int? ExecuteSlave(string? query, DbConfigConnection dbConfigConnection, Dictionary<string, object?>? args)
     {
+        
+        OpenConnection();
+        
         if (_connectionTemp != null)
         {
             int numberOfRowsAffected;
@@ -82,7 +90,6 @@ public class MySqlConnectionWithLock
                 var cmd = new SQLiteCommand(query, _connectionTemp);
 
 
-                OpenConnection();
 
                 if (args != null)
                     foreach (var (key, value) in args)
@@ -101,9 +108,7 @@ public class MySqlConnectionWithLock
             lock (Lock)
             {
                 var cmd = new MySqlCommand(query, _conn);
-
-
-                OpenConnection();
+                
 
                 if (args != null)
                     foreach (var (key, value) in args)
@@ -121,19 +126,38 @@ public class MySqlConnectionWithLock
 
     private void OpenConnection()
     {
+        if (this._conn == null && this._connectionTemp == null)
+        {
+            lock (this.Lock)
+            {
+                this._conn = new MySqlConnection(this._connectionStringMysql);
+            }
+        }
+        
         if (this is { _conn.State: ConnectionState.Open } or { _connectionTemp.State: ConnectionState.Open })
             return;
 
+        var done = false;
         try
         {
-            _conn?.Open();
+            if (this._conn == null) return;
+            lock (this._conn)
+            {
+                _conn?.Open();
+                done = true;
+            }
         }
-        catch
+        catch (Exception e)
         {
-            var connectionTemp = new SQLiteConnection("Data Source=temp.db");
-            connectionTemp.Open();
-            _connectionTemp = connectionTemp;
+            Logger.WriteLine(e);
         }
+
+        if (done) return;
+        
+        var connectionTemp = new SQLiteConnection("Data Source=temp.db");
+        connectionTemp.Open();
+        _connectionTemp = connectionTemp;
+
     }
 
     public DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,
@@ -142,6 +166,8 @@ public class MySqlConnectionWithLock
         if (dbConfigConnection == null)
             return null;
 
+        OpenConnection();
+        
         if (_connectionTemp != null)
         {
             var ret = new DataSet();
@@ -153,7 +179,7 @@ public class MySqlConnectionWithLock
                     foreach (var (key, value) in args)
                         cmd.Parameters.AddWithValue(key, value);
 
-                OpenConnection();
+               
 
                 var adapter = new SQLiteDataAdapter
                 {
@@ -179,7 +205,6 @@ public class MySqlConnectionWithLock
                     foreach (var (key, value) in args)
                         cmd.Parameters.AddWithValue(key, value);
 
-                OpenConnection();
 
                 var adapter = new MySqlDataAdapter
                 {
