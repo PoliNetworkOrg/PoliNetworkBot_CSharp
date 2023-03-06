@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace PoliNetworkBot_CSharp.Code.Objects;
+namespace PoliNetworkBot_CSharp.Code.Objects.Container;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]

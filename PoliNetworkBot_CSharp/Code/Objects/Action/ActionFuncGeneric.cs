@@ -81,6 +81,7 @@ public class ActionFuncGeneric
                     return CommandExecutionState.SUCCESSFUL;
                 }
 
+        // ReSharper disable once InvertIf
         if (_action6 != null)
         {
             _action6.Invoke(e, telegramBotAbstract).Wait();

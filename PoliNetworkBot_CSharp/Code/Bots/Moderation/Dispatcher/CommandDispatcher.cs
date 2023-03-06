@@ -1,8 +1,8 @@
 ﻿#region
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -13,16 +13,17 @@ using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Assoc;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -100,26 +101,13 @@ internal static class CommandDispatcher
         foreach (var command in SwitchDispatcher.Commands)
             try
             {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                var commandExecutionState = command.TryTrigger(e, sender, cmd, args);
+                switch (commandExecutionState)
                 {
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
                     case CommandExecutionState.UNMET_CONDITIONS:
-                        if (e.Message.Chat.Type == ChatType.Private)
-                            await NotifyUserCommandError(new L(
-                                    "it",
-                                    "Formattazione del messaggio errata. \n" +
-                                    "Per informazioni aggiuntive scrivi<b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>",
-                                    "en",
-                                    "The message is wrongly formatted. \n" +
-                                    "For additional info type <b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>"),
-                                sender, e);
-                        else
-                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                        await UnmetConditions(sender, e, command);
                         return false;
                     case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
@@ -137,6 +125,25 @@ internal static class CommandDispatcher
             }
 
         return await DefaultCommand(sender, e);
+    }
+
+    private static async Task UnmetConditions(TelegramBotAbstract sender, MessageEventArgs e, Command command)
+    {
+        if (e.Message.Chat.Type == ChatType.Private)
+            await NotifyUserCommandError(new L(
+                    "it",
+                    "Formattazione del messaggio errata. \n" +
+                    "Per informazioni aggiuntive scrivi<b>\n" +
+                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                    "</b>",
+                    "en",
+                    "The message is wrongly formatted. \n" +
+                    "For additional info type <b>\n" +
+                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                    "</b>"),
+                sender, e);
+        else
+            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
     }
 
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
@@ -181,7 +188,7 @@ internal static class CommandDispatcher
     public static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
         var fourHours = new TimeSpan(4, 0, 0);
-        await Assoc.AllowMessage(e, sender, fourHours);
+        await AssocGeneric.AllowMessage(e, sender, fourHours);
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -258,7 +265,7 @@ internal static class CommandDispatcher
         var output = ExecuteBashCommand("./static/github_pusher.sh");
 
         Logger.WriteLine(output);
-        
+
         var text = output.Length > 0
             ? new Dictionary<string, string?>
             {
@@ -272,7 +279,8 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"), sender, null,
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"),
+            sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
@@ -309,19 +317,19 @@ internal static class CommandDispatcher
 
         Logger.WriteLine(output);
     }
-    
+
     private static string ExecuteBashCommand(string command)
     {
         // according to: https://stackoverflow.com/a/15262019/637142
         // thans to this we will pass everything as one command
-        command = command.Replace("\"","\"\"");
+        command = command.Replace("\"", "\"\"");
 
         var proc = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
-                Arguments = "-c \""+ command + "\"",
+                Arguments = "-c \"" + command + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
@@ -10,22 +9,20 @@ namespace PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
 public static class BulkInsert
 {
-    public static int BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
+    public static int? BulkInsertMySql(DataTable table, string tableName, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null)
             return 0;
 
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
-        var connection = connectionWithLock.Conn;
-        int numberOfRowsAffected;
+        int? numberOfRowsAffected;
 
         var colonne = CreateTable_DestroyIfExist(table, tableName, dbConfigConnection);
         var table2 = FixDataTable(table, colonne);
 
         lock (connectionWithLock.Lock)
         {
-            Database.OpenConnection(connection);
-            numberOfRowsAffected = BulkInsertMySql2(connection, tableName, table2);
+            numberOfRowsAffected = BulkInsertMySql2(connectionWithLock, tableName, table2);
         }
 
         dbConfigConnection.ReleaseConn(connectionWithLock);
@@ -209,15 +206,13 @@ public static class BulkInsert
 
         var maxLength = GetMaxLength(enumerable);
 
-        if (maxLength != null)
-        {
-            var length = maxLength.Value * 10;
-            return length > 500
-                ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string)))
-                : new Tuple<string?, Colonna>("VARCHAR(500)", new Colonna(xDataColumn.ColumnName, typeof(string)));
-        }
+        if (maxLength == null)
+            return new Tuple<string?, Colonna>(null, new Colonna(xDataColumn.ColumnName, typeof(object)));
 
-        return new Tuple<string?, Colonna>(null, new Colonna(xDataColumn.ColumnName, typeof(object)));
+        var length = maxLength.Value * 10;
+        return length > 500
+            ? new Tuple<string?, Colonna>("TEXT", new Colonna(xDataColumn.ColumnName, typeof(string)))
+            : new Tuple<string?, Colonna>("VARCHAR(500)", new Colonna(xDataColumn.ColumnName, typeof(string)));
     }
 
     private static bool AllYn(IEnumerable<string> strings)
@@ -281,20 +276,8 @@ public static class BulkInsert
         return null;
     }
 
-    private static int BulkInsertMySql2(MySqlConnection connection, string tableName, DataTable table)
+    private static int? BulkInsertMySql2(MySqlConnectionWithLock connection, string tableName, DataTable table)
     {
-        using var tran = connection.BeginTransaction(IsolationLevel.Serializable);
-        using var cmd = new MySqlCommand();
-        cmd.Connection = connection;
-        cmd.Transaction = tran;
-        cmd.CommandText = "SELECT * FROM " + tableName + " limit 0";
-
-        using var adapter = new MySqlDataAdapter(cmd);
-        adapter.UpdateBatchSize = 10000;
-        using var cb = new MySqlCommandBuilder(adapter);
-        cb.SetAllValues = true;
-        var numberOfRowsAffected = adapter.Update(table);
-        tran.Commit();
-        return numberOfRowsAffected;
+        return connection.BulkInsert(tableName, table);
     }
 }

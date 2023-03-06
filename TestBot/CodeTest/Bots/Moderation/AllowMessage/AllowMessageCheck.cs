@@ -4,7 +4,7 @@ using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Utils;
+using PoliNetworkBot_CSharp.Code.Utils.Assoc;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -81,7 +81,7 @@ public class AllowMessageCheck
         {
             var message = new Message { ReplyToMessage = tMessage, From = tMessage.From };
             var e = new MessageEventArgs(message);
-            await Assoc.AllowMessage(e, null, TimeSpan.Zero);
+            await AssocGeneric.AllowMessage(e, null, TimeSpan.Zero);
         }
 
         var e2 = new MessageEventArgs(tMessage);
