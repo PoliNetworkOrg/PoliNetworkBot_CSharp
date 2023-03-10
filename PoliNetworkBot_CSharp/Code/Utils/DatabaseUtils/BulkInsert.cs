@@ -227,7 +227,7 @@ public static class BulkInsert
         {
             if (string.IsNullOrEmpty(x))
                 return false;
-            
+
             try
             {
                 var xc = int.Parse(x);

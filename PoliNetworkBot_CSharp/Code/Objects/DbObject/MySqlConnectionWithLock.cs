@@ -12,9 +12,9 @@ namespace PoliNetworkBot_CSharp.Code.Objects.DbObject;
 
 public class MySqlConnectionWithLock
 {
+    private readonly string? _connectionStringMysql;
     public readonly object Lock;
     private MySqlConnection? _conn;
-    private readonly string? _connectionStringMysql;
     private SQLiteConnection? _connectionTemp;
 
     public MySqlConnectionWithLock(string getConnectionString)
