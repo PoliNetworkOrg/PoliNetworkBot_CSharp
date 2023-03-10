@@ -65,7 +65,6 @@ public static class AssocGeneric
     {
         if (ex is SQLiteException sqLiteException)
         {
-            ;
             const string noSuchTable = "no such table:";
             if (sqLiteException.Message.Contains(noSuchTable))
             {
