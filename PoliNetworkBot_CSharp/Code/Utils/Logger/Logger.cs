@@ -292,7 +292,7 @@ public static class Logger
         if (data == null)
             return null;
 
-        List<string> r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
+        var r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
         return r.Aggregate((x, y) => x + "\n--------------------\n" + y).Trim();
     }
 
