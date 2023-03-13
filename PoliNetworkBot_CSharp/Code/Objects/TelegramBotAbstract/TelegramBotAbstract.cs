@@ -359,13 +359,9 @@ public class TelegramBotAbstract
                 try
                 {
                     if (_botClient != null)
-                    {
                         if (id != null)
-                        {
                             await _botClient.PromoteChatMemberAsync(chatId, id.Value, true, true, true, true,
                                 true, true, true, true);
-                        }
-                    }
                 }
                 catch (Exception? e)
                 {
@@ -386,7 +382,7 @@ public class TelegramBotAbstract
                         if (id != null)
                             await UserbotClient.ChannelsEditAdmin(
                                 UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
-                                new TLInputUser() { UserId = (int)id.Value, AccessHash = userIdInput.AccessHash},
+                                new TLInputUser { UserId = (int)id.Value, AccessHash = userIdInput.AccessHash },
                                 role);
                 }
                 catch (Exception? e)
@@ -1845,6 +1841,4 @@ public class TelegramBotAbstract
                 break;
         }
     }
-
-
 }

@@ -93,7 +93,7 @@ internal static class Main
                         foreach (var admin in admins)
                         {
                             Thread.Sleep(1 * 1000 * 10);
-                            var userIdInput = new TelegramUser(admin.UserId){AccessHash = admin.AccessHash};
+                            var userIdInput = new TelegramUser(admin.UserId) { AccessHash = admin.AccessHash };
                             await telegramBotAbstract.PromoteChatMember(userIdInput, channel.Channel.Id,
                                 channel.Channel.AccessHash);
                         }

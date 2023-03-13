@@ -271,9 +271,9 @@ public static class SwitchDispatcher
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Kill bot"), null,
             null),
-        new Command("make_me_admin", Utils.AdminUtil.PromoteUser,         
+        new Command("make_me_admin", AdminUtil.PromoteUser,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup }, Permission.OWNER,
             new L("en", "Promote me as admin"), null,
-            null),
+            null)
     };
 }
