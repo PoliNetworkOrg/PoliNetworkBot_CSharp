@@ -21,6 +21,13 @@ public static class AdminUtil
             return CommandExecutionState.NOT_TRIGGERED;
 
         var b = await promoteChatMember;
-        return b ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
+        if (b)
+        {
+            var promotedInGroup = "Promoted in group "+chatId;
+            await SendMessage.SendMessageInPrivate(arg2, fromId, promotedInGroup);
+            return CommandExecutionState.SUCCESSFUL;
+        }
+        else
+            return CommandExecutionState.ERROR_DEFAULT;
     }
 }
