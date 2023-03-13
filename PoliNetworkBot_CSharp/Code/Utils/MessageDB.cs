@@ -8,9 +8,11 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Container;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
+using PoliNetworkBot_CSharp.Code.Utils.Assoc;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
@@ -113,32 +115,11 @@ public static class MessageDb
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
+        var singleBot = new Single<TelegramBotAbstract?>(telegramBotAbstract);
         foreach (DataRow dr in dt.Rows)
             try
             {
-                var botToReportException = FindBotIfNeeded(null, telegramBotAbstract);
-                var r1 = await SendMessageToSend(dr, telegramBotAbstract, !forceSendEverythingInQueue,
-                    botToReportException,
-                    messageEventArgs);
-                telegramBotAbstract = FindBotIfNeeded(r1, telegramBotAbstract);
-                if (telegramBotAbstract !=
-                    null) // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
-                    switch (r1.ScheduleMessageSentResult)
-                    {
-                        case ScheduleMessageSentResult.FAILED_SEND:
-                        case ScheduleMessageSentResult.SUCCESS:
-                        case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
-                        {
-                            await NotifyOwnersOfResultAsync(r1, telegramBotAbstract, messageEventArgs);
-                            break;
-                        }
-
-
-                        case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
-                        case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
-                        case ScheduleMessageSentResult.ALREADY_SENT:
-                            break;
-                    }
+                await SendSingleScheduledMessage(forceSendEverythingInQueue, singleBot, messageEventArgs, dr);
             }
             catch (Exception? e)
             {
@@ -147,6 +128,41 @@ public static class MessageDb
             }
 
         return true;
+    }
+
+    private static async Task SendSingleScheduledMessage(bool forceSendEverythingInQueue,
+        Single<TelegramBotAbstract?> telegramBotAbstract, MessageEventArgs? messageEventArgs, DataRow dr)
+    {
+        var botToReportException = FindBotIfNeeded(null, telegramBotAbstract.Obj);
+
+        var r1 = await SendMessageToSend(
+            dr, telegramBotAbstract.Obj,
+            !forceSendEverythingInQueue,
+            botToReportException,
+            messageEventArgs);
+
+        telegramBotAbstract.Obj = FindBotIfNeeded(r1, telegramBotAbstract.Obj);
+
+        // && r1.scheduleMessageSentResult != Enums.ScheduleMessageSentResult.ALREADY_SENT)
+        if (telegramBotAbstract is not { Obj: { } }) return;
+
+        switch (r1.ScheduleMessageSentResult)
+        {
+            case ScheduleMessageSentResult.FAILED_SEND:
+            case ScheduleMessageSentResult.SUCCESS:
+            case ScheduleMessageSentResult.WE_DONT_KNOW_IF_IT_HAS_BEEN_SENT:
+            {
+                await NotifyOwnersOfResultAsync(r1, telegramBotAbstract.Obj, messageEventArgs);
+                break;
+            }
+
+            case ScheduleMessageSentResult.NOT_THE_RIGHT_TIME:
+            case ScheduleMessageSentResult.THE_MESSAGE_IS_NOT_SCHEDULED:
+            case ScheduleMessageSentResult.ALREADY_SENT:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     private static TelegramBotAbstract? FindBotIfNeeded(MessageSendScheduled? r1,
@@ -326,6 +342,7 @@ public static class MessageDb
     public static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract? telegramBotAbstract, int count)
     {
+        ;
         var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract);
 
         if (!extraInfo) return r1;
@@ -380,7 +397,7 @@ public static class MessageDb
         if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToAmericanFormat(dt) + "\n";
         if (fromIdEntity != null)
         {
-            var entityName = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
+            var entityName = AssocGeneric.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);
             text1 += "👥 " + entityName + "\n";
         }
 
@@ -623,10 +640,11 @@ public static class MessageDb
             chatIdFromIdPerson,
             ChatType.Private, botClass);
 
-        if (botClass != null)
-            return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode, typeOfChatSentInto.Value);
-        return null;
+        if (botClass == null)
+            return null;
+
+        return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
+            caption, parseMode, typeOfChatSentInto.Value);
     }
 
     internal static async Task CheckMessageToDelete(MessageEventArgs? messageEventArgs)
