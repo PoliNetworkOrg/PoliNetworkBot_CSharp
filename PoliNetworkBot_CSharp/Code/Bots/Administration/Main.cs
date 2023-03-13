@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -92,7 +93,8 @@ internal static class Main
                         foreach (var admin in admins)
                         {
                             Thread.Sleep(1 * 1000 * 10);
-                            await telegramBotAbstract.PromoteChatMember(admin, channel.Channel.Id,
+                            var userIdInput = new TelegramUser(admin.UserId) { AccessHash = admin.AccessHash };
+                            await telegramBotAbstract.PromoteChatMember(userIdInput, channel.Channel.Id,
                                 channel.Channel.AccessHash);
                         }
 

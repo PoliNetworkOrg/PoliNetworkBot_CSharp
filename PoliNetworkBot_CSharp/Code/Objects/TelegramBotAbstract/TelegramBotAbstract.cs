@@ -349,8 +349,9 @@ public class TelegramBotAbstract
         return false;
     }
 
-    internal async Task<bool> PromoteChatMember(TLInputUser userIdInput, ChatId chatId, long? accessHashChat)
+    internal async Task<bool> PromoteChatMember(TelegramUser userIdInput, ChatId chatId, long? accessHashChat)
     {
+        var id = userIdInput.Id;
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -358,8 +359,9 @@ public class TelegramBotAbstract
                 try
                 {
                     if (_botClient != null)
-                        await _botClient.PromoteChatMemberAsync(chatId, userIdInput.UserId, true, true, true, true,
-                            true, true, true, true);
+                        if (id != null)
+                            await _botClient.PromoteChatMemberAsync(chatId, id.Value, true, true, true, true,
+                                true, true, true, true);
                 }
                 catch (Exception? e)
                 {
@@ -377,10 +379,11 @@ public class TelegramBotAbstract
                     TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
 
                     if (UserbotClient != null)
-                        await UserbotClient.ChannelsEditAdmin(
-                            UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
-                            userIdInput,
-                            role);
+                        if (id != null)
+                            await UserbotClient.ChannelsEditAdmin(
+                                UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
+                                new TLInputUser { UserId = (int)id.Value, AccessHash = userIdInput.AccessHash },
+                                role);
                 }
                 catch (Exception? e)
                 {
