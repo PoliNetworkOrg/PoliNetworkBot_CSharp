@@ -182,7 +182,7 @@ public static class BulkInsert
     }
 
     private static Tuple<string?, Colonna> MySqlStringTypeFromDataType(DataColumn xDataColumn,
-        List<object> exampleValue)
+        IReadOnlyCollection<object> exampleValue)
     {
         var xDataType = xDataColumn.DataType;
 

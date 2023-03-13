@@ -360,8 +360,14 @@ public class TelegramBotAbstract
                 {
                     if (_botClient != null)
                         if (id != null)
-                            await _botClient.PromoteChatMemberAsync(chatId, id.Value, true, true, true, true,
-                                true, true, true, true);
+                            await _botClient.PromoteChatMemberAsync(
+                                chatId, id.Value, 
+                                null, true, 
+                                true, true,
+                                true, true, 
+                                true, true, 
+                                true, true, 
+                                true);
                 }
                 catch (Exception? e)
                 {
