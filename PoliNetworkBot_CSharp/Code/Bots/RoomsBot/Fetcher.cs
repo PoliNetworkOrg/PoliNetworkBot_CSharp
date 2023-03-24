@@ -10,8 +10,8 @@ public class Fetcher
 {
  
     private static readonly TimeSpan CacheInvalidationTime = TimeSpan.FromHours(1);
-    private static readonly Dictionary<string, DateTime> _fetchCacheAge = new();
-    private static readonly Dictionary<string, HtmlDocument> _rawFetchedFile = new();
+    private static readonly Dictionary<string, DateTime> FetchCacheAge = new();
+    private static readonly Dictionary<string, HtmlDocument> RawFetchedFile = new();
 
     public static string? GetRawOccupancy(string campus)
     {
@@ -59,12 +59,12 @@ public class Fetcher
 
     private static HtmlDocument FetchOccupationData(string campus)
     {
-        if (DateTime.Now - _fetchCacheAge[campus] < CacheInvalidationTime)
-            return _rawFetchedFile[campus];
+        if (DateTime.Now - FetchCacheAge[campus] < CacheInvalidationTime)
+            return RawFetchedFile[campus];
         var doc = new HtmlDocument();
         doc.LoadHtml(Const.PolimiController + $"/?csic={campus}?tipologia={Data.Enums.RoomType.tutte}?categoria=tutte" );
-        _rawFetchedFile[campus] = doc;
-        _fetchCacheAge[campus] = DateTime.Now;
+        RawFetchedFile[campus] = doc;
+        FetchCacheAge[campus] = DateTime.Now;
         return doc;
     }
 }
