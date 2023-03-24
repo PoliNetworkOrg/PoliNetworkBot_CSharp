@@ -40,6 +40,7 @@ internal static class RoomsBot
             return;
 
         var telegramBotAbstract = TelegramBotAbstract.GetFromRam(t2);
+        
 
     }
 

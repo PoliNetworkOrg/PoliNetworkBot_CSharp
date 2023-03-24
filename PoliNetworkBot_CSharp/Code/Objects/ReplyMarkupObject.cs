@@ -15,12 +15,12 @@ public class ReplyMarkupObject
     private readonly ReplyMarkupOptions? _list;
     private readonly ReplyMarkupEnum _replyMarkupEnum;
 
-    public ReplyMarkupObject(ReplyMarkupOptions? list)
+    public ReplyMarkupObject(ReplyMarkupOptions? list, bool onetime = true)
     {
         if (list == null)
             return;
         _list = list;
-        _replyMarkupEnum = ReplyMarkupEnum.CHOICE;
+        _replyMarkupEnum = onetime ? ReplyMarkupEnum.ONETIME : ReplyMarkupEnum.CHOICE;
     }
 
     public ReplyMarkupObject(ReplyMarkupEnum replyMarkupEnum)
@@ -46,18 +46,19 @@ public class ReplyMarkupObject
         {
             ReplyMarkupEnum.FORCED => new ForceReplyMarkup(),
             ReplyMarkupEnum.REMOVE => new ReplyKeyboardRemove(),
-            ReplyMarkupEnum.CHOICE => KeyboardMarkupMethod(),
+            ReplyMarkupEnum.ONETIME => KeyboardMarkupMethod(true),
+            ReplyMarkupEnum.CHOICE => KeyboardMarkupMethod(false),
             ReplyMarkupEnum.INLINE => _inlineKeyboardMarkup,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    private IReplyMarkup? KeyboardMarkupMethod()
+    private IReplyMarkup? KeyboardMarkupMethod(bool onetime)
     {
         var matrixKeyboardButton = _list?.GetMatrixKeyboardButton();
         if (matrixKeyboardButton != null)
             return new ReplyKeyboardMarkup(matrixKeyboardButton!)
-                { OneTimeKeyboard = true };
+                { OneTimeKeyboard = onetime };
 
         return null;
     }
@@ -69,7 +70,7 @@ public class ReplyMarkupObject
             {
                 ReplyMarkupEnum.FORCED => new TLReplyKeyboardForceReply(),
                 ReplyMarkupEnum.REMOVE => new TLReplyKeyboardHide(),
-                ReplyMarkupEnum.CHOICE => new TLReplyKeyboardMarkup { Rows = _list.GetMatrixTlKeyboardButton() },
+                ReplyMarkupEnum.ONETIME => new TLReplyKeyboardMarkup { Rows = _list.GetMatrixTlKeyboardButton() },
                 ReplyMarkupEnum.INLINE => GetRowsInline(_inlineKeyboardMarkup),
                 _ => throw new ArgumentOutOfRangeException()
             };
