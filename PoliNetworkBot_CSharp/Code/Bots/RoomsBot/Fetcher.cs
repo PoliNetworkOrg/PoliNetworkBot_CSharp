@@ -1,31 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
+using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
 public class Fetcher
 {
- 
-    private static readonly TimeSpan CacheInvalidationTime = TimeSpan.FromHours(1);
-    private static readonly Dictionary<string, DateTime> FetchCacheAge = new();
-    private static readonly Dictionary<string, HtmlDocument> RawFetchedFile = new();
 
-    public static string? GetRawOccupancy(string campus)
+    private static readonly int MaximumApiCallsPerSecond = 5;
+    private static readonly int MaximumApiCallsPerMinute = 30;
+    private static readonly object Lock = new();
+    
+    private static int ApiCallsCounterPerSeconds = 0;
+    private static int ApiCallsSecondTracker = 0;
+    
+    private static int ApiCallsCounterPerMinute = 0;
+    private static int ApiCallsMinuteTracker = 0;
+
+    private static readonly TimeSpan CacheInvalidationTime = TimeSpan.FromHours(1);
+    private static readonly Dictionary<string, Dictionary<DateTime, DateTime>> FetchCacheAge = new();
+    private static readonly Dictionary<string, Dictionary<DateTime, HtmlDocument>> RawFetchedFile = new();
+
+    public static string? GetRawOccupancy(string campus, DateTime dateTime)
     {
         
         var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus);
+        var doc = FetchOccupationData(parsedCampus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
         return parsedDoc?.ToString();
     }
 
-    private static List<string> GetFreeClassrooms(string campus, int startingTime, int endingTime)
+    private static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
     {
         var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus);
+        var doc = FetchOccupationData(parsedCampus, dateTime);
         var classroomRows = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
         var toReturn = new List<string>();
         foreach (var row in classroomRows)
@@ -45,26 +57,69 @@ public class Fetcher
         return toReturn;
     }
 
-    public List<string> GetAllClassrooms(string campus)
+    public List<string> GetAllClassrooms(string campus, DateTime dateTime)
     {
-        return GetFreeClassrooms(campus, 8, 8);
+        return GetFreeClassrooms(campus, dateTime,8, 8);
     }
 
-    public string? GetSingleClassroom(string campus, string roomName)
+    public string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
         var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus);
+        var doc = FetchOccupationData(parsedCampus, dateTime);
         return doc.DocumentNode.SelectSingleNode($"//div[.='{roomName}']")?.ToString();
     }
 
-    private static HtmlDocument FetchOccupationData(string campus)
+    private static HtmlDocument FetchOccupationData(string campus, DateTime dateTime)
     {
-        if (DateTime.Now - FetchCacheAge[campus] < CacheInvalidationTime)
-            return RawFetchedFile[campus];
-        var doc = new HtmlDocument();
-        doc.LoadHtml(Const.PolimiController + $"/?csic={campus}?tipologia={Data.Enums.RoomType.tutte}?categoria=tutte" );
-        RawFetchedFile[campus] = doc;
-        FetchCacheAge[campus] = DateTime.Now;
-        return doc;
+        lock (Lock)
+        {
+            if (DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime)
+                return RawFetchedFile[campus][dateTime];
+            if(dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
+                CheckApiRateLimit();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(Const.PolimiController + 
+                         $"/?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
+                         $"&giorno_day={dateTime.Day}" +
+                         $"&giorno_month={dateTime.Month}" +
+                         $"&giorno_year={dateTime.Year}" +
+                         $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
+            RawFetchedFile[campus][dateTime] = doc;
+            FetchCacheAge[campus][dateTime] = DateTime.Now;
+            Thread.Sleep(50);
+            return doc;
+        }
     }
+
+    private static void CheckApiRateLimit()
+    {
+        var now = DateTime.Now;
+        if (now.Second == ApiCallsSecondTracker)
+        {
+            if (ApiCallsCounterPerSeconds > MaximumApiCallsPerSecond)
+                throw new TooManyRequestsException();
+            ApiCallsCounterPerSeconds++;
+        }
+        else
+        {
+            ApiCallsSecondTracker = DateTime.Now.Second;
+            ApiCallsCounterPerSeconds = 1;
+        }
+
+        if (now.Minute == ApiCallsMinuteTracker)
+        {
+            if (ApiCallsCounterPerMinute > MaximumApiCallsPerMinute)
+                throw new TooManyRequestsException();
+            ApiCallsCounterPerMinute++;
+        }
+        else
+        {
+            ApiCallsMinuteTracker = DateTime.Now.Minute;
+            ApiCallsCounterPerMinute = 1;
+        }
+    }
+}
+
+internal class TooManyRequestsException : Exception
+{
 }

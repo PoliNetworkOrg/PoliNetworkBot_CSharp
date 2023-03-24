@@ -8,12 +8,12 @@ public class Enums
 {
     public static readonly Dictionary<string, string> Campuses = new()
     {
-        ["COE"] = "Como",
-        ["CRG"] = "Cremona",
-        ["LCF"] = "Lecco",
-        ["MNI"] = "Mantova",
-        ["MIB"] = "Milano Bovisa",
-        ["MIA"] = "Milano Leonardo"
+        ["Como"] = "COE",
+        ["Cremona"] = "CRG",
+        ["Lecco"] = "LCF",
+        ["Mantova"] = "MNI", 
+        ["Milano Bovisa"] = "MIB",
+        ["Milano Leonardo"] = "MIA"
     };
 
     public enum RoomType
