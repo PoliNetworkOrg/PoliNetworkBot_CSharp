@@ -6,7 +6,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 
 public class Enums
 {
-    private static readonly Dictionary<string, string> Campuses = new()
+    public static readonly Dictionary<string, string> Campuses = new()
     {
         ["COE"] = "Como",
         ["CRG"] = "Cremona",
