@@ -258,7 +258,7 @@ public static class MessageHandler
                 var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
                     conversation.StartHour!, conversation.EndHour!);
 
-                markupObject = ReplyMarkupGenerator.BackButton();
+                markupObject = null;
                 if (freeClassrooms.Count == 0)
                 {
                     replyLang = new L("it", "Errore interno", "en", "Internal error");
@@ -276,7 +276,7 @@ public static class MessageHandler
 
                 return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
-                    markupObject, null);
+                    markupObject, null, splitMessage: true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

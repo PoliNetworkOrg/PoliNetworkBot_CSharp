@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
@@ -30,7 +31,16 @@ public class Fetcher
         
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        return parsedDoc?.ToString();
+        var text =  parsedDoc.Nodes().Aggregate(@"<head>	<link rel=""stylesheet\""
+        href=""https://webcommons.polimi.it/webcommons/assets/ateneo2014.css.jsp?v=5&lang=it&dt_version=1.10""
+        type=""text/css"" />
+            <link rel=""stylesheet""
+        href=""https://webcommons.polimi.it/webcommons/ajax/libs/jqueryui/1.12.1/themes/polij.css.jsp?v=5&lang=it""
+        type=""text/css"" />
+            <link rel=""stylesheet"" href=""https://webcommons.polimi.it/webcommons/assets/desktop.css.jsp?v=5&lang=it""
+        type=""text/css"" /></head><body>", (current, node) => current + node.OuterHtml);
+        text += "</body>";
+        return text;
     }
 
     public static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
