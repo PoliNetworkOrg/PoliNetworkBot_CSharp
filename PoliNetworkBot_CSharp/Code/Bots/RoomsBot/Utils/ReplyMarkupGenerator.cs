@@ -16,11 +16,11 @@ public static class ReplyMarkupGenerator
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, false)), false);
     }
 
-    public static ReplyMarkupObject CampusKeyboard(string langCode)
+    public static ReplyMarkupObject CampusKeyboard(string langCode, bool withBackButton = true)
     {
         var campuses = Data.Enums.Campuses.Keys;
         var choices = new List<string>(campuses);
-        return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, true)), false);
+        return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, withBackButton)), false);
     }
 
     public const int DaysAmount = 30;

@@ -48,6 +48,7 @@ public static class MessageHandler
         }
         catch (TooManyRequestsException e)
         {
+            conversation.State = Data.Enums.ConversationState.START;
             await botClient.SendTextMessageAsync(message.From.Id,
                 new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
                     "en", "we are handling a large number of requests try again in a few minutes"),
@@ -101,7 +102,7 @@ public static class MessageHandler
                 return await StartKeyboard(botClient, message, messageText);
         }
 
-        markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
+        markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, true);
 
         replyLang = new L("it", "Seleziona un opzione valida", "en", "Select a valid option");
 
@@ -116,13 +117,13 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
         
-        ReplyMarkupObject markupObject;
+        ReplyMarkupObject? markupObject;
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date!);
         if (!classRooms.Contains(messageText))
         {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
+            markupObject = null;
 
             replyLang = new L("it", "Seleziona un'aula valida", "en", "Select a valid classroom");
 
@@ -165,12 +166,12 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
         
-        ReplyMarkupObject markupObject;
+        ReplyMarkupObject? markupObject;
         L replyLang;
         
         if (!int.TryParse(messageText, out var startHour) || startHour is < 8 or > 19)
         {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
+            markupObject = null;
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
 
@@ -195,12 +196,12 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
         
-        ReplyMarkupObject markupObject;
+        ReplyMarkupObject? markupObject;
         L replyLang;
         
         if (!int.TryParse(messageText, out var endHour) || endHour is < 9 or > 20)
         {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
+            markupObject = null;
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
 
@@ -248,7 +249,9 @@ public static class MessageHandler
 
         // try to parse the date and check if it less than 30 days in the future
 
-
+        if(await CheckIfNoCampus(conversation!, langCode!, botClient, message))
+            return null;
+        
         if (!DateTime.TryParse(messageText, out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
@@ -322,7 +325,7 @@ public static class MessageHandler
 
         if (!Data.Enums.Campuses.TryGetValue(messageText, out var campus))
         {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
+            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, true);
 
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
 
@@ -338,7 +341,6 @@ public static class MessageHandler
 
         replyLang = new L("it", "Sede selezionata", "en", "Campus selected");
 
-        conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null);
@@ -353,24 +355,31 @@ public static class MessageHandler
 
         ReplyMarkupObject markupObject;
         L replyLang;
-        if (conversation!.Campus == null)
-        {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
-
-            replyLang = new L("it", "Seleziona una sede", "en", "Select a campus");
-
-            conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
-        }
-
+        
         replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option")!;
         markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
-        conversation.State = Data.Enums.ConversationState.MAIN;
+        conversation!.State = Data.Enums.ConversationState.MAIN;
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null);
+    }
+
+    private static async Task<bool> CheckIfNoCampus(Conversation conversation, string langCode,TelegramBotAbstract botClient, Message message)
+    {
+        if (conversation!.Campus == null)
+        {
+            var markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, false);
+
+            var replyLang = new L("it", "Seleziona una sede", "en", "Select a campus");
+
+            conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
+            await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
+                ParseMode.Html,
+                markupObject, null);
+            return false;
+        }
+
+        return true;
     }
 }
