@@ -63,7 +63,15 @@ public class Fetcher
     public static string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
         var doc = FetchOccupationData(campus, dateTime);
-        return doc.DocumentNode.SelectSingleNode($"//div[.='{roomName}']")?.ToString();
+        foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
+        {
+            if (classNode.ChildNodes[1].InnerText == roomName)
+            {
+                return classNode.ToString();
+            }
+        }
+
+        return null;
     }
 
     private static HtmlDocument FetchOccupationData(string campus, DateTime dateTime)
