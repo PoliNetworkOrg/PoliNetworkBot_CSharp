@@ -42,7 +42,7 @@ public static class ReplyMarkupGenerator
 
     public static ReplyMarkupObject HourSelector(int firstHour, int lastHour)
     {
-        var hours = Enumerable.Range(firstHour, lastHour).ToArray();
+        var hours = Enumerable.Range(firstHour, lastHour-firstHour).ToArray();
         var choices = new List<string>(hours.Select(i => i.ToString()).ToArray());
         var options = new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, 1, true));
         return new ReplyMarkupObject(options, false);
