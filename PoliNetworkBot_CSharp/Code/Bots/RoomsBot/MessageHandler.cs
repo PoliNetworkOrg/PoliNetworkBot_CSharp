@@ -191,7 +191,7 @@ public static class MessageHandler
         var stream = new MemoryStream(encoding.GetBytes(fileString));
         PeerAbstract peer = new(message.From?.Id, message.Chat.Type);
 
-        var file = new TelegramFile(stream, "classroom.hml", replyLang, "text/plain",
+        var file = new TelegramFile(stream, "classroom.html", replyLang, "text/plain",
             TextAsCaption.AS_CAPTION);
         botClient.SendFileAsync(file, peer, message.From?.Username,
             message.From?.LanguageCode, null, true);

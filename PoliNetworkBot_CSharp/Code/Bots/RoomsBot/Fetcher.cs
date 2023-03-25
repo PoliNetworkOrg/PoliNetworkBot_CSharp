@@ -28,18 +28,9 @@ public class Fetcher
 
     public static string? GetRawOccupancies(string campus, DateTime dateTime)
     {
-        
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        var text =  parsedDoc.Nodes().Aggregate(@"<head>	<link rel=""stylesheet\""
-        href=""https://webcommons.polimi.it/webcommons/assets/ateneo2014.css.jsp?v=5&lang=it&dt_version=1.10""
-        type=""text/css"" />
-            <link rel=""stylesheet""
-        href=""https://webcommons.polimi.it/webcommons/ajax/libs/jqueryui/1.12.1/themes/polij.css.jsp?v=5&lang=it""
-        type=""text/css"" />
-            <link rel=""stylesheet"" href=""https://webcommons.polimi.it/webcommons/assets/desktop.css.jsp?v=5&lang=it""
-        type=""text/css"" /></head><body>", (current, node) => current + node.OuterHtml);
-        text += "</body>";
+        var text =  parsedDoc.Nodes().Aggregate(Data.Const.CssData, (current, node) => current + node.OuterHtml);
         return text;
     }
 
@@ -77,9 +68,11 @@ public class Fetcher
         {
             if (classNode.ChildNodes[1].InnerText == roomName)
             {
-                return classNode.ToString();
+                var text = Data.Const.CssData + "<body>" + classNode.OuterHtml + "</body>";
+                return text;
             }
         }
+        
 
         return null;
     }
