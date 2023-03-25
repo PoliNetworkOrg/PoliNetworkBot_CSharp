@@ -18,7 +18,7 @@ public static class ReplyMarkupGenerator
 
     public static ReplyMarkupObject CampusKeyboard(string langCode)
     {
-        var campuses = Data.Enums.Campuses.Values;
+        var campuses = Data.Enums.Campuses.Keys;
         var choices = new List<string>(campuses);
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, true)), false);
     }
