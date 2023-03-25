@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Utils;
@@ -148,7 +149,8 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        if (!classRooms.Contains(messageText))
+        var uglyClassRoomWLineBreaks = classRooms.Find((classRoom) => classRoom.Contains(messageText));
+        if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
             replyLang = new L("it", "Seleziona un'aula valida", "en", "Select a valid classroom");
@@ -159,7 +161,8 @@ public static class MessageHandler
 
         
         conversation.State = Data.Enums.ConversationState.START;
-        var fileString = Fetcher.GetSingleClassroom(conversation.Campus!, messageText, conversation.Date);
+        var fileString = Fetcher.GetSingleClassroom(conversation.Campus!, uglyClassRoomWLineBreaks, conversation.Date);
+        
         markupObject = ReplyMarkupGenerator.BackButton();
         replyLang = new L("it", "", "en", "");
 
@@ -321,8 +324,15 @@ public static class MessageHandler
                     markupObject, null);
             case Data.Enums.Function.FIND_CLASSROOM:
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
+                var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date).Select(
+                    classRoom => classRoom.Trim()
+                        .Replace("\n","")
+                        .Replace("\t","")
+                        .Replace("\r","")
+                        .Trim()).ToList();
+                
                 markupObject =
-                    ReplyMarkupGenerator.ClassroomsKeyboard(Fetcher.GetAllClassrooms(conversation.Campus!, date));
+                    ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
                 replyLang = new L("it", "seleziona un'aula", "en", "select a classroom");
 
                 return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
