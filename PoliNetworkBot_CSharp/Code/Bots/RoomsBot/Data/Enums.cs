@@ -1,11 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
+using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 
 public class Enums
 {
+    public enum ConversationState
+    {
+        START,
+        MAIN,
+        SELECT_CAMPUS,
+        SELECT_CLASSROOM,
+        SELECT_DATE,
+        SELECT_START_HOUR,
+        SELECT_END_HOUR,
+        END
+    }
+
+    public enum Function
+    {
+        OCCUPANCIES,
+        FREE_CLASSROOMS,
+        FIND_CLASSROOM,
+        SETTINGS
+    }
+
     public static readonly Dictionary<string, string> Campuses = new()
     {
         ["Como"] = "COE",
@@ -14,6 +35,22 @@ public class Enums
         ["Mantova"] = "MNI", 
         ["Milano Bovisa"] = "MIB",
         ["Milano Leonardo"] = "MIA"
+    };
+    
+    public static readonly Dictionary<string, Function> MainMenuOptionsToFunction = new()
+    {
+        ["Occupazione aule"] = Function.OCCUPANCIES,
+        ["Aule libere"] = Function.FREE_CLASSROOMS,
+        ["Trova aula"] = Function.FIND_CLASSROOM,
+        ["imposta preferenze"] = Function.SETTINGS
+    };
+
+    public static readonly Dictionary<string, Function> MainMenuOptionsToStateEn = new()
+    {
+        ["Classroom Occupancies"] = Function.OCCUPANCIES,
+        ["Free Classrooms"] = Function.FREE_CLASSROOMS,
+        ["Find Classroom"] = Function.FIND_CLASSROOM,
+        ["set defaults"] = Function.SETTINGS
     };
 
     public enum RoomType

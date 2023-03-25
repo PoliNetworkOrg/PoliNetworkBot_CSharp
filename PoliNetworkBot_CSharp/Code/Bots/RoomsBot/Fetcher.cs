@@ -25,7 +25,7 @@ public class Fetcher
     private static readonly Dictionary<string, Dictionary<DateTime, DateTime>> FetchCacheAge = new();
     private static readonly Dictionary<string, Dictionary<DateTime, HtmlDocument>> RawFetchedFile = new();
 
-    public static string? GetRawOccupancy(string campus, DateTime dateTime)
+    public static string? GetRawOccupancies(string campus, DateTime dateTime)
     {
         
         var parsedCampus = Data.Enums.GetCampusByName(campus);
@@ -34,7 +34,7 @@ public class Fetcher
         return parsedDoc?.ToString();
     }
 
-    private static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
+    public static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
     {
         var parsedCampus = Data.Enums.GetCampusByName(campus);
         var doc = FetchOccupationData(parsedCampus, dateTime);
@@ -57,12 +57,12 @@ public class Fetcher
         return toReturn;
     }
 
-    public List<string> GetAllClassrooms(string campus, DateTime dateTime)
+    public static List<string> GetAllClassrooms(string campus, DateTime dateTime)
     {
         return GetFreeClassrooms(campus, dateTime,8, 8);
     }
 
-    public string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
+    public static string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
         var parsedCampus = Data.Enums.GetCampusByName(campus);
         var doc = FetchOccupationData(parsedCampus, dateTime);
