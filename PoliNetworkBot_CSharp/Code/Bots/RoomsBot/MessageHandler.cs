@@ -267,7 +267,13 @@ public static class MessageHandler
                         markupObject, null);
                 }
 
-                var freeClassroomsString = string.Join("\n- ", freeClassrooms);
+                var fixedFreeClassRooms = freeClassrooms.Select(classRoom => classRoom.Trim()
+                    .Replace("\n", "")
+                    .Replace("\t", "")
+                    .Replace("\r", "")
+                    .Trim()).ToList();
+                
+                var freeClassroomsString = string.Join("\n- ", fixedFreeClassRooms);
                 var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
                              + freeClassroomsString;
                 var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
@@ -297,7 +303,6 @@ public static class MessageHandler
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
             markupObject = null;
-            var peer = new PeerAbstract(message.From.Id, ChatType.Private);
             replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
