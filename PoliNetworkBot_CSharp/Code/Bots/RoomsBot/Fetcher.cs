@@ -76,8 +76,9 @@ public class Fetcher
                 return RawFetchedFile[campus][dateTime];
             if(dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
                 CheckApiRateLimit();
-            var doc = new HtmlDocument();
+            var doc = new HtmlDocument(); 
             var web = new HtmlWeb();
+            Console.WriteLine("### Requested passed to API endpoint ###");
             doc = web.Load(Const.PolimiController + 
                            $"?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
                            $"&giorno_day={dateTime.Day}" +
