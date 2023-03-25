@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -30,6 +30,12 @@ public static class MessageHandler
 
         var messageText = message.Text!;
         //try catch block that handles the exceptions, when it's a TooManyRequestsException, it sedds a message to the user
+
+        if (messageText == "back")
+        {
+            conversation.State = Data.Enums.ConversationState.START;
+        }
+        
         try
         {
             var action = conversation.State switch
@@ -137,7 +143,7 @@ public static class MessageHandler
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
-        
+
         ReplyMarkupObject? markupObject;
         L replyLang;
 
@@ -182,14 +188,15 @@ public static class MessageHandler
             markupObject, null);
     }
 
-    private static async Task<MessageSentResult?> SelectStartHour(TelegramBotAbstract botClient, Message message, string messageText)
+    private static async Task<MessageSentResult?> SelectStartHour(TelegramBotAbstract botClient, Message message,
+        string messageText)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
-        
+
         ReplyMarkupObject? markupObject;
         L replyLang;
-        
+
         if (!int.TryParse(messageText, out var startHour) || startHour is < 8 or > 19)
         {
             markupObject = null;
@@ -199,9 +206,9 @@ public static class MessageHandler
                 ParseMode.Html,
                 markupObject, null);
         }
-        
+
         conversation!.StartHour = startHour;
-        
+
         conversation.State = Data.Enums.ConversationState.SELECT_END_HOUR;
         markupObject = ReplyMarkupGenerator.HourSelector(9, 20);
         replyLang = new L("it", "a che orario?", "en", "to what time?");
@@ -210,14 +217,15 @@ public static class MessageHandler
             markupObject, null);
     }
 
-    private static async Task<MessageSentResult?> SelectEndHour(TelegramBotAbstract botClient, Message message, string messageText)
+    private static async Task<MessageSentResult?> SelectEndHour(TelegramBotAbstract botClient, Message message,
+        string messageText)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
-        
+
         ReplyMarkupObject? markupObject;
         L replyLang;
-        
+
         if (!int.TryParse(messageText, out var endHour) || endHour is < 9 or > 20)
         {
             markupObject = null;
@@ -227,7 +235,7 @@ public static class MessageHandler
                 ParseMode.Html,
                 markupObject, null);
         }
-        
+
         conversation!.EndHour = endHour;
         conversation.State = Data.Enums.ConversationState.START;
         switch (conversation.CurrentFunction)
@@ -245,7 +253,7 @@ public static class MessageHandler
                         ParseMode.Html,
                         markupObject, null);
                 }
-                
+
                 //TODO: send message with free classrooms
                 return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
@@ -381,7 +389,7 @@ public static class MessageHandler
 
         ReplyMarkupObject markupObject;
         L replyLang;
-        
+
         replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option")!;
         markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
