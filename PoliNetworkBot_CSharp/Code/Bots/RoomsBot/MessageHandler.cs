@@ -76,8 +76,6 @@ public static class MessageHandler
             markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
 
             replyLang = new L("it", "Seleziona un opzione valida", "en", "Select a valid option");
-
-            conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
@@ -100,16 +98,9 @@ public static class MessageHandler
                 conversation.Campus = null;
                 conversation.State = Data.Enums.ConversationState.START;
                 return await StartKeyboard(botClient, message, messageText);
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, true);
-
-        replyLang = new L("it", "Seleziona un opzione valida", "en", "Select a valid option");
-
-        conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-        return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
     }
 
     private static async Task<MessageSentResult?> SelectClassRoom(TelegramBotAbstract botClient, Message message, string messageText)
@@ -174,8 +165,6 @@ public static class MessageHandler
             markupObject = null;
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
-
-            conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
@@ -204,8 +193,6 @@ public static class MessageHandler
             markupObject = null;
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
-
-            conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
@@ -244,7 +231,7 @@ public static class MessageHandler
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
-        ReplyMarkupObject markupObject;
+        ReplyMarkupObject? markupObject;
         L replyLang;
 
         // try to parse the date and check if it less than 30 days in the future
@@ -255,7 +242,7 @@ public static class MessageHandler
         if (!DateTime.TryParse(messageText, out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
-            markupObject = ReplyMarkupGenerator.DateKeyboard();
+            markupObject = null;
             var peer = new PeerAbstract(message.From.Id, ChatType.Private);
             replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
@@ -328,8 +315,6 @@ public static class MessageHandler
             markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, true);
 
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
-
-            conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
