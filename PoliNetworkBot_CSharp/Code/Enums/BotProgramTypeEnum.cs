@@ -13,7 +13,8 @@ public enum BotProgramTypeEnum
     PRIMO = 2,
     ANON = 3,
     MATERIALS = 4,
-    ADMIN = 5
+    ADMIN = 5,
+    ROOMS = 6
 }
 
 //see PoliNetworkBot_CSharp.Code.Data.Constants.BotStartMethods

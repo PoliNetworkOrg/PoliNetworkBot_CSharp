@@ -78,6 +78,8 @@ public class BotInfoAbstract
             botProgramType = BotProgramTypeEnum.ADMIN;
         else if (onMessages == BotStartMethods.Primo.Item1)
             botProgramType = BotProgramTypeEnum.PRIMO;
+        else if (onMessages == BotStartMethods.Rooms.Item1)
+            botProgramType = BotProgramTypeEnum.ROOMS;
         else
             botProgramType = null;
     }
