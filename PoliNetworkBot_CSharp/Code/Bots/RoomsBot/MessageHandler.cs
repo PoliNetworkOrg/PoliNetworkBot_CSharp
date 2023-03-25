@@ -236,7 +236,7 @@ public static class MessageHandler
 
         // try to parse the date and check if it less than 30 days in the future
 
-        if(await CheckIfNoCampus(conversation!, langCode!, botClient, message))
+        if(!await CheckIfHasCampus(conversation!, langCode!, botClient, message))
             return null;
         
         if (!DateTime.TryParse(messageText, out var date) ||
@@ -350,7 +350,7 @@ public static class MessageHandler
             markupObject, null);
     }
 
-    private static async Task<bool> CheckIfNoCampus(Conversation conversation, string langCode,TelegramBotAbstract botClient, Message message)
+    private static async Task<bool> CheckIfHasCampus(Conversation conversation, string langCode,TelegramBotAbstract botClient, Message message)
     {
         if (conversation!.Campus == null)
         {
