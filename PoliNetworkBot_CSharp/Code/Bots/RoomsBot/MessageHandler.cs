@@ -147,14 +147,11 @@ public static class MessageHandler
         ReplyMarkupObject? markupObject;
         L replyLang;
 
-        var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date!);
+        var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
         if (!classRooms.Contains(messageText))
         {
             markupObject = null;
-
             replyLang = new L("it", "Seleziona un'aula valida", "en", "Select a valid classroom");
-
-            conversation!.State = Data.Enums.ConversationState.SELECT_CAMPUS;
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
