@@ -28,16 +28,14 @@ public class Fetcher
     public static string? GetRawOccupancies(string campus, DateTime dateTime)
     {
         
-        var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus, dateTime);
+        var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
         return parsedDoc?.ToString();
     }
 
     public static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
     {
-        var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus, dateTime);
+        var doc = FetchOccupationData(campus, dateTime);
         var classroomRows = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
         var toReturn = new List<string>();
         foreach (var row in classroomRows)
@@ -64,8 +62,7 @@ public class Fetcher
 
     public static string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
-        var parsedCampus = Data.Enums.GetCampusByName(campus);
-        var doc = FetchOccupationData(parsedCampus, dateTime);
+        var doc = FetchOccupationData(campus, dateTime);
         return doc.DocumentNode.SelectSingleNode($"//div[.='{roomName}']")?.ToString();
     }
 
@@ -73,19 +70,26 @@ public class Fetcher
     {
         lock (Lock)
         {
-            if (DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime)
+            if (FetchCacheAge.ContainsKey(campus) 
+                && FetchCacheAge[campus].ContainsKey(dateTime) 
+                && (DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime))
                 return RawFetchedFile[campus][dateTime];
             if(dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
                 CheckApiRateLimit();
             var doc = new HtmlDocument();
-            doc.LoadHtml(Const.PolimiController + 
-                         $"/?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
-                         $"&giorno_day={dateTime.Day}" +
-                         $"&giorno_month={dateTime.Month}" +
-                         $"&giorno_year={dateTime.Year}" +
-                         $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
-            RawFetchedFile[campus][dateTime] = doc;
-            FetchCacheAge[campus][dateTime] = DateTime.Now;
+            var web = new HtmlWeb();
+            doc = web.Load(Const.PolimiController + 
+                           $"?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
+                           $"&giorno_day={dateTime.Day}" +
+                           $"&giorno_month={dateTime.Month}" +
+                           $"&giorno_year={dateTime.Year}" +
+                           $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
+            RawFetchedFile.Remove(campus);
+            RawFetchedFile.Add(campus, new Dictionary<DateTime, HtmlDocument>());
+            RawFetchedFile[campus].Add(dateTime, doc);
+            FetchCacheAge.Remove(campus);
+            FetchCacheAge.Add(campus, new Dictionary<DateTime, DateTime>());
+            FetchCacheAge[campus].Add(dateTime, DateTime.Now);
             Thread.Sleep(50);
             return doc;
         }

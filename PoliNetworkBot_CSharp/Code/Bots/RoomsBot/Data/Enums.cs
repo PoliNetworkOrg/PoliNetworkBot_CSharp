@@ -15,12 +15,12 @@ public class Enums
         SELECT_CLASSROOM,
         SELECT_DATE,
         SELECT_START_HOUR,
-        SELECT_END_HOUR,
-        END
+        SELECT_END_HOUR
     }
 
     public enum Function
     {
+        NULL_FUNCTION,
         OCCUPANCIES,
         FREE_CLASSROOMS,
         FIND_CLASSROOM,
