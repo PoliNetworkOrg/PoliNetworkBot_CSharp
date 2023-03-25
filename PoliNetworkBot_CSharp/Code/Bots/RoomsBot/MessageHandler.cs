@@ -28,43 +28,55 @@ public static class MessageHandler
             UserIdToConversation.Add(message.From.Id, conversation);
         }
 
-
-        var messageText = message.Text!;
-        //try catch block that handles the exceptions, when it's a TooManyRequestsException, it sedds a message to the user
-
-        if (messageText == "back")
-        {
-            conversation.State = Data.Enums.ConversationState.START;
-        }
-        
         try
         {
-            var action = conversation.State switch
+            var messageText = message.Text!;
+
+            if (messageText == "back")
             {
-                Data.Enums.ConversationState.START => StartKeyboard(botClient, message, messageText),
-                Data.Enums.ConversationState.MAIN => MainMenuKeyboard(botClient, message, messageText),
-                Data.Enums.ConversationState.SELECT_CAMPUS => SelectCampus(botClient, message, messageText),
-                Data.Enums.ConversationState.SELECT_DATE => SelectDate(botClient, message, messageText),
-                Data.Enums.ConversationState.SELECT_START_HOUR => SelectStartHour(botClient, message, messageText),
-                Data.Enums.ConversationState.SELECT_END_HOUR => SelectEndHour(botClient, message, messageText),
-                Data.Enums.ConversationState.SELECT_CLASSROOM => SelectClassRoom(botClient, message, messageText),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                conversation.State = Data.Enums.ConversationState.START;
+            }
 
-            await action;
+            try
+            {
+                var action = conversation.State switch
+                {
+                    Data.Enums.ConversationState.START => StartKeyboard(botClient, message, messageText),
+                    Data.Enums.ConversationState.MAIN => MainMenuKeyboard(botClient, message, messageText),
+                    Data.Enums.ConversationState.SELECT_CAMPUS => SelectCampus(botClient, message, messageText),
+                    Data.Enums.ConversationState.SELECT_DATE => SelectDate(botClient, message, messageText),
+                    Data.Enums.ConversationState.SELECT_START_HOUR => SelectStartHour(botClient, message, messageText),
+                    Data.Enums.ConversationState.SELECT_END_HOUR => SelectEndHour(botClient, message, messageText),
+                    Data.Enums.ConversationState.SELECT_CLASSROOM => SelectClassRoom(botClient, message, messageText),
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                await action;
+            }
+            catch (TooManyRequestsException e)
+            {
+                conversation.State = Data.Enums.ConversationState.START;
+                await botClient.SendTextMessageAsync(message.From.Id,
+                    new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
+                        "en", "we are handling a large number of requests try again in a few minutes"),
+                    ChatType.Private, message.From!.LanguageCode, ParseMode.Html,
+                    new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    null);
+            }
+
+            return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
         }
-        catch (TooManyRequestsException e)
+        catch (Exception exception)
         {
-            conversation.State = Data.Enums.ConversationState.START;
-            await botClient.SendTextMessageAsync(message.From.Id,
-                new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
-                    "en", "we are handling a large number of requests try again in a few minutes"),
-                ChatType.Private, message.From!.LanguageCode, ParseMode.Html,
-                new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                null);
+            Console.WriteLine(exception);
+            var errorText = new L("it", "E' avvenuto un errore interno al bot, riprova più tardi",
+                "en", "An internal error occurred in the bot, try again later");
+            await botClient.SendTextMessageAsync(message.From.Id, errorText, ChatType.Private,
+                message.From.LanguageCode,
+                ParseMode.Html,
+                null, null);
+            return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
         }
-
-        return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
     }
 
     private static async Task<MessageSentResult?> MainMenuKeyboard(TelegramBotAbstract botClient, Message message,
@@ -135,12 +147,13 @@ public static class MessageHandler
         _ = telegramBotAbstract.SendTextMessageAsync(message?.From!.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null);
-        
+
         conversation.CallbackNextFunction = conversationCurrentFunction;
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
     }
 
-    private static async Task<MessageSentResult?> SelectClassRoom(TelegramBotAbstract botClient, Message message, string messageText)
+    private static async Task<MessageSentResult?> SelectClassRoom(TelegramBotAbstract botClient, Message message,
+        string messageText)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
@@ -159,10 +172,10 @@ public static class MessageHandler
                 markupObject, null);
         }
 
-        
+
         conversation.State = Data.Enums.ConversationState.START;
         var fileString = Fetcher.GetSingleClassroom(conversation.Campus!, uglyClassRoomWLineBreaks, conversation.Date);
-        
+
         markupObject = ReplyMarkupGenerator.BackButton();
         replyLang = new L("it", "", "en", "");
 
@@ -242,11 +255,11 @@ public static class MessageHandler
         {
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.START;
-                var fileString = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!, conversation.StartHour!, conversation.EndHour!);
-                markupObject = ReplyMarkupGenerator.BackButton();
-                replyLang = new L("it", "", "en", "");
+                var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
+                    conversation.StartHour!, conversation.EndHour!);
 
-                if (fileString.Count == 0)
+                markupObject = ReplyMarkupGenerator.BackButton();
+                if (freeClassrooms.Count == 0)
                 {
                     replyLang = new L("it", "Errore interno", "en", "Internal error");
                     return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
@@ -254,7 +267,13 @@ public static class MessageHandler
                         markupObject, null);
                 }
 
-                //TODO: send message with free classrooms
+                var freeClassroomsString = string.Join("\n- ", freeClassrooms);
+                var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
+                             + freeClassroomsString;
+                var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
+                             + freeClassroomsString;
+                replyLang = new L("it", textIt, "en", textEn);
+
                 return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
                     markupObject, null);
@@ -273,7 +292,7 @@ public static class MessageHandler
         L replyLang;
 
         // try to parse the date and check if it less than 30 days in the future
-        
+
         if (!DateTime.TryParse(messageText, out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
@@ -326,11 +345,11 @@ public static class MessageHandler
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
                 var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date).Select(
                     classRoom => classRoom.Trim()
-                        .Replace("\n","")
-                        .Replace("\t","")
-                        .Replace("\r","")
+                        .Replace("\n", "")
+                        .Replace("\t", "")
+                        .Replace("\r", "")
                         .Trim()).ToList();
-                
+
                 markupObject =
                     ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
                 replyLang = new L("it", "seleziona un'aula", "en", "select a classroom");
@@ -361,6 +380,7 @@ public static class MessageHandler
                 ParseMode.Html,
                 markupObject, null);
         }
+
         conversation!.Campus = campus;
 
         switch (conversation!.CallbackNextFunction)
@@ -377,7 +397,7 @@ public static class MessageHandler
                 markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
                 break;
         }
-        
+
         replyLang = new L("it", "Sede selezionata", "en", "Campus selected");
 
         if (conversation.CallbackNextFunction == Data.Enums.Function.NULL_FUNCTION)
