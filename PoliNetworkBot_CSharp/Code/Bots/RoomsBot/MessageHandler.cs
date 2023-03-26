@@ -130,16 +130,14 @@ public static class MessageHandler
                     markupObject, null);
             case Data.Enums.Function.SETTINGS:
                 conversation.Campus = null;
-                conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-                return await StartKeyboard(botClient, message, messageText);
+                SendCampusKeyboard(botClient, message, conversation);
+                return null;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private static void ForceSelectCampus(TelegramBotAbstract telegramBotAbstract,
-        Data.Enums.Function conversationCurrentFunction, Message message,
-        Conversation conversation)
+    private static void SendCampusKeyboard(TelegramBotAbstract botClient, Message message, Conversation conversation)
     {
         var langCode = message?.From?.LanguageCode ?? "en";
         var markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode, false);
@@ -147,10 +145,16 @@ public static class MessageHandler
         var replyLang = new L("it", "Seleziona una sede", "en", "Select a campus");
 
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-        _ = telegramBotAbstract.SendTextMessageAsync(message?.From!.Id, replyLang, ChatType.Private, langCode,
+        _ = botClient.SendTextMessageAsync(message?.From!.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null);
+    }
 
+    private static void ForceSelectCampus(TelegramBotAbstract telegramBotAbstract,
+        Data.Enums.Function conversationCurrentFunction, Message message,
+        Conversation conversation)
+    {
+        SendCampusKeyboard(telegramBotAbstract, message, conversation);
         conversation.CallbackNextFunction = conversationCurrentFunction;
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
     }
@@ -194,7 +198,8 @@ public static class MessageHandler
         var stream = new MemoryStream(encoding.GetBytes(fileString));
         PeerAbstract peer = new(message.From?.Id, message.Chat.Type);
 
-        var file = new TelegramFile(stream, $"Classroom_{conversation.Date:dd-MM-yy}_{messageText}.html", replyLang, "text/plain",
+        var file = new TelegramFile(stream, $"Classroom_{conversation.Date:dd-MM-yy}_{messageText}.html", replyLang,
+            "text/plain",
             TextAsCaption.AS_CAPTION);
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
         conversation.State = Data.Enums.ConversationState.MAIN;
@@ -263,7 +268,8 @@ public static class MessageHandler
                 markupObject = null;
                 if (freeClassrooms?.Count == 0)
                 {
-                    replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en", "Internal error - No classrooms found in this campus");
+                    replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en",
+                        "Internal error - No classrooms found in this campus");
                     markupObject = ReplyMarkupGenerator.MainKeyboard(langCode ?? "en");
                     conversation.State = Data.Enums.ConversationState.MAIN;
                     return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
@@ -276,7 +282,7 @@ public static class MessageHandler
                     .Replace("\t", "")
                     .Replace("\r", "")
                     .Trim()).ToList() ?? new List<string?>();
-                
+
                 var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
                 var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
                              + freeClassroomsString;
@@ -303,7 +309,8 @@ public static class MessageHandler
 
         // try to parse the date and check if it less than 30 days in the future
 
-        if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ||
+        if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
             // Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
@@ -335,7 +342,8 @@ public static class MessageHandler
                 var stream = new MemoryStream(encoding.GetBytes(fileString));
                 PeerAbstract peer = new(message.From?.Id, message.Chat.Type);
 
-                var file = new TelegramFile(stream, $"Occupancies_{conversation.Date:dd-MM-yy}.html", replyLang, "text/plain",
+                var file = new TelegramFile(stream, $"Occupancies_{conversation.Date:dd-MM-yy}.html", replyLang,
+                    "text/plain",
                     TextAsCaption.AS_CAPTION);
                 var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
                 conversation.State = Data.Enums.ConversationState.MAIN;
@@ -353,10 +361,10 @@ public static class MessageHandler
                 if (classRooms?.Count > 0)
                 {
                     classRooms = classRooms.Select(classRoom => classRoom.Trim()
-                            .Replace("\n", "")
-                            .Replace("\t", "")
-                            .Replace("\r", "")
-                            .Trim()).ToList();
+                        .Replace("\n", "")
+                        .Replace("\t", "")
+                        .Replace("\r", "")
+                        .Trim()).ToList();
                 }
                 else
                 {
@@ -366,13 +374,14 @@ public static class MessageHandler
                 markupObject =
                     ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
                 replyLang = new L("it", "Seleziona un'aula", "en", "Select a classroom");
-                
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, langCode, ParseMode.Html,
+        return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, langCode,
+            ParseMode.Html,
             markupObject, null);
     }
 
