@@ -306,7 +306,7 @@ public static class MessageHandler
         if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
-            Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
+            // Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
             markupObject = null;
             replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
