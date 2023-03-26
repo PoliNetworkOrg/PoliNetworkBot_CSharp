@@ -29,4 +29,10 @@ public class Conversation
         ChatId = chatId;
         State = Data.Enums.ConversationState.START;
     }
+
+    public void ResetConversationFunctions()
+    {
+        CurrentFunction = Data.Enums.Function.NULL_FUNCTION;
+        CallbackNextFunction = Data.Enums.Function.NULL_FUNCTION;
+    }
 }

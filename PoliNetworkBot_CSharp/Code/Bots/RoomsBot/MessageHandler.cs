@@ -37,8 +37,7 @@ public static class MessageHandler
             if (messageText == "back")
             {
                 conversation.State = Data.Enums.ConversationState.START;
-                conversation.CurrentFunction = Data.Enums.Function.NULL_FUNCTION;
-                conversation.CallbackNextFunction = Data.Enums.Function.NULL_FUNCTION;
+                conversation.ResetConversationFunctions();
             }
 
             try
@@ -205,6 +204,7 @@ public static class MessageHandler
             TextAsCaption.AS_CAPTION);
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
         conversation.State = Data.Enums.ConversationState.MAIN;
+        conversation.ResetConversationFunctions();
         botClient.SendFileAsync(file, peer, message.From?.Username,
             message.From?.LanguageCode, null, true, replyMarkup);
         return null;
@@ -263,6 +263,7 @@ public static class MessageHandler
         switch (conversation.CurrentFunction)
         {
             case Data.Enums.Function.FREE_CLASSROOMS:
+                conversation.ResetConversationFunctions();
                 conversation.State = Data.Enums.ConversationState.START;
                 var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
                     conversation.StartHour!, conversation.EndHour!);
@@ -327,6 +328,7 @@ public static class MessageHandler
         switch (conversation.CurrentFunction)
         {
             case Data.Enums.Function.OCCUPANCIES:
+                conversation.ResetConversationFunctions();
                 conversation.State = Data.Enums.ConversationState.START;
                 var fileString = Fetcher.GetRawOccupancies(conversation.Campus!, date);
                 markupObject = ReplyMarkupGenerator.BackButton();
