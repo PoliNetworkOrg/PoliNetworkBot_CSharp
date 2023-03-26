@@ -183,7 +183,7 @@ internal static class Rooms
         return null;
     }
 
-    private static List<string?>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop)
+    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop)
     {
         if (table?.ChildNodes == null)
             return null;
@@ -191,12 +191,17 @@ internal static class Rooms
         var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
 
-        return (from child in table.ChildNodes
-            where child != null
-            select CheckIfFree(child, shiftStart, shiftEnd)
-            into toAdd
-            where !string.IsNullOrEmpty(toAdd)
-            select toAdd).ToList();
+        List<string> list = new();
+        foreach (var child in table.ChildNodes)
+        {
+            if (child != null)
+            {
+                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
+                if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
+            }
+        }
+
+        return list;
     }
 
     /// <summary>

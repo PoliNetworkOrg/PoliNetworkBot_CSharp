@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
@@ -34,31 +36,17 @@ public class Fetcher
         return text;
     }
 
-    public static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
+    public static List<string>? GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
     {
         var doc = FetchOccupationData(campus, dateTime);
-        var classroomRows = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
-        var toReturn = new List<string>();
-        if (classroomRows == null)
-            return toReturn;
-        foreach (var row in classroomRows)
-        {
-            var freeClassroom = true;
-            for (var i = 2 + startingTime - 8; i < row.OuterLength && i < 2 + endingTime - 8; i++)
-            {
-                if (!row.ChildNodes[i].HasClass("slot")) continue;
-                freeClassroom = false;
-                break;
-            }
-            if (!freeClassroom) continue;
-            var roomName = row.ChildNodes[1].InnerText;
-            toReturn.Add(roomName);
-        }
+        var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
 
-        return toReturn;
+        var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
+
+        return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime), dateTime.AddHours(endingTime));
     }
 
-    public static List<string> GetAllClassrooms(string campus, DateTime dateTime)
+    public static List<string>? GetAllClassrooms(string campus, DateTime dateTime)
     {
         return GetFreeClassrooms(campus, dateTime,8, 8);
     }

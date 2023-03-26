@@ -165,7 +165,7 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        var uglyClassRoomWLineBreaks = classRooms.Find((classRoom) => classRoom.Contains(messageText));
+        var uglyClassRoomWLineBreaks = classRooms?.Find((classRoom) => classRoom?.Contains(messageText) ?? false);
         if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
@@ -226,7 +226,7 @@ public static class MessageHandler
 
         conversation.State = Data.Enums.ConversationState.SELECT_END_HOUR;
         markupObject = ReplyMarkupGenerator.HourSelector(9, 20);
-        replyLang = new L("it", "a che orario?", "en", "to what time?");
+        replyLang = new L("it", "A che orario?", "en", "To what time?");
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null);
@@ -261,7 +261,7 @@ public static class MessageHandler
                     conversation.StartHour!, conversation.EndHour!);
 
                 markupObject = null;
-                if (freeClassrooms.Count == 0)
+                if (freeClassrooms?.Count == 0)
                 {
                     replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en", "Internal error - No classrooms found in this campus");
                     markupObject = ReplyMarkupGenerator.MainKeyboard(langCode ?? "en");
@@ -271,13 +271,13 @@ public static class MessageHandler
                         markupObject, null);
                 }
 
-                var fixedFreeClassRooms = freeClassrooms.Select(classRoom => classRoom.Trim()
+                var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom?.Trim()
                     .Replace("\n", "")
                     .Replace("\t", "")
                     .Replace("\r", "")
-                    .Trim()).ToList();
+                    .Trim()).ToList() ?? new List<string?>();
                 
-                var freeClassroomsString = string.Join("\n- ", fixedFreeClassRooms);
+                var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
                 var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
                              + freeClassroomsString;
                 var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
@@ -345,12 +345,12 @@ public static class MessageHandler
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.SELECT_START_HOUR;
                 markupObject = ReplyMarkupGenerator.HourSelector(8, 19);
-                replyLang = new L("it", "da che orario?", "en", "from what time?");
+                replyLang = new L("it", "Da che orario?", "en", "From what time?");
                 break;
             case Data.Enums.Function.FIND_CLASSROOM:
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
                 var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date);
-                if (classRooms.Count > 0)
+                if (classRooms?.Count > 0)
                 {
                     classRooms = classRooms.Select(classRoom => classRoom.Trim()
                             .Replace("\n", "")
@@ -360,12 +360,12 @@ public static class MessageHandler
                 }
                 else
                 {
-                    classRooms.Add("No classrooms available");
+                    classRooms = new List<string> { "No classrooms available" };
                 }
 
                 markupObject =
                     ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
-                replyLang = new L("it", "seleziona un'aula", "en", "select a classroom");
+                replyLang = new L("it", "Seleziona un'aula", "en", "Select a classroom");
                 
                 break;
             default:
