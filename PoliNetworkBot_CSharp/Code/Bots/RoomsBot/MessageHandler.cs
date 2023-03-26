@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -302,7 +303,7 @@ public static class MessageHandler
 
         // try to parse the date and check if it less than 30 days in the future
 
-        if (!DateTime.TryParse(messageText, out var date) ||
+        if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ||
             date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
         {
             Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
