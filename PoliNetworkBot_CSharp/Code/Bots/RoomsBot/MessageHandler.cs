@@ -112,7 +112,7 @@ public static class MessageHandler
 
             conversation!.CurrentFunction = function;
 
-            if (conversation!.Campus == null)
+            if (conversation!.Campus == null && function != Data.Enums.Function.SETTINGS)
             {
                 ForceSelectCampus(botClient, conversation.CurrentFunction, message, conversation);
                 return null;
@@ -417,7 +417,6 @@ public static class MessageHandler
                 conversation.CurrentFunction = conversation.CallbackNextFunction;
                 break;
             default:
-                conversation.CallbackNextFunction = Data.Enums.Function.NULL_FUNCTION;
                 conversation.State = Data.Enums.ConversationState.MAIN;
                 markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
                 break;

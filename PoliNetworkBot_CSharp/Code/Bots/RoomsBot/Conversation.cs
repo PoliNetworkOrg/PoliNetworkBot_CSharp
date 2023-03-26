@@ -1,5 +1,4 @@
 ﻿using System;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
@@ -14,11 +13,7 @@ public class Conversation
     public Data.Enums.ConversationState State
     {
         get => _state;
-        set
-        {
-            Logger.WriteLine("changed state to => " + value);
-            _state = value;
-        }
+        set => _state = value;
     }
 
     public long ChatId { get; set; }
