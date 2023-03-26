@@ -56,7 +56,7 @@ public class Fetcher
         var doc = FetchOccupationData(campus, dateTime);
         foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
         {
-            if (classNode.ChildNodes[1].InnerText == roomName)
+            if (classNode.ChildNodes[1].InnerText.Contains(roomName))
             {
                 var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
                 return text;
