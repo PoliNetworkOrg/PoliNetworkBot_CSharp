@@ -16,7 +16,7 @@ public static class RunningUtil
         }
         catch
         {
-            // ignored
+            ;
         }
 
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);

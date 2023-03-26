@@ -18,6 +18,7 @@ public static class BotStartMethods
     public static readonly Tuple<string, int> Anon = new("a", 3);
     public static readonly Tuple<string, int> Material = new("mat", 4);
     public static readonly Tuple<string, int> Admin = new("ad", 5);
+    public static readonly Tuple<string, int> Rooms = new("au", 6);
 
     internal static ActionMessageEvent GetMethodFromString(string? s)
     {
@@ -30,6 +31,8 @@ public static class BotStartMethods
             x = MainAnon.MainMethod;
         else if (s == Material.Item1)
             x = Program.BotClient_OnMessageAsync;
+        else if (s == Rooms.Item1)
+            x = Bots.RoomsBot.RoomsBot.MainMethod;
 
         return new ActionMessageEvent(x);
     }

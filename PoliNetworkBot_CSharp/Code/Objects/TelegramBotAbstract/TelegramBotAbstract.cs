@@ -349,9 +349,8 @@ public class TelegramBotAbstract
         return false;
     }
 
-    internal async Task<bool> PromoteChatMember(TelegramUser userIdInput, ChatId chatId, long? accessHashChat)
+    internal async Task<bool> PromoteChatMember(TLInputUser userIdInput, ChatId chatId, long? accessHashChat)
     {
-        var id = userIdInput.Id;
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -359,15 +358,8 @@ public class TelegramBotAbstract
                 try
                 {
                     if (_botClient != null)
-                        if (id != null)
-                            await _botClient.PromoteChatMemberAsync(
-                                chatId, id.Value, 
-                                null, true, 
-                                true, true,
-                                true, true, 
-                                true, true, 
-                                true, true, 
-                                true);
+                        await _botClient.PromoteChatMemberAsync(chatId, userIdInput.UserId, true, true, true, true,
+                            true, true, true, true);
                 }
                 catch (Exception? e)
                 {
@@ -385,11 +377,10 @@ public class TelegramBotAbstract
                     TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
 
                     if (UserbotClient != null)
-                        if (id != null)
-                            await UserbotClient.ChannelsEditAdmin(
-                                UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
-                                new TLInputUser { UserId = (int)id.Value, AccessHash = userIdInput.AccessHash },
-                                role);
+                        await UserbotClient.ChannelsEditAdmin(
+                            UserbotPeer.GetPeerChannelFromIdAndType(chatId.Identifier, accessHashChat),
+                            userIdInput,
+                            role);
                 }
                 catch (Exception? e)
                 {
@@ -1179,10 +1170,12 @@ public class TelegramBotAbstract
     }
 
     internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
-        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
-        ParseMode parseModeCaption = ParseMode.Html)
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink, 
+        ReplyMarkupObject? replyMarkupObject = null, ParseMode parseModeCaption = ParseMode.Html)
     {
         var textToSend = GetTextToSend(lang, documentInput);
+        IReplyMarkup? reply = null;
+        if (replyMarkupObject != null) reply = replyMarkupObject.GetReplyMarkupBot();
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
@@ -1201,7 +1194,7 @@ public class TelegramBotAbstract
 
 
                         _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null,
-                            textToSend, parseModeCaption).Result;
+                            textToSend, parseModeCaption, replyMarkup:reply).Result;
 
                         return true;
                     }
@@ -1212,7 +1205,7 @@ public class TelegramBotAbstract
                             return true;
 
                         if (textToSend != null)
-                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup:reply).Result;
 
 
                         if (inputOnlineFile != null)
@@ -1231,7 +1224,7 @@ public class TelegramBotAbstract
                                 .Result;
 
                         if (textToSend != null)
-                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption).Result;
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup:reply).Result;
 
 
                         return true;

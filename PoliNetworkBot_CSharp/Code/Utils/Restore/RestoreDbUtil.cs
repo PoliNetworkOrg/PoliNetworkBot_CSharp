@@ -145,7 +145,10 @@ public static class RestoreDbUtil
             return null;
 
         var x = JsonConvert.DeserializeObject<DbBackupDdl?>(s);
-        return x == null ? null : restoredb_ddl_FromData(x);
+        if (x == null)
+            return null;
+
+        return restoredb_ddl_FromData(x);
     }
 
     private static ActionDoneReport restoredb_ddl_FromData(DbBackupDdl? x)

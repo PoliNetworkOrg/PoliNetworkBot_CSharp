@@ -11,7 +11,6 @@ public class TelegramUser
 {
     private readonly string? _username;
     public readonly long? Id;
-    public long AccessHash;
 
     public TelegramUser(string? v)
     {
