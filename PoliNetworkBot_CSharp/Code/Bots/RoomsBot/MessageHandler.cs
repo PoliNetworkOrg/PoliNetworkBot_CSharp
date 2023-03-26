@@ -44,7 +44,7 @@ public static class MessageHandler
                 var action = conversation.State switch
                 {
                     Data.Enums.ConversationState.START => StartKeyboard(botClient, message, messageText),
-                    Data.Enums.ConversationState.MAIN => MainMenuKeyboard(botClient, message, messageText),
+                    Data.Enums.ConversationState.MAIN => MainMenu(botClient, message, messageText),
                     Data.Enums.ConversationState.SELECT_CAMPUS => SelectCampus(botClient, message, messageText),
                     Data.Enums.ConversationState.SELECT_DATE => SelectDate(botClient, message, messageText),
                     Data.Enums.ConversationState.SELECT_START_HOUR => SelectStartHour(botClient, message, messageText),
@@ -82,7 +82,7 @@ public static class MessageHandler
         }
     }
 
-    private static async Task<MessageSentResult?> MainMenuKeyboard(TelegramBotAbstract botClient, Message message,
+    private static async Task<MessageSentResult?> MainMenu(TelegramBotAbstract botClient, Message message,
         string messageText, Data.Enums.Function? callbackFunction = null)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
@@ -130,7 +130,7 @@ public static class MessageHandler
                     markupObject, null);
             case Data.Enums.Function.SETTINGS:
                 conversation.Campus = null;
-                conversation.State = Data.Enums.ConversationState.START;
+                conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
                 return await StartKeyboard(botClient, message, messageText);
             default:
                 throw new ArgumentOutOfRangeException();
@@ -416,7 +416,7 @@ public static class MessageHandler
         if (conversation.CallbackNextFunction == Data.Enums.Function.NULL_FUNCTION)
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html, markupObject, null);
-        await MainMenuKeyboard(botClient, message, "", conversation.CallbackNextFunction);
+        await MainMenu(botClient, message, "", conversation.CallbackNextFunction);
         return null;
     }
 
@@ -427,11 +427,8 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
 
-        ReplyMarkupObject markupObject;
-        L replyLang;
-
-        replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option")!;
-        markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
+        var replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option")!;
+        var markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
         conversation!.State = Data.Enums.ConversationState.MAIN;
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
