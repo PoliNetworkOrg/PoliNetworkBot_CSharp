@@ -417,7 +417,7 @@ public static class MessageHandler
                 conversation.CurrentFunction = conversation.CallbackNextFunction;
                 break;
             default:
-                conversation.State = Data.Enums.ConversationState.START;
+                conversation.State = Data.Enums.ConversationState.MAIN;
                 markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
                 break;
         }
