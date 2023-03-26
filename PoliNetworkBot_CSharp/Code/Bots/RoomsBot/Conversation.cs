@@ -18,7 +18,7 @@ public class Conversation
 
     public long ChatId { get; set; }
     public DateTime Date { get; set; }
-    public Data.Enums.Function CurrentFunction { get; set; }
+    public Data.Enums.Function CurrentFunction { get; set; } = Data.Enums.Function.NULL_FUNCTION;
     public Data.Enums.Function CallbackNextFunction { get; set; } = Data.Enums.Function.NULL_FUNCTION;
     public string? Campus { get; set; }
     public int StartHour { get; set; }

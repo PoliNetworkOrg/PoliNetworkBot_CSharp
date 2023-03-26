@@ -37,6 +37,8 @@ public static class MessageHandler
             if (messageText == "back")
             {
                 conversation.State = Data.Enums.ConversationState.START;
+                conversation.CurrentFunction = Data.Enums.Function.NULL_FUNCTION;
+                conversation.CallbackNextFunction = Data.Enums.Function.NULL_FUNCTION;
             }
 
             try
