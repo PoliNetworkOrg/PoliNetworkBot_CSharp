@@ -14,7 +14,7 @@ public static class ReplyMarkupGenerator
         // filter out the main menu options that are not available in the current language
         var choices = langCode == "it" ? new List<string>(Data.Enums.MainMenuOptionsToFunction.Keys) : new List<string>(Data.Enums.MainMenuOptionsToStateEn.Keys);
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, false)), false);
-    }
+    } 
 
     public static ReplyMarkupObject CampusKeyboard(string langCode, bool withBackButton = true)
     {
@@ -63,7 +63,7 @@ public static class ReplyMarkupGenerator
     /// <returns>Generated ReplyKeyboardMarkup.</returns>
     public static List<List<KeyboardButton?>> GenerateKeyboardMarkup(List<string> items, bool hasBackButton)
     {
-        const int maxCharsPerRow = 87;
+        const int maxCharsPerRow = 40;
         const int maxItemsPerRow = 3;
         var buttons = new List<List<KeyboardButton?>>();
         if (hasBackButton)
