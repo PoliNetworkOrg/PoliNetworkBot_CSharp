@@ -117,9 +117,9 @@ jobs:
           azPSVersion: "latest"
           
       - name: Update image name in manifest file
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/dev' }}
         env:
-          DOCKER_REPO: 'prod'
+          DOCKER_REPO: 'dev'
           STAGE_ENV: 'rooms'
         uses: azure/powershell@v1
         with:
