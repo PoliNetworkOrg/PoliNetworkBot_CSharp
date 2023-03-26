@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -48,13 +49,14 @@ public static class MessageHandler
                     Data.Enums.ConversationState.SELECT_START_HOUR => SelectStartHour(botClient, message, messageText),
                     Data.Enums.ConversationState.SELECT_END_HOUR => SelectEndHour(botClient, message, messageText),
                     Data.Enums.ConversationState.SELECT_CLASSROOM => SelectClassRoom(botClient, message, messageText),
-                    _ => throw new ArgumentOutOfRangeException()
+                    _ => StartKeyboard(botClient, message, messageText)
                 };
 
                 await action;
             }
             catch (TooManyRequestsException e)
             {
+                Logger.WriteLine(e);
                 conversation.State = Data.Enums.ConversationState.START;
                 await botClient.SendTextMessageAsync(message.From.Id,
                     new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
@@ -68,7 +70,7 @@ public static class MessageHandler
         }
         catch (Exception exception)
         {
-            Console.WriteLine(exception);
+            Logger.WriteLine(exception);
             var errorText = new L("it", "E' avvenuto un errore interno al bot, riprova più tardi",
                 "en", "An internal error occurred in the bot, try again later");
             await botClient.SendTextMessageAsync(message.From.Id, errorText, ChatType.Private,
@@ -191,14 +193,13 @@ public static class MessageHandler
         var stream = new MemoryStream(encoding.GetBytes(fileString));
         PeerAbstract peer = new(message.From?.Id, message.Chat.Type);
 
-        var file = new TelegramFile(stream, "classroom.html", replyLang, "text/plain",
+        var file = new TelegramFile(stream, $"Classroom_{conversation.Date:dd-MM-yy}_{messageText}.html", replyLang, "text/plain",
             TextAsCaption.AS_CAPTION);
+        var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
+        conversation.State = Data.Enums.ConversationState.MAIN;
         botClient.SendFileAsync(file, peer, message.From?.Username,
-            message.From?.LanguageCode, null, true);
-
-        return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
+            message.From?.LanguageCode, null, true, replyMarkup);
+        return null;
     }
 
     private static async Task<MessageSentResult?> SelectStartHour(TelegramBotAbstract botClient, Message message,
@@ -261,7 +262,9 @@ public static class MessageHandler
                 markupObject = null;
                 if (freeClassrooms.Count == 0)
                 {
-                    replyLang = new L("it", "Errore interno", "en", "Internal error");
+                    replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en", "Internal error - No classrooms found in this campus");
+                    markupObject = ReplyMarkupGenerator.MainKeyboard(langCode ?? "en");
+                    conversation.State = Data.Enums.ConversationState.MAIN;
                     return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                         ParseMode.Html,
                         markupObject, null);
@@ -279,11 +282,11 @@ public static class MessageHandler
                 var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
                              + freeClassroomsString;
                 replyLang = new L("it", textIt, "en", textEn);
-
+                conversation.State = Data.Enums.ConversationState.MAIN;
+                var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
                 return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
-                    markupObject, null, splitMessage: true);
-                break;
+                    replyMarkup, null, splitMessage: true);
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -330,42 +333,45 @@ public static class MessageHandler
                 var stream = new MemoryStream(encoding.GetBytes(fileString));
                 PeerAbstract peer = new(message.From?.Id, message.Chat.Type);
 
-                var file = new TelegramFile(stream, "occupancies.html", replyLang, "text/plain",
+                var file = new TelegramFile(stream, $"Occupancies_{conversation.Date:dd-MM-yy}.html", replyLang, "text/plain",
                     TextAsCaption.AS_CAPTION);
+                var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
+                conversation.State = Data.Enums.ConversationState.MAIN;
                 botClient.SendFileAsync(file, peer, message.From?.Username,
-                    message.From?.LanguageCode, null, true);
-
-                return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+                    message.From?.LanguageCode, null, true, replyMarkup);
+                return null;
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.SELECT_START_HOUR;
                 markupObject = ReplyMarkupGenerator.HourSelector(8, 19);
                 replyLang = new L("it", "da che orario?", "en", "from what time?");
-
-                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+                break;
             case Data.Enums.Function.FIND_CLASSROOM:
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
-                var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date).Select(
-                    classRoom => classRoom.Trim()
-                        .Replace("\n", "")
-                        .Replace("\t", "")
-                        .Replace("\r", "")
-                        .Trim()).ToList();
+                var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date);
+                if (classRooms.Count > 0)
+                {
+                    classRooms = classRooms.Select(classRoom => classRoom.Trim()
+                            .Replace("\n", "")
+                            .Replace("\t", "")
+                            .Replace("\r", "")
+                            .Trim()).ToList();
+                }
+                else
+                {
+                    classRooms.Add("No classrooms available");
+                }
 
                 markupObject =
                     ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
                 replyLang = new L("it", "seleziona un'aula", "en", "select a classroom");
-
-                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+                
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, langCode, ParseMode.Html,
+            markupObject, null);
     }
 
     private static async Task<MessageSentResult?> SelectCampus(TelegramBotAbstract botClient, Message message,
@@ -414,7 +420,7 @@ public static class MessageHandler
 
 
     private static async Task<MessageSentResult?> StartKeyboard(TelegramBotAbstract botClient, Message message,
-        string choice)
+        string? choice)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;

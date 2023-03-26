@@ -5,7 +5,16 @@ public class Const
     public const string PolimiController =
         "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do";
 
-    public const string CssData = @"
+    public const string HtmlTableInit = @"
+<div id=""tableContainer"" class=""tableContainer"">
+	<table padding=""0"" spacing=""0"" class=""scrollTable"" style=""table-layout: fixed; width: 100%;"">				
+			<tbody class=""scrollContent"">";
+    public const string HtmlTableEnd = @"</tbody></table></div>";
+
+    public const string HtmlClockLine = @"
+<tr><td class=""innerDataDove"">Data</td><td class=""innerDataDove"">Dove</td><td class=""innerOrario"" colspan=""2""></td><td class=""innerOrario"" colspan=""4"">09:00</td><td class=""innerOrario"" colspan=""4"">10:00</td><td class=""innerOrario"" colspan=""4"">11:00</td><td class=""innerOrario"" colspan=""4"">12:00</td><td class=""innerOrario"" colspan=""4"">13:00</td><td class=""innerOrario"" colspan=""4"">14:00</td><td class=""innerOrario"" colspan=""4"">15:00</td><td class=""innerOrario"" colspan=""4"">16:00</td><td class=""innerOrario"" colspan=""4"">17:00</td><td class=""innerOrario"" colspan=""4"">18:00</td><td class=""innerOrario"" colspan=""4"">19:00</td><td class=""innerOrario"" colspan=""4"">20:00</td><td class=""innerOrario"" colspan=""2""></td></tr>";
+
+    public const string CssStyles = @"
 <head>
 <style>
 body {

@@ -29,12 +29,13 @@ public class Enums
 
     public static readonly Dictionary<string, string> Campuses = new()
     {
+        ["Milano Leonardo"] = "MIA",
+        ["Milano Bovisa"] = "MIB",
         ["Como"] = "COE",
         ["Cremona"] = "CRG",
         ["Lecco"] = "LCF",
         ["Mantova"] = "MNI", 
-        ["Milano Bovisa"] = "MIB",
-        ["Milano Leonardo"] = "MIA"
+        
     };
     
     public static readonly Dictionary<string, Function> MainMenuOptionsToFunction = new()

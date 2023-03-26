@@ -30,7 +30,7 @@ public class Fetcher
     {
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        var text =  parsedDoc.Nodes().Aggregate(Data.Const.CssData, (current, node) => current + node.OuterHtml);
+        var text =  parsedDoc.Nodes().Aggregate(Data.Const.CssStyles, (current, node) => current + node.OuterHtml);
         return text;
     }
 
@@ -39,6 +39,8 @@ public class Fetcher
         var doc = FetchOccupationData(campus, dateTime);
         var classroomRows = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
         var toReturn = new List<string>();
+        if (classroomRows == null)
+            return toReturn;
         foreach (var row in classroomRows)
         {
             var freeClassroom = true;
@@ -68,7 +70,7 @@ public class Fetcher
         {
             if (classNode.ChildNodes[1].InnerText == roomName)
             {
-                var text = Data.Const.CssData + "<body>" + classNode.OuterHtml + "</body>";
+                var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
                 return text;
             }
         }
