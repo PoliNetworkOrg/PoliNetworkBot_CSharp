@@ -232,7 +232,7 @@ public static class MessageHandler
         conversation!.StartHour = startHour;
 
         conversation.State = Data.Enums.ConversationState.SELECT_END_HOUR;
-        markupObject = ReplyMarkupGenerator.HourSelector(9, 20);
+        markupObject = ReplyMarkupGenerator.HourSelector(startHour, 20);
         replyLang = new L("it", "A che orario?", "en", "To what time?");
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
@@ -247,8 +247,8 @@ public static class MessageHandler
 
         ReplyMarkupObject? markupObject;
         L replyLang;
-
-        if (!int.TryParse(messageText, out var endHour) || endHour is < 9 or > 20)
+        
+        if (!int.TryParse(messageText, out var endHour) || endHour < conversation!.StartHour || endHour > 20)
         {
             markupObject = null;
 
