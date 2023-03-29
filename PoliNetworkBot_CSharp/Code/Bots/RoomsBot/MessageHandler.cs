@@ -430,7 +430,6 @@ public static class MessageHandler
 
         switch (conversation!.CallbackNextFunction)
         {
-            case Data.Enums.Function.NULL_FUNCTION:
             case Data.Enums.Function.FREE_CLASSROOMS_NOW:
             case Data.Enums.Function.OCCUPANCIES:
             case Data.Enums.Function.ROOM_OCCUPANCY:
@@ -439,6 +438,7 @@ public static class MessageHandler
                 markupObject = null;
                 conversation.CurrentFunction = conversation.CallbackNextFunction;
                 break;
+            case Data.Enums.Function.NULL_FUNCTION:
             case Data.Enums.Function.SETTINGS:
             default:
                 conversation.State = Data.Enums.ConversationState.MAIN;
@@ -448,7 +448,7 @@ public static class MessageHandler
 
         replyLang = new L("it", "Sede selezionata", "en", "Campus selected");
 
-        if (conversation.CallbackNextFunction == Data.Enums.Function.NULL_FUNCTION)
+        if (conversation.CallbackNextFunction is Data.Enums.Function.NULL_FUNCTION or Data.Enums.Function.SETTINGS)
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html, markupObject, null);
         await MainMenu(botClient, message, "", conversation.CallbackNextFunction);
