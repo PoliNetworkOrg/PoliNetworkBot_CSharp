@@ -44,7 +44,7 @@ public class Fetcher
 
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
 
-        return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime).AddMinutes(15), dateTime.AddHours(endingTime).AddMinutes(15));
+        return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime), dateTime.AddHours(endingTime), 1);
     }
     
     
