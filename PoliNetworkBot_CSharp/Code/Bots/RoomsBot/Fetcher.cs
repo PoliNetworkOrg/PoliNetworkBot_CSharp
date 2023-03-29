@@ -32,11 +32,11 @@ public class Fetcher
     {
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        var text =  parsedDoc.Nodes().Aggregate(Data.Const.CssStyles, (current, node) => current + node.OuterHtml);
+        var text =  parsedDoc.Nodes().Aggregate(Const.CssStyles, (current, node) => current + node.OuterHtml);
         return text;
     }
 
-    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, int startingTime, int endingTime)
+    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, double startingTime, double endingTime)
     {
         var dateTime = rawDateTime.Date;
         var doc = FetchOccupationData(campus, dateTime.Date);
@@ -46,6 +46,8 @@ public class Fetcher
 
         return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime), dateTime.AddHours(endingTime));
     }
+    
+    
 
     public static List<string>? GetAllClassrooms(string campus, DateTime dateTime)
     {

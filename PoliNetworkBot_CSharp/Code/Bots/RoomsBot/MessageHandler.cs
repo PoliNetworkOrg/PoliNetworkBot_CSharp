@@ -249,14 +249,11 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
 
-        ReplyMarkupObject? markupObject;
-        L replyLang;
-        
         if (!int.TryParse(messageText, out var endHour) || endHour < conversation!.StartHour || endHour > 20)
         {
-            markupObject = null;
+            ReplyMarkupObject? markupObject = null;
 
-            replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
+            var replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
                 markupObject, null);
@@ -264,21 +261,20 @@ public static class MessageHandler
 
         conversation!.EndHour = endHour;
         conversation.State = Data.Enums.ConversationState.START;
-        switch (conversation.CurrentFunction)
+        return conversation.CurrentFunction switch
         {
-            case Data.Enums.Function.FREE_CLASSROOMS:
-                return await SendFreeClassrooms(conversation, message, botClient);
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+            Data.Enums.Function.FREE_CLASSROOMS => await SendFreeClassrooms(conversation, message, botClient),
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     private static async Task<MessageSentResult?> SendFreeClassrooms(Conversation conversation, Message message, TelegramBotAbstract botClient)
     {
         conversation.ResetConversationFunctions();
         conversation.State = Data.Enums.ConversationState.START;
+        // fetching classrooms and adding necessary quarter of an hour to start and end hours
         var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
-            conversation.StartHour!, conversation.EndHour!);
+            conversation.StartHour + 0.25, conversation.EndHour + 0.25);
 
         L? replyLang;
         if (freeClassrooms?.Count == 0)
