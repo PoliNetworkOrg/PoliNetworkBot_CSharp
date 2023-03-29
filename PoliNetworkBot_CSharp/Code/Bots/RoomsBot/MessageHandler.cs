@@ -274,7 +274,7 @@ public static class MessageHandler
         conversation.State = Data.Enums.ConversationState.START;
         // fetching classrooms and adding necessary quarter of an hour to start and end hours
         var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
-            conversation.StartHour + 0.25, conversation.EndHour + 0.25);
+            conversation.StartHour, conversation.EndHour);
 
         L? replyLang;
         if (freeClassrooms?.Count == 0)
