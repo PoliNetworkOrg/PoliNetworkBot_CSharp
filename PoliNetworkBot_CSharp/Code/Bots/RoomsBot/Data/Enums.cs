@@ -23,8 +23,9 @@ public class Enums
         NULL_FUNCTION,
         OCCUPANCIES,
         FREE_CLASSROOMS,
-        FIND_CLASSROOM,
-        SETTINGS
+        ROOM_OCCUPANCY,
+        SETTINGS,
+        FREE_CLASSROOMS_NOW
     }
 
     public static readonly Dictionary<string, string> Campuses = new()
@@ -40,18 +41,20 @@ public class Enums
     
     public static readonly Dictionary<string, Function> MainMenuOptionsToFunction = new()
     {
-        ["Occupazione aule"] = Function.OCCUPANCIES,
-        ["Aule libere"] = Function.FREE_CLASSROOMS,
-        ["Trova aula"] = Function.FIND_CLASSROOM,
-        ["imposta preferenze"] = Function.SETTINGS
+        ["📅 Occupazione Giornaliera"] = Function.OCCUPANCIES,
+        ["🏫 Occupazione Aula"] = Function.ROOM_OCCUPANCY,
+        ["🆓 Aule libere"] = Function.FREE_CLASSROOMS,
+        ["🕒 Ora"] = Function.FREE_CLASSROOMS_NOW,
+        ["⚙ Imposta preferenze"] = Function.SETTINGS,
     };
 
     public static readonly Dictionary<string, Function> MainMenuOptionsToStateEn = new()
     {
-        ["Classroom Occupancies"] = Function.OCCUPANCIES,
-        ["Free Classrooms"] = Function.FREE_CLASSROOMS,
-        ["Find Classroom"] = Function.FIND_CLASSROOM,
-        ["set defaults"] = Function.SETTINGS
+        ["📅 Daily Occupancies"] = Function.OCCUPANCIES,
+        ["🏫 Classroom Occupancy"] = Function.ROOM_OCCUPANCY,
+        ["🆓 Free Classrooms"] = Function.FREE_CLASSROOMS,
+        ["🕒 Now"] = Function.FREE_CLASSROOMS_NOW,
+        ["⚙ Set defaults"] = Function.SETTINGS,
     };
 
     public enum RoomType

@@ -36,9 +36,10 @@ public class Fetcher
         return text;
     }
 
-    public static List<string>? GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
+    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, int startingTime, int endingTime)
     {
-        var doc = FetchOccupationData(campus, dateTime);
+        var dateTime = rawDateTime.Date;
+        var doc = FetchOccupationData(campus, dateTime.Date);
         var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
 
         var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
@@ -67,6 +68,15 @@ public class Fetcher
         return null;
     }
 
+    private static void FixHyperlinks(HtmlNode classNode)
+    {
+        foreach (var link in classNode.SelectNodes("//a[@href]"))
+        {
+            var att = link.Attributes["href"];
+            att.Value = Data.Const.HrefRepairLink + att.Value;
+        }
+    }
+
     private static HtmlDocument FetchOccupationData(string campus, DateTime dateTime)
     {
         lock (Lock)
@@ -86,6 +96,7 @@ public class Fetcher
                            $"&giorno_month={dateTime.Month}" +
                            $"&giorno_year={dateTime.Year}" +
                            $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
+            FixHyperlinks(doc.DocumentNode);
             RawFetchedFile.Remove(campus);
             RawFetchedFile.Add(campus, new Dictionary<DateTime, HtmlDocument>());
             RawFetchedFile[campus].Add(dateTime, doc);

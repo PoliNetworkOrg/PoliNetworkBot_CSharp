@@ -122,17 +122,21 @@ public static class MessageHandler
         {
             case Data.Enums.Function.OCCUPANCIES:
             case Data.Enums.Function.FREE_CLASSROOMS:
-            case Data.Enums.Function.FIND_CLASSROOM:
+            case Data.Enums.Function.ROOM_OCCUPANCY:
                 conversation.State = Data.Enums.ConversationState.SELECT_DATE;
                 markupObject = ReplyMarkupGenerator.DateKeyboard();
                 replyLang = new L("it", "Seleziona una data", "en", "Select a date");
                 return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
                     markupObject, null);
+            case Data.Enums.Function.FREE_CLASSROOMS_NOW:
+                _ = SelectDate(botClient, message, null , true);
+                return null;
             case Data.Enums.Function.SETTINGS:
                 conversation.Campus = null;
                 SendCampusKeyboard(botClient, message, conversation);
                 return null;
+            case Data.Enums.Function.NULL_FUNCTION:
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -263,69 +267,80 @@ public static class MessageHandler
         switch (conversation.CurrentFunction)
         {
             case Data.Enums.Function.FREE_CLASSROOMS:
-                conversation.ResetConversationFunctions();
-                conversation.State = Data.Enums.ConversationState.START;
-                var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
-                    conversation.StartHour!, conversation.EndHour!);
-
-                markupObject = null;
-                if (freeClassrooms?.Count == 0)
-                {
-                    replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en",
-                        "Internal error - No classrooms found in this campus");
-                    markupObject = ReplyMarkupGenerator.MainKeyboard(langCode ?? "en");
-                    conversation.State = Data.Enums.ConversationState.MAIN;
-                    return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                        ParseMode.Html,
-                        markupObject, null);
-                }
-
-                var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom?.Trim()
-                    .Replace("\n", "")
-                    .Replace("\t", "")
-                    .Replace("\r", "")
-                    .Trim()).ToList() ?? new List<string?>();
-
-                var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
-                var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
-                             + freeClassroomsString;
-                var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
-                             + freeClassroomsString;
-                replyLang = new L("it", textIt, "en", textEn);
-                conversation.State = Data.Enums.ConversationState.MAIN;
-                var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
-                return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    replyMarkup, null, splitMessage: true);
+                return await SendFreeClassrooms(conversation, message, botClient);
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
+    private static async Task<MessageSentResult?> SendFreeClassrooms(Conversation conversation, Message message, TelegramBotAbstract botClient)
+    {
+        conversation.ResetConversationFunctions();
+        conversation.State = Data.Enums.ConversationState.START;
+        var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
+            conversation.StartHour!, conversation.EndHour!);
+
+        L? replyLang;
+        if (freeClassrooms?.Count == 0)
+        {
+            replyLang = new L("it", "Errore interno - Non ho trovato aule in questo campus", "en",
+                "Internal error - No classrooms found in this campus");
+            var markupObject = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
+            conversation.State = Data.Enums.ConversationState.MAIN;
+            return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
+                ParseMode.Html,
+                markupObject, null);
+        }
+
+        var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom?.Trim()
+            .Replace("\n", "")
+            .Replace("\t", "")
+            .Replace("\r", "")
+            .Trim()).ToList() ?? new List<string?>();
+
+        var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
+        var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
+                     + freeClassroomsString;
+        var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
+                     + freeClassroomsString;
+        replyLang = new L("it", textIt, "en", textEn);
+        conversation.State = Data.Enums.ConversationState.MAIN;
+        var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
+        return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
+            ParseMode.Html,
+            replyMarkup, null, splitMessage: true);
+    }
+
     private static async Task<MessageSentResult?> SelectDate(TelegramBotAbstract botClient, Message message,
-        string messageText)
+        string? messageText, bool? now = false)
     {
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
         ReplyMarkupObject? markupObject;
         L replyLang;
-
+        DateTime date;
         // try to parse the date and check if it less than 30 days in the future
-
-        if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
-                out var date) ||
-            date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
+        if (now != null && now.Value)
         {
-            // Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
-            markupObject = null;
-            replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+            date = DateTime.Now;
+        }
+        else
+        {
+            if (!DateTime.TryParseExact(messageText, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out date) ||
+                date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount))
+            {
+                // Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
+                markupObject = null;
+                replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
+                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
+                    ParseMode.Html,
+                    markupObject, null);
+            }
         }
 
         conversation!.Date = date;
-        switch (conversation.CurrentFunction)
+        switch (conversation.CurrentFunction)//todo
         {
             case Data.Enums.Function.OCCUPANCIES:
                 conversation.ResetConversationFunctions();
@@ -359,7 +374,7 @@ public static class MessageHandler
                 markupObject = ReplyMarkupGenerator.HourSelector(8, 19);
                 replyLang = new L("it", "Da che orario?", "en", "From what time?");
                 break;
-            case Data.Enums.Function.FIND_CLASSROOM:
+            case Data.Enums.Function.ROOM_OCCUPANCY:
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
                 var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date);
                 if (classRooms?.Count > 0)
@@ -380,6 +395,10 @@ public static class MessageHandler
                 replyLang = new L("it", "Seleziona un'aula", "en", "Select a classroom");
 
                 break;
+            case Data.Enums.Function.FREE_CLASSROOMS_NOW:
+                conversation.StartHour = DateTime.Now.Hour;
+                conversation.EndHour = 19;
+                return await SendFreeClassrooms(conversation, message, botClient);
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -411,13 +430,16 @@ public static class MessageHandler
 
         switch (conversation!.CallbackNextFunction)
         {
+            case Data.Enums.Function.NULL_FUNCTION:
+            case Data.Enums.Function.FREE_CLASSROOMS_NOW:
             case Data.Enums.Function.OCCUPANCIES:
-            case Data.Enums.Function.FIND_CLASSROOM:
+            case Data.Enums.Function.ROOM_OCCUPANCY:
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.MAIN;
                 markupObject = null;
                 conversation.CurrentFunction = conversation.CallbackNextFunction;
                 break;
+            case Data.Enums.Function.SETTINGS:
             default:
                 conversation.State = Data.Enums.ConversationState.MAIN;
                 markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
