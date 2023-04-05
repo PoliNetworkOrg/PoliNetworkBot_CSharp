@@ -295,9 +295,9 @@ public static class MessageHandler
             .Trim()).ToList() ?? new List<string?>();
 
         var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
-        var textIt = "Aule libere dalle " + conversation.StartHour + " alle " + conversation.EndHour + ":\n"
+        var textIt = "Aule libere dalle " + conversation.StartHour + ".15 alle " + conversation.EndHour + ".15:\n"
                      + freeClassroomsString;
-        var textEn = "Free classrooms from " + conversation.StartHour + " to " + conversation.EndHour + ":\n"
+        var textEn = "Free classrooms from " + conversation.StartHour + ".15 to " + conversation.EndHour + ".15:\n"
                      + freeClassroomsString;
         replyLang = new L("it", textIt, "en", textEn);
         conversation.State = Data.Enums.ConversationState.MAIN;
