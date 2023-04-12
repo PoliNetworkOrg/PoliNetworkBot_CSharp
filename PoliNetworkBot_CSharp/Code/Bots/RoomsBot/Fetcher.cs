@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HtmlAgilityPack;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
@@ -30,35 +32,24 @@ public class Fetcher
     {
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        var text =  parsedDoc.Nodes().Aggregate(Data.Const.CssStyles, (current, node) => current + node.OuterHtml);
+        var text =  parsedDoc.Nodes().Aggregate(Const.CssStyles, (current, node) => current + node.OuterHtml);
         return text;
     }
 
-    public static List<string> GetFreeClassrooms(string campus, DateTime dateTime, int startingTime, int endingTime)
+    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, double startingTime, double endingTime)
     {
-        var doc = FetchOccupationData(campus, dateTime);
-        var classroomRows = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
-        var toReturn = new List<string>();
-        if (classroomRows == null)
-            return toReturn;
-        foreach (var row in classroomRows)
-        {
-            var freeClassroom = true;
-            for (var i = 2 + startingTime - 8; i < row.OuterLength && i < 2 + endingTime - 8; i++)
-            {
-                if (!row.ChildNodes[i].HasClass("slot")) continue;
-                freeClassroom = false;
-                break;
-            }
-            if (!freeClassroom) continue;
-            var roomName = row.ChildNodes[1].InnerText;
-            toReturn.Add(roomName);
-        }
+        var dateTime = rawDateTime.Date;
+        var doc = FetchOccupationData(campus, dateTime.Date);
+        var t1 = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "", "BoxInfoCard", 1);
 
-        return toReturn;
+        var t3 = HtmlUtil.GetElementsByTagAndClassName(t1?[0], "", "scrollContent");
+
+        return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime), dateTime.AddHours(endingTime), 1);
     }
+    
+    
 
-    public static List<string> GetAllClassrooms(string campus, DateTime dateTime)
+    public static List<string>? GetAllClassrooms(string campus, DateTime dateTime)
     {
         return GetFreeClassrooms(campus, dateTime,8, 8);
     }
@@ -68,7 +59,7 @@ public class Fetcher
         var doc = FetchOccupationData(campus, dateTime);
         foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
         {
-            if (classNode.ChildNodes[1].InnerText == roomName)
+            if (classNode.ChildNodes[1].InnerText.Contains(roomName))
             {
                 var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
                 return text;
@@ -77,6 +68,15 @@ public class Fetcher
         
 
         return null;
+    }
+
+    private static void FixHyperlinks(HtmlNode classNode)
+    {
+        foreach (var link in classNode.SelectNodes("//a[@href]"))
+        {
+            var att = link.Attributes["href"];
+            att.Value = Data.Const.HrefRepairLink + att.Value;
+        }
     }
 
     private static HtmlDocument FetchOccupationData(string campus, DateTime dateTime)
@@ -98,6 +98,7 @@ public class Fetcher
                            $"&giorno_month={dateTime.Month}" +
                            $"&giorno_year={dateTime.Year}" +
                            $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
+            FixHyperlinks(doc.DocumentNode);
             RawFetchedFile.Remove(campus);
             RawFetchedFile.Add(campus, new Dictionary<DateTime, HtmlDocument>());
             RawFetchedFile[campus].Add(dateTime, doc);

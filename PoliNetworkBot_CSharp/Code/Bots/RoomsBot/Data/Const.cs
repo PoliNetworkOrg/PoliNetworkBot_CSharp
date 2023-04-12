@@ -2,6 +2,8 @@
 
 public class Const
 {
+	public const string HrefRepairLink = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
+	
     public const string PolimiController =
         "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do";
 
@@ -12,7 +14,8 @@ public class Const
     public const string HtmlTableEnd = @"</tbody></table></div>";
 
     public const string HtmlClockLine = @"
-<tr><td class=""innerDataDove"">Data</td><td class=""innerDataDove"">Dove</td><td class=""innerOrario"" colspan=""2""></td><td class=""innerOrario"" colspan=""4"">09:00</td><td class=""innerOrario"" colspan=""4"">10:00</td><td class=""innerOrario"" colspan=""4"">11:00</td><td class=""innerOrario"" colspan=""4"">12:00</td><td class=""innerOrario"" colspan=""4"">13:00</td><td class=""innerOrario"" colspan=""4"">14:00</td><td class=""innerOrario"" colspan=""4"">15:00</td><td class=""innerOrario"" colspan=""4"">16:00</td><td class=""innerOrario"" colspan=""4"">17:00</td><td class=""innerOrario"" colspan=""4"">18:00</td><td class=""innerOrario"" colspan=""4"">19:00</td><td class=""innerOrario"" colspan=""4"">20:00</td><td class=""innerOrario"" colspan=""2""></td></tr>";
+<tr><td class=""innerDataDove"">Data</td><td class=""innerDataDove"">Dove</td><td class=""innerOrario"" colspan=""2""></td><td class=""innerOrario"" colspan=""4"">09:00</td><td class=""innerOrario"" colspan=""4"">10:00</td><td class=""innerOrario"" colspan=""4"">11:00</td><td class=""innerOrario"" colspan=""4"">12:00</td><td class=""innerOrario"" colspan=""4"">13:00</td><td class=""innerOrario"" colspan=""4"">14:00</td><td class=""innerOrario"" colspan=""4"">15:00</td><td class=""innerOrario"" colspan=""4"">16:00</td><td class=""innerOrario"" colspan=""4"">17:00</td><td class=""innerOrario"" colspan=""4"">18:00</td><td class=""innerOrario"" colspan=""4"">19:00</td><td class=""innerOrario"" colspan=""4"">20:00</td><td class=""innerOrario"" colspan=""2""></td></tr>
+<tr><td colspan=""2"" class=""innerGiorno""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td><td style=""height:10"" class=""riferimento_orario_prima""></td><td class=""empty""></td><td class=""empty""></td><td class=""riferimento_orario_ultima""></td></tr>";
 
     public const string CssStyles = @"
 <head>
@@ -155,6 +158,7 @@ table.scrollTable tbody tr td.empty {
 	background: EFEEF1;
     color: #000000;
 	text-align: center;	
+	width: 80px;
 }
 .innerEdificio{
 	font-size: 1em;
@@ -178,3 +182,4 @@ table.scrollTable tbody tr td.empty {
 </style>
 </head>";
 }
+

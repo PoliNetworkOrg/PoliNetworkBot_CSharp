@@ -183,20 +183,27 @@ internal static class Rooms
         return null;
     }
 
-    private static List<string?>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop)
+    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop, int quarterHourOffset = 0)
     {
         if (table?.ChildNodes == null)
             return null;
 
-        var shiftStart = GetShiftSlotFromTime(start);
+        var shiftStart =  GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
+        shiftStart += quarterHourOffset;
+        shiftEnd += quarterHourOffset;
 
-        return (from child in table.ChildNodes
-            where child != null
-            select CheckIfFree(child, shiftStart, shiftEnd)
-            into toAdd
-            where !string.IsNullOrEmpty(toAdd)
-            select toAdd).ToList();
+        List<string> list = new();
+        foreach (var child in table.ChildNodes)
+        {
+            if (child != null)
+            {
+                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
+                if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
+            }
+        }
+
+        return list;
     }
 
     /// <summary>
@@ -277,7 +284,7 @@ internal static class Rooms
 
             // this is the trickery, if any column ends before the shift start or starts before
             // the shift end, then we skip
-            if (vEnd < shiftStart || vStart > shiftEnd)
+            if (vEnd <= shiftStart || vStart >= shiftEnd)
                 continue;
 
             // if one of the not-skipped column represents an actual lesson, then return false,
