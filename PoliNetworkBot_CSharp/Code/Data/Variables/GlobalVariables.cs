@@ -56,7 +56,6 @@ public static class GlobalVariables
 
         SubCreators = new List<TelegramUser>
         {
-            new("carlogiova"),
             new("giovannieffe777"),
             new("testpolinetwork"),
             new("albus25"),
@@ -65,28 +64,30 @@ public static class GlobalVariables
             new("scala98"),
             new("giulia_ye"),
             new("andre_crc"),
-            new("perularrabeiti"),
             new("fllippo"),
             new("marcol_8"),
             new("andre_crc"),
             new("lucreziaal"),
             new("giada_marti"),
             new("raif9"),
-            new("diegoaldarese")
+            new("diegoaldarese"),
+            new(992285066) // Tommaso
         };
 
         AllowedBanAll = new List<TelegramUser>
         {
             new(5651789),
             new("raif9"),
-            new("eliamaggioni")
+            new("eliamaggioni"),
+            new(992285066) // Tommaso
         };
 
         AllowedMuteAll = new List<TelegramUser>
         {
             new(5651789),
             new("raif9"),
-            new("eliamaggioni")
+            new("eliamaggioni"),
+            new(992285066) // Tommaso
         };
 
         AllowedSpam = new List<TelegramUser>
@@ -94,7 +95,7 @@ public static class GlobalVariables
             new(5651789),
             new("raif9"),
             new("eliamaggioni"),
-            new("tlpats"),
+            new(992285066), // Tommaso
             new(349275135), //policreator
             new(1051414781), //polinetwork,
             new(1087968824) //@GroupAnonymousBot (è quello di telegram per retrocompatibilità
@@ -113,7 +114,8 @@ public static class GlobalVariables
         Owners = new List<TelegramUser>
         {
             new(5651789),
-            new(107050697, "eliamaggioni")
+            new(107050697, "eliamaggioni"),
+            new(992285066) // Tommaso
         };
 
         WordToBeFirsts = new List<WordToBeFirst>
