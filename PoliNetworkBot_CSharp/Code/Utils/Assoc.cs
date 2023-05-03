@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -123,16 +124,27 @@ public static class Assoc
                 var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
                     languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
 
-                DateTime? sentDate = null;
+                var sentDate = new DateTime();
 
                 if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
                 {
-                    sentDate = DateTime.Parse(await AskUser.AskAsync(e.Message.From?.Id,
-                        new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
-                            "Insert a date AAAA-MM-DD HH:mm"),
-                        sender, e.Message.From?.LanguageCode, e.Message.From?.Username) ?? "");
+                    string? dateTimeString = null;
+                    var parseSuccess = false;
+                    while (dateTimeString == null && !parseSuccess)
+                    {
+                        dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
+                            new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
+                                "Insert a date AAAA-MM-DD HH:mm"),
+                            sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
+                    }
 
-                    if (CheckIfDateTimeIsValid(sentDate) == false)
+                    parseSuccess = DateTime.TryParseExact(
+                        dateTimeString,
+                        "yyyy-MM-dd HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out sentDate);
+                    if (!parseSuccess || CheckIfDateTimeIsValid(sentDate) == false)
                     {
                         var lang4 = new Language(new Dictionary<string, string?>
                         {
