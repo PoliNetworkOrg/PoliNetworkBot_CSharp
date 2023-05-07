@@ -8,14 +8,24 @@ RUN dotnet restore
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
-# Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 COPY --from=build-env /App/static ./static
 
-# Install git
+# Set globalization invariant to false and install Italian locale
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y locales && rm -rf /var/lib/apt/lists/* \
+    && echo "it_IT.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen
+
+# Set Italian culture for the application
+ENV LANG=it_IT.UTF-8
+ENV LANGUAGE=it_IT.UTF-8
+ENV LC_ALL=it_IT.UTF-8
+
+# Install git
 RUN apt update && apt install -y git hub wget unzip && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Italy
