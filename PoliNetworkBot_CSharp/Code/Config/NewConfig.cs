@@ -117,7 +117,7 @@ public static class NewConfig
         }
     }
 
-    internal static void Redo_DB(bool alsoFillTablesFromJson)
+    private static void Redo_DB(bool alsoFillTablesFromJson)
     {
         Database.Execute("CREATE TABLE GroupsTelegram (" +
                          "id BIGINT PRIMARY KEY, " +

@@ -34,7 +34,7 @@ public static class Navigator
             "Architettura"
         },
         ["ICAT"] = Array.Empty<string>(),
-        ["Design"] = new[]
+        ["Design"] = new []
         {
             "Design"
         }

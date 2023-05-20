@@ -133,7 +133,7 @@ internal static class SendMessage
                    file, peer,
                    username, lang,
                    replyToMessageId, disablePreviewLink,
-                   parseModeCaption
+                   parseModeCaption: parseModeCaption
                );
     }
 
