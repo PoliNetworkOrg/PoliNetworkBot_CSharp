@@ -541,7 +541,8 @@ internal static class CommandDispatcher
 
         if (sender == null) return null;
         var x = Database.ExecuteSelect(query, sender.DbConfig);
-        var x2 = StreamSerialization.SerializeToStream(x);
+        var x2 = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil
+            .SerializeObject(x));
         var documentInput =
             new TelegramFile(x2, "table.bin", new L("Query result"), "application/octet-stream",
                 TextAsCaption.AS_CAPTION);

@@ -16,8 +16,8 @@ using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
-using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
@@ -84,7 +84,8 @@ public static class RestoreDbUtil
 
     public static async Task RestoreDb()
     {
-        var path = FileUtil.FindFile("db.json");
+        const string dbJson = "*/db.json";
+        var path = FileUtil.FindFile(dbJson);
         var x = await RestoreDbMethod(path);
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }

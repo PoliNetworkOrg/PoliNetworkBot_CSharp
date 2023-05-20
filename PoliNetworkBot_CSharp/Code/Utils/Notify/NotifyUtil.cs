@@ -584,14 +584,17 @@ internal static class NotifyUtil
         {
             if (done == null)
                 return;
-
+//        var x2 = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(x));
             var (banUnbanAllResult, _) = done;
-            SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                "success.bin", sender, e);
-            SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                "failed.bin", sender, e);
+            
+            var dataRowsSuccess = banUnbanAllResult.GetSuccess();
+            var dataRowsFailed = banUnbanAllResult.GetFailed();
+            
+            var success = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(dataRowsSuccess));
+            var failed = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(dataRowsFailed));
+            
+            SendReportOfSuccessAndFailures2(success, "success.bin", sender, e);
+            SendReportOfSuccessAndFailures2(failed, "failed.bin", sender, e);
         }
         catch
         {
