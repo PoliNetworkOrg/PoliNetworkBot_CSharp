@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -121,87 +122,9 @@ public static class Assoc
 
             if (e?.Message != null)
             {
-                var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
-                    languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
-
-                var sentDate = new DateTime();
-
-                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
-                {
-                    string? dateTimeString = null;
-                    var parseSuccess = false;
-                    while (dateTimeString == null && !parseSuccess)
-                    {
-                        dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
-                            new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
-                                "Insert a date AAAA-MM-DD HH:mm"),
-                            sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
-                    }
-
-                    parseSuccess = DateTime.TryParseExact(
-                        dateTimeString,
-                        "yyyy-MM-dd HH:mm",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out sentDate);
-                    if (!parseSuccess || CheckIfDateTimeIsValid(sentDate) == false)
-                    {
-                        var lang4 = new Language(new Dictionary<string, string?>
-                        {
-                            { "en", "The date you choose is invalid!" },
-                            { "it", "La data che hai scelto non è valida!" }
-                        });
-                        if (sender != null)
-                            await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
-                                ChatType.Private, e.Message.From?.LanguageCode,
-                                ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                                e.Message.From?.Username);
-                        return false;
-                    }
-                }
-
-                var idChatsSentInto = Channels.Assoc.GetChannels();
-                //const long idChatSentInto = -432645805;
-                const ChatType chatTypeSendInto = ChatType.Group;
-                if (!dry)
-                    foreach (var idChat in idChatsSentInto)
-                    {
-                        if (sentDate == null) return false;
-                        var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
-                            new DateTimeSchedule(sentDate, true),
-                            e.Message.From?.Id,
-                            messageFromIdEntity, idChat, sender, chatTypeSendInto);
-
-                        switch (successQueue)
-                        {
-                            case SuccessQueue.INVALID_ID_TO_DB:
-                                break;
-
-                            case SuccessQueue.INVALID_OBJECT:
-                            {
-                                await Assoc_ObjectToSendNotValid(sender, e);
-                                return false;
-                            }
-
-                            case SuccessQueue.SUCCESS:
-                                break;
-
-                            case SuccessQueue.DATE_INVALID:
-                                break;
-
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        if (successQueue == SuccessQueue.SUCCESS)
-                            continue;
-
-                        await NotifyUtil.NotifyOwnerWithLog2(
-                            new Exception("Success queue is " + successQueue + " while trying to send a message!"),
-                            sender, EventArgsContainer.Get(e));
-
-                        return false;
-                    }
+                var assocSendAsync2 = await AssocSendAsync2(sender, e, dry, languageList2, options, replyTo, messageFromIdEntity);
+                if (assocSendAsync2 == ToExit.EXIT) 
+                    return false;
             }
 
             var lang3 = new Language(new Dictionary<string, string?>
@@ -223,6 +146,93 @@ public static class Assoc
             await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
             return false;
         }
+    }
+
+    private static async Task<Enums.ToExit> AssocSendAsync2(TelegramBotAbstract? sender, MessageEventArgs e, bool dry,
+        Language languageList2, IReadOnlyList<List<Language>> options, Message replyTo, [DisallowNull] long? messageFromIdEntity)
+    {
+        var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
+            languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
+
+        var sentDate = new DateTime();
+
+        if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
+        {
+            string? dateTimeString = null;
+            var parseSuccess = false;
+            while (dateTimeString == null && !parseSuccess)
+            {
+                dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
+                    new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
+                        "Insert a date AAAA-MM-DD HH:mm"),
+                    sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
+            }
+
+            parseSuccess = DateTime.TryParseExact(
+                dateTimeString,
+                "yyyy-MM-dd HH:mm",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out sentDate);
+            if (!parseSuccess || CheckIfDateTimeIsValid(sentDate) == false)
+            {
+                var lang4 = new Language(new Dictionary<string, string?>
+                {
+                    { "en", "The date you choose is invalid!" },
+                    { "it", "La data che hai scelto non è valida!" }
+                });
+                if (sender != null)
+                    await sender.SendTextMessageAsync(e.Message.From?.Id, lang4,
+                        ChatType.Private, e.Message.From?.LanguageCode,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        e.Message.From?.Username);
+                return  ToExit.EXIT;
+            }
+        }
+
+        var idChatsSentInto = Channels.Assoc.GetChannels();
+        //const long idChatSentInto = -432645805;
+        const ChatType chatTypeSendInto = ChatType.Group;
+        if (dry) return  ToExit.STAY;
+        foreach (var idChat in idChatsSentInto)
+        {
+            var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
+                new DateTimeSchedule(sentDate, true),
+                e.Message.From?.Id,
+                messageFromIdEntity, idChat, sender, chatTypeSendInto);
+
+            switch (successQueue)
+            {
+                case SuccessQueue.INVALID_ID_TO_DB:
+                    break;
+
+                case SuccessQueue.INVALID_OBJECT:
+                {
+                    await Assoc_ObjectToSendNotValid(sender, e);
+                    return ToExit.EXIT;
+                }
+
+                case SuccessQueue.SUCCESS:
+                    break;
+
+                case SuccessQueue.DATE_INVALID:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (successQueue == SuccessQueue.SUCCESS)
+                continue;
+
+            await NotifyUtil.NotifyOwnerWithLog2(
+                new Exception("Success queue is " + successQueue + " while trying to send a message!"),
+                sender, EventArgsContainer.Get(e));
+
+            return ToExit.EXIT;
+        }
+
+        return ToExit.STAY;
     }
 
     private static bool CheckIfDateTimeIsValid(DateTime? sdt)
