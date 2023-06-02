@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBot", "TestBot\TestBot.csproj", "{0026AC91-46FB-4924-865D-940761FFB06F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleNuGet", "TestNugetPackage\SampleNuGet\SampleNuGet.csproj", "{62181022-82AE-4B74-964A-1777FDAABF17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{0026AC91-46FB-4924-865D-940761FFB06F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0026AC91-46FB-4924-865D-940761FFB06F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0026AC91-46FB-4924-865D-940761FFB06F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62181022-82AE-4B74-964A-1777FDAABF17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62181022-82AE-4B74-964A-1777FDAABF17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62181022-82AE-4B74-964A-1777FDAABF17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62181022-82AE-4B74-964A-1777FDAABF17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
