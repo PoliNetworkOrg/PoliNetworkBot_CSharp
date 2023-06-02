@@ -3,8 +3,8 @@
 using System;
 using System.Data;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using SampleNuGet.Objects;
+using SampleNuGet.Utils.DatabaseUtils;
 
 #endregion
 
