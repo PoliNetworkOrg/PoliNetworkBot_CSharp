@@ -17,7 +17,9 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Objects;
 using SampleNuGet.Utils;
+using SampleNuGet.Utils.DatabaseUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 

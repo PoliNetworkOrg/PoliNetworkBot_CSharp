@@ -1,28 +1,17 @@
-﻿#region
-
-using System;
+﻿using System;
 using System.IO;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
-
-#endregion
+using SampleNuGet.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Config;
 
-[Serializable]
-[JsonObject(MemberSerialization.Fields)]
-public class DbConfig
+public class DbConfigClass
 {
-    public string? Database;
-    public string? Host;
-    public string? Password;
-    public int Port;
-    public string? User;
-
+    
     public static void InitializeDbConfig()
     {
         if (File.Exists(Paths.Info.DbConfig))
@@ -54,15 +43,5 @@ public class DbConfig
         File.WriteAllText(Paths.Info.DbConfig, x);
         Logger.WriteLine("Initialized DBConfig to empty!", LogSeverityLevel.CRITICAL);
         Logger.WriteLine("Database failed to initialize, we generated an empty file to fill");
-    }
-
-    public string GetConnectionString()
-    {
-        if (string.IsNullOrEmpty(Password))
-            return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port +
-                   ";Allow User Variables=True";
-
-        return "server='" + Host + "';user='" + User + "';database='" + Database + "';port=" + Port + ";password='" +
-               Password + "'" + ";Allow User Variables=True";
     }
 }
