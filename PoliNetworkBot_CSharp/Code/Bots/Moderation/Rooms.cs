@@ -196,11 +196,9 @@ internal static class Rooms
         List<string> list = new();
         foreach (var child in table.ChildNodes)
         {
-            if (child != null)
-            {
-                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
-                if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
-            }
+            if (child == null) continue;
+            var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
+            if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
         }
 
         return list;

@@ -572,8 +572,8 @@ public static class ProgramUtil
 
             case UpdateType.Message:
             {
-                if (update.Message != null && botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                    if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                if (update.Message != null && botClientWhole.UpdatesMessageLastId.TryGetValue(update.Message.Chat.Id, out var value))
+                    if (value >= update.Message.MessageId)
                         return;
 
                 if (update.Message != null)

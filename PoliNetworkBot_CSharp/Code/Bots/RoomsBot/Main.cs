@@ -36,7 +36,7 @@ internal static class RoomsBot
         //t1.Start();
     }
 
-    public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
+    private static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
     {
         TelegramBotAbstract? telegramBotClient = null;
 

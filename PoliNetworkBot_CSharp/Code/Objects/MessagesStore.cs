@@ -152,8 +152,8 @@ public static class MessagesStore
         if (text == null) return SpamType.UNDEFINED;
         StoredMessage? storedMessage = null;
 
-        if (Store.ContainsKey(text))
-            storedMessage = Store[text];
+        if (Store.TryGetValue(text, out var value))
+            storedMessage = value;
 
         if (Store.ContainsKey(text))
         {
@@ -213,9 +213,9 @@ public static class MessagesStore
         {
             if (Store != null)
                 if (text != null)
-                    if (Store.ContainsKey(text))
+                    if (Store.TryGetValue(text, out var value))
                     {
-                        var messages = Store[text]?.Messages;
+                        var messages = value?.Messages;
                         if (messages != null)
                             return messages;
                     }

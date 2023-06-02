@@ -11,11 +11,10 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
-public class Fetcher
+public static class Fetcher
 {
-
-    private static readonly int MaximumApiCallsPerSecond = 5;
-    private static readonly int MaximumApiCallsPerMinute = 30;
+    private const int MaximumApiCallsPerSecond = 5;
+    private const int MaximumApiCallsPerMinute = 30;
     private static readonly object Lock = new();
     
     private static int ApiCallsCounterPerSeconds = 0;
@@ -59,11 +58,9 @@ public class Fetcher
         var doc = FetchOccupationData(campus, dateTime);
         foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
         {
-            if (classNode.ChildNodes[1].InnerText.Contains(roomName))
-            {
-                var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
-                return text;
-            }
+            if (!classNode.ChildNodes[1].InnerText.Contains(roomName)) continue;
+            var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
+            return text;
         }
         
 
@@ -85,7 +82,7 @@ public class Fetcher
         {
             if (FetchCacheAge.ContainsKey(campus) 
                 && FetchCacheAge[campus].ContainsKey(dateTime) 
-                && (DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime))
+                && DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime)
                 return RawFetchedFile[campus][dateTime];
             if(dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
                 CheckApiRateLimit();

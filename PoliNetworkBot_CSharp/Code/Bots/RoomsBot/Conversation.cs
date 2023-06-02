@@ -8,13 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 /// </summary>
 public class Conversation
 {
-    private Data.Enums.ConversationState _state;
-
-    public Data.Enums.ConversationState State
-    {
-        get => _state;
-        set => _state = value;
-    }
+    public Data.Enums.ConversationState State { get; set; }
 
     public long ChatId { get; set; }
     public DateTime Date { get; set; }
