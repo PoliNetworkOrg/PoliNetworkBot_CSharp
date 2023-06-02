@@ -97,7 +97,7 @@ public static class ProgramUtil
 
         MessagesStore.InitializeMessageStore();
         CallbackUtils.CallbackUtils.InitializeCallbackDatas();
-        DbConfig.InitializeDbConfig();
+        DbConfigClass.InitializeDbConfig();
 
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.Logger.WriteLine("Current TimeZone: " + currentTimeZone + " time: " + DateTime.Now);

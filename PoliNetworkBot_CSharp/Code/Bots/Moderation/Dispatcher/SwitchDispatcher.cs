@@ -128,9 +128,9 @@ public static class SwitchDispatcher
         new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot groups"), null, null),
 
-        new Command("qe", Database.QueryBotExec, new List<ChatType> { ChatType.Private },
+        new Command("qe", DatabaseClass.QueryBotExec, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query execute"), null, null),
-        new Command("qs", Database.QueryBotSelect, new List<ChatType> { ChatType.Private },
+        new Command("qs", DatabaseClass.QueryBotSelect, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query select"), null, null),
 
         new Command("allow_message", CommandDispatcher.AllowMessageAsync,

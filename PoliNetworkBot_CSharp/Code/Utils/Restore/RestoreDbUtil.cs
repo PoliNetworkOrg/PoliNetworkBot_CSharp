@@ -50,7 +50,7 @@ public static class RestoreDbUtil
         if (x == null)
             return null;
 
-        DbConfig.InitializeDbConfig();
+        DbConfigClass.InitializeDbConfig();
 
         x.tables ??= new Dictionary<string, DataTable>();
         var done = x.tables.Sum(y =>
@@ -273,7 +273,7 @@ public static class RestoreDbUtil
 
         try
         {
-            DbConfig.InitializeDbConfig();
+            DbConfigClass.InitializeDbConfig();
             var procedureName = procedure.Value.Rows[0]["Procedure"].ToString();
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
             create = create?.Replace("`", "");

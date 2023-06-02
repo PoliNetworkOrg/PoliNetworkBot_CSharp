@@ -9,7 +9,7 @@ using SampleNuGet.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Config;
 
-public class DbConfigClass
+public static class DbConfigClass
 {
     
     public static void InitializeDbConfig()

@@ -5,7 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
-public class DatabaseClass
+public static class DatabaseClass
 {
     public static async Task<CommandExecutionState> QueryBotExec(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
