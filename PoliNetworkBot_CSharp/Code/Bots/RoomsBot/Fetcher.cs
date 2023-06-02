@@ -85,15 +85,14 @@ public static class Fetcher
                 return RawFetchedFile[campus][dateTime];
             if (dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
                 CheckApiRateLimit();
-            var doc = new HtmlDocument();
             var web = new HtmlWeb();
             Console.WriteLine("### Requested passed to API endpoint ###");
-            doc = web.Load(Const.PolimiController +
-                           $"?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
-                           $"&giorno_day={dateTime.Day}" +
-                           $"&giorno_month={dateTime.Month}" +
-                           $"&giorno_year={dateTime.Year}" +
-                           "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=");
+            var doc = web.Load(Const.PolimiController +
+                               $"?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
+                               $"&giorno_day={dateTime.Day}" +
+                               $"&giorno_month={dateTime.Month}" +
+                               $"&giorno_year={dateTime.Year}" +
+                               "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=");
             FixHyperlinks(doc.DocumentNode);
             RawFetchedFile.Remove(campus);
             RawFetchedFile.Add(campus, new Dictionary<DateTime, HtmlDocument>());
