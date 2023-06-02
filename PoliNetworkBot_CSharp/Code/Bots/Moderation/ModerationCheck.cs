@@ -208,7 +208,7 @@ internal static class ModerationCheck
             }
 
             var name = "";
-            if (messageEventArgs is { Message.Chat.Title: { } })
+            if (messageEventArgs is { Message.Chat.Title: not null })
                 name = messageEventArgs.Message.Chat.Title;
 
             Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message.Chat.Id + ", name:" + name +
@@ -300,7 +300,7 @@ internal static class ModerationCheck
             GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
 
         var from = message1?.From;
-        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e.Message is { From: { } } &&
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e.Message is { From: not null } &&
             from != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
             return null;
 

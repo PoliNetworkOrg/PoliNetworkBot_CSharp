@@ -327,7 +327,7 @@ internal static class MainAnon
             var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
             var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-            if (dataAnon is { CallBackQueryFromTelegram.Message: { }, Bot: { } })
+            if (dataAnon is { CallBackQueryFromTelegram.Message: not null, Bot: not null })
                 await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
                     dataAnon.CallBackQueryFromTelegram.Message.MessageId,
                     "Hai scelto [" + dataAnon.GetResultEnum() + "]", replyMarkup);

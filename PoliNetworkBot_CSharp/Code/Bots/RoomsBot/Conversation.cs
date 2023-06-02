@@ -3,11 +3,17 @@
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
 /// <summary>
-/// Class containing data and useful methods
-/// related to a conversation between the bot and a user.
+///     Class containing data and useful methods
+///     related to a conversation between the bot and a user.
 /// </summary>
 public class Conversation
 {
+    public Conversation(long chatId)
+    {
+        ChatId = chatId;
+        State = Data.Enums.ConversationState.START;
+    }
+
     public Data.Enums.ConversationState State { get; set; }
 
     public long ChatId { get; set; }
@@ -17,12 +23,6 @@ public class Conversation
     public string? Campus { get; set; }
     public int StartHour { get; set; }
     public int EndHour { get; set; }
-
-    public Conversation(long chatId)
-    {
-        ChatId = chatId;
-        State = Data.Enums.ConversationState.START;
-    }
 
     public void ResetConversationFunctions()
     {
