@@ -206,7 +206,7 @@ public static class ProgramUtil
             // ignored
         }
 
-        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: not null } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -257,7 +257,7 @@ public static class ProgramUtil
             Logger.Logger.WriteLine(ex);
         }
 
-        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: not null } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -572,7 +572,8 @@ public static class ProgramUtil
 
             case UpdateType.Message:
             {
-                if (update.Message != null && botClientWhole.UpdatesMessageLastId.TryGetValue(update.Message.Chat.Id, out var value))
+                if (update.Message != null &&
+                    botClientWhole.UpdatesMessageLastId.TryGetValue(update.Message.Chat.Id, out var value))
                     if (value >= update.Message.MessageId)
                         return;
 

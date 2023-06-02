@@ -122,8 +122,9 @@ public static class Assoc
 
             if (e?.Message != null)
             {
-                var assocSendAsync2 = await AssocSendAsync2(sender, e, dry, languageList2, options, replyTo, messageFromIdEntity);
-                if (assocSendAsync2 == ToExit.EXIT) 
+                var assocSendAsync2 =
+                    await AssocSendAsync2(sender, e, dry, languageList2, options, replyTo, messageFromIdEntity);
+                if (assocSendAsync2 == ToExit.EXIT)
                     return false;
             }
 
@@ -148,8 +149,9 @@ public static class Assoc
         }
     }
 
-    private static async Task<Enums.ToExit> AssocSendAsync2(TelegramBotAbstract? sender, MessageEventArgs e, bool dry,
-        Language languageList2, IReadOnlyList<List<Language>> options, Message replyTo, [DisallowNull] long? messageFromIdEntity)
+    private static async Task<ToExit> AssocSendAsync2(TelegramBotAbstract? sender, MessageEventArgs e, bool dry,
+        Language languageList2, IReadOnlyList<List<Language>> options, Message replyTo,
+        [DisallowNull] long? messageFromIdEntity)
     {
         var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
             languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
@@ -161,12 +163,10 @@ public static class Assoc
             string? dateTimeString = null;
             var parseSuccess = false;
             while (dateTimeString == null && !parseSuccess)
-            {
                 dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
                     new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                         "Insert a date AAAA-MM-DD HH:mm"),
                     sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
-            }
 
             parseSuccess = DateTime.TryParseExact(
                 dateTimeString,
@@ -186,14 +186,14 @@ public static class Assoc
                         ChatType.Private, e.Message.From?.LanguageCode,
                         ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                         e.Message.From?.Username);
-                return  ToExit.EXIT;
+                return ToExit.EXIT;
             }
         }
 
         var idChatsSentInto = Channels.Assoc.GetChannels();
         //const long idChatSentInto = -432645805;
         const ChatType chatTypeSendInto = ChatType.Group;
-        if (dry) return  ToExit.STAY;
+        if (dry) return ToExit.STAY;
         foreach (var idChat in idChatsSentInto)
         {
             var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
@@ -576,9 +576,9 @@ public static class Assoc
     {
         string? message = null;
 
-        if (e is { Message: { } } && (e.Message.ReplyToMessage == null ||
-                                      (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                       string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
+        if (e is { Message: not null } && (e.Message.ReplyToMessage == null ||
+                                           (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                            string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
         {
             // the command is being called without a reply, ask for the message:
             var question = new Language(new Dictionary<string, string?>

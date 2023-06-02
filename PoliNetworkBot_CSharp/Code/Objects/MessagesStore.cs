@@ -167,7 +167,7 @@ public static class MessagesStore
         {
             lock (Store)
             {
-                if (message is { Text: { } })
+                if (message is { Text: not null })
                 {
                     Store[text] = new StoredMessage
                     (
@@ -186,7 +186,7 @@ public static class MessagesStore
             if (storedMessage != null)
                 lock (storedMessage)
                 {
-                    if (message is { From: { } } && !storedMessage.FromUserId.Contains(message.From.Id))
+                    if (message is { From: not null } && !storedMessage.FromUserId.Contains(message.From.Id))
                         storedMessage.FromUserId.Add(message.From.Id);
 
                     if (message != null &&

@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Utils;
 
-using Telegram.Bot.Types.ReplyMarkups;
-
 public static class ReplyMarkupGenerator
 {
+    public const int DaysAmount = 30;
+
     public static ReplyMarkupObject MainKeyboard(string langCode)
     {
         // filter out the main menu options that are not available in the current language
-        var choices = langCode == "it" ? new List<string>(Data.Enums.MainMenuOptionsToFunction.Keys) : new List<string>(Data.Enums.MainMenuOptionsToStateEn.Keys);
+        var choices = langCode == "it"
+            ? new List<string>(Data.Enums.MainMenuOptionsToFunction.Keys)
+            : new List<string>(Data.Enums.MainMenuOptionsToStateEn.Keys);
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, false)), false);
-    } 
+    }
 
     public static ReplyMarkupObject CampusKeyboard(string langCode, bool withBackButton = true)
     {
@@ -23,7 +26,6 @@ public static class ReplyMarkupGenerator
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, withBackButton)), false);
     }
 
-    public const int DaysAmount = 30;
     public static ReplyMarkupObject DateKeyboard()
     {
         // Generate an array of dates from today to 30 days from now in day/month/year format
@@ -42,7 +44,7 @@ public static class ReplyMarkupGenerator
 
     public static ReplyMarkupObject HourSelector(int firstHour, int lastHour)
     {
-        var hours = Enumerable.Range(firstHour, lastHour-firstHour).ToArray();
+        var hours = Enumerable.Range(firstHour, lastHour - firstHour).ToArray();
         var choices = new List<string>(hours.Select(i => i.ToString()).ToArray());
         var options = new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, 1, true));
         return new ReplyMarkupObject(options, false);
@@ -55,8 +57,8 @@ public static class ReplyMarkupGenerator
 
 
     /// <summary>
-    /// Generates a ReplyKeyboardMarkup dynamically by having a maximum of characters per row.
-    /// <br/> The maximum items per row are 3.
+    ///     Generates a ReplyKeyboardMarkup dynamically by having a maximum of characters per row.
+    ///     <br /> The maximum items per row are 3.
     /// </summary>
     /// <param name="items">List of texts to put in buttons.</param>
     /// <param name="hasBackButton">true if markup needs to be generated with a back button; otherwise false.</param>
@@ -92,7 +94,7 @@ public static class ReplyMarkupGenerator
     }
 
     /// <summary>
-    /// Generates a ReplyKeyboardMarkUp with the requested amount of items per row.
+    ///     Generates a ReplyKeyboardMarkUp with the requested amount of items per row.
     /// </summary>
     /// <param name="items">List of texts to put in buttons.</param>
     /// <param name="itemsPerRow">Max amount of items in one row.</param>

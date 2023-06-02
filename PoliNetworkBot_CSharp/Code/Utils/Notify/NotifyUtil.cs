@@ -19,6 +19,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using SampleNuGet.Utils;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -38,7 +39,7 @@ internal static class NotifyUtil
         EventArgsContainer? messageEventArgs)
     {
         var title = messageEventArgs?.MessageEventArgs?.Message.Chat.Title;
-        if (messageEventArgs is not { MessageEventArgs.Message: { } })
+        if (messageEventArgs is not { MessageEventArgs.Message: not null })
             return false;
 
         var text = messageEventArgs.MessageEventArgs.Message.Text ?? messageEventArgs.MessageEventArgs.Message.Caption;
@@ -431,7 +432,7 @@ internal static class NotifyUtil
         try
         {
             {
-                if (messageEventArgs is not { MessageEventArgs.Message: { } }) return;
+                if (messageEventArgs is not { MessageEventArgs.Message: not null }) return;
 
                 var message = "Restrict action: " + restrictAction;
                 message += "\n";
@@ -474,7 +475,7 @@ internal static class NotifyUtil
         try
         {
             {
-                if (messageEventArgs is not { MessageEventArgs.Message: { } }) return false;
+                if (messageEventArgs is not { MessageEventArgs.Message: not null }) return false;
                 var message = "Restrict action: " + "Simple Ban";
                 message += "\n";
                 message += "Restricted user: " + target + "[" +
@@ -586,13 +587,13 @@ internal static class NotifyUtil
                 return;
 //        var x2 = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(x));
             var (banUnbanAllResult, _) = done;
-            
+
             var dataRowsSuccess = banUnbanAllResult.GetSuccess();
             var dataRowsFailed = banUnbanAllResult.GetFailed();
-            
-            var success = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(dataRowsSuccess));
-            var failed = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(dataRowsFailed));
-            
+
+            var success = SerializeUtil.GetMemoryStreamFromByteArray(SerializeUtil.SerializeObject(dataRowsSuccess));
+            var failed = SerializeUtil.GetMemoryStreamFromByteArray(SerializeUtil.SerializeObject(dataRowsFailed));
+
             SendReportOfSuccessAndFailures2(success, "success.bin", sender, e);
             SendReportOfSuccessAndFailures2(failed, "failed.bin", sender, e);
         }

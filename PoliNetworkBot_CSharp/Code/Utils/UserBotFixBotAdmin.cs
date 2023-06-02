@@ -270,7 +270,7 @@ internal static class UserBotFixBotAdmin
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4 is { R2.Item1: { }, R: { } };
+        return r4 is { R2.Item1: not null, R: not null };
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChannel? x5,
@@ -374,7 +374,7 @@ internal static class UserBotFixBotAdmin
         try
         {
             TLAbsChannelParticipantRole role = new TLChannelRoleEditor();
-            if (telegramBotAbstract is { UserbotClient: { } })
+            if (telegramBotAbstract is { UserbotClient: not null })
                 r2 = await telegramBotAbstract.UserbotClient.ChannelsEditAdmin(channel, u2, role);
         }
         catch (Exception e2)
@@ -389,7 +389,7 @@ internal static class UserBotFixBotAdmin
             {
                 try
                 {
-                    var r3 = telegramBotAbstract is { UserbotClient: { } } &&
+                    var r3 = telegramBotAbstract is { UserbotClient: not null } &&
                              await telegramBotAbstract.UserbotClient.Messages_EditChatAdmin(channel.ChannelId, u2,
                                  true);
                     if (r3 == false) return new Tuple<TLAbsUpdates?, Exception?>(null, e3);
@@ -499,7 +499,7 @@ internal static class UserBotFixBotAdmin
 
         if (_idOfChatsWeKnowAreOk != null) _idOfChatsWeKnowAreOk[x5.Id] = true;
 
-        return r4 is { R2.Item1: { }, R: { } };
+        return r4 is { R2.Item1: not null, R: not null };
     }
 
     private static async Task DeleteMessageAddedAsync(long? idMessageAdded, TLChat? x5, long? accessHash,

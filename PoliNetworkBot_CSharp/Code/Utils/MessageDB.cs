@@ -254,11 +254,11 @@ public static class MessageDb
         {
             var s = dr[v].ToString();
             var r = DateTimeClass.GetDateTimeFromString(s);
-            if (r is { Item2: null, Item1: { } })
+            if (r is { Item2: null, Item1: not null })
             {
             }
 
-            if (r is { Item1: { } })
+            if (r is { Item1: not null })
                 return r.Item1.Value;
         }
         catch
