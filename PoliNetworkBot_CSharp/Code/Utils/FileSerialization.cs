@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 #endregion
 
@@ -31,7 +30,7 @@ public static class FileSerialization
         try
         {
             stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
-            SerializeFile(objectToWrite, ref stream);
+            SampleNuGet.Utils.SerializeUtil.SerializeObjectToStream(objectToWrite, ref stream);
             stream?.Close();
             return new Tuple<bool, Exception?>(true, null);
         }
@@ -50,67 +49,6 @@ public static class FileSerialization
         }
     }
 
-    /// <summary>
-    ///     Reads an object instance from a binary file.
-    /// </summary>
-    /// <typeparam name="T">The type of object to read from the binary file.</typeparam>
-    /// <param name="filePath">The file path to read the object instance from.</param>
-    /// <returns>Returns a new instance of the object read from the binary file.</returns>
-    public static T? ReadFromBinaryFile<T>(string filePath)
-    {
-        Stream? stream = null;
-        try
-        {
-            stream = File.Open(filePath, FileMode.Open);
-            var binaryFormatter = new BinaryFormatter();
-            try
-            {
-                var r = (T)binaryFormatter.Deserialize(stream);
-                try
-                {
-                    stream.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
+   
 
-                return r;
-            }
-            catch
-            {
-                try
-                {
-                    stream.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
-
-                return default;
-            }
-        }
-        catch
-        {
-            try
-            {
-                stream?.Close();
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return default;
-        }
-    }
-
-    internal static void SerializeFile<T>(T objectToWrite, ref Stream? stream)
-    {
-        var binaryFormatter = new BinaryFormatter();
-        if (stream == null) return;
-        if (objectToWrite != null)
-            binaryFormatter.Serialize(stream, objectToWrite);
-    }
 }

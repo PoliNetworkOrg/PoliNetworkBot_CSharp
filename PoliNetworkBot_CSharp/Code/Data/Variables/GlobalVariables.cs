@@ -147,7 +147,7 @@ public static class GlobalVariables
 
     private static void LoadMessagesToDelete()
     {
-        var m = FileSerialization.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
+        var m = SampleNuGet.Utils.SerializeUtil.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
         if (m is null or null)
         {
             MessagesToDelete = new List<MessageToDelete>();
