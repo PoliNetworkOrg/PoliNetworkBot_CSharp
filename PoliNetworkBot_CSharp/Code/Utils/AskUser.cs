@@ -155,7 +155,7 @@ internal static class AskUser
         string? languageCode, string? username)
     {
         var s = await AskAsync(id, question, sender, languageCode, username);
-        return DateTimeClass.GetHours(s);
+        return SampleNuGet.Utils.DateTimeClass.GetHours(s);
     }
 
     internal static async Task<Tuple<DateTimeSchedule?, Exception?, string?>?> AskDateAsync(long? id, string text,
@@ -195,7 +195,7 @@ internal static class AskUser
         var reply = await AskAsync(id, lang2, sender, lang, username);
         try
         {
-            var tuple1 = DateTimeClass.GetDateTimeFromString(reply);
+            var tuple1 = SampleNuGet.Utils.DateTimeClass.GetDateTimeFromString(reply);
             if (tuple1 != null)
             {
                 var dateTime = tuple1.Item1;

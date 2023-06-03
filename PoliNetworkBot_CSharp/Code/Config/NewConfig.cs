@@ -375,8 +375,19 @@ DELIMITER ;
     private static ValueWithException<DateTime?>? GetLastUpdateLinkTimeFromJson(JToken r3)
     {
         var r4 = r3.First;
-        return r4 is not JValue r5 ? new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound()) :
-            r5.Value == null ? null : DateTimeClass.GetFromString(r5.Value.ToString());
+        if (r4 is not JValue r5)
+            return new ValueWithException<DateTime?>(null, new JsonDateTimeNotFound());
+        if (r5.Value == null)
+            return null;
+        try
+        {
+            var x = SampleNuGet.Utils.DateTimeClass.GetFromString(r5.Value.ToString());
+            return new ValueWithException<DateTime?>(x, null);
+        }
+        catch (Exception ex)
+        {
+            return new ValueWithException<DateTime?>(null, ex);
+        }
     }
 
     private static ChatJson GetChatFromJson(JToken r3)

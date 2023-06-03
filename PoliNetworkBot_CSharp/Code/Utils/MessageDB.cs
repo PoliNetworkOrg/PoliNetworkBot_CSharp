@@ -253,7 +253,7 @@ public static class MessageDb
         try
         {
             var s = dr[v].ToString();
-            var r = DateTimeClass.GetDateTimeFromString(s);
+            var r = SampleNuGet.Utils.DateTimeClass.GetDateTimeFromString(s);
             if (r is { Item2: null, Item1: not null })
             {
             }
@@ -377,7 +377,7 @@ public static class MessageDb
         }
 
         var text1 = "📌 ID: " + count + "\n";
-        if (dt != null) text1 += "📅 " + DateTimeClass.DateTimeToAmericanFormat(dt) + "\n";
+        if (dt != null) text1 += "📅 " + SampleNuGet.Utils.DateTimeClass.DateTimeToAmericanFormat(dt) + "\n";
         if (fromIdEntity != null)
         {
             var entityName = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);

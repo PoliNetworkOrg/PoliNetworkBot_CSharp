@@ -537,7 +537,17 @@ internal static class RestrictUser
         IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
         bool? revokeMessage)
     {
-        var d1 = DateTimeClass.GetDateTime(target);
+        ValueWithException<DateTime?> d1;
+        try
+        {
+            var dd1 = SampleNuGet.Utils.DateTimeClass.GetDateTime(target);
+            d1 = new ValueWithException<DateTime?>(dd1, null);
+        }
+        catch (Exception ex)
+        {
+            d1 = new ValueWithException<DateTime?>(null, ex);
+        }
+
         try
         {
             var targetUserObject = new TargetUserObject(target, sender, e);

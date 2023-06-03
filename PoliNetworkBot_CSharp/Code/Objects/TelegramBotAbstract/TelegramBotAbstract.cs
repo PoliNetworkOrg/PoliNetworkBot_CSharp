@@ -1466,7 +1466,7 @@ public class TelegramBotAbstract
         {
             case BotTypeApi.REAL_BOT:
 
-                var untilDate = DateTimeClass.GetUntilDate(time);
+                var untilDate = SampleNuGet.Utils.DateTimeClass.GetUntilDate(time);
 
                 try
                 {
