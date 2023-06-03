@@ -553,8 +553,8 @@ internal static class RestrictUser
             var targetUserObject = new TargetUserObject(target, sender, e);
             await BanAllUnbanAllMethod1Async(ban, targetUserObject, e, sender, lang,
                 username,
-                d1?.GetValue(), revokeMessage);
-            return new SuccessWithException(true, d1?.GetExceptions());
+                d1.GetValue(), revokeMessage);
+            return new SuccessWithException(true, d1.GetExceptions());
         }
         catch (Exception? ex)
         {
