@@ -27,6 +27,11 @@ public static class MessagesStore
 {
     private static Dictionary<string, StoredMessage?>? Store;
 
+    public static int GetStoreSize()
+    {
+        return Store?.Count ?? 0;
+    }
+
     public static void InitializeMessageStore()
     {
         try
@@ -152,8 +157,8 @@ public static class MessagesStore
         if (text == null) return SpamType.UNDEFINED;
         StoredMessage? storedMessage = null;
 
-        if (Store.ContainsKey(text))
-            storedMessage = Store[text];
+        if (Store.TryGetValue(text, out var value))
+            storedMessage = value;
 
         if (Store.ContainsKey(text))
         {
@@ -167,7 +172,7 @@ public static class MessagesStore
         {
             lock (Store)
             {
-                if (message is { Text: { } })
+                if (message is { Text: not null })
                 {
                     Store[text] = new StoredMessage
                     (
@@ -186,7 +191,7 @@ public static class MessagesStore
             if (storedMessage != null)
                 lock (storedMessage)
                 {
-                    if (message is { From: { } } && !storedMessage.FromUserId.Contains(message.From.Id))
+                    if (message is { From: not null } && !storedMessage.FromUserId.Contains(message.From.Id))
                         storedMessage.FromUserId.Add(message.From.Id);
 
                     if (message != null &&
@@ -213,9 +218,9 @@ public static class MessagesStore
         {
             if (Store != null)
                 if (text != null)
-                    if (Store.ContainsKey(text))
+                    if (Store.TryGetValue(text, out var value))
                     {
-                        var messages = Store[text]?.Messages;
+                        var messages = value?.Messages;
                         if (messages != null)
                             return messages;
                     }

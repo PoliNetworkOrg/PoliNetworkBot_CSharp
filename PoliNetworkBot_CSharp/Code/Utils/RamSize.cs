@@ -25,7 +25,7 @@ public static class RamSize
         while (true)
         {
             await CheckRamSizeThread2();
-            Thread.Sleep(1000 * 60 * 60 * 12); // every 12 hours
+            Thread.Sleep(1000 * 60 * 60 * 1); // every 1 hr
         }
     }
 
@@ -50,6 +50,14 @@ public static class RamSize
                     new Dictionary<string, string?>
                     {
                         { "en", message }
+                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+            var storeSizeMessage = "#messageStorageCount " + MessagesStore.GetStoreSize();
+            Logger.Logger.WriteLine(storeSizeMessage);
+            await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
+                new Language(
+                    new Dictionary<string, string?>
+                    {
+                        { "en", storeSizeMessage }
                     }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
         }
         catch (Exception? ex)
