@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -267,9 +268,16 @@ public static class Logger
         if (data == null)
             return null;
 
-        List<string> r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
-        return r.Aggregate((x, y) => x + "\n--------------------\n" + y).Trim();
+        StringBuilder sb = new();
+        foreach (DataRow row in data.Rows)
+        {
+            sb.Append(GetDbLogRow(row));
+            sb.Append("\\n--------------------\\n");
+        }
+
+        return sb.ToString();
     }
+
 
     private static string GetDbLogRow(DataRow dr)
     {
