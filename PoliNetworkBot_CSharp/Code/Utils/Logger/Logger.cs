@@ -268,7 +268,7 @@ public static class Logger
             return null;
 
         List<string> r = (from DataRow dr in data.Rows select GetDbLogRow(dr)).ToList();
-        return r.Aggregate((x, y) => x + "\n--------------------\n" + y).Trim();
+        return "r.Aggregate((x, y) => x + \"\\n--------------------\\n\" + y).Trim()";
     }
 
     private static string GetDbLogRow(DataRow dr)
