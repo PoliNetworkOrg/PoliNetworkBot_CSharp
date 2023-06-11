@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
@@ -37,9 +38,15 @@ internal static class BackupUtil
                 var dbFull = DbBackup.GetDb_Full(botAbstract.DbConfig);
                 var dbFullDdl = DbBackup.Get_DB_DDL_Full(botAbstract.DbConfig);
                 var backupFull = new BackupFull(dbFull, dbFullDdl);
+                const string path = "LocalJSONFile.JSON";
+                await using (TextWriter writer = File.CreateText(path))
+                {
+                    var serializer = new JsonSerializer();
+                    serializer.Serialize(writer, backupFull);
+                }
 
-                var jsonDb = JsonConvert.SerializeObject(backupFull);
-                LoggerSendFile.SendFiles(sendTo, jsonDb, botAbstract,
+                var serializedText = await File.ReadAllTextAsync(path);
+                LoggerSendFile.SendFiles(sendTo, serializedText, botAbstract,
                     "Backup DB", applicationJson, "db_full.json");
             }
         }
