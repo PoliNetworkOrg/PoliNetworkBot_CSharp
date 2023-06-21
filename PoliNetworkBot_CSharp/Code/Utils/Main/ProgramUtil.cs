@@ -518,6 +518,7 @@ public static class ProgramUtil
                 }
                 
                 Thread.Sleep(200);
+                
             }
             catch (Exception? e)
             {

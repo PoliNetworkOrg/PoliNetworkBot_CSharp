@@ -27,6 +27,7 @@ public static class ThreadAsyncModeration
 {
     public static void DoThingsAsyncBot()
     {
+        return;
         var t = new Thread(CheckMessagesToSend);
         t.Start();
 
