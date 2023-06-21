@@ -489,6 +489,7 @@ public static class ProgramUtil
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit:20, timeout: 250).Result.ToList();
+                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset, LogSeverityLevel.DEBUG);
                 }
                 catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
