@@ -109,6 +109,8 @@ public static class MessageDb
         var dt = Database.ExecuteSelectUnlogged(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
         );
+        
+        Logger.Logger.WriteLine("Successfully queried in CheckMessagesToSend", LogSeverityLevel.DEBUG);
 
         if (dt == null || dt.Rows.Count == 0)
             return false;
@@ -145,6 +147,8 @@ public static class MessageDb
                 await NotifyUtil.NotifyOwnerWithLog2(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
                     EventArgsContainer.Get(messageEventArgs));
             }
+        
+        Logger.Logger.WriteLine("Successfully ended method with success in CheckMessagesToSend", LogSeverityLevel.DEBUG);
 
         return true;
     }

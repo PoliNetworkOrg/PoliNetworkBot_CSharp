@@ -312,6 +312,7 @@ public static class ThreadAsyncModeration
             try
             {
                 await MessageDb.CheckMessagesToSend(false, BotUtil.GetFirstModerationRealBot(), null);
+                Logger.WriteLine("Successfully ended method CheckMessagesToSend", LogSeverityLevel.DEBUG);
             }
             catch (Exception? ex)
             {
