@@ -486,10 +486,11 @@ public static class ProgramUtil
                 List<Update>? updates = null;
                 try
                 {
+                    Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
                         updates = botClientWhole.BotClient.GetUpdatesAsync(limit:20, timeout: 250).Result.ToList();
                 }
-                catch (ApiRequestException e) // Overlap in cluster to verify healthy application
+                catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
                     Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     Logger.Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
@@ -516,9 +517,7 @@ public static class ProgramUtil
                         }
                     }
                 }
-                
-                Thread.Sleep(200);
-                
+
             }
             catch (Exception? e)
             {

@@ -109,8 +109,6 @@ public static class MessageDb
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
         );
         
-        Logger.Logger.WriteLine("Successfully queried in CheckMessagesToSend", LogSeverityLevel.DEBUG);
-
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -147,8 +145,6 @@ public static class MessageDb
                     EventArgsContainer.Get(messageEventArgs));
             }
         
-        Logger.Logger.WriteLine("Successfully ended method with success in CheckMessagesToSend", LogSeverityLevel.DEBUG);
-
         return true;
     }
 

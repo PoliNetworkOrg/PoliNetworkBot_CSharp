@@ -253,11 +253,9 @@ public static class ThreadAsyncModeration
         }
         // ReSharper disable once FunctionNeverReturns
     }
-
-#pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
-
+    
+    
     private static TelegramBotAbstract? GetFirstBot()
-#pragma warning restore IDE0051 // Rimuovi i membri privati inutilizzati
     {
         if (GlobalVariables.Bots == null) return null;
         foreach (var bot2 in GlobalVariables.Bots.Keys.Select(bot => GlobalVariables.Bots[bot]))
@@ -312,7 +310,6 @@ public static class ThreadAsyncModeration
             try
             {
                 await MessageDb.CheckMessagesToSend(false, BotUtil.GetFirstModerationRealBot(), null);
-                Logger.WriteLine("Successfully ended method CheckMessagesToSend", LogSeverityLevel.DEBUG);
             }
             catch (Exception? ex)
             {

@@ -44,7 +44,7 @@ public static class MessagesStore
         {
             File.Create(Paths.Data.MessageStore);
             Store = new Dictionary<string, StoredMessage?>();
-            Logger.WriteLine(ex);
+            Logger.WriteLine("initialized Message Store");
         }
     }
 
