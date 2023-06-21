@@ -89,6 +89,8 @@ public static class Logger
 
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
+        Console.WriteLine(log);
+        return;
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
         try
