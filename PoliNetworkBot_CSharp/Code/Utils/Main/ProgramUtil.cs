@@ -68,17 +68,22 @@ public static class ProgramUtil
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-
-        Thread.Sleep(1000*3600*24);
+        
         try
         {
             while (true)
+            {
+                Thread.Sleep(1000);
                 Console.ReadKey();
+            }
         }
         catch (Exception)
         {
             while (true)
+            {
+                Thread.Sleep(1000);
                 Console.Read();
+            }
         }
     }
 
@@ -360,8 +365,6 @@ public static class ProgramUtil
                         anonBots++;
                 }
 
-        return; //todo
-
         if (BotConfigAll.UserBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
             if (BotConfigAll.UserBotsInfos.bots != null)
                 foreach (var userbot in BotConfigAll.UserBotsInfos.bots)
@@ -439,7 +442,6 @@ public static class ProgramUtil
     private static void PreStartupActionsAsync(TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
-        return; //todo
         if (Logger.Logger.ContainsCriticalErrors(out var critics))
         {
             var toSend = "WARNING! \n";
@@ -487,8 +489,6 @@ public static class ProgramUtil
         while (true)
             try
             {
-                Thread.Sleep(1000*3600*24);
-                continue; //todo
                 List<Update>? updates = null;
                 try
                 {

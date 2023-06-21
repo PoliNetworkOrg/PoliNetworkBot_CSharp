@@ -90,7 +90,6 @@ public static class Logger
     public static void WriteLine(object? log, LogSeverityLevel logSeverityLevel = LogSeverityLevel.INFO)
     {
         Console.WriteLine(log);
-        return; //todo 
         if (log == null || string.IsNullOrEmpty(log.ToString()))
             return;
         try
@@ -211,7 +210,6 @@ public static class Logger
 
     private static void PrintLog(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs)
     {
-        return; //todo
         lock (PrintLogLock)
         {
             try
