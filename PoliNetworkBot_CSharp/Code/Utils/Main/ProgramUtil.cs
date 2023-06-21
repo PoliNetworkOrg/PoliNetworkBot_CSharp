@@ -358,6 +358,8 @@ public static class ProgramUtil
                         anonBots++;
                 }
 
+        return; //todo
+
         if (BotConfigAll.UserBotsInfos != null && advancedModeDebugDisguised == false && runOnlyNormalBot == false)
             if (BotConfigAll.UserBotsInfos.bots != null)
                 foreach (var userbot in BotConfigAll.UserBotsInfos.bots)
