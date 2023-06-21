@@ -27,35 +27,35 @@ public static class ThreadAsyncModeration
 {
     public static void DoThingsAsyncBot()
     {
-        // var t = new Thread(CheckMessagesToSend);
-        // t.Start();
+        var t = new Thread(CheckMessagesToSend);
+        t.Start();
 
-        // var t2 = new Thread(CheckMessagesToDeleteAsync);
+        var t2 = new Thread(CheckMessagesToDeleteAsync);
         // t2.Start();
 
-        // var t4 = new Thread(DoBackupAndMessageStore);
+        var t4 = new Thread(DoBackupAndMessageStore);
         // t4.Start();
 
-        // var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
+        var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
         // t5.Start();
 
         var t6 = new Thread(StartLogger);
-        t6.Start();
+        //t6.Start();
 
         var t7 = new Thread(SayYouRestarted);
-        t7.Start();
+        //t7.Start();
 
         var t8 = new Thread(UpdateGroups);
-        t8.Start();
+        //t8.Start();
 
         var t9 = new Thread(DoCheckCallbackDataExpired);
-        t9.Start();
+        //t9.Start();
 
         var t10 = new Thread(AutomaticLog);
-        t10.Start();
+        //t10.Start();
 
         var t11 = new Thread(CheckRamSize);
-        t11.Start();
+        //t11.Start();
 
         //var t3 = new Thread(FixThings);
         //t3.Start();
