@@ -94,9 +94,10 @@ public static class ProgramUtil
         if (!Directory.Exists("./data"))
             Directory.CreateDirectory("./data");
 
-        MessagesStore.InitializeMessageStore();
-        CallbackUtils.CallbackUtils.InitializeCallbackDatas();
-        DbConfig.InitializeDbConfig();
+        //MessagesStore.InitializeMessageStore();
+        //CallbackUtils.CallbackUtils.InitializeCallbackDatas();
+        //DbConfig.InitializeDbConfig();
+        //todo
 
         var currentTimeZone = TimeZoneInfo.Local;
         Logger.Logger.WriteLine("Current TimeZone: " + currentTimeZone + " time: " + DateTime.Now);
@@ -480,12 +481,13 @@ public static class ProgramUtil
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
     {
-
         Logger.Logger.WriteLine("Starting on main loop for bot: " + botClientWhole.BotInfoAbstract.onMessages);
         int? offset = null;
         while (true)
             try
             {
+                Thread.Sleep(1000*3600*24);
+                continue; //todo
                 List<Update>? updates = null;
                 try
                 {
