@@ -28,7 +28,7 @@ public static class ThreadAsyncModeration
     public static void DoThingsAsyncBot()
     {
         var t = new Thread(CheckMessagesToSend);
-        t.Start();
+        //t.Start();
 
         var t2 = new Thread(CheckMessagesToDeleteAsync);
         // t2.Start();

@@ -435,6 +435,7 @@ public static class ProgramUtil
     private static void PreStartupActionsAsync(TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
+        return; //todo
         if (Logger.Logger.ContainsCriticalErrors(out var critics))
         {
             var toSend = "WARNING! \n";
