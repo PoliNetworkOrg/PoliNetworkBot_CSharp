@@ -27,7 +27,6 @@ public static class ThreadAsyncModeration
 {
     public static void DoThingsAsyncBot()
     {
-        return;
         var t = new Thread(CheckMessagesToSend);
         t.Start();
 
@@ -39,6 +38,8 @@ public static class ThreadAsyncModeration
 
         var t5 = new Thread(DoCheckAllowedMessageExpiration2Async);
         t5.Start();
+        
+        return;
 
         var t6 = new Thread(StartLogger);
         t6.Start();
