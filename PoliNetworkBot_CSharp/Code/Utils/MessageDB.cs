@@ -103,8 +103,7 @@ public static class MessageDb
     public static async Task<bool> CheckMessagesToSend(bool forceSendEverythingInQueue,
         TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? messageEventArgs)
     {
-        const string? q = "SELECT * " +
-                          "FROM Messages ";
+        const string? q = "SELECT * FROM Messages WHERE has_been_sent != 1;";
 
         var dt = Database.ExecuteSelectUnlogged(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
