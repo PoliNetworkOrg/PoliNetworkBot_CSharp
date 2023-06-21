@@ -69,14 +69,7 @@ public static class RebootUtil
         {
             // ignored
         }
-
-        using var powershell = PowerShell.Create();
-        if (ScriptUtil.DoScript(powershell, "screen -ls", true).Aggregate("", (current, a) => current + a)
-            .Contains("rebooter"))
-            return false;
-
-        ScriptUtil.DoScript(powershell, "screen -d -m -S rebooter ./static/rebooter.sh", true);
-
+        
         return true;
     }
 }

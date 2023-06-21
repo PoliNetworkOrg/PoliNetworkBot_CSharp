@@ -116,7 +116,7 @@ public static class SwitchDispatcher
                 "Cerca gruppi per titolo. @condition: devi rispondere ad un messaggio"), null,
             e => e.Message.ReplyToMessage != null),
         new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER,
-            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null),
+            new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null, enabled: false), // do not turn this on, use /kill and let kubernetes handle reboots
         new Command("sendmessageinchannel", SendMessage.SendMessageInChannel2, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "Send message in channel", "it", "Invia messaggio in canale"),

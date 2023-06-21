@@ -479,7 +479,7 @@ public static class ProgramUtil
     {
 
         Logger.Logger.WriteLine("Starting on main loop for bot: " + botClientWhole.BotInfoAbstract.onMessages);
-
+        int? offset = null;
         while (true)
             try
             {
@@ -488,7 +488,7 @@ public static class ProgramUtil
                 {
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(limit:20, timeout: 250).Result.ToList();
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit:20, timeout: 250).Result.ToList();
                 }
                 catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
@@ -502,21 +502,22 @@ public static class ProgramUtil
                     Logger.Logger.WriteLine(ex, LogSeverityLevel.EMERGENCY);
                     continue;
                 }
-                
-                if (updates?.Count > 0)
+
+                if (updates == null || updates.Count == 0) continue;
+                foreach (var update in updates)
                 {
-                    foreach (var update in updates)
+                    try
                     {
-                        try
-                        {
-                            HandleUpdate(update, botClientWhole);
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
-                        }
+                        HandleUpdate(update, botClientWhole);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     }
                 }
+
+                offset ??= 0;
+                offset = updates.Last().Id + 1;
 
             }
             catch (Exception? e)
