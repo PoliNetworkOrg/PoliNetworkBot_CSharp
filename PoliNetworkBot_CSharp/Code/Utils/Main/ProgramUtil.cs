@@ -69,6 +69,7 @@ public static class ProgramUtil
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
+        Thread.Sleep(1000*3600*24);
         try
         {
             while (true)
