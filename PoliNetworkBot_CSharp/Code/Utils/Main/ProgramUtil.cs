@@ -477,9 +477,6 @@ public static class ProgramUtil
 
     private static Task StartBotsAsync2Async(BotClientWhole botClientWhole)
     {
-        const int maxWait = 1000 * 10; //10 seconds
-        var i = 0;
-        int? offset = null;
 
         Logger.Logger.WriteLine("Starting on main loop for bot: " + botClientWhole.BotInfoAbstract.onMessages);
 
@@ -490,7 +487,7 @@ public static class ProgramUtil
                 try
                 {
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, timeout: 250).Result.ToList();
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(limit:20, timeout: 250).Result.ToList();
                 }
                 catch (ApiRequestException e) // Overlap in cluster to verify healthy application
                 {
@@ -504,38 +501,10 @@ public static class ProgramUtil
                     Logger.Logger.WriteLine(ex, LogSeverityLevel.EMERGENCY);
                     continue;
                 }
-
-                if (updates != null)
+                
+                if (updates?.Count > 0)
                 {
-                    var duplicates = updates.GroupBy(s => s.Id).SelectMany(grp => grp.Skip(1)).ToList();
-
-                    if (duplicates.Count > 0)
-                    {
-                        foreach (var duplicate in duplicates)
-                        {
-                            var msg = "I found a duplicated update";
-                            msg += "\n";
-                            msg += "----";
-                            msg += "\n";
-                            msg += "ID: " + duplicate.Id;
-                            msg += "\n";
-                            msg += "Message: " + duplicate.Message;
-                            msg += "\n";
-                            msg += "Type: " + duplicate.Type;
-                            Logger.Logger.WriteLine(msg, LogSeverityLevel.ERROR);
-                        }
-
-                        updates = updates.Distinct().ToList();
-                    }
-                }
-
-                if (updates is { Count: > 0 })
-                {
-                    i = 0;
-
-                    var updates2 = updates.OrderBy(o => o.Id).ToList();
-
-                    foreach (var update in updates2)
+                    foreach (var update in updates)
                     {
                         try
                         {
@@ -543,17 +512,12 @@ public static class ProgramUtil
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
+                            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                         }
-
-                        offset = update.Id + 1;
                     }
                 }
-
-                i++;
-
-                var wait = i * 200;
-                Thread.Sleep(wait > maxWait ? maxWait : wait);
+                
+                Thread.Sleep(200);
             }
             catch (Exception? e)
             {
