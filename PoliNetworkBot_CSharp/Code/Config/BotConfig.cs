@@ -21,10 +21,18 @@ public class BotConfig
     public List<BotInfoAbstract>? bots;
 
     public static CommandExecutionState GetConfig(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        return e != null && ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
-            e.Message.From?.LanguageCode,
-            e.Message.Chat.Type)
+    { 
+        if (e == null)
+                 return CommandExecutionState.UNMET_CONDITIONS;
+        
+        var eMessage = e.Message;
+        var eMessageFrom = eMessage.From;
+        var eMessageChat = eMessage.Chat;
+    
+        var config = ConfigUtil.GetConfig(eMessageFrom?.Id, eMessageFrom?.Username, sender,
+            eMessageFrom?.LanguageCode,
+            eMessageChat.Type, eMessage.MessageThreadId);
+        return config
             ? CommandExecutionState.SUCCESSFUL
             : CommandExecutionState.UNMET_CONDITIONS;
     }
