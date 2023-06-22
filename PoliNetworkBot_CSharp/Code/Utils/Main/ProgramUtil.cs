@@ -619,8 +619,11 @@ public static class ProgramUtil
         });
 
 
-        await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-            "", default, replyMarkupObject, "@polinetwork3bot");
+        const int chatid = 768169879;
+        const string polinetwork3Bot = "@polinetwork3bot";
+        await bot.SendTextMessageAsync(chatid, text, ChatType.Private,
+            "", default, replyMarkupObject, 
+            polinetwork3Bot, messageThreadId: null);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",
