@@ -391,9 +391,18 @@ public static class MessageDb
         };
         var text2 = new Language(dict);
         if (telegramBotAbstract != null)
-            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
+        {
+            var replyToMessageId = r1.GetMessageId();
+            return await telegramBotAbstract.SendTextMessageAsync(
+                chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
                 ParseMode.Html,
-                null, null, r1.GetMessageId(), true);
+                null, null, 
+                replyToMessageId: replyToMessageId,
+                messageThreadId: null,
+                disablePreviewLink:true,
+                splitMessage:default);
+        }
+
         return null;
     }
 
@@ -527,8 +536,8 @@ public static class MessageDb
 
     private static string? GetMessageTypeNameById(in long typeI, TelegramBotAbstract? sender)
     {
-        if (MessageTypesInRam.ContainsKey(typeI))
-            return MessageTypesInRam[typeI];
+        if (MessageTypesInRam.TryGetValue(typeI, out var id))
+            return id;
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
         var dt = Database.ExecuteSelect(q, sender?.DbConfig);
@@ -624,7 +633,7 @@ public static class MessageDb
 
         if (botClass != null)
             return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode, typeOfChatSentInto.Value);
+                caption, parseMode, typeOfChatSentInto.Value, messageThreadId: null);
         return null;
     }
 
