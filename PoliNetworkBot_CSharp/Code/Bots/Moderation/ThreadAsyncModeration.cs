@@ -170,7 +170,7 @@ public static class ThreadAsyncModeration
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
             _ = telegramBotAbstract.SendTextMessageAsync(GroupsConstants.BackupGroup, text, ChatType.Supergroup, "en",
-                ParseMode.Html, null, null);
+                ParseMode.Html, null, null, null);
         }
         catch (Exception? ex)
         {
