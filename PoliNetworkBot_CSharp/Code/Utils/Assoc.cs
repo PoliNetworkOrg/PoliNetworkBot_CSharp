@@ -62,7 +62,8 @@ public static class Assoc
     {
         try
         {
-            var replyTo = e?.Message.ReplyToMessage;
+            var message = e?.Message;
+            var replyTo = message?.ReplyToMessage;
 
             if (replyTo == null)
             {
@@ -76,8 +77,9 @@ public static class Assoc
                 { "en", "Choose the entity you are writing this message for" }
             });
 
-            var messageFromIdEntity = await GetIdEntityFromPersonAsync(e?.Message.From?.Id, languageList,
-                sender, e?.Message.From?.LanguageCode, e?.Message.From?.Username);
+            var eMessageFrom = message?.From;
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(eMessageFrom?.Id, languageList,
+                sender, eMessageFrom?.LanguageCode, eMessageFrom?.Username, message?.MessageThreadId);
 
             if (messageFromIdEntity == null)
             {
@@ -94,12 +96,12 @@ public static class Assoc
                     { "it", "Spiacente! In questo periodo hai inviato troppi messaggi" },
                     { "en", "I'm sorry! In this period you have sent too many messages" }
                 });
-                if (e?.Message == null)
+                if (message == null)
                     return false;
 
                 if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, languageList4, ChatType.Private, default,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e.Message.From?.Username);
+                    await sender.SendTextMessageAsync(message?.From?.Id, languageList4, ChatType.Private, default,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), message?.From?.Username, message?.MessageThreadId);
                 return false;
             }
 
@@ -119,23 +121,23 @@ public static class Assoc
                 new() { opt1, opt2 }
             };
 
-            if (e?.Message != null)
+            if (message != null)
             {
-                var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(e.Message.From?.Id,
-                    languageList2, sender, e.Message.From?.LanguageCode, options, e.Message.From?.Username);
+                var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(message?.From?.Id,
+                    languageList2, sender, message?.From?.LanguageCode, options, message?.From?.Username, message?.MessageThreadId);
 
                 var sentDate = new DateTime();
 
-                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], e.Message.From?.LanguageCode))
+                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], message?.From?.LanguageCode))
                 {
                     string? dateTimeString = null;
                     var parseSuccess = false;
                     while (dateTimeString == null && !parseSuccess)
                     {
-                        dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
+                        dateTimeString = await AskUser.AskAsync(e?.Message.From?.Id,
                             new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                                 "Insert a date AAAA-MM-DD HH:mm"),
-                            sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
+                            sender, e?.Message.From?.LanguageCode, e?.Message.From?.Username);
                     }
 
                     parseSuccess = DateTime.TryParseExact(
@@ -210,7 +212,7 @@ public static class Assoc
                 { "it", "Il messaggio è stato inviato correttamente" }
             });
             if (sender == null) return true;
-            if (e?.Message != null)
+            if (message != null)
                 await sender.SendTextMessageAsync(e.Message.From?.Id, lang3,
                     ChatType.Private, e.Message.From?.LanguageCode,
                     ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),

@@ -52,7 +52,7 @@ public class DictionaryUserAnswer
     }
 
     internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username)
+        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username, int? messageThreadId)
     {
         if (botId == null) return;
 
@@ -61,13 +61,13 @@ public class DictionaryUserAnswer
             // ReSharper disable once AsyncVoidLambda
             answerTelegram.WorkCompleted += async result =>
                 await OnAnswerTelegramWorkCompleted(answerTelegram, sendMessageConfirmationChoice,
-                    telegramBotAbstract, result, idUser, lang, username, botId);
+                    telegramBotAbstract, result, idUser, lang, username, botId, messageThreadId);
     }
 
 
     private async Task OnAnswerTelegramWorkCompleted(AnswerTelegram? answerTelegram, bool sendMessageConfirmationChoice,
         TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, object? result, long idUser,
-        string? lang, string? username, long? botId)
+        string? lang, string? username, long? botId, int? messageThreadId)
     {
         var crashed = true;
         try
@@ -82,7 +82,7 @@ public class DictionaryUserAnswer
                         { { "en", "You chose [" + result + "]" }, { "it", "Hai scelto [" + result + "]" } });
                     if (telegramBotAbstract != null)
                         await telegramBotAbstract.SendTextMessageAsync(idUser, languageReply, ChatType.Private, lang,
-                            ParseMode.Html, replyMarkup, username);
+                            ParseMode.Html, replyMarkup, username, messageThreadId: messageThreadId);
                 }
 
                 answerTelegram.SetAnswerProcessed(true);
