@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
@@ -28,16 +26,26 @@ public static class RebootUtil
         });
 
         foreach (var sendToSingle in sendTo)
+        {
+            var eventArgsContainer = EventArgsContainer.Get(messageEventArgs);
             try
             {
-                SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                    null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                    EventArgsContainer.Get(messageEventArgs)).Wait();
+                var messageMessageThreadId = messageEventArgs.Message.MessageThreadId;
+                const ParseMode parseMode = ParseMode.Html;
+                var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
+                    null, 
+                    text, parseMode,
+                    messageIdToReplyTo:null,
+                    messageThreadId: messageMessageThreadId, 
+                    inlineKeyboardMarkup: InlineKeyboardMarkup.Empty(),
+                    eventArgsContainer: eventArgsContainer);
+                sendMessageInPrivate.Wait();
             }
             catch (Exception e)
             {
-                await NotifyUtil.NotifyOwnersWithLog(e, sender, null, EventArgsContainer.Get(messageEventArgs));
+                await NotifyUtil.NotifyOwnersWithLog(e, sender, null, eventArgsContainer);
             }
+        }
     }
 
     public static async Task<CommandExecutionState> RebootWithLog(MessageEventArgs? e, TelegramBotAbstract? sender)
