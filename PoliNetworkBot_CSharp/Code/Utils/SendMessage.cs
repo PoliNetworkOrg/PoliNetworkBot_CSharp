@@ -272,8 +272,8 @@ internal static class SendMessage
         try
         {
             if (sender == null) return new SuccessWithException(false);
-            await sender.ForwardMessageAsync(chatId, fromChatId, messageId, disableNotification, protectContent,
-                cancellationToken, messageThreadId);
+            await sender.ForwardMessageAsync(chatId, fromChatId, messageId,
+                disableNotification, protectContent, messageThreadId, cancellationToken);
             return new SuccessWithException(true);
         }
         catch (Exception ex)

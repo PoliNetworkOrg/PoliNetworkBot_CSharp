@@ -1839,7 +1839,7 @@ public class TelegramBotAbstract
     }
 
     public async Task ForwardMessageAsync(ChatId messageId, ChatId idChatMessageFrom, int idChatMessageTo,
-        bool? disableNotification, bool? protectContent, CancellationToken cancellationToken, int? messageThreadId)
+        bool? disableNotification, bool? protectContent, int? messageThreadId, CancellationToken cancellationToken)
     {
         switch (_isbot)
         {
