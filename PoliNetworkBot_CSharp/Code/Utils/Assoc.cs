@@ -100,8 +100,12 @@ public static class Assoc
                     return false;
 
                 if (sender != null)
-                    await sender.SendTextMessageAsync(eMessage?.From?.Id, languageList4, ChatType.Private, default,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessage?.From?.Username, eMessage?.MessageThreadId);
+                {
+                    var from = eMessage.From;
+                    await sender.SendTextMessageAsync(from?.Id, languageList4, ChatType.Private, default,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), from?.Username, eMessage.MessageThreadId);
+                }
+
                 return false;
             }
 
@@ -468,11 +472,13 @@ public static class Assoc
         var conditionOnIdEntity = "";
         Dictionary<string, object?>? dict2 = null;
 
+        var eMessage = e?.Message;
+        var from = eMessage?.From;
         if (allAssoc == false)
             if (e?.Message != null)
             {
-                var messageFromIdEntity = await GetIdEntityFromPersonAsync(e.Message.From?.Id, null,
-                    sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
+                var messageFromIdEntity = await GetIdEntityFromPersonAsync(from?.Id, null,
+                    sender, from?.LanguageCode, from?.Username, messageThreadId: eMessage?.MessageThreadId);
 
                 if (messageFromIdEntity == null)
                 {
@@ -493,12 +499,16 @@ public static class Assoc
             { "en", "There are no message in the queue!" }
         });
         if (e?.Message != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id, e.Message.From?.LanguageCode,
-                e.Message.From?.Username,
-                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        {
+            var eventArgsContainer = EventArgsContainer.Get(e);
+            await SendMessage.SendMessageInPrivate(sender, from?.Id, from?.LanguageCode,
+                from?.Username,
+                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, messageThreadId: e.Message.MessageThreadId);
+        }
 
         return null;
     }
+ 
 
     private static async Task<MessageSentResult?> SendMessageAssocToUserAsync(DataRow? m, TelegramBotAbstract? sender,
         MessageEventArgs? e, bool extraInfo, int count)
@@ -585,9 +595,11 @@ public static class Assoc
     {
         string? message = null;
 
-        if (e is { Message: { } } && (e.Message.ReplyToMessage == null ||
-                                      (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                       string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
+        var eMessage = e?.Message;
+        var messageReplyToMessage = eMessage?.ReplyToMessage;
+        if (e is { Message: not null } && (messageReplyToMessage == null ||
+                                           (string.IsNullOrEmpty(messageReplyToMessage.Text) &&
+                                            string.IsNullOrEmpty(messageReplyToMessage.Caption))))
         {
             // the command is being called without a reply, ask for the message:
             var question = new Language(new Dictionary<string, string?>
@@ -595,14 +607,17 @@ public static class Assoc
                 { "en", "Type the message you want to allow" },
                 { "it", "Scrivi il messaggio che vuoi approvare" }
             });
-            message = await AskUser.AskAsync(e.Message.From?.Id, question, sender, e.Message.From?.LanguageCode,
-                e.Message.From?.Username, true);
+            var message1From = eMessage?.From;
+            message = await AskUser.AskAsync(message1From?.Id, question, sender, message1From?.LanguageCode,
+                message1From?.Username,  eMessage?.MessageThreadId, true);
         }
         else
         {
             // the message which got replied to is used for the text
-            if (e?.Message?.ReplyToMessage != null)
-                message = e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage?.Caption;
+            if (messageReplyToMessage != null)
+            {
+                message = messageReplyToMessage?.Text ?? messageReplyToMessage?.Caption;
+            }
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>
@@ -610,18 +625,18 @@ public static class Assoc
             { "en", "In which groups do you want to allow it?" },
             { "it", "In quale gruppo le vuoi approvare?" }
         });
-        var groups = await AskUser.AskAsync(e?.Message?.From?.Id, groupsQuestion, sender,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, true);
+        var groups = await AskUser.AskAsync(eMessage?.From?.Id, groupsQuestion, sender,
+            eMessage?.From?.LanguageCode,
+            eMessage?.From?.Username, eMessage?.MessageThreadId, true);
 
         var typeQuestion = new Language(new Dictionary<string, string?>
         {
             { "en", "What type of message is it? (e.g Promotional message, Invite to an event, ecc.)" },
             { "it", "Che tipo di messagio è? (ad esempio Messaggio promozionale, Invito ad un evento, ecc.)" }
         });
-        var messageType = await AskUser.AskAsync(e?.Message?.From?.Id, typeQuestion, sender,
-            e?.Message?.From?.LanguageCode,
-            e?.Message?.From?.Username, true);
+        var messageType = await AskUser.AskAsync(eMessage?.From?.Id, typeQuestion, sender,
+            eMessage?.From?.LanguageCode,
+            eMessage?.From?.Username, eMessage?.MessageThreadId, true);
 
         var assocList = await GetAssocList();
         var assocQuestion = new Language(new Dictionary<string, string?>
@@ -653,12 +668,13 @@ public static class Assoc
 
         var options = KeyboardMarkup.ArrayToMatrixString(assocAndClub);
 
-        if (e?.Message?.From == null) return;
+        if (eMessage?.From == null) return;
 
-        var assocOrClub = await AskUser.AskBetweenRangeAsync(e.Message.From.Id, assocQuestion,
-            lang: e.Message.From.LanguageCode,
-            options: options, username: e.Message.From.Username, sendMessageConfirmationChoice: true,
-            sender: sender);
+        var eMessageFrom = eMessage.From;
+        var assocOrClub = await AskUser.AskBetweenRangeAsync(eMessageFrom.Id, assocQuestion,
+            lang: eMessageFrom.LanguageCode,
+            options: options, username: eMessageFrom.Username, sendMessageConfirmationChoice: true,
+            sender: sender, messageThreadId: eMessage.MessageThreadId);
 
         if (assocOrClub is "Departmental Club" or "Club Dipartimentale")
         {
@@ -667,13 +683,14 @@ public static class Assoc
                 { "en", "What is the name of the departimental club?" },
                 { "it", "Qual è il nome del club dipartimentale?" }
             });
-            assocOrClub = await AskUser.AskAsync(e.Message.From.Id, depClub, sender,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username, true);
+            assocOrClub = await AskUser.AskAsync(eMessageFrom.Id, depClub, sender,
+                eMessageFrom.LanguageCode,
+                eMessageFrom.Username,  eMessage.MessageThreadId, true);
         }
 
+        var eventArgsContainer = EventArgsContainer.Get(e);
         var permittedSpamMessage =
-            await NotifyUtil.NotifyAllowedMessage(sender, EventArgsContainer.Get(e), message, groups,
+            await NotifyUtil.NotifyAllowedMessage(sender, eventArgsContainer, message, groups,
                 messageType, assocOrClub);
 
         var privateConfirmationMessage = new Language(new Dictionary<string, string?>
@@ -682,15 +699,15 @@ public static class Assoc
         });
 
         await SendMessage.SendMessageInPrivate(sender,
-            e.Message.From.Id, "uni",
+            eMessageFrom.Id, "uni",
             null, privateConfirmationMessage,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
 
         var splitMessage = false;
 
         if (message is { Length: > 4000 })
         {
-            permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(EventArgsContainer.Get(e),
+            permittedSpamMessage = NotifyUtil.CreatePermittedSpamMessage(eventArgsContainer,
                 "#### MESSAGE IS TOO LONG! Read above this message ####", groups, messageType,
                 assocOrClub);
             splitMessage = true;
@@ -764,6 +781,7 @@ public static class Assoc
 
         long? replyTo = null;
 
+        var message2 = messageEventArgs?.Message;
         if (splitMessage)
             if (sender != null)
             {
@@ -771,7 +789,7 @@ public static class Assoc
                     new Dictionary<string, string?>
                     {
                         { "en", message }
-                    }), ChatType.Group, "en", ParseMode.Html, null, null);
+                    }), ChatType.Group, "en", ParseMode.Html, null, null, message2?.MessageThreadId);
                 replyTo = m?.GetMessageId();
             }
 
@@ -791,7 +809,7 @@ public static class Assoc
 
         await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato,
-            councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
+            councilMessage, sender, ChatType.Group, "uni", null,  message2?.MessageThreadId, true, replyTo);
 
         _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
     }
