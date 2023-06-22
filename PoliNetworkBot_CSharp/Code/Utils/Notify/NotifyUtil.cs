@@ -38,10 +38,12 @@ internal static class NotifyUtil
         EventArgsContainer? messageEventArgs)
     {
         var title = messageEventArgs?.MessageEventArgs?.Message.Chat.Title;
-        if (messageEventArgs is not { MessageEventArgs.Message: { } })
+        if (messageEventArgs is not { MessageEventArgs.Message: not null })
             return false;
 
-        var text = messageEventArgs.MessageEventArgs.Message.Text ?? messageEventArgs.MessageEventArgs.Message.Caption;
+        var eventArgs = messageEventArgs.MessageEventArgs;
+        var eventArgsMessage = eventArgs.Message;
+        var text = eventArgsMessage.Text ?? eventArgsMessage.Caption;
         if (text == null)
         {
             var ex = new Exception("text null and caption null in permitted spam notification");
@@ -61,10 +63,10 @@ internal static class NotifyUtil
         message += "\n\n";
         message += "@@@@@@@";
         message += "\n\n";
-        message += "#IDGroup_" + (messageEventArgs.MessageEventArgs.Message.Chat.Id > 0
-            ? messageEventArgs.MessageEventArgs.Message.Chat.Id.ToString()
-            : "n" + -1 * messageEventArgs.MessageEventArgs.Message.Chat.Id);
-        message += "\n" + "#IDUser_" + messageEventArgs.MessageEventArgs.Message.From?.Id;
+        message += "#IDGroup_" + (eventArgsMessage.Chat.Id > 0
+            ? eventArgsMessage.Chat.Id.ToString()
+            : "n" + -1 * eventArgsMessage.Chat.Id);
+        message += "\n" + "#IDUser_" + eventArgsMessage.From?.Id;
         message += "\n\n";
         message += "Message tag: #" + hashText;
 
@@ -77,7 +79,7 @@ internal static class NotifyUtil
         var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
             GroupsConstants.PermittedSpamGroup,
             ChatType.Group,
-            ParseMode.Html, null, true);
+            ParseMode.Html, null, true, eventArgsMessage.MessageThreadId);
         return m != null && m.IsSuccess();
     }
 
@@ -147,15 +149,18 @@ internal static class NotifyUtil
     internal static Task NotifyOwners_AnError_AndLog3(string? v, TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs, FileTypeJsonEnum whatWeWant, SendActionEnum sendActionEnum)
     {
+        var eventArgs = messageEventArgs?.MessageEventArgs;
         return NotifyOwners_AnError_AndLog(new Language(new Dictionary<string, string?> { { "it", v } }),
             telegramBotAbstract,
-            null, null, messageEventArgs, null, whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION);
+            null, null, messageEventArgs, 
+            null, whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION, eventArgs?.Message.MessageThreadId);
     }
 
     private static async Task<List<MessageSentResult>?> NotifyOwners_AnError_AndLog(Language text2,
         TelegramBotAbstract? sender,
         long? replyToMessageId, string? langCode, EventArgsContainer? messageEventArgs, StringJson? fileContent,
-        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum, TextAsCaption textAsCaptionParam)
+        FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum, TextAsCaption textAsCaptionParam,
+        int? messageThreadId)
     {
         Logger.Logger.WriteLine(text2.Select(langCode), LogSeverityLevel.ERROR);
 
@@ -170,7 +175,8 @@ internal static class NotifyUtil
             case SendActionEnum.SEND_TEXT:
                 var x = await SendMessage.SendMessageInAGroup(sender, langCode, text, messageEventArgs,
                     GroupsConstants.GroupException,
-                    ChatType.Group, ParseMode.Html, replyToMessageId, true);
+                    ChatType.Group, ParseMode.Html, replyToMessageId, true,
+                    messageThreadId: messageThreadId);
                 return x != null ? new List<MessageSentResult> { x } : new List<MessageSentResult>();
         }
 
@@ -237,8 +243,10 @@ internal static class NotifyUtil
         string? langCode, long? replyTo, EventArgsContainer? messageEventArgs, StringJson? fileContent,
         FileTypeJsonEnum? whatWeWant, SendActionEnum sendActionEnum)
     {
+        var eventArgs = messageEventArgs?.MessageEventArgs;
+        var eventArgsMessage = eventArgs?.Message;
         return await NotifyOwners_AnError_AndLog(text, sender, replyTo, langCode, messageEventArgs, fileContent,
-            whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION);
+            whatWeWant, sendActionEnum, TextAsCaption.AS_CAPTION, eventArgsMessage?.MessageThreadId);
     }
 
     internal static void NotifyIfFalseAsync(Tuple<bool?, string, long>? r1, string extraInfo,
@@ -392,15 +400,18 @@ internal static class NotifyUtil
     {
         var peer = new PeerAbstract(GroupsConstants.GroupException, ChatType.Group);
         var destinatari = new List<PeerAbstract> { peer };
+        var eventArgs = messageEventArgs?.MessageEventArgs;
+        var eventArgsMessage = eventArgs?.Message;
+        var from = eventArgsMessage?.From;
         return SendFiles2(
             stream, filename, caption, telegramBotAbstract,
-            messageEventArgs?.MessageEventArgs?.Message.From?.Username, destinatari, parseModeCaption, replyToMessageId,
-            textAsCaptionParam);
+            from?.Username, destinatari, parseModeCaption, replyToMessageId,
+            textAsCaptionParam, eventArgsMessage?.MessageThreadId);
     }
 
     private static List<MessageSentResult> SendFiles2(Stream stream, string filename, Language? caption,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, IEnumerable<PeerAbstract> peerAbstracts,
-        ParseMode parseModeCaption, long? replyToMessageId, TextAsCaption textAsCaptionParam)
+        ParseMode parseModeCaption, long? replyToMessageId, TextAsCaption textAsCaptionParam, int? messageThreadId)
     {
         var file = TelegramFile.FromStreamJson(stream, filename, caption, textAsCaptionParam);
 
@@ -408,17 +419,21 @@ internal static class NotifyUtil
         //var peer = new PeerAbstract(e?.Message?.From?.Id, message.Chat.Type);
 
 
-        return peerAbstracts.Select(peer =>
-                SendFiles3(peer, file, telegramBotAbstract, fromUsername, replyToMessageId, parseModeCaption))
+        MessageSentResult Selector(PeerAbstract peer) => SendFiles3(peer, file, telegramBotAbstract,
+            fromUsername, replyToMessageId, parseModeCaption, messageThreadId: messageThreadId);
+        
+        return peerAbstracts.Select((Func<PeerAbstract, MessageSentResult>)Selector)
             .ToList();
     }
 
     private static MessageSentResult SendFiles3(PeerAbstract peer, TelegramFile file,
         TelegramBotAbstract? telegramBotAbstract, string? fromUsername, long? replyToMessageId,
-        ParseMode parseModeCaption)
+        ParseMode parseModeCaption, int? messageThreadId)
     {
         var b = SendMessage.SendFileAsync(file, peer,
-            telegramBotAbstract, fromUsername, "en",
+            telegramBotAbstract, fromUsername, 
+            messageThreadId,
+            "en",
             replyToMessageId, true, parseModeCaption);
         return new MessageSentResult(b, null, peer.Type);
     }
@@ -435,8 +450,10 @@ internal static class NotifyUtil
 
                 var message = "Restrict action: " + restrictAction;
                 message += "\n";
+                var eventArgs = messageEventArgs.MessageEventArgs;
+                var eventArgsMessage = eventArgs.Message;
                 message += "Restricted by: " +
-                           UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.MessageEventArgs.Message.From);
+                           UserbotPeer.GetHtmlStringWithUserLink(eventArgsMessage.From);
                 message += "\n";
                 message += "For reason: \n";
                 message += reason;
@@ -455,10 +472,12 @@ internal static class NotifyUtil
                     { "it", message }
                 });
                 Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                await SendMessage.SendMessageInAGroup(
+                    sender, langCode, text2, messageEventArgs,
                     GroupsConstants.BanNotificationGroup,
                     ChatType.Group,
-                    ParseMode.Html, null, true);
+                    ParseMode.Html, null, true,
+                    messageThreadId: eventArgsMessage.MessageThreadId);
             }
         }
         catch (Exception? e)
@@ -477,13 +496,15 @@ internal static class NotifyUtil
                 if (messageEventArgs is not { MessageEventArgs.Message: { } }) return false;
                 var message = "Restrict action: " + "Simple Ban";
                 message += "\n";
+                var eventArgs = messageEventArgs.MessageEventArgs;
+                var eventArgsMessage = eventArgs.Message;
                 message += "Restricted user: " + target + "[" +
                            (string.IsNullOrEmpty(username) ? "Unknown" : " @" + username) + " ]" + " in group: " +
-                           messageEventArgs.MessageEventArgs.Message.Chat.Id + " [" +
-                           messageEventArgs.MessageEventArgs.Message.Chat.Title + "]";
+                           eventArgsMessage.Chat.Id + " [" +
+                           eventArgsMessage.Chat.Title + "]";
                 message += "\n";
                 message += "Restricted by: " +
-                           UserbotPeer.GetHtmlStringWithUserLink(messageEventArgs.MessageEventArgs.Message.From);
+                           UserbotPeer.GetHtmlStringWithUserLink(eventArgsMessage.From);
 
                 const string? langCode = "it";
                 var text2 = new Language(new Dictionary<string, string?>
@@ -491,10 +512,12 @@ internal static class NotifyUtil
                     { "it", message }
                 });
                 Logger.Logger.WriteLine(text2.Select("it"), LogSeverityLevel.ALERT);
-                var m = await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+                var m = await SendMessage.SendMessageInAGroup(
+                    sender, langCode, text2, messageEventArgs,
                     GroupsConstants.BanNotificationGroup,
                     ChatType.Group,
-                    ParseMode.Html, null, true);
+                    ParseMode.Html, null, true,
+                    messageThreadId: eventArgsMessage.MessageThreadId);
                 return m != null && m.IsSuccess();
             }
         }
@@ -542,10 +565,13 @@ internal static class NotifyUtil
         });
 
         Logger.Logger.WriteLine(text2.Select("en"), LogSeverityLevel.ALERT);
-        await SendMessage.SendMessageInAGroup(sender, langCode, text2, messageEventArgs,
+        var eventArgs = messageEventArgs?.MessageEventArgs;
+        await SendMessage.SendMessageInAGroup(
+            sender, langCode, text2, messageEventArgs,
             GroupsConstants.PermittedSpamGroup,
             ChatType.Group,
-            ParseMode.Html, null, true);
+            ParseMode.Html, null, true,
+            messageThreadId: eventArgs?.Message.MessageThreadId);
 
         return message;
     }
@@ -609,8 +635,11 @@ internal static class NotifyUtil
             return;
 
         var peer = new PeerAbstract(e?.Message.From?.Id, message.Chat.Type);
-        SendMessage.SendFileAsync(file, peer,
-            sender, e?.Message.From?.Username, e?.Message.From?.LanguageCode,
+        SendMessage.SendFileAsync(
+            file, peer,
+            sender, e?.Message.From?.Username,
+            e?.Message.MessageThreadId,
+            e?.Message.From?.LanguageCode,
             null, true);
     }
 
@@ -637,7 +666,8 @@ internal static class NotifyUtil
         foreach (var toSend in longs)
             try
             {
-                var r2 = SendReportSingle(sTosend, toSend, telegramBotAbstract);
+                var message = messageEventArgs?.Message;
+                var r2 = SendReportSingle(sTosend, toSend, telegramBotAbstract, message?.MessageThreadId);
                 r.Add(r2);
             }
             catch
@@ -648,13 +678,15 @@ internal static class NotifyUtil
         return r.All(b => b);
     }
 
-    private static bool SendReportSingle(string sTosend, long? toSendUser, TelegramBotAbstract telegramBotAbstract)
+    private static bool SendReportSingle(
+        string sTosend, long? toSendUser, TelegramBotAbstract telegramBotAbstract, int? messageThreadId)
     {
         var language = sTosend.Length < 1024 ? new L(sTosend) : new L();
         var documentInput =
             TelegramFile.FromString(sTosend, "report_execution.json", language, TextAsCaption.AS_CAPTION);
         var peer = new PeerAbstract(toSendUser, ChatType.Private);
-        var r2 = telegramBotAbstract.SendFileAsync(documentInput, peer, null, null, null, false);
+        var r2 = telegramBotAbstract.SendFileAsync(
+            documentInput, peer, null, null, null, false, messageThreadId: messageThreadId);
         return r2;
     }
 
