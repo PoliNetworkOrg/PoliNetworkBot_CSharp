@@ -233,15 +233,19 @@ public static class AutoReplyInGroups
             }
         });
         if (e != null)
+        {
+            var eMessage = e.Message;
+            var eMessageChat = eMessage.Chat;
             await SendMessage.SendMessageInAGroup(telegramBotClient,
                 "uni",
                 text,
                 EventArgsContainer.Get(e),
-                e.Message.Chat.Id,
-                e.Message.Chat.Type,
+                eMessageChat.Id,
+                eMessageChat.Type,
                 ParseMode.Html,
-                e.Message.MessageId,
-                true);
+                eMessage.MessageId,
+                true, messageThreadId: eMessage.MessageThreadId);
+        }
     }
 
     internal static void MessageInGroup2Async(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e,
