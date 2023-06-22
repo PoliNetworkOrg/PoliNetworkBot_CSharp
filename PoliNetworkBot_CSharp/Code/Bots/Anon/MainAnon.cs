@@ -561,7 +561,7 @@ internal static class MainAnon
 
         var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
             ConfigAnon.ModAnonCheckGroup,
-            language, telegramBotAbstract, ChatType.Group, "it", null, false, x?.GetMessageId());
+            language, telegramBotAbstract, ChatType.Group, "it", null,  callBackDataAnon.MessageThreadId, false, x?.GetMessageId());
 
         return m4 != null;
     }
