@@ -17,7 +17,7 @@ public static class LoggerSendFile
     public static int SendFiles(List<long?> sendTo,
         string fileContent,
         TelegramBotAbstract? sender,
-        string textToSendBefore, string applicationOctetStream, string fileName)
+        string textToSendBefore, string applicationOctetStream, string fileName, int? messageThreadId)
     {
         var id = sender?.GetId();
         if (id == null)
@@ -31,12 +31,12 @@ public static class LoggerSendFile
 
         lock (DictLock[id.Value])
         {
-            return SendFilesBehindLock(textToSendBefore, sendTo, fileContent, applicationOctetStream, sender, fileName);
+            return SendFilesBehindLock(textToSendBefore, sendTo, fileContent, applicationOctetStream, sender, fileName, messageThreadId: messageThreadId);
         }
     }
 
     private static int SendFilesBehindLock(string textToSendBefore, List<long?> sendTo, string fileContent,
-        string fileMimeType, TelegramBotAbstract? sender, string fileName)
+        string fileMimeType, TelegramBotAbstract? sender, string fileName, int? messageThreadId)
     {
         try
         {
@@ -59,7 +59,7 @@ public static class LoggerSendFile
 
                     SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
                             text2, fileMimeType, TextAsCaption.AS_CAPTION), peer,
-                        sender, null, lang, null, true);
+                        sender, null, messageThreadId, lang, null, true);
 
                     done++;
                 }
