@@ -28,7 +28,7 @@ internal static class BackupUtil
 
 
     public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
-        ChatType chatType)
+        ChatType chatType, int? messageThreadId)
     {
         try
         {
@@ -47,7 +47,7 @@ internal static class BackupUtil
 
                 var serializedText = await File.ReadAllTextAsync(path);
                 LoggerSendFile.SendFiles(sendTo, serializedText, botAbstract,
-                    "Backup DB", applicationJson, "db_full.json");
+                    "Backup DB", applicationJson, "db_full.json", messageThreadId: messageThreadId);
             }
         }
         catch (Exception? ex)
@@ -63,9 +63,11 @@ internal static class BackupUtil
         if (sender == null)
             return CommandExecutionState.NOT_TRIGGERED;
 
-        var fromId = e.Message.From.Id;
-        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, e.Message.From.Username,
-            e.Message.Chat.Type);
+        var eMessage = e.Message;
+        var eMessageFrom = eMessage.From;
+        var fromId = eMessageFrom.Id;
+        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, eMessageFrom.Username,
+            eMessage.Chat.Type, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }
