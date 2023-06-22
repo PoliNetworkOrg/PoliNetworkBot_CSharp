@@ -17,7 +17,7 @@ internal static class AskUser
     public static readonly DictionaryUserAnswer UserAnswers = new();
 
     internal static async Task<string?> AskAsync(long? idUser, Language question,
-        TelegramBotAbstract? sender, string? lang, string? username, bool sendMessageConfirmationChoice = false)
+        TelegramBotAbstract? sender, string? lang, string? username, int? messageThreadId, bool sendMessageConfirmationChoice = false)
     {
         if (sender == null) return null;
         var botId = sender.GetId();
@@ -25,7 +25,7 @@ internal static class AskUser
         UserAnswers.Reset(idUser, botId);
 
         await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
-            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
+            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username, messageThreadId:messageThreadId);
 
         var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
         UserAnswers.Delete(idUser, botId);
@@ -62,7 +62,7 @@ internal static class AskUser
 
     internal static async Task<string?> AskBetweenRangeAsync(long? idUser, Language? question,
         TelegramBotAbstract? sender, string? lang, IEnumerable<List<Language>>? options,
-        string? username,
+        string? username, int? messageThreadId,
         bool sendMessageConfirmationChoice = true, long? messageIdToReplyTo = 0)
     {
         if (sender == null) return null;
@@ -81,7 +81,7 @@ internal static class AskUser
 
             var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
                 parseMode: ParseMode.Html, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
-                replyToMessageId: messageIdToReplyTo);
+                replyToMessageId: messageIdToReplyTo, messageThreadId: messageThreadId);
         }
 
         var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
@@ -102,13 +102,15 @@ internal static class AskUser
             { "it", "In che sede?" },
             { "en", "In which territorial pole?" }
         });
-        var reply = await AskBetweenRangeAsync(e?.Message.From?.Id,
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        var reply = await AskBetweenRangeAsync(eMessageFrom?.Id,
             sender: sender,
-            lang: e?.Message.From?.LanguageCode,
+            lang: eMessageFrom?.LanguageCode,
             options: options,
-            username: e?.Message.From?.Username,
+            username: eMessageFrom?.Username,
             sendMessageConfirmationChoice: true,
-            question: question);
+            question: question, messageThreadId : eMessage?.MessageThreadId);
 
         if (string.IsNullOrEmpty(reply))
             return null;

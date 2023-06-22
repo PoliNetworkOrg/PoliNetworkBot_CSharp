@@ -26,7 +26,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 public static class Assoc
 {
     private static async Task<long?> GetIdEntityFromPersonAsync(long? id, Language? question,
-        TelegramBotAbstract? sender, string? lang, string? username)
+        TelegramBotAbstract? sender, string? lang, string? username, int? messageThreadId)
     {
         const string? q =
             "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
@@ -53,7 +53,7 @@ public static class Assoc
 
         var options = KeyboardMarkup.ArrayToMatrixString(l3);
         var r2 = await AskUser.AskBetweenRangeAsync(id, question, sender, lang,
-            options, username);
+            options, username, messageThreadId);
 
         return r2 != null ? l[r2] : null;
     }

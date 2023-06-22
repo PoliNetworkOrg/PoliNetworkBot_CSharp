@@ -73,17 +73,19 @@ internal static class MainAnon
 
     private static async Task DetectMessageAsync(TelegramBotAbstract? telegramBotAbstract, MessageEventArgs? e)
     {
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
         if (telegramBotAbstract != null)
         {
             var botId = telegramBotAbstract.GetId();
 
-            if (AskUser.UserAnswers.ContainsUser(e?.Message.From?.Id, botId))
-                if (AskUser.UserAnswers.GetState(e?.Message.From?.Id, botId) ==
+            if (AskUser.UserAnswers.ContainsUser(eMessageFrom?.Id, botId))
+                if (AskUser.UserAnswers.GetState(eMessageFrom?.Id, botId) ==
                     AnswerTelegram.State.WAITING_FOR_ANSWER)
                 {
-                    var text = e?.Message.Text;
+                    var text = eMessage?.Text;
                     if (text != null)
-                        AskUser.UserAnswers.RecordAnswer(e?.Message.From?.Id, botId, text);
+                        AskUser.UserAnswers.RecordAnswer(eMessageFrom?.Id, botId, text);
                     return;
                 }
         }
@@ -104,11 +106,11 @@ internal static class MainAnon
             }
         };
 
-        var m1 = e?.Message;
+        var m1 = eMessage;
         if (m1 != null)
         {
-            var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
-                e?.Message.From?.LanguageCode, options, e?.Message.From?.Username, true, m1.MessageId);
+            var r = await AskUser.AskBetweenRangeAsync(eMessageFrom?.Id, question, telegramBotAbstract,
+                eMessageFrom?.LanguageCode, options, eMessageFrom?.Username, eMessage?.MessageThreadId, true, m1.MessageId);
             if (l1.Matches(r))
             {
                 //yes
@@ -123,9 +125,9 @@ internal static class MainAnon
             { "en", "Ok. If you need any help, use /help" }
         });
         if (telegramBotAbstract != null)
-            await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l3, ChatType.Private,
-                e?.Message.From?.LanguageCode, ParseMode.Html, 
-                null, e?.Message.From?.Username, e?.Message.MessageThreadId);
+            await telegramBotAbstract.SendTextMessageAsync(eMessageFrom?.Id, l3, ChatType.Private,
+                eMessageFrom?.LanguageCode, ParseMode.Html, 
+                null, eMessageFrom?.Username, eMessage?.MessageThreadId);
     }
 
     private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract? telegramBotAbstract,
@@ -151,12 +153,13 @@ internal static class MainAnon
             }
         };
 
-        var m1 = e?.Message;
-        if (m1 != null)
+        var eMessage = e?.Message;
+        if (eMessage != null)
         {
-            var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, telegramBotAbstract,
-                e?.Message.From?.LanguageCode, options,
-                e?.Message.From?.Username, true, m1.MessageId);
+            var eMessageFrom = eMessage.From;
+            var r = await AskUser.AskBetweenRangeAsync(eMessageFrom?.Id, question, telegramBotAbstract,
+                eMessageFrom?.LanguageCode, options,
+                eMessageFrom?.Username,eMessage.MessageThreadId, true, eMessage.MessageId);
 
             if (l1.Matches(r))
             {
@@ -202,8 +205,10 @@ internal static class MainAnon
         {
             { "it", "Inserisci il link del messaggio a cui vuoi rispondere" }
         });
-        var r = await AskUser.AskAsync(e?.Message.From?.Id, question, telegramBotAbstract,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        var r = await AskUser.AskAsync(eMessageFrom?.Id, question, telegramBotAbstract,
+            eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessage?.MessageThreadId);
         if (r != null)
         {
             var tuple = GetMessageReply(r);
@@ -222,9 +227,9 @@ internal static class MainAnon
             });
 
             if (telegramBotAbstract != null)
-                await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l2, ChatType.Private,
-                    e?.Message.From?.LanguageCode, ParseMode.Html,
-                    null, e?.Message.From?.Username, e?.Message.MessageThreadId);
+                await telegramBotAbstract.SendTextMessageAsync(eMessageFrom?.Id, l2, ChatType.Private,
+                    eMessageFrom?.LanguageCode, ParseMode.Html,
+                    null, eMessageFrom?.Username, eMessage?.MessageThreadId);
         }
     }
 

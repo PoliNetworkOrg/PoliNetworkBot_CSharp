@@ -23,7 +23,8 @@ internal static class Rooms
 {
     internal static async Task RoomsMainAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
-        if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
+        var message = e?.Message;
+        if (message != null && message.Chat.Type != ChatType.Private)
             return;
 
         var question = new Language(new Dictionary<string, string?>
@@ -58,10 +59,10 @@ internal static class Rooms
         };
         var o3 = KeyboardMarkup.ArrayToMatrixString(options2);
 
-        var r = await AskUser.AskBetweenRangeAsync(e?.Message.From?.Id, question, lang: e?.Message.From?.LanguageCode,
-            options: o3, username: e?.Message.From?.Username, sendMessageConfirmationChoice: true, sender: sender);
+        var r = await AskUser.AskBetweenRangeAsync(message?.From?.Id, question, lang: message?.From?.LanguageCode,
+            options: o3, username: message?.From?.Username, sendMessageConfirmationChoice: true, sender: sender, messageThreadId:message?.MessageThreadId);
 
-        var chosen = Language.FindChosen(options2, r, e?.Message.From?.LanguageCode);
+        var chosen = Language.FindChosen(options2, r, message?.From?.LanguageCode);
         if (chosen == null)
             return;
 
@@ -90,8 +91,8 @@ internal static class Rooms
             { "en", "You choose something that was not possible to choose" }
         });
         //wrong choice: (should be impossible)
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id, e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text,
+        await SendMessage.SendMessageInPrivate(sender, message?.From?.Id, message?.From?.LanguageCode,
+            message?.From?.Username, text,
             ParseMode.Html,
             null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
     }
@@ -305,7 +306,7 @@ internal static class Rooms
             { "en", "Name of the room?" }
         });
         var sigla = await AskUser.AskAsync(e?.Message.From?.Id, question, sender,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username);
+            e?.Message.From?.LanguageCode, e?.Message.From?.Username, e?.Message.MessageThreadId);
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/RicercaAula.do?spazi___model" +
                   "___formbean___RicercaAvanzataAuleVO___postBack=true&spazi___model___formbean___" +
