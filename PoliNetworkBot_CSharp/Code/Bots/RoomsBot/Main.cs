@@ -30,7 +30,7 @@ internal static class RoomsBot
 
         telegramBotClient = sender.GetTelegramBot();
 
-        if (telegramBotClient == null || e?.Message?.From == null || e.Message.Text == null)
+        if (telegramBotClient == null || e?.Message.From == null || e.Message.Text == null)
             return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
 

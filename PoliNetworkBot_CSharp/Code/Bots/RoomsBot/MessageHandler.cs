@@ -92,7 +92,7 @@ public static class MessageHandler
         L replyLang;
         var choicesToState =
             langCode == "it" ? Data.Enums.MainMenuOptionsToFunction : Data.Enums.MainMenuOptionsToStateEn;
-        var function = Data.Enums.Function.NULL_FUNCTION;
+        Data.Enums.Function function;
         if (callbackFunction != null)
         {
             function = conversation!.CurrentFunction;
@@ -111,7 +111,7 @@ public static class MessageHandler
 
             conversation!.CurrentFunction = function;
 
-            if (conversation!.Campus == null && function != Data.Enums.Function.SETTINGS)
+            if (conversation.Campus == null && function != Data.Enums.Function.SETTINGS)
             {
                 ForceSelectCampus(botClient, conversation.CurrentFunction, message, conversation);
                 return null;
@@ -144,14 +144,15 @@ public static class MessageHandler
 
     private static void SendCampusKeyboard(TelegramBotAbstract botClient, Message message, Conversation conversation)
     {
-        var langCode = message?.From?.LanguageCode ?? "en";
+        var from = message.From;
+        var langCode = from?.LanguageCode ?? "en";
         var markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode, false);
 
         var replyLang = new L("it", "Seleziona una sede", "en", "Select a campus");
 
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-        var messageMessageThreadId = message?.MessageThreadId;
-        _ = botClient.SendTextMessageAsync(message?.From?.Id, replyLang, ChatType.Private, langCode,
+        var messageMessageThreadId = message.MessageThreadId;
+        _ = botClient.SendTextMessageAsync(from?.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
             markupObject, null, messageMessageThreadId);
     }
@@ -175,7 +176,7 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom?.Contains(messageText) ?? false);
+        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom.Contains(messageText) );
         if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
@@ -260,7 +261,7 @@ public static class MessageHandler
                 markupObject, null, message.MessageThreadId);
         }
 
-        conversation!.EndHour = endHour;
+        conversation.EndHour = endHour;
         conversation.State = Data.Enums.ConversationState.START;
         return conversation.CurrentFunction switch
         {
@@ -275,7 +276,7 @@ public static class MessageHandler
         conversation.ResetConversationFunctions();
         conversation.State = Data.Enums.ConversationState.START;
         // fetching classrooms and adding necessary quarter of an hour to start and end hours
-        var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date!,
+        var freeClassrooms = Fetcher.GetFreeClassrooms(conversation.Campus!, conversation.Date,
             conversation.StartHour, conversation.EndHour);
 
         L? replyLang;
@@ -291,11 +292,11 @@ public static class MessageHandler
                 markupObject, null, message.MessageThreadId);
         }
 
-        var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom?.Trim()
+        var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom.Trim()
             .Replace("\n", "")
             .Replace("\t", "")
             .Replace("\r", "")
-            .Trim()).ToList() ?? new List<string?>();
+            .Trim()).ToList() ?? new List<string>();
 
         var freeClassroomsString = string.Concat("- ", string.Join("\n- ", fixedFreeClassRooms));
         var textIt = "Aule libere dalle " + conversation.StartHour + ".15 alle " + conversation.EndHour + ".15:\n"
@@ -424,7 +425,7 @@ public static class MessageHandler
 
         conversation!.Campus = campus;
 
-        switch (conversation!.CallbackNextFunction)
+        switch (conversation.CallbackNextFunction)
         {
             case Data.Enums.Function.FREE_CLASSROOMS_NOW:
             case Data.Enums.Function.OCCUPANCIES:
@@ -458,7 +459,7 @@ public static class MessageHandler
         UserIdToConversation.TryGetValue(message.From!.Id, out var conversation);
         var langCode = message.From!.LanguageCode;
 
-        var replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option")!;
+        var replyLang = new L("it", "Seleziona un'opzione", "en", "Select an option");
         var markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
         conversation!.State = Data.Enums.ConversationState.MAIN;

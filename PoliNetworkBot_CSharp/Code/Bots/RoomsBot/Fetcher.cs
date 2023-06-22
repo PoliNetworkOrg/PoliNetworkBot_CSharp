@@ -54,14 +54,13 @@ public class Fetcher
     public static string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
         var doc = FetchOccupationData(campus, dateTime);
-        foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
+        var htmlNodeCollection = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
+        foreach (var classNode in htmlNodeCollection)
             if (classNode.ChildNodes[1].InnerText.Contains(roomName))
             {
-                var text = Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
+                return  Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
                            Const.HtmlTableEnd;
-                return text;
             }
-
 
         return null;
     }

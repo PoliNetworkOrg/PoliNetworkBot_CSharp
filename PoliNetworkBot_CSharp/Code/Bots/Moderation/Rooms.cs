@@ -206,7 +206,8 @@ internal static class Rooms
         shiftEnd += quarterHourOffset;
 
         List<string> list = new();
-        foreach (var child in table.ChildNodes)
+        var htmlNodeCollection = table.ChildNodes;
+        foreach (var child in htmlNodeCollection)
             if (child != null)
             {
                 var toAdd = CheckIfFree(child, shiftStart, shiftEnd);

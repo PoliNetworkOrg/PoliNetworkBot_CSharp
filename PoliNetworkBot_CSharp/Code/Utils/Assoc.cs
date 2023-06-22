@@ -132,7 +132,7 @@ public static class Assoc
                 var from = eMessage.From;
                 var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(eMessageFrom1?.Id,
                     languageList2, sender, from?.LanguageCode, options, from?.Username,
-                    eMessage?.MessageThreadId);
+                    eMessage.MessageThreadId);
 
                 DateTime? sentDate = null;
 
@@ -617,7 +617,7 @@ public static class Assoc
         else
         {
             // the message which got replied to is used for the text
-            if (messageReplyToMessage != null) message = messageReplyToMessage?.Text ?? messageReplyToMessage?.Caption;
+            if (messageReplyToMessage != null) message = messageReplyToMessage.Text ?? messageReplyToMessage?.Caption;
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>
