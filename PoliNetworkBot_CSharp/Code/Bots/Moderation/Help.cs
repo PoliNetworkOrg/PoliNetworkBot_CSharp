@@ -15,8 +15,9 @@ public static class Help
 {
     public static async Task HelpSpecific(MessageEventArgs? e, TelegramBotAbstract? sender, string[] args)
     {
+        var eMessage = e?.Message;
         var command = SwitchDispatcher.Commands.Find(x =>
-            x.GetTriggers().Contains(args[0]) && x.CheckPermissions(e?.Message.From));
+            x.GetTriggers().Contains(args[0]) && x.CheckPermissions(eMessage?.From));
 
         Language text;
         if (command != null)
@@ -25,12 +26,12 @@ public static class Help
                 {
                     "en",
                     "\n<b>Command description:</b>\n" +
-                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("en")
+                    command.GetLongDescription(Permissions.GetPrivileges(eMessage?.From)).Select("en")
                 },
                 {
                     "it",
                     "\n<b>Descrizione del comando:</b>\n" +
-                    command.GetLongDescription(Permissions.GetPrivileges(e?.Message.From)).Select("it")
+                    command.GetLongDescription(Permissions.GetPrivileges(eMessage?.From)).Select("it")
                 }
             });
         else
@@ -50,10 +51,11 @@ public static class Help
                 }
             });
 
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+            eMessage?.From?.LanguageCode,
+            eMessage?.From?.Username, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     public static async Task HelpExtendedSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -72,6 +74,8 @@ public static class Help
                                "FAQ (frequently asked questions)</a>\n\n";
 
 
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
         var text2 = new Language(new Dictionary<string, string?>
         {
             {
@@ -79,20 +83,21 @@ public static class Help
                 textEng + "\n<b>Commands available:</b>\n" +
                 string.Join("",
                     SwitchDispatcher.Commands.Select(x =>
-                        x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("en")))
+                        x.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("en")))
             },
             {
                 "it",
                 text + "\n<b>Comandi disponibili:</b>\n" +
                 string.Join("",
                     SwitchDispatcher.Commands.Select(x =>
-                        x.HelpMessage(Permissions.GetPrivileges(e?.Message.From)).Select("it")))
+                        x.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("it")))
             }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
     }
 
     public static async Task HelpPrivateSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -128,9 +133,12 @@ public static class Help
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
     }
 }
