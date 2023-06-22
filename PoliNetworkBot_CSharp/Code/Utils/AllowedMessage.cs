@@ -44,9 +44,10 @@ public static class AllowedMessage
             {
                 { "uni", m2 }
             });
-            await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
+            var eMessage = e?.Message;
+            await sender.SendTextMessageAsync(eMessage?.From?.Id, text,
                 ChatType.Private,
-                "uni", ParseMode.Html, null, e?.Message?.From?.Username);
+                "uni", ParseMode.Html, null, eMessage?.From?.Username, eMessage?.MessageThreadId);
         }
 
 

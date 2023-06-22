@@ -99,7 +99,7 @@ public class Program
                         if (telegramBotClient == null) return;
                         await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id, new L("The Bot is DOWN for MAINTENANCE. Try again tomorrow\n"), ChatType.Private,
                             e?.Message?.From?.LanguageCode,
-                            ParseMode.Html, null, null);
+                            ParseMode.Html, null, null, e.Message.MessageThreadId);
                         return;
                     }
                     switch (e)
@@ -293,7 +293,7 @@ public class Program
 
             if (sender != null)
                 await sender.SendTextMessageAsync(LogGroup,
-                    text, ChatType.Group, "uni", ParseMode.Html, null, null);
+                    text, ChatType.Group, "uni", ParseMode.Html, null, null, null);
         }
         catch (Exception ex)
         {
@@ -411,7 +411,8 @@ public class Program
                                 await sender.SendTextMessageAsync(
                                     ChannelsForApproval.GetChannel(GetChan(fileNameWithPath)), text,
                                     ChatType.Private,
-                                    callbackQuery.Message?.From?.LanguageCode, ParseMode.Html, null, null);
+                                    callbackQuery.Message?.From?.LanguageCode, ParseMode.Html, null, null,
+                                    callbackQuery.Message?.MessageThreadId);
                                 return;
                             }
 
@@ -449,7 +450,8 @@ public class Program
                                     };
                                     var text = new Language(dict);
                                     await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
-                                        callbackQuery.From.LanguageCode, ParseMode.Html, null, null);
+                                        callbackQuery.From.LanguageCode, ParseMode.Html, null, null,
+                                        callbackQuery.Message?.MessageThreadId);
 
                                     var gitDir = GetGit(fileNameWithPath);
                                     if (gitDir != null)
@@ -485,7 +487,8 @@ public class Program
                                     var text = new Language(dict);
                                     await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                         callbackQuery.From.LanguageCode,
-                                        ParseMode.Html, null, null);
+                                        ParseMode.Html, null, null, 
+                                        callbackQuery.Message?.MessageThreadId);
                                 }
                             }
 
@@ -520,7 +523,8 @@ public class Program
                                 var text = new Language(dict);
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
-                                    ParseMode.Html, null, null);
+                                    ParseMode.Html, null, null,
+                                    callbackQuery.Message?.MessageThreadId);
                             }
                         }
                         catch (Exception exception)
@@ -535,7 +539,8 @@ public class Program
                             {
                                 await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                     callbackQuery.From.LanguageCode,
-                                    ParseMode.Html, null, null);
+                                    ParseMode.Html, null, null,
+                                    callbackQuery.Message?.MessageThreadId);
                                 await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                                     new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
                             }
@@ -607,7 +612,8 @@ public class Program
             if (telegramBotAbstract != null)
                 await telegramBotAbstract.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
                     e.Message.From?.LanguageCode,
-                    ParseMode.Html, null, null);
+                    ParseMode.Html, null, null,
+                    e.Message.MessageThreadId);
             return;
         }
 
@@ -622,7 +628,7 @@ public class Program
             if (telegramBotAbstract == null) return;
             await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, text, ChatType.Private,
                 e?.Message.From?.LanguageCode,
-                ParseMode.Html, null, null);
+                ParseMode.Html, null, null, e?.Message.MessageThreadId);
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
             return;
@@ -668,7 +674,7 @@ public class Program
                 {
                     await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, null, null);
+                        ParseMode.Html, null, null, e.Message.MessageThreadId);
 
                     lock (SlowDownLock)
                     {
@@ -688,12 +694,13 @@ public class Program
                         };
                         var approveText = new Language(approveMessage);
 
+                        var replyToMessageId = messageFw?.GetMessageId();
                         _ = telegramBotAbstract.SendTextMessageAsync(
                             ChannelsForApproval.GetChannel(course),
                             approveText, ChatType.Group, e.Message.From.LanguageCode, ParseMode.Html,
                             new ReplyMarkupObject(inlineKeyboardMarkup), null,
-                            messageFw
-                                ?.GetMessageId()); //aggiunge sotto la InlineKeyboard per la selezione del what to do
+                            e.Message.MessageThreadId,
+                            replyToMessageId); //aggiunge sotto la InlineKeyboard per la selezione del what to do
 
                         Thread.Sleep(100);
                     }
@@ -748,7 +755,7 @@ public class Program
             if (sender == null) return;
             await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                 e.Message.From?.LanguageCode,
-                ParseMode.Html, null, null);
+                ParseMode.Html, null, null, e.Message.MessageThreadId);
 
             if (e.Message.From != null) UsersConversations[e.Message.From.Id].SetState(UserState.WAITING_FILE);
             await HandleFileAsync(e, sender);
@@ -775,7 +782,7 @@ public class Program
                 if (sender != null)
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, null, null);
+                        ParseMode.Html, null, null, e.Message.MessageThreadId);
             }
         }
         else if (e.Message.Text.StartsWith("🔙"))
@@ -801,7 +808,7 @@ public class Program
                 if (sender != null)
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From?.LanguageCode,
-                        ParseMode.Html, null, null);
+                        ParseMode.Html, null, null, e.Message.MessageThreadId);
             }
             else
             {
@@ -841,7 +848,7 @@ public class Program
             if (sender != null)
                 await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                     e.Message.From.LanguageCode,
-                    ParseMode.Html, null, null);
+                    ParseMode.Html, null, null, e.Message.MessageThreadId);
         }
     }
 
@@ -869,7 +876,7 @@ public class Program
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                        ParseMode.Html, replyMarkupObject, null, e.Message.MessageThreadId);
             }
         }
     }
@@ -906,7 +913,7 @@ public class Program
                     if (sender != null)
                         await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                             e.Message.From.LanguageCode,
-                            ParseMode.Html, null, null);
+                            ParseMode.Html, null, null, e.Message.MessageThreadId);
                 }
 
                 await HandleStartAsync(e, sender);
@@ -932,7 +939,7 @@ public class Program
                 {
                     await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, null, null);
+                        ParseMode.Html, null, null, e.Message.MessageThreadId);
                     await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
                 }
             }
@@ -970,7 +977,7 @@ public class Program
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                        ParseMode.Html, replyMarkupObject, null, e.Message.MessageThreadId);
             }
         }
     }
@@ -993,7 +1000,7 @@ public class Program
             if (telegramBotAbstract == null) return;
             await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
                 e.Message.From.LanguageCode,
-                ParseMode.Html, null, null);
+                ParseMode.Html, null, null, e.Message.MessageThreadId);
 
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
@@ -1021,7 +1028,7 @@ public class Program
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,
                         e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                        ParseMode.Html, replyMarkupObject, null, e.Message.MessageThreadId);
             }
         }
     }

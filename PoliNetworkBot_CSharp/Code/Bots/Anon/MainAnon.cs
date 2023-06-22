@@ -124,7 +124,8 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
             await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l3, ChatType.Private,
-                e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
+                e?.Message.From?.LanguageCode, ParseMode.Html, 
+                null, e?.Message.From?.Username, e?.Message.MessageThreadId);
     }
 
     private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract? telegramBotAbstract,
@@ -222,7 +223,8 @@ internal static class MainAnon
 
             if (telegramBotAbstract != null)
                 await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l2, ChatType.Private,
-                    e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
+                    e?.Message.From?.LanguageCode, ParseMode.Html,
+                    null, e?.Message.From?.Username, e?.Message.MessageThreadId);
         }
     }
 
@@ -307,7 +309,7 @@ internal static class MainAnon
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, l3,
                         ChatType.Private, m1.From?.LanguageCode,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username);
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username, m1.MessageThreadId);
                 return;
             }
 
