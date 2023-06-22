@@ -176,7 +176,7 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom.Contains(messageText) );
+        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom.Contains(messageText));
         if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
