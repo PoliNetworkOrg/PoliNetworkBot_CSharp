@@ -46,7 +46,12 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = false,
                 CanChangeInfo = false,
                 CanPinMessages = false,
-                CanSendMediaMessages = false
+                CanSendPhotos = false,
+                CanSendVideos = false,
+                CanSendAudios = false, 
+                CanSendVideoNotes = false,
+                CanSendVoiceNotes = false,
+                CanSendDocuments = false
             },
             RestrictAction.UNMUTE => new ChatPermissions
             {
@@ -57,7 +62,13 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = true,
                 CanChangeInfo = true,
                 CanPinMessages = true,
-                CanSendMediaMessages = true
+                CanSendAudios = true,
+                CanSendDocuments = true,
+                CanSendPhotos = true,
+                CanSendVideos = true,
+                CanSendVideoNotes = true,
+                CanSendVoiceNotes = true
+
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };

@@ -4,8 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
+
 using TeleSharp.TL;
 using TLSharp.Core;
 using TLSharp.Core.Utils;
@@ -32,10 +33,13 @@ public class TelegramFile : GenericFile
         TextAsCaption = textAsCaption;
     }
 
-    internal InputOnlineFile? GetOnlineFile()
+    internal InputFile? GetOnlineFile()
     {
-        _stream?.Seek(0, SeekOrigin.Begin);
-        return _stream != null ? new InputOnlineFile(_stream, _fileName) : null;
+        if (_stream == null)
+            return null;
+        
+        _stream.Seek(0, SeekOrigin.Begin);
+        return InputFile.FromStream(_stream, _fileName);
     }
 
     public override MessageType? GetMediaBotType()
