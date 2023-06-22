@@ -257,7 +257,7 @@ public static class MessageHandler
             var replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
-                markupObject, null);
+                markupObject, null, message.MessageThreadId);
         }
 
         conversation!.EndHour = endHour;
@@ -286,7 +286,7 @@ public static class MessageHandler
             conversation.State = Data.Enums.ConversationState.MAIN;
             return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
                 ParseMode.Html,
-                markupObject, null);
+                markupObject, null, message.MessageThreadId);
         }
 
         var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom?.Trim()
@@ -305,7 +305,7 @@ public static class MessageHandler
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
         return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
             ParseMode.Html,
-            replyMarkup, null, splitMessage: true);
+            replyMarkup, null, message.MessageThreadId, splitMessage: true);
     }
 
     private static async Task<MessageSentResult?> SelectDate(TelegramBotAbstract botClient, Message message,
@@ -332,7 +332,7 @@ public static class MessageHandler
                 replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
                 return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                     ParseMode.Html,
-                    markupObject, null);
+                    markupObject, null, message.MessageThreadId);
             }
         }
 
@@ -351,7 +351,7 @@ public static class MessageHandler
                     replyLang = new L("it", "Errore interno", "en", "Internal error");
                     return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                         ParseMode.Html,
-                        markupObject, null);
+                        markupObject, null, message.MessageThreadId);
                 }
 
                 var encoding = Encoding.UTF8;
@@ -364,7 +364,7 @@ public static class MessageHandler
                 var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
                 conversation.State = Data.Enums.ConversationState.MAIN;
                 botClient.SendFileAsync(file, peer, message.From?.Username,
-                    message.From?.LanguageCode, null, true, replyMarkup);
+                    message.From?.LanguageCode, null, true, message.MessageThreadId, replyMarkup);
                 return null;
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.SELECT_START_HOUR;
@@ -402,7 +402,7 @@ public static class MessageHandler
 
         return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
-            markupObject, null);
+            markupObject, null, message.MessageThreadId);
     }
 
     private static async Task<MessageSentResult?> SelectCampus(TelegramBotAbstract botClient, Message message,
@@ -420,7 +420,7 @@ public static class MessageHandler
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
                 ParseMode.Html,
-                markupObject, null);
+                markupObject, null, message.MessageThreadId);
         }
 
         conversation!.Campus = campus;
@@ -447,7 +447,7 @@ public static class MessageHandler
 
         if (conversation.CallbackNextFunction is Data.Enums.Function.NULL_FUNCTION or Data.Enums.Function.SETTINGS)
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html, markupObject, null);
+                ParseMode.Html, markupObject, null, message.MessageThreadId);
         await MainMenu(botClient, message, "", conversation.CallbackNextFunction);
         return null;
     }
@@ -465,6 +465,6 @@ public static class MessageHandler
         conversation!.State = Data.Enums.ConversationState.MAIN;
         return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
             ParseMode.Html,
-            markupObject, null);
+            markupObject, null, message.MessageThreadId);
     }
 }
