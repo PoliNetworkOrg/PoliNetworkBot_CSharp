@@ -26,16 +26,17 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivateOrAGroup(
         TelegramBotAbstract? telegramBotClient,
         Language text, string? lang, string? username, long? userId, string? firstName, string? lastName, long? chatId,
-        ChatType? chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        ChatType? chatType,int? messageThreadId, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         MessageSentResult? r = null;
+        var replyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup);
         try
         {
             if (telegramBotClient != null)
                 r = await telegramBotClient.SendTextMessageAsync(userId,
                     text, ChatType.Private, parseMode: parseMode,
                     lang: lang, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup));
+                    replyMarkupObject: replyMarkupObject, messageThreadId: messageThreadId);
             if (r != null && r.IsSuccess()) return r;
         }
         catch
@@ -54,7 +55,7 @@ internal static class SendMessage
 
         if (telegramBotClient != null)
             return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
-                lang, parseMode, new ReplyMarkupObject(inlineKeyboardMarkup), username);
+                lang, parseMode, replyMarkupObject, username, messageThreadId);
         return null;
     }
 
@@ -68,18 +69,22 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
         long? userIdToSendTo, string? langCode, string? usernameToSendTo,
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, bool notifyOwners = true)
+        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, int? messageThreadId,bool notifyOwners = true)
     {
         var stackTrace = Environment.StackTrace;
 
         try
         {
             if (telegramBotClient != null)
+            {
+                var replyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup);
                 return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
                     ChatType.Private, parseMode: parseMode,
                     lang: langCode, username: usernameToSendTo,
-                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
-                    replyToMessageId: messageIdToReplyTo);
+                    replyMarkupObject: replyMarkupObject,
+                    replyToMessageId: messageIdToReplyTo,
+                    messageThreadId: messageThreadId);
+            }
         }
         catch (Exception e)
         {
@@ -95,7 +100,9 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInAGroup(TelegramBotAbstract? telegramBotClient,
         string? lang, Language? text, EventArgsContainer? messageEventArgs,
         long chatId, ChatType chatType, ParseMode parseMode, long? replyToMessageId,
-        bool disablePreviewLink, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        bool disablePreviewLink,
+        int? messageThreadId,
+        InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         MessageSentResult? r1 = null;
 
@@ -104,16 +111,18 @@ internal static class SendMessage
 
         try
         {
+            var replyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup);
             r1 = await telegramBotClient.SendTextMessageAsync(chatId,
                 text,
                 chatType,
                 lang,
                 parseMode,
                 username: null,
-                replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
+                replyMarkupObject: replyMarkupObject,
                 replyToMessageId: replyToMessageId,
                 disablePreviewLink: disablePreviewLink,
-                splitMessage: true);
+                splitMessage: true,
+                messageThreadId: messageThreadId);
         }
         catch (Exception? e1)
         {
@@ -125,7 +134,7 @@ internal static class SendMessage
 
     internal static bool SendFileAsync(TelegramFile file, PeerAbstract peer,
         TelegramBotAbstract? telegramBotAbstract,
-        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
+        string? username, int? messageThreadId, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
         return telegramBotAbstract != null &&
@@ -133,7 +142,8 @@ internal static class SendMessage
                    file, peer,
                    username, lang,
                    replyToMessageId, disablePreviewLink,
-                   parseModeCaption: parseModeCaption
+                   parseModeCaption: parseModeCaption,
+                   messageThreadId: messageThreadId
                );
     }
 
@@ -233,27 +243,27 @@ internal static class SendMessage
         string[]? cmdLines)
     {
         if (e == null || cmdLines == null) return CommandExecutionState.UNMET_CONDITIONS;
-        var message = e.Message;
-        if (!Owners.CheckIfOwner(e.Message.From?.Id) || message.Chat.Type != ChatType.Private)
+        var eMessage = e.Message;
+        if (!Owners.CheckIfOwner(eMessage.From?.Id) || eMessage.Chat.Type != ChatType.Private)
             return CommandExecutionState.UNMET_CONDITIONS;
-        if (e.Message.ReplyToMessage == null || cmdLines.Length != 2)
+        if (eMessage.ReplyToMessage == null || cmdLines.Length != 2)
             return CommandExecutionState.UNMET_CONDITIONS;
         var text = new Language(new Dictionary<string, string?>
         {
-            { "it", e.Message.ReplyToMessage?.Text ?? e.Message.ReplyToMessage?.Caption }
+            { "it", eMessage.ReplyToMessage?.Text ?? eMessage.ReplyToMessage?.Caption }
         });
         var c2 = cmdLines[1];
 
-        await SendMessageInAGroup(sender, e.Message.From?.LanguageCode,
+        await SendMessageInAGroup(sender, eMessage.From?.LanguageCode,
             text, EventArgsContainer.Get(e),
             long.Parse(c2),
-            ChatType.Channel, ParseMode.Html, null, false);
+            ChatType.Channel, ParseMode.Html, null, false, messageThreadId: eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<SuccessWithException> ForwardMessage(TelegramBotAbstract? sender, MessageEventArgs? e,
-        ChatId chatId, ChatId fromChatId, int messageId,
+        ChatId chatId, ChatId fromChatId, int messageId, int? messageThreadId,
         bool? disableNotification = default, bool? protectContent = default,
         CancellationToken cancellationToken = default)
     {
@@ -261,7 +271,7 @@ internal static class SendMessage
         {
             if (sender == null) return new SuccessWithException(false);
             await sender.ForwardMessageAsync(chatId, fromChatId, messageId, disableNotification, protectContent,
-                cancellationToken);
+                cancellationToken, messageThreadId: messageThreadId);
             return new SuccessWithException(true);
         }
         catch (Exception ex)
