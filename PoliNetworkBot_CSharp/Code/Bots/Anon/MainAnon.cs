@@ -106,12 +106,11 @@ internal static class MainAnon
             }
         };
 
-        var m1 = eMessage;
-        if (m1 != null)
+        if (eMessage != null)
         {
             var r = await AskUser.AskBetweenRangeAsync(eMessageFrom?.Id, question, telegramBotAbstract,
-                eMessageFrom?.LanguageCode, options, eMessageFrom?.Username, eMessage?.MessageThreadId, true,
-                m1.MessageId);
+                eMessageFrom?.LanguageCode, options, eMessageFrom?.Username, eMessage.MessageThreadId, true,
+                eMessage.MessageId);
             if (l1.Matches(r))
             {
                 //yes
@@ -543,8 +542,7 @@ internal static class MainAnon
             new CallbackOption("No, elimina", 2, ResultQueueEnum.DELETE)
         };
 
-        var m6 = message1;
-        if (m6 == null)
+        if (message1 == null)
             return false;
 
         CallBackDataAnon callBackDataAnon = new(options, cb => { _ = CallbackMethod2Async(cb); })
@@ -554,7 +552,7 @@ internal static class MainAnon
             LangUser = e.GetLanguageCode(),
             Username = e.GetUsername(),
             FromTelegram = true,
-            MessageIdUser = m6.MessageId,
+            MessageIdUser = message1.MessageId,
             MessageIdReplyTo = messageReply?.MessageIdToReplyTo,
             MessageThreadId = message1?.MessageThreadId
         };

@@ -305,11 +305,10 @@ internal static class InviteLinks
                                         ex1M
                                     }
                                 });
-                            var messageFrom = from;
-                            await sender.SendTextMessageAsync(messageFrom?.Id,
+                            await sender.SendTextMessageAsync(from?.Id,
                                 language,
                                 ChatType.Private, "it", ParseMode.Html,
-                                null, messageFrom?.Username,
+                                null, from?.Username,
                                 eMessage?.MessageThreadId);
                         }
 

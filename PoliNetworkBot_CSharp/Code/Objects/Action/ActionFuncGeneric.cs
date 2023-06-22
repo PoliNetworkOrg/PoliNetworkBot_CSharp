@@ -81,12 +81,9 @@ public class ActionFuncGeneric
                     return CommandExecutionState.SUCCESSFUL;
                 }
 
-        if (_action6 != null)
-        {
-            _action6.Invoke(e, telegramBotAbstract).Wait();
-            return CommandExecutionState.SUCCESSFUL;
-        }
+        if (_action6 == null) return CommandExecutionState.NOT_TRIGGERED;
+        _action6.Invoke(e, telegramBotAbstract).Wait();
+        return CommandExecutionState.SUCCESSFUL;
 
-        return CommandExecutionState.NOT_TRIGGERED;
     }
 }

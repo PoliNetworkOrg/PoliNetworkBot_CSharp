@@ -549,15 +549,13 @@ internal static class Groups
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
 
-        if (e != null)
-        {
-            var eventArgsContainer = EventArgsContainer.Get(e);
-            var eMessage = e.Message;
-            await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
-                eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                eventArgsContainer, eMessage.MessageThreadId);
-        }
+        if (e == null) return CommandExecutionState.SUCCESSFUL;
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e.Message;
+        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+            eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }

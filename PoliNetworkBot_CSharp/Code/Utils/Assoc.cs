@@ -500,14 +500,12 @@ public static class Assoc
             { "it", "Non ci sono messaggi in coda!" },
             { "en", "There are no message in the queue!" }
         });
-        if (e?.Message != null)
-        {
-            var eventArgsContainer = EventArgsContainer.Get(e);
-            await SendMessage.SendMessageInPrivate(sender, from?.Id, from?.LanguageCode,
-                from?.Username,
-                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
-                e.Message.MessageThreadId);
-        }
+        if (e?.Message == null) return null;
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, from?.Id, from?.LanguageCode,
+            from?.Username,
+            text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+            e.Message.MessageThreadId);
 
         return null;
     }

@@ -40,15 +40,13 @@ internal static class TimeUtils
             {
                 { "", await CommandDispatcher.GetRunningTime() }
             });
-            if (e != null)
-            {
-                var eMessage = e.Message;
-                var eMessageFrom = eMessage.From;
-                await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
-                    eMessageFrom?.LanguageCode,
-                    eMessageFrom?.Username, lang, ParseMode.Html,
-                    null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
-            }
+            if (e == null) return CommandExecutionState.SUCCESSFUL;
+            var eMessage = e.Message;
+            var eMessageFrom = eMessage.From;
+            await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+                eMessageFrom?.LanguageCode,
+                eMessageFrom?.Username, lang, ParseMode.Html,
+                null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
 
             return CommandExecutionState.SUCCESSFUL;
         }
@@ -73,15 +71,13 @@ internal static class TimeUtils
         {
             { "", DateTimeClass.NowAsStringAmericanFormat() }
         });
-        if (e != null)
-        {
-            var eventArgsContainer = EventArgsContainer.Get(e);
-            var eMessage = e.Message;
-            await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
-                eMessage.From?.LanguageCode,
-                eMessage.From?.Username, lang, ParseMode.Html,
-                null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
-        }
+        if (e == null) return CommandExecutionState.SUCCESSFUL;
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e.Message;
+        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+            eMessage.From?.LanguageCode,
+            eMessage.From?.Username, lang, ParseMode.Html,
+            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }

@@ -390,20 +390,17 @@ public static class MessageDb
             { "en", text1 }
         };
         var text2 = new Language(dict);
-        if (telegramBotAbstract != null)
-        {
-            var replyToMessageId = r1.GetMessageId();
-            return await telegramBotAbstract.SendTextMessageAsync(
-                chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
-                ParseMode.Html,
-                null, null,
-                replyToMessageId: replyToMessageId,
-                messageThreadId: null,
-                disablePreviewLink: true,
-                splitMessage: default);
-        }
+        if (telegramBotAbstract == null) return null;
+        var replyToMessageId = r1.GetMessageId();
+        return await telegramBotAbstract.SendTextMessageAsync(
+            chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
+            ParseMode.Html,
+            null, null,
+            replyToMessageId: replyToMessageId,
+            messageThreadId: null,
+            disablePreviewLink: true,
+            splitMessage: default);
 
-        return null;
     }
 
     private static async Task<MessageSentResult?> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
