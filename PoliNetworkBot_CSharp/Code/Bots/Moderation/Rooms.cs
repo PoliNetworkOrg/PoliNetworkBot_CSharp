@@ -59,10 +59,11 @@ internal static class Rooms
         };
         var o3 = KeyboardMarkup.ArrayToMatrixString(options2);
 
-        var r = await AskUser.AskBetweenRangeAsync(message?.From?.Id, question, lang: message?.From?.LanguageCode,
-            options: o3, username: message?.From?.Username, sendMessageConfirmationChoice: true, sender: sender, messageThreadId:message?.MessageThreadId);
+        var messageFrom = message?.From;
+        var r = await AskUser.AskBetweenRangeAsync(messageFrom?.Id, question, lang: messageFrom?.LanguageCode,
+            options: o3, username: messageFrom?.Username, sendMessageConfirmationChoice: true, sender: sender, messageThreadId:message?.MessageThreadId);
 
-        var chosen = Language.FindChosen(options2, r, message?.From?.LanguageCode);
+        var chosen = Language.FindChosen(options2, r, messageFrom?.LanguageCode);
         if (chosen == null)
             return;
 
@@ -91,10 +92,11 @@ internal static class Rooms
             { "en", "You choose something that was not possible to choose" }
         });
         //wrong choice: (should be impossible)
-        await SendMessage.SendMessageInPrivate(sender, message?.From?.Id, message?.From?.LanguageCode,
-            message?.From?.Username, text,
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, messageFrom?.Id, messageFrom?.LanguageCode,
+            messageFrom?.Username, text,
             ParseMode.Html,
-            null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, message?.MessageThreadId);
     }
 
     private static async Task HelpAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -104,14 +106,16 @@ internal static class Rooms
             { "it", "Usa /rooms per cercare le aule!" },
             { "en", "Use /rooms to find rooms!" }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username, text,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        var eMessage = e?.Message;
+        await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+            eMessage?.From?.LanguageCode, eMessage?.From?.Username, text,
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), messageThreadId: eMessage?.MessageThreadId);
     }
 
     private static async Task FreeClassroomAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
     {
         var t3 = await GetDailySituationAsync(sender, e);
+        var eMessage = e?.Message;
         if (t3 is not { Item1: null })
         {
             Logger.WriteLine(t3?.Item1);
@@ -120,11 +124,11 @@ internal static class Rooms
                 { "it", "Errore nella consultazione del sito del polimi!" },
                 { "en", "Error while getting polimi website!" }
             });
-            await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-                e?.Message.From?.LanguageCode,
-                e?.Message.From?.Username,
+            await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+                eMessage?.From?.LanguageCode,
+                eMessage?.From?.Username,
                 text4,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), eMessage?.MessageThreadId);
             return;
         }
 
@@ -138,11 +142,11 @@ internal static class Rooms
                 { "it", "Nessuna aula libera trovata!" },
                 { "en", "No free rooms found!" }
             });
-            await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-                e?.Message.From?.LanguageCode,
-                e?.Message.From?.Username,
+            await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+                eMessage?.From?.LanguageCode,
+                eMessage?.From?.Username,
                 text3,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), eMessage?.MessageThreadId);
             return;
         }
 
@@ -152,11 +156,12 @@ internal static class Rooms
         {
             { "en", replyText }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username,
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+            eMessage?.From?.LanguageCode,
+            eMessage?.From?.Username,
             text2,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     private static async Task<Tuple<DateTime?, DateTime?>?> GetStartAndStopHoursAsync(TelegramBotAbstract? sender,
@@ -307,8 +312,9 @@ internal static class Rooms
             { "it", "Nome dell'aula?" },
             { "en", "Name of the room?" }
         });
-        var sigla = await AskUser.AskAsync(e?.Message.From?.Id, question, sender,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username, e?.Message.MessageThreadId);
+        var eMessage = e?.Message;
+        var sigla = await AskUser.AskAsync(eMessage?.From?.Id, question, sender,
+            eMessage?.From?.LanguageCode, eMessage?.From?.Username, eMessage?.MessageThreadId);
 
         var url = "https://www7.ceda.polimi.it/spazi/spazi/controller/RicercaAula.do?spazi___model" +
                   "___formbean___RicercaAvanzataAuleVO___postBack=true&spazi___model___formbean___" +
@@ -386,9 +392,10 @@ internal static class Rooms
         {
             { "en", result }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+            eMessage?.From?.LanguageCode, eMessage?.From?.Username,
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     private static async Task RoomNotFoundAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -402,9 +409,10 @@ internal static class Rooms
                 "en", "Room not found."
             }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        var eMessage = e?.Message;
+        await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
+            eMessage?.From?.LanguageCode, eMessage?.From?.Username,
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e),eMessage?.MessageThreadId);
     }
 
     private static async Task DownloadFailedAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
