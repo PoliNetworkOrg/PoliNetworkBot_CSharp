@@ -97,21 +97,23 @@ public class Program
                     if (DISABLED)
                     {
                         if (telegramBotClient == null) return;
-                        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id, new L("The Bot is DOWN for MAINTENANCE. Try again tomorrow\n"), ChatType.Private,
+                        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
+                            new L("The Bot is DOWN for MAINTENANCE. Try again tomorrow\n"), ChatType.Private,
                             e?.Message?.From?.LanguageCode,
                             ParseMode.Html, null, null, e.Message.MessageThreadId);
                         return;
                     }
+
                     switch (e)
                     {
-                        case { Message: { } } when e.Message.Chat.Type != ChatType.Private:
+                        case { Message: not null } when e.Message.Chat.Type != ChatType.Private:
                             return;
                         case { Message.Text: "/start" }:
                             GenerateStart(e);
                             break;
                     }
 
-                    if (e is { Message.From: { } })
+                    if (e is { Message.From: not null })
                     {
                         Logger.WriteLine("Message Arrived " + e.Message.From.Id + " : " + e.Message.Text);
                         if (!UsersConversations.ContainsKey(e.Message.From.Id)) GenerateStart(e);
@@ -261,11 +263,11 @@ public class Program
 
                     var config_email = "git config user.email \"polinetwork2@gmail.com\"";
 
-                    DoScript(powershell, config_email , true);
+                    DoScript(powershell, config_email, true);
 
                     var config_name = "git config user.name \"PoliBot\"";
 
-                    DoScript(powershell, config_name , true);
+                    DoScript(powershell, config_name, true);
 
                     var commit = "git commit -m \"[Bot] files changed:  " + diff +
                                  "\" --author=\"PoliBot <polinetwork2@gmail.com>\"";
@@ -487,7 +489,7 @@ public class Program
                                     var text = new Language(dict);
                                     await sender.SendTextMessageAsync(fromId, text, ChatType.Private,
                                         callbackQuery.From.LanguageCode,
-                                        ParseMode.Html, null, null, 
+                                        ParseMode.Html, null, null,
                                         callbackQuery.Message?.MessageThreadId);
                                 }
                             }

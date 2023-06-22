@@ -47,7 +47,7 @@ internal static class BackupUtil
 
                 var serializedText = await File.ReadAllTextAsync(path);
                 LoggerSendFile.SendFiles(sendTo, serializedText, botAbstract,
-                    "Backup DB", applicationJson, "db_full.json", messageThreadId: messageThreadId);
+                    "Backup DB", applicationJson, "db_full.json", messageThreadId);
             }
         }
         catch (Exception? ex)

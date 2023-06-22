@@ -52,7 +52,8 @@ public class DictionaryUserAnswer
     }
 
     internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username, int? messageThreadId)
+        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username,
+        int? messageThreadId)
     {
         if (botId == null) return;
 
@@ -82,7 +83,7 @@ public class DictionaryUserAnswer
                         { { "en", "You chose [" + result + "]" }, { "it", "Hai scelto [" + result + "]" } });
                     if (telegramBotAbstract != null)
                         await telegramBotAbstract.SendTextMessageAsync(idUser, languageReply, ChatType.Private, lang,
-                            ParseMode.Html, replyMarkup, username, messageThreadId: messageThreadId);
+                            ParseMode.Html, replyMarkup, username, messageThreadId);
                 }
 
                 answerTelegram.SetAnswerProcessed(true);

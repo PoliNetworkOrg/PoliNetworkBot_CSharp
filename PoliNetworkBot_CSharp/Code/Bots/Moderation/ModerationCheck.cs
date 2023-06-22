@@ -208,7 +208,7 @@ internal static class ModerationCheck
             }
 
             var name = "";
-            if (messageEventArgs is { Message.Chat.Title: { } })
+            if (messageEventArgs is { Message.Chat.Title: not null })
                 name = messageEventArgs.Message.Chat.Title;
 
             Logger.WriteLine("Changed group with ID: " + messageEventArgs?.Message.Chat.Id + ", name:" + name +
@@ -300,7 +300,7 @@ internal static class ModerationCheck
             GlobalVariables.NoUsernameCheckInThisChats.Contains(id.Value)) return null;
 
         var from = message1?.From;
-        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e.Message is { From: { } } &&
+        if (e != null && GlobalVariables.AllowedNoUsernameFromThisUserId != null && e.Message is { From: not null } &&
             from != null && GlobalVariables.AllowedNoUsernameFromThisUserId.Contains(from.Id))
             return null;
 
@@ -476,7 +476,8 @@ internal static class ModerationCheck
         long chatId, ChatType messageChatType, MessageEventArgs? messageEventArgs)
     {
         var r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
-            usernameOfUser, userId, firstName, lastName, chatId, messageChatType, messageEventArgs?.Message.MessageThreadId);
+            usernameOfUser, userId, firstName, lastName, chatId, messageChatType,
+            messageEventArgs?.Message.MessageThreadId);
 
         const int minutesWait = 2;
 
@@ -604,7 +605,7 @@ internal static class ModerationCheck
                 await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
                     eMessageFrom?.LanguageCode,
                     eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                    eventArgsContainer , messageThreadId: eMessage?.MessageThreadId);
+                    eventArgsContainer, eMessage?.MessageThreadId);
 
                 break;
             }
@@ -619,7 +620,7 @@ internal static class ModerationCheck
                 await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
                     messageFrom?.LanguageCode,
                     messageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                    eventArgsContainer, 
+                    eventArgsContainer,
                     eMessage?.MessageThreadId,
                     false);
 
@@ -641,7 +642,7 @@ internal static class ModerationCheck
                     messageFrom?.LanguageCode,
                     messageFrom?.Username, text2,
                     ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
-                    messageThreadId: eMessage?.MessageThreadId);
+                    eMessage?.MessageThreadId);
                 break;
             }
 

@@ -4,7 +4,6 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-
 using TLSharp.Core;
 
 #endregion
@@ -31,7 +30,7 @@ public class GenericMedia : GenericFile
     {
         if (FileId == null)
             return null;
-            
+
         var r = InputFile.FromFileId(FileId);
         return r;
     }

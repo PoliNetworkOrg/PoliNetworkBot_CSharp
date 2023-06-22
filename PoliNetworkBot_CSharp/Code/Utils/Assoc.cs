@@ -103,7 +103,8 @@ public static class Assoc
                 {
                     var from = eMessage.From;
                     await sender.SendTextMessageAsync(from?.Id, languageList4, ChatType.Private, default,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), from?.Username, eMessage.MessageThreadId);
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), from?.Username,
+                        eMessage.MessageThreadId);
                 }
 
                 return false;
@@ -130,7 +131,8 @@ public static class Assoc
             if (eMessage != null)
             {
                 var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(eMessage?.From?.Id,
-                    languageList2, sender, eMessage?.From?.LanguageCode, options, eMessage?.From?.Username, eMessage?.MessageThreadId);
+                    languageList2, sender, eMessage?.From?.LanguageCode, options, eMessage?.From?.Username,
+                    eMessage?.MessageThreadId);
 
                 var sentDate = new DateTime();
 
@@ -139,12 +141,10 @@ public static class Assoc
                     string? dateTimeString = null;
                     var parseSuccess = false;
                     while (dateTimeString == null && !parseSuccess)
-                    {
                         dateTimeString = await AskUser.AskAsync(eMessage?.From?.Id,
                             new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                                 "Insert a date AAAA-MM-DD HH:mm"),
                             sender, eMessage?.From?.LanguageCode, eMessage?.From?.Username, eMessage?.MessageThreadId);
-                    }
 
                     parseSuccess = DateTime.TryParseExact(
                         dateTimeString,
@@ -163,7 +163,7 @@ public static class Assoc
                             await sender.SendTextMessageAsync(messageFrom?.Id, lang4,
                                 ChatType.Private, messageFrom?.LanguageCode,
                                 ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                                messageFrom?.Username, messageThreadId: message?.MessageThreadId);
+                                messageFrom?.Username, message?.MessageThreadId);
                         return false;
                     }
                 }
@@ -265,7 +265,7 @@ public static class Assoc
                     lang2,
                     ChatType.Private, eMessageFrom?.LanguageCode,
                     ParseMode.Html,
-                    replyMarkupObject, eMessageFrom?.Username, messageThreadId: eMessage.MessageThreadId);
+                    replyMarkupObject, eMessageFrom?.Username, eMessage.MessageThreadId);
             }
     }
 
@@ -478,7 +478,7 @@ public static class Assoc
             if (e?.Message != null)
             {
                 var messageFromIdEntity = await GetIdEntityFromPersonAsync(from?.Id, null,
-                    sender, from?.LanguageCode, from?.Username, messageThreadId: eMessage?.MessageThreadId);
+                    sender, from?.LanguageCode, from?.Username, eMessage?.MessageThreadId);
 
                 if (messageFromIdEntity == null)
                 {
@@ -503,12 +503,13 @@ public static class Assoc
             var eventArgsContainer = EventArgsContainer.Get(e);
             await SendMessage.SendMessageInPrivate(sender, from?.Id, from?.LanguageCode,
                 from?.Username,
-                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, messageThreadId: e.Message.MessageThreadId);
+                text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                e.Message.MessageThreadId);
         }
 
         return null;
     }
- 
+
 
     private static async Task<MessageSentResult?> SendMessageAssocToUserAsync(DataRow? m, TelegramBotAbstract? sender,
         MessageEventArgs? e, bool extraInfo, int count)
@@ -609,15 +610,12 @@ public static class Assoc
             });
             var message1From = eMessage?.From;
             message = await AskUser.AskAsync(message1From?.Id, question, sender, message1From?.LanguageCode,
-                message1From?.Username,  eMessage?.MessageThreadId, true);
+                message1From?.Username, eMessage?.MessageThreadId, true);
         }
         else
         {
             // the message which got replied to is used for the text
-            if (messageReplyToMessage != null)
-            {
-                message = messageReplyToMessage?.Text ?? messageReplyToMessage?.Caption;
-            }
+            if (messageReplyToMessage != null) message = messageReplyToMessage?.Text ?? messageReplyToMessage?.Caption;
         }
 
         var groupsQuestion = new Language(new Dictionary<string, string?>
@@ -685,7 +683,7 @@ public static class Assoc
             });
             assocOrClub = await AskUser.AskAsync(eMessageFrom.Id, depClub, sender,
                 eMessageFrom.LanguageCode,
-                eMessageFrom.Username,  eMessage.MessageThreadId, true);
+                eMessageFrom.Username, eMessage.MessageThreadId, true);
         }
 
         var eventArgsContainer = EventArgsContainer.Get(e);
@@ -809,7 +807,7 @@ public static class Assoc
 
         await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato,
-            councilMessage, sender, ChatType.Group, "uni", null,  message2?.MessageThreadId, true, replyTo);
+            councilMessage, sender, ChatType.Group, "uni", null, message2?.MessageThreadId, true, replyTo);
 
         _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
     }

@@ -211,7 +211,7 @@ public static class ThreadAsyncModeration
             {
                 var message = messageEventArgs?.Message;
                 await BackupUtil.BackupHandler(new List<long?> { GroupsConstants.BackupGroup }, bot, null,
-                    ChatType.Group, messageThreadId: message?.MessageThreadId);
+                    ChatType.Group, message?.MessageThreadId);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }
@@ -254,8 +254,8 @@ public static class ThreadAsyncModeration
         }
         // ReSharper disable once FunctionNeverReturns
     }
-    
-    
+
+
     private static TelegramBotAbstract? GetFirstBot()
     {
         if (GlobalVariables.Bots == null) return null;

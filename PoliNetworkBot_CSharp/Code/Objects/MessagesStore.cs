@@ -285,8 +285,8 @@ public static class MessagesStore
                 if (messageChatType != null)
                 {
                     PeerAbstract peer = new(eMessageFrom?.Id, messageChatType.Value);
-                    sender?.SendFileAsync(tf, peer, eMessageFrom?.Username, 
-                        eMessageFrom?.LanguageCode, null, true, messageThreadId: message?.MessageThreadId);
+                    sender?.SendFileAsync(tf, peer, eMessageFrom?.Username,
+                        eMessageFrom?.LanguageCode, null, true, message?.MessageThreadId);
                 }
             }
         }

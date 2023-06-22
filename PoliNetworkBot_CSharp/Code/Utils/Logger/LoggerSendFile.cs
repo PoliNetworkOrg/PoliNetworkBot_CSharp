@@ -31,7 +31,8 @@ public static class LoggerSendFile
 
         lock (DictLock[id.Value])
         {
-            return SendFilesBehindLock(textToSendBefore, sendTo, fileContent, applicationOctetStream, sender, fileName, messageThreadId: messageThreadId);
+            return SendFilesBehindLock(textToSendBefore, sendTo, fileContent, applicationOctetStream, sender, fileName,
+                messageThreadId);
         }
     }
 

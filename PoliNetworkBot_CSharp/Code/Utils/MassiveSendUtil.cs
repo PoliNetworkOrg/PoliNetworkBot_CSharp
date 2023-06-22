@@ -141,7 +141,7 @@ public static class MassiveSendUtil
             {
                 return await SendMessage.SendMessageInAGroup(sender, "en", text, eventArgsContainer, groupId,
                     ChatType.Supergroup, ParseMode.Html, null, default,
-                    messageThreadId: message?.MessageThreadId);
+                    message?.MessageThreadId);
             }
             catch
             {

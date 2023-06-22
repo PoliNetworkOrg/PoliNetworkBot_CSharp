@@ -244,7 +244,7 @@ public static class AutoReplyInGroups
                 eMessageChat.Type,
                 ParseMode.Html,
                 eMessage.MessageId,
-                true, messageThreadId: eMessage.MessageThreadId);
+                true, eMessage.MessageThreadId);
         }
     }
 

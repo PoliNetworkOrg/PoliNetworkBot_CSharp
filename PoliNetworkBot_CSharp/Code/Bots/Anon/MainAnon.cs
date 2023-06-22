@@ -110,7 +110,8 @@ internal static class MainAnon
         if (m1 != null)
         {
             var r = await AskUser.AskBetweenRangeAsync(eMessageFrom?.Id, question, telegramBotAbstract,
-                eMessageFrom?.LanguageCode, options, eMessageFrom?.Username, eMessage?.MessageThreadId, true, m1.MessageId);
+                eMessageFrom?.LanguageCode, options, eMessageFrom?.Username, eMessage?.MessageThreadId, true,
+                m1.MessageId);
             if (l1.Matches(r))
             {
                 //yes
@@ -126,7 +127,7 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
             await telegramBotAbstract.SendTextMessageAsync(eMessageFrom?.Id, l3, ChatType.Private,
-                eMessageFrom?.LanguageCode, ParseMode.Html, 
+                eMessageFrom?.LanguageCode, ParseMode.Html,
                 null, eMessageFrom?.Username, eMessage?.MessageThreadId);
     }
 
@@ -159,7 +160,7 @@ internal static class MainAnon
             var eMessageFrom = eMessage.From;
             var r = await AskUser.AskBetweenRangeAsync(eMessageFrom?.Id, question, telegramBotAbstract,
                 eMessageFrom?.LanguageCode, options,
-                eMessageFrom?.Username,eMessage.MessageThreadId, true, eMessage.MessageId);
+                eMessageFrom?.Username, eMessage.MessageThreadId, true, eMessage.MessageId);
 
             if (l1.Matches(r))
             {
@@ -185,7 +186,7 @@ internal static class MainAnon
 
         var m1 = e?.Message;
         var r = m1 != null && await AskUser.AskYesNo(m1.From?.Id, question, false, telegramBotAbstract,
-            m1.From?.LanguageCode, m1.From?.Username, messageThreadId: m1.MessageThreadId);
+            m1.From?.LanguageCode, m1.From?.Username, m1.MessageThreadId);
 
         if (r == false)
         {
@@ -314,7 +315,8 @@ internal static class MainAnon
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, l3,
                         ChatType.Private, m1.From?.LanguageCode,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username, m1.MessageThreadId);
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username,
+                        m1.MessageThreadId);
                 return;
             }
 
@@ -334,7 +336,7 @@ internal static class MainAnon
             var inlineKeyboard = new InlineKeyboardButton("-") { CallbackData = "-" };
             var replyMarkup = new InlineKeyboardMarkup(inlineKeyboard);
 
-            if (dataAnon is { CallBackQueryFromTelegram.Message: { }, Bot: { } })
+            if (dataAnon is { CallBackQueryFromTelegram.Message: not null, Bot: not null })
                 await dataAnon.Bot.EditText(ConfigAnon.ModAnonCheckGroup,
                     dataAnon.CallBackQueryFromTelegram.Message.MessageId,
                     "Hai scelto [" + dataAnon.GetResultEnum() + "]", replyMarkup);
@@ -375,7 +377,7 @@ internal static class MainAnon
                             dataAnon.LangUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                             dataAnon.Username,
                             dataAnon.MessageThreadId,
-                            dataAnon.MessageIdUser );
+                            dataAnon.MessageIdUser);
                 }
                 else
                 {
@@ -519,12 +521,10 @@ internal static class MainAnon
 
             if (e.FromTelegram())
                 if (telegramBotAbstract != null)
-                {
                     if (message1 != null)
                         await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
                             ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
                             message1.MessageId);
-                }
         }
         catch (Exception e1)
         {
@@ -561,7 +561,8 @@ internal static class MainAnon
 
         var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
             ConfigAnon.ModAnonCheckGroup,
-            language, telegramBotAbstract, ChatType.Group, "it", null,  callBackDataAnon.MessageThreadId, false, x?.GetMessageId());
+            language, telegramBotAbstract, ChatType.Group, "it", null, callBackDataAnon.MessageThreadId, false,
+            x?.GetMessageId());
 
         return m4 != null;
     }

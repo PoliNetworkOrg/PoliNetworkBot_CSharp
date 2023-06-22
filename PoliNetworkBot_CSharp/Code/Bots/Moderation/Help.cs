@@ -97,7 +97,7 @@ public static class Help
         await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+            eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     public static async Task HelpPrivateSlave(MessageEventArgs? e, TelegramBotAbstract? sender)
@@ -139,6 +139,6 @@ public static class Help
         await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+            eventArgsContainer, eMessage?.MessageThreadId);
     }
 }

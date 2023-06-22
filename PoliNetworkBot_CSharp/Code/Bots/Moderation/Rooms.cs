@@ -61,7 +61,8 @@ internal static class Rooms
 
         var messageFrom = message?.From;
         var r = await AskUser.AskBetweenRangeAsync(messageFrom?.Id, question, lang: messageFrom?.LanguageCode,
-            options: o3, username: messageFrom?.Username, sendMessageConfirmationChoice: true, sender: sender, messageThreadId:message?.MessageThreadId);
+            options: o3, username: messageFrom?.Username, sendMessageConfirmationChoice: true, sender: sender,
+            messageThreadId: message?.MessageThreadId);
 
         var chosen = Language.FindChosen(options2, r, messageFrom?.LanguageCode);
         if (chosen == null)
@@ -109,7 +110,7 @@ internal static class Rooms
         var eMessage = e?.Message;
         await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
             eMessage?.From?.LanguageCode, eMessage?.From?.Username, text,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), messageThreadId: eMessage?.MessageThreadId);
+            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), eMessage?.MessageThreadId);
     }
 
     private static async Task FreeClassroomAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -128,7 +129,8 @@ internal static class Rooms
                 eMessage?.From?.LanguageCode,
                 eMessage?.From?.Username,
                 text4,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), eMessage?.MessageThreadId);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e),
+                eMessage?.MessageThreadId);
             return;
         }
 
@@ -146,7 +148,8 @@ internal static class Rooms
                 eMessage?.From?.LanguageCode,
                 eMessage?.From?.Username,
                 text3,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), eMessage?.MessageThreadId);
+                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e),
+                eMessage?.MessageThreadId);
             return;
         }
 
@@ -191,25 +194,24 @@ internal static class Rooms
         return null;
     }
 
-    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop, int quarterHourOffset = 0)
+    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop,
+        int quarterHourOffset = 0)
     {
         if (table?.ChildNodes == null)
             return null;
 
-        var shiftStart =  GetShiftSlotFromTime(start);
+        var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
         shiftStart += quarterHourOffset;
         shiftEnd += quarterHourOffset;
 
         List<string> list = new();
         foreach (var child in table.ChildNodes)
-        {
             if (child != null)
             {
                 var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
                 if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
             }
-        }
 
         return list;
     }
@@ -412,7 +414,8 @@ internal static class Rooms
         var eMessage = e?.Message;
         await SendMessage.SendMessageInPrivate(sender, eMessage?.From?.Id,
             eMessage?.From?.LanguageCode, eMessage?.From?.Username,
-            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e),eMessage?.MessageThreadId);
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e),
+            eMessage?.MessageThreadId);
     }
 
     private static async Task DownloadFailedAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -500,7 +503,8 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                        eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -517,7 +521,8 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                        eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -543,7 +548,8 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                        eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -624,7 +630,7 @@ internal static class Rooms
                 sender?.SendFileAsync(document,
                     peer, eMessageFrom?.Username,
                     eMessageFrom?.LanguageCode, null,
-                    true, messageThreadId: eMessage?.MessageThreadId);
+                    true, eMessage?.MessageThreadId);
             }
         }
     }

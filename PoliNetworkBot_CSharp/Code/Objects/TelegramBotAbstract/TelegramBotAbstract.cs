@@ -17,7 +17,6 @@ using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-
 using Telegram.Bot.Types.ReplyMarkups;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
@@ -82,7 +81,7 @@ public class TelegramBotAbstract
                 case BotTypeApi.REAL_BOT:
                 {
                     if (_botClient != null)
-                        if (e is { Message: { } })
+                        if (e is { Message: not null })
                             await _botClient.LeaveChatAsync(e.Message.Chat.Id);
                 }
                     break;
@@ -684,7 +683,7 @@ public class TelegramBotAbstract
                     if (message != null)
                         return chatid != null
                             ? new MessageSentResult(true, await _botClient.SendTextMessageAsync(chatid, message,
-                                messageThreadId,
+                                    messageThreadId,
                                     parseMode,
                                     replyMarkup: reply, replyToMessageId: (int)m2,
                                     disableWebPagePreview: disablePreviewLink),
@@ -1083,7 +1082,6 @@ public class TelegramBotAbstract
                     {
                         var fileId = message.Photo[idMax.Value].FileId;
                         return InputFile.FromFileId(fileId);
-
                     }
                 }
 
@@ -1187,7 +1185,7 @@ public class TelegramBotAbstract
     }
 
     internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
-        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,  int? messageThreadId,
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink, int? messageThreadId,
         ReplyMarkupObject? replyMarkupObject = null, ParseMode parseModeCaption = ParseMode.Html)
     {
         var textToSend = GetTextToSend(lang, documentInput);
@@ -1212,7 +1210,7 @@ public class TelegramBotAbstract
 
                         _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, messageThreadId,
                             null,
-                            textToSend, parseModeCaption, replyMarkup:reply).Result;
+                            textToSend, parseModeCaption, replyMarkup: reply).Result;
 
                         return true;
                     }
@@ -1223,8 +1221,8 @@ public class TelegramBotAbstract
                             return true;
 
                         if (textToSend != null)
-                            _ = _botClient.SendTextMessageAsync(userId, textToSend, messageThreadId, 
-                                parseModeCaption, replyMarkup:reply).Result;
+                            _ = _botClient.SendTextMessageAsync(userId, textToSend, messageThreadId,
+                                parseModeCaption, replyMarkup: reply).Result;
 
 
                         if (inputOnlineFile != null)
@@ -1244,7 +1242,7 @@ public class TelegramBotAbstract
 
                         if (textToSend != null)
                             _ = _botClient.SendTextMessageAsync(userId, textToSend, messageThreadId,
-                                parseModeCaption, replyMarkup:reply).Result;
+                                parseModeCaption, replyMarkup: reply).Result;
 
 
                         return true;
@@ -1612,7 +1610,7 @@ public class TelegramBotAbstract
 
     public async Task<MessageSentResult?> SendPhotoAsync(long chatIdToSendTo, ObjectPhoto? objectPhoto,
         string? caption,
-        ParseMode parseMode, ChatType chatTypeToSendTo, 
+        ParseMode parseMode, ChatType chatTypeToSendTo,
         int? messageThreadId)
     {
         switch (_isbot)

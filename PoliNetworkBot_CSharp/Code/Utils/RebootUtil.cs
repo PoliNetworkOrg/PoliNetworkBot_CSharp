@@ -33,10 +33,10 @@ public static class RebootUtil
                 var messageMessageThreadId = messageEventArgs.Message.MessageThreadId;
                 const ParseMode parseMode = ParseMode.Html;
                 var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                    null, 
+                    null,
                     text, parseMode,
-                    messageIdToReplyTo:null,
-                    messageThreadId: messageMessageThreadId, 
+                    null,
+                    messageThreadId: messageMessageThreadId,
                     inlineKeyboardMarkup: InlineKeyboardMarkup.Empty(),
                     eventArgsContainer: eventArgsContainer);
                 sendMessageInPrivate.Wait();
@@ -77,7 +77,7 @@ public static class RebootUtil
         {
             // ignored
         }
-        
+
         return true;
     }
 }

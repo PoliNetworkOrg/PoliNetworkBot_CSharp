@@ -44,6 +44,6 @@ public static class ConfigUtil
         var message1From = message1?.From;
         return message1From != null && GetFile(objectToSend, message1From.Id,
             message1From.Username,
-            telegramBotAbstract, message1From.LanguageCode, ChatType.Private, messageThreadId: message1?.MessageThreadId);
+            telegramBotAbstract, message1From.LanguageCode, ChatType.Private, message1?.MessageThreadId);
     }
 }

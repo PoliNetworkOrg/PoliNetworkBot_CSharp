@@ -368,7 +368,7 @@ internal static class Groups
                             await SendMessage.SendMessageInAGroup(
                                 telegramBotClient, eMessageFrom?.LanguageCode, lang, eventArgsContainer,
                                 eMessageChat.Id, eMessageChat.Type,
-                                ParseMode.Html, null, true, messageThreadId: eMessage.MessageThreadId
+                                ParseMode.Html, null, true, eMessage.MessageThreadId
                             );
                         }
                         catch
@@ -445,7 +445,7 @@ internal static class Groups
 
             if (e is not { Message.From: not null })
                 return null;
-            
+
             var eMessage = e.Message;
             var eMessageReplyToMessage = eMessage.ReplyToMessage;
             return eMessage.Chat.Type switch
@@ -461,8 +461,8 @@ internal static class Groups
                         eMessageReplyToMessage?.From?.LanguageCode ?? eMessage.From?.LanguageCode,
                         text2, eventArgsContainer,
                         eMessage.Chat.Id, eMessage.Chat.Type,
-                        ParseMode.Html, eMessageReplyToMessage?.MessageId, true, 
-                        messageThreadId: eMessage.MessageThreadId,
+                        ParseMode.Html, eMessageReplyToMessage?.MessageId, true,
+                        eMessage.MessageThreadId,
                         inline),
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -510,7 +510,7 @@ internal static class Groups
         var eMessageFrom = eMessage.From;
         var allGroups = await CommandDispatcher.GetAllGroups(eMessageFrom?.Id, eMessageFrom?.Username, sender,
             eMessageFrom?.LanguageCode,
-            eMessage.Chat.Type, messageThreadId: eMessage.MessageThreadId);
+            eMessage.Chat.Type, eMessage.MessageThreadId);
         return allGroups
             ? CommandExecutionState.SUCCESSFUL
             : CommandExecutionState.ERROR_DEFAULT;
@@ -540,7 +540,7 @@ internal static class Groups
         await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
             eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
-            messageThreadId: eMessage.MessageThreadId);
+            eMessage.MessageThreadId);
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -567,7 +567,7 @@ internal static class Groups
     {
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;
-        
+
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
 
         var eventArgsContainer = EventArgsContainer.Get(e);

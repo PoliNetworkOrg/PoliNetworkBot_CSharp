@@ -53,7 +53,7 @@ public static class RamSize
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
                 language, null, GroupsConstants.BackupGroup, ChatType.Group,
                 ParseMode.Html, null, true,
-                messageThreadId: null);
+                null);
             var storeSizeMessage = "#messageStorageCount " + MessagesStore.GetStoreSize();
             Logger.Logger.WriteLine(storeSizeMessage);
             var text = new Language(
@@ -62,8 +62,8 @@ public static class RamSize
                     { "en", storeSizeMessage }
                 });
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
-                text, null, 
-                GroupsConstants.BackupGroup, ChatType.Group, 
+                text, null,
+                GroupsConstants.BackupGroup, ChatType.Group,
                 ParseMode.Html, null, true, null);
         }
         catch (Exception? ex)

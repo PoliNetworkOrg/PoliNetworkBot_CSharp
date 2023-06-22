@@ -48,7 +48,7 @@ internal static class RestrictUser
                 CanPinMessages = false,
                 CanSendPhotos = false,
                 CanSendVideos = false,
-                CanSendAudios = false, 
+                CanSendAudios = false,
                 CanSendVideoNotes = false,
                 CanSendVoiceNotes = false,
                 CanSendDocuments = false
@@ -68,7 +68,6 @@ internal static class RestrictUser
                 CanSendVideos = true,
                 CanSendVideoNotes = true,
                 CanSendVoiceNotes = true
-
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
@@ -144,7 +143,7 @@ internal static class RestrictUser
                 text3,
                 ParseMode.Html,
                 eMessage?.MessageId, InlineKeyboardMarkup.Empty(),
-                eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+                eventArgsContainer, eMessage?.MessageThreadId);
         return null;
     }
 
@@ -406,7 +405,7 @@ internal static class RestrictUser
                 eMessageFrom.Username,
                 text7,
                 ParseMode.Html,
-                eMessage.MessageId, 
+                eMessage.MessageId,
                 InlineKeyboardMarkup.Empty(),
                 eventArgsContainer, eMessage.MessageThreadId);
         }
@@ -638,10 +637,10 @@ internal static class RestrictUser
                 messageFrom.LanguageCode,
                 messageFrom.Username, text2,
                 ParseMode.Html,
-                message?.MessageId, 
+                message?.MessageId,
                 InlineKeyboardMarkup.Empty(),
                 eventArgsContainer,
-                messageThreadId: message?.MessageThreadId);
+                message?.MessageThreadId);
 
         NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }

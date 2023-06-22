@@ -80,7 +80,7 @@ internal static class TimeUtils
             await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
                 eMessage.From?.LanguageCode,
                 eMessage.From?.Username, lang, ParseMode.Html,
-                null, InlineKeyboardMarkup.Empty(), eventArgsContainer, messageThreadId: eMessage.MessageThreadId);
+                null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
         }
 
         return CommandExecutionState.SUCCESSFUL;

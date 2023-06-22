@@ -59,7 +59,7 @@ internal static class UserbotPeer
     {
         TLUser? user2 = null;
         if (telegramClient == null)
-            return user2 is { AccessHash: { } }
+            return user2 is { AccessHash: not null }
                 ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
                 : null;
 
@@ -69,7 +69,7 @@ internal static class UserbotPeer
         if (user is not TLUser)
             return null;
 
-        return user2 is { AccessHash: { } }
+        return user2 is { AccessHash: not null }
             ? new TLInputPeerUser { AccessHash = user2.AccessHash.Value, UserId = user2.Id }
             : null;
     }

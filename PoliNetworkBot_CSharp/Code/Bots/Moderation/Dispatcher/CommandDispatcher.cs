@@ -1,8 +1,8 @@
 ﻿#region
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -42,7 +42,7 @@ internal static class CommandDispatcher
             return CommandExecutionState.UNMET_CONDITIONS;
 
         await SendMessage.ForwardMessage(sender, e, eMessage1.Chat.Id,
-            args[0], eMessage1.MessageId, 
+            args[0], eMessage1.MessageId,
             eMessage1.MessageThreadId, false, null,
             CancellationToken.None);
         return CommandExecutionState.SUCCESSFUL;
@@ -216,8 +216,8 @@ internal static class CommandDispatcher
             var eMessageFrom = eMessage.From;
             await SendMessage.SendMessageInPrivateOrAGroup(sender,
                 lang, eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessageFrom?.Id,
-                eMessageFrom?.FirstName, eMessageFrom?.LastName, eMessage.Chat.Id, 
-                eMessage.Chat.Type, messageThreadId: eMessage.MessageThreadId);
+                eMessageFrom?.FirstName, eMessageFrom?.LastName, eMessage.Chat.Id,
+                eMessage.Chat.Type, eMessage.MessageThreadId);
         }
     }
 
@@ -265,7 +265,7 @@ internal static class CommandDispatcher
         var output = ExecuteBashCommand("./static/github_pusher.sh");
 
         Logger.WriteLine(output);
-        
+
         var text = output.Length > 0
             ? new Dictionary<string, string?>
             {
@@ -279,7 +279,8 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"), sender, null,
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"),
+            sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
@@ -316,19 +317,19 @@ internal static class CommandDispatcher
 
         Logger.WriteLine(output);
     }
-    
+
     private static string ExecuteBashCommand(string command)
     {
         // according to: https://stackoverflow.com/a/15262019/637142
         // thans to this we will pass everything as one command
-        command = command.Replace("\"","\"\"");
+        command = command.Replace("\"", "\"\"");
 
         var proc = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
-                Arguments = "-c \""+ command + "\"",
+                Arguments = "-c \"" + command + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -372,7 +373,7 @@ internal static class CommandDispatcher
                     if (sender != null)
                         await sender.SendTextMessageAsync(eMessage.From.Id, text, ChatType.Private, "en",
                             ParseMode.Html,
-                            null, null, messageThreadId: eMessage.MessageThreadId);
+                            null, null, eMessage.MessageThreadId);
             }
             catch
             {
@@ -554,7 +555,7 @@ internal static class CommandDispatcher
 
         PeerAbstract peer = new(eMessageFrom.Id, eMessage.Chat.Type);
         var v = sender.SendFileAsync(documentInput, peer, eMessageFrom.Username,
-            eMessageFrom.LanguageCode, eMessage.MessageId, false, messageThreadId: eMessage.MessageThreadId);
+            eMessageFrom.LanguageCode, eMessage.MessageId, false, eMessage.MessageThreadId);
         return v ? 1 : 0;
     }
 
@@ -568,7 +569,7 @@ internal static class CommandDispatcher
         var eMessageFrom = eMessage.From;
         var tuple1 = await AskUser.AskDateAsync(eMessageFrom.Id,
             eMessage.Text,
-            eMessageFrom.LanguageCode, sender, eMessageFrom.Username, messageThreadId: eMessage.MessageThreadId);
+            eMessageFrom.LanguageCode, sender, eMessageFrom.Username, eMessage.MessageThreadId);
 
         var exception = tuple1?.Item2;
         if (exception != null)
@@ -596,7 +597,8 @@ internal static class CommandDispatcher
         var argsContainer = EventArgsContainer.Get(e);
         return await SendMessage.SendMessageInPrivate(sender, eMessageFrom.Id,
             eMessageFrom.LanguageCode, eMessageFrom.Username,
-            text, ParseMode.Html, eMessage.MessageId, InlineKeyboardMarkup.Empty(), argsContainer, messageThreadId: eMessage.MessageThreadId);
+            text, ParseMode.Html, eMessage.MessageId, InlineKeyboardMarkup.Empty(), argsContainer,
+            eMessage.MessageThreadId);
     }
 
     private static async Task<MessageSentResult?> Rules(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -618,9 +620,9 @@ internal static class CommandDispatcher
         var eMessageFrom = eMessage?.From;
         return await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
-            eMessageFrom?.Username, text2, ParseMode.Html, 
+            eMessageFrom?.Username, text2, ParseMode.Html,
             null, InlineKeyboardMarkup.Empty(),
-            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+            eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     public static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
@@ -653,7 +655,7 @@ internal static class CommandDispatcher
         await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+            eventArgsContainer, eMessage?.MessageThreadId);
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -676,7 +678,7 @@ internal static class CommandDispatcher
         });
         var sendFileAsync = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                 text2, "application/octet-stream", TextAsCaption.BEFORE_FILE), peer,
-            sender, username, messageThreadId, lang, null, true );
+            sender, username, messageThreadId, lang, null, true);
         return Task.FromResult(sendFileAsync);
     }
 
@@ -701,7 +703,7 @@ internal static class CommandDispatcher
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2,
             ParseMode.Html,
-            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, messageThreadId: eMessage?.MessageThreadId);
+            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
 
         return true;
     }
@@ -720,8 +722,8 @@ internal static class CommandDispatcher
             var eMessageChat = eMessage.Chat;
             await SendMessage.SendMessageInPrivateOrAGroup(sender,
                 lang, eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessageFrom?.Id,
-                eMessageFrom?.FirstName, eMessageFrom?.LastName, 
-                eMessageChat.Id, eMessageChat.Type, messageThreadId: eMessage.MessageThreadId);
+                eMessageFrom?.FirstName, eMessageFrom?.LastName,
+                eMessageChat.Id, eMessageChat.Type, eMessage.MessageThreadId);
 
             if (sender != null)
                 await sender.DeleteMessageAsync(eMessageChat.Id, eMessage.MessageId, null);
@@ -762,7 +764,7 @@ internal static class CommandDispatcher
         await telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
             lang2, eMessageChat?.Type, eMessageFrom?.LanguageCode,
             ParseMode.Html,
-            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom?.Username, messageThreadId:eMessage?.MessageThreadId
+            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom?.Username, eMessage?.MessageThreadId
         );
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -772,7 +774,7 @@ internal static class CommandDispatcher
     {
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;
-        
+
         long? n = null;
         var eventArgsContainer = EventArgsContainer.Get(e);
         try
@@ -792,7 +794,7 @@ internal static class CommandDispatcher
             { "en", "I have updated n=" + n + " links" },
             { "it", "Ho aggiornato n=" + n + " link" }
         });
-        
+
         var eMessage = e.Message;
         var eMessageFrom = eMessage.From;
         await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
@@ -800,7 +802,7 @@ internal static class CommandDispatcher
             eMessageFrom?.Username, text2,
             ParseMode.Html,
             eMessage.MessageId, InlineKeyboardMarkup.Empty(),
-            eventArgsContainer, messageThreadId: eMessage.MessageThreadId);
+            eventArgsContainer, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -829,7 +831,8 @@ internal static class CommandDispatcher
             await telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
                 lang2,
                 eMessageChat?.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: eMessageFrom?.LanguageCode, username: eMessageFrom?.Username, parseMode: ParseMode.Html, messageThreadId: eMessage?.MessageThreadId
+                lang: eMessageFrom?.LanguageCode, username: eMessageFrom?.Username, parseMode: ParseMode.Html,
+                messageThreadId: eMessage?.MessageThreadId
             );
         }
     }

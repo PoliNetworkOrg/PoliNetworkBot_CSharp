@@ -103,6 +103,6 @@ internal static class TextConversation
         await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2,
-            ParseMode.Html, null, null, eventArgsContainer, messageThreadId: eMessage.MessageThreadId);
+            ParseMode.Html, null, null, eventArgsContainer, eMessage.MessageThreadId);
     }
 }

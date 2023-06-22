@@ -209,7 +209,7 @@ internal static class InviteLinks
                                     language,
                                     ChatType.Private, "it", ParseMode.Html,
                                     null, eMessageFrom?.Username,
-                                    messageThreadId: eMessage.MessageThreadId);
+                                    eMessage.MessageThreadId);
                                 return;
                             }
                         }
@@ -230,9 +230,9 @@ internal static class InviteLinks
                             });
                         await sender.SendTextMessageAsync(eMessageFrom?.Id,
                             language1,
-                            ChatType.Private, "it", ParseMode.Html, 
+                            ChatType.Private, "it", ParseMode.Html,
                             null, eMessageFrom?.Username,
-                            messageThreadId: eMessage.MessageThreadId);
+                            eMessage.MessageThreadId);
 
                         var st = l.GetStringList();
 
@@ -241,7 +241,7 @@ internal static class InviteLinks
                             "text/plain", TextAsCaption.AFTER_FILE);
                         sender.SendFileAsync(tf, new PeerAbstract(eMessageFrom?.Id, eMessage.Chat.Type),
                             eMessageFrom?.Username, eMessageFrom?.LanguageCode, null,
-                            false, messageThreadId: eMessage.MessageThreadId);
+                            false, eMessage.MessageThreadId);
                     }
                 }
             }
@@ -308,9 +308,9 @@ internal static class InviteLinks
                             var messageFrom = from;
                             await sender.SendTextMessageAsync(messageFrom?.Id,
                                 language,
-                                ChatType.Private, "it", ParseMode.Html, 
+                                ChatType.Private, "it", ParseMode.Html,
                                 null, messageFrom?.Username,
-                                messageThreadId: eMessage?.MessageThreadId);
+                                eMessage?.MessageThreadId);
                         }
 
                     result.GruppoTg = gruppoTg;
@@ -359,8 +359,8 @@ internal static class InviteLinks
                                 });
                             await sender.SendTextMessageAsync(from?.Id,
                                 language,
-                                ChatType.Private, "it", ParseMode.Html, null, 
-                                from?.Username, messageThreadId: eMessage?.MessageThreadId);
+                                ChatType.Private, "it", ParseMode.Html, null,
+                                from?.Username, eMessage?.MessageThreadId);
                         }
 
                     result.GruppoTg = gruppoTg;
@@ -404,9 +404,9 @@ internal static class InviteLinks
                                 });
                             await sender.SendTextMessageAsync(from?.Id,
                                 language,
-                                ChatType.Private, "it", 
+                                ChatType.Private, "it",
                                 ParseMode.Html, null, eMessage?.From?.Username,
-                                messageThreadId: eMessage?.MessageThreadId);
+                                eMessage?.MessageThreadId);
                         }
 
                     result.GruppoTg = gruppoTg;
@@ -443,7 +443,7 @@ internal static class InviteLinks
             {
                 var gruppoTg1 = gruppoTGs[i];
                 var gruppoTg2 = gruppoTGs[j];
-                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: { } } ||
+                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: not null } ||
                     gruppoTg2.PermanentId == null) continue;
 
                 if (gruppoTg1.PermanentId != gruppoTg2.PermanentId) continue;

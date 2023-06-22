@@ -17,7 +17,8 @@ internal static class AskUser
     public static readonly DictionaryUserAnswer UserAnswers = new();
 
     internal static async Task<string?> AskAsync(long? idUser, Language question,
-        TelegramBotAbstract? sender, string? lang, string? username,  int? messageThreadId, bool sendMessageConfirmationChoice = false)
+        TelegramBotAbstract? sender, string? lang, string? username, int? messageThreadId,
+        bool sendMessageConfirmationChoice = false)
     {
         if (sender == null) return null;
         var botId = sender.GetId();
@@ -25,9 +26,11 @@ internal static class AskUser
         UserAnswers.Reset(idUser, botId);
 
         await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
-            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username, messageThreadId:messageThreadId);
+            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username,
+            messageThreadId: messageThreadId);
 
-        var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username, messageThreadId);
+        var result =
+            await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username, messageThreadId);
         UserAnswers.Delete(idUser, botId);
         return result;
     }
@@ -84,7 +87,8 @@ internal static class AskUser
                 replyToMessageId: messageIdToReplyTo, messageThreadId: messageThreadId);
         }
 
-        var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username, messageThreadId);
+        var result =
+            await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username, messageThreadId);
         UserAnswers.Delete(idUser, botId);
         return result;
     }
@@ -110,7 +114,7 @@ internal static class AskUser
             options: options,
             username: eMessageFrom?.Username,
             sendMessageConfirmationChoice: true,
-            question: question, messageThreadId : eMessage?.MessageThreadId);
+            question: question, messageThreadId: eMessage?.MessageThreadId);
 
         if (string.IsNullOrEmpty(reply))
             return null;
@@ -146,7 +150,7 @@ internal static class AskUser
             }
         };
 
-        var r = await AskBetweenRangeAsync(id, question, sender, lang, options, username, messageThreadId: messageThreadId);
+        var r = await AskBetweenRangeAsync(id, question, sender, lang, options, username, messageThreadId);
 
         if (l1.Matches(r)) return true;
 
@@ -163,7 +167,7 @@ internal static class AskUser
     internal static async Task<Tuple<DateTimeSchedule?, Exception?, string?>?> AskDateAsync(long? id, string text,
         string? lang,
         TelegramBotAbstract? sender,
-        string? username,int? messageThreadId)
+        string? username, int? messageThreadId)
     {
         if (string.IsNullOrEmpty(text))
             return await AskDate2Async(id, lang, sender, username, messageThreadId);

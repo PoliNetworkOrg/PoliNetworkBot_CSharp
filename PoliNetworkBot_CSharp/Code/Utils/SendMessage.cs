@@ -26,7 +26,8 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivateOrAGroup(
         TelegramBotAbstract? telegramBotClient,
         Language text, string? lang, string? username, long? userId, string? firstName, string? lastName, long? chatId,
-        ChatType? chatType,int? messageThreadId, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
+        ChatType? chatType, int? messageThreadId, ParseMode parseMode = ParseMode.Html,
+        InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
         MessageSentResult? r = null;
         var replyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup);
@@ -69,7 +70,8 @@ internal static class SendMessage
     internal static async Task<MessageSentResult?> SendMessageInPrivate(TelegramBotAbstract? telegramBotClient,
         long? userIdToSendTo, string? langCode, string? usernameToSendTo,
         Language? text, ParseMode parseMode, long? messageIdToReplyTo,
-        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, int? messageThreadId,bool notifyOwners = true)
+        InlineKeyboardMarkup? inlineKeyboardMarkup, EventArgsContainer eventArgsContainer, int? messageThreadId,
+        bool notifyOwners = true)
     {
         var stackTrace = Environment.StackTrace;
 
@@ -257,7 +259,7 @@ internal static class SendMessage
         await SendMessageInAGroup(sender, eMessage.From?.LanguageCode,
             text, EventArgsContainer.Get(e),
             long.Parse(c2),
-            ChatType.Channel, ParseMode.Html, null, false, messageThreadId: eMessage.MessageThreadId);
+            ChatType.Channel, ParseMode.Html, null, false, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -271,7 +273,7 @@ internal static class SendMessage
         {
             if (sender == null) return new SuccessWithException(false);
             await sender.ForwardMessageAsync(chatId, fromChatId, messageId, disableNotification, protectContent,
-                cancellationToken, messageThreadId: messageThreadId);
+                cancellationToken, messageThreadId);
             return new SuccessWithException(true);
         }
         catch (Exception ex)

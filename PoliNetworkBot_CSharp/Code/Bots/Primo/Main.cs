@@ -117,7 +117,7 @@ public static class Main
                 telegramBotClient, e?.Message.From?.LanguageCode,
                 text, EventArgsContainer.Get(e),
                 message.Chat.Id, message.Chat.Type,
-                ParseMode.Html, message.MessageId, true, messageThreadId: message.MessageThreadId);
+                ParseMode.Html, message.MessageId, true, message.MessageThreadId);
         return null;
     }
 
@@ -175,7 +175,7 @@ public static class Main
             return await SendMessage.SendMessageInAGroup(telegramBotClient, e?.Message.From?.LanguageCode,
                 text,
                 EventArgsContainer.Get(e),
-                r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true, messageThreadId: r5.MessageThreadId);
+                r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true, r5.MessageThreadId);
 
         return null;
     }
@@ -243,7 +243,7 @@ public static class Main
         if (r5 != null)
             return await SendMessage.SendMessageInAGroup(telegramBotClient, r5.From?.LanguageCode, text,
                 EventArgsContainer.Get(e),
-                r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true, messageThreadId:r5.MessageThreadId);
+                r5.Chat.Id, r5.Chat.Type, ParseMode.Html, r5.MessageId, true, r5.MessageThreadId);
 
         return null;
     }
@@ -288,7 +288,7 @@ public static class Main
         return (from DataRow dr in r.Rows
             where dr != null
             let id = (long)dr["king_id"]
-            where message is { From: { } } && id == message.From.Id
+            where message is { From: not null } && id == message.From.Id
             let dt = (DateTime)dr["when_king"]
             where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
             select dr["title"].ToString()).ToList();

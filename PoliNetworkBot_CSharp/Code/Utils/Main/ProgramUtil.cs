@@ -68,7 +68,7 @@ public static class ProgramUtil
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-        
+
         try
         {
             while (true)
@@ -213,7 +213,7 @@ public static class ProgramUtil
             // ignored
         }
 
-        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: not null } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -264,7 +264,7 @@ public static class ProgramUtil
             Logger.Logger.WriteLine(ex);
         }
 
-        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: not null } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -494,10 +494,12 @@ public static class ProgramUtil
                 {
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit:20, timeout: 250).Result.ToList();
-                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset, LogSeverityLevel.DEBUG);
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, 20, 250).Result.ToList();
+                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset,
+                        LogSeverityLevel.DEBUG);
                 }
-                catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
+                catch (Exception e) when
+                    (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
                     Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     Logger.Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
@@ -512,7 +514,6 @@ public static class ProgramUtil
 
                 if (updates == null || updates.Count == 0) continue;
                 foreach (var update in updates)
-                {
                     try
                     {
                         HandleUpdate(update, botClientWhole);
@@ -521,11 +522,9 @@ public static class ProgramUtil
                     {
                         Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     }
-                }
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
-
             }
             catch (Exception? e)
             {
@@ -622,8 +621,8 @@ public static class ProgramUtil
         const int chatid = 768169879;
         const string polinetwork3Bot = "@polinetwork3bot";
         await bot.SendTextMessageAsync(chatid, text, ChatType.Private,
-            "", default, replyMarkupObject, 
-            polinetwork3Bot, messageThreadId: null);
+            "", default, replyMarkupObject,
+            polinetwork3Bot, null);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",

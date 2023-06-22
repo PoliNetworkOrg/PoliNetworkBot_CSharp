@@ -116,12 +116,12 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            
+
             try
             {
                 const string? q1 =
                     "CALL `insert_log`(@id, @severity, @stacktrace, @content)";
-            
+
                 Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
                     { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
@@ -338,7 +338,8 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName, messageThreadId);
+        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName,
+            messageThreadId);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -360,8 +361,8 @@ public static class Logger
             var messageEventArgs = eventArgsContainer.MessageEventArgs;
             var message = messageEventArgs?.Message;
             var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                null, text, ParseMode.Html, null, 
-                InlineKeyboardMarkup.Empty(), eventArgsContainer, messageThreadId: message?.MessageThreadId);
+                null, text, ParseMode.Html, null,
+                InlineKeyboardMarkup.Empty(), eventArgsContainer, message?.MessageThreadId);
             sendMessageInPrivate.Wait();
         }
     }
