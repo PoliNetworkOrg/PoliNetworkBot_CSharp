@@ -45,20 +45,26 @@ public static class RamSize
 
             var message = "#ramsize " + ramUsed;
             Logger.Logger.WriteLine(message);
+            var language = new Language(
+                new Dictionary<string, string?>
+                {
+                    { "en", message }
+                });
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
-                new Language(
-                    new Dictionary<string, string?>
-                    {
-                        { "en", message }
-                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                language, null, GroupsConstants.BackupGroup, ChatType.Group,
+                ParseMode.Html, null, true,
+                messageThreadId: null);
             var storeSizeMessage = "#messageStorageCount " + MessagesStore.GetStoreSize();
             Logger.Logger.WriteLine(storeSizeMessage);
+            var text = new Language(
+                new Dictionary<string, string?>
+                {
+                    { "en", storeSizeMessage }
+                });
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
-                new Language(
-                    new Dictionary<string, string?>
-                    {
-                        { "en", storeSizeMessage }
-                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                text, null, 
+                GroupsConstants.BackupGroup, ChatType.Group, 
+                ParseMode.Html, null, true, null);
         }
         catch (Exception? ex)
         {
