@@ -228,15 +228,15 @@ public class Command
             return CommandExecutionState.UNMET_CONDITIONS;
         if (!CheckPermissions(e?.Message.From))
             return CommandExecutionState.INSUFFICIENT_PERMISSIONS;
-        if (_actionFuncGeneric == null) 
+        if (_actionFuncGeneric == null)
             throw new Exception("Illegal state exception!");
 
         if (e == null) throw new Exception("Illegal state exception!");
         if (telegramBotAbstract == null) throw new Exception("Illegal state exception!");
-        
+
         if (args != null)
             return _actionFuncGeneric.Invoke(e, telegramBotAbstract, args);
-        
+
         throw new Exception("Illegal state exception!");
     }
 

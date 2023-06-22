@@ -100,11 +100,9 @@ public static class Assoc
                     return false;
 
                 if (sender != null)
-                {
                     await sender.SendTextMessageAsync(eMessageFrom1?.Id, languageList4, ChatType.Private, default,
                         ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom1?.Username,
                         eMessage.MessageThreadId);
-                }
 
                 return false;
             }

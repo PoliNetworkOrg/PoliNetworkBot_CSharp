@@ -57,10 +57,8 @@ public class Fetcher
         var htmlNodeCollection = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
         foreach (var classNode in htmlNodeCollection)
             if (classNode.ChildNodes[1].InnerText.Contains(roomName))
-            {
-                return  Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
-                           Const.HtmlTableEnd;
-            }
+                return Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
+                       Const.HtmlTableEnd;
 
         return null;
     }

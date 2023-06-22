@@ -400,7 +400,6 @@ public static class MessageDb
             messageThreadId: null,
             disablePreviewLink: true,
             splitMessage: default);
-
     }
 
     private static async Task<MessageSentResult?> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
