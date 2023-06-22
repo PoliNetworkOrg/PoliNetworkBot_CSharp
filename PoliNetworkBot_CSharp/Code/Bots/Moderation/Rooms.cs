@@ -426,9 +426,12 @@ internal static class Rooms
                 "en", "Room not found."
             }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode, e?.Message.From?.Username,
-            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode, eMessageFrom?.Username,
+            text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     private static long? FindRoomIndex(IReadOnlyList<HtmlNode?>? t3, string? sigla)
@@ -485,6 +488,7 @@ internal static class Rooms
             if (dateTimeSchedule != null)
             {
                 var d2 = dateTimeSchedule.GetDate();
+                var eventArgsContainer = EventArgsContainer.Get(e);
                 if (d2 == null)
                 {
                     var text2 = new Language(new Dictionary<string, string?>
@@ -496,7 +500,7 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -513,7 +517,7 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -539,7 +543,7 @@ internal static class Rooms
                         eMessageFrom?.LanguageCode,
                         eMessageFrom?.Username,
                         text2,
-                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                        ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
                     return;
                 }
 
@@ -601,7 +605,7 @@ internal static class Rooms
                     eMessageFrom?.LanguageCode,
                     eMessageFrom?.Username,
                     message,
-                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
 
                 // send the table as an html document for further info
                 var htmlResult = t4.Aggregate(
