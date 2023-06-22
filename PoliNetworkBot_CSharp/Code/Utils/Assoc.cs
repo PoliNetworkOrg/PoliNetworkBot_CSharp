@@ -77,9 +77,9 @@ public static class Assoc
                 { "en", "Choose the entity you are writing this message for" }
             });
 
-            var eMessageFrom = eMessage?.From;
-            var messageFromIdEntity = await GetIdEntityFromPersonAsync(eMessageFrom?.Id, languageList,
-                sender, eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessage?.MessageThreadId);
+            var eMessageFrom1 = eMessage?.From;
+            var messageFromIdEntity = await GetIdEntityFromPersonAsync(eMessageFrom1?.Id, languageList,
+                sender, eMessageFrom1?.LanguageCode, eMessageFrom1?.Username, eMessage?.MessageThreadId);
 
             if (messageFromIdEntity == null)
             {
@@ -101,9 +101,8 @@ public static class Assoc
 
                 if (sender != null)
                 {
-                    var from = eMessage.From;
-                    await sender.SendTextMessageAsync(from?.Id, languageList4, ChatType.Private, default,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), from?.Username,
+                    await sender.SendTextMessageAsync(eMessageFrom1?.Id, languageList4, ChatType.Private, default,
+                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom1?.Username,
                         eMessage.MessageThreadId);
                 }
 
@@ -130,28 +129,29 @@ public static class Assoc
             var messageFrom = message?.From;
             if (eMessage != null)
             {
-                var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(eMessage?.From?.Id,
-                    languageList2, sender, eMessage?.From?.LanguageCode, options, eMessage?.From?.Username,
+                var from = eMessage.From;
+                var queueOrPreciseDate = await AskUser.AskBetweenRangeAsync(eMessageFrom1?.Id,
+                    languageList2, sender, from?.LanguageCode, options, from?.Username,
                     eMessage?.MessageThreadId);
 
-                var sentDate = new DateTime();
+                DateTime? sentDate = null;
 
-                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], eMessage?.From?.LanguageCode))
+                if (!Language.EqualsLang(queueOrPreciseDate, options[0][0], eMessageFrom1?.LanguageCode))
                 {
                     string? dateTimeString = null;
                     var parseSuccess = false;
                     while (dateTimeString == null && !parseSuccess)
-                        dateTimeString = await AskUser.AskAsync(eMessage?.From?.Id,
+                        dateTimeString = await AskUser.AskAsync(eMessageFrom1?.Id,
                             new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                                 "Insert a date AAAA-MM-DD HH:mm"),
-                            sender, eMessage?.From?.LanguageCode, eMessage?.From?.Username, eMessage?.MessageThreadId);
+                            sender, eMessageFrom1?.LanguageCode, eMessageFrom1?.Username, eMessage?.MessageThreadId);
 
                     parseSuccess = DateTime.TryParseExact(
                         dateTimeString,
                         "yyyy-MM-dd HH:mm",
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.None,
-                        out sentDate);
+                        out var sentDate2);
                     if (!parseSuccess || CheckIfDateTimeIsValid(sentDate) == false)
                     {
                         var lang4 = new Language(new Dictionary<string, string?>
@@ -166,6 +166,8 @@ public static class Assoc
                                 messageFrom?.Username, message?.MessageThreadId);
                         return false;
                     }
+
+                    sentDate = sentDate2;
                 }
 
                 var idChatsSentInto = Channels.Assoc.GetChannels();
