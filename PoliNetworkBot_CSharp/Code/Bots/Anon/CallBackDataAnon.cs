@@ -17,6 +17,7 @@ internal class CallBackDataAnon : CallbackGenericData
     public int? MessageIdReplyTo;
     public long? MessageIdUser;
     public string? Username;
+    public int? MessageThreadId;
 
     public CallBackDataAnon(List<CallbackOption> options, Action<CallbackGenericData> runAfterSelection) : base(options,
         runAfterSelection)

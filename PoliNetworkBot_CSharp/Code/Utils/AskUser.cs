@@ -125,7 +125,7 @@ internal static class AskUser
     }
 
     internal static async Task<bool> AskYesNo(long? id, Language? question, bool defaultBool,
-        TelegramBotAbstract? sender, string? lang, string? username)
+        TelegramBotAbstract? sender, string? lang, string? username, int? messageThreadId)
     {
         var l1 = new Language(new Dictionary<string, string?>
         {
@@ -146,7 +146,7 @@ internal static class AskUser
             }
         };
 
-        var r = await AskBetweenRangeAsync(id, question, sender, lang, options, username);
+        var r = await AskBetweenRangeAsync(id, question, sender, lang, options, username, messageThreadId: messageThreadId);
 
         if (l1.Matches(r)) return true;
 
