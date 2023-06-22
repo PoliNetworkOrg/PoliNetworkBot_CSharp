@@ -304,7 +304,7 @@ public class TelegramBotAbstract
         return telegramBotClientBot?.BotId == null ? null : GlobalVariables.Bots?[telegramBotClientBot.BotId.Value];
     }
 
-    internal async Task<bool> DeleteMessageAsync(long chatId, long messageId, long? accessHash)
+    internal async Task<bool> DeleteMessageAsync(long? chatId, long? messageId, long? accessHash)
     {
         //todo: rimettere e aggiungere una caption a questo metodo/log
         //Logger.WriteLogComplete(new List<object?> { chatId, messageId, accessHash }, this, "DeleteMessageAsync");
@@ -315,7 +315,10 @@ public class TelegramBotAbstract
             {
                 try
                 {
-                    if (_botClient != null) await _botClient.DeleteMessageAsync(chatId, (int)messageId);
+                    if (_botClient != null)
+                        if (chatId != null)
+                            if (messageId != null)
+                                await _botClient.DeleteMessageAsync(chatId, (int)messageId.Value);
                 }
                 catch
                 {
@@ -331,8 +334,10 @@ public class TelegramBotAbstract
 
                 if (UserbotClient != null)
                 {
+                    var tlVector = new TLVector<int>();
+                    if (messageId != null) tlVector.Add((int)messageId);
                     var r1 = await UserbotClient.ChannelsDeleteMessageAsync(peer,
-                        new TLVector<int> { (int)messageId });
+                        tlVector);
 
                     return r1 != null;
                 }
@@ -483,7 +488,7 @@ public class TelegramBotAbstract
         return null;
     }
 
-    internal async Task RestrictChatMemberAsync(long chatId, long? userId, ChatPermissions permissions,
+    internal async Task RestrictChatMemberAsync(long? chatId, long? userId, ChatPermissions permissions,
         DateTime? untilDate, ChatType? chatType)
     {
         switch (_isbot)
@@ -496,9 +501,10 @@ public class TelegramBotAbstract
                     {
                         if (userId != null)
                             if (_botClient != null)
-                                await _botClient.RestrictChatMemberAsync(chatId, userId.Value, permissions,
-                                    true,
-                                    untilDate);
+                                if (chatId != null)
+                                    await _botClient.RestrictChatMemberAsync(chatId, userId.Value, permissions,
+                                        true,
+                                        untilDate);
 
                         break;
                     }
@@ -644,6 +650,7 @@ public class TelegramBotAbstract
     /// <param name="parseMode"></param>
     /// <param name="replyMarkupObject"></param>
     /// <param name="username"></param>
+    /// <param name="messageThreadId"></param>
     /// <param name="replyToMessageId"></param>
     /// <param name="disablePreviewLink"></param>
     /// <param name="splitMessage"></param>

@@ -346,7 +346,7 @@ internal static class ModerationCheck
         var from1 = message.From;
         var chat = message.Chat;
 
-        var b = chat?.Type == ChatType.Private;
+        var b = chat.Type == ChatType.Private;
         return b || (from1 != null && Innocuo(from1, chat));
     }
 
@@ -476,7 +476,7 @@ internal static class ModerationCheck
         long chatId, ChatType messageChatType, MessageEventArgs? messageEventArgs)
     {
         var r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
-            usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
+            usernameOfUser, userId, firstName, lastName, chatId, messageChatType, messageEventArgs?.Message.MessageThreadId);
 
         const int minutesWait = 2;
 
@@ -556,13 +556,21 @@ internal static class ModerationCheck
         if (checkSpam == SpamType.ALL_GOOD)
             return false;
 
+        var eMessage = e?.Message;
+        var eMessageChat = eMessage?.Chat;
         if (e?.Message.From == null)
             return telegramBotClient != null && e?.Message != null &&
-                   await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                   await telegramBotClient.DeleteMessageAsync(eMessageChat?.Id, eMessage?.MessageId, null);
 
-        await RestrictUser.Mute(60 * 5, telegramBotClient, e.Message.Chat.Id, e.Message.From.Id,
-            e.Message.Chat.Type, RestrictAction.MUTE);
+        var eMessageFrom = eMessage?.From;
+        var messageChat = eMessage?.Chat;
+        const int timeInSeconds = 60 * 5;
+        var messageChatType = messageChat?.Type;
+        await RestrictUser.Mute(timeInSeconds, telegramBotClient, eMessageChat?.Id, eMessageFrom?.Id,
+            messageChatType, RestrictAction.MUTE);
 
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var messageFrom = eMessage?.From;
         switch (checkSpam)
         {
             case SpamType.SPAM_LINK:
@@ -573,10 +581,12 @@ internal static class ModerationCheck
                     { "it", "Hai inviato un messaggio con spam, e quindi il bot ti ha mutato per 5 minuti" }
                 });
 
-                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username, text2, ParseMode.Html, null,
-                    InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e), false);
+                await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
+                    eMessageFrom?.LanguageCode,
+                    eMessageFrom?.Username, text2, ParseMode.Html, null,
+                    InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                    eMessage?.MessageThreadId,
+                    false);
 
                 break;
             }
@@ -591,10 +601,10 @@ internal static class ModerationCheck
                     }
                 });
 
-                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                    EventArgsContainer.Get(e));
+                await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
+                    eMessageFrom?.LanguageCode,
+                    eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                    eventArgsContainer , messageThreadId: eMessage?.MessageThreadId);
 
                 break;
             }
@@ -606,10 +616,12 @@ internal static class ModerationCheck
                     { "it", "Hai inviato un messaggio che non rispetta il format del gruppo" }
                 });
 
-                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-                    EventArgsContainer.Get(e), false);
+                await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
+                    messageFrom?.LanguageCode,
+                    messageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+                    eventArgsContainer, 
+                    eMessage?.MessageThreadId,
+                    false);
 
                 break;
             }
@@ -625,10 +637,11 @@ internal static class ModerationCheck
                     }
                 });
 
-                await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username, text2,
-                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                await SendMessage.SendMessageInPrivate(telegramBotClient, messageFrom?.Id,
+                    messageFrom?.LanguageCode,
+                    messageFrom?.Username, text2,
+                    ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
+                    messageThreadId: eMessage?.MessageThreadId);
                 break;
             }
 
@@ -641,7 +654,7 @@ internal static class ModerationCheck
         }
 
         return telegramBotClient != null &&
-               await telegramBotClient.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+               await telegramBotClient.DeleteMessageAsync(messageChat?.Id, eMessage?.MessageId, null);
     }
 
     public static async Task<bool> CheckUsernameAndName(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient)
