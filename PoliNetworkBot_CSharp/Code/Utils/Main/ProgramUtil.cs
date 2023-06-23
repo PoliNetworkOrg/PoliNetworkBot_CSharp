@@ -67,8 +67,11 @@ public static class ProgramUtil
 
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
 
+        DbConfig.InitializeDbConfig();
+
+
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-        
+
         try
         {
             while (true)
@@ -213,7 +216,7 @@ public static class ProgramUtil
             // ignored
         }
 
-        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: not null } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -264,7 +267,7 @@ public static class ProgramUtil
             Logger.Logger.WriteLine(ex);
         }
 
-        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: not null } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -329,12 +332,12 @@ public static class ProgramUtil
                         x1 = new DbConfigConnection(x2);
                     x1 ??= GlobalVariables.DbConfig;
 
+                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
+                        bot.GetContactString(),
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S) { DbConfig = x1 };
+
                     GlobalVariables.Bots[botClient.BotId.Value] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT, bot.GetOnMessage().S)
-                        {
-                            DbConfig = x1
-                        };
+                        telegramBotAbstract;
 
                     var acceptMessages = bot.AcceptsMessages();
                     if (acceptMessages is null or false)
@@ -494,10 +497,13 @@ public static class ProgramUtil
                 {
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit:20, timeout: 250).Result.ToList();
-                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset, LogSeverityLevel.DEBUG);
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, 20, 250)
+                            .Result.ToList();
+                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset,
+                        LogSeverityLevel.DEBUG);
                 }
-                catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
+                catch (Exception e) when
+                    (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
                     Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     Logger.Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
@@ -511,21 +517,37 @@ public static class ProgramUtil
                 }
 
                 if (updates == null || updates.Count == 0) continue;
-                foreach (var update in updates)
+
+
+                var enumerable = updates.Select(update =>
                 {
+                    void ThreadStart()
+                    {
+                        try
+                        {
+                            HandleUpdate(update, botClientWhole);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                        }
+                    }
+
+                    return new Thread(ThreadStart);
+                });
+
+                foreach (var thread in enumerable)
                     try
                     {
-                        HandleUpdate(update, botClientWhole);
+                        thread.Start();
                     }
                     catch (Exception e)
                     {
                         Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     }
-                }
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
-
             }
             catch (Exception? e)
             {
@@ -544,17 +566,19 @@ public static class ProgramUtil
 
             case UpdateType.Message:
             {
-                if (update.Message != null && botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                    if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                var updateMessage = update.Message;
+                if (updateMessage != null &&
+                    botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
+                    if (value >= updateMessage.MessageId)
                         return;
 
-                if (update.Message != null)
+                if (updateMessage != null)
                 {
-                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                    botClientWhole.UpdatesMessageLastId[updateMessage.Chat.Id] = updateMessage.MessageId;
 
                     botClientWhole.OnmessageMethod2.ActionMessageEvent?.GetAction()
                         ?.Invoke(botClientWhole.BotClient,
-                            new MessageEventArgs(update.Message));
+                            new MessageEventArgs(updateMessage));
                 }
 
                 break;
@@ -600,7 +624,10 @@ public static class ProgramUtil
                 break;
 
             case UpdateType.ChatJoinRequest:
+            {
+                //todo: eventualmente gestire le richieste di ingresso ai gruppi
                 break;
+            }
         }
     }
 

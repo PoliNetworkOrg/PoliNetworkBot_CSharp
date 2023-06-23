@@ -2,8 +2,8 @@
 
 public class Const
 {
-	public const string HrefRepairLink = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
-	
+    public const string HrefRepairLink = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
+
     public const string PolimiController =
         "https://www7.ceda.polimi.it/spazi/spazi/controller/OccupazioniGiornoEsatto.do";
 
@@ -11,6 +11,7 @@ public class Const
 <div id=""tableContainer"" class=""tableContainer"">
 	<table padding=""0"" spacing=""0"" class=""scrollTable"" style=""table-layout: fixed; width: 100%;"">				
 			<tbody class=""scrollContent"">";
+
     public const string HtmlTableEnd = @"</tbody></table></div>";
 
     public const string HtmlClockLine = @"
@@ -182,4 +183,3 @@ table.scrollTable tbody tr td.empty {
 </style>
 </head>";
 }
-

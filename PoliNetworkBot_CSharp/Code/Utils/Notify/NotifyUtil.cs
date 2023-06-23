@@ -38,7 +38,7 @@ internal static class NotifyUtil
         EventArgsContainer? messageEventArgs)
     {
         var title = messageEventArgs?.MessageEventArgs?.Message.Chat.Title;
-        if (messageEventArgs is not { MessageEventArgs.Message: { } })
+        if (messageEventArgs is not { MessageEventArgs.Message: not null })
             return false;
 
         var text = messageEventArgs.MessageEventArgs.Message.Text ?? messageEventArgs.MessageEventArgs.Message.Caption;
@@ -431,7 +431,7 @@ internal static class NotifyUtil
         try
         {
             {
-                if (messageEventArgs is not { MessageEventArgs.Message: { } }) return;
+                if (messageEventArgs is not { MessageEventArgs.Message: not null }) return;
 
                 var message = "Restrict action: " + restrictAction;
                 message += "\n";
@@ -474,7 +474,7 @@ internal static class NotifyUtil
         try
         {
             {
-                if (messageEventArgs is not { MessageEventArgs.Message: { } }) return false;
+                if (messageEventArgs is not { MessageEventArgs.Message: not null }) return false;
                 var message = "Restrict action: " + "Simple Ban";
                 message += "\n";
                 message += "Restricted user: " + target + "[" +

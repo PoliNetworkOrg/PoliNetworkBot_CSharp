@@ -131,12 +131,10 @@ public static class Assoc
                     string? dateTimeString = null;
                     var parseSuccess = false;
                     while (dateTimeString == null && !parseSuccess)
-                    {
                         dateTimeString = await AskUser.AskAsync(e.Message.From?.Id,
                             new L("it", "Inserisci una data in formato AAAA-MM-DD HH:mm", "en",
                                 "Insert a date AAAA-MM-DD HH:mm"),
                             sender, e.Message.From?.LanguageCode, e.Message.From?.Username);
-                    }
 
                     parseSuccess = DateTime.TryParseExact(
                         dateTimeString,
@@ -566,9 +564,9 @@ public static class Assoc
     {
         string? message = null;
 
-        if (e is { Message: { } } && (e.Message.ReplyToMessage == null ||
-                                      (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
-                                       string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
+        if (e is { Message: not null } && (e.Message.ReplyToMessage == null ||
+                                           (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
+                                            string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption))))
         {
             // the command is being called without a reply, ask for the message:
             var question = new Language(new Dictionary<string, string?>

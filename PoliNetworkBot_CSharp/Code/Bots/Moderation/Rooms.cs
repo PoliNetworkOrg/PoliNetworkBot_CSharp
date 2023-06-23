@@ -183,25 +183,24 @@ internal static class Rooms
         return null;
     }
 
-    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop, int quarterHourOffset = 0)
+    public static List<string>? GetFreeRooms(HtmlNode? table, DateTime? start, DateTime? stop,
+        int quarterHourOffset = 0)
     {
         if (table?.ChildNodes == null)
             return null;
 
-        var shiftStart =  GetShiftSlotFromTime(start);
+        var shiftStart = GetShiftSlotFromTime(start);
         var shiftEnd = GetShiftSlotFromTime(stop);
         shiftStart += quarterHourOffset;
         shiftEnd += quarterHourOffset;
 
         List<string> list = new();
         foreach (var child in table.ChildNodes)
-        {
             if (child != null)
             {
                 var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
                 if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
             }
-        }
 
         return list;
     }

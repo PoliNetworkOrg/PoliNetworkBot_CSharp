@@ -253,8 +253,8 @@ public static class ThreadAsyncModeration
         }
         // ReSharper disable once FunctionNeverReturns
     }
-    
-    
+
+
     private static TelegramBotAbstract? GetFirstBot()
     {
         if (GlobalVariables.Bots == null) return null;
