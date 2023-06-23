@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -201,7 +201,7 @@ internal static class AskUser
         var reply = await AskAsync(id, lang2, sender, lang, username, messageThreadId);
         try
         {
-            var tuple1 = DateTimeClass.GetDateTimeFromString(reply);
+            var tuple1 = SampleNuGet.Utils.DateTimeClass.GetDateTimeFromString(reply);
             if (tuple1 != null)
             {
                 var dateTime = tuple1.Item1;

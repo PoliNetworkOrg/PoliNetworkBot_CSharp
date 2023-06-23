@@ -7,6 +7,7 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using SampleNuGet.Objects;
 
 #endregion
 
@@ -146,7 +147,7 @@ public static class GlobalVariables
 
     private static void LoadMessagesToDelete()
     {
-        var m = FileSerialization.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
+        var m = SampleNuGet.Utils.SerializeUtil.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
         if (m is null or null)
         {
             MessagesToDelete = new List<MessageToDelete>();

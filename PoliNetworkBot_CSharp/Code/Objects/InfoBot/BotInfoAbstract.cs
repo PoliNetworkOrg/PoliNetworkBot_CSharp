@@ -8,6 +8,7 @@ using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+using SampleNuGet.Objects;
 
 #endregion
 

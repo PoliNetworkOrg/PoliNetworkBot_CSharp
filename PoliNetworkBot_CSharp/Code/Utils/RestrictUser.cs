@@ -12,8 +12,8 @@ using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -577,14 +577,24 @@ internal static class RestrictUser
         IReadOnlyList<string?>? target, string? lang, string? username, RestrictAction ban,
         bool? revokeMessage)
     {
-        var d1 = DateTimeClass.GetDateTime(target);
+        ValueWithException<DateTime?> d1;
+        try
+        {
+            var dd1 = SampleNuGet.Utils.DateTimeClass.GetDateTime(target);
+            d1 = new ValueWithException<DateTime?>(dd1, null);
+        }
+        catch (Exception ex)
+        {
+            d1 = new ValueWithException<DateTime?>(null, ex);
+        }
+
         try
         {
             var targetUserObject = new TargetUserObject(target, sender, e);
             await BanAllUnbanAllMethod1Async(ban, targetUserObject, e, sender, lang,
                 username,
-                d1?.GetValue(), revokeMessage);
-            return new SuccessWithException(true, d1?.GetExceptions());
+                d1.GetValue(), revokeMessage);
+            return new SuccessWithException(true, d1.GetExceptions());
         }
         catch (Exception? ex)
         {

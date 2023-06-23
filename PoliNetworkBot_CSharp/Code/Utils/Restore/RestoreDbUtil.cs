@@ -14,9 +14,10 @@ using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.BackupObj;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
-using PoliNetworkBot_CSharp.Code.Utils.FileUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Objects;
+using SampleNuGet.Utils;
+using SampleNuGet.Utils.DatabaseUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Restore;
 
@@ -48,7 +49,7 @@ public static class RestoreDbUtil
         if (x == null)
             return null;
 
-        DbConfig.InitializeDbConfig();
+        DbConfigClass.InitializeDbConfig();
 
         x.tables ??= new Dictionary<string, DataTable>();
         var done = x.tables.Sum(y =>
@@ -83,7 +84,8 @@ public static class RestoreDbUtil
 
     public static async Task RestoreDb()
     {
-        var path = FileUtil.FindFile("db.json");
+        const string dbJson = "*/db.json";
+        var path = FileUtil.FindFile(dbJson);
         var x = await RestoreDbMethod(path);
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }
@@ -290,7 +292,7 @@ public static class RestoreDbUtil
 
         try
         {
-            DbConfig.InitializeDbConfig();
+            DbConfigClass.InitializeDbConfig();
             var procedureName = procedure.Value.Rows[0]["Procedure"].ToString();
             create = procedure.Value.Rows[0]["Create Procedure"].ToString();
             create = create?.Replace("`", "");

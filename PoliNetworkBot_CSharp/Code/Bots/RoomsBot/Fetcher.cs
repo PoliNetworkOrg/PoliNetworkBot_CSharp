@@ -9,7 +9,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
-public class Fetcher
+public static class Fetcher
 {
     private static readonly int MaximumApiCallsPerSecond = 5;
     private static readonly int MaximumApiCallsPerMinute = 30;

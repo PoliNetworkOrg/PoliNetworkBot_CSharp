@@ -5,10 +5,10 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Restore;
 using PoliNetworkBot_CSharp.Code.Utils.Running;
+using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
@@ -129,9 +129,9 @@ public static class SwitchDispatcher
         new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot groups"), null, null),
 
-        new Command("qe", Database.QueryBotExec, new List<ChatType> { ChatType.Private },
+        new Command("qe", DatabaseClass.QueryBotExec, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query execute"), null, null),
-        new Command("qs", Database.QueryBotSelect, new List<ChatType> { ChatType.Private },
+        new Command("qs", DatabaseClass.QueryBotSelect, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query select"), null, null),
 
         new Command("allow_message", CommandDispatcher.AllowMessageAsync,

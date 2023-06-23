@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -24,9 +24,10 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Utils;
+using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -720,7 +721,7 @@ internal static class CommandDispatcher
     {
         var groups = Groups.GetAllGroups(sender);
         Stream? stream = new MemoryStream();
-        FileSerialization.SerializeFile(groups, ref stream);
+        SampleNuGet.Utils.SerializeUtil.SerializeObjectToStream(groups, ref stream);
 
         if (chatType == null)
             return Task.FromResult(false);

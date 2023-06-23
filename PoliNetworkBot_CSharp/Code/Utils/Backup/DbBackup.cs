@@ -4,7 +4,8 @@ using System.Data;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.DbObject;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
+using SampleNuGet.Objects;
+using SampleNuGet.Utils.DatabaseUtils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 

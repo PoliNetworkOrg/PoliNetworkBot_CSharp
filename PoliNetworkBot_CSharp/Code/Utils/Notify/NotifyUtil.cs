@@ -19,6 +19,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using SampleNuGet.Utils;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -613,14 +614,17 @@ internal static class NotifyUtil
         {
             if (done == null)
                 return;
-
+//        var x2 = SampleNuGet.Utils.SerializeUtil.GetMemoryStreamFromByteArray(SampleNuGet.Utils.SerializeUtil.SerializeObject(x));
             var (banUnbanAllResult, _) = done;
-            SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetSuccess()),
-                "success.bin", sender, e);
-            SendReportOfSuccessAndFailures2(
-                StreamSerialization.SerializeToStream(banUnbanAllResult.GetFailed()),
-                "failed.bin", sender, e);
+
+            var dataRowsSuccess = banUnbanAllResult.GetSuccess();
+            var dataRowsFailed = banUnbanAllResult.GetFailed();
+
+            var success = SerializeUtil.GetMemoryStreamFromByteArray(SerializeUtil.SerializeObject(dataRowsSuccess));
+            var failed = SerializeUtil.GetMemoryStreamFromByteArray(SerializeUtil.SerializeObject(dataRowsFailed));
+
+            SendReportOfSuccessAndFailures2(success, "success.bin", sender, e);
+            SendReportOfSuccessAndFailures2(failed, "failed.bin", sender, e);
         }
         catch
         {
