@@ -375,7 +375,8 @@ public static class MessagesStore
 
     public static void GetMessagesSent(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var sendMessageDetailsAsync = SendMessageDetailsAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        var sendMessageDetailsAsync = SendMessageDetailsAsync(actionFuncGenericParams.TelegramBotAbstract,
+            actionFuncGenericParams.MessageEventArgs);
         sendMessageDetailsAsync.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
