@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using SampleNuGet.Objects;
 using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Types.Enums;
 

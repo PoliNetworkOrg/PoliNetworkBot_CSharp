@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,8 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Objects;
+using SampleNuGet.Utils;
 using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;

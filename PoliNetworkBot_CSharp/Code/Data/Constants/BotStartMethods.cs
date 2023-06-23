@@ -7,6 +7,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
+using SampleNuGet.Objects;
 
 #endregion
 

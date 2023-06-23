@@ -1,4 +1,5 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects.Action;
+using SampleNuGet.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 

@@ -8,6 +8,8 @@ using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
+using SampleNuGet.Objects;
+using SampleNuGet.Utils;
 
 #endregion
 

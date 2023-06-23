@@ -17,6 +17,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion

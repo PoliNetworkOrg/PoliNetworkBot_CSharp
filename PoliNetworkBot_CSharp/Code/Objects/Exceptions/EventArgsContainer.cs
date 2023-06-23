@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+using SampleNuGet.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 

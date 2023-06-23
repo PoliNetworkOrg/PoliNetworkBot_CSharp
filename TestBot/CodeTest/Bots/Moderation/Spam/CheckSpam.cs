@@ -1,5 +1,6 @@
 ﻿using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using SampleNuGet.Objects;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 

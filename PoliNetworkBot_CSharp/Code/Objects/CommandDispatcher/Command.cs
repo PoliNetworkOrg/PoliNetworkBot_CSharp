@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Utils;
+using SampleNuGet.Objects;
+using SampleNuGet.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
