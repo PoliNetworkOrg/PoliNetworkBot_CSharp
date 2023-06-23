@@ -66,6 +66,9 @@ public static class ProgramUtil
         GlobalVariables.LoadToRam();
 
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
+        
+        DbConfig.InitializeDbConfig();
+
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
         

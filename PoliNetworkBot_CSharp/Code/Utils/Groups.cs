@@ -56,8 +56,10 @@ internal static class Groups
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
-        return Database.ExecuteSelect(q1, sender?.DbConfig,
-            new Dictionary<string, object?> { { "@title", query2 }, { "@limit", limit } });
+        var dictionary = new Dictionary<string, object?> { { "@title", query2 }, { "@limit", limit } };
+        var dbConfigConnection = sender?.DbConfig;
+        return Database.ExecuteSelect(q1, dbConfigConnection,
+            dictionary);
     }
 
     internal static async Task<SuccessWithException?> CheckIfAdminAsync(long userId, string? username, long chatId,

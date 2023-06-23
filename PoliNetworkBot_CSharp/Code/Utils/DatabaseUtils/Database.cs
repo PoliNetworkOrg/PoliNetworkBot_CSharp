@@ -74,7 +74,8 @@ public static class Database
     private static DataTable? ExecuteSelectSlave(string? query, DbConfigConnection? dbConfigConnection,
         Dictionary<string, object?>? args = null)
     {
-        if (dbConfigConnection == null) return null;
+        if (dbConfigConnection == null)
+            return null;
         var connectionWithLock = dbConfigConnection.GetMySqlConnection();
         var connection = connectionWithLock.Conn;
         var ret = new DataSet();

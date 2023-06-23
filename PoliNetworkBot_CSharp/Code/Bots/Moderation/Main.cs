@@ -32,7 +32,11 @@ public static class Main
     {
         var t = new Thread(() =>
         {
-            if (sender != null && e != null) _ = MainMethod2(new TelegramBotParam(sender, false), e);
+            if (sender != null && e != null)
+            {
+                ;
+                _ = MainMethod2(new TelegramBotParam(sender, false), e);
+            }
         });
         t.Start();
         //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
