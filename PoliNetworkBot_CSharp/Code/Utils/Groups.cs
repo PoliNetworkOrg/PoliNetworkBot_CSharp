@@ -406,9 +406,17 @@ internal static class Groups
 
     public static void SendGroupsByTitle(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (args is { Length: < 1 } or null) return CommandExecutionState.UNMET_CONDITIONS;
-        await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
-        return CommandExecutionState.SUCCESSFUL;
+        var args = actionFuncGenericParams.Strings;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        var e = actionFuncGenericParams.MessageEventArgs;
+        if (args is { Length: < 1 } or null)
+        {
+            actionFuncGenericParams.CommandExecutionState =               CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+        var sendGroupsByTitle = SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
+        sendGroupsByTitle.Wait();
+        actionFuncGenericParams.CommandExecutionState =               CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task<MessageSentResult?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
@@ -506,77 +514,115 @@ internal static class Groups
 
     public static void  GetGroups(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         var eMessage = e.Message;
         var eMessageFrom = eMessage.From;
-        var allGroups = await CommandDispatcher.GetAllGroups(eMessageFrom?.Id, eMessageFrom?.Username, sender,
+        var groups = CommandDispatcher.GetAllGroups(eMessageFrom?.Id, eMessageFrom?.Username, sender,
             eMessageFrom?.LanguageCode,
             eMessage.Chat.Type, eMessage.MessageThreadId);
-        return allGroups
+        var allGroups = groups.Result;
+        actionFuncGenericParams.CommandExecutionState = allGroups
             ? CommandExecutionState.SUCCESSFUL
             : CommandExecutionState.ERROR_DEFAULT;
     }
 
     public static void UpdateGroupsDry(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        var updateGroups = CommandDispatcher.UpdateGroups(actionFuncGenericParams.TelegramBotAbstract, true, 
+            true, false, actionFuncGenericParams.MessageEventArgs);
+        var text = updateGroups.Result;
 
         if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         var eventArgsContainer = EventArgsContainer.Get(e);
         var eMessage = e.Message;
-        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
             eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
-        return CommandExecutionState.SUCCESSFUL;
+            ParseMode.Html, null,
+            InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
+        sendMessageInPrivate.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void UpdateGroups(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var updateGroups = CommandDispatcher.UpdateGroups(sender, false, true, false, e);
+        var text =  updateGroups.Result;
 
-        if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
+        if (e == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return ;
+        }
         var eMessage = e.Message;
         var eventArgsContainer = EventArgsContainer.Get(e);
-        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
             eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer,
             eMessage.MessageThreadId);
-        return CommandExecutionState.SUCCESSFUL;
+         sendMessageInPrivate.Wait();
+         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void UpdateGroupsAndFixNames(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        var updateGroups = CommandDispatcher.UpdateGroups(sender, false, true, true, e);
+        var text =  updateGroups.Result;
 
-        if (e == null) return CommandExecutionState.SUCCESSFUL;
+        if (e == null)
+        {
+            actionFuncGenericParams.CommandExecutionState =              CommandExecutionState.SUCCESSFUL;
+            return;
+        }
         var eventArgsContainer = EventArgsContainer.Get(e);
         var eMessage = e.Message;
-        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
             eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             eventArgsContainer, eMessage.MessageThreadId);
+         sendMessageInPrivate.Wait();
 
-        return CommandExecutionState.SUCCESSFUL;
+         actionFuncGenericParams.CommandExecutionState =              CommandExecutionState.SUCCESSFUL;
     }
 
     public static void  UpdateGroupsAndFixNamesDry(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState= CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
-        var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
+        var updateGroups = CommandDispatcher.UpdateGroups(sender, true, true, true, e);
+        var text =  updateGroups.Result;
 
         var eventArgsContainer = EventArgsContainer.Get(e);
         var eMessage = e.Message;
-        await SendMessage.SendMessageInPrivate(
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(
             sender, eMessage.From?.Id,
             eMessage.From?.LanguageCode, eMessage.From?.Username, text.Language,
             ParseMode.Html, null,
             InlineKeyboardMarkup.Empty(), eventArgsContainer,
             eMessage.MessageThreadId);
+         sendMessageInPrivate.Wait();
 
-        return CommandExecutionState.SUCCESSFUL;
+         actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
     }
 }
