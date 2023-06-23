@@ -235,11 +235,12 @@ public static class Logger
                 var botId = sender?.GetId();
                 if (botId != null)
                 {
+                    var dictionary = new Dictionary<string, object?>
+                    {
+                        { "@bot_id", botId }
+                    };
                     var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
-                        new Dictionary<string, object?>
-                        {
-                            { "@bot_id", botId }
-                        });
+                        dictionary);
                     var dbLogFileContent = GetFileContentFromDataTable(data);
                     if (!string.IsNullOrEmpty(dbLogFileContent))
                     {

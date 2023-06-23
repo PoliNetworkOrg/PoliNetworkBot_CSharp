@@ -32,6 +32,8 @@ internal static class Main
                 await sw.WriteLineAsync("Nome Gruppo $ Link di Invito");
             }
 
+            ;
+
             foreach (var group in groups) await MainMethodAsync2Async(group, telegramBotAbstract, links);
 
             Logger.WriteLine("====== CREATION COMPLETE ======");

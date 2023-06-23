@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -59,6 +59,7 @@ public class Fetcher
             if (classNode.ChildNodes[1].InnerText.Contains(roomName))
                 return Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
                        Const.HtmlTableEnd;
+
 
         return null;
     }
