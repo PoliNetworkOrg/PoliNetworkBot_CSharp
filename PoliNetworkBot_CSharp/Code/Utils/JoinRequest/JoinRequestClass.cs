@@ -16,7 +16,7 @@ public static class JoinRequestClass
         var telegramBotAbstract = TelegramBotAbstract.From(botClientWhole);
         if (telegramBotAbstract == null)
             return;
-        
+
         var updateChatJoinRequest = update.ChatJoinRequest;
         var vuoiJoinareIlGruppo = "Vuoi joinare il gruppo?\n\n" + updateChatJoinRequest?.Chat.Title;
         Language text = new L(vuoiJoinareIlGruppo);
