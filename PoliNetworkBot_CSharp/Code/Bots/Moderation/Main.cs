@@ -30,17 +30,10 @@ public static class Main
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
-        var t = new Thread(() =>
-        {
-            if (sender != null && e != null)
-            {
-                ;
-                _ = MainMethod2(new TelegramBotParam(sender, false), e);
-            }
-        });
-        t.Start();
-        //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
-        //t1.Start();
+        if (sender == null || e == null) return;
+        var telegramBotParam = new TelegramBotParam(sender, false);
+        var x = MainMethod2(telegramBotParam, e);
+        x.Wait();
     }
 
     public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
