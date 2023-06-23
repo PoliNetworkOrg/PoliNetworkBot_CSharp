@@ -18,15 +18,14 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.JoinRequest;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using SampleNuGet.Objects;
-using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Database = SampleNuGet.Utils.DatabaseUtils.Database;
 using File = System.IO.File;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Main;
@@ -70,7 +69,7 @@ public static class ProgramUtil
 
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
 
-        DbConfig.InitializeDbConfig();
+        DbConfigClass.InitializeDbConfig();
 
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');

@@ -3,7 +3,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
-namespace PoliNetworkBot_CSharp.Code.Utils;
+namespace PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 
 public static class DatabaseClass
 {
