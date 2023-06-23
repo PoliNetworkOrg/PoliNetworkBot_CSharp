@@ -1844,8 +1844,8 @@ public class TelegramBotAbstract
         }
     }
 
-    public static TelegramBotAbstract From(BotClientWhole botClientWhole)
+    public static TelegramBotAbstract? From(BotClientWhole botClientWhole)
     {
-        return new TelegramBotAbstract(botClientWhole.BotClient);
+        return botClientWhole.BotClient != null ? new TelegramBotAbstract(botClientWhole.BotClient) : null;
     }
 }
