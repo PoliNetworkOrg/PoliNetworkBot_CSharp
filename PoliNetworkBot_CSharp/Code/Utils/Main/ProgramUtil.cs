@@ -332,12 +332,11 @@ public static class ProgramUtil
                         x1 = new DbConfigConnection(x2);
                     x1 ??= GlobalVariables.DbConfig;
 
+                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S) { DbConfig = x1 };
+                    
                     GlobalVariables.Bots[botClient.BotId.Value] =
-                        new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
-                            BotTypeApi.REAL_BOT, bot.GetOnMessage().S)
-                        {
-                            DbConfig = x1
-                        };
+                        telegramBotAbstract;
 
                     var acceptMessages = bot.AcceptsMessages();
                     if (acceptMessages is null or false)
@@ -514,16 +513,29 @@ public static class ProgramUtil
                 }
 
                 if (updates == null || updates.Count == 0) continue;
-                foreach (var update in updates)
+
+                Action Selector(Update update)
                 {
-                    try
+                    void Action()
                     {
-                        HandleUpdate(update, botClientWhole);
+                        try
+                        {
+                            HandleUpdate(update, botClientWhole);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
-                    }
+
+                    return Action;
+                }
+
+                var actions = updates.Select((Func<Update, Action>)Selector).ToArray();
+
+                if (actions.Length > 0)
+                {
+                    Parallel.Invoke(actions);
                 }
 
                 offset ??= 0;
@@ -547,17 +559,18 @@ public static class ProgramUtil
 
             case UpdateType.Message:
             {
-                if (update.Message != null && botClientWhole.UpdatesMessageLastId.ContainsKey(update.Message.Chat.Id))
-                    if (botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] >= update.Message.MessageId)
+                var updateMessage = update.Message;
+                if (updateMessage != null && botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
+                    if (value >= updateMessage.MessageId)
                         return;
 
-                if (update.Message != null)
+                if (updateMessage != null)
                 {
-                    botClientWhole.UpdatesMessageLastId[update.Message.Chat.Id] = update.Message.MessageId;
+                    botClientWhole.UpdatesMessageLastId[updateMessage.Chat.Id] = updateMessage.MessageId;
 
                     botClientWhole.OnmessageMethod2.ActionMessageEvent?.GetAction()
                         ?.Invoke(botClientWhole.BotClient,
-                            new MessageEventArgs(update.Message));
+                            new MessageEventArgs(updateMessage));
                 }
 
                 break;
