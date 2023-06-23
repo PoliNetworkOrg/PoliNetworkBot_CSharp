@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -517,9 +517,10 @@ public static class ProgramUtil
 
                 if (updates == null || updates.Count == 0) continue;
 
-                Action Selector(Update update)
+
+                var enumerable = updates.Select(update =>
                 {
-                    void Action()
+                    void ThreadStart()
                     {
                         try
                         {
@@ -531,10 +532,18 @@ public static class ProgramUtil
                         }
                     }
 
-                    return Action;
-                }
+                    return new Thread(ThreadStart);
+                });
 
-                var actions = updates.Select((Func<Update, Action>)Selector).ToArray();
+                foreach (var thread in enumerable)
+                    try
+                    {
+                        thread.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                    }
 
                 if (actions.Length > 0)
                 {
