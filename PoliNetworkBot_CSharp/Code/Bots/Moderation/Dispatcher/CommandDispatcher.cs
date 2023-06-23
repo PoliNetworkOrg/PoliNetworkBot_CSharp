@@ -159,7 +159,7 @@ internal static class CommandDispatcher
         if (e != null)
             return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
                 e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                e.Message.MessageId);
+                messageThreadId:e.Message.MessageThreadId);
         return null;
     }
 
