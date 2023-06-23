@@ -641,7 +641,7 @@ public static class ProgramUtil
 
             case UpdateType.ChatJoinRequest:
             {
-                //todo: eventualmente gestire le richieste di ingresso ai gruppi
+                JoinRequest.JoinRequestClass.JoinHandle(update, botClientWhole);
                 break;
             }
         }
