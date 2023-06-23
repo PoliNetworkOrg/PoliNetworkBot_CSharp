@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -557,7 +555,7 @@ internal static class MainAnon
             FromTelegram = true,
             MessageIdUser = message1.MessageId,
             MessageIdReplyTo = messageReply?.MessageIdToReplyTo,
-            MessageThreadId = message1?.MessageThreadId
+            MessageThreadId = message1.MessageThreadId
         };
 
         var m4 = await CallbackUtils.SendMessageWithCallbackQueryAsync(callBackDataAnon,
