@@ -1,23 +1,11 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Org.BouncyCastle.Asn1.IsisMtt.X509;
-using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
-using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
-using PoliNetworkBot_CSharp.Code.Utils.Logger;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
@@ -42,7 +30,7 @@ internal static class RoomsBot
 
         telegramBotClient = sender.GetTelegramBot();
 
-        if (telegramBotClient == null || e?.Message?.From == null || e.Message.Text == null)
+        if (telegramBotClient == null || e?.Message.From == null || e.Message.Text == null)
             return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
 

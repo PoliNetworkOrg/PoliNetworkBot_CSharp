@@ -127,19 +127,21 @@ internal static class InviteLinks
     {
         try
         {
-            if (e?.Message != null && e.Message.Chat.Type != ChatType.Private)
+            var eMessage = e?.Message;
+            if (e?.Message != null && eMessage?.Chat.Type != ChatType.Private)
                 return;
 
             if (e?.Message.From == null)
                 return;
 
-            if (!Owners.CheckIfOwner(e.Message.From.Id))
+            var eMessageFrom = eMessage?.From;
+            if (!Owners.CheckIfOwner(eMessageFrom?.Id))
                 return;
 
-            if (e.Message.ReplyToMessage?.Document == null)
+            if (eMessage?.ReplyToMessage?.Document == null)
                 return;
 
-            var d = e.Message.ReplyToMessage.Document;
+            var d = eMessage.ReplyToMessage.Document;
             if (sender != null)
             {
                 var tuple1 = await sender.DownloadFileAsync(d);
@@ -195,16 +197,19 @@ internal static class InviteLinks
                             {
                                 Logger.Logger.WriteLine(ex);
                                 var ex4M = "4" + "\n\n" + ex.Message;
-                                await sender.SendTextMessageAsync(e.Message.From.Id,
-                                    new Language(
-                                        new Dictionary<string, string?>
+                                var language = new Language(
+                                    new Dictionary<string, string?>
+                                    {
                                         {
-                                            {
-                                                "it",
-                                                ex4M
-                                            }
-                                        }),
-                                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                            "it",
+                                            ex4M
+                                        }
+                                    });
+                                await sender.SendTextMessageAsync(eMessageFrom?.Id,
+                                    language,
+                                    ChatType.Private, "it", ParseMode.Html,
+                                    null, eMessageFrom?.Username,
+                                    eMessage.MessageThreadId);
                                 return;
                             }
                         }
@@ -215,25 +220,28 @@ internal static class InviteLinks
                                  "Riciclati: " + l.GetCount_Filtered(SuccessoGenerazioneLink.RICICLATO) + "\n" +
                                  "Errori: " + l.GetCount_Filtered(SuccessoGenerazioneLink.ERRORE) + "\n";
 
-                        await sender.SendTextMessageAsync(e.Message.From.Id,
-                            new Language(
-                                new Dictionary<string, string?>
+                        var language1 = new Language(
+                            new Dictionary<string, string?>
+                            {
                                 {
-                                    {
-                                        "it",
-                                        s2
-                                    }
-                                }),
-                            ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                    "it",
+                                    s2
+                                }
+                            });
+                        await sender.SendTextMessageAsync(eMessageFrom?.Id,
+                            language1,
+                            ChatType.Private, "it", ParseMode.Html,
+                            null, eMessageFrom?.Username,
+                            eMessage.MessageThreadId);
 
                         var st = l.GetStringList();
 
                         var stream = UtilsFileText.GenerateStreamFromString(st);
                         var tf = new TelegramFile(stream, "groups.txt", new L("Gruppi con link rigenerati"),
                             "text/plain", TextAsCaption.AFTER_FILE);
-                        sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
-                            e.Message.From.Username, e.Message.From.LanguageCode, null,
-                            false);
+                        sender.SendFileAsync(tf, new PeerAbstract(eMessageFrom?.Id, eMessage.Chat.Type),
+                            eMessageFrom?.Username, eMessageFrom?.LanguageCode, null,
+                            false, eMessage.MessageThreadId);
                     }
                 }
             }
@@ -261,6 +269,8 @@ internal static class InviteLinks
                 if (gruppoTg.IdLink.Length < 3) gruppoTg.IdLink = "";
             }
 
+            var eMessage = e?.Message;
+            var from = eMessage?.From;
             if (groupId == null)
                 try
                 {
@@ -286,16 +296,21 @@ internal static class InviteLinks
                                gruppoTg.Nome + "\n\n" + gruppoTg.NewLink + "\n\n" + gruppoTg.PermanentId;
                     if (sender != null)
                         if (e?.Message != null)
-                            await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex1M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                        "it",
+                                        ex1M
+                                    }
+                                });
+                            await sender.SendTextMessageAsync(from?.Id,
+                                language,
+                                ChatType.Private, "it", ParseMode.Html,
+                                null, from?.Username,
+                                eMessage?.MessageThreadId);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -332,16 +347,20 @@ internal static class InviteLinks
                     var ex2M = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.Nome;
                     if (sender != null)
                         if (e?.Message != null)
-                            await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex2M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                        "it",
+                                        ex2M
+                                    }
+                                });
+                            await sender.SendTextMessageAsync(from?.Id,
+                                language,
+                                ChatType.Private, "it", ParseMode.Html, null,
+                                from?.Username, eMessage?.MessageThreadId);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -373,16 +392,21 @@ internal static class InviteLinks
                     var ex3M = "3" + "\n\n" + ex3.Message;
                     if (sender != null)
                         if (e?.Message.From != null)
-                            await sender.SendTextMessageAsync(e.Message.From.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex3M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                        "it",
+                                        ex3M
+                                    }
+                                });
+                            await sender.SendTextMessageAsync(from?.Id,
+                                language,
+                                ChatType.Private, "it",
+                                ParseMode.Html, null, eMessage?.From?.Username,
+                                eMessage?.MessageThreadId);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -418,7 +442,7 @@ internal static class InviteLinks
             {
                 var gruppoTg1 = gruppoTGs[i];
                 var gruppoTg2 = gruppoTGs[j];
-                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: { } } ||
+                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: not null } ||
                     gruppoTg2.PermanentId == null) continue;
 
                 if (gruppoTg1.PermanentId != gruppoTg2.PermanentId) continue;

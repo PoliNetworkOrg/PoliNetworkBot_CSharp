@@ -16,22 +16,22 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 public static class ConfigUtil
 {
     public static bool GetConfig(long? fromId, string? fromUsername, TelegramBotAbstract? sender,
-        string? fromLanguageCode, ChatType? chatType)
+        string? fromLanguageCode, ChatType? chatType, int? messageThreadId)
     {
         var objectToSend = new ObjectToSend { FileName = "config.json", Value = ProgramUtil.BotConfigAll };
-        return GetFile(objectToSend, fromId, fromUsername, sender, fromLanguageCode, chatType);
+        return GetFile(objectToSend, fromId, fromUsername, sender, fromLanguageCode, chatType, messageThreadId);
     }
 
 
     private static bool GetFile(ObjectToSend configJson, long? fromId, string? fromUsername,
-        TelegramBotAbstract? sender, string? fromLanguageCode, ChatType? chatType)
+        TelegramBotAbstract? sender, string? fromLanguageCode, ChatType? chatType, int? messageThreadId)
     {
         var json = JsonConvert.SerializeObject(configJson.Value);
         var file = TelegramFile.FromString(json, configJson.FileName ?? "file.json", new L(), TextAsCaption.AS_CAPTION);
         chatType ??= ChatType.Private;
 
         var peer = new PeerAbstract(fromId, chatType.Value);
-        return SendMessage.SendFileAsync(file, peer, sender, fromUsername,
+        return SendMessage.SendFileAsync(file, peer, sender, fromUsername, messageThreadId,
             fromLanguageCode, null, true);
     }
 
@@ -40,8 +40,10 @@ public static class ConfigUtil
         var dbConfigConnection = telegramBotAbstract?.DbConfig;
         if (dbConfigConnection == null) return false;
         var objectToSend = new ObjectToSend { Value = dbConfigConnection.GetDbConfig(), FileName = "dbconfig.json" };
-        return messageEventArgs?.Message.From != null && GetFile(objectToSend, messageEventArgs.Message.From.Id,
-            messageEventArgs.Message.From.Username,
-            telegramBotAbstract, messageEventArgs.Message.From.LanguageCode, ChatType.Private);
+        var message1 = messageEventArgs?.Message;
+        var message1From = message1?.From;
+        return message1From != null && GetFile(objectToSend, message1From.Id,
+            message1From.Username,
+            telegramBotAbstract, message1From.LanguageCode, ChatType.Private, message1?.MessageThreadId);
     }
 }

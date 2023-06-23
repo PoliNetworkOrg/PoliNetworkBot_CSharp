@@ -170,7 +170,7 @@ public static class ThreadAsyncModeration
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
             _ = telegramBotAbstract.SendTextMessageAsync(GroupsConstants.BackupGroup, text, ChatType.Supergroup, "en",
-                ParseMode.Html, null, null);
+                ParseMode.Html, null, null, null);
         }
         catch (Exception? ex)
         {
@@ -209,8 +209,9 @@ public static class ThreadAsyncModeration
         {
             while (true)
             {
+                var message = messageEventArgs?.Message;
                 await BackupUtil.BackupHandler(new List<long?> { GroupsConstants.BackupGroup }, bot, null,
-                    ChatType.Group);
+                    ChatType.Group, message?.MessageThreadId);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);
             }
@@ -253,8 +254,8 @@ public static class ThreadAsyncModeration
         }
         // ReSharper disable once FunctionNeverReturns
     }
-    
-    
+
+
     private static TelegramBotAbstract? GetFirstBot()
     {
         if (GlobalVariables.Bots == null) return null;

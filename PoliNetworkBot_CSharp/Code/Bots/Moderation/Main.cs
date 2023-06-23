@@ -112,7 +112,7 @@ public static class Main
             {
                 case null:
                     return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
-                case { Item2: { } }:
+                case { Item2: not null }:
                     return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
             }
 
@@ -139,8 +139,9 @@ public static class Main
     {
         try
         {
-            if (messageEventArgs is { Message: { } } && (messageEventArgs.Message.Text != null ||
-                                                         messageEventArgs.Message.Type != MessageType.ChatMemberLeft))
+            if (messageEventArgs is { Message: not null } && (messageEventArgs.Message.Text != null ||
+                                                              messageEventArgs.Message.Type !=
+                                                              MessageType.ChatMemberLeft))
                 return false;
             if (messageEventArgs != null && messageEventArgs.Message?.From?.Id == null) return false;
             if (messageEventArgs?.Message?.LeftChatMember?.Id == null) return false;

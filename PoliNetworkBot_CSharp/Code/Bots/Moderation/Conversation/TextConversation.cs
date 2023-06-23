@@ -97,9 +97,12 @@ internal static class TextConversation
                 "Ti consigliamo di premere /help per vedere le funzioni disponibili"
             }
         });
-        await SendMessage.SendMessageInPrivate(telegramBotClient, e.Message.From?.Id,
-            e.Message.From?.LanguageCode,
-            e.Message.From?.Username, text2,
-            ParseMode.Html, null, null, EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e.Message;
+        var eMessageFrom = eMessage.From;
+        await SendMessage.SendMessageInPrivate(telegramBotClient, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2,
+            ParseMode.Html, null, null, eventArgsContainer, eMessage.MessageThreadId);
     }
 }

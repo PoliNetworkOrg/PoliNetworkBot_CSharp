@@ -108,7 +108,7 @@ public static class MessageDb
         var dt = Database.ExecuteSelectUnlogged(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
         );
-        
+
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -144,7 +144,7 @@ public static class MessageDb
                 await NotifyUtil.NotifyOwnerWithLog2(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
                     EventArgsContainer.Get(messageEventArgs));
             }
-        
+
         return true;
     }
 
@@ -253,11 +253,11 @@ public static class MessageDb
         {
             var s = dr[v].ToString();
             var r = DateTimeClass.GetDateTimeFromString(s);
-            if (r is { Item2: null, Item1: { } })
+            if (r is { Item2: null, Item1: not null })
             {
             }
 
-            if (r is { Item1: { } })
+            if (r is { Item1: not null })
                 return r.Item1.Value;
         }
         catch
@@ -390,11 +390,16 @@ public static class MessageDb
             { "en", text1 }
         };
         var text2 = new Language(dict);
-        if (telegramBotAbstract != null)
-            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
-                ParseMode.Html,
-                null, null, r1.GetMessageId(), true);
-        return null;
+        if (telegramBotAbstract == null) return null;
+        var replyToMessageId = r1.GetMessageId();
+        return await telegramBotAbstract.SendTextMessageAsync(
+            chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
+            ParseMode.Html,
+            null, null,
+            replyToMessageId: replyToMessageId,
+            messageThreadId: null,
+            disablePreviewLink: true,
+            splitMessage: default);
     }
 
     private static async Task<MessageSentResult?> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,
@@ -527,8 +532,8 @@ public static class MessageDb
 
     private static string? GetMessageTypeNameById(in long typeI, TelegramBotAbstract? sender)
     {
-        if (MessageTypesInRam.ContainsKey(typeI))
-            return MessageTypesInRam[typeI];
+        if (MessageTypesInRam.TryGetValue(typeI, out var id))
+            return id;
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
         var dt = Database.ExecuteSelect(q, sender?.DbConfig);
@@ -624,7 +629,7 @@ public static class MessageDb
 
         if (botClass != null)
             return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode, typeOfChatSentInto.Value);
+                caption, parseMode, typeOfChatSentInto.Value, null);
         return null;
     }
 

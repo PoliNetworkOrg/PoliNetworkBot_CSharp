@@ -135,18 +135,21 @@ public static class MassiveSendUtil
         {
             var groupId = Convert.ToInt64(element.ItemArray[0]);
 
+            var eventArgsContainer = EventArgsContainer.Get(e);
+            var message = e?.Message;
             try
             {
-                return await SendMessage.SendMessageInAGroup(sender, "en", text, EventArgsContainer.Get(e), groupId,
-                    ChatType.Supergroup, ParseMode.Html, null, default);
+                return await SendMessage.SendMessageInAGroup(sender, "en", text, eventArgsContainer, groupId,
+                    ChatType.Supergroup, ParseMode.Html, null, default,
+                    message?.MessageThreadId);
             }
             catch
             {
                 try
                 {
-                    return await SendMessage.SendMessageInAGroup(sender, "en", text, EventArgsContainer.Get(e),
+                    return await SendMessage.SendMessageInAGroup(sender, "en", text, eventArgsContainer,
                         groupId,
-                        ChatType.Group, ParseMode.Html, null, default);
+                        ChatType.Group, ParseMode.Html, null, default, message?.MessageThreadId);
                 }
                 catch
                 {

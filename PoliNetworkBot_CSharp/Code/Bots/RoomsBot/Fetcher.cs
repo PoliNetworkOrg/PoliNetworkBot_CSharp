@@ -5,24 +5,21 @@ using System.Threading;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
-using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
 public class Fetcher
 {
-
     private static readonly int MaximumApiCallsPerSecond = 5;
     private static readonly int MaximumApiCallsPerMinute = 30;
     private static readonly object Lock = new();
-    
-    private static int ApiCallsCounterPerSeconds = 0;
-    private static int ApiCallsSecondTracker = 0;
-    
-    private static int ApiCallsCounterPerMinute = 0;
-    private static int ApiCallsMinuteTracker = 0;
+
+    private static int ApiCallsCounterPerSeconds;
+    private static int ApiCallsSecondTracker;
+
+    private static int ApiCallsCounterPerMinute;
+    private static int ApiCallsMinuteTracker;
 
     private static readonly TimeSpan CacheInvalidationTime = TimeSpan.FromHours(1);
     private static readonly Dictionary<string, Dictionary<DateTime, DateTime>> FetchCacheAge = new();
@@ -32,11 +29,12 @@ public class Fetcher
     {
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");
-        var text =  parsedDoc.Nodes().Aggregate(Const.CssStyles, (current, node) => current + node.OuterHtml);
+        var text = parsedDoc.Nodes().Aggregate(Const.CssStyles, (current, node) => current + node.OuterHtml);
         return text;
     }
 
-    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, double startingTime, double endingTime)
+    public static List<string>? GetFreeClassrooms(string campus, DateTime rawDateTime, double startingTime,
+        double endingTime)
     {
         var dateTime = rawDateTime.Date;
         var doc = FetchOccupationData(campus, dateTime.Date);
@@ -46,26 +44,21 @@ public class Fetcher
 
         return Rooms.GetFreeRooms(t3?[0], dateTime.AddHours(startingTime), dateTime.AddHours(endingTime), 1);
     }
-    
-    
+
 
     public static List<string>? GetAllClassrooms(string campus, DateTime dateTime)
     {
-        return GetFreeClassrooms(campus, dateTime,8, 8);
+        return GetFreeClassrooms(campus, dateTime, 8, 8);
     }
 
     public static string? GetSingleClassroom(string campus, string roomName, DateTime dateTime)
     {
         var doc = FetchOccupationData(campus, dateTime);
-        foreach (var classNode in doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]"))
-        {
+        var htmlNodeCollection = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
+        foreach (var classNode in htmlNodeCollection)
             if (classNode.ChildNodes[1].InnerText.Contains(roomName))
-            {
-                var text = Data.Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml + Const.HtmlTableEnd;
-                return text;
-            }
-        }
-        
+                return Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
+                       Const.HtmlTableEnd;
 
         return null;
     }
@@ -75,7 +68,7 @@ public class Fetcher
         foreach (var link in classNode.SelectNodes("//a[@href]"))
         {
             var att = link.Attributes["href"];
-            att.Value = Data.Const.HrefRepairLink + att.Value;
+            att.Value = Const.HrefRepairLink + att.Value;
         }
     }
 
@@ -83,21 +76,21 @@ public class Fetcher
     {
         lock (Lock)
         {
-            if (FetchCacheAge.ContainsKey(campus) 
-                && FetchCacheAge[campus].ContainsKey(dateTime) 
-                && (DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime))
+            if (FetchCacheAge.ContainsKey(campus)
+                && FetchCacheAge[campus].ContainsKey(dateTime)
+                && DateTime.Now - FetchCacheAge[campus][dateTime] < CacheInvalidationTime)
                 return RawFetchedFile[campus][dateTime];
-            if(dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
+            if (dateTime != DateTime.Today && dateTime != DateTime.Today + TimeSpan.FromDays(1))
                 CheckApiRateLimit();
-            var doc = new HtmlDocument(); 
+            var doc = new HtmlDocument();
             var web = new HtmlWeb();
             Console.WriteLine("### Requested passed to API endpoint ###");
-            doc = web.Load(Const.PolimiController + 
+            doc = web.Load(Const.PolimiController +
                            $"?csic={campus}&tipologia={Data.Enums.RoomType.tutte}&categoria=tutte" +
                            $"&giorno_day={dateTime.Day}" +
                            $"&giorno_month={dateTime.Month}" +
                            $"&giorno_year={dateTime.Year}" +
-                           $"&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=" );
+                           "&jaf_giorno_date_format=dd%2FMM%2Fyyyy&&evn_visualizza=");
             FixHyperlinks(doc.DocumentNode);
             RawFetchedFile.Remove(campus);
             RawFetchedFile.Add(campus, new Dictionary<DateTime, HtmlDocument>());

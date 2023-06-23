@@ -59,7 +59,7 @@ public static class Logger
                 if (messageToBeSent.Key.Value != null)
                     await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
                         messageToBeSent.ChatType, "un", ParseMode.Html,
-                        null, null, splitMessage: true);
+                        null, null, splitMessage: true, messageThreadId: null);
             }
             catch (Exception e)
             {
@@ -116,12 +116,12 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            
+
             try
             {
                 const string? q1 =
                     "CALL `insert_log`(@id, @severity, @stacktrace, @content)";
-            
+
                 Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
                     { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },
@@ -249,8 +249,9 @@ public static class Logger
                         {
                             var textToSendBefore = "LOG (bot " + botId + ") from db:";
                             const string applicationOctetStream = "application/octet-stream";
+                            var message = messageEventArgs?.Message;
                             LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-                                applicationOctetStream, "log_db_" + botId + ".log");
+                                applicationOctetStream, "log_db_" + botId + ".log", message?.MessageThreadId);
                         }
                     }
                 }
@@ -314,7 +315,7 @@ public static class Logger
         if (DetectEmptyLog(text))
             EmptyLog(sender, sendTo, EventArgsContainer.Get(messageEventArgs));
         else
-            PrintLog2(sendTo, sender, path, textToSendBefore, fileName);
+            PrintLog2(sendTo, sender, path, textToSendBefore, fileName, messageEventArgs?.Message.MessageThreadId);
 
 
         _linesCount = 0;
@@ -327,7 +328,7 @@ public static class Logger
 
 
     private static void PrintLog2(List<long?> sendTo, TelegramBotAbstract? sender, string path, string textToSendBefore,
-        string fileName)
+        string fileName, int? messageThreadId)
     {
         string file;
         lock (LogFileLock)
@@ -338,7 +339,8 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
+        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName,
+            messageThreadId);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -356,8 +358,14 @@ public static class Logger
         });
 
         foreach (var sendToSingle in sendTo)
-            SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
-                null, text, ParseMode.Html, null, InlineKeyboardMarkup.Empty(), eventArgsContainer).Wait();
+        {
+            var messageEventArgs = eventArgsContainer.MessageEventArgs;
+            var message = messageEventArgs?.Message;
+            var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, sendToSingle, "en",
+                null, text, ParseMode.Html, null,
+                InlineKeyboardMarkup.Empty(), eventArgsContainer, message?.MessageThreadId);
+            sendMessageInPrivate.Wait();
+        }
     }
 
     internal static void Log(EventoConLog eventoLog)

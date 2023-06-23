@@ -236,10 +236,14 @@ public static class MessagesStore
     internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
-        if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+        var message = e?.Message;
+        var toMessage = message?.ReplyToMessage;
+        var messageText = toMessage?.Text;
+        if (toMessage == null || string.IsNullOrEmpty(messageText))
             return;
 
-        if (Store != null && !Store.ContainsKey(e.Message.ReplyToMessage.Text))
+        var eMessageFrom = message?.From;
+        if (Store != null && !Store.ContainsKey(messageText))
         {
             Language language1 = new(new Dictionary<string, string?>
             {
@@ -251,14 +255,15 @@ public static class MessagesStore
                 }
             });
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From?.Id, language1, ChatType.Private,
-                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username);
+                await sender.SendTextMessageAsync(eMessageFrom?.Id, language1, ChatType.Private,
+                    eMessageFrom?.LanguageCode, ParseMode.Html,
+                    null, eMessageFrom?.Username, message?.MessageThreadId);
             return;
         }
 
         if (Store != null)
         {
-            var storedMessage = Store[e.Message.ReplyToMessage.Text];
+            var storedMessage = Store[messageText];
             var json = storedMessage?.ToJson();
             Language language2 = new(new Dictionary<string, string?>
             {
@@ -275,9 +280,14 @@ public static class MessagesStore
                 var stream = UtilsFileText.GenerateStreamFromString(json);
                 var tf = new TelegramFile(stream, "messagesSent.json", language2, "text/plain",
                     TextAsCaption.AS_CAPTION);
-                PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
-                sender?.SendFileAsync(tf, peer, e.Message.From?.Username,
-                    e.Message.From?.LanguageCode, null, true);
+                var messageChat = message?.Chat;
+                var messageChatType = messageChat?.Type;
+                if (messageChatType != null)
+                {
+                    PeerAbstract peer = new(eMessageFrom?.Id, messageChatType.Value);
+                    sender?.SendFileAsync(tf, peer, eMessageFrom?.Username,
+                        eMessageFrom?.LanguageCode, null, true, message?.MessageThreadId);
+                }
             }
         }
     }

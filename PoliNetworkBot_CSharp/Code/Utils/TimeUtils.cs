@@ -33,22 +33,26 @@ internal static class TimeUtils
 
     public static async Task<CommandExecutionState> GetRunningTime(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        var eventArgsContainer = EventArgsContainer.Get(e);
         try
         {
             var lang = new Language(new Dictionary<string, string?>
             {
                 { "", await CommandDispatcher.GetRunningTime() }
             });
-            if (e != null)
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                    e.Message.From?.LanguageCode,
-                    e.Message.From?.Username, lang, ParseMode.Html,
-                    null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            if (e == null) return CommandExecutionState.SUCCESSFUL;
+            var eMessage = e.Message;
+            var eMessageFrom = eMessage.From;
+            await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+                eMessageFrom?.LanguageCode,
+                eMessageFrom?.Username, lang, ParseMode.Html,
+                null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
+
             return CommandExecutionState.SUCCESSFUL;
         }
         catch (Exception? ex)
         {
-            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
+            _ = NotifyUtil.NotifyOwnerWithLog2(ex, sender, eventArgsContainer);
         }
 
         return CommandExecutionState.ERROR_DEFAULT;
@@ -67,11 +71,13 @@ internal static class TimeUtils
         {
             { "", DateTimeClass.NowAsStringAmericanFormat() }
         });
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode,
-                e.Message.From?.Username, lang, ParseMode.Html,
-                null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        if (e == null) return CommandExecutionState.SUCCESSFUL;
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e.Message;
+        await SendMessage.SendMessageInPrivate(sender, eMessage.From?.Id,
+            eMessage.From?.LanguageCode,
+            eMessage.From?.Username, lang, ParseMode.Html,
+            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
 
         return CommandExecutionState.SUCCESSFUL;
     }

@@ -2,8 +2,8 @@
 
 using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using TLSharp.Core;
 
 #endregion
@@ -26,10 +26,12 @@ public class GenericMedia : GenericFile
         throw new NotImplementedException();
     }
 
-    public InputOnlineFile? GetTelegramBotInputOnlineFile()
+    public InputFile? GetTelegramBotInputOnlineFile()
     {
-        if (FileId == null) return null;
-        var r = new InputOnlineFile(FileId);
+        if (FileId == null)
+            return null;
+
+        var r = InputFile.FromFileId(FileId);
         return r;
     }
 }

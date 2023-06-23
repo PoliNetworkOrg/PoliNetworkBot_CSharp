@@ -31,6 +31,7 @@ public static class CallbackUtils
         CallbackGenericData callbackGenericData,
         long chatToSendTo,
         Language text, TelegramBotAbstract? telegramBotAbstract, ChatType chatType, string? lang, string? username,
+        int? messageThreadId,
         bool splitMessage, long? replyToMessageId = null)
     {
         callbackGenericData.Bot = telegramBotAbstract;
@@ -45,7 +46,7 @@ public static class CallbackUtils
         if (telegramBotAbstract == null) return null;
         var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
             ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
-            replyToMessageId: replyToMessageId);
+            replyToMessageId: replyToMessageId, messageThreadId: messageThreadId);
         callbackGenericData.MessageSent = messageSent;
 
         return messageSent;

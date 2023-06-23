@@ -1,8 +1,8 @@
 ﻿#region
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -13,7 +13,6 @@ using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -38,10 +37,13 @@ internal static class CommandDispatcher
     public static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e,
         TelegramBotAbstract? sender, string[]? args)
     {
-        if (e?.Message.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
+        var eMessage1 = e?.Message;
+        if (eMessage1?.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
             return CommandExecutionState.UNMET_CONDITIONS;
 
-        await SendMessage.ForwardMessage(sender, e, e.Message.Chat.Id, args[0], e.Message.MessageId, false, null,
+        await SendMessage.ForwardMessage(sender, e, eMessage1.Chat.Id,
+            args[0], eMessage1.MessageId,
+            eMessage1.MessageThreadId, false, null,
             CancellationToken.None);
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -209,9 +211,14 @@ internal static class CommandDispatcher
             { "en", "This command only works with a reply to message" }
         });
         if (e != null)
+        {
+            var eMessage = e.Message;
+            var eMessageFrom = eMessage.From;
             await SendMessage.SendMessageInPrivateOrAGroup(sender,
-                lang, e.Message.From?.LanguageCode, e.Message.From?.Username, e.Message.From?.Id,
-                e.Message.From?.FirstName, e.Message.From?.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
+                lang, eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessageFrom?.Id,
+                eMessageFrom?.FirstName, eMessageFrom?.LastName, eMessage.Chat.Id,
+                eMessage.Chat.Type, eMessage.MessageThreadId);
+        }
     }
 
     public static async Task<UpdateGroupsResult> UpdateGroups(TelegramBotAbstract? sender, bool dry,
@@ -258,7 +265,7 @@ internal static class CommandDispatcher
         var output = ExecuteBashCommand("./static/github_pusher.sh");
 
         Logger.WriteLine(output);
-        
+
         var text = output.Length > 0
             ? new Dictionary<string, string?>
             {
@@ -272,7 +279,8 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"), sender, null,
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"),
+            sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
@@ -309,19 +317,19 @@ internal static class CommandDispatcher
 
         Logger.WriteLine(output);
     }
-    
+
     private static string ExecuteBashCommand(string command)
     {
         // according to: https://stackoverflow.com/a/15262019/637142
         // thans to this we will pass everything as one command
-        command = command.Replace("\"","\"\"");
+        command = command.Replace("\"", "\"\"");
 
         var proc = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
-                Arguments = "-c \""+ command + "\"",
+                Arguments = "-c \"" + command + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -342,11 +350,12 @@ internal static class CommandDispatcher
         if (e?.Message == null)
             return CommandExecutionState.SUCCESSFUL;
 
-        var r2 = MessagesStore.StoreAndCheck(e.Message.ReplyToMessage);
+        var eMessage = e.Message;
+        var r2 = MessagesStore.StoreAndCheck(eMessage.ReplyToMessage);
 
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
         {
-            var e2 = new MessageEventArgs(e.Message.ReplyToMessage ?? e.Message);
+            var e2 = new MessageEventArgs(eMessage.ReplyToMessage ?? eMessage);
             r2 = await CheckSpam.CheckSpamAsync(e2, sender, false);
         }
 
@@ -360,11 +369,11 @@ internal static class CommandDispatcher
             var text = new Language(dict);
             try
             {
-                if (e.Message.From != null)
+                if (eMessage.From != null)
                     if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
+                        await sender.SendTextMessageAsync(eMessage.From.Id, text, ChatType.Private, "en",
                             ParseMode.Html,
-                            null, null);
+                            null, null, eMessage.MessageThreadId);
             }
             catch
             {
@@ -499,51 +508,54 @@ internal static class CommandDispatcher
         TelegramBotAbstract? sender)
     {
         if (e == null) return null;
-        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+        var eMessage = e.Message;
+        var eMessageReplyToMessage = eMessage.ReplyToMessage;
+        var value = eMessageReplyToMessage?.Text;
+        var eMessageFrom = eMessage.From;
+        if (eMessageReplyToMessage == null || string.IsNullOrEmpty(value))
         {
             var text = new Language(new Dictionary<string, string?>
             {
                 { "en", "You have to reply to a message containing the query" }
             });
-            if (e.Message.From == null) return null;
+            if (eMessageFrom == null) return null;
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                    e.Message.MessageId);
+                await sender.SendTextMessageAsync(eMessageFrom.Id, text, ChatType.Private,
+                    eMessageFrom.LanguageCode, ParseMode.Html, null, eMessageFrom.Username,
+                    eMessage.MessageId);
             return null;
         }
 
-        var query = e.Message.ReplyToMessage.Text;
         if (executeTrueSelectFalse)
             if (sender != null)
             {
-                var i = Database.Execute(query, sender.DbConfig);
+                var i = Database.Execute(value, sender.DbConfig);
 
                 var text = new Language(new Dictionary<string, string?>
                 {
                     { "en", "Query execution. Result: " + i }
                 });
-                if (e.Message.From != null)
-                    await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                        e.Message.MessageId);
+                if (eMessageFrom != null)
+                    await sender.SendTextMessageAsync(eMessageFrom.Id, text, ChatType.Private,
+                        eMessageFrom.LanguageCode, ParseMode.Html, null, eMessageFrom.Username,
+                        eMessage.MessageId);
                 return i;
             }
 
 
         if (sender == null) return null;
-        var x = Database.ExecuteSelect(query, sender.DbConfig);
+        var x = Database.ExecuteSelect(value, sender.DbConfig);
         var x2 = StreamSerialization.SerializeToStream(x);
         var documentInput =
             new TelegramFile(x2, "table.bin", new L("Query result"), "application/octet-stream",
                 TextAsCaption.AS_CAPTION);
 
-        if (e.Message.From == null)
+        if (eMessageFrom == null)
             return -1;
 
-        PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v = sender.SendFileAsync(documentInput, peer, e.Message.From.Username,
-            e.Message.From.LanguageCode, e.Message.MessageId, false);
+        PeerAbstract peer = new(eMessageFrom.Id, eMessage.Chat.Type);
+        var v = sender.SendFileAsync(documentInput, peer, eMessageFrom.Username,
+            eMessageFrom.LanguageCode, eMessage.MessageId, false, eMessage.MessageThreadId);
         return v ? 1 : 0;
     }
 
@@ -552,10 +564,12 @@ internal static class CommandDispatcher
         if (e?.Message.From == null)
             return null;
 
-        if (e.Message.Text == null) return null;
-        var tuple1 = await AskUser.AskDateAsync(e.Message.From.Id,
-            e.Message.Text,
-            e.Message.From.LanguageCode, sender, e.Message.From.Username);
+        var eMessage = e.Message;
+        if (eMessage.Text == null) return null;
+        var eMessageFrom = eMessage.From;
+        var tuple1 = await AskUser.AskDateAsync(eMessageFrom.Id,
+            eMessage.Text,
+            eMessageFrom.LanguageCode, sender, eMessageFrom.Username, eMessage.MessageThreadId);
 
         var exception = tuple1?.Item2;
         if (exception != null)
@@ -580,9 +594,11 @@ internal static class CommandDispatcher
             { "en", DateTimeClass.DateTimeToAmericanFormat(sentDate2) }
         };
         var text = new Language(dict);
-        return await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-            e.Message.From.LanguageCode, e.Message.From.Username,
-            text, ParseMode.Html, e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+        var argsContainer = EventArgsContainer.Get(e);
+        return await SendMessage.SendMessageInPrivate(sender, eMessageFrom.Id,
+            eMessageFrom.LanguageCode, eMessageFrom.Username,
+            text, ParseMode.Html, eMessage.MessageId, InlineKeyboardMarkup.Empty(), argsContainer,
+            eMessage.MessageThreadId);
     }
 
     private static async Task<MessageSentResult?> Rules(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -599,10 +615,14 @@ internal static class CommandDispatcher
             { "it", text }
         });
 
-        return await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        return await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2, ParseMode.Html,
+            null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, eMessage?.MessageThreadId);
     }
 
     public static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
@@ -629,15 +649,18 @@ internal static class CommandDispatcher
             { "en", textEng },
             { "it", text }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
-            EventArgsContainer.Get(e));
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, eMessage?.MessageThreadId);
         return CommandExecutionState.SUCCESSFUL;
     }
 
     public static Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
-        string? lang, ChatType? chatType)
+        string? lang, ChatType? chatType, int? messageThreadId)
     {
         var groups = Groups.GetAllGroups(sender);
         Stream? stream = new MemoryStream();
@@ -653,9 +676,10 @@ internal static class CommandDispatcher
             { "en", "Here are all groups:" },
             { "it", "Ecco tutti i gruppi:" }
         });
-        return Task.FromResult(SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
+        var sendFileAsync = SendMessage.SendFileAsync(new TelegramFile(stream, "groups.bin",
                 text2, "application/octet-stream", TextAsCaption.BEFORE_FILE), peer,
-            sender, username, lang, null, true));
+            sender, username, messageThreadId, lang, null, true);
+        return Task.FromResult(sendFileAsync);
     }
 
 
@@ -672,11 +696,14 @@ internal static class CommandDispatcher
                 "Mi dispiace, ma non conosco questo comando. Prova a contattare gli amministratori (/contact)"
             }
         });
-        await SendMessage.SendMessageInPrivate(sender, e?.Message.From?.Id,
-            e?.Message.From?.LanguageCode,
-            e?.Message.From?.Username, text2,
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2,
             ParseMode.Html,
-            null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+            null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
 
         return true;
     }
@@ -690,12 +717,16 @@ internal static class CommandDispatcher
         });
         if (e != null)
         {
+            var eMessage = e.Message;
+            var eMessageFrom = eMessage.From;
+            var eMessageChat = eMessage.Chat;
             await SendMessage.SendMessageInPrivateOrAGroup(sender,
-                lang, e.Message.From?.LanguageCode, e.Message.From?.Username, e.Message.From?.Id,
-                e.Message.From?.FirstName, e.Message.From?.LastName, e.Message.Chat.Id, e.Message.Chat.Type);
+                lang, eMessageFrom?.LanguageCode, eMessageFrom?.Username, eMessageFrom?.Id,
+                eMessageFrom?.FirstName, eMessageFrom?.LastName,
+                eMessageChat.Id, eMessageChat.Type, eMessage.MessageThreadId);
 
             if (sender != null)
-                await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                await sender.DeleteMessageAsync(eMessageChat.Id, eMessage.MessageId, null);
         }
     }
 
@@ -718,7 +749,8 @@ internal static class CommandDispatcher
     public static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotClient)
     {
-        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
+        var eMessage = e?.Message;
+        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, eMessage);
         if (telegramBotClient == null)
             return CommandExecutionState.ERROR_DEFAULT;
 
@@ -727,10 +759,12 @@ internal static class CommandDispatcher
             { "it", telegramBotClient.GetContactString() },
             { "en", telegramBotClient.GetContactString() }
         });
-        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
-            lang2, e?.Message.Chat.Type, e?.Message.From?.LanguageCode,
+        var eMessageChat = eMessage?.Chat;
+        var eMessageFrom = eMessage?.From;
+        await telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
+            lang2, eMessageChat?.Type, eMessageFrom?.LanguageCode,
             ParseMode.Html,
-            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e?.Message.From?.Username
+            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom?.Username, eMessage?.MessageThreadId
         );
         return CommandExecutionState.SUCCESSFUL;
     }
@@ -738,14 +772,18 @@ internal static class CommandDispatcher
     public static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e,
         TelegramBotAbstract? sender)
     {
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+
         long? n = null;
+        var eventArgsContainer = EventArgsContainer.Get(e);
         try
         {
             n = await InviteLinks.FillMissingLinksIntoDB_Async(sender, e);
         }
         catch (Exception? e2)
         {
-            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, eventArgsContainer);
         }
 
         if (n == null)
@@ -756,18 +794,23 @@ internal static class CommandDispatcher
             { "en", "I have updated n=" + n + " links" },
             { "it", "Ho aggiornato n=" + n + " link" }
         });
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode,
-                e.Message.From?.Username, text2,
-                ParseMode.Html,
-                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+
+        var eMessage = e.Message;
+        var eMessageFrom = eMessage.From;
+        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+            eMessageFrom?.LanguageCode,
+            eMessageFrom?.Username, text2,
+            ParseMode.Html,
+            eMessage.MessageId, InlineKeyboardMarkup.Empty(),
+            eventArgsContainer, eMessage.MessageThreadId);
+
         return CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task Start(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string[]? args)
     {
-        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
+        var eMessage = e?.Message;
+        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, eMessage);
         var lang2 = new Language(new Dictionary<string, string?>
         {
             {
@@ -782,11 +825,16 @@ internal static class CommandDispatcher
             }
         });
         if (telegramBotClient != null)
-            await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
+        {
+            var eMessageChat = eMessage?.Chat;
+            var eMessageFrom = eMessage?.From;
+            await telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
                 lang2,
-                e?.Message.Chat.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: e?.Message.From?.LanguageCode, username: e?.Message.From?.Username, parseMode: ParseMode.Html
+                eMessageChat?.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                lang: eMessageFrom?.LanguageCode, username: eMessageFrom?.Username, parseMode: ParseMode.Html,
+                messageThreadId: eMessage?.MessageThreadId
             );
+        }
     }
 
     public static async Task<bool> BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)

@@ -23,15 +23,15 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 internal static class RestrictUser
 {
-    internal static async Task Mute(int timeInSeconds, TelegramBotAbstract? telegramBotClient, long chatId,
+    internal static async Task Mute(int timeInSeconds, TelegramBotAbstract? telegramBotClient, long? chatId,
         long? userId,
-        ChatType chatType, RestrictAction restrictAction)
+        ChatType? chatType, RestrictAction restrictAction)
     {
         var untilDate = DateTime.Now.AddSeconds(timeInSeconds);
         await Mute2Async(untilDate, telegramBotClient, chatId, userId, chatType, restrictAction);
     }
 
-    private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract? telegramBotClient, long chatId,
+    private static async Task Mute2Async(DateTime? untilDate, TelegramBotAbstract? telegramBotClient, long? chatId,
         long? userId, ChatType? chatType, RestrictAction restrictAction)
     {
         var permissions = restrictAction switch
@@ -46,7 +46,12 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = false,
                 CanChangeInfo = false,
                 CanPinMessages = false,
-                CanSendMediaMessages = false
+                CanSendPhotos = false,
+                CanSendVideos = false,
+                CanSendAudios = false,
+                CanSendVideoNotes = false,
+                CanSendVoiceNotes = false,
+                CanSendDocuments = false
             },
             RestrictAction.UNMUTE => new ChatPermissions
             {
@@ -57,7 +62,12 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = true,
                 CanChangeInfo = true,
                 CanPinMessages = true,
-                CanSendMediaMessages = true
+                CanSendAudios = true,
+                CanSendDocuments = true,
+                CanSendPhotos = true,
+                CanSendVideos = true,
+                CanSendVideoNotes = true,
+                CanSendVoiceNotes = true
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
@@ -80,6 +90,9 @@ internal static class RestrictUser
         TargetUserObject target, MessageEventArgs? e)
     {
         var targetEmpty = await targetId.UserIdEmpty(sender);
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
         if (targetEmpty)
         {
             var text2 = new Language(new Dictionary<string, string?>
@@ -93,13 +106,14 @@ internal static class RestrictUser
                           ErrorCodes.TargetInvalidWhenBanAll
                 }
             });
-            if (e is { Message.From: { } })
-                await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                    e.Message.From.LanguageCode,
-                    e.Message.From.Username,
+            if (e is { Message.From: not null })
+                await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+                    eMessageFrom?.LanguageCode,
+                    eMessageFrom?.Username,
                     text2,
                     ParseMode.Html,
-                    e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                    eMessage?.MessageId,
+                    InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage?.MessageThreadId);
             return null;
         }
 
@@ -122,13 +136,14 @@ internal static class RestrictUser
                       ErrorCodes.DatatableEmptyWhenBanAll
             }
         });
-        if (e is { Message.From: { } })
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username,
+        if (e is { Message.From: not null })
+            await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+                eMessageFrom?.LanguageCode,
+                eMessageFrom?.Username,
                 text3,
                 ParseMode.Html,
-                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                eMessage?.MessageId, InlineKeyboardMarkup.Empty(),
+                eventArgsContainer, eMessage?.MessageThreadId);
         return null;
     }
 
@@ -380,13 +395,20 @@ internal static class RestrictUser
             }
         });
 
-        if (e is { Message.From: { } })
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username,
+        if (e is { Message.From: not null })
+        {
+            var eventArgsContainer = EventArgsContainer.Get(e);
+            var eMessage = e.Message;
+            var eMessageFrom = eMessage.From;
+            await SendMessage.SendMessageInPrivate(sender, eMessageFrom.Id,
+                eMessageFrom.LanguageCode,
+                eMessageFrom.Username,
                 text7,
                 ParseMode.Html,
-                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                eMessage.MessageId,
+                InlineKeyboardMarkup.Empty(),
+                eventArgsContainer, eMessage.MessageThreadId);
+        }
     }
 
     private static int AddExceptionIfNeeded(ref List<ExceptionNumbered> exceptions, Exception? item2)
@@ -560,6 +582,9 @@ internal static class RestrictUser
         bool? revokeMessage)
     {
         var targetEmpty = await finalTarget.UserIdEmpty(sender);
+        var eMessage = e?.Message;
+        var eMessageFrom = eMessage?.From;
+        var replyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE);
         if (targetEmpty)
         {
             var lang2 = new Language(new Dictionary<string, string?>
@@ -568,25 +593,29 @@ internal static class RestrictUser
                 { "it", "Non riusciamo a trovare il bersaglio" }
             });
             if (sender != null)
-                await sender.SendTextMessageAsync(e?.Message.From?.Id, lang2, ChatType.Private,
+                await sender.SendTextMessageAsync(eMessageFrom?.Id, lang2, ChatType.Private,
                     lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+                    replyMarkupObject: replyMarkupObject,
+                    messageThreadId: eMessage?.MessageThreadId);
 
             return;
         }
 
-        if (string.IsNullOrEmpty(e?.Message.ReplyToMessage?.Text))
+        var message = e?.Message;
+        var messageFrom = message?.From;
+        if (string.IsNullOrEmpty(eMessage?.ReplyToMessage?.Text))
         {
             var lang2 = new Language(new Dictionary<string, string?>
             {
                 { "en", "The replied message cannot be empty!" },
                 { "it", "Il messaggio a cui rispondi non può essere vuoto" }
             });
-            if (e?.Message.From == null) return;
+            if (eMessageFrom == null) return;
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
+                await sender.SendTextMessageAsync(messageFrom?.Id, lang2, ChatType.Private,
                     lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+                    replyMarkupObject: replyMarkupObject,
+                    messageThreadId: eMessage?.MessageThreadId);
 
             return;
         }
@@ -595,15 +624,23 @@ internal static class RestrictUser
             await BanAllAsync(sender, e, finalTarget, restrictAction, until, revokeMessage);
         var text2 = done?.BanUnbanAllResult.GetLanguage(restrictAction, finalTarget, done.NExceptions);
 
-        NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), restrictAction, done, finalTarget,
-            e.Message.ReplyToMessage.Text);
+        var messageReplyToMessage = message?.ReplyToMessage;
+        var reason = messageReplyToMessage?.Text;
+        var eventArgsContainer = EventArgsContainer.Get(e);
+        NotifyUtil.NotifyOwnersBanAction(
+            sender, eventArgsContainer,
+            restrictAction, done, finalTarget,
+            reason);
 
-        if (e.Message.From != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
-                e.Message.From.LanguageCode,
-                e.Message.From.Username, text2,
+        if (messageFrom != null)
+            await SendMessage.SendMessageInPrivate(sender, messageFrom.Id,
+                messageFrom.LanguageCode,
+                messageFrom.Username, text2,
                 ParseMode.Html,
-                e.Message.MessageId, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
+                message?.MessageId,
+                InlineKeyboardMarkup.Empty(),
+                eventArgsContainer,
+                message?.MessageThreadId);
 
         NotifyUtil.SendReportOfSuccessAndFailures(sender, e, done);
     }
