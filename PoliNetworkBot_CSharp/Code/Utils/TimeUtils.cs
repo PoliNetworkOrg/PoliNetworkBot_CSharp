@@ -39,16 +39,18 @@ internal static class TimeUtils
             var runningTime = CommandDispatcher.GetRunningTime();
             var lang = new Language(new Dictionary<string, string?>
             {
-                { "",  runningTime.Result }
+                { "", runningTime.Result }
             });
             if (actionFuncGenericParams.MessageEventArgs == null)
             {
                 actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
                 return;
             }
+
             var eMessage = actionFuncGenericParams.MessageEventArgs.Message;
             var eMessageFrom = eMessage.From;
-            var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract, eMessageFrom?.Id,
+            var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract,
+                eMessageFrom?.Id,
                 eMessageFrom?.LanguageCode,
                 eMessageFrom?.Username, lang, ParseMode.Html,
                 null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
@@ -66,7 +68,8 @@ internal static class TimeUtils
 
     public static void TestTime(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var testTime = CommandDispatcher.TestTime(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        var testTime = CommandDispatcher.TestTime(actionFuncGenericParams.TelegramBotAbstract,
+            actionFuncGenericParams.MessageEventArgs);
         var time = testTime.Result;
         Logger.Logger.WriteLine(time);
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
@@ -83,9 +86,11 @@ internal static class TimeUtils
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
             return;
         }
+
         var eventArgsContainer = EventArgsContainer.Get(actionFuncGenericParams.MessageEventArgs);
         var eMessage = actionFuncGenericParams.MessageEventArgs.Message;
-        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract, eMessage.From?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract,
+            eMessage.From?.Id,
             eMessage.From?.LanguageCode,
             eMessage.From?.Username, lang, ParseMode.Html,
             null, InlineKeyboardMarkup.Empty(), eventArgsContainer, eMessage.MessageThreadId);
