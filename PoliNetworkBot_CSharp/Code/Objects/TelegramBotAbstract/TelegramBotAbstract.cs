@@ -681,14 +681,19 @@ public class TelegramBotAbstract
 
                 if (_botClient != null)
                     if (message != null)
-                        return chatid != null
-                            ? new MessageSentResult(true, await _botClient.SendTextMessageAsync(chatid, message,
-                                    messageThreadId,
-                                    parseMode,
-                                    replyMarkup: reply, replyToMessageId: (int)m2,
-                                    disableWebPagePreview: disablePreviewLink),
-                                chatType)
-                            : null;
+                        if (chatid != null)
+                        {
+                            var sendTextMessageAsync = _botClient.SendTextMessageAsync(chatid, message,
+                                messageThreadId,
+                                parseMode,
+                                replyMarkup: reply, replyToMessageId: (int)m2,
+                                disableWebPagePreview: disablePreviewLink);
+                            var result = sendTextMessageAsync.Result;
+                            return new MessageSentResult(true, result,
+                                chatType);
+                        }
+                        else
+                            return null;
                 break;
 
 
