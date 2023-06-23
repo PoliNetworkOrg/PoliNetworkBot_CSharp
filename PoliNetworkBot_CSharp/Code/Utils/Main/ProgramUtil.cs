@@ -518,7 +518,6 @@ public static class ProgramUtil
                 if (updates == null || updates.Count == 0) continue;
 
 
-
                 var enumerable = GetEnumerableHandleUpdateThreads(botClientWhole, updates);
 
                 foreach (var thread in enumerable) RunHandleSingleUpdate(thread);
@@ -536,7 +535,8 @@ public static class ProgramUtil
     }
 
 
-    private static IEnumerable<Thread> GetEnumerableHandleUpdateThreads(BotClientWhole botClientWhole, List<Update> updates)
+    private static IEnumerable<Thread> GetEnumerableHandleUpdateThreads(BotClientWhole botClientWhole,
+        List<Update> updates)
     {
         var enumerable = updates.Select(update =>
         {
@@ -564,7 +564,6 @@ public static class ProgramUtil
     {
         try
         {
-
             thread.Start();
         }
         catch (Exception e)
