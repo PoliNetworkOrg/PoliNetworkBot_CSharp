@@ -174,8 +174,9 @@ public static class MassiveSendUtil
             return;
         }
 
-        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract, false).Result;
-        actionFuncGenericParams.CommandExecutionState = 
+        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs,
+            actionFuncGenericParams.TelegramBotAbstract, false).Result;
+        actionFuncGenericParams.CommandExecutionState =
             massiveGeneralSendAsync ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
@@ -187,9 +188,10 @@ public static class MassiveSendUtil
             return;
         }
 
-        
-        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract, true).Result;
-        actionFuncGenericParams.CommandExecutionState = 
+
+        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs,
+            actionFuncGenericParams.TelegramBotAbstract, true).Result;
+        actionFuncGenericParams.CommandExecutionState =
             massiveGeneralSendAsync ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
@@ -197,7 +199,8 @@ public static class MassiveSendUtil
     {
         try
         {
-            if (actionFuncGenericParams.MessageEventArgs != null && Matches(GlobalVariables.AllowedBanAll, actionFuncGenericParams.MessageEventArgs.Message.From))
+            if (actionFuncGenericParams.MessageEventArgs != null && Matches(GlobalVariables.AllowedBanAll,
+                    actionFuncGenericParams.MessageEventArgs.Message.From))
             {
                 if (actionFuncGenericParams.TelegramBotAbstract == null
                     || actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage?.Text == null
@@ -208,13 +211,15 @@ public static class MassiveSendUtil
                 }
 
                 var massiveSendAsync = CommandDispatcher.MassiveSendAsync(actionFuncGenericParams.TelegramBotAbstract,
-                    actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text);
+                    actionFuncGenericParams.MessageEventArgs,
+                    actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text);
                 massiveSendAsync.Wait();
                 actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
                 return;
             }
 
-            var defaultCommand = CommandDispatcher.DefaultCommand(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+            var defaultCommand = CommandDispatcher.DefaultCommand(actionFuncGenericParams.TelegramBotAbstract,
+                actionFuncGenericParams.MessageEventArgs);
             defaultCommand.Wait();
             return;
         }
