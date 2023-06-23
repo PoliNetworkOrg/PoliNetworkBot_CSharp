@@ -516,11 +516,15 @@ public static class ProgramUtil
                 }
 
                 if (updates == null || updates.Count == 0) continue;
+<<<<<<< HEAD
 
 
                 var enumerable = GetEnumerableHandleUpdateThreads(botClientWhole, updates);
 
                 foreach (var thread in enumerable) RunHandleSingleUpdate(thread);
+=======
+                foreach (var update in updates) RunSingleThread(botClientWhole, update);
+>>>>>>> update-bot-lib
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
@@ -533,16 +537,25 @@ public static class ProgramUtil
         // ReSharper disable once FunctionNeverReturns
     }
 
+<<<<<<< HEAD
     private static IEnumerable<Thread> GetEnumerableHandleUpdateThreads(BotClientWhole botClientWhole, List<Update> updates)
     {
         var enumerable = updates.Select(update =>
         {
             void ThreadStart()
+=======
+    private static void RunSingleThread(BotClientWhole botClientWhole, Update update)
+    {
+        try
+        {
+            Thread thread = new Thread(() =>
+>>>>>>> update-bot-lib
             {
                 try
                 {
                     HandleUpdate(update, botClientWhole);
                 }
+<<<<<<< HEAD
                 catch (Exception e)
                 {
                     Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
@@ -558,6 +571,13 @@ public static class ProgramUtil
     {
         try
         {
+=======
+                catch (Exception e2)
+                {
+                    Logger.Logger.WriteLine(e2, LogSeverityLevel.ALERT);
+                }
+            });
+>>>>>>> update-bot-lib
             thread.Start();
         }
         catch (Exception e)
@@ -566,7 +586,10 @@ public static class ProgramUtil
         }
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> update-bot-lib
     private static void HandleUpdate(Update update, BotClientWhole botClientWhole)
     {
         switch (update.Type)
