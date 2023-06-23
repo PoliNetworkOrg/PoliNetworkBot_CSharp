@@ -893,7 +893,7 @@ public static class Assoc
         var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs,
             permittedSpamMessage);
 
-        await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
+        await SampleNuGet.Utils.CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato,
             councilMessage, sender, ChatType.Group, "uni", null, message2?.MessageThreadId, true, replyTo);
 

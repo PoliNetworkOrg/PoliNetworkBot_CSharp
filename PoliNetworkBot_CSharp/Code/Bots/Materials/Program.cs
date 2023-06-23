@@ -23,9 +23,11 @@ using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using SampleNuGet.Objects;
 using SampleNuGet.Objects.Exceptions;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using BotUtils = PoliNetworkBot_CSharp.Code.Utils;
+using File = System.IO.File;
 
 #endregion
 
@@ -681,9 +683,10 @@ public class Program
 
                     lock (SlowDownLock)
                     {
-                        var messageFw = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
+                        var forwardMessageAsync = telegramBotAbstract.ForwardMessageAsync(e.Message.MessageId,
                             e.Message.Chat.Id,
-                            ChannelsForApproval.GetChannel(course)).Result;
+                            ChannelsForApproval.GetChannel(course));
+                        var messageFw = forwardMessageAsync.Result;
 
                         Thread.Sleep(100);
 
