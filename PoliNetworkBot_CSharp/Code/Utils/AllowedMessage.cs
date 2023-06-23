@@ -3,6 +3,7 @@ using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
+using SampleNuGet.Objects;
 using SampleNuGet.Utils;
 using Telegram.Bot.Types.Enums;
 

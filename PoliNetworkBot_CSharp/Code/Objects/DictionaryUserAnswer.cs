@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
+using SampleNuGet.Enums;
+using SampleNuGet.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -52,7 +54,7 @@ public class DictionaryUserAnswer
     }
 
     internal void AddWorkCompleted(long idUser, long? botId, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username,
+        SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract, string? lang, string? username,
         int? messageThreadId)
     {
         if (botId == null) return;
@@ -67,7 +69,7 @@ public class DictionaryUserAnswer
 
 
     private async Task OnAnswerTelegramWorkCompleted(AnswerTelegram? answerTelegram, bool sendMessageConfirmationChoice,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract, object? result, long idUser,
+        SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract, object? result, long idUser,
         string? lang, string? username, long? botId, int? messageThreadId)
     {
         var crashed = true;

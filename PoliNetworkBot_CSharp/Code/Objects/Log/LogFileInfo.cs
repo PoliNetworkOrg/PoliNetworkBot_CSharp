@@ -1,4 +1,6 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Objects.Log;
+﻿using SampleNuGet.Objects;
+
+namespace PoliNetworkBot_CSharp.Code.Objects.Log;
 
 public class LogFileInfo
 {

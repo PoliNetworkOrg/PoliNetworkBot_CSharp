@@ -15,6 +15,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Enums;
 using SampleNuGet.Objects;
 using SampleNuGet.Utils.DatabaseUtils;
 using Telegram.Bot.Types;

@@ -19,7 +19,9 @@ using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+using SampleNuGet.Enums;
 using SampleNuGet.Objects;
+using SampleNuGet.Objects.TelegramMedia;
 using SampleNuGet.Utils;
 using Telegram.Bot.Types.Enums;
 

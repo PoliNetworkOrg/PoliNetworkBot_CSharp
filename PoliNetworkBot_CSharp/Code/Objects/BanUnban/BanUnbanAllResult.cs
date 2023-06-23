@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Data;
 using PoliNetworkBot_CSharp.Code.Enums;
+using SampleNuGet.Objects;
 
 #endregion
 

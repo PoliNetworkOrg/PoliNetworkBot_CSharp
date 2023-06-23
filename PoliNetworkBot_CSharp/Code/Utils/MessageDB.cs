@@ -9,12 +9,13 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using SampleNuGet.Objects;
+using SampleNuGet.Utils;
 using SampleNuGet.Utils.DatabaseUtils;
+using SampleNuGet.Utils.UtilsMedia;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -253,7 +254,7 @@ public static class MessageDb
         try
         {
             var s = dr[v].ToString();
-            var r = DateTimeClass.GetDateTimeFromString(s);
+            var r = DateTimeUtil.GetDateTimeFromString(s);
             if (r is { Item2: null, Item1: not null })
             {
             }
@@ -377,7 +378,7 @@ public static class MessageDb
         }
 
         var text1 = "📌 ID: " + count + "\n";
-        if (dt != null) text1 += "📅 " + SampleNuGet.Utils.DateTimeClass.DateTimeToAmericanFormat(dt) + "\n";
+        if (dt != null) text1 += "📅 " + DateTimeUtil.DateTimeToAmericanFormat(dt) + "\n";
         if (fromIdEntity != null)
         {
             var entityName = Assoc.GetNameOfEntityFromItsId(fromIdEntity.Value, telegramBotAbstract);

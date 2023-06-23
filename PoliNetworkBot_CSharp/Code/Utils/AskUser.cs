@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using SampleNuGet.Enums;
 using SampleNuGet.Objects;
 using Telegram.Bot.Types.Enums;
 
@@ -202,7 +203,7 @@ internal static class AskUser
         var reply = await AskAsync(id, lang2, sender, lang, username, messageThreadId);
         try
         {
-            var tuple1 = SampleNuGet.Utils.DateTimeClass.GetDateTimeFromString(reply);
+            var tuple1 = SampleNuGet.Utils.DateTimeUtil.GetDateTimeFromString(reply);
             if (tuple1 != null)
             {
                 var dateTime = tuple1.Item1;

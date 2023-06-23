@@ -45,7 +45,7 @@ public class ExceptionNumbered : Exception
     }
 
     internal static async Task<bool> SendExceptionAsync(Exception? e,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
+        SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? eventArgsContainer)
     {
         if (telegramBotAbstract == null)

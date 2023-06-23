@@ -14,7 +14,7 @@ public class TelegramBotParam
         _test = test;
     }
 
-    public TelegramBotAbstract? GetTelegramBot()
+    public SampleNuGet.Objects.TelegramBotAbstract? GetTelegramBot()
     {
         TelegramBotClient? telegramBotClientBot = null;
         if (_sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
@@ -25,10 +25,10 @@ public class TelegramBotParam
                 return null;
 
             var botClient = new TelegramBotClient("");
-            return new TelegramBotAbstract(botClient);
+            return new SampleNuGet.Objects.TelegramBotAbstract(botClient);
         }
 
-        var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+        var telegramBotClient = SampleNuGet.Objects.TelegramBotAbstract.GetFromRam(telegramBotClientBot);
         return telegramBotClient;
     }
 }

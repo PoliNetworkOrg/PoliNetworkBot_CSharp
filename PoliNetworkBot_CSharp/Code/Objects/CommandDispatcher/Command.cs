@@ -160,7 +160,7 @@ public class Command
     }
 
     public virtual CommandExecutionState? TryTrigger(MessageEventArgs? e,
-        TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
+        SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract,
         string command,
         string[]? args)
     {

@@ -2,6 +2,7 @@
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using SampleNuGet.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using SampleNuGet.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion

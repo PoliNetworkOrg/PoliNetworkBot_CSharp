@@ -13,6 +13,7 @@ using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using SampleNuGet.Enums;
 using SampleNuGet.Objects;
 using SampleNuGet.Utils;
 using SampleNuGet.Utils.DatabaseUtils;

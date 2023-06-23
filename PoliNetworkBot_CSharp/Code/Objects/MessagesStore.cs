@@ -12,7 +12,9 @@ using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
+using SampleNuGet.Enums;
 using SampleNuGet.Objects;
+using SampleNuGet.Objects.TelegramMedia;
 using SampleNuGet.Utils;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -236,7 +238,7 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
+    internal static async Task SendMessageDetailsAsync(SampleNuGet.Objects.TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
         var message = e?.Message;

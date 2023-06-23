@@ -2,6 +2,7 @@
 
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
+using SampleNuGet.Objects;
 using Telegram.Bot.Types.Enums;
 
 #endregion

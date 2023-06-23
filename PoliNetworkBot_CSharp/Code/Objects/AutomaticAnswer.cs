@@ -19,8 +19,8 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 [JsonObject(MemberSerialization.Fields)]
 public class AutomaticAnswer
 {
-    private Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? _action;
-    private Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task>? _actionMessage;
+    private Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, Task>? _action;
+    private Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, string, Task>? _actionMessage;
     private List<long> _except;
     private string? _response;
 
@@ -29,7 +29,7 @@ public class AutomaticAnswer
 
 
     public AutomaticAnswer(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? action,
+        Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, Task>? action,
         List<long> except)
     {
         _trigger = trigger;
@@ -38,7 +38,7 @@ public class AutomaticAnswer
     }
 
     public AutomaticAnswer(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task>? action, List<long> except,
+        Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, string, Task>? action, List<long> except,
         string response)
     {
         _trigger = trigger;
@@ -60,7 +60,7 @@ public class AutomaticAnswer
         return id != null && _except.All(group => !group.Equals(id));
     }
 
-    public virtual bool TryTrigger(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
+    public virtual bool TryTrigger(MessageEventArgs? e, SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract,
         string message)
     {
         if (!IsTriggered(message) || !GroupAllowed(e?.Message.Chat.Id)) return false;
@@ -84,21 +84,21 @@ public class AutomaticAnswerRestricted : AutomaticAnswer
     private Func<MessageEventArgs?, bool> _condition;
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, Task>? action, List<long> except,
+        Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, Task>? action, List<long> except,
         Func<MessageEventArgs?, bool> condition) : base(trigger, action, except)
     {
         _condition = condition;
     }
 
     public AutomaticAnswerRestricted(List<List<string>> trigger,
-        Func<MessageEventArgs, TelegramBotAbstract.TelegramBotAbstract?, string, Task>? action, List<long> except,
+        Func<MessageEventArgs, SampleNuGet.Objects.TelegramBotAbstract?, string, Task>? action, List<long> except,
         string response,
         Func<MessageEventArgs?, bool> condition) : base(trigger, action, except, response)
     {
         _condition = condition;
     }
 
-    public override bool TryTrigger(MessageEventArgs? e, TelegramBotAbstract.TelegramBotAbstract? telegramBotAbstract,
+    public override bool TryTrigger(MessageEventArgs? e, SampleNuGet.Objects.TelegramBotAbstract? telegramBotAbstract,
         string message)
     {
         return _condition(e) && base.TryTrigger(e, telegramBotAbstract, message);

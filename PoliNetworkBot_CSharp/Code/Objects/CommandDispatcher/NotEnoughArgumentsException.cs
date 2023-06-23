@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using SampleNuGet.Objects;
 
 #endregion
 
