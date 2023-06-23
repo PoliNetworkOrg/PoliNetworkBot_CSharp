@@ -518,59 +518,9 @@ public static class ProgramUtil
                 if (updates == null || updates.Count == 0) continue;
 
 
-                var enumerable = updates.Select(update =>
-                {
-                    void ThreadStart()
-                    {
-                        try
-                        {
-                            HandleUpdate(update, botClientWhole);
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
-                        }
-                    }
+                var enumerable = GetEnumerableHandleUpdateThreads(botClientWhole, updates);
 
-                    return new Thread(ThreadStart);
-                });
-
-                foreach (var thread in enumerable)
-                    try
-                    {
-                        thread.Start();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
-                    }
-
-                if (actions.Length > 0)
-                {
-                    try
-                    {
-                        Thread thread = new Thread(() =>
-                        {
-
-                            try
-                            {
-                                Parallel.Invoke(actions);
-                            }
-                            catch (Exception? e)
-                            {
-                                Logger.Logger.WriteLine("[01] Critical exception in update application!", LogSeverityLevel.CRITICAL);
-                                Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
-                            }
-                        });
-                        thread.Start();
-                    }
-                    catch (Exception? e)
-                    {
-                        Logger.Logger.WriteLine("[02] Critical exception in update application!", LogSeverityLevel.CRITICAL);
-                        Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
-                    }
-
-                }
+                foreach (var thread in enumerable) RunHandleSingleUpdate(thread);
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
@@ -583,6 +533,38 @@ public static class ProgramUtil
         // ReSharper disable once FunctionNeverReturns
     }
 
+    private static IEnumerable<Thread> GetEnumerableHandleUpdateThreads(BotClientWhole botClientWhole, List<Update> updates)
+    {
+        var enumerable = updates.Select(update =>
+        {
+            void ThreadStart()
+            {
+                try
+                {
+                    HandleUpdate(update, botClientWhole);
+                }
+                catch (Exception e)
+                {
+                    Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+                }
+            }
+
+            return new Thread(ThreadStart);
+        });
+        return enumerable;
+    }
+
+    private static void RunHandleSingleUpdate(Thread thread)
+    {
+        try
+        {
+            thread.Start();
+        }
+        catch (Exception e)
+        {
+            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+        }
+    }
 
 
     private static void HandleUpdate(Update update, BotClientWhole botClientWhole)
