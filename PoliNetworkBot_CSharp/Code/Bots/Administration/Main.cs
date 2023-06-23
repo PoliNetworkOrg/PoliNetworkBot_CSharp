@@ -33,7 +33,7 @@ internal static class Main
             }
 
             ;
-            
+
             foreach (var group in groups) await MainMethodAsync2Async(group, telegramBotAbstract, links);
 
             Logger.WriteLine("====== CREATION COMPLETE ======");
