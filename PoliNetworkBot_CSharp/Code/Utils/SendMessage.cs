@@ -243,24 +243,38 @@ internal static class SendMessage
 
     public static void SendMessageInChannel2(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e == null || cmdLines == null) return CommandExecutionState.UNMET_CONDITIONS;
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var cmdLines = actionFuncGenericParams.Strings;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        if (e == null || cmdLines == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         var eMessage = e.Message;
         if (!Owners.CheckIfOwner(eMessage.From?.Id) || eMessage.Chat.Type != ChatType.Private)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         if (eMessage.ReplyToMessage == null || cmdLines.Length != 2)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         var text = new Language(new Dictionary<string, string?>
         {
             { "it", eMessage.ReplyToMessage?.Text ?? eMessage.ReplyToMessage?.Caption }
         });
         var c2 = cmdLines[1];
 
-        await SendMessageInAGroup(sender, eMessage.From?.LanguageCode,
+        var sendMessageInAGroup = SendMessageInAGroup(sender, eMessage.From?.LanguageCode,
             text, EventArgsContainer.Get(e),
             long.Parse(c2),
             ChatType.Channel, ParseMode.Html, null, false, eMessage.MessageThreadId);
 
-        return CommandExecutionState.SUCCESSFUL;
+        sendMessageInAGroup.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<SuccessWithException> ForwardMessage(TelegramBotAbstract? sender, MessageEventArgs? e,
