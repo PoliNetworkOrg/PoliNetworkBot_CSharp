@@ -25,6 +25,8 @@ public static class JoinRequestClass
             ParseMode.Html,
             null, null, messageThreadId: null);
         sendTextMessageAsync.Wait();
+        
+
         ;
     }
 }
