@@ -217,8 +217,6 @@ public static class Logger
         {
             try
             {
-             
-
                 List<string>? text = null;
                 try
                 {

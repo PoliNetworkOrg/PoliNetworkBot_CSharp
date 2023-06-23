@@ -23,9 +23,9 @@ public static class JoinRequestClass
         var sendTextMessageAsync = telegramBotAbstract.SendTextMessageAsync(updateChatJoinRequest?.From.Id, text,
             ChatType.Private, null,
             ParseMode.Html,
-            null, null, messageThreadId: null);
+            null, null, null);
         sendTextMessageAsync.Wait();
-        
+
 
         ;
     }

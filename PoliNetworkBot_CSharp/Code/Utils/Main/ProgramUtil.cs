@@ -608,7 +608,7 @@ public static class ProgramUtil
                     callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                 break;
             }
- 
+
 
             case UpdateType.ChannelPost:
                 break;

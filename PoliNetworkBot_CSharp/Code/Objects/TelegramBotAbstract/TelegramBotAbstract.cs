@@ -694,7 +694,10 @@ public class TelegramBotAbstract
                                 chatType);
                         }
                         else
+                        {
                             return null;
+                        }
+
                 break;
 
 

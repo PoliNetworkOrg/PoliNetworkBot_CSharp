@@ -110,11 +110,8 @@ internal static class CommandDispatcher
         if (sender == null)
             return await DefaultCommand(sender, e);
 
-        Command? command = FindCommandToRun(SwitchDispatcher.Commands, cmd);
-        if (command == null)
-        {
-            return await DefaultCommand(sender, e);
-        }
+        var command = FindCommandToRun(SwitchDispatcher.Commands, cmd);
+        if (command == null) return await DefaultCommand(sender, e);
 
         try
         {
@@ -161,7 +158,10 @@ internal static class CommandDispatcher
 
     private static Command? FindCommandToRun(List<Command?> commands, string cmd)
     {
-        return (from variable in commands let trigger = variable?.IsTriggered(cmd) where trigger ?? false select variable).FirstOrDefault();
+        return (from variable in commands
+            let trigger = variable?.IsTriggered(cmd)
+            where trigger ?? false
+            select variable).FirstOrDefault();
     }
 
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
@@ -170,7 +170,7 @@ internal static class CommandDispatcher
         if (e != null)
             return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
                 e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                messageThreadId:e.Message.MessageThreadId);
+                e.Message.MessageThreadId);
         return null;
     }
 
