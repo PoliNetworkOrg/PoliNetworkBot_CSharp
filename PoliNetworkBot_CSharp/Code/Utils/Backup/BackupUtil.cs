@@ -60,16 +60,26 @@ internal static class BackupUtil
 
     public static void Backup(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        if (e?.Message.From == null)
+        {
+            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
         if (sender == null)
-            return CommandExecutionState.NOT_TRIGGERED;
+        {
+            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.NOT_TRIGGERED;
+            return;
+        }
 
         var eMessage = e.Message;
         var eMessageFrom = eMessage.From;
         var fromId = eMessageFrom.Id;
-        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, eMessageFrom.Username,
+        var backupHandler = BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, eMessageFrom.Username,
             eMessage.Chat.Type, eMessage.MessageThreadId);
+        backupHandler.Wait();
 
-        return CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Running;
 
@@ -19,6 +16,6 @@ public static class RunningUtil
             ;
         }
 
-        return Task.FromResult(CommandExecutionState.SUCCESSFUL);
-    }
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
+     }
 }
