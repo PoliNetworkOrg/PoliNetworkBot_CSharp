@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -1841,5 +1842,10 @@ public class TelegramBotAbstract
             case BotTypeApi.DISGUISED_BOT:
                 break;
         }
+    }
+
+    public static TelegramBotAbstract From(BotClientWhole botClientWhole)
+    {
+        return new TelegramBotAbstract(botClientWhole.BotClient);
     }
 }
