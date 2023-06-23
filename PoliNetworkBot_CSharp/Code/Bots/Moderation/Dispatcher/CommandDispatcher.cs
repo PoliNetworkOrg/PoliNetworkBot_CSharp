@@ -37,15 +37,22 @@ internal static class CommandDispatcher
 {
     public static void SendMessageInGroup(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var eMessage1 = e?.Message;
-        if (eMessage1?.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        var eMessage1 = actionFuncGenericParams.MessageEventArgs?.Message;
+        if (eMessage1?.ReplyToMessage == null || actionFuncGenericParams.TelegramBotAbstract == null ||
+            actionFuncGenericParams.Strings == null || actionFuncGenericParams.Strings.Length == 0)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
-        await SendMessage.ForwardMessage(sender, e, eMessage1.Chat.Id,
-            args[0], eMessage1.MessageId,
+        var forwardMessage = SendMessage.ForwardMessage(
+            actionFuncGenericParams.TelegramBotAbstract,
+            actionFuncGenericParams.MessageEventArgs, eMessage1.Chat.Id,
+            actionFuncGenericParams.Strings[0], eMessage1.MessageId,
             eMessage1.MessageThreadId, false, null,
             CancellationToken.None);
-        return CommandExecutionState.SUCCESSFUL;
+        forwardMessage.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void BanHistory(ActionFuncGenericParams actionFuncGenericParams)
@@ -58,14 +65,16 @@ internal static class CommandDispatcher
 
     public static void GetRooms(ActionFuncGenericParams actionFuncGenericParams)
     {
-        await Rooms.RoomsMainAsync(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        var roomsMainAsync = Rooms.RoomsMainAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        roomsMainAsync.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void GetRules(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Rules(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        var rules = Rules(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        rules.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<bool> CommandDispatcherMethod(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -156,7 +165,14 @@ internal static class CommandDispatcher
 
     public static void AllowMessageOwnerAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
+        if (actionFuncGenericParams.MessageEventArgs == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (e.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
                                                  string.IsNullOrEmpty(e.Message.ReplyToMessage.Caption)))
         {
@@ -167,10 +183,16 @@ internal static class CommandDispatcher
             });
 
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
+            {
+                var sendTextMessageAsync = sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
                     e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
                     e.Message.MessageId);
-            return CommandExecutionState.UNMET_CONDITIONS;
+                sendTextMessageAsync.Wait();
+                return;
+            }
+
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
         }
 
         MessagesStore.AllowMessageOwner(e.Message.ReplyToMessage.Text);
@@ -178,14 +200,16 @@ internal static class CommandDispatcher
         Logger.WriteLine(
             e.Message.ReplyToMessage.Text ?? e.Message.ReplyToMessage.Caption ??
             "Error in allowmessage, both caption and text are null");
-        return CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void AllowMessageAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         var fourHours = new TimeSpan(4, 0, 0);
-        await Assoc.AllowMessage(e, sender, fourHours);
-        return CommandExecutionState.SUCCESSFUL;
+        var allowMessage = Assoc.AllowMessage(actionFuncGenericParams.MessageEventArgs,
+            actionFuncGenericParams.TelegramBotAbstract, fourHours);
+        allowMessage.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static async Task<string?> GetRunningTime()
@@ -345,11 +369,20 @@ internal static class CommandDispatcher
 
     public static void TestSpamAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         var message = e?.Message.ReplyToMessage;
         if (message == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+
         if (e?.Message == null)
-            return CommandExecutionState.SUCCESSFUL;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
+            return;
+        }
 
         var eMessage = e.Message;
         var r2 = MessagesStore.StoreAndCheck(eMessage.ReplyToMessage);
@@ -357,7 +390,8 @@ internal static class CommandDispatcher
         if (r2 is not (SpamType.SPAM_PERMITTED or SpamType.SPAM_LINK))
         {
             var e2 = new MessageEventArgs(eMessage.ReplyToMessage ?? eMessage);
-            r2 = await CheckSpam.CheckSpamAsync(e2, sender, false);
+            var checkSpamAsync = CheckSpam.CheckSpamAsync(e2, sender, false);
+            r2 = checkSpamAsync.Result;
         }
 
 
@@ -372,9 +406,14 @@ internal static class CommandDispatcher
             {
                 if (eMessage.From != null)
                     if (sender != null)
-                        await sender.SendTextMessageAsync(eMessage.From.Id, text, ChatType.Private, "en",
+                    {
+                        var sendTextMessageAsync = sender.SendTextMessageAsync(
+                            eMessage.From.Id, text, ChatType.Private, "en",
                             ParseMode.Html,
-                            null, null, eMessage.MessageThreadId);
+                            null, null,
+                            eMessage.MessageThreadId);
+                        sendTextMessageAsync.Wait();
+                    }
             }
             catch
             {
@@ -383,10 +422,11 @@ internal static class CommandDispatcher
         }
         catch
         {
-            return CommandExecutionState.ERROR_DEFAULT;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
+            return;
         }
 
-        return CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 #pragma warning disable IDE0051 // Rimuovi i membri privati inutilizzati
 
@@ -628,6 +668,9 @@ internal static class CommandDispatcher
 
     public static void SendRecommendedGroupsAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
                             "\n📖 Libri @PoliBook\n" +
@@ -652,11 +695,12 @@ internal static class CommandDispatcher
         var eventArgsContainer = EventArgsContainer.Get(e);
         var eMessage = e?.Message;
         var eMessageFrom = eMessage?.From;
-        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             eventArgsContainer, eMessage?.MessageThreadId);
-        return CommandExecutionState.SUCCESSFUL;
+        sendMessageInPrivate.Wait();
+        actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
     }
 
     public static Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
@@ -732,25 +776,43 @@ internal static class CommandDispatcher
 
     public static void HelpExtended(ActionFuncGenericParams actionFuncGenericParams)
     {
-        await Help.HelpExtendedSlave(e, sender);
-        return CommandExecutionState.SUCCESSFUL;
+        var helpExtendedSlave = Help.HelpExtendedSlave(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract);
+        helpExtendedSlave.Wait();
+        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
     }
 
     public static void HelpPrivate(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var args = actionFuncGenericParams.Strings;
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (args == null || args.Length == 0)
-            await Help.HelpPrivateSlave(e, sender);
+        {
+            var helpPrivateSlave = Help.HelpPrivateSlave(e, sender);
+            helpPrivateSlave.Wait();
+        }
         else
-            await Help.HelpSpecific(e, sender, args);
-        return CommandExecutionState.SUCCESSFUL;
+        {
+            var helpSpecific = Help.HelpSpecific(e, sender, args);
+            helpSpecific.Wait();
+        }
+
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void ContactUs(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
+        var telegramBotClient = actionFuncGenericParams.TelegramBotAbstract;
         var eMessage = e?.Message;
-        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, eMessage);
+        var deleteIfMessageIsNotInPrivate = DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, eMessage);
+        deleteIfMessageIsNotInPrivate.Wait();
         if (telegramBotClient == null)
-            return CommandExecutionState.ERROR_DEFAULT;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
+            return;
+        }
 
         var lang2 = new Language(new Dictionary<string, string?>
         {
@@ -759,12 +821,13 @@ internal static class CommandDispatcher
         });
         var eMessageChat = eMessage?.Chat;
         var eMessageFrom = eMessage?.From;
-        await telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
+        var sendTextMessageAsync = telegramBotClient.SendTextMessageAsync(eMessageChat?.Id,
             lang2, eMessageChat?.Type, eMessageFrom?.LanguageCode,
             ParseMode.Html,
             new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom?.Username, eMessage?.MessageThreadId
         );
-        return CommandExecutionState.SUCCESSFUL;
+        sendTextMessageAsync.Wait();
+        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
     }
 
     public static void ForceCheckInviteLinksAsync(ActionFuncGenericParams actionFuncGenericParams)
