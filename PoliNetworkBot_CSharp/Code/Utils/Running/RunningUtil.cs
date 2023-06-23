@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Utils.Running;
 
 public static class RunningUtil
 {
-    public static Task<CommandExecutionState> KillYourself(MessageEventArgs? arg1, TelegramBotAbstract? arg2,
-        string[]? arg3)
+    public static void  KillYourself(ActionFuncGenericParams actionFuncGenericParams)
     {
         try
         {

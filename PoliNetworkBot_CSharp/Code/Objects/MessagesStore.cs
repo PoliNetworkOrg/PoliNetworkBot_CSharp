@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -372,8 +373,7 @@ public static class MessagesStore
         return storedMessage?.AllowedStatus.GetAllowedTime();
     }
 
-    public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e,
-        TelegramBotAbstract.TelegramBotAbstract? sender)
+    public static void GetMessagesSent(ActionFuncGenericParams actionFuncGenericParams)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;

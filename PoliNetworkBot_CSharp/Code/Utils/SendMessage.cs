@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -240,9 +241,7 @@ internal static class SendMessage
     }
 
 
-    public static async Task<CommandExecutionState> SendMessageInChannel2(MessageEventArgs? e,
-        TelegramBotAbstract? sender,
-        string[]? cmdLines)
+    public static void SendMessageInChannel2(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null || cmdLines == null) return CommandExecutionState.UNMET_CONDITIONS;
         var eMessage = e.Message;

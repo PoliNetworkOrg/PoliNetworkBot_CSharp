@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
@@ -48,7 +49,7 @@ public static class RebootUtil
         }
     }
 
-    public static async Task<CommandExecutionState> RebootWithLog(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void RebootWithLog(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;

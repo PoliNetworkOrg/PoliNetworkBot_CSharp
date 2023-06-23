@@ -89,8 +89,7 @@ public static class RestoreDbUtil
         Console.WriteLine("PoliNetworkBot_CSharp.Code.Utils.Restore.RestoreDbUtil [RestoreDb] [" + x + "]");
     }
 
-    public static async Task<CommandExecutionState> RestoreDbFromTelegram(MessageEventArgs? arg1,
-        TelegramBotAbstract? arg2, string[]? arg3)
+    public static void RestoreDbFromTelegram(ActionFuncGenericParams actionFuncGenericParams)
     {
         var m = arg1?.Message.ReplyToMessage?.Document;
         if (m == null || arg2 == null)
@@ -114,8 +113,7 @@ public static class RestoreDbUtil
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> RestoreDb_Ddl_FromTelegram(MessageEventArgs? arg1,
-        TelegramBotAbstract? arg2, string[]? arg3)
+    public static void RestoreDb_Ddl_FromTelegram(ActionFuncGenericParams actionFuncGenericParams)
     {
         var m = arg1?.Message.ReplyToMessage?.Document;
         if (m == null || arg2 == null)
@@ -301,8 +299,7 @@ public static class RestoreDbUtil
         return s2;
     }
 
-    public static async Task<CommandExecutionState> RestoreDb_Full_FromTelegram(MessageEventArgs? arg1,
-        TelegramBotAbstract? arg2, string[]? arg3)
+    public static void RestoreDb_Full_FromTelegram(ActionFuncGenericParams actionFuncGenericParams)
     {
         var m = arg1?.Message.ReplyToMessage?.Document;
         if (m == null || arg2 == null)

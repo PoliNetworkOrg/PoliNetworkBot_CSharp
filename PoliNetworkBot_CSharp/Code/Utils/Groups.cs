@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
@@ -403,8 +404,7 @@ internal static class Groups
     }
 
 
-    public static async Task<CommandExecutionState> SendGroupsByTitle(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
+    public static void SendGroupsByTitle(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is { Length: < 1 } or null) return CommandExecutionState.UNMET_CONDITIONS;
         await SendGroupsByTitle(string.Join(" ", args), sender, e, 6);
@@ -504,7 +504,7 @@ internal static class Groups
         };
     }
 
-    public static async Task<CommandExecutionState> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void  GetGroups(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;
@@ -518,7 +518,7 @@ internal static class Groups
             : CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void UpdateGroupsDry(ActionFuncGenericParams actionFuncGenericParams)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
 
@@ -532,7 +532,7 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void UpdateGroups(ActionFuncGenericParams actionFuncGenericParams)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
 
@@ -546,8 +546,7 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNames(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void UpdateGroupsAndFixNames(ActionFuncGenericParams actionFuncGenericParams)
     {
         var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
 
@@ -562,8 +561,7 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNamesDry(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void  UpdateGroupsAndFixNamesDry(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null)
             return CommandExecutionState.UNMET_CONDITIONS;

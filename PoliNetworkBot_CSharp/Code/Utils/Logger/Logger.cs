@@ -18,6 +18,7 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -444,7 +445,7 @@ public static class Logger
         return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup };
     }
 
-    public static async Task<CommandExecutionState> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void SubscribeCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null)
             return CommandExecutionState.ERROR_DEFAULT;
@@ -453,7 +454,7 @@ public static class Logger
         return CommandExecutionState.UNMET_CONDITIONS;
     }
 
-    public static Task<CommandExecutionState> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void UnsubscribeCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null)
             return Task.FromResult(CommandExecutionState.ERROR_DEFAULT);
@@ -461,7 +462,7 @@ public static class Logger
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }
 
-    public static Task<CommandExecutionState> GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    public static void  GetLogCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (arg1 != null) GetLog(arg2, arg1);
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);

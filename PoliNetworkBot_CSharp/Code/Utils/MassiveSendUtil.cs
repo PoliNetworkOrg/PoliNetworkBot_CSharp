@@ -11,6 +11,7 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -165,24 +166,21 @@ public static class MassiveSendUtil
         return null;
     }
 
-    public static async Task<CommandExecutionState> MassiveGeneralSendAsyncCommand(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void MassiveGeneralSendAsyncCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
         return sender == null ? CommandExecutionState.UNMET_CONDITIONS :
             await MassiveGeneralSendAsync(e, sender, false) ? CommandExecutionState.ERROR_DEFAULT :
             CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> MassiveGeneralSendAsyncTestCommand(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void MassiveGeneralSendAsyncTestCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
         return sender == null ? CommandExecutionState.UNMET_CONDITIONS :
             await MassiveGeneralSendAsync(e, sender, true) ? CommandExecutionState.ERROR_DEFAULT :
             CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> MassiveSend(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? cmdLines)
+    public static void MassiveSend(ActionFuncGenericParams actionFuncGenericParams)
     {
         try
         {

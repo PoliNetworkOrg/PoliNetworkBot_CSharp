@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -37,13 +38,13 @@ public class BotConfig
             : CommandExecutionState.UNMET_CONDITIONS;
     }
 
-    public static Task GetConfig2(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
+    public static void GetConfig2(ActionFuncGenericParams actionFuncGenericParams)
     {
         GetConfig(arg1, arg2);
         return Task.CompletedTask;
     }
 
-    public static Task GetDbConfig(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
+    public static void GetDbConfig(ActionFuncGenericParams actionFuncGenericParams)
     {
         ConfigUtil.GetDbConfig(arg1, arg2);
         return Task.CompletedTask;

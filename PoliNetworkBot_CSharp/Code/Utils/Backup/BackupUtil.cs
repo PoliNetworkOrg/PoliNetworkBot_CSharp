@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.BackupObj;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -57,7 +58,7 @@ internal static class BackupUtil
     }
 
 
-    public static async Task<CommandExecutionState> Backup(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void Backup(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e?.Message.From == null) return CommandExecutionState.UNMET_CONDITIONS;
         if (sender == null)

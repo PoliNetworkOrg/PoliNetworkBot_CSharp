@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 #endregion
@@ -142,13 +143,13 @@ public static class Database
         }
     }
 
-    public static async Task<CommandExecutionState> QueryBotExec(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void QueryBotExec(ActionFuncGenericParams actionFuncGenericParams)
     {
         _ = await CommandDispatcher.QueryBot(true, e, sender);
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> QueryBotSelect(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void QueryBotSelect(ActionFuncGenericParams actionFuncGenericParams)
     {
         _ = await CommandDispatcher.QueryBot(false, e, sender);
         return CommandExecutionState.SUCCESSFUL;

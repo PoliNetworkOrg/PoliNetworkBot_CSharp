@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot.Types.Enums;
 
@@ -10,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public static class AllowedMessage
 {
-    public static async Task<CommandExecutionState> GetAllowedMessages(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void GetAllowedMessages(ActionFuncGenericParams actionFuncGenericParams)
     {
         var text = new Language(new Dictionary<string, string?>
         {
@@ -54,7 +55,7 @@ public static class AllowedMessage
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UnAllowMessage(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void UnAllowMessage(ActionFuncGenericParams actionFuncGenericParams)
     {
         var message = e?.Message;
         if (message == null ||

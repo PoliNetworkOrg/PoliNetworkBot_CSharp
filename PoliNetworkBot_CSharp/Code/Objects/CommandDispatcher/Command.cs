@@ -28,7 +28,7 @@ public class Command
     private readonly List<ChatType> _chatTypes;
     private readonly bool _enabled;
     private readonly Language _helpMessage;
-    private readonly Language _longDescription;
+    private readonly Language? _longDescription;
     private readonly Func<MessageEventArgs, bool>? _optionalConditions;
     private readonly Permission _permissionLevel;
 
@@ -103,9 +103,23 @@ public class Command
         _enabled = enabled;
     }
 
- 
+    public Command(List<string> trigger, 
+        Action<ActionFuncGenericParams> assocWrite, 
+        List<ChatType> chatTypes,
+        Permission permissionLevel, 
+        L helpMessage,
+        L? longDescription,
+        Func<MessageEventArgs, bool>? optionalConditions)
+    {
+        this._trigger = trigger;
+        this._actionFuncGeneric = new ActionFuncGeneric(assocWrite);
+        this._chatTypes = chatTypes;
+        this._permissionLevel = permissionLevel;
+        this._helpMessage = helpMessage;
+        this._longDescription = longDescription;
+        this._optionalConditions = optionalConditions;
+    }
 
- 
 
     public static Command CreateInstance(IEnumerable<string> trigger,
         ActionFuncGenericParams action,
@@ -129,7 +143,7 @@ public class Command
 
     public Language GetLongDescription(Permission clearance)
     {
-        return string.IsNullOrEmpty(_longDescription.Select(""))
+        return string.IsNullOrEmpty(_longDescription?.Select(""))
             ? HelpMessage(clearance)
             : CommandsUtils.GenerateMessage(_longDescription, clearance, _permissionLevel, _trigger);
     }

@@ -35,8 +35,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 
 internal static class CommandDispatcher
 {
-    public static async Task<CommandExecutionState> SendMessageInGroup(MessageEventArgs? e,
-        TelegramBotAbstract? sender, string[]? args)
+    public static void SendMessageInGroup(ActionFuncGenericParams actionFuncGenericParams)
     {
         var eMessage1 = e?.Message;
         if (eMessage1?.ReplyToMessage == null || sender == null || args == null || args.Length == 0)
@@ -49,7 +48,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static Task<CommandExecutionState> BanHistory(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void BanHistory(ActionFuncGenericParams actionFuncGenericParams)
     {
         throw new NotImplementedException();
         //todo: complete
@@ -57,13 +56,13 @@ internal static class CommandDispatcher
         //return Task.CompletedTask;
     }
 
-    public static async Task<CommandExecutionState> GetRooms(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void GetRooms(ActionFuncGenericParams actionFuncGenericParams)
     {
         await Rooms.RoomsMainAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> GetRules(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void GetRules(ActionFuncGenericParams actionFuncGenericParams)
     {
         _ = await Rules(sender, e);
         return CommandExecutionState.SUCCESSFUL;
@@ -155,8 +154,7 @@ internal static class CommandDispatcher
     }
 
 
-    public static async Task<CommandExecutionState> AllowMessageOwnerAsync(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void AllowMessageOwnerAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
         if (e.Message.ReplyToMessage == null || (string.IsNullOrEmpty(e.Message.ReplyToMessage.Text) &&
@@ -183,7 +181,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> AllowMessageAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void AllowMessageAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         var fourHours = new TimeSpan(4, 0, 0);
         await Assoc.AllowMessage(e, sender, fourHours);
@@ -345,7 +343,7 @@ internal static class CommandDispatcher
         return proc.StandardOutput.ReadToEnd();
     }
 
-    public static async Task<CommandExecutionState> TestSpamAsync(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void TestSpamAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         var message = e?.Message.ReplyToMessage;
         if (message == null)
@@ -628,8 +626,7 @@ internal static class CommandDispatcher
             eventArgsContainer, eMessage?.MessageThreadId);
     }
 
-    public static async Task<CommandExecutionState> SendRecommendedGroupsAsync(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void SendRecommendedGroupsAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
@@ -733,7 +730,7 @@ internal static class CommandDispatcher
         }
     }
 
-    public static async Task<CommandExecutionState> HelpExtended(MessageEventArgs? e, TelegramBotAbstract? sender)
+    public static void HelpExtended(ActionFuncGenericParams actionFuncGenericParams)
     {
         await Help.HelpExtendedSlave(e, sender);
         return CommandExecutionState.SUCCESSFUL;
@@ -748,8 +745,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
-        TelegramBotAbstract? telegramBotClient)
+    public static void ContactUs(ActionFuncGenericParams actionFuncGenericParams)
     {
         var eMessage = e?.Message;
         await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, eMessage);

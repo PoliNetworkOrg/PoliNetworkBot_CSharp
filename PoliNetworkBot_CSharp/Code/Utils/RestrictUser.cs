@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Errors;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -525,8 +526,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<CommandExecutionState> BanAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
+    public static void BanAllAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
         await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
@@ -535,8 +535,7 @@ internal static class RestrictUser
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> BanDeleteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
+    public static void BanDeleteAllAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
         await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
@@ -545,8 +544,7 @@ internal static class RestrictUser
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> DeleteMessageFromUser(MessageEventArgs? e,
-        TelegramBotAbstract? sender, string[]? args)
+    public static void DeleteMessageFromUser(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e?.Message.ReplyToMessage?.Chat.Id == null || sender == null) return CommandExecutionState.UNMET_CONDITIONS;
         await sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
@@ -646,8 +644,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<CommandExecutionState> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? stringInfo)
+    public static void BanUserAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (e?.Message.From != null)
         {
@@ -692,8 +689,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<CommandExecutionState> UnbanAllAsync(
-        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    public static void UnbanAllAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
         await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
@@ -703,8 +699,7 @@ internal static class RestrictUser
     }
 
 
-    public static async Task<CommandExecutionState> MuteAllAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
+    public static void MuteAllAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
         await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
@@ -713,8 +708,7 @@ internal static class RestrictUser
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UnMuteAllAsync(
-        MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
+    public static void UnMuteAllAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args is not { Length: >= 1 }) return CommandExecutionState.UNMET_CONDITIONS;
         await BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
