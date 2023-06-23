@@ -27,7 +27,8 @@ public static class AllowedMessage
         {
             var message1 = actionFuncGenericParams.MessageEventArgs.Message;
 
-            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(actionFuncGenericParams.MessageEventArgs.Message.From?.Id, text,
+            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(
+                actionFuncGenericParams.MessageEventArgs.Message.From?.Id, text,
                 ChatType.Private,
                 actionFuncGenericParams.MessageEventArgs.Message.From?.LanguageCode, ParseMode.Html, null,
                 actionFuncGenericParams.MessageEventArgs.Message.From?.Username,
@@ -51,7 +52,8 @@ public static class AllowedMessage
                 { "uni", m2 }
             });
             var eMessage = actionFuncGenericParams.MessageEventArgs?.Message;
-            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(eMessage?.From?.Id, text,
+            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(
+                eMessage?.From?.Id, text,
                 ChatType.Private,
                 "uni", ParseMode.Html, null, eMessage?.From?.Username, eMessage?.MessageThreadId);
             sendTextMessageAsync.Wait();
@@ -68,12 +70,12 @@ public static class AllowedMessage
             !Owners.CheckIfOwner(actionFuncGenericParams.MessageEventArgs.Message.From?.Id) ||
             message.Chat.Type != ChatType.Private)
         {
-
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
 
-        if (actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage == null || string.IsNullOrEmpty(actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text))
+        if (actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage == null ||
+            string.IsNullOrEmpty(actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text))
         {
             var text = new Language(new Dictionary<string, string?>
             {
@@ -84,6 +86,7 @@ public static class AllowedMessage
                 actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
                 return;
             }
+
             var o = actionFuncGenericParams.MessageEventArgs.Message;
             var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(
                 actionFuncGenericParams.MessageEventArgs.Message.From?.Id, text,
@@ -93,7 +96,7 @@ public static class AllowedMessage
                 o.MessageId);
             sendTextMessageAsync.Wait();
 
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
 
