@@ -17,7 +17,12 @@ public static class Help
     {
         var eMessage = e?.Message;
         var command = SwitchDispatcher.Commands.Find(x =>
-            x.GetTriggers().Contains(args[0]) && x.CheckPermissions(eMessage?.From));
+        {
+            var contains = x?.GetTriggers().Contains(args[0]) ?? false;
+            var permissions = x?.CheckPermissions(eMessage?.From) ?? false;
+            var checkPermissions = contains && permissions;
+            return checkPermissions;
+        });
 
         Language text;
         if (command != null)
@@ -83,14 +88,14 @@ public static class Help
                 textEng + "\n<b>Commands available:</b>\n" +
                 string.Join("",
                     SwitchDispatcher.Commands.Select(x =>
-                        x.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("en")))
+                        x?.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("en")))
             },
             {
                 "it",
                 text + "\n<b>Comandi disponibili:</b>\n" +
                 string.Join("",
                     SwitchDispatcher.Commands.Select(x =>
-                        x.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("it")))
+                        x?.HelpMessage(Permissions.GetPrivileges(eMessageFrom)).Select("it")))
             }
         });
         var eventArgsContainer = EventArgsContainer.Get(e);
