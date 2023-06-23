@@ -51,10 +51,17 @@ public static class RebootUtil
 
     public static void RebootWithLog(ActionFuncGenericParams actionFuncGenericParams)
     {
+        var e = actionFuncGenericParams.MessageEventArgs;
+        var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
-        await AnnounceReboot(sender, e);
+        var announceReboot = AnnounceReboot(sender, e);
+        announceReboot.Wait();
+ 
 
         try
         {
@@ -65,7 +72,8 @@ public static class RebootUtil
             // ignored
         }
 
-        return Reboot() ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
+        var reboot = Reboot();
+        actionFuncGenericParams.CommandExecutionState = reboot ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 
     private static bool Reboot()
