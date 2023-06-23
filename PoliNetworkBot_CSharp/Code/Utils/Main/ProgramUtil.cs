@@ -19,6 +19,7 @@ using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
+using PoliNetworkBot_CSharp.Code.Utils.JoinRequest;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -625,7 +626,7 @@ public static class ProgramUtil
 
             case UpdateType.ChatJoinRequest:
             {
-                JoinRequest.JoinRequestClass.JoinHandle(update, botClientWhole);
+                JoinRequestClass.JoinHandle(update, botClientWhole);
                 break;
             }
         }
