@@ -98,7 +98,10 @@ public static class Logger
             var log1 = log.ToString();
             if (Directory.Exists("./data/") == false) Directory.CreateDirectory("./data/");
 
-            if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
+            lock (LogFileLock)
+            {
+                if (!File.Exists(DataLogPath)) File.WriteAllText(DataLogPath, "");
+            }
 
             lock (LogFileLock)
             {
@@ -214,14 +217,14 @@ public static class Logger
         {
             try
             {
-                const string path = Paths.Data.Log;
+             
 
                 List<string>? text = null;
                 try
                 {
                     lock (LogFileLock)
                     {
-                        text = File.ReadAllLines(path).ToList();
+                        text = File.ReadAllLines(DataLogPath).ToList();
                     }
                 }
                 catch (Exception? e)
@@ -257,7 +260,7 @@ public static class Logger
                     }
                 }
 
-                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
+                PrintLog3(text, sender, sendTo, messageEventArgs, DataLogPath, "LOG general:", "log_general.log");
             }
             catch (Exception? e)
             {

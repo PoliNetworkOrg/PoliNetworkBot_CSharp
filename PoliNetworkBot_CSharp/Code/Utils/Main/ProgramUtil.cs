@@ -50,7 +50,7 @@ public static class ProgramUtil
             : new Tuple<char, bool>(args[0][0], true);
     }
 
-    internal static void MainBot(char readChoice, bool alwaysYes)
+    internal static async Task MainBot(char readChoice, bool alwaysYes)
     {
         var toExit = LoadBotConfig(alwaysYes);
         if (toExit == ToExit.EXIT)
@@ -73,22 +73,7 @@ public static class ProgramUtil
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
 
-        try
-        {
-            while (true)
-            {
-                Thread.Sleep(1000);
-                Console.ReadKey();
-            }
-        }
-        catch (Exception)
-        {
-            while (true)
-            {
-                Thread.Sleep(1000);
-                Console.Read();
-            }
-        }
+        await Task.Delay(-1);
     }
 
     internal static ToExit FirstThingsToDo()

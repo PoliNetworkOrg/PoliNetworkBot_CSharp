@@ -42,7 +42,7 @@ internal static class Program
                 case '8':
                 case '9':
                 {
-                    ProgramUtil.MainBot(item1, item2);
+                    await ProgramUtil.MainBot(item1, item2);
                     return;
                 }
 
@@ -89,7 +89,7 @@ internal static class Program
                 case 'r':
                 {
                     await RestoreDbUtil.RestoreDb();
-                    ProgramUtil.MainBot(item1, item2);
+                    await ProgramUtil.MainBot(item1, item2);
                     break;
                 }
             }
