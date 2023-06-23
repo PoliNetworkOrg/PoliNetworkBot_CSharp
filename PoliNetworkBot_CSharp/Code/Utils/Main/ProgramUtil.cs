@@ -536,18 +536,45 @@ public static class ProgramUtil
 
                 var actions = updates.Select((Func<Update, Action>)Selector).ToArray();
 
-                if (actions.Length > 0) Parallel.Invoke(actions);
+                if (actions.Length > 0)
+                {
+                    try
+                    {
+                        Thread thread = new Thread(() =>
+                        {
+
+                            try
+                            {
+                                Parallel.Invoke(actions);
+                            }
+                            catch (Exception? e)
+                            {
+                                Logger.Logger.WriteLine("[01] Critical exception in update application!", LogSeverityLevel.CRITICAL);
+                                Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
+                            }
+                        });
+                        thread.Start();
+                    }
+                    catch (Exception? e)
+                    {
+                        Logger.Logger.WriteLine("[02] Critical exception in update application!", LogSeverityLevel.CRITICAL);
+                        Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
+                    }
+
+                }
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
             }
             catch (Exception? e)
             {
-                Logger.Logger.WriteLine("Critical exception in update application!", LogSeverityLevel.CRITICAL);
+                Logger.Logger.WriteLine("[03] Critical exception in update application!", LogSeverityLevel.CRITICAL);
                 Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
             }
         // ReSharper disable once FunctionNeverReturns
     }
+
+
 
     private static void HandleUpdate(Update update, BotClientWhole botClientWhole)
     {
