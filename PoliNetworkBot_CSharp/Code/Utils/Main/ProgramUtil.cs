@@ -586,10 +586,18 @@ public static class ProgramUtil
                 break;
             }
             case UpdateType.InlineQuery:
+            {
+                Console.WriteLine(update.InlineQuery?.Query);
                 break;
+            }
 
             case UpdateType.ChosenInlineResult:
+            {
+                var updateChosenInlineResult = update.ChosenInlineResult;
+                if (updateChosenInlineResult != null)
+                    Console.WriteLine(updateChosenInlineResult.Query + "\n\n" + updateChosenInlineResult.ResultId);
                 break;
+            }
 
             case UpdateType.CallbackQuery:
             {
@@ -599,7 +607,10 @@ public static class ProgramUtil
                 break;
             }
             case UpdateType.EditedMessage:
+            {
+                Console.WriteLine(update.EditedMessage?.Text);
                 break;
+            }
 
             case UpdateType.ChannelPost:
                 break;
@@ -614,16 +625,28 @@ public static class ProgramUtil
                 break;
 
             case UpdateType.Poll:
+            {
+                Console.WriteLine(update.Poll?.Question);
                 break;
+            }
 
             case UpdateType.PollAnswer:
+            {
+                Console.WriteLine(update.PollAnswer?.User.Id);
                 break;
+            }
 
             case UpdateType.MyChatMember:
+            {
+                Console.WriteLine(update.MyChatMember?.InviteLink?.InviteLink);
                 break;
+            }
 
             case UpdateType.ChatMember:
+            {
+                Console.WriteLine(update.ChatMember?.From.Id);
                 break;
+            }
 
             case UpdateType.ChatJoinRequest:
             {
