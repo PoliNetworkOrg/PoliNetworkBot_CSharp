@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
+using SampleNuGet.Utils.CallbackUtils;
 
 #endregion
 

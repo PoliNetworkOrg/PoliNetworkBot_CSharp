@@ -12,6 +12,7 @@ using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using SampleNuGet.Enums;
 using SampleNuGet.Objects;
+using SampleNuGet.Utils.CallbackUtils;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;

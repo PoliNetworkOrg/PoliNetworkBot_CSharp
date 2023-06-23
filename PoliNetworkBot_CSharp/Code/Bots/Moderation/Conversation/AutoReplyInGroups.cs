@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using SampleNuGet.Objects;
+using SampleNuGet.Objects.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
 

@@ -3,9 +3,9 @@
 using System;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
-using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using SampleNuGet.Objects;
+using SampleNuGet.Objects.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;

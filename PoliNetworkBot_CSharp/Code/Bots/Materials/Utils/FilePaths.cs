@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using SampleNuGet.Objects;
+using SampleNuGet.Objects.Exceptions;
 using SampleNuGet.Utils.DatabaseUtils;
 
 #endregion
