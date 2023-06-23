@@ -516,15 +516,7 @@ public static class ProgramUtil
                 }
 
                 if (updates == null || updates.Count == 0) continue;
-                foreach (var update in updates)
-                    try
-                    {
-                        thread.Start();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
-                    }
+                foreach (var update in updates) RunSingleThread(botClientWhole, update);
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
@@ -535,6 +527,29 @@ public static class ProgramUtil
                 Logger.Logger.WriteLine(e, LogSeverityLevel.CRITICAL);
             }
         // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static void RunSingleThread(BotClientWhole botClientWhole, Update update)
+    {
+        try
+        {
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    HandleUpdate(update, botClientWhole);
+                }
+                catch (Exception e2)
+                {
+                    Logger.Logger.WriteLine(e2, LogSeverityLevel.ALERT);
+                }
+            });
+            thread.Start();
+        }
+        catch (Exception e)
+        {
+            Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
+        }
     }
 
     private static void HandleUpdate(Update update, BotClientWhole botClientWhole)
