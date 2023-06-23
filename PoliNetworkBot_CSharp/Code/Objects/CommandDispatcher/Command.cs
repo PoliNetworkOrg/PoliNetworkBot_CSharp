@@ -145,11 +145,16 @@ public class Command
             : CommandsUtils.GenerateMessage(_longDescription, clearance, _permissionLevel, _trigger);
     }
 
-    private bool IsTriggered(string command)
+    public bool IsTriggered(string command)
     {
-        if (command.Contains(' ')) throw new Exception("Commands can't contain blank spaces!");
+        return IsTriggered2(command, _trigger);
+    }
+
+    public static bool IsTriggered2(string command, IEnumerable<string> list)
+    {
+        if (command.Contains(' ')) return false;
         var lowMessage = command.ToLower();
-        return _trigger.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
+        return list.Any(trigger => string.CompareOrdinal("/" + trigger, lowMessage) == 0);
     }
 
     public virtual CommandExecutionState? TryTrigger(MessageEventArgs? e,

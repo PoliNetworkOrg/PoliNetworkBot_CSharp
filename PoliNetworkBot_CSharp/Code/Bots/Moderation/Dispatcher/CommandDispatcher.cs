@@ -19,6 +19,7 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
+using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -109,48 +110,58 @@ internal static class CommandDispatcher
         if (sender == null)
             return await DefaultCommand(sender, e);
 
-        foreach (var command in SwitchDispatcher.Commands)
-            try
+        Command? command = FindCommandToRun(SwitchDispatcher.Commands, cmd);
+        if (command == null)
+        {
+            return await DefaultCommand(sender, e);
+        }
+
+        try
+        {
+            var commandExecutionState = command.TryTrigger(e, sender, cmd, args);
+            switch (commandExecutionState)
             {
-                var commandExecutionState = command.TryTrigger(e, sender, cmd, args);
-                switch (commandExecutionState)
-                {
-                    case CommandExecutionState.SUCCESSFUL:
-                        return true;
-                    case CommandExecutionState.UNMET_CONDITIONS:
-                        if (e.Message.Chat.Type == ChatType.Private)
-                            await NotifyUserCommandError(new L(
-                                    "it",
-                                    "Formattazione del messaggio errata. \n" +
-                                    "Per informazioni aggiuntive scrivi<b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>",
-                                    "en",
-                                    "The message is wrongly formatted. \n" +
-                                    "For additional info type <b>\n" +
-                                    "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
-                                    "</b>"),
-                                sender, e);
-                        else
-                            await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
-                        return false;
-                    case CommandExecutionState.NOT_TRIGGERED:
-                    case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
-                    case CommandExecutionState.ERROR_NOT_ENABLED:
-                    case CommandExecutionState.ERROR_DEFAULT:
-                    case null:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                case CommandExecutionState.SUCCESSFUL:
+                    return true;
+                case CommandExecutionState.UNMET_CONDITIONS:
+                    if (e.Message.Chat.Type == ChatType.Private)
+                        await NotifyUserCommandError(new L(
+                                "it",
+                                "Formattazione del messaggio errata. \n" +
+                                "Per informazioni aggiuntive scrivi<b>\n" +
+                                "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                "</b>",
+                                "en",
+                                "The message is wrongly formatted. \n" +
+                                "For additional info type <b>\n" +
+                                "/help " + string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray()) +
+                                "</b>"),
+                            sender, e);
+                    else
+                        await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
+                    return false;
+                case CommandExecutionState.NOT_TRIGGERED:
+                case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
+                case CommandExecutionState.ERROR_NOT_ENABLED:
+                case CommandExecutionState.ERROR_DEFAULT:
+                case null:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            catch (Exception ex)
-            {
-                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
-                return false;
-            }
+        }
+        catch (Exception ex)
+        {
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(ex), sender, EventArgsContainer.Get(e));
+            return false;
+        }
 
         return await DefaultCommand(sender, e);
+    }
+
+    private static Command? FindCommandToRun(List<Command?> commands, string cmd)
+    {
+        return (from variable in commands let trigger = variable?.IsTriggered(cmd) where trigger ?? false select variable).FirstOrDefault();
     }
 
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,

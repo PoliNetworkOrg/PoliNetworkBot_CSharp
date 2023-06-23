@@ -26,7 +26,7 @@ public static class SwitchDispatcher
     ///     order to provide feedback to the user (and try to keep them standard)
     ///     optionalConditions are checked by the caller
     /// </summary>
-    public static readonly List<Command> Commands = new()
+    public static readonly List<Command?> Commands = new()
     {
         new Command("start", CommandDispatcher.HelpPrivate, new List<ChatType> { ChatType.Private },
             Permission.USER,
