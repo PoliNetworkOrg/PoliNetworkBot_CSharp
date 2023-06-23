@@ -447,25 +447,33 @@ public static class Logger
 
     public static void SubscribeCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e == null)
-            return CommandExecutionState.ERROR_DEFAULT;
+        if (actionFuncGenericParams.MessageEventArgs == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
+            return;
+        }
 
-        await Subscribe(e.Message.From?.Id, sender, e);
-        return CommandExecutionState.UNMET_CONDITIONS;
+        var subscribe = Subscribe(actionFuncGenericParams.MessageEventArgs.Message.From?.Id,
+            actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        subscribe.Wait();
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
     }
 
     public static void UnsubscribeCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e == null)
-            return Task.FromResult(CommandExecutionState.ERROR_DEFAULT);
-        Unsubscribe(e.Message.From?.Id);
-        return Task.FromResult(CommandExecutionState.SUCCESSFUL);
+        if (actionFuncGenericParams.MessageEventArgs == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
+            return;
+        }
+        Unsubscribe(actionFuncGenericParams.MessageEventArgs.Message.From?.Id);
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
-    public static void  GetLogCommand(ActionFuncGenericParams actionFuncGenericParams)
+    public static void GetLogCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (arg1 != null) GetLog(arg2, arg1);
-        return Task.FromResult(CommandExecutionState.SUCCESSFUL);
+        if (actionFuncGenericParams.MessageEventArgs != null) GetLog(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]

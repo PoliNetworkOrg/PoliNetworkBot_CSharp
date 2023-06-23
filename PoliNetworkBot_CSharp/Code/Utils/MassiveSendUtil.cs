@@ -168,38 +168,62 @@ public static class MassiveSendUtil
 
     public static void MassiveGeneralSendAsyncCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        return sender == null ? CommandExecutionState.UNMET_CONDITIONS :
-            await MassiveGeneralSendAsync(e, sender, false) ? CommandExecutionState.ERROR_DEFAULT :
-            CommandExecutionState.SUCCESSFUL;
+        if (actionFuncGenericParams.TelegramBotAbstract == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+
+        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract, false).Result;
+        actionFuncGenericParams.CommandExecutionState = 
+            massiveGeneralSendAsync ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
     public static void MassiveGeneralSendAsyncTestCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        return sender == null ? CommandExecutionState.UNMET_CONDITIONS :
-            await MassiveGeneralSendAsync(e, sender, true) ? CommandExecutionState.ERROR_DEFAULT :
-            CommandExecutionState.SUCCESSFUL;
+        if (actionFuncGenericParams.TelegramBotAbstract == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+
+        
+        var massiveGeneralSendAsync = MassiveGeneralSendAsync(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract, true).Result;
+        actionFuncGenericParams.CommandExecutionState = 
+            massiveGeneralSendAsync ? CommandExecutionState.ERROR_DEFAULT : CommandExecutionState.SUCCESSFUL;
     }
 
     public static void MassiveSend(ActionFuncGenericParams actionFuncGenericParams)
     {
         try
         {
-            if (e != null && Matches(GlobalVariables.AllowedBanAll, e.Message.From))
+            if (actionFuncGenericParams.MessageEventArgs != null && Matches(GlobalVariables.AllowedBanAll, actionFuncGenericParams.MessageEventArgs.Message.From))
             {
-                if (sender == null || e.Message.ReplyToMessage?.Text == null || e.Message.From == null)
-                    return CommandExecutionState.UNMET_CONDITIONS;
-                await CommandDispatcher.MassiveSendAsync(sender, e, e.Message.ReplyToMessage.Text);
-                return CommandExecutionState.SUCCESSFUL;
+                if (actionFuncGenericParams.TelegramBotAbstract == null
+                    || actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage?.Text == null
+                    || actionFuncGenericParams.MessageEventArgs.Message.From == null)
+                {
+                    actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+                    return;
+                }
+
+                var massiveSendAsync = CommandDispatcher.MassiveSendAsync(actionFuncGenericParams.TelegramBotAbstract,
+                    actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text);
+                massiveSendAsync.Wait();
+                actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
+                return;
             }
 
-            await CommandDispatcher.DefaultCommand(sender, e);
+            var defaultCommand = CommandDispatcher.DefaultCommand(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+            defaultCommand.Wait();
+            return;
         }
         catch (Exception ex)
         {
             Logger.Logger.WriteLine(ex);
         }
 
-        return CommandExecutionState.ERROR_DEFAULT;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
     }
 
     private static bool Matches(IReadOnlyCollection<TelegramUser>? allowedBanAll, User? user)

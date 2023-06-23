@@ -40,13 +40,11 @@ public class BotConfig
 
     public static void GetConfig2(ActionFuncGenericParams actionFuncGenericParams)
     {
-        GetConfig(arg1, arg2);
-        return Task.CompletedTask;
+        GetConfig(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract);
     }
 
     public static void GetDbConfig(ActionFuncGenericParams actionFuncGenericParams)
     {
-        ConfigUtil.GetDbConfig(arg1, arg2);
-        return Task.CompletedTask;
+        ConfigUtil.GetDbConfig(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract);
     }
 }

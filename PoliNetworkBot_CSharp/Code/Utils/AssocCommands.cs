@@ -9,37 +9,37 @@ public static class AssocCommands
 {
     public static void AssocWrite(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_SendAsync(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_SendAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void AssocWriteDry(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_SendAsync(sender, e, true);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_SendAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs, true).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void  AssocPublish(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_Publish(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_Publish(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void AssocRead(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_Read(sender, e, false);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_Read(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs,false).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void AssocReadAll(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_ReadAll(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_ReadAll(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void AssocDelete(ActionFuncGenericParams actionFuncGenericParams)
     {
-        _ = await Assoc.Assoc_Delete(sender, e);
-        return CommandExecutionState.SUCCESSFUL;
+        _ = Assoc.Assoc_Delete(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs).Result;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 }

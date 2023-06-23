@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
@@ -18,25 +16,32 @@ public static class AllowedMessage
             { "it", "List of messages: " },
             { "en", "List of messages: " }
         });
-        if (sender == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
-
-
-        if (e != null)
+        if (actionFuncGenericParams.TelegramBotAbstract == null)
         {
-            var message1 = e.Message;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
-            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
+
+        if (actionFuncGenericParams.MessageEventArgs != null)
+        {
+            var message1 = actionFuncGenericParams.MessageEventArgs.Message;
+
+            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(actionFuncGenericParams.MessageEventArgs.Message.From?.Id, text,
                 ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null,
-                e.Message.From?.Username,
+                actionFuncGenericParams.MessageEventArgs.Message.From?.LanguageCode, ParseMode.Html, null,
+                actionFuncGenericParams.MessageEventArgs.Message.From?.Username,
                 message1.MessageId);
+            sendTextMessageAsync.Wait();
         }
 
         var messages = MessagesStore.GetAllMessages(x =>
             x != null && x.AllowedStatus.GetStatus() == MessageAllowedStatusEnum.ALLOWED);
         if (messages == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
         foreach (var m2 in messages.Select(message => message?.message)
                      .Where(m2 => m2 != null))
@@ -45,44 +50,54 @@ public static class AllowedMessage
             {
                 { "uni", m2 }
             });
-            var eMessage = e?.Message;
-            await sender.SendTextMessageAsync(eMessage?.From?.Id, text,
+            var eMessage = actionFuncGenericParams.MessageEventArgs?.Message;
+            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(eMessage?.From?.Id, text,
                 ChatType.Private,
                 "uni", ParseMode.Html, null, eMessage?.From?.Username, eMessage?.MessageThreadId);
+            sendTextMessageAsync.Wait();
         }
 
-
-        return CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void UnAllowMessage(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var message = e?.Message;
+        var message = actionFuncGenericParams.MessageEventArgs?.Message;
         if (message == null ||
-            e == null ||
-            !Owners.CheckIfOwner(e.Message.From?.Id) ||
+            actionFuncGenericParams.MessageEventArgs == null ||
+            !Owners.CheckIfOwner(actionFuncGenericParams.MessageEventArgs.Message.From?.Id) ||
             message.Chat.Type != ChatType.Private)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        {
 
-        if (e.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
+
+        if (actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage == null || string.IsNullOrEmpty(actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text))
         {
             var text = new Language(new Dictionary<string, string?>
             {
                 { "en", "You have to reply to a message containing the message" }
             });
-            if (sender == null)
-                return CommandExecutionState.UNMET_CONDITIONS;
-            var o = e.Message;
-            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
+            if (actionFuncGenericParams.TelegramBotAbstract == null)
+            {
+                actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+                return;
+            }
+            var o = actionFuncGenericParams.MessageEventArgs.Message;
+            var sendTextMessageAsync = actionFuncGenericParams.TelegramBotAbstract.SendTextMessageAsync(
+                actionFuncGenericParams.MessageEventArgs.Message.From?.Id, text,
                 ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null,
-                e.Message.From?.Username,
+                actionFuncGenericParams.MessageEventArgs.Message.From?.LanguageCode, ParseMode.Html, null,
+                actionFuncGenericParams.MessageEventArgs.Message.From?.Username,
                 o.MessageId);
+            sendTextMessageAsync.Wait();
 
-            return CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            return;
         }
 
-        MessagesStore.RemoveMessage(e.Message.ReplyToMessage.Text);
-        return CommandExecutionState.SUCCESSFUL;
+        MessagesStore.RemoveMessage(actionFuncGenericParams.MessageEventArgs.Message.ReplyToMessage.Text);
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 }
