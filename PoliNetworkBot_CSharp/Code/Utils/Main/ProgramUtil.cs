@@ -564,6 +564,7 @@ public static class ProgramUtil
             case UpdateType.Unknown:
                 break;
 
+            case UpdateType.EditedMessage:
             case UpdateType.Message:
             {
                 var updateMessage = update.Message;
@@ -576,9 +577,10 @@ public static class ProgramUtil
                 {
                     botClientWhole.UpdatesMessageLastId[updateMessage.Chat.Id] = updateMessage.MessageId;
 
+                    var edit = update.Type == UpdateType.EditedMessage;
                     botClientWhole.OnmessageMethod2.ActionMessageEvent?.GetAction()
                         ?.Invoke(botClientWhole.BotClient,
-                            new MessageEventArgs(updateMessage));
+                            new MessageEventArgs(updateMessage, edit));
                 }
 
                 break;
@@ -596,8 +598,7 @@ public static class ProgramUtil
                     callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                 break;
             }
-            case UpdateType.EditedMessage:
-                break;
+ 
 
             case UpdateType.ChannelPost:
                 break;

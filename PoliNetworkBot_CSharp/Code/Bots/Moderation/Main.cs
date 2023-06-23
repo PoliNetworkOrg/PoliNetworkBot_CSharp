@@ -115,10 +115,13 @@ public static class Main
                     return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
             }
 
-            if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
+            if (e.Edit == false)
             {
-                var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
-                return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
+                if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
+                {
+                    var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
+                    return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
+                }
             }
 
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
