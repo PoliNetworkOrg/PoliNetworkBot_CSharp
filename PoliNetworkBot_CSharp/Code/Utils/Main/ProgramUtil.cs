@@ -616,7 +616,11 @@ public static class ProgramUtil
                 break;
 
             case UpdateType.ChatJoinRequest:
+            {
+                //todo: eventualmente gestire le richieste di ingresso ai gruppi
                 break;
+            }
+      
         }
     }
 
