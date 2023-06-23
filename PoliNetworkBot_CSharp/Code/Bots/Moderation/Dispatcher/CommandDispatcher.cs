@@ -65,7 +65,8 @@ internal static class CommandDispatcher
 
     public static void GetRooms(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var roomsMainAsync = Rooms.RoomsMainAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        var roomsMainAsync = Rooms.RoomsMainAsync(actionFuncGenericParams.TelegramBotAbstract,
+            actionFuncGenericParams.MessageEventArgs);
         roomsMainAsync.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
@@ -670,7 +671,7 @@ internal static class CommandDispatcher
     {
         var e = actionFuncGenericParams.MessageEventArgs;
         var sender = actionFuncGenericParams.TelegramBotAbstract;
-        
+
         const string text = "<i>Lista di gruppi consigliati</i>:\n" +
                             "\n👥 Gruppo di tutti gli studenti @PoliGruppo 👈\n" +
                             "\n📖 Libri @PoliBook\n" +
@@ -700,7 +701,7 @@ internal static class CommandDispatcher
             eMessageFrom?.Username, text2, ParseMode.Html, null, InlineKeyboardMarkup.Empty(),
             eventArgsContainer, eMessage?.MessageThreadId);
         sendMessageInPrivate.Wait();
-        actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static Task<bool> GetAllGroups(long? chatId, string? username, TelegramBotAbstract? sender,
@@ -776,9 +777,10 @@ internal static class CommandDispatcher
 
     public static void HelpExtended(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var helpExtendedSlave = Help.HelpExtendedSlave(actionFuncGenericParams.MessageEventArgs, actionFuncGenericParams.TelegramBotAbstract);
+        var helpExtendedSlave = Help.HelpExtendedSlave(actionFuncGenericParams.MessageEventArgs,
+            actionFuncGenericParams.TelegramBotAbstract);
         helpExtendedSlave.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void HelpPrivate(ActionFuncGenericParams actionFuncGenericParams)
@@ -827,7 +829,7 @@ internal static class CommandDispatcher
             new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), eMessageFrom?.Username, eMessage?.MessageThreadId
         );
         sendTextMessageAsync.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void ForceCheckInviteLinksAsync(ActionFuncGenericParams actionFuncGenericParams)
@@ -842,14 +844,15 @@ internal static class CommandDispatcher
         var eventArgsContainer = EventArgsContainer.Get(actionFuncGenericParams.MessageEventArgs);
         try
         {
-            var fillMissingLinksIntoDbAsync = 
+            var fillMissingLinksIntoDbAsync =
                 InviteLinks.FillMissingLinksIntoDB_Async(
                     actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
             n = fillMissingLinksIntoDbAsync.Result;
         }
         catch (Exception? e2)
         {
-            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), actionFuncGenericParams.TelegramBotAbstract, eventArgsContainer);
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), actionFuncGenericParams.TelegramBotAbstract,
+                eventArgsContainer);
         }
 
         if (n == null)
@@ -857,7 +860,7 @@ internal static class CommandDispatcher
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
             return;
         }
- 
+
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -867,7 +870,8 @@ internal static class CommandDispatcher
 
         var eMessage = actionFuncGenericParams.MessageEventArgs.Message;
         var eMessageFrom = eMessage.From;
-        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract, eMessageFrom?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract,
+            eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2,
             ParseMode.Html,
