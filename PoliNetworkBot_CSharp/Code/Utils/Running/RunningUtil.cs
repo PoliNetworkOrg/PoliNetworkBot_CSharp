@@ -5,7 +5,7 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Running;
 
 public static class RunningUtil
 {
-    public static void  KillYourself(ActionFuncGenericParams actionFuncGenericParams)
+    public static void KillYourself(ActionFuncGenericParams actionFuncGenericParams)
     {
         try
         {
@@ -17,5 +17,5 @@ public static class RunningUtil
         }
 
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
-     }
+    }
 }

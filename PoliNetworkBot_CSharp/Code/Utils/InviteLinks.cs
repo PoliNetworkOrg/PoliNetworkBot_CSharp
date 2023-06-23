@@ -458,7 +458,8 @@ internal static class InviteLinks
 
     public static void UpdateLinksFromJsonAsync2(ActionFuncGenericParams actionFuncGenericParams)
     {
-        var updateLinksFromJsonAsync = UpdateLinksFromJsonAsync(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        var updateLinksFromJsonAsync = UpdateLinksFromJsonAsync(actionFuncGenericParams.TelegramBotAbstract,
+            actionFuncGenericParams.MessageEventArgs);
         updateLinksFromJsonAsync.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }

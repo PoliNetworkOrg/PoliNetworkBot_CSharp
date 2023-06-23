@@ -146,7 +146,7 @@ public static class Database
         var e = actionFuncGenericParams.MessageEventArgs;
         var sender = actionFuncGenericParams.TelegramBotAbstract;
         var queryBot = CommandDispatcher.QueryBot(true, e, sender);
-  queryBot.Wait();
+        queryBot.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
@@ -157,7 +157,5 @@ public static class Database
         var queryBot = CommandDispatcher.QueryBot(false, e, sender);
         queryBot.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
-        
-
     }
 }

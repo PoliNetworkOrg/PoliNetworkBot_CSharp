@@ -95,12 +95,12 @@ public static class RestoreDbUtil
         var m = arg1?.Message.ReplyToMessage?.Document;
         if (m == null || arg2 == null)
         {
-            actionFuncGenericParams.CommandExecutionState=  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
 
         var downloadFileAsync = arg2.DownloadFileAsync(m);
-        var f =  downloadFileAsync.Result;
+        var f = downloadFileAsync.Result;
         var stream = f?.Item2;
         if (stream == null)
         {
@@ -147,7 +147,7 @@ public static class RestoreDbUtil
         stream.Seek(0, SeekOrigin.Begin);
         var reader = new StreamReader(stream);
         var readToEndAsync = reader.ReadToEndAsync();
-        var text =  readToEndAsync.Result;
+        var text = readToEndAsync.Result;
         var x = RestoreDb_ddl_FromFileContent(text);
 
         var r = "RestoreDb_Ddl_FromTelegram [" + (x?.Message ?? "[null]") + "]";
@@ -155,7 +155,7 @@ public static class RestoreDbUtil
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, x?.Extra);
         Logger.Logger.WriteLine(r + " " + b);
 
-        actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     private static ActionDoneReport? RestoreDb_ddl_FromFileContent(string s)
@@ -324,28 +324,27 @@ public static class RestoreDbUtil
     {
         var arg1 = actionFuncGenericParams.MessageEventArgs;
         var arg2 = actionFuncGenericParams.TelegramBotAbstract;
-        
+
         var m = arg1?.Message.ReplyToMessage?.Document;
         if (m == null || arg2 == null)
         {
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
-            return ;
+            return;
         }
 
         var downloadFileAsync = arg2.DownloadFileAsync(m);
-        var f =  downloadFileAsync.Result;
+        var f = downloadFileAsync.Result;
         var stream = f?.Item2;
         if (stream == null)
         {
-            
-            actionFuncGenericParams.CommandExecutionState =   CommandExecutionState.ERROR_DEFAULT;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
             return;
         }
 
         stream.Seek(0, SeekOrigin.Begin);
         var reader = new StreamReader(stream);
         var readToEndAsync = reader.ReadToEndAsync();
-        var text =  readToEndAsync.Result;
+        var text = readToEndAsync.Result;
         var x = RestoreDb_full_FromFileContent(text);
 
         var r = "RestoreDb_Full_FromTelegram [" + x + "]";
@@ -354,7 +353,7 @@ public static class RestoreDbUtil
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
         Logger.Logger.WriteLine(r + " " + b);
 
-        actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     private static List<ActionDoneReport?> RestoreDb_full_FromFileContent(string text)

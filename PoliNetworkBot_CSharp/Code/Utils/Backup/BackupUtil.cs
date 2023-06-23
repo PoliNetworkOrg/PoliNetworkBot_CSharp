@@ -64,19 +64,21 @@ internal static class BackupUtil
         var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (e?.Message.From == null)
         {
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
+
         if (sender == null)
         {
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.NOT_TRIGGERED;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.NOT_TRIGGERED;
             return;
         }
 
         var eMessage = e.Message;
         var eMessageFrom = eMessage.From;
         var fromId = eMessageFrom.Id;
-        var backupHandler = BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, eMessageFrom.Username,
+        var backupHandler = BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender,
+            eMessageFrom.Username,
             eMessage.Chat.Type, eMessage.MessageThreadId);
         backupHandler.Wait();
 
