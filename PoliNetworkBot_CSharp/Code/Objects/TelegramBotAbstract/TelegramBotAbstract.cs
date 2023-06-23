@@ -82,7 +82,7 @@ public class TelegramBotAbstract
                 case BotTypeApi.REAL_BOT:
                 {
                     if (_botClient != null)
-                        if (e is { Message: { } })
+                        if (e is { Message: not null })
                             await _botClient.LeaveChatAsync(e.Message.Chat.Id);
                 }
                     break;
@@ -1170,7 +1170,7 @@ public class TelegramBotAbstract
     }
 
     internal bool SendFileAsync(TelegramFile documentInput, PeerAbstract peer,
-        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink, 
+        string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ReplyMarkupObject? replyMarkupObject = null, ParseMode parseModeCaption = ParseMode.Html)
     {
         var textToSend = GetTextToSend(lang, documentInput);
@@ -1194,7 +1194,7 @@ public class TelegramBotAbstract
 
 
                         _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null,
-                            textToSend, parseModeCaption, replyMarkup:reply).Result;
+                            textToSend, parseModeCaption, replyMarkup: reply).Result;
 
                         return true;
                     }
@@ -1205,7 +1205,8 @@ public class TelegramBotAbstract
                             return true;
 
                         if (textToSend != null)
-                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup:reply).Result;
+                            _ = _botClient
+                                .SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup: reply).Result;
 
 
                         if (inputOnlineFile != null)
@@ -1224,7 +1225,8 @@ public class TelegramBotAbstract
                                 .Result;
 
                         if (textToSend != null)
-                            _ = _botClient.SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup:reply).Result;
+                            _ = _botClient
+                                .SendTextMessageAsync(userId, textToSend, parseModeCaption, replyMarkup: reply).Result;
 
 
                         return true;

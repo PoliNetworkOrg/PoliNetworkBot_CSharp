@@ -130,7 +130,7 @@ public static class MessageHandler
                     ParseMode.Html,
                     markupObject, null);
             case Data.Enums.Function.FREE_CLASSROOMS_NOW:
-                _ = SelectDate(botClient, message, null , true);
+                _ = SelectDate(botClient, message, null, true);
                 return null;
             case Data.Enums.Function.SETTINGS:
                 conversation.Campus = null;
@@ -174,7 +174,7 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        var uglyClassRoomWLineBreaks = classRooms?.Find((classRoom) => classRoom?.Contains(messageText) ?? false);
+        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom?.Contains(messageText) ?? false);
         if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
@@ -268,7 +268,8 @@ public static class MessageHandler
         };
     }
 
-    private static async Task<MessageSentResult?> SendFreeClassrooms(Conversation conversation, Message message, TelegramBotAbstract botClient)
+    private static async Task<MessageSentResult?> SendFreeClassrooms(Conversation conversation, Message message,
+        TelegramBotAbstract botClient)
     {
         conversation.ResetConversationFunctions();
         conversation.State = Data.Enums.ConversationState.START;
@@ -283,7 +284,8 @@ public static class MessageHandler
                 "Internal error - No classrooms found in this campus");
             var markupObject = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
             conversation.State = Data.Enums.ConversationState.MAIN;
-            return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
+            return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private,
+                message.From?.LanguageCode,
                 ParseMode.Html,
                 markupObject, null);
         }
@@ -302,7 +304,8 @@ public static class MessageHandler
         replyLang = new L("it", textIt, "en", textEn);
         conversation.State = Data.Enums.ConversationState.MAIN;
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
-        return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, message.From?.LanguageCode,
+        return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private,
+            message.From?.LanguageCode,
             ParseMode.Html,
             replyMarkup, null, splitMessage: true);
     }
@@ -336,7 +339,7 @@ public static class MessageHandler
         }
 
         conversation!.Date = date;
-        switch (conversation.CurrentFunction)//todo
+        switch (conversation.CurrentFunction) //todo
         {
             case Data.Enums.Function.OCCUPANCIES:
                 conversation.ResetConversationFunctions();
@@ -374,17 +377,13 @@ public static class MessageHandler
                 conversation.State = Data.Enums.ConversationState.SELECT_CLASSROOM;
                 var classRooms = Fetcher.GetAllClassrooms(conversation.Campus!, date);
                 if (classRooms?.Count > 0)
-                {
                     classRooms = classRooms.Select(classRoom => classRoom.Trim()
                         .Replace("\n", "")
                         .Replace("\t", "")
                         .Replace("\r", "")
                         .Trim()).ToList();
-                }
                 else
-                {
                     classRooms = new List<string> { "No classrooms available" };
-                }
 
                 markupObject =
                     ReplyMarkupGenerator.ClassroomsKeyboard(classRooms);
@@ -414,7 +413,7 @@ public static class MessageHandler
 
         if (!Data.Enums.Campuses.TryGetValue(messageText, out var campus))
         {
-            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!, true);
+            markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
 
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
             return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,

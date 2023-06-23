@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
@@ -30,13 +29,10 @@ public static class Main
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
-        var t = new Thread(() =>
-        {
-            if (sender != null && e != null) _ = MainMethod2(new TelegramBotParam(sender, false), e);
-        });
-        t.Start();
-        //var t1 = new Thread(() => _ = CheckAllowedMessageExpiration(sender, e));
-        //t1.Start();
+        if (sender == null || e == null) return;
+        var telegramBotParam = new TelegramBotParam(sender, false);
+        var x = MainMethod2(telegramBotParam, e);
+        x.Wait();
     }
 
     public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
@@ -115,7 +111,7 @@ public static class Main
             {
                 case null:
                     return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
-                case { Item2: { } }:
+                case { Item2: not null }:
                     return new ActionDoneObject(ActionDoneEnum.CHECK_SPAM, result.Item2, result.Item1);
             }
 
@@ -142,8 +138,9 @@ public static class Main
     {
         try
         {
-            if (messageEventArgs is { Message: { } } && (messageEventArgs.Message.Text != null ||
-                                                         messageEventArgs.Message.Type != MessageType.ChatMemberLeft))
+            if (messageEventArgs is { Message: not null } && (messageEventArgs.Message.Text != null ||
+                                                              messageEventArgs.Message.Type !=
+                                                              MessageType.ChatMemberLeft))
                 return false;
             if (messageEventArgs != null && messageEventArgs.Message?.From?.Id == null) return false;
             if (messageEventArgs?.Message?.LeftChatMember?.Id == null) return false;

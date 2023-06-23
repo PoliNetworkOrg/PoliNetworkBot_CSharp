@@ -1,8 +1,8 @@
 ﻿#region
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -13,7 +13,6 @@ using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
-using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -258,7 +257,7 @@ internal static class CommandDispatcher
         var output = ExecuteBashCommand("./static/github_pusher.sh");
 
         Logger.WriteLine(output);
-        
+
         var text = output.Length > 0
             ? new Dictionary<string, string?>
             {
@@ -272,7 +271,8 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"), sender, null,
+            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"),
+            sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
@@ -309,19 +309,19 @@ internal static class CommandDispatcher
 
         Logger.WriteLine(output);
     }
-    
+
     private static string ExecuteBashCommand(string command)
     {
         // according to: https://stackoverflow.com/a/15262019/637142
         // thans to this we will pass everything as one command
-        command = command.Replace("\"","\"\"");
+        command = command.Replace("\"", "\"\"");
 
         var proc = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
-                Arguments = "-c \""+ command + "\"",
+                Arguments = "-c \"" + command + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true

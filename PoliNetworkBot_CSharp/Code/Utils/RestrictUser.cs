@@ -93,7 +93,7 @@ internal static class RestrictUser
                           ErrorCodes.TargetInvalidWhenBanAll
                 }
             });
-            if (e is { Message.From: { } })
+            if (e is { Message.From: not null })
                 await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                     e.Message.From.LanguageCode,
                     e.Message.From.Username,
@@ -122,7 +122,7 @@ internal static class RestrictUser
                       ErrorCodes.DatatableEmptyWhenBanAll
             }
         });
-        if (e is { Message.From: { } })
+        if (e is { Message.From: not null })
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username,
@@ -380,7 +380,7 @@ internal static class RestrictUser
             }
         });
 
-        if (e is { Message.From: { } })
+        if (e is { Message.From: not null })
             await SendMessage.SendMessageInPrivate(sender, e.Message.From.Id,
                 e.Message.From.LanguageCode,
                 e.Message.From.Username,

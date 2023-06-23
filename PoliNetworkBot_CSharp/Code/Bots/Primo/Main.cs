@@ -288,7 +288,7 @@ public static class Main
         return (from DataRow dr in r.Rows
             where dr != null
             let id = (long)dr["king_id"]
-            where message is { From: { } } && id == message.From.Id
+            where message is { From: not null } && id == message.From.Id
             let dt = (DateTime)dr["when_king"]
             where DateTime.Now.Year == dt.Year && DateTime.Now.Month == dt.Month && DateTime.Now.Day == dt.Day
             select dr["title"].ToString()).ToList();
