@@ -251,17 +251,20 @@ internal static class SendMessage
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
+
         var eMessage = e.Message;
         if (!Owners.CheckIfOwner(eMessage.From?.Id) || eMessage.Chat.Type != ChatType.Private)
         {
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
+
         if (eMessage.ReplyToMessage == null || cmdLines.Length != 2)
         {
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
+
         var text = new Language(new Dictionary<string, string?>
         {
             { "it", eMessage.ReplyToMessage?.Text ?? eMessage.ReplyToMessage?.Caption }

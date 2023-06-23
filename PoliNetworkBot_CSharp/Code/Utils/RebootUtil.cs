@@ -61,7 +61,7 @@ public static class RebootUtil
 
         var announceReboot = AnnounceReboot(sender, e);
         announceReboot.Wait();
- 
+
 
         try
         {
@@ -73,7 +73,8 @@ public static class RebootUtil
         }
 
         var reboot = Reboot();
-        actionFuncGenericParams.CommandExecutionState = reboot ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
+        actionFuncGenericParams.CommandExecutionState =
+            reboot ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 
     private static bool Reboot()

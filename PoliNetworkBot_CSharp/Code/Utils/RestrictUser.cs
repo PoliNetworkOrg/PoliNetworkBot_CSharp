@@ -531,16 +531,13 @@ internal static class RestrictUser
         var args = actionFuncGenericParams.Strings;
         var e = actionFuncGenericParams.MessageEventArgs;
         if (args is not { Length: >= 1 })
-        {
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
-        }
         var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(
             actionFuncGenericParams.TelegramBotAbstract, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
             false);
         banAllUnbanAllMethod1Async2Async.Wait();
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
-
     }
 
     public static void BanDeleteAllAsync(ActionFuncGenericParams actionFuncGenericParams)
@@ -549,9 +546,7 @@ internal static class RestrictUser
         var sender = actionFuncGenericParams.TelegramBotAbstract;
         var e = actionFuncGenericParams.MessageEventArgs;
         if (args is not { Length: >= 1 })
-        {
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
-        }
         var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(
             sender, e, args, e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.BAN,
@@ -569,9 +564,11 @@ internal static class RestrictUser
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
-        var deleteMessageAsync = sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
+
+        var deleteMessageAsync =
+            sender.DeleteMessageAsync(e.Message.ReplyToMessage.Chat.Id, e.Message.ReplyToMessage.MessageId, null);
         deleteMessageAsync.Wait();
-        actionFuncGenericParams.CommandExecutionState= CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
 
@@ -674,9 +671,10 @@ internal static class RestrictUser
         var stringInfo = actionFuncGenericParams.Strings;
         if (e?.Message.From != null)
         {
-            var checkIfAdminAsync = Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
+            var checkIfAdminAsync = Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username,
+                e.Message.Chat.Id,
                 sender);
-            
+
             var r = checkIfAdminAsync.Result;
             if (r != null && !r.IsSuccess())
             {
@@ -695,7 +693,7 @@ internal static class RestrictUser
             {
                 var e2 = new Exception("Can't find userid (1)");
                 NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
-                actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.ERROR_DEFAULT;
+                actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
                 return;
             }
 
@@ -704,13 +702,13 @@ internal static class RestrictUser
             {
                 var banUserFromGroup = BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null, false);
                 banUserFromGroup.Wait();
-                actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+                actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
                 return;
             }
 
             var e3 = new Exception("Can't find userid (2)");
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.ERROR_DEFAULT;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
             return;
         }
 
@@ -723,8 +721,7 @@ internal static class RestrictUser
         var userFromGroup = BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             false);
         userFromGroup.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
-        return;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
 
@@ -735,14 +732,16 @@ internal static class RestrictUser
         var e = actionFuncGenericParams.MessageEventArgs;
         if (args is not { Length: >= 1 })
         {
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
-        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+
+        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args,
+            e?.Message.From?.LanguageCode,
             e?.Message.From?.Username,
             RestrictAction.UNBAN, false);
         banAllUnbanAllMethod1Async2Async.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
 
@@ -753,14 +752,16 @@ internal static class RestrictUser
         var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (args is not { Length: >= 1 })
         {
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
-        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+
+        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args,
+            e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.MUTE,
             false);
         banAllUnbanAllMethod1Async2Async.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void UnMuteAllAsync(ActionFuncGenericParams actionFuncGenericParams)
@@ -770,13 +771,15 @@ internal static class RestrictUser
         var sender = actionFuncGenericParams.TelegramBotAbstract;
         if (args is not { Length: >= 1 })
         {
-            actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.UNMET_CONDITIONS;
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
             return;
         }
-        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args, e?.Message.From?.LanguageCode,
+
+        var banAllUnbanAllMethod1Async2Async = BanAllUnbanAllMethod1Async2Async(sender, e, args,
+            e?.Message.From?.LanguageCode,
             e?.Message.From?.Username, RestrictAction.UNMUTE,
             false);
         banAllUnbanAllMethod1Async2Async.Wait();
-        actionFuncGenericParams.CommandExecutionState =  CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 }
