@@ -466,13 +466,15 @@ public static class Logger
             actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
             return;
         }
+
         Unsubscribe(actionFuncGenericParams.MessageEventArgs.Message.From?.Id);
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     public static void GetLogCommand(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (actionFuncGenericParams.MessageEventArgs != null) GetLog(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+        if (actionFuncGenericParams.MessageEventArgs != null)
+            GetLog(actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
