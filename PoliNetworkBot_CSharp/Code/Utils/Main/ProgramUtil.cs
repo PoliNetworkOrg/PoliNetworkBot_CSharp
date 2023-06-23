@@ -640,7 +640,7 @@ public static class ProgramUtil
 
 
         await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-            "", default, replyMarkupObject, "@polinetwork3bot");
+            "", default, replyMarkupObject, "@polinetwork3bot", messageThreadId: null);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",
