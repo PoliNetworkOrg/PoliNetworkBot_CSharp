@@ -18,6 +18,7 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.Action;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
@@ -102,7 +103,8 @@ internal static class CommandDispatcher
         foreach (var command in SwitchDispatcher.Commands)
             try
             {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                var commandExecutionState = command.TryTrigger(e, sender, cmd, args);
+                switch (commandExecutionState)
                 {
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
@@ -127,6 +129,7 @@ internal static class CommandDispatcher
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.ERROR_DEFAULT:
+                    case null:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -736,8 +739,7 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> HelpPrivate(MessageEventArgs? e, TelegramBotAbstract? sender,
-        string[]? args)
+    public static void HelpPrivate(ActionFuncGenericParams actionFuncGenericParams)
     {
         if (args == null || args.Length == 0)
             await Help.HelpPrivateSlave(e, sender);
@@ -769,25 +771,34 @@ internal static class CommandDispatcher
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> ForceCheckInviteLinksAsync(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void ForceCheckInviteLinksAsync(ActionFuncGenericParams actionFuncGenericParams)
     {
-        if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
+        if (actionFuncGenericParams.MessageEventArgs == null)
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.UNMET_CONDITIONS;
+            return;
+        }
 
         long? n = null;
-        var eventArgsContainer = EventArgsContainer.Get(e);
+        var eventArgsContainer = EventArgsContainer.Get(actionFuncGenericParams.MessageEventArgs);
         try
         {
-            n = await InviteLinks.FillMissingLinksIntoDB_Async(sender, e);
+            var fillMissingLinksIntoDbAsync = 
+                InviteLinks.FillMissingLinksIntoDB_Async(
+                    actionFuncGenericParams.TelegramBotAbstract, actionFuncGenericParams.MessageEventArgs);
+            n = fillMissingLinksIntoDbAsync.Result;
         }
         catch (Exception? e2)
         {
-            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, eventArgsContainer);
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), actionFuncGenericParams.TelegramBotAbstract, eventArgsContainer);
         }
 
         if (n == null)
-            return CommandExecutionState.ERROR_DEFAULT;
+        {
+            actionFuncGenericParams.CommandExecutionState = CommandExecutionState.ERROR_DEFAULT;
+            return;
+        }
+ 
 
         var text2 = new Language(new Dictionary<string, string?>
         {
@@ -795,16 +806,17 @@ internal static class CommandDispatcher
             { "it", "Ho aggiornato n=" + n + " link" }
         });
 
-        var eMessage = e.Message;
+        var eMessage = actionFuncGenericParams.MessageEventArgs.Message;
         var eMessageFrom = eMessage.From;
-        await SendMessage.SendMessageInPrivate(sender, eMessageFrom?.Id,
+        var sendMessageInPrivate = SendMessage.SendMessageInPrivate(actionFuncGenericParams.TelegramBotAbstract, eMessageFrom?.Id,
             eMessageFrom?.LanguageCode,
             eMessageFrom?.Username, text2,
             ParseMode.Html,
             eMessage.MessageId, InlineKeyboardMarkup.Empty(),
             eventArgsContainer, eMessage.MessageThreadId);
+        sendMessageInPrivate.Wait();
 
-        return CommandExecutionState.SUCCESSFUL;
+        actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
     }
 
     private static async Task Start(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient, string[]? args)

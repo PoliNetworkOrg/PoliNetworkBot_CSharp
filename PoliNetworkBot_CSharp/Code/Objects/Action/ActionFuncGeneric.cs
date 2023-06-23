@@ -9,30 +9,35 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 [JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGenericParams
 {
-    private MessageEventArgs? _messageEventArgs;
-    private TelegramBotAbstract.TelegramBotAbstract? _telegramBotAbstract;
-    private string[]? _strings;
-    private Task<CommandExecutionState>? _taskCommandExecutionState;
-    private Task? _task;
+    public MessageEventArgs? MessageEventArgs;
+    public TelegramBotAbstract.TelegramBotAbstract? TelegramBotAbstract;
+    public string[]? Strings;
+    public Task<CommandExecutionState>? TaskCommandExecutionState;
+    public Task? Task;
 
     public ActionFuncGenericParams Invoke()
     {
-        if (_taskCommandExecutionState != null)
+        if (Action != null)
         {
-            _taskCommandExecutionState.Start();
-            _taskCommandExecutionState.Wait();
-            this.CommandExecutionState = _taskCommandExecutionState.Result;
+            this.Action.Invoke(this);
         }
-        else if (this._task != null)
+        else if (TaskCommandExecutionState != null)
         {
-            this._task.Start();
-            this._task.Wait();
+            TaskCommandExecutionState.Start();
+            TaskCommandExecutionState.Wait();
+            this.CommandExecutionState = TaskCommandExecutionState.Result;
+        }
+        else if (this.Task != null)
+        {
+            this.Task.Start();
+            this.Task.Wait();
         }
 
         return this;
     }
 
-    public CommandExecutionState CommandExecutionState { get; set; }
+    public CommandExecutionState? CommandExecutionState;
+    public Action<ActionFuncGenericParams>? Action;
 }
 
 
@@ -47,6 +52,11 @@ public class ActionFuncGeneric
     public ActionFuncGeneric( ActionFuncGenericParams? action)
     {
         this._action = action;
+    }
+
+    public ActionFuncGeneric(Action<ActionFuncGenericParams>? action)
+    {
+        this._action = new ActionFuncGenericParams() { Action = action };
     }
 
 
