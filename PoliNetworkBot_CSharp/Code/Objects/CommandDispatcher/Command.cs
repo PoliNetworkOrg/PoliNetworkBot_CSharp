@@ -179,7 +179,11 @@ public class Command
         if (telegramBotAbstract == null) throw new Exception("Illegal state exception!");
 
         if (args != null)
-            return _actionFuncGeneric.Invoke()?.CommandExecutionState;
+        {
+            var actionFuncGenericParams = _actionFuncGeneric.Invoke(e, telegramBotAbstract, command, args);
+            var commandExecutionState = actionFuncGenericParams?.CommandExecutionState;
+            return commandExecutionState;
+        }
 
         throw new Exception("Illegal state exception!");
     }

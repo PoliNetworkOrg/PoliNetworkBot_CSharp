@@ -44,7 +44,7 @@ public class ActionFuncGenericParams
 [JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGeneric
 {
-    private readonly ActionFuncGenericParams? _action;
+    private ActionFuncGenericParams? _action;
 
 
     public ActionFuncGeneric(ActionFuncGenericParams? action)
@@ -58,8 +58,13 @@ public class ActionFuncGeneric
     }
 
 
-    public ActionFuncGenericParams? Invoke()
+    public ActionFuncGenericParams? Invoke(MessageEventArgs messageEventArgs,
+        TelegramBotAbstract.TelegramBotAbstract telegramBotAbstract, string command, string[] strings)
     {
+        this._action ??= new ActionFuncGenericParams();
+        this._action.TelegramBotAbstract = telegramBotAbstract;
+        this._action.MessageEventArgs = messageEventArgs;
+        this._action.Strings = strings;
         return _action?.Invoke();
     }
 }
