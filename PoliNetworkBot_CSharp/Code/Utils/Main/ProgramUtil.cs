@@ -567,7 +567,7 @@ public static class ProgramUtil
             case UpdateType.EditedMessage:
             case UpdateType.Message:
             {
-                var updateMessage = update.Message;
+                var updateMessage = update.Message ?? update.EditedMessage;
                 if (updateMessage != null &&
                     botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
                     if (value >= updateMessage.MessageId)
