@@ -36,8 +36,6 @@ public class Command
     private List<string> _trigger;
 
 
- 
-
     private Command(IEnumerable<string> trigger,
         ActionFuncGenericParams? action,
         List<ChatType> chatTypes, Permission permissionLevel, Language helpMessage, Language? longDescription,
@@ -53,7 +51,6 @@ public class Command
         _enabled = enabled;
     }
 
- 
 
     public Command(string trigger,
         Action<ActionFuncGenericParams>?
@@ -85,7 +82,7 @@ public class Command
         _longDescription = longDescription ?? helpMessage;
         _enabled = enabled;
     }
- 
+
 
     public Command(List<string> trigger,
         ActionFuncGenericParams? action,
@@ -103,21 +100,21 @@ public class Command
         _enabled = enabled;
     }
 
-    public Command(List<string> trigger, 
-        Action<ActionFuncGenericParams> assocWrite, 
+    public Command(List<string> trigger,
+        Action<ActionFuncGenericParams> assocWrite,
         List<ChatType> chatTypes,
-        Permission permissionLevel, 
+        Permission permissionLevel,
         L helpMessage,
         L? longDescription,
         Func<MessageEventArgs, bool>? optionalConditions)
     {
-        this._trigger = trigger;
-        this._actionFuncGeneric = new ActionFuncGeneric(assocWrite);
-        this._chatTypes = chatTypes;
-        this._permissionLevel = permissionLevel;
-        this._helpMessage = helpMessage;
-        this._longDescription = longDescription;
-        this._optionalConditions = optionalConditions;
+        _trigger = trigger;
+        _actionFuncGeneric = new ActionFuncGeneric(assocWrite);
+        _chatTypes = chatTypes;
+        _permissionLevel = permissionLevel;
+        _helpMessage = helpMessage;
+        _longDescription = longDescription;
+        _optionalConditions = optionalConditions;
     }
 
 

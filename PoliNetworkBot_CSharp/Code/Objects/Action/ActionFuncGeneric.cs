@@ -9,59 +9,57 @@ namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 [JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGenericParams
 {
+    public Action<ActionFuncGenericParams>? Action;
+
+    public CommandExecutionState? CommandExecutionState;
     public MessageEventArgs? MessageEventArgs;
-    public TelegramBotAbstract.TelegramBotAbstract? TelegramBotAbstract;
     public string[]? Strings;
-    public Task<CommandExecutionState>? TaskCommandExecutionState;
     public Task? Task;
+    public Task<CommandExecutionState>? TaskCommandExecutionState;
+    public TelegramBotAbstract.TelegramBotAbstract? TelegramBotAbstract;
 
     public ActionFuncGenericParams Invoke()
     {
         if (Action != null)
         {
-            this.Action.Invoke(this);
+            Action.Invoke(this);
         }
         else if (TaskCommandExecutionState != null)
         {
             TaskCommandExecutionState.Start();
             TaskCommandExecutionState.Wait();
-            this.CommandExecutionState = TaskCommandExecutionState.Result;
+            CommandExecutionState = TaskCommandExecutionState.Result;
         }
-        else if (this.Task != null)
+        else if (Task != null)
         {
-            this.Task.Start();
-            this.Task.Wait();
+            Task.Start();
+            Task.Wait();
         }
 
         return this;
     }
-
-    public CommandExecutionState? CommandExecutionState;
-    public Action<ActionFuncGenericParams>? Action;
 }
-
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
 public class ActionFuncGeneric
 {
-    
     private readonly ActionFuncGenericParams? _action;
-    
 
-    public ActionFuncGeneric( ActionFuncGenericParams? action)
+
+    public ActionFuncGeneric(ActionFuncGenericParams? action)
     {
-        this._action = action;
+        _action = action;
     }
 
     public ActionFuncGeneric(Action<ActionFuncGenericParams>? action)
     {
-        this._action = new ActionFuncGenericParams() { Action = action };
+        _action = new ActionFuncGenericParams { Action = action };
     }
 
 
     public ActionFuncGenericParams? Invoke()
     {
-        return this._action?.Invoke();
+        return _action?.Invoke();
     }
 }
