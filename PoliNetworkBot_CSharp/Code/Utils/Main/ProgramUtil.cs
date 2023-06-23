@@ -66,12 +66,12 @@ public static class ProgramUtil
         GlobalVariables.LoadToRam();
 
         Logger.Logger.WriteLine("\nTo kill this process, you have to check the process list");
-        
+
         DbConfig.InitializeDbConfig();
 
 
         _ = StartBotsAsync(readChoice == '3', readChoice == '8', readChoice == '9');
-        
+
         try
         {
             while (true)
@@ -216,7 +216,7 @@ public static class ProgramUtil
             // ignored
         }
 
-        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: not null } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -267,7 +267,7 @@ public static class ProgramUtil
             Logger.Logger.WriteLine(ex);
         }
 
-        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: not null } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -332,9 +332,10 @@ public static class ProgramUtil
                         x1 = new DbConfigConnection(x2);
                     x1 ??= GlobalVariables.DbConfig;
 
-                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(), bot.GetContactString(),
+                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
+                        bot.GetContactString(),
                         BotTypeApi.REAL_BOT, bot.GetOnMessage().S) { DbConfig = x1 };
-                    
+
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         telegramBotAbstract;
 
@@ -496,10 +497,12 @@ public static class ProgramUtil
                 {
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit:20, timeout: 250).Result.ToList();
-                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset, LogSeverityLevel.DEBUG);
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, 20, 250).Result.ToList();
+                    Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset,
+                        LogSeverityLevel.DEBUG);
                 }
-                catch (Exception e) when (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
+                catch (Exception e) when
+                    (e is ApiRequestException or AggregateException) // Overlap in cluster to verify healthy application
                 {
                     Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     Logger.Logger.WriteLine("Probably other container is still active, waiting 10 seconds");
@@ -533,14 +536,10 @@ public static class ProgramUtil
 
                 var actions = updates.Select((Func<Update, Action>)Selector).ToArray();
 
-                if (actions.Length > 0)
-                {
-                    Parallel.Invoke(actions);
-                }
+                if (actions.Length > 0) Parallel.Invoke(actions);
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;
-
             }
             catch (Exception? e)
             {
@@ -560,7 +559,8 @@ public static class ProgramUtil
             case UpdateType.Message:
             {
                 var updateMessage = update.Message;
-                if (updateMessage != null && botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
+                if (updateMessage != null &&
+                    botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
                     if (value >= updateMessage.MessageId)
                         return;
 
@@ -620,7 +620,6 @@ public static class ProgramUtil
                 //todo: eventualmente gestire le richieste di ingresso ai gruppi
                 break;
             }
-      
         }
     }
 
@@ -640,7 +639,7 @@ public static class ProgramUtil
 
 
         await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-            "", default, replyMarkupObject, "@polinetwork3bot", messageThreadId: null);
+            "", default, replyMarkupObject, "@polinetwork3bot", null);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",
