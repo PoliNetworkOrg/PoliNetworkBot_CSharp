@@ -4,6 +4,7 @@ using System;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
 
@@ -32,7 +33,7 @@ public static class BotStartMethods
         else if (s == Material.Item1)
             x = Program.BotClient_OnMessageAsync;
         else if (s == Rooms.Item1)
-            x = Bots.RoomsBot.RoomsBot.MainMethod;
+            x = RoomsBot.MainMethod;
 
         return new ActionMessageEvent(x);
     }

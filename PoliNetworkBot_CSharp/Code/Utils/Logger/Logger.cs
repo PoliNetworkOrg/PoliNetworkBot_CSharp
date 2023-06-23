@@ -116,12 +116,12 @@ public static class Logger
                             ChatType.Group,
                             ParseMode.Html)
                     );
-            
+
             try
             {
                 const string? q1 =
                     "CALL `insert_log`(@id, @severity, @stacktrace, @content)";
-            
+
                 Database.ExecuteUnlogged(q1, GlobalVariables.DbConfig, new Dictionary<string, object?>
                 {
                     { "@id", GlobalVariables.Bots?.Values.First()?.GetId() ?? 0 },

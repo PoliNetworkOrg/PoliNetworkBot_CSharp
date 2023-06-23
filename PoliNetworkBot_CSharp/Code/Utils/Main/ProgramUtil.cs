@@ -216,7 +216,7 @@ public static class ProgramUtil
             // ignored
         }
 
-        if (BotConfigAll.UserBotsInfos is { bots: { } } && BotConfigAll.UserBotsInfos.bots.Count != 0)
+        if (BotConfigAll.UserBotsInfos is { bots: not null } && BotConfigAll.UserBotsInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -267,7 +267,7 @@ public static class ProgramUtil
             Logger.Logger.WriteLine(ex);
         }
 
-        if (BotConfigAll.BotInfos is { bots: { } } && BotConfigAll.BotInfos.bots.Count != 0)
+        if (BotConfigAll.BotInfos is { bots: not null } && BotConfigAll.BotInfos.bots.Count != 0)
             return ToExit.STAY;
 
         Logger.Logger.WriteLine(
@@ -497,7 +497,7 @@ public static class ProgramUtil
                 {
                     Thread.Sleep(200);
                     if (botClientWhole.BotClient != null)
-                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset: offset, limit: 20, timeout: 250)
+                        updates = botClientWhole.BotClient.GetUpdatesAsync(offset, 20, 250)
                             .Result.ToList();
                     Logger.Logger.WriteLine("Received " + updates?.Count + " Updates. Offset: " + offset,
                         LogSeverityLevel.DEBUG);
@@ -532,11 +532,11 @@ public static class ProgramUtil
                             Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                         }
                     }
+
                     return new Thread(ThreadStart);
                 });
-                
+
                 foreach (var thread in enumerable)
-                {
                     try
                     {
                         thread.Start();
@@ -545,7 +545,6 @@ public static class ProgramUtil
                     {
                         Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                     }
-                }
 
                 offset ??= 0;
                 offset = updates.Last().Id + 1;

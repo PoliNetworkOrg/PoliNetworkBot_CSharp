@@ -418,7 +418,7 @@ internal static class InviteLinks
             {
                 var gruppoTg1 = gruppoTGs[i];
                 var gruppoTg2 = gruppoTGs[j];
-                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: { } } ||
+                if (gruppoTg2 == null || gruppoTg1 is not { PermanentId: not null } ||
                     gruppoTg2.PermanentId == null) continue;
 
                 if (gruppoTg1.PermanentId != gruppoTg2.PermanentId) continue;

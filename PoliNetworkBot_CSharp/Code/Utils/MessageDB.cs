@@ -108,7 +108,7 @@ public static class MessageDb
         var dt = Database.ExecuteSelectUnlogged(
             q, telegramBotAbstract?.DbConfig ?? GlobalVariables.DbConfig
         );
-        
+
         if (dt == null || dt.Rows.Count == 0)
             return false;
 
@@ -144,7 +144,7 @@ public static class MessageDb
                 await NotifyUtil.NotifyOwnerWithLog2(e, BotUtil.GetFirstModerationRealBot(telegramBotAbstract),
                     EventArgsContainer.Get(messageEventArgs));
             }
-        
+
         return true;
     }
 
@@ -253,11 +253,11 @@ public static class MessageDb
         {
             var s = dr[v].ToString();
             var r = DateTimeClass.GetDateTimeFromString(s);
-            if (r is { Item2: null, Item1: { } })
+            if (r is { Item2: null, Item1: not null })
             {
             }
 
-            if (r is { Item1: { } })
+            if (r is { Item1: not null })
                 return r.Item1.Value;
         }
         catch

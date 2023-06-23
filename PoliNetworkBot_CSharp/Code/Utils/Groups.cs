@@ -438,7 +438,7 @@ internal static class Groups
 
             var inline = buttonsMatrix == null ? null : new InlineKeyboardMarkup(buttonsMatrix);
 
-            if (e is { Message.From: { } })
+            if (e is { Message.From: not null })
                 return e.Message.Chat.Type switch
                 {
                     ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
