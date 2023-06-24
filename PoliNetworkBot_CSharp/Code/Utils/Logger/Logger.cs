@@ -237,7 +237,12 @@ public static class Logger
         var size = count.Value / (decimal)ChunckSize;
         var howManyFiles = (int)Math.Ceiling(size);
 
-        for (var i = 0; i < howManyFiles; i++)
+        var lastIndex = howManyFiles-1;
+        
+        //we will skip first files
+        var startWithLastOnes = Math.Max(0, lastIndex-3);
+        
+        for (var i = startWithLastOnes; i < howManyFiles; i++)
         {
             try
             {
