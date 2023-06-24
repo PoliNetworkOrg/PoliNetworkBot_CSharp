@@ -193,8 +193,8 @@ internal static class UserBotFixBotAdmin
     private static async Task<IsBotPresentObject> CheckIfOurBotIsPresent2Async(TLInputChannel x5,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        if (_idOfChatsWeKnowAreOk != null && _idOfChatsWeKnowAreOk.ContainsKey(x5.ChannelId))
-            return new IsBotPresentObject(_idOfChatsWeKnowAreOk[x5.ChannelId], null);
+        if (_idOfChatsWeKnowAreOk != null && _idOfChatsWeKnowAreOk.TryGetValue(x5.ChannelId, out var value))
+            return new IsBotPresentObject(value, null);
 
         TLAbsInputChannel channel = new TLInputChannel { ChannelId = x5.ChannelId, AccessHash = x5.AccessHash };
         TLChatFull? x = null;
@@ -588,8 +588,8 @@ internal static class UserBotFixBotAdmin
     private static async Task<IsBotPresentObject> CheckIfOurBotIsPresent3Async(TLChat? x5,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        if (x5 != null && _idOfChatsWeKnowAreOk != null && _idOfChatsWeKnowAreOk.ContainsKey(x5.Id))
-            return new IsBotPresentObject(_idOfChatsWeKnowAreOk[x5.Id], null);
+        if (x5 != null && _idOfChatsWeKnowAreOk != null && _idOfChatsWeKnowAreOk.TryGetValue(x5.Id, out var value))
+            return new IsBotPresentObject(value, null);
 
         TLChatFull? x = null;
         try

@@ -527,8 +527,8 @@ public static class MessageDb
 
     private static string? GetMessageTypeNameById(in long typeI, TelegramBotAbstract? sender)
     {
-        if (MessageTypesInRam.ContainsKey(typeI))
-            return MessageTypesInRam[typeI];
+        if (MessageTypesInRam.TryGetValue(typeI, out var id))
+            return id;
 
         var q = "SELECT name FROM MessageTypes WHERE id = " + typeI;
         var dt = Database.ExecuteSelect(q, sender?.DbConfig);

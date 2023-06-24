@@ -35,7 +35,7 @@ public static class ReplyMarkupGenerator
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, true)), false);
     }
 
-    public static ReplyMarkupObject ClassroomsKeyboard(List<string> classrooms)
+    public static ReplyMarkupObject ClassroomsKeyboard(IEnumerable<string> classrooms)
     {
         var choices = new List<string>(classrooms);
         return new ReplyMarkupObject(new ReplyMarkupOptions(GenerateKeyboardMarkup(choices, true)), false);
@@ -63,7 +63,7 @@ public static class ReplyMarkupGenerator
     /// <param name="items">List of texts to put in buttons.</param>
     /// <param name="hasBackButton">true if markup needs to be generated with a back button; otherwise false.</param>
     /// <returns>Generated ReplyKeyboardMarkup.</returns>
-    public static List<List<KeyboardButton?>> GenerateKeyboardMarkup(List<string> items, bool hasBackButton)
+    private static List<List<KeyboardButton?>> GenerateKeyboardMarkup(IReadOnlyList<string> items, bool hasBackButton)
     {
         const int maxCharsPerRow = 40;
         const int maxItemsPerRow = 3;
@@ -100,7 +100,7 @@ public static class ReplyMarkupGenerator
     /// <param name="itemsPerRow">Max amount of items in one row.</param>
     /// <param name="hasBackButton">true if markup needs to be generated with a back button; otherwise false.</param>
     /// <returns>Generated ReplyKeyboardMarkup.</returns>
-    public static List<List<KeyboardButton?>> GenerateKeyboardMarkup(List<string> items, int itemsPerRow,
+    private static List<List<KeyboardButton?>> GenerateKeyboardMarkup(IReadOnlyList<string> items, int itemsPerRow,
         bool hasBackButton)
     {
         var buttons = new List<List<KeyboardButton?>>();

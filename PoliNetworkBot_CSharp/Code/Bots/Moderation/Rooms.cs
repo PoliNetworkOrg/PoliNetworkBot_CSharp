@@ -196,11 +196,10 @@ internal static class Rooms
 
         List<string> list = new();
         foreach (var child in table.ChildNodes)
-            if (child != null)
-            {
-                var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
-                if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
-            }
+        {
+            var toAdd = CheckIfFree(child, shiftStart, shiftEnd);
+            if (!string.IsNullOrEmpty(toAdd)) list.Add(toAdd);
+        }
 
         return list;
     }
@@ -233,8 +232,9 @@ internal static class Rooms
     /// <returns>a string with the room name if the room is empty, null otherwise</returns>
     private static string? CheckIfFree(HtmlNode? node, int? shiftStart, int? shiftEnd)
     {
-        if (node != null && !node.GetClasses().Contains("normalRow")) return null;
-        if (node?.ChildNodes == null) return null;
+        if (node == null) return null;
+        if (!node.GetClasses().Contains("normalRow")) return null;
+        if (node.ChildNodes == null) return null;
 
         if (!node.ChildNodes.Any(x =>
                 x.HasClass("dove")

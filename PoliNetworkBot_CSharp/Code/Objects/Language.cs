@@ -29,8 +29,8 @@ public class Language
         if (string.IsNullOrEmpty(lang))
             return _dict.Values.ToList().FirstOrDefault(x => !string.IsNullOrEmpty(x), null);
 
-        if (_dict.ContainsKey(lang))
-            return _dict[lang];
+        if (_dict.TryGetValue(lang, out var select))
+            return select;
 
         var key2 = _dict.Keys.ToList().Where(key => key.Contains(lang))
             .FirstOrDefault(key => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(_dict[key]), null);
