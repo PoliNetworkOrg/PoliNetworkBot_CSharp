@@ -275,7 +275,7 @@ public static class Logger
         var textToSendBefore = "LOG (bot " + botId + ") from db:";
         const string applicationOctetStream = "application/octet-stream";
         LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-            applicationOctetStream, "log_db_" + botId + ".log");
+            applicationOctetStream, "log_db_" + chunckIndex+ "_bot_" + botId + ".log");
     }
 
     private static int? GetCountLogDb(long botId)
