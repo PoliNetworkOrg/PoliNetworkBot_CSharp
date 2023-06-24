@@ -24,13 +24,13 @@ internal static class RoomsBot
         //t1.Start();
     }
 
-    public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
+    private static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
     {
         TelegramBotAbstract? telegramBotClient = null;
 
         telegramBotClient = sender.GetTelegramBot();
 
-        if (telegramBotClient == null || e?.Message?.From == null || e.Message.Text == null)
+        if (telegramBotClient == null || e?.Message.From == null || e.Message.Text == null)
             return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
 
 

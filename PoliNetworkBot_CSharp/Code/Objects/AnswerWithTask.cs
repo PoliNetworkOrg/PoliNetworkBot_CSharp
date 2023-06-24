@@ -27,8 +27,7 @@ public class AnswerWithTask
 
     public void InitializeIfKeyNotPresent(long botId)
     {
-        if (!_dictionary.ContainsKey(botId))
-            _dictionary[botId] = new Couple<AnswerTelegram, TaskCompletionSource<string?>?>();
+        _dictionary.TryAdd(botId, new Couple<AnswerTelegram, TaskCompletionSource<string?>?>());
     }
 
     public void ResetItem1(long botId)
