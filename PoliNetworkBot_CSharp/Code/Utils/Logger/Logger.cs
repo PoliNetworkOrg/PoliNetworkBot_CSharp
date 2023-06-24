@@ -215,53 +215,119 @@ public static class Logger
             {
                 const string path = Paths.Data.Log;
 
-                List<string>? text = null;
-                try
-                {
-                    lock (LogFileLock)
-                    {
-                        text = File.ReadAllLines(path).ToList();
-                    }
-                }
-                catch (Exception? e)
-                {
-                    WriteLine(e, LogSeverityLevel.CRITICAL);
-                }
+                SendLogGeneral(sender, sendTo, messageEventArgs, path);
 
-                const string q1 = "SELECT * " +
-                                  "FROM LogTable X " +
-                                  "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
-                                  "ORDER BY X.when_insert ASC";
-                var botId = sender?.GetId();
-                if (botId != null)
-                {
-                    var dictionary = new Dictionary<string, object?>
-                    {
-                        { "@bot_id", botId }
-                    };
-                    var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
-                        dictionary);
-                    var dbLogFileContent = GetFileContentFromDataTable(data);
-                    if (!string.IsNullOrEmpty(dbLogFileContent))
-                    {
-                        dbLogFileContent = dbLogFileContent.Trim();
-                        if (!string.IsNullOrEmpty(dbLogFileContent))
-                        {
-                            var textToSendBefore = "LOG (bot " + botId + ") from db:";
-                            const string applicationOctetStream = "application/octet-stream";
-                            LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-                                applicationOctetStream, "log_db_" + botId + ".log");
-                        }
-                    }
-                }
-
-                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
+                SendLogDb(sender, sendTo);
             }
             catch (Exception? e)
             {
                 NotifyUtil.NotifyOwnerWithLog2(e, sender, EventArgsContainer.Get(messageEventArgs)).Wait();
             }
         }
+    }
+
+    private static void SendLogDb(TelegramBotAbstract? sender, List<long?> sendTo)
+    {
+        var botId = sender?.GetId();
+        if (botId == null) return;
+        var count = GetCountLogDb(botId.Value);
+        if (count == null)
+            return;
+        
+        var size = count.Value / (decimal)ChunckSize;
+        var howManyFiles = (int)Math.Ceiling(size);
+
+        var lastIndex = howManyFiles-1;
+        
+        //we will skip first files
+        var startWithLastOnes = Math.Max(0, lastIndex-3);
+        
+        for (var i = startWithLastOnes; i < howManyFiles; i++)
+        {
+            try
+            {
+                SendLogDbChunk(sender, sendTo, botId.Value, i);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+ 
+    }
+
+    private const int ChunckSize = 100;
+    
+    private static void SendLogDbChunk(TelegramBotAbstract? sender, List<long?> sendTo,  long botId, int chunckIndex)
+    {
+        var chunckSize = ChunckSize*chunckIndex;
+        var q1 = "SELECT * " +
+                 "FROM LogTable X " +
+                 "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
+                 "ORDER BY X.when_insert ASC " +
+                 $"LIMIT {ChunckSize},{chunckSize}";
+        
+        var dictionary = new Dictionary<string, object?>
+        {
+            { "@bot_id", botId }
+        };
+        var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+            dictionary);
+        var dbLogFileContent = GetFileContentFromDataTable(data);
+        if (string.IsNullOrEmpty(dbLogFileContent)) return;
+        dbLogFileContent = dbLogFileContent.Trim();
+        if (string.IsNullOrEmpty(dbLogFileContent)) return;
+        var textToSendBefore = "LOG (bot " + botId + ") from db:";
+        const string applicationOctetStream = "application/octet-stream";
+        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
+            applicationOctetStream, "log_db_" + chunckIndex+ "_bot_" + botId + ".log");
+    }
+
+    private static int? GetCountLogDb(long botId)
+    {
+        const string q1 = "SELECT COUNT(*) " +
+                          "FROM LogTable X " +
+                          "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
+                          "ORDER BY X.when_insert ASC";
+
+        var dictionary = new Dictionary<string, object?>
+        {
+            { "@bot_id", botId }
+        };
+        var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+            dictionary);
+
+        var o = Database.GetFirstValueFromDataTable(data);
+        if (o == null)
+            return null;
+        
+        try
+        {
+            return Convert.ToInt32(o);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static void SendLogGeneral(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs,
+        string path)
+    {
+        List<string>? text = null;
+        try
+        {
+            lock (LogFileLock)
+            {
+                text = File.ReadAllLines(path).ToList();
+            }
+        }
+        catch (Exception? e)
+        {
+            WriteLine(e, LogSeverityLevel.CRITICAL);
+        }
+
+        PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
     }
 
     private static string? GetFileContentFromDataTable(DataTable? data)
