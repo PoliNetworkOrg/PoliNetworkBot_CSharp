@@ -9,17 +9,17 @@ using PoliNetworkBot_CSharp.Code.Utils;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 
-public class Fetcher
+public static class Fetcher
 {
-    private static readonly int MaximumApiCallsPerSecond = 5;
-    private static readonly int MaximumApiCallsPerMinute = 30;
+    private const int MaximumApiCallsPerSecond = 5;
+    private const int MaximumApiCallsPerMinute = 30;
     private static readonly object Lock = new();
 
-    private static int ApiCallsCounterPerSeconds;
-    private static int ApiCallsSecondTracker;
+    private static int _apiCallsCounterPerSeconds;
+    private static int _apiCallsSecondTracker;
 
-    private static int ApiCallsCounterPerMinute;
-    private static int ApiCallsMinuteTracker;
+    private static int _apiCallsCounterPerMinute;
+    private static int _apiCallsMinuteTracker;
 
     private static readonly TimeSpan CacheInvalidationTime = TimeSpan.FromHours(1);
     private static readonly Dictionary<string, Dictionary<DateTime, DateTime>> FetchCacheAge = new();
@@ -107,28 +107,28 @@ public class Fetcher
     private static void CheckApiRateLimit()
     {
         var now = DateTime.Now;
-        if (now.Second == ApiCallsSecondTracker)
+        if (now.Second == _apiCallsSecondTracker)
         {
-            if (ApiCallsCounterPerSeconds > MaximumApiCallsPerSecond)
+            if (_apiCallsCounterPerSeconds > MaximumApiCallsPerSecond)
                 throw new TooManyRequestsException();
-            ApiCallsCounterPerSeconds++;
+            _apiCallsCounterPerSeconds++;
         }
         else
         {
-            ApiCallsSecondTracker = DateTime.Now.Second;
-            ApiCallsCounterPerSeconds = 1;
+            _apiCallsSecondTracker = DateTime.Now.Second;
+            _apiCallsCounterPerSeconds = 1;
         }
 
-        if (now.Minute == ApiCallsMinuteTracker)
+        if (now.Minute == _apiCallsMinuteTracker)
         {
-            if (ApiCallsCounterPerMinute > MaximumApiCallsPerMinute)
+            if (_apiCallsCounterPerMinute > MaximumApiCallsPerMinute)
                 throw new TooManyRequestsException();
-            ApiCallsCounterPerMinute++;
+            _apiCallsCounterPerMinute++;
         }
         else
         {
-            ApiCallsMinuteTracker = DateTime.Now.Minute;
-            ApiCallsCounterPerMinute = 1;
+            _apiCallsMinuteTracker = DateTime.Now.Minute;
+            _apiCallsCounterPerMinute = 1;
         }
     }
 }

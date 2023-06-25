@@ -174,7 +174,6 @@ public static class Assoc
                 if (!dry)
                     foreach (var idChat in idChatsSentInto)
                     {
-                        if (sentDate == null) return false;
                         var successQueue = SendMessage.PlaceMessageInQueue(replyTo,
                             new DateTimeSchedule(sentDate, true),
                             messageFrom?.Id,

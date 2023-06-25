@@ -13,7 +13,7 @@ public static class RunningUtil
         }
         catch
         {
-            ;
+            // ignored
         }
 
         actionFuncGenericParams.CommandExecutionState = CommandExecutionState.SUCCESSFUL;
