@@ -44,6 +44,7 @@ public static class Logger
     private static readonly object PrintLogLock = new();
 
     private static DateTime? _lastTimeSentAutomaticLog;
+    public static bool EnableSelfManagedLogger { get; set; }
 
     internal static async Task MainMethodAsync()
     {
@@ -93,7 +94,8 @@ public static class Logger
             return;
         try
         {
-            Console.WriteLine(logSeverityLevel + " | " + log);
+            Console.WriteLine(logSeverityLevel + " | " + DateTime.Now.ToString("O") + " | " + log);
+            if (!EnableSelfManagedLogger) return;
             var log1 = log.ToString();
             if (Directory.Exists("./data/") == false) Directory.CreateDirectory("./data/");
 
@@ -109,13 +111,18 @@ public static class Logger
             }
 
             foreach (var subscriber in Subscribers.Where(subscriber => subscriber.Value != null))
+            {
                 if (log1 != null)
+                {
                     Buffer.Post(
                         new MessageQueue(subscriber,
                             log1,
                             ChatType.Group,
                             ParseMode.Html)
                     );
+                }
+                        
+            }
 
             try
             {
@@ -133,10 +140,11 @@ public static class Logger
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-            }
-
+            }            
+                
             _linesCount++;
             SendLogIfOversize();
+
         }
         catch (Exception e)
         {
@@ -463,6 +471,7 @@ public static class Logger
 
     public static void AutomaticLog()
     {
+        if (!EnableSelfManagedLogger) return;
         while (true)
         {
             try
@@ -493,6 +502,7 @@ public static class Logger
 
     public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
     {
+        if (!EnableSelfManagedLogger) return;
         var sendTo = GetLogTo(e);
         PrintLog(sender, sendTo, e);
     }
@@ -504,6 +514,8 @@ public static class Logger
 
     public static async Task<CommandExecutionState> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        if (!EnableSelfManagedLogger) return await Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
+
         if (e == null)
             return CommandExecutionState.ERROR_DEFAULT;
 
@@ -513,6 +525,8 @@ public static class Logger
 
     public static Task<CommandExecutionState> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        if (!EnableSelfManagedLogger) return Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
+
         if (e == null)
             return Task.FromResult(CommandExecutionState.ERROR_DEFAULT);
         Unsubscribe(e.Message.From?.Id);
@@ -521,6 +535,7 @@ public static class Logger
 
     public static Task<CommandExecutionState> GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
     {
+        if (!EnableSelfManagedLogger) return Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
         if (arg1 != null) GetLog(arg2, arg1);
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }

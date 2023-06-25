@@ -99,7 +99,8 @@ internal static class CommandDispatcher
         foreach (var command in SwitchDispatcher.Commands)
             try
             {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                var execState = command.TryTrigger(e, sender, cmd, args);
+                switch (execState)
                 {
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
@@ -124,6 +125,19 @@ internal static class CommandDispatcher
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.ERROR_DEFAULT:
+                        if (e.Message.Chat.Type == ChatType.Private)
+                        {
+                            string commands = string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray());
+                            string errorDescription = execState.ToString();
+
+                            await NotifyUserCommandError(new L(
+                                    "it",
+                                    $"Errore: {errorDescription}. \n</b>",
+                                    "en",
+                                    $"Error: {errorDescription}. \n</b>"
+                                ),
+                                sender, e);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
