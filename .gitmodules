@@ -1,6 +1,3 @@
 [submodule "TestPackageCSharpTelegram"]
 	path = TestPackageCSharpTelegram
 	url = https://github.com/PoliNetworkOrg/TestPackageCSharpTelegram.git
-[submodule "TestNugetPackage"]
-	path = TestNugetPackage
-	url = https://github.com/PoliNetworkOrg/TestNugetPackage.git
