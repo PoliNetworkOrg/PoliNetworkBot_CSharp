@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBot", "TestBot\TestBot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Core", "TestNugetPackage\PoliNetwork.Core\PoliNetwork.Core.csproj", "{2976892B-B2A6-46B9-897E-304C8CA793C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetworkTelegram", "TestPackageCSharpTelegram\PoliNetworkTelegram\PoliNetworkTelegram.csproj", "{42B0BC2F-47A7-40D1-AB77-2B4BDC2E8E30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoliNetwork.Telegram", "TestPackageCSharpTelegram\PoliNetwork.Telegram\PoliNetwork.Telegram.csproj", "{42B0BC2F-47A7-40D1-AB77-2B4BDC2E8E30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
