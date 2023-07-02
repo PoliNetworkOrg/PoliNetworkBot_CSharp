@@ -163,44 +163,9 @@ public class Program
         }
     }
 
-    public static void Serialize<TObject>(TObject dictionary, Stream stream)
-    {
-        try // try to serialize the collection to a file
-        {
-            using (stream)
-            {
-                // create BinaryFormatter
-                var bin = new BinaryFormatter();
-                // serialize the collection (EmployeeList1) to file (stream)
-                if (dictionary != null) bin.Serialize(stream, dictionary);
-            }
-        }
-        catch (IOException)
-        {
-            Console.WriteLine("dict non esistente? ser");
-        }
-    }
+ 
 
-    public static TObject? Deserialize<TObject>(Stream stream) where TObject : new()
-    {
-        var ret = CreateInstance<TObject>();
-        try
-        {
-            using (stream)
-            {
-                // create BinaryFormatter
-                var bin = new BinaryFormatter();
-                // deserialize the collection (Employee) from file (stream)
-                ret = (TObject)bin.Deserialize(stream);
-            }
-        }
-        catch (IOException ex)
-        {
-            Console.WriteLine(ex);
-        }
-
-        return ret;
-    }
+ 
 
     // function to create instance of T
     public static TObject? CreateInstance<TObject>() where TObject : new()

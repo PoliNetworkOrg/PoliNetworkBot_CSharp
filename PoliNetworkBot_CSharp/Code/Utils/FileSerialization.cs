@@ -58,50 +58,13 @@ public static class FileSerialization
     /// <returns>Returns a new instance of the object read from the binary file.</returns>
     public static T? ReadFromBinaryFile<T>(string filePath)
     {
-        Stream? stream = null;
         try
         {
-            stream = File.Open(filePath, FileMode.Open);
-            var binaryFormatter = new BinaryFormatter();
-            try
-            {
-                var r = (T)binaryFormatter.Deserialize(stream);
-                try
-                {
-                    stream.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
-
-                return r;
-            }
-            catch
-            {
-                try
-                {
-                    stream.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
-
-                return default;
-            }
+            var s = File.ReadAllText(filePath);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(s);
         }
         catch
         {
-            try
-            {
-                stream?.Close();
-            }
-            catch
-            {
-                // ignored
-            }
-
             return default;
         }
     }
