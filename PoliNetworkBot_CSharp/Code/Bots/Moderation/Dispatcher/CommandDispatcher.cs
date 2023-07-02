@@ -641,7 +641,7 @@ internal static class CommandDispatcher
     {
         var groups = Groups.GetAllGroups(sender);
         Stream? stream = new MemoryStream();
-        FileSerialization.SerializeFile(groups, ref stream);
+        FileSerialization.SerializeObjectToJsonFile(groups, ref stream);
 
         if (chatType == null)
             return Task.FromResult(false);

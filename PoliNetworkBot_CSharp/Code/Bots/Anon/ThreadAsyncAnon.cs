@@ -190,7 +190,7 @@ internal static class ThreadAsyncAnon
         var done = false;
         try
         {
-            DictionaryWebpost = FileSerialization.ReadFromBinaryFile<Dictionary<long, WebPost>>(Pathwebdict);
+            DictionaryWebpost = FileSerialization.ReadFromJsonFile<Dictionary<long, WebPost>>(Pathwebdict);
             if (DictionaryWebpost != null)
                 done = true;
         }

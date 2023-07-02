@@ -3,6 +3,8 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -31,7 +33,7 @@ public static class FileSerialization
         try
         {
             stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create);
-            SerializeFile(objectToWrite, ref stream);
+            SerializeObjectToJsonFile(objectToWrite, ref stream);
             stream?.Close();
             return new Tuple<bool, Exception?>(true, null);
         }
@@ -56,7 +58,7 @@ public static class FileSerialization
     /// <typeparam name="T">The type of object to read from the binary file.</typeparam>
     /// <param name="filePath">The file path to read the object instance from.</param>
     /// <returns>Returns a new instance of the object read from the binary file.</returns>
-    public static T? ReadFromBinaryFile<T>(string filePath)
+    public static T? ReadFromJsonFile<T>(string filePath)
     {
         try
         {
@@ -69,11 +71,17 @@ public static class FileSerialization
         }
     }
 
-    internal static void SerializeFile<T>(T objectToWrite, ref Stream? stream)
+    internal static void SerializeObjectToJsonFile<T>(T objectToWrite, ref Stream? stream)
     {
-        var binaryFormatter = new BinaryFormatter();
-        if (stream == null) return;
-        if (objectToWrite != null)
-            binaryFormatter.Serialize(stream, objectToWrite);
+        try
+        {
+            var s = JsonConvert.SerializeObject(objectToWrite);
+            var buffer = Encoding.UTF8.GetBytes(s);
+            stream?.Write(buffer);
+        }
+        catch
+        {
+            ;
+        }
     }
 }
