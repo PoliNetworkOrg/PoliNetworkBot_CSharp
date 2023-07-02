@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
         
     - uses: actions/cache@v3
       with:
@@ -24,6 +24,20 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nuget
+      
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+          
+    # Update references
+    - name: Git Sumbodule Update
+      run: |
+        git config --global user.email "polinetwork@outlook.com"
+        git config --global user.name "PoliNetwork"
+        git config --global pull.rebase false --allow-unrelated-histories
+        git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules --allow-unrelated-histories
+        git submodule update --remote --recursive  
           
     - name: Install dependencies
       run: dotnet restore
@@ -51,6 +65,15 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ runner.os }}-nuget
+          
+    # Update references
+    - name: Git Sumbodule Update
+      run: |
+        git config --global user.email "polinetwork@outlook.com"
+        git config --global user.name "PoliNetwork"
+        git config --global pull.rebase false --allow-unrelated-histories
+        git pull origin   ${{ steps.extract_branch.outputs.branch }} --recurse-submodules --allow-unrelated-histories
+        git submodule update --remote --recursive  
           
     - name: Restore dependencies
       run: dotnet restore
