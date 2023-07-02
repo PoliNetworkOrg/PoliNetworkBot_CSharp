@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -14,6 +15,7 @@ using TeleSharp.TL;
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
 [Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class MessageToDelete
 {
     private readonly long? _accessHash;

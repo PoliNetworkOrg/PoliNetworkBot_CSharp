@@ -3,11 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 #endregion
 
 namespace PoliNetworkBot_CSharp.Code.Objects;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class WordToBeFirst
 {
     private readonly List<string>? _similarWords;
