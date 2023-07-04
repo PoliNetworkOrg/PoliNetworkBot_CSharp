@@ -48,6 +48,7 @@ public static class Logger
 
     internal static async Task MainMethodAsync()
     {
+        if (!EnableSelfManagedLogger) return;
         while (await Buffer.OutputAvailableAsync())
             try
             {
