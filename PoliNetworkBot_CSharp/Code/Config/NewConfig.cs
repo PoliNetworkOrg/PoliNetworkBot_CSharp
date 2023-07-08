@@ -125,6 +125,7 @@ public static class NewConfig
                          "valid CHAR(1)," +
                          "link VARCHAR(250)," +
                          "last_update_link DATETIME," +
+                         "last_checked_link DATETIME," +
                          "type VARCHAR(250)," +
                          "title VARCHAR(250)" +
                          ") ", GlobalVariables.DbConfig);

@@ -238,16 +238,17 @@ internal static class CommandDispatcher
         if (updateDb) x1 = await Groups.FixAllGroupsName(sender, messageEventArgs);
 
         var groups = Groups.GetAllGroups(sender, true);
+        if (groups == null) throw new RuntimeException("Groups.GetAllGroups is null in UpdateGroups");
 
-        Variabili.L = new ListaGruppo();
-
-        Variabili.L.HandleSerializedObject(groups);
-
-        CheckSeILinkVanno2(5, true, 10);
-
-        var json =
-            JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
-                false);
+        var json = "";
+        Groups.HandleListaGruppo(groups, () =>
+        {
+            Groups.CheckIfLinkIsWorkingSlave(5, true, 10);
+            
+            json =
+                JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
+                    false);
+        });
 
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
@@ -291,24 +292,6 @@ internal static class CommandDispatcher
 
         var l1 = new Language(text);
         return new UpdateGroupsResult(l1, x1);
-    }
-
-    private static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo,
-        int waitOgniVoltaCheCiRiprova)
-    {
-        ParametriFunzione parametriFunzione = new();
-        parametriFunzione.AddParam(volteCheCiRiprova, "volteCheCiRiprova");
-        parametriFunzione.AddParam(laPrimaVoltaControllaDaCapo, "laPrimaVoltaControllaDaCapo");
-        parametriFunzione.AddParam(waitOgniVoltaCheCiRiprova, "waitOgniVoltaCheCiRiprova");
-        RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione);
-    }
-
-    private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> funcEvent,
-        ParametriFunzione parametriFunzione)
-    {
-        var eventoLog = funcEvent.Invoke(parametriFunzione);
-        eventoLog.RunAction();
-        Logger.Log(eventoLog);
     }
 
     private static void InitGithubRepo()
