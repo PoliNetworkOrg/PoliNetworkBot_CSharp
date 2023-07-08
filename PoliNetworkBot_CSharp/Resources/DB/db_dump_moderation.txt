@@ -64,7 +64,8 @@ CREATE TABLE IF NOT EXISTS `GroupsTelegram` (
   `type` varchar(500) DEFAULT NULL,
   `title` text DEFAULT NULL,
   `last_checked_link` datetime DEFAULT NULL,
-  `number_of_times_failed` int(11) DEFAULT 0
+  `link_check_times_failed` int(11) DEFAULT 0,
+  `link_working` bit(1) DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- L’esportazione dei dati non era selezionata.
