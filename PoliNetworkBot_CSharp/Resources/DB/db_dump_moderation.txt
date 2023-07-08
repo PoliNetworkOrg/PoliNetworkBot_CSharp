@@ -1,0 +1,198 @@
+﻿-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Versione server:              10.9.4-MariaDB-1:10.9.4+maria~ubu2204 - mariadb.org binary distribution
+-- S.O. server:                  debian-linux-gnu
+-- HeidiSQL Versione:            12.1.0.6537
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- Dump della struttura del database polinetwork_test
+CREATE DATABASE IF NOT EXISTS `polinetwork_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `polinetwork_test`;
+
+-- Dump della struttura di tabella polinetwork_test.Banned
+CREATE TABLE IF NOT EXISTS `Banned` (
+  `from_bot_id` bigint(20) DEFAULT NULL,
+  `who_banned` bigint(20) DEFAULT NULL,
+  `when_banned` datetime DEFAULT NULL,
+  `target` bigint(20) DEFAULT NULL,
+  `banned_true_unbanned_false` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Bot
+CREATE TABLE IF NOT EXISTS `Bot` (
+  `bot_id` bigint(20) DEFAULT NULL,
+  `log_row` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Entities
+CREATE TABLE IF NOT EXISTS `Entities` (
+  `id` bigint(20) DEFAULT NULL,
+  `name` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.FilePaths
+CREATE TABLE IF NOT EXISTS `FilePaths` (
+  `file_and_git` varchar(250) DEFAULT NULL,
+  `location` varchar(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.GroupsTelegram
+CREATE TABLE IF NOT EXISTS `GroupsTelegram` (
+  `id` bigint(20) DEFAULT NULL,
+  `bot_id` bigint(20) DEFAULT NULL,
+  `valid` varchar(500) DEFAULT NULL,
+  `link` varchar(500) DEFAULT NULL,
+  `last_update_link` datetime DEFAULT NULL,
+  `type` varchar(500) DEFAULT NULL,
+  `title` text DEFAULT NULL,
+  `last_checked_link` datetime DEFAULT NULL,
+  `number_of_times_failed` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di procedura polinetwork_test.insert_log
+DELIMITER //
+CREATE PROCEDURE `insert_log`(
+	IN `in_bot_id` BIGINT,
+	IN `in_severity` VARCHAR(50),
+	IN `in_content` TEXT,
+	IN `in_stracktrace` TEXT
+)
+    MODIFIES SQL DATA
+BEGIN
+	SELECT COUNT(*)
+	INTO @num_rows
+	FROM Bot b 
+	WHERE b.bot_id = in_bot_id;
+	
+	IF @num_rows IS NULL OR @num_rows < 1 THEN
+		INSERT INTO Bot (bot_id, log_row) VALUES (in_bot_id, 0);
+	END IF;
+	
+	SELECT MOD((b.log_row +1),10000)
+	INTO @curr_count
+	FROM Bot b 
+	WHERE b.bot_id = in_bot_id;
+	
+	UPDATE Bot b
+		SET b.log_row = @curr_count
+		WHERE b.bot_id = in_bot_id;
+	
+	REPLACE INTO LogTable (bot_id, log_id, content, when_insert, severity, stacktrace) 
+		VALUES (in_bot_id, @curr_count, in_content, NOW(), in_severity, in_stracktrace);
+	
+END//
+DELIMITER ;
+
+-- Dump della struttura di tabella polinetwork_test.LogTable
+CREATE TABLE IF NOT EXISTS `LogTable` (
+  `log_id` bigint(20) DEFAULT NULL,
+  `bot_id` bigint(20) DEFAULT NULL,
+  `when_insert` datetime DEFAULT NULL,
+  `severity` varchar(500) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `stacktrace` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Messages
+CREATE TABLE IF NOT EXISTS `Messages` (
+  `id` bigint(20) DEFAULT NULL,
+  `from_id_person` bigint(20) DEFAULT NULL,
+  `from_id_entity` bigint(20) DEFAULT NULL,
+  `type` bigint(20) DEFAULT NULL,
+  `id_photo` varchar(500) DEFAULT NULL,
+  `id_video` varchar(500) DEFAULT NULL,
+  `id_file` tinyint(1) DEFAULT NULL,
+  `id_voice` tinyint(1) DEFAULT NULL,
+  `id_audio` tinyint(1) DEFAULT NULL,
+  `message_text` text DEFAULT NULL,
+  `sent_date` datetime DEFAULT NULL,
+  `has_been_sent` bigint(20) DEFAULT NULL,
+  `message_id_tg_from` bigint(20) DEFAULT NULL,
+  `message_id_tg_to` tinyint(1) DEFAULT NULL,
+  `id_chat_sent_into` bigint(20) DEFAULT NULL,
+  `from_id_bot` bigint(20) DEFAULT NULL,
+  `type_chat_sent_into` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.MessageTypes
+CREATE TABLE IF NOT EXISTS `MessageTypes` (
+  `id` bigint(20) DEFAULT NULL,
+  `name` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.PeopleInEntities
+CREATE TABLE IF NOT EXISTS `PeopleInEntities` (
+  `id_entity` bigint(20) DEFAULT NULL,
+  `id_person` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Photos
+CREATE TABLE IF NOT EXISTS `Photos` (
+  `id_photo` bigint(20) DEFAULT NULL,
+  `file_id` text DEFAULT NULL,
+  `file_size` bigint(20) DEFAULT NULL,
+  `height` bigint(20) DEFAULT NULL,
+  `width` bigint(20) DEFAULT NULL,
+  `unique_id` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Primo
+CREATE TABLE IF NOT EXISTS `Primo` (
+  `title` varchar(500) DEFAULT NULL,
+  `firstname` varchar(500) DEFAULT NULL,
+  `when_king` datetime DEFAULT NULL,
+  `lastname` varchar(500) DEFAULT NULL,
+  `king_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+-- Dump della struttura di tabella polinetwork_test.Videos
+CREATE TABLE IF NOT EXISTS `Videos` (
+  `id_video` bigint(20) DEFAULT NULL,
+  `file_id` text DEFAULT NULL,
+  `file_size` bigint(20) DEFAULT NULL,
+  `height` bigint(20) DEFAULT NULL,
+  `width` bigint(20) DEFAULT NULL,
+  `unique_id` varchar(500) DEFAULT NULL,
+  `duration` bigint(20) DEFAULT NULL,
+  `mime` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- L’esportazione dei dati non era selezionata.
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
