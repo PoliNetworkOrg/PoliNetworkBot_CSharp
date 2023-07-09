@@ -507,18 +507,6 @@ internal static class Groups
             : CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
-
-        if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-        return CommandExecutionState.SUCCESSFUL;
-    }
-
     public static bool CheckIfLinkIsWorking(string link)
     {
         var dataTable = new DataTable();
@@ -539,7 +527,7 @@ internal static class Groups
         
         return isLinkWorking;
     }
-    
+
     public static void HandleListaGruppo(DataTable groups, Action action)
     {
         Variabili.L = new ListaGruppo();
@@ -571,42 +559,86 @@ internal static class Groups
         eventoLog.RunAction();
         Logger.Logger.Log(eventoLog);
     }
-
-    public static async Task<CommandExecutionState> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
+    
+    public static async Task<CommandExecutionState> UpdateGroups(MessageEventArgs? e, TelegramBotAbstract? sender, string[]? args)
     {
-        var text = await CommandDispatcher.UpdateGroups(sender, false, true, false, e);
+        bool dry = false;
+        bool debug = true;
+        bool fixGroupsNames = false;
+        bool linkCheck = false;
+        if (args != null)
+            foreach (var arg in args)
+            {
+                if (arg == "-dry")
+                    dry = true;
+                if (arg == "-link-check")
+                    linkCheck = true;
+                if (arg == "-fix-names")
+                    fixGroupsNames = true;
+            }
 
-        if (e == null) return CommandExecutionState.UNMET_CONDITIONS;
+        var text = await CommandDispatcher.UpdateGroups(sender, dry, debug, fixGroupsNames, e, linkCheck);
+
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
         await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
             e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNames(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
+    public static void ProgressiveLinkCheck()
     {
-        var text = await CommandDispatcher.UpdateGroups(sender, false, true, true, e);
-
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-
-        return CommandExecutionState.SUCCESSFUL;
-    }
-
-    public static async Task<CommandExecutionState> UpdateGroupsAndFixNamesDry(MessageEventArgs? e,
-        TelegramBotAbstract? sender)
-    {
-        var text = await CommandDispatcher.UpdateGroups(sender, true, true, true, e);
-
-        if (e != null)
-            await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-                e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-                ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-
-        return CommandExecutionState.SUCCESSFUL;
+        int retry = 5;
+        var bot = BotUtil.GetFirstModerationRealBot();
+        while (retry > 0)
+        {
+            bot = BotUtil.GetFirstModerationRealBot();
+            if(bot != null) break;
+            Thread.Sleep(500);
+            retry--;
+        }
+        if (bot == null)
+        {
+            return;
+        }
+        const string countGroup = "SELECT COUNT(*) from GroupsTelegram";
+        var count = Database.ExecuteSelect(countGroup, bot.DbConfig)?.Rows[0][0].ToString();
+        var tryParse = int.TryParse(count, out var numberOfTotalGroups);
+        if (!tryParse) return;
+        var waitingTimeBetweenGroups = 3600*24*7 / numberOfTotalGroups;
+        waitingTimeBetweenGroups = waitingTimeBetweenGroups < 60
+            ? 60
+            : waitingTimeBetweenGroups;
+        Logger.Logger.WriteLine($"Starting Progressive link check on {numberOfTotalGroups} with a waiting time between groups of {waitingTimeBetweenGroups}");
+        const string allGroupsQuery = "SELECT id, valid, link, last_checked_link, link_check_times_failed from GroupsTelegram order by last_checked_link";
+        var allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);
+        if (allGroups == null) return;
+        var i = 0;
+        while (true)
+        {
+            var link = allGroups.Rows[i][allGroups.Columns.IndexOf("link")].ToString();
+            if (string.IsNullOrEmpty(link)) return;
+            var linkIsWorking = CheckIfLinkIsWorking(link);
+            var idString = allGroups.Rows[i][allGroups.Columns.IndexOf("id")].ToString();
+            var foundId = long.TryParse(idString, out var id);
+            if (!foundId) throw new RuntimeException($"ID of group is null at index {i}");
+            var queryUpdate = "";
+            var linkCheckedTimes = 0;
+            if (linkIsWorking)
+            {
+                queryUpdate = $"UPDATE `GroupsTelegram` SET `last_checked_link`=@last_checked, `link_working`=b'1' WHERE  `id`={id};";
+            }
+            else
+            {
+                var parse = int.TryParse(allGroups.Rows[i][allGroups.Columns.IndexOf("link_check_times_failed")].ToString(), out linkCheckedTimes);
+                if (!parse) linkCheckedTimes = 0;
+                queryUpdate = $"UPDATE `GroupsTelegram` SET `last_checked_link`=@last_checked, `link_working`=b'0', link_check_times_failed={linkCheckedTimes} WHERE  `id`={id};";
+            }
+            Database.Execute(queryUpdate, bot?.DbConfig, new Dictionary<string, object?> { { "@last_checked", DateTime.Now } });
+            Thread.Sleep(waitingTimeBetweenGroups*1000);
+            i++;
+        }
     }
 
     public static void ProgressiveLinkCheck()
