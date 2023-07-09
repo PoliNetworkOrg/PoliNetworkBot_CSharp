@@ -17,6 +17,7 @@ internal static class ChannelsForApproval
     private const long ChimicaChannel = -1001510001243;
     private const long ManagementChannel = -1001564464792;
     private const long ArchitectureChannel = -1001668124149;
+    private const long AmbientaleChannel = -1001934328516;
 
     internal static long? GetChannel(string? v)
     {
@@ -37,6 +38,7 @@ internal static class ChannelsForApproval
                 "architettura" => ArchitectureChannel,
                 "bioinformatics" => InfoChannel,
                 "design" => ArchitectureChannel,
+                "ambientale" => AmbientaleChannel,
                 _ => throw new Exception("No such channel: " + v)
             };
         return null;
