@@ -99,7 +99,8 @@ internal static class CommandDispatcher
         foreach (var command in SwitchDispatcher.Commands)
             try
             {
-                switch (command.TryTrigger(e, sender, cmd, args))
+                var execState = command.TryTrigger(e, sender, cmd, args);
+                switch (execState)
                 {
                     case CommandExecutionState.SUCCESSFUL:
                         return true;
@@ -120,10 +121,24 @@ internal static class CommandDispatcher
                         else
                             await sender.DeleteMessageAsync(e.Message.Chat.Id, e.Message.MessageId, null);
                         return false;
-                    case CommandExecutionState.NOT_TRIGGERED:
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
-                    case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.ERROR_DEFAULT:
+                        if (e.Message.Chat.Type == ChatType.Private)
+                        {
+                            string errorDescription = execState.ToString();
+
+                            await NotifyUserCommandError(new L(
+                                    "it",
+                                    $"<b>Errore:</b> {errorDescription}.",
+                                    "en",
+                                    $"<b>Error:</b> {errorDescription}."
+                                ),
+                                sender, e);
+                        }
+                        return false;
+                    case CommandExecutionState.ERROR_NOT_ENABLED:
+                    case CommandExecutionState.NOT_TRIGGERED:
+                        // do nothing, this is normal as NotTriggered simply means that preconditions were false.
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -215,33 +230,56 @@ internal static class CommandDispatcher
 
     public static async Task<UpdateGroupsResult> UpdateGroups(TelegramBotAbstract? sender, bool dry,
         bool debug,
-        bool updateDb, MessageEventArgs? messageEventArgs)
+        bool updateDb,
+        MessageEventArgs? messageEventArgs,
+        bool linkCheck = true)
     {
         Logger.WriteLine(
-            "UpdateGroups started (dry: " + dry + ", debug: " + debug + ", updateDB: " + updateDb + ")",
+            $"UpdateGroups started (dry: {dry}, debug: {debug}, updateDB: {updateDb}, linkCheck: {linkCheck})",
             LogSeverityLevel.ALERT);
         List<ResultFixGroupsName>? x1 = null;
         if (updateDb) x1 = await Groups.FixAllGroupsName(sender, messageEventArgs);
 
-        var groups = Groups.GetAllGroups(sender, true);
+        var json = "";
+        
+        if (!linkCheck)
+        {
+            const string q1 = "SELECT * FROM GroupsTelegram WHERE link_working = 1";
 
-        Variabili.L = new ListaGruppo();
+            var groups = Database.ExecuteSelect(q1, sender?.DbConfig);
+            if (groups == null) throw new RuntimeException("Query returned null in in UpdateGroups");
 
-        Variabili.L.HandleSerializedObject(groups);
+            Groups.HandleListaGruppo(groups, () =>
+            {
+                Variabili.L.GetGroups().ForEach(e => { e.LinkFunzionante = true;});
+                json =
+                    JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
+                        false);
+            });
+        }
+        else
+        {
+            var groups = Groups.GetAllGroups(sender, true);
+            if (groups == null) throw new RuntimeException("Groups.GetAllGroups is null in UpdateGroups");
 
-        CheckSeILinkVanno2(5, true, 10);
+        
+            Groups.HandleListaGruppo(groups, () =>
+            {
+                Groups.CheckIfLinkIsWorkingSlave(5, true, 10);
+            
+                json =
+                    JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
+                        false);
+            });
 
-        var json =
-            JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
-                false);
-
+        }
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
             InitGithubRepo();
         }
 
-        const string path = Paths.Data.PoliNetworkWebsiteData + "/groupsGenerated.json";
+        const string path = $"{Paths.Data.PoliNetworkWebsiteData}/groupsGenerated.json";
         await File.WriteAllTextAsync(path, json, Encoding.UTF8);
         if (dry)
         {
@@ -271,30 +309,12 @@ internal static class CommandDispatcher
             };
 
         _ = NotifyUtil.NotifyOwners_AnError_AndLog3(
-            "UpdateGroup result: \n" + (string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed"),
+            $"UpdateGroup result: \n{(string.IsNullOrEmpty(output) ? "No PR created" : "Command succesfuly executed")}",
             sender, null,
             FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_FILE);
 
         var l1 = new Language(text);
         return new UpdateGroupsResult(l1, x1);
-    }
-
-    private static void CheckSeILinkVanno2(int volteCheCiRiprova, bool laPrimaVoltaControllaDaCapo,
-        int waitOgniVoltaCheCiRiprova)
-    {
-        ParametriFunzione parametriFunzione = new();
-        parametriFunzione.AddParam(volteCheCiRiprova, "volteCheCiRiprova");
-        parametriFunzione.AddParam(laPrimaVoltaControllaDaCapo, "laPrimaVoltaControllaDaCapo");
-        parametriFunzione.AddParam(waitOgniVoltaCheCiRiprova, "waitOgniVoltaCheCiRiprova");
-        RunEventoLogged(Variabili.L.CheckSeILinkVanno, parametriFunzione);
-    }
-
-    private static void RunEventoLogged(Func<ParametriFunzione, EventoConLog> funcEvent,
-        ParametriFunzione parametriFunzione)
-    {
-        var eventoLog = funcEvent.Invoke(parametriFunzione);
-        eventoLog.RunAction();
-        Logger.Log(eventoLog);
     }
 
     private static void InitGithubRepo()

@@ -33,7 +33,10 @@ public static class Navigator
         {
             "Architettura"
         },
-        ["ICAT"] = Array.Empty<string>(),
+        ["ICAT"] =new[]
+        {
+            "Ambientale"
+        },
         ["Design"] = new[]
         {
             "Design"
