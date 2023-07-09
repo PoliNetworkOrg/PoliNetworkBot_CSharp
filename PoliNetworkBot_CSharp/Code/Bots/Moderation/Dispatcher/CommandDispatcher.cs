@@ -125,18 +125,17 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-                            string commands = string.Join("</b> \n<b>/help ", command.GetTriggers().ToArray());
                             string errorDescription = execState.ToString();
 
                             await NotifyUserCommandError(new L(
                                     "it",
-                                    $"Errore: {errorDescription}. \n</b>",
+                                    $"<b>Errore:</b> {errorDescription}.",
                                     "en",
-                                    $"Error: {errorDescription}. \n</b>"
+                                    $"<b>Error:</b> {errorDescription}."
                                 ),
                                 sender, e);
                         }
-                        break;
+                        return false;
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.NOT_TRIGGERED:
                         // do nothing, this is normal as NotTriggered simply means that preconditions were false.
