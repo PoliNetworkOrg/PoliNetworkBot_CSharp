@@ -586,7 +586,7 @@ internal static class Groups
             ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
         return CommandExecutionState.SUCCESSFUL;
     }
-
+    
     public static void ProgressiveLinkCheck()
     {
         int retry = 5;
