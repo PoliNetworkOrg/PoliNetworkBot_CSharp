@@ -507,18 +507,6 @@ internal static class Groups
             : CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static async Task<CommandExecutionState> UpdateGroupsDry(MessageEventArgs? e, TelegramBotAbstract? sender)
-    {
-        var text = await CommandDispatcher.UpdateGroups(sender, true, true, false, e);
-
-        if (e == null)
-            return CommandExecutionState.UNMET_CONDITIONS;
-        await SendMessage.SendMessageInPrivate(sender, e.Message.From?.Id,
-            e.Message.From?.LanguageCode, e.Message.From?.Username, text.Language,
-            ParseMode.Html, null, InlineKeyboardMarkup.Empty(), EventArgsContainer.Get(e));
-        return CommandExecutionState.SUCCESSFUL;
-    }
-
     public static bool CheckIfLinkIsWorking(string link)
     {
         var dataTable = new DataTable();
