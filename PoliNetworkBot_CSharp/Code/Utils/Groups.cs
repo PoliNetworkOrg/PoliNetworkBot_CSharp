@@ -606,14 +606,22 @@ internal static class Groups
         var count = Database.ExecuteSelect(countGroup, bot.DbConfig)?.Rows[0][0].ToString();
         var tryParse = int.TryParse(count, out var numberOfTotalGroups);
         if (!tryParse) return;
-        var waitingTimeBetweenGroups = 3600*24*7 / numberOfTotalGroups;
-        waitingTimeBetweenGroups = waitingTimeBetweenGroups < 60
-            ? 60
-            : waitingTimeBetweenGroups;
+
+        int CalculateWaitingTime(int x)
+        {
+            var waitingTimeBetweenGroups = 3600 * 24 * 7 / x;
+            waitingTimeBetweenGroups = waitingTimeBetweenGroups < 60
+                ? 60
+                : waitingTimeBetweenGroups;
+            return waitingTimeBetweenGroups;
+        }
+
+        var waitingTimeBetweenGroups = CalculateWaitingTime(numberOfTotalGroups);
+        
         Logger.Logger.WriteLine($"Starting Progressive link check on {numberOfTotalGroups} with a waiting time between groups of {waitingTimeBetweenGroups}");
         const string allGroupsQuery = "SELECT id, valid, link, last_checked_link, link_check_times_failed from GroupsTelegram order by last_checked_link";
         var allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);
-        if (allGroups == null) return;
+        if (allGroups == null) throw new Exception("allGroups got from database is null!");
         var i = 0;
         while (true)
         {
@@ -638,6 +646,13 @@ internal static class Groups
             Database.Execute(queryUpdate, bot?.DbConfig, new Dictionary<string, object?> { { "@last_checked", DateTime.Now } });
             Thread.Sleep(waitingTimeBetweenGroups*1000);
             i++;
+            if (i % 100 != 99) continue;
+            allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);
+            count = Database.ExecuteSelect(countGroup, bot?.DbConfig)?.Rows[0][0].ToString();
+            tryParse = int.TryParse(count, out numberOfTotalGroups);
+            if (allGroups == null || tryParse) throw new Exception("Periodic query to database resulted in null!");
+            waitingTimeBetweenGroups = CalculateWaitingTime(numberOfTotalGroups);
+            i = 0;
         }
     }
 }
