@@ -18,7 +18,9 @@
 
     <ItemGroup>
         <Folder Include="Code\Bots\Materials" />
+
         <Folder Include="Resources\DB\" />
+
     </ItemGroup>
 
     <ItemGroup>

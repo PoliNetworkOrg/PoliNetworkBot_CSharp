@@ -151,18 +151,11 @@ public static class SwitchDispatcher
         new Command("backup", BackupUtil.Backup, new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "backup"), null, null),
 
-
         new Command("updategroups", Groups.UpdateGroups, new List<ChatType> { ChatType.Private }, Permission.OWNER,
-            new L("en", "update groups"), null, null),
-        new Command("updategroups_dry", Groups.UpdateGroupsDry, new List<ChatType> { ChatType.Private },
-            Permission.OWNER,
-            new L("en", "update groups dry"), null, null),
-        new Command("updategroupsandfixnames", Groups.UpdateGroupsAndFixNames, new List<ChatType> { ChatType.Private },
-            Permission.OWNER,
-            new L("en", "update groups and fix names"), null, null),
-        new Command("updategroupsandfixnames_dry", Groups.UpdateGroupsAndFixNamesDry,
-            new List<ChatType> { ChatType.Private }, Permission.OWNER,
-            new L("en", "update groups and fix names dry"), null, null),
+            new L("en", "Update Groups. Options:" +
+                        "\n -dry Output to console" +
+                        "\n -link-check Ask telegram if each link is working" +
+                        "\n -fix-names Ask telegram if each db name is consistent with actual name"), null, null),
         new Command("update_links_from_json", InviteLinks.UpdateLinksFromJsonAsync2,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "update links from json"), null, null),

@@ -445,13 +445,7 @@ public static class ProgramUtil
     private static void PreStartupActionsAsync(TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
-        if (Logger.Logger.ContainsCriticalErrors(out var critics))
-        {
-            var toSend = "WARNING! \n";
-            toSend += "Critical errors found in log while starting up! \n" + critics;
-            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs,
-                FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
-        }
+        Logger.Logger.EnableSelfManagedLogger = botInfoAbstract.EnableSelfManagedLogger ?? false;
 
         using var powershell = PowerShell.Create();
         foreach (var line in ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.Logger.WriteLine(line);
