@@ -866,7 +866,7 @@ public class Program
                 var replyMarkupObject = new ReplyMarkupObject(
                     new ReplyMarkupOptions(
                         optionsStringToKeyboard
-                    )
+                    ), false
                 );
                 if (telegramBotAbstract != null)
                     await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
@@ -1012,7 +1012,7 @@ public class Program
                 var replyMarkupObject = new ReplyMarkupObject(
                     new ReplyMarkupOptions(
                         optionsStringToKeyboard
-                    )
+                    ), false
                 );
                 var dict1 = new Dictionary<string, string?>
                 {
