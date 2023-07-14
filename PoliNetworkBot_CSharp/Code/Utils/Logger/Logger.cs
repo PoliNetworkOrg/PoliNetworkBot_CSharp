@@ -288,7 +288,8 @@ public static class Logger
         if (string.IsNullOrEmpty(dbLogFileContent)) return;
         var textToSendBefore = "LOG (bot " + botId + ") from db:";
         const string applicationOctetStream = "application/octet-stream";
-        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
+        var stringOrStream = new StringOrStream(){StringValue = dbLogFileContent};
+        LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore,
             applicationOctetStream, "log_db_" + chunckIndex+ "_bot_" + botId + ".log");
     }
 
@@ -413,7 +414,8 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
+        var stringOrStream = new StringOrStream(){ StringValue = file};
+        var done = LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore, applicationOctetStream, fileName);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 

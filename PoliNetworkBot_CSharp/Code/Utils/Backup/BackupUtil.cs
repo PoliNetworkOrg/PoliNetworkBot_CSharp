@@ -39,14 +39,10 @@ internal static class BackupUtil
                 var dbFullDdl = DbBackup.Get_DB_DDL_Full(botAbstract.DbConfig);
                 var backupFull = new BackupFull(dbFull, dbFullDdl);
                 const string path = "LocalJSONFile.JSON";
-                await using (TextWriter writer = File.CreateText(path))
-                {
-                    var serializer = new JsonSerializer();
-                    serializer.Serialize(writer, backupFull);
-                }
-
-                var serializedText = await File.ReadAllTextAsync(path);
-                LoggerSendFile.SendFiles(sendTo, serializedText, botAbstract,
+                var serializedText = Newtonsoft.Json.JsonConvert.SerializeObject(backupFull);
+                await File.WriteAllTextAsync(path,serializedText);
+                var stringOrStream = new StringOrStream(){StringValue = serializedText};
+                LoggerSendFile.SendFiles(sendTo, stringOrStream, botAbstract,
                     "Backup DB", applicationJson, "db_full.json");
             }
         }
