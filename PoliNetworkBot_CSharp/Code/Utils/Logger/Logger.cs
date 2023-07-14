@@ -36,6 +36,8 @@ public static class Logger
 {
     private const string DataLogPath = Paths.Data.Log;
     private const string LogSeparator = "#@#LOG ENTRY#@#";
+
+    private const int ChunckSize = 100;
     private static readonly Dictionary<long, TelegramBotAbstract?> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
     private static readonly object LogFileLock = new();
@@ -112,18 +114,13 @@ public static class Logger
             }
 
             foreach (var subscriber in Subscribers.Where(subscriber => subscriber.Value != null))
-            {
                 if (log1 != null)
-                {
                     Buffer.Post(
                         new MessageQueue(subscriber,
                             log1,
                             ChatType.Group,
                             ParseMode.Html)
                     );
-                }
-                        
-            }
 
             try
             {
@@ -141,11 +138,10 @@ public static class Logger
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-            }            
-                
+            }
+
             _linesCount++;
             SendLogIfOversize();
-
         }
         catch (Exception e)
         {
@@ -242,17 +238,16 @@ public static class Logger
         var count = GetCountLogDb(botId.Value);
         if (count == null)
             return;
-        
+
         var size = count.Value / (decimal)ChunckSize;
         var howManyFiles = (int)Math.Ceiling(size);
 
-        var lastIndex = howManyFiles-1;
-        
+        var lastIndex = howManyFiles - 1;
+
         //we will skip first files
-        var startWithLastOnes = Math.Max(0, lastIndex-3);
-        
+        var startWithLastOnes = Math.Max(0, lastIndex - 3);
+
         for (var i = startWithLastOnes; i < howManyFiles; i++)
-        {
             try
             {
                 SendLogDbChunk(sender, sendTo, botId.Value, i);
@@ -261,21 +256,17 @@ public static class Logger
             {
                 Console.WriteLine(ex);
             }
-        }
- 
     }
 
-    private const int ChunckSize = 100;
-    
-    private static void SendLogDbChunk(TelegramBotAbstract? sender, List<long?> sendTo,  long botId, int chunckIndex)
+    private static void SendLogDbChunk(TelegramBotAbstract? sender, List<long?> sendTo, long botId, int chunckIndex)
     {
-        var chunckSize = ChunckSize*chunckIndex;
+        var chunckSize = ChunckSize * chunckIndex;
         var q1 = "SELECT * " +
                  "FROM LogTable X " +
                  "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
                  "ORDER BY X.when_insert ASC " +
                  $"LIMIT {ChunckSize},{chunckSize}";
-        
+
         var dictionary = new Dictionary<string, object?>
         {
             { "@bot_id", botId }
@@ -288,8 +279,9 @@ public static class Logger
         if (string.IsNullOrEmpty(dbLogFileContent)) return;
         var textToSendBefore = "LOG (bot " + botId + ") from db:";
         const string applicationOctetStream = "application/octet-stream";
-        LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-            applicationOctetStream, "log_db_" + chunckIndex+ "_bot_" + botId + ".log");
+        var stringOrStream = new StringOrStream { StringValue = dbLogFileContent };
+        LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore,
+            applicationOctetStream, "log_db_" + chunckIndex + "_bot_" + botId + ".log");
     }
 
     private static int? GetCountLogDb(long botId)
@@ -309,7 +301,7 @@ public static class Logger
         var o = Database.GetFirstValueFromDataTable(data);
         if (o == null)
             return null;
-        
+
         try
         {
             return Convert.ToInt32(o);
@@ -320,7 +312,8 @@ public static class Logger
         }
     }
 
-    private static void SendLogGeneral(TelegramBotAbstract? sender, List<long?> sendTo, MessageEventArgs? messageEventArgs,
+    private static void SendLogGeneral(TelegramBotAbstract? sender, List<long?> sendTo,
+        MessageEventArgs? messageEventArgs,
         string path)
     {
         List<string>? text = null;
@@ -413,7 +406,9 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
+        var stringOrStream = new StringOrStream { StringValue = file };
+        var done = LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore, applicationOctetStream,
+            fileName);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
