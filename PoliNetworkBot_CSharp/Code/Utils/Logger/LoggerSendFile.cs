@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -34,7 +33,7 @@ public static class LoggerSendFile
         }
     }
 
-    private static int SendFilesBehindLock(string textToSendBefore, 
+    private static int SendFilesBehindLock(string textToSendBefore,
         List<long?> sendTo, StringOrStream fileContent,
         string fileMimeType, TelegramBotAbstract? sender, string fileName)
     {
@@ -53,7 +52,7 @@ public static class LoggerSendFile
                 {
                     var peer = new PeerAbstract(sendToSingle, ChatType.Private);
 
-                    Stream stream = fileContent.GetStream();
+                    var stream = fileContent.GetStream();
 
 
                     SendMessage.SendFileAsync(new TelegramFile(stream, fileName,
