@@ -24,6 +24,7 @@ public class BotInfoAbstract
     public BotTypeApi? botTypeApi;
     public string? contactString;
     public DbConfig? DbConfig;
+    public bool? EnableSelfManagedLogger = false;
     public string? method;
     public string? NumberCountry;
     public string? NumberNumber;
@@ -34,7 +35,6 @@ public class BotInfoAbstract
     public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
     public string? website;
-    public bool? EnableSelfManagedLogger = false;
 
     internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()
     {

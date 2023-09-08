@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
@@ -33,7 +32,10 @@ public static class Navigator
         {
             "Architettura"
         },
-        ["ICAT"] = Array.Empty<string>(),
+        ["ICAT"] = new[]
+        {
+            "Ambientale"
+        },
         ["Design"] = new[]
         {
             "Design"
