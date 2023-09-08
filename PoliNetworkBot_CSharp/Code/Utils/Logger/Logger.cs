@@ -36,6 +36,8 @@ public static class Logger
 {
     private const string DataLogPath = Paths.Data.Log;
     private const string LogSeparator = "#@#LOG ENTRY#@#";
+
+    private const int ChunckSize = 100;
     private static readonly Dictionary<long, TelegramBotAbstract?> Subscribers = new();
     private static readonly BufferBlock<MessageQueue> Buffer = new();
     private static readonly object LogFileLock = new();
@@ -44,9 +46,11 @@ public static class Logger
     private static readonly object PrintLogLock = new();
 
     private static DateTime? _lastTimeSentAutomaticLog;
+    public static bool EnableSelfManagedLogger { get; set; }
 
     internal static async Task MainMethodAsync()
     {
+        if (!EnableSelfManagedLogger) return;
         while (await Buffer.OutputAvailableAsync())
             try
             {
@@ -93,7 +97,8 @@ public static class Logger
             return;
         try
         {
-            Console.WriteLine(logSeverityLevel + " | " + log);
+            Console.WriteLine(logSeverityLevel + " | " + DateTime.Now.ToString("O") + " | " + log);
+            if (!EnableSelfManagedLogger) return;
             var log1 = log.ToString();
             if (Directory.Exists("./data/") == false) Directory.CreateDirectory("./data/");
 
@@ -215,53 +220,116 @@ public static class Logger
             {
                 const string path = Paths.Data.Log;
 
-                List<string>? text = null;
-                try
-                {
-                    lock (LogFileLock)
-                    {
-                        text = File.ReadAllLines(path).ToList();
-                    }
-                }
-                catch (Exception? e)
-                {
-                    WriteLine(e, LogSeverityLevel.CRITICAL);
-                }
+                SendLogGeneral(sender, sendTo, messageEventArgs, path);
 
-                const string q1 = "SELECT * " +
-                                  "FROM LogTable X " +
-                                  "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
-                                  "ORDER BY X.when_insert ASC";
-                var botId = sender?.GetId();
-                if (botId != null)
-                {
-                    var dictionary = new Dictionary<string, object?>
-                    {
-                        { "@bot_id", botId }
-                    };
-                    var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
-                        dictionary);
-                    var dbLogFileContent = GetFileContentFromDataTable(data);
-                    if (!string.IsNullOrEmpty(dbLogFileContent))
-                    {
-                        dbLogFileContent = dbLogFileContent.Trim();
-                        if (!string.IsNullOrEmpty(dbLogFileContent))
-                        {
-                            var textToSendBefore = "LOG (bot " + botId + ") from db:";
-                            const string applicationOctetStream = "application/octet-stream";
-                            LoggerSendFile.SendFiles(sendTo, dbLogFileContent, sender, textToSendBefore,
-                                applicationOctetStream, "log_db_" + botId + ".log");
-                        }
-                    }
-                }
-
-                PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
+                SendLogDb(sender, sendTo);
             }
             catch (Exception? e)
             {
                 NotifyUtil.NotifyOwnerWithLog2(e, sender, EventArgsContainer.Get(messageEventArgs)).Wait();
             }
         }
+    }
+
+    private static void SendLogDb(TelegramBotAbstract? sender, List<long?> sendTo)
+    {
+        var botId = sender?.GetId();
+        if (botId == null) return;
+        var count = GetCountLogDb(botId.Value);
+        if (count == null)
+            return;
+
+        var size = count.Value / (decimal)ChunckSize;
+        var howManyFiles = (int)Math.Ceiling(size);
+
+        var lastIndex = howManyFiles - 1;
+
+        //we will skip first files
+        var startWithLastOnes = Math.Max(0, lastIndex - 3);
+
+        for (var i = startWithLastOnes; i < howManyFiles; i++)
+            try
+            {
+                SendLogDbChunk(sender, sendTo, botId.Value, i);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+    }
+
+    private static void SendLogDbChunk(TelegramBotAbstract? sender, List<long?> sendTo, long botId, int chunckIndex)
+    {
+        var chunckSize = ChunckSize * chunckIndex;
+        var q1 = "SELECT * " +
+                 "FROM LogTable X " +
+                 "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
+                 "ORDER BY X.when_insert ASC " +
+                 $"LIMIT {ChunckSize},{chunckSize}";
+
+        var dictionary = new Dictionary<string, object?>
+        {
+            { "@bot_id", botId }
+        };
+        var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+            dictionary);
+        var dbLogFileContent = GetFileContentFromDataTable(data);
+        if (string.IsNullOrEmpty(dbLogFileContent)) return;
+        dbLogFileContent = dbLogFileContent.Trim();
+        if (string.IsNullOrEmpty(dbLogFileContent)) return;
+        var textToSendBefore = "LOG (bot " + botId + ") from db:";
+        const string applicationOctetStream = "application/octet-stream";
+        var stringOrStream = new StringOrStream { StringValue = dbLogFileContent };
+        LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore,
+            applicationOctetStream, "log_db_" + chunckIndex + "_bot_" + botId + ".log");
+    }
+
+    private static int? GetCountLogDb(long botId)
+    {
+        const string q1 = "SELECT COUNT(*) " +
+                          "FROM LogTable X " +
+                          "WHERE X.bot_id = 0 OR X.bot_id = @bot_id " +
+                          "ORDER BY X.when_insert ASC";
+
+        var dictionary = new Dictionary<string, object?>
+        {
+            { "@bot_id", botId }
+        };
+        var data = Database.ExecuteSelectUnlogged(q1, GlobalVariables.DbConfig,
+            dictionary);
+
+        var o = Database.GetFirstValueFromDataTable(data);
+        if (o == null)
+            return null;
+
+        try
+        {
+            return Convert.ToInt32(o);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static void SendLogGeneral(TelegramBotAbstract? sender, List<long?> sendTo,
+        MessageEventArgs? messageEventArgs,
+        string path)
+    {
+        List<string>? text = null;
+        try
+        {
+            lock (LogFileLock)
+            {
+                text = File.ReadAllLines(path).ToList();
+            }
+        }
+        catch (Exception? e)
+        {
+            WriteLine(e, LogSeverityLevel.CRITICAL);
+        }
+
+        PrintLog3(text, sender, sendTo, messageEventArgs, path, "LOG general:", "log_general.log");
     }
 
     private static string? GetFileContentFromDataTable(DataTable? data)
@@ -338,7 +406,9 @@ public static class Logger
         file = string.Join("", file.Split(LogSeparator)); //remove "#@#LOG ENTRY#@#" from all the lines
 
         const string applicationOctetStream = "application/octet-stream";
-        var done = LoggerSendFile.SendFiles(sendTo, file, sender, textToSendBefore, applicationOctetStream, fileName);
+        var stringOrStream = new StringOrStream { StringValue = file };
+        var done = LoggerSendFile.SendFiles(sendTo, stringOrStream, sender, textToSendBefore, applicationOctetStream,
+            fileName);
         if (done <= 0 || sendTo.Count <= 0)
             return;
 
@@ -397,6 +467,7 @@ public static class Logger
 
     public static void AutomaticLog()
     {
+        if (!EnableSelfManagedLogger) return;
         while (true)
         {
             try
@@ -427,6 +498,7 @@ public static class Logger
 
     public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
     {
+        if (!EnableSelfManagedLogger) return;
         var sendTo = GetLogTo(e);
         PrintLog(sender, sendTo, e);
     }
@@ -438,6 +510,8 @@ public static class Logger
 
     public static async Task<CommandExecutionState> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        if (!EnableSelfManagedLogger) return await Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
+
         if (e == null)
             return CommandExecutionState.ERROR_DEFAULT;
 
@@ -447,6 +521,8 @@ public static class Logger
 
     public static Task<CommandExecutionState> UnsubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
+        if (!EnableSelfManagedLogger) return Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
+
         if (e == null)
             return Task.FromResult(CommandExecutionState.ERROR_DEFAULT);
         Unsubscribe(e.Message.From?.Id);
@@ -455,6 +531,7 @@ public static class Logger
 
     public static Task<CommandExecutionState> GetLogCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2)
     {
+        if (!EnableSelfManagedLogger) return Task.FromResult(CommandExecutionState.ERROR_NOT_ENABLED);
         if (arg1 != null) GetLog(arg2, arg1);
         return Task.FromResult(CommandExecutionState.SUCCESSFUL);
     }

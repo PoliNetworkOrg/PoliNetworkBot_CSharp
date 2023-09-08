@@ -45,8 +45,8 @@ public static class ThreadAsyncModeration
         var t7 = new Thread(SayYouRestarted);
         t7.Start();
 
-        var t8 = new Thread(UpdateGroups);
-        t8.Start();
+        // var t8 = new Thread(UpdateGroups);
+        // t8.Start();
 
         var t9 = new Thread(DoCheckCallbackDataExpired);
         t9.Start();
@@ -57,8 +57,23 @@ public static class ThreadAsyncModeration
         var t11 = new Thread(CheckRamSize);
         t11.Start();
 
+        var t12 = new Thread(ProgressiveLinkCheck);
+        t12.Start();
+
         //var t3 = new Thread(FixThings);
         //t3.Start();
+    }
+
+    private static void ProgressiveLinkCheck()
+    {
+        try
+        {
+            Groups.ProgressiveLinkCheck();
+        }
+        catch (Exception e)
+        {
+            Logger.WriteLine(e);
+        }
     }
 
     private static async void CheckRamSize()

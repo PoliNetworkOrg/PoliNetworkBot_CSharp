@@ -13,7 +13,6 @@ using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
@@ -446,13 +445,7 @@ public static class ProgramUtil
     private static void PreStartupActionsAsync(TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? messageEventArgs, BotInfoAbstract botInfoAbstract)
     {
-        if (Logger.Logger.ContainsCriticalErrors(out var critics))
-        {
-            var toSend = "WARNING! \n";
-            toSend += "Critical errors found in log while starting up! \n" + critics;
-            NotifyUtil.NotifyOwners_AnError_AndLog3(toSend, telegramBotAbstract, messageEventArgs,
-                FileTypeJsonEnum.SIMPLE_STRING, SendActionEnum.SEND_TEXT);
-        }
+        Logger.Logger.EnableSelfManagedLogger = botInfoAbstract.EnableSelfManagedLogger ?? false;
 
         using var powershell = PowerShell.Create();
         foreach (var line in ScriptUtil.DoScript(powershell, "screen -ls", true)) Logger.Logger.WriteLine(line);
@@ -565,9 +558,10 @@ public static class ProgramUtil
             case UpdateType.Unknown:
                 break;
 
+            case UpdateType.EditedMessage:
             case UpdateType.Message:
             {
-                var updateMessage = update.Message;
+                var updateMessage = update.Message ?? update.EditedMessage;
                 if (updateMessage != null &&
                     botClientWhole.UpdatesMessageLastId.TryGetValue(updateMessage.Chat.Id, out var value))
                     if (value >= updateMessage.MessageId)
@@ -577,9 +571,10 @@ public static class ProgramUtil
                 {
                     botClientWhole.UpdatesMessageLastId[updateMessage.Chat.Id] = updateMessage.MessageId;
 
+                    var edit = update.Type == UpdateType.EditedMessage;
                     botClientWhole.OnmessageMethod2.ActionMessageEvent?.GetAction()
                         ?.Invoke(botClientWhole.BotClient,
-                            new MessageEventArgs(updateMessage));
+                            new MessageEventArgs(updateMessage, edit));
                 }
 
                 break;
@@ -597,8 +592,7 @@ public static class ProgramUtil
                     callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                 break;
             }
-            case UpdateType.EditedMessage:
-                break;
+
 
             case UpdateType.ChannelPost:
                 break;
