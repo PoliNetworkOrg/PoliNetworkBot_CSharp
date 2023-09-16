@@ -615,51 +615,59 @@ internal static class RestrictUser
         var eMessage = e?.Message;
         if (eMessage == null)
             return CommandExecutionState.NOT_TRIGGERED;
-        var messageFrom = eMessage?.From;
+        var messageFrom = eMessage.From;
         if (e == null || messageFrom == null)
             return CommandExecutionState.NOT_TRIGGERED;
 
+        var chatId = eMessage?.Chat.Id;
+        if (chatId == null)
+            return CommandExecutionState.NOT_TRIGGERED;
+        
         var r =
-            await Groups.CheckIfAdminAsync(messageFrom.Id, messageFrom.Username, e.Message.Chat.Id,
+            await Groups.CheckIfAdminAsync(
+                messageFrom.Id, 
+                messageFrom.Username,
+                chatId.Value,
                 sender);
+        
         if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
 
-        if (eMessage?.ReplyToMessage == null)
+        var replyToMessage = eMessage?.ReplyToMessage;
+        if (replyToMessage == null)
         {
-            var targetUserObject = new TargetUserObject(stringInfo, sender, e);
-            var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
-            var targetEmpty = await userIdFound.UserIdEmpty(sender);
-            if (targetEmpty)
-            {
-                var e2 = new Exception("Can't find userid (1)");
-                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
-                return CommandExecutionState.ERROR_DEFAULT;
-            }
+            var e2 = new Exception("Can't find replyMessage!");
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            return CommandExecutionState.ERROR_DEFAULT;
+        }
 
-            var targetId = userIdFound.GetUserId();
-            if (targetId != null && eMessage != null)
-            {
-                await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null, false);
-                return CommandExecutionState.SUCCESSFUL;
-            }
+        var targetUserObject = new TargetUserObject(stringInfo, sender, e);
+        var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
+        var targetEmpty = await userIdFound.UserIdEmpty(sender);
+        if (targetEmpty)
+        {
+            var e2 = new Exception("Can't find userid (1)");
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            return CommandExecutionState.ERROR_DEFAULT;
+        }
 
+        var targetId = userIdFound.GetUserId();
+        if (targetId  == null )
+        {
             var e3 = new Exception("Can't find userid (2)");
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
             return CommandExecutionState.ERROR_DEFAULT;
         }
 
-        var messageReplyToMessage = e.Message.ReplyToMessage;
-
-        var targetInt = messageReplyToMessage?.From?.Id;
-
-        if (targetInt == null)
+        // don't self ban
+        if (targetId == messageFrom.Id)
             return CommandExecutionState.NOT_TRIGGERED;
 
-        var fromUsername = messageReplyToMessage?.From?.Username;
-        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt,
+
+        var fromUsername = replyToMessage.From?.Username;
+        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetId,
             fromUsername);
 
-        await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
+        await BanUserFromGroup(sender, targetId, chatId.Value, stringInfo,
             false);
         return CommandExecutionState.SUCCESSFUL;
     }
