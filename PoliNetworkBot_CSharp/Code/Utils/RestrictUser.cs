@@ -619,26 +619,19 @@ internal static class RestrictUser
         if (e == null || messageFrom == null)
             return CommandExecutionState.NOT_TRIGGERED;
 
-        var chatId = eMessage?.Chat.Id;
-        if (chatId == null)
-            return CommandExecutionState.NOT_TRIGGERED;
-        
+        var chatId = eMessage.Chat.Id;
+
         var r =
             await Groups.CheckIfAdminAsync(
-                messageFrom.Id, 
+                messageFrom.Id,
                 messageFrom.Username,
-                chatId.Value,
+                chatId,
                 sender);
-        
-        if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
 
-        var replyToMessage = eMessage?.ReplyToMessage;
-        if (replyToMessage == null)
-        {
-            var e2 = new Exception("Can't find replyMessage!");
-            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
-            return CommandExecutionState.ERROR_DEFAULT;
-        }
+        var skippare = r == null || !r.IsSuccess();
+        if (skippare)
+            return CommandExecutionState.NOT_TRIGGERED;
+
 
         var targetUserObject = new TargetUserObject(stringInfo, sender, e);
         var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
@@ -651,7 +644,7 @@ internal static class RestrictUser
         }
 
         var targetId = userIdFound.GetUserId();
-        if (targetId  == null )
+        if (targetId == null)
         {
             var e3 = new Exception("Can't find userid (2)");
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
@@ -663,11 +656,12 @@ internal static class RestrictUser
             return CommandExecutionState.NOT_TRIGGERED;
 
 
-        var fromUsername = replyToMessage.From?.Username;
+        var replyToMessage = eMessage?.ReplyToMessage;
+        var fromUsername = replyToMessage?.From?.Username;
         await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetId,
             fromUsername);
 
-        await BanUserFromGroup(sender, targetId, chatId.Value, stringInfo,
+        await BanUserFromGroup(sender, targetId, chatId, stringInfo,
             false);
         return CommandExecutionState.SUCCESSFUL;
     }
