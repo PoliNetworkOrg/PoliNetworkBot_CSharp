@@ -612,15 +612,19 @@ internal static class RestrictUser
     public static async Task<CommandExecutionState> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? stringInfo)
     {
-        if (e?.Message.From != null)
-        {
-            var r =
-                await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
-                    sender);
-            if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
-        }
+        var eMessage = e?.Message;
+        if (eMessage == null)
+            return CommandExecutionState.NOT_TRIGGERED;
+        var messageFrom = eMessage?.From;
+        if (e == null || messageFrom == null)
+            return CommandExecutionState.NOT_TRIGGERED;
 
-        if (e?.Message.ReplyToMessage == null)
+        var r =
+            await Groups.CheckIfAdminAsync(messageFrom.Id, messageFrom.Username, e.Message.Chat.Id,
+                sender);
+        if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
+
+        if (eMessage?.ReplyToMessage == null)
         {
             var targetUserObject = new TargetUserObject(stringInfo, sender, e);
             var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
@@ -633,7 +637,7 @@ internal static class RestrictUser
             }
 
             var targetId = userIdFound.GetUserId();
-            if (targetId != null && e?.Message != null)
+            if (targetId != null && eMessage != null)
             {
                 await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null, false);
                 return CommandExecutionState.SUCCESSFUL;
@@ -644,10 +648,16 @@ internal static class RestrictUser
             return CommandExecutionState.ERROR_DEFAULT;
         }
 
-        var targetInt = e.Message.ReplyToMessage.From?.Id;
+        var messageReplyToMessage = e.Message.ReplyToMessage;
 
+        var targetInt = messageReplyToMessage?.From?.Id;
+
+        if (targetInt == null)
+            return CommandExecutionState.NOT_TRIGGERED;
+
+        var fromUsername = messageReplyToMessage?.From?.Username;
         await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt,
-            e.Message.ReplyToMessage.From?.Username);
+            fromUsername);
 
         await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
             false);
