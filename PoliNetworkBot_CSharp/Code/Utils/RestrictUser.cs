@@ -474,12 +474,16 @@ internal static class RestrictUser
 
     public static async Task<SuccessWithException?> BanUserFromGroup(TelegramBotAbstract? sender,
         long? target,
-        long groupChatId, string?[]? time,
+        long? groupChatId,
+        string?[]? time,
         bool? revokeMessage)
     {
+        if (groupChatId == null)
+            return null;
+
         if (sender != null)
             return target != null
-                ? await sender.BanUserFromGroup(target.Value, groupChatId, time, revokeMessage)
+                ? await sender.BanUserFromGroup(target.Value, groupChatId.Value, time, revokeMessage)
                 : new SuccessWithException(false, new ArgumentNullException());
         return null;
     }
@@ -612,44 +616,53 @@ internal static class RestrictUser
     public static async Task<CommandExecutionState> BanUserAsync(MessageEventArgs? e, TelegramBotAbstract? sender,
         string[]? stringInfo)
     {
-        if (e?.Message.From != null)
+        var eMessage = e?.Message;
+
+        var messageFrom = eMessage?.From;
+
+        var chatId = eMessage?.Chat.Id;
+
+        var r =
+            await Groups.CheckIfAdminAsync(
+                messageFrom?.Id,
+                messageFrom?.Username,
+                chatId,
+                sender);
+
+        var skippare = r == null || !r.IsSuccess();
+        if (skippare)
+            return CommandExecutionState.NOT_TRIGGERED;
+
+
+        var targetUserObject = new TargetUserObject(stringInfo, sender, e);
+        var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
+        var targetEmpty = await userIdFound.UserIdEmpty(sender);
+        if (targetEmpty)
         {
-            var r =
-                await Groups.CheckIfAdminAsync(e.Message.From.Id, e.Message.From.Username, e.Message.Chat.Id,
-                    sender);
-            if (r != null && !r.IsSuccess()) return CommandExecutionState.ERROR_DEFAULT;
+            var e2 = new Exception("Can't find userid (1)");
+            NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
+            return CommandExecutionState.ERROR_DEFAULT;
         }
 
-        if (e?.Message.ReplyToMessage == null)
+        var targetId = userIdFound.GetUserId();
+        if (targetId == null)
         {
-            var targetUserObject = new TargetUserObject(stringInfo, sender, e);
-            var userIdFound = await Info.GetTargetUserIdAsync(targetUserObject, sender);
-            var targetEmpty = await userIdFound.UserIdEmpty(sender);
-            if (targetEmpty)
-            {
-                var e2 = new Exception("Can't find userid (1)");
-                NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e2), sender, EventArgsContainer.Get(e));
-                return CommandExecutionState.ERROR_DEFAULT;
-            }
-
-            var targetId = userIdFound.GetUserId();
-            if (targetId != null && e?.Message != null)
-            {
-                await BanUserFromGroup(sender, targetId.Value, e.Message.Chat.Id, null, false);
-                return CommandExecutionState.SUCCESSFUL;
-            }
-
             var e3 = new Exception("Can't find userid (2)");
             NotifyUtil.NotifyOwnersClassic(new ExceptionNumbered(e3), sender, EventArgsContainer.Get(e));
             return CommandExecutionState.ERROR_DEFAULT;
         }
 
-        var targetInt = e.Message.ReplyToMessage.From?.Id;
+        // don't self ban
+        if (targetId == messageFrom?.Id)
+            return CommandExecutionState.NOT_TRIGGERED;
 
-        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetInt,
-            e.Message.ReplyToMessage.From?.Username);
 
-        await BanUserFromGroup(sender, targetInt, e.Message.Chat.Id, stringInfo,
+        var replyToMessage = eMessage?.ReplyToMessage;
+        var fromUsername = replyToMessage?.From?.Username;
+        await NotifyUtil.NotifyOwnersBanAction(sender, EventArgsContainer.Get(e), targetId,
+            fromUsername);
+
+        await BanUserFromGroup(sender, targetId, chatId, stringInfo,
             false);
         return CommandExecutionState.SUCCESSFUL;
     }

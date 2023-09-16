@@ -65,20 +65,26 @@ internal static class Groups
             dictionary);
     }
 
-    internal static async Task<SuccessWithException?> CheckIfAdminAsync(long userId, string? username, long chatId,
+    internal static async Task<SuccessWithException?> CheckIfAdminAsync(long? userId, string? username, long? chatId,
         TelegramBotAbstract? telegramBotAbstract)
     {
-        if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(userId, username)))
+        if (userId == null)
+            return null;
+
+        if (chatId == null)
+            return null;
+        
+        if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
             return new SuccessWithException(true);
 
         if (telegramBotAbstract != null)
         {
-            var s1 = await telegramBotAbstract.IsAdminAsync(userId, chatId);
+            var s1 = await telegramBotAbstract.IsAdminAsync(userId.Value, chatId.Value);
             if (s1 != null && s1.IsSuccess())
                 return s1;
         }
 
-        if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId, username)))
+        if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
             return new SuccessWithException(true);
 
         return null;
