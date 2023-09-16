@@ -474,12 +474,16 @@ internal static class RestrictUser
 
     public static async Task<SuccessWithException?> BanUserFromGroup(TelegramBotAbstract? sender,
         long? target,
-        long groupChatId, string?[]? time,
+        long? groupChatId,
+        string?[]? time,
         bool? revokeMessage)
     {
+        if (groupChatId == null)
+            return null;
+
         if (sender != null)
             return target != null
-                ? await sender.BanUserFromGroup(target.Value, groupChatId, time, revokeMessage)
+                ? await sender.BanUserFromGroup(target.Value, groupChatId.Value, time, revokeMessage)
                 : new SuccessWithException(false, new ArgumentNullException());
         return null;
     }
@@ -613,18 +617,15 @@ internal static class RestrictUser
         string[]? stringInfo)
     {
         var eMessage = e?.Message;
-        if (eMessage == null)
-            return CommandExecutionState.NOT_TRIGGERED;
-        var messageFrom = eMessage.From;
-        if (e == null || messageFrom == null)
-            return CommandExecutionState.NOT_TRIGGERED;
 
-        var chatId = eMessage.Chat.Id;
+        var messageFrom = eMessage?.From;
+
+        var chatId = eMessage?.Chat.Id;
 
         var r =
             await Groups.CheckIfAdminAsync(
-                messageFrom.Id,
-                messageFrom.Username,
+                messageFrom?.Id,
+                messageFrom?.Username,
                 chatId,
                 sender);
 
@@ -652,7 +653,7 @@ internal static class RestrictUser
         }
 
         // don't self ban
-        if (targetId == messageFrom.Id)
+        if (targetId == messageFrom?.Id)
             return CommandExecutionState.NOT_TRIGGERED;
 
 
