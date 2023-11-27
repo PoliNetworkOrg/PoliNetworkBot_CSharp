@@ -71,7 +71,8 @@ public static class GlobalVariables
             new("giada_marti"),
             new("raif9"),
             new("diegoaldarese"),
-            new(992285066) // Tommaso
+            new(992285066), // Tommaso
+            new(1182159515) //eliaf
         };
 
         AllowedBanAll = new List<TelegramUser>
