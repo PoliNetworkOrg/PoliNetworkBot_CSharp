@@ -127,7 +127,7 @@ public static class Main
 
             }
 
-
+            Ticket.Handle.HandleMethod(telegramBotClient, e);
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
             return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);
         }
