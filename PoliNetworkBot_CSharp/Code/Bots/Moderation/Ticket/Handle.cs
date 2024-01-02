@@ -13,7 +13,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 public static class Handle
 {
     private static readonly List<ChatIdTg>
-        AllowedGroups = new() { new() { Id = 2124790858, VaAggiuntoMeno100 = true } };
+        AllowedGroups = new() { new ChatIdTg { Id = 2124790858, VaAggiuntoMeno100 = true } };
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -34,10 +34,20 @@ public static class Handle
             if (string.IsNullOrEmpty(messageText))
                 return;
 
+            var date = GetItalianDateTime(e);
+
+
             var chatId = allowedGroupsContains.Item2?.Id;
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
-            body += "When: " + e.Message.Date.ToString(CultureInfo.InvariantCulture);
+
+            body += "When: " + date.ToString(CultureInfo.InvariantCulture);
+            body += "\n\n\n";
+            body += "Chat title: " + e.Message.Chat.Title;
+            body += "\n\n\n";
+            body += "Chat type: " + e.Message.Chat.Type;
+            body += "\n\n\n";
+            body += "Message type: " + e.Message.Type;
             body += "\n\n\n";
             body += "From user id: " + e.Message.From?.Id;
             body += "\n\n\n";
@@ -53,6 +63,14 @@ public static class Handle
         {
             NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer { MessageEventArgs = e });
         }
+    }
+
+    private static DateTime GetItalianDateTime(MessageEventArgs e)
+    {
+        var messageDate = e.Message.Date;
+        var diff = DateTime.Now - DateTime.UtcNow;
+        var date = messageDate.AddHours(diff.TotalHours);
+        return date;
     }
 
     private static Tuple<bool, ChatIdTg?> AllowedGroupsContains(long chatId)
