@@ -43,7 +43,7 @@ public class TelegramBotAbstract
     private string? _username;
 
     public DbConfigConnection? DbConfig;
-    private readonly string? GithubToken;
+    public readonly string? GithubToken;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
         string? website, string? contactString, long? id, string? GithubToken)

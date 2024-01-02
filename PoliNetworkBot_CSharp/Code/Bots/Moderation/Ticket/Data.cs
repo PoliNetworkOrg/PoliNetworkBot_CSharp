@@ -20,7 +20,7 @@ public static class Data
         
         _httpClient = new HttpClient();
         var d = _httpClient.DefaultRequestHeaders;
-        d.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", telegramBotAbstract..Token);
+        d.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", telegramBotAbstract.GithubToken);
         d.Add("Accept", "application/vnd.github+json");
         d.Add("X-GitHub-Api-Version", "2022-11-28");
         d.Add("User-Agent", NameUserAgent);
@@ -28,14 +28,14 @@ public static class Data
         return _httpClient;
     }
     
-    public static GitHubClient GetGitHubClient()
+    public static GitHubClient GetGitHubClient(TelegramBotAbstract telegramBotAbstract)
     {
         if (_gitHubClient != null)
             return _gitHubClient;
 
         var productHeaderValue = new ProductHeaderValue(NameUserAgent);
         _gitHubClient = new GitHubClient(productHeaderValue);
-        var tokenAuth = new Credentials(Secrets.Token);
+        var tokenAuth = new Credentials(telegramBotAbstract.GithubToken);
         _gitHubClient.Credentials = tokenAuth;
         return _gitHubClient;
     }

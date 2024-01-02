@@ -1,35 +1,36 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Octokit;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class CreateIssue
 {
-    public static Issue Create(string title, string body, long telegramChatId, long? fromId)
+    public static Issue Create(string title, string body, long telegramChatId, long? fromId, TelegramBotAbstract telegramBotAbstract)
     {
-        var githubClient = Data.GetGitHubClient();
+        var githubClient = Data.GetGitHubClient(telegramBotAbstract);
         var newIssue = new NewIssue(title)
         {
             Body = body
         };
-        CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue);
-        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue);
+        CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue, telegramBotAbstract);
+        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue,telegramBotAbstract);
         var task = githubClient.Issue.Create(Data.OwnerRepo, Data.NameRepo, newIssue);
         task.Wait();
         return task.Result;
     }
 
-    private static void CreateAndAddLabel(string? labelIdTelegramName, NewIssue newIssue)
+    private static void CreateAndAddLabel(string? labelIdTelegramName, NewIssue newIssue, TelegramBotAbstract telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(labelIdTelegramName))
             return;
 
-        CreateLabel(labelIdTelegramName);
+        CreateLabel(labelIdTelegramName, telegramBotAbstract);
         newIssue.Labels.Add(labelIdTelegramName);
     }
 
-    private static void CreateLabel(string? labelIdTelegramName)
+    private static void CreateLabel(string? labelIdTelegramName, TelegramBotAbstract telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(labelIdTelegramName))
             return;
@@ -38,7 +39,7 @@ public static class CreateIssue
         {
             var generateHexColor = GenerateHexColor(labelIdTelegramName);
             NewLabel label = new NewLabel(labelIdTelegramName, generateHexColor);
-            var githubClient = Data.GetGitHubClient();
+            var githubClient = Data.GetGitHubClient(telegramBotAbstract);
             githubClient.Issue.Labels.Create(Data.OwnerRepo, Data.NameRepo, label).Wait();
         }
         catch
