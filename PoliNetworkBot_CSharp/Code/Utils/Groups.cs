@@ -530,6 +530,7 @@ internal static class Groups
             CheckIfLinkIsWorkingSlave(5, true, 100);
             isLinkWorking = Variabili.L.GetElem(0).LinkFunzionante ?? false;
         });
+
         
         return isLinkWorking;
     }
@@ -651,6 +652,7 @@ internal static class Groups
             }
             Database.Execute(queryUpdate, bot?.DbConfig, new Dictionary<string, object?> { { "@last_checked", DateTime.Now } });
             Thread.Sleep(waitingTimeBetweenGroups*1000);
+
             i++;
             if (i % 100 != 99) continue;
             allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);

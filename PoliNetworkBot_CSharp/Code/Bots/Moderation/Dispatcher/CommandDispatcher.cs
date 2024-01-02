@@ -125,7 +125,9 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
+
                             string errorDescription = execState.ToString();
+
 
                             await NotifyUserCommandError(new L(
                                     "it",
@@ -135,6 +137,7 @@ internal static class CommandDispatcher
                                 ),
                                 sender, e);
                         }
+
                         return false;
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.NOT_TRIGGERED:
@@ -241,13 +244,14 @@ internal static class CommandDispatcher
         if (updateDb) x1 = await Groups.FixAllGroupsName(sender, messageEventArgs);
 
         var json = "";
-        
+
         if (!linkCheck)
         {
             const string q1 = "SELECT * FROM GroupsTelegram WHERE link_working = 1";
 
             var groups = Database.ExecuteSelect(q1, sender?.DbConfig);
             if (groups == null) throw new RuntimeException("Query returned null in in UpdateGroups");
+
 
             Groups.HandleListaGruppo(groups, () =>
             {
@@ -267,10 +271,12 @@ internal static class CommandDispatcher
             {
                 Groups.CheckIfLinkIsWorkingSlave(5, true, 10);
             
+
                 json =
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
             });
+
 
         }
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))

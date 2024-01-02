@@ -116,13 +116,17 @@ public static class Main
             }
 
             if (e.Edit == false)
+
             {
+
                 if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 {
                     var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                     return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
                 }
+
             }
+
 
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
             return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);
