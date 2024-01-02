@@ -43,9 +43,10 @@ public class TelegramBotAbstract
     private string? _username;
 
     public DbConfigConnection? DbConfig;
+    private readonly string? GithubToken;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
-        string? website, string? contactString, long? id)
+        string? website, string? contactString, long? id, string? GithubToken)
     {
         UserbotClient = userBotClient;
         _botClient = botClient;
@@ -53,23 +54,25 @@ public class TelegramBotAbstract
         _website = website;
         _contactString = contactString;
         _id = id;
+        this.GithubToken = GithubToken;
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
-        BotTypeApi? botTypeApi, string? mode) : this(botClient, null, botTypeApi, website, contactString,
-        botClient?.BotId)
+        BotTypeApi? botTypeApi, string? mode, string? GithubToken) : this(botClient, null, botTypeApi, website, contactString,
+        botClient?.BotId, GithubToken)
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
-        BotTypeApi? botTypeApi, string? mode) : this(null, userbotClient, botTypeApi, website, contactString, id)
+        BotTypeApi? botTypeApi, string? mode, string? GithubToken) : 
+        this(null, userbotClient, botTypeApi, website, contactString, id, GithubToken)
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
-        null)
+        null, null)
     {
     }
 

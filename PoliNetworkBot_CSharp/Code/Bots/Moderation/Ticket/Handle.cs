@@ -5,6 +5,7 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
@@ -15,6 +16,9 @@ public static class Handle
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
         if (!AllowedGroups.Contains(e.Message.Chat.Id))
+            return;
+
+        if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
 
         try
