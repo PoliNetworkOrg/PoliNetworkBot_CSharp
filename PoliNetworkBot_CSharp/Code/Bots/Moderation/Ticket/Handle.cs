@@ -6,15 +6,14 @@ using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private static readonly List<ChatIdTg> AllowedGroups = new List<ChatIdTg>()
-        { new ChatIdTg() { Id = 2124790858, VaAggiuntoMeno100 = true } };
+    private static readonly List<ChatIdTg>
+        AllowedGroups = new() { new() { Id = 2124790858, VaAggiuntoMeno100 = true } };
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -52,7 +51,7 @@ public static class Handle
         }
         catch (Exception ex)
         {
-            NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer() { MessageEventArgs = e });
+            NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer { MessageEventArgs = e });
         }
     }
 

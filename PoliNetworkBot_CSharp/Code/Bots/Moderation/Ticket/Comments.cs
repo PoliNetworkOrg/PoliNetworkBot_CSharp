@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Octokit;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
@@ -13,7 +14,7 @@ public static class Comments
         var httpClient = Data.GetHttpClient(telegramBotAbstract);
         var r = httpClient.GetAsync(issue.CommentsUrl).Result;
         var responseBody = r.Content.ReadAsStringAsync().Result;
-        var jArray = (JArray?)Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+        var jArray = (JArray?)JsonConvert.DeserializeObject(responseBody);
         return jArray;
     }
 }

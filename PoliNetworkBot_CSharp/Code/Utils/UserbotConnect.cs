@@ -56,7 +56,7 @@ internal static class UserbotConnect
 
                 if (telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, GithubToken: userbot.GithubToken);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
 
                 var numberToAuthenticate = userbot.NumberNumber;
                 var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
@@ -86,7 +86,7 @@ internal static class UserbotConnect
 
                 if (user != null && telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, GithubToken: userbot.GithubToken);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
 
                 return null;
             }
@@ -103,13 +103,13 @@ internal static class UserbotConnect
 
                 if (t.IsUserAuthorized())
                     return new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-                        userbot.botTypeApi.Value, userbot.onMessages, GithubToken: userbot.GithubToken);
+                        userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
 
                 var r = await t.AuthImportBotAuthorization(userbot.GetToken());
 
                 return r?.User != null
                     ? new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-                        userbot.botTypeApi, userbot.onMessages, GithubToken: userbot.GithubToken)
+                        userbot.botTypeApi, userbot.onMessages, userbot.GithubToken)
                     : null;
             }
         }

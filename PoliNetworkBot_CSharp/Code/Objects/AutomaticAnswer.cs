@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
 
 #endregion
 

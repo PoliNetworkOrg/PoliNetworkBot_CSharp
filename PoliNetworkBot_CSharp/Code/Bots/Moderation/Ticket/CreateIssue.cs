@@ -7,7 +7,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class CreateIssue
 {
-    public static Issue Create(string title, string body, long telegramChatId, long? fromId, TelegramBotAbstract telegramBotAbstract)
+    public static Issue Create(string title, string body, long telegramChatId, long? fromId,
+        TelegramBotAbstract telegramBotAbstract)
     {
         var githubClient = Data.GetGitHubClient(telegramBotAbstract);
         var newIssue = new NewIssue(title)
@@ -15,13 +16,14 @@ public static class CreateIssue
             Body = body
         };
         CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue, telegramBotAbstract);
-        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue,telegramBotAbstract);
+        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue, telegramBotAbstract);
         var task = githubClient.Issue.Create(Data.OwnerRepo, Data.NameRepo, newIssue);
         task.Wait();
         return task.Result;
     }
 
-    private static void CreateAndAddLabel(string? labelIdTelegramName, NewIssue newIssue, TelegramBotAbstract telegramBotAbstract)
+    private static void CreateAndAddLabel(string? labelIdTelegramName, NewIssue newIssue,
+        TelegramBotAbstract telegramBotAbstract)
     {
         if (string.IsNullOrEmpty(labelIdTelegramName))
             return;
@@ -38,7 +40,7 @@ public static class CreateIssue
         try
         {
             var generateHexColor = GenerateHexColor(labelIdTelegramName);
-            NewLabel label = new NewLabel(labelIdTelegramName, generateHexColor);
+            var label = new NewLabel(labelIdTelegramName, generateHexColor);
             var githubClient = Data.GetGitHubClient(telegramBotAbstract);
             githubClient.Issue.Labels.Create(Data.OwnerRepo, Data.NameRepo, label).Wait();
         }
@@ -63,17 +65,17 @@ public static class CreateIssue
         if (string.IsNullOrEmpty(input))
             return "FFFFFF";
 
-        using MD5 md5 = MD5.Create();
-        byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-        byte[] hashBytes = md5.ComputeHash(inputBytes);
+        using var md5 = MD5.Create();
+        var inputBytes = Encoding.UTF8.GetBytes(input);
+        var hashBytes = md5.ComputeHash(inputBytes);
 
         // Take the first 3 bytes of the hash to determine RGB values
-        byte r = hashBytes[0];
-        byte g = hashBytes[1];
-        byte b = hashBytes[2];
+        var r = hashBytes[0];
+        var g = hashBytes[1];
+        var b = hashBytes[2];
 
         // Convert RGB values to hex
-        string hexColor = $"{r:X2}{g:X2}{b:X2}";
+        var hexColor = $"{r:X2}{g:X2}{b:X2}";
 
         return hexColor;
     }

@@ -25,6 +25,7 @@ public class BotInfoAbstract
     public string? contactString;
     public DbConfig? DbConfig;
     public bool? EnableSelfManagedLogger = false;
+    public string? GithubToken;
     public string? method;
     public string? NumberCountry;
     public string? NumberNumber;
@@ -35,7 +36,6 @@ public class BotInfoAbstract
     public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
     public string? website;
-    public string? GithubToken;
 
 
     internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()
