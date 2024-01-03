@@ -639,7 +639,6 @@ public static class ProgramUtil
         });
 
 
-
         var messageOptions = new TelegramBotAbstract.MessageOptions
 
         {

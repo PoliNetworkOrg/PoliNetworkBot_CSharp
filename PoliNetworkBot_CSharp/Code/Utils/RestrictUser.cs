@@ -53,7 +53,6 @@ internal static class RestrictUser
                 CanSendVideoNotes = false,
 
                 CanSendVoiceNotes = false
-
             },
             RestrictAction.UNMUTE => new ChatPermissions
             {
@@ -71,7 +70,6 @@ internal static class RestrictUser
                 CanSendVideoNotes = true,
 
                 CanSendVoiceNotes = true
-
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
@@ -587,7 +585,6 @@ internal static class RestrictUser
             });
             if (sender != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -614,7 +611,6 @@ internal static class RestrictUser
             if (e?.Message.From == null) return;
             if (sender != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {

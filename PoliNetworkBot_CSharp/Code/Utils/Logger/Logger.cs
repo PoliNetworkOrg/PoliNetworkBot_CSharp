@@ -62,7 +62,6 @@ public static class Logger
                 });
                 if (messageToBeSent.Key.Value != null)
                 {
-
                     var messageOptions = new TelegramBotAbstract.MessageOptions
 
                     {

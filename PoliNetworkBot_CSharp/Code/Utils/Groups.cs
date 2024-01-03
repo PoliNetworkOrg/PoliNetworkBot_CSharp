@@ -75,7 +75,6 @@ internal static class Groups
             return null;
 
 
-
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
 

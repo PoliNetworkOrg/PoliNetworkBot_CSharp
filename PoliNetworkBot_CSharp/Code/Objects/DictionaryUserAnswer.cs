@@ -82,7 +82,6 @@ public class DictionaryUserAnswer
                         { { "en", "You chose [" + result + "]" }, { "it", "Hai scelto [" + result + "]" } });
                     if (telegramBotAbstract != null)
                     {
-
                         var messageOptions =
                             new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
 

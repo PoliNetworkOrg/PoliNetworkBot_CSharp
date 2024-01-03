@@ -61,7 +61,6 @@ public static class AllowedMessage
                 Lang = "uni",
 
                 Username = e?.Message?.From?.Username
-
             };
             await sender.SendTextMessageAsync(messageOptions);
         }
