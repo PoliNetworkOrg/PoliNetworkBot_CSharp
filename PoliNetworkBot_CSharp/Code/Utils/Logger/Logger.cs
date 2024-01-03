@@ -168,7 +168,7 @@ public static class Logger
             var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
             if (bots is { Count: < 1 }) throw new Exception("No REAL_BOT to send Log");
 
-            if (bots != null) PrintLog(bots[0], new List<long?> { GroupsConstants.BackupGroup }, null);
+            if (bots != null) PrintLog(bots[0], new List<long?> { GroupsConstants.BackupGroup.FullLong() }, null);
         }
         catch (Exception e)
         {
@@ -501,7 +501,7 @@ public static class Logger
         var bots = BotUtil.GetBotFromType(BotTypeApi.REAL_BOT, BotStartMethods.Moderation.Item1);
         if (bots == null || bots.Count == 0)
             return;
-        PrintLog(bots.First(), new List<long?> { GroupsConstants.BackupGroup }, null);
+        PrintLog(bots.First(), new List<long?> { GroupsConstants.BackupGroup.FullLong() }, null);
     }
 
     public static void GetLog(TelegramBotAbstract? sender, MessageEventArgs e)
@@ -513,7 +513,7 @@ public static class Logger
 
     public static List<long?> GetLogTo(MessageEventArgs e)
     {
-        return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup };
+        return new List<long?> { e.Message.From?.Id, GroupsConstants.BackupGroup.FullLong() };
     }
 
     public static async Task<CommandExecutionState> SubscribeCommand(MessageEventArgs? e, TelegramBotAbstract? sender)

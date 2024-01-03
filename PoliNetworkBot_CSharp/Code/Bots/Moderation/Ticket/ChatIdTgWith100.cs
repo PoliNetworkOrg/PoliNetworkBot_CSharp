@@ -15,6 +15,7 @@ public class ChatIdTgWith100
 
     public long FullLong()
     {
-        return Convert.ToInt64(GetString());
+        var value = GetString();
+        return Convert.ToInt64(value);
     }
 }
