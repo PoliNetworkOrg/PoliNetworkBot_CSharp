@@ -30,4 +30,7 @@ public static class GroupsConstants
 
     public static ChatIdTgWith100 Testing = new()
         { Id = 1436937011, VaAggiuntoMeno100 = true };
+
+    public static ChatIdTgWith100 TestGroup = new()
+        { Id = 2124790858, VaAggiuntoMeno100 = true };
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -13,7 +14,12 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 public static class Handle
 {
     private static readonly List<ChatIdTgWith100>
-        AllowedGroups = new() { new ChatIdTgWith100 { Id = 2124790858, VaAggiuntoMeno100 = true } };
+        AllowedGroups = new()
+        {
+            GroupsConstants.TestGroup,
+            GroupsConstants.PianoDiStudi,
+            GroupsConstants.Dsu
+        };
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -22,7 +28,7 @@ public static class Handle
 
 
         var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
-        if (!found)
+        if (!found || chatIdTgWith100 == null)
             return;
 
         try
