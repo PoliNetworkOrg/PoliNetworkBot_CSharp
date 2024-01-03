@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,10 +22,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 internal static class BackupUtil
 {
-    private const string applicationJson = "application/json";
-    private const string path = "LocalJSONFile.JSON";
+    private const string ApplicationJson = "application/json";
+    private const string Path = "LocalJSONFile.JSON";
 
-    public static List<string> excludedTablesBackupDb = new()
+    private static readonly List<string> ExcludedTablesBackupDb = new()
     {
         "LogTable"
     };
@@ -82,10 +83,13 @@ internal static class BackupUtil
 
             DbBackup.FillTableNames(db, botAbstract.DbConfig);
 
-            var dbTableNames = db.tableNames?.Where(x => !excludedTablesBackupDb.Contains(x));
+            var dbTableNames = db.tableNames?.Where(x => !ExcludedTablesBackupDb.Contains(x));
             if (dbTableNames != null)
                 foreach (var tableName in dbTableNames)
+                {
+                    Thread.Sleep(1000);
                     await BackupDbDataSingleTable(tableName, sendTo, botAbstract);
+                }
         }
         catch (Exception? ex)
         {
@@ -129,10 +133,10 @@ internal static class BackupUtil
     {
         try
         {
-            await File.WriteAllTextAsync(path, serializedText);
+            await File.WriteAllTextAsync(Path, serializedText);
             var stringOrStream = new StringOrStream { StringValue = serializedText };
             LoggerSendFile.SendFiles(sendTo, stringOrStream, botAbstract,
-                textToSendBefore, applicationJson, dbFullDataJson);
+                textToSendBefore, ApplicationJson, dbFullDataJson);
         }
         catch (Exception? ex)
         {
