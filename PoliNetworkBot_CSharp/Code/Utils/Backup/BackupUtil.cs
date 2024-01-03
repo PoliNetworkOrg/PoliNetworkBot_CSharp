@@ -21,7 +21,10 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 internal static class BackupUtil
 {
-    public static List<string> excludedTablesBackupDb = new List<string>()
+    private const string applicationJson = "application/json";
+    private const string path = "LocalJSONFile.JSON";
+
+    public static List<string> excludedTablesBackupDb = new()
     {
         "LogTable"
     };
@@ -32,9 +35,6 @@ internal static class BackupUtil
         if (CallbackUtils.CallbackUtils.CallBackDataFull != null)
             CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
-
-    const string applicationJson = "application/json";
-    const string path = "LocalJSONFile.JSON";
 
     public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
