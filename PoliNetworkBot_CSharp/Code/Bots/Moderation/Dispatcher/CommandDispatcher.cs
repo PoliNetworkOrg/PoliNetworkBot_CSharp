@@ -160,22 +160,18 @@ internal static class CommandDispatcher
     {
         if (e != null)
         {
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
             {
                 ChatId = e.Message.From?.Id,
                 Text = message,
                 ChatType = ChatType.Private,
                 Lang = e.Message.From?.LanguageCode,
                 Username = e.Message.From?.Username,
-<<<<<<< HEAD
+
                 ReplyToMessageId = e.Message.MessageId
-=======
-                ReplyToMessageId = e.Message.MessageId,
->>>>>>> dev
+
             };
             var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
             return sendTextMessageAsync;
@@ -200,22 +196,18 @@ internal static class CommandDispatcher
 
             if (sender != null)
             {
-<<<<<<< HEAD
+
                 var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text,
                     ChatType = ChatType.Private,
                     Lang = e.Message.From?.LanguageCode,
                     Username = e.Message.From?.Username,
-<<<<<<< HEAD
+
                     ReplyToMessageId = e.Message.MessageId
-=======
-                    ReplyToMessageId = e.Message.MessageId,
->>>>>>> dev
+
                 };
                 await sender.SendTextMessageAsync(messageOptions);
             }
@@ -424,21 +416,17 @@ internal static class CommandDispatcher
                 if (e.Message.From != null)
                     if (sender != null)
                     {
-<<<<<<< HEAD
+
                         var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                         {
                             ChatId = e.Message.From?.Id,
                             Text = text,
                             ChatType = ChatType.Private,
                             Lang = e.Message.From?.LanguageCode,
-<<<<<<< HEAD
+
                             Username = e.Message.From?.Username
-=======
-                            Username = e.Message.From?.Username,
->>>>>>> dev
+
                         };
                         await sender.SendTextMessageAsync(messageOptions);
                     }
@@ -585,11 +573,9 @@ internal static class CommandDispatcher
             if (e.Message.From == null) return null;
             if (sender != null)
             {
-<<<<<<< HEAD
+
                 var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text,
@@ -616,11 +602,9 @@ internal static class CommandDispatcher
                 });
                 if (e.Message.From != null)
                 {
-<<<<<<< HEAD
+
                     var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                     {
                         ChatId = e.Message.From?.Id,
                         Text = text,
@@ -647,11 +631,9 @@ internal static class CommandDispatcher
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-<<<<<<< HEAD
+
         var messageOptions2 = new TelegramBotAbstract.MessageOptions
-=======
-        TelegramBotAbstract.MessageOptions messageOptions2 = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
         {
             ChatId = peer.GetUserId(),
             peer = peer,
@@ -845,11 +827,9 @@ internal static class CommandDispatcher
             { "it", telegramBotClient.GetContactString() },
             { "en", telegramBotClient.GetContactString() }
         });
-<<<<<<< HEAD
+
         var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
         {
             ChatId = e?.Message.Chat.Id,
             Text = lang2,
@@ -911,11 +891,9 @@ internal static class CommandDispatcher
         });
         if (telegramBotClient != null)
         {
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
             {
                 ChatId = e?.Message.Chat.Id,
                 Text = lang2,

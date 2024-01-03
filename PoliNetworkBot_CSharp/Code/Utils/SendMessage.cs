@@ -33,11 +33,9 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-<<<<<<< HEAD
+
                 var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                 {
                     ChatId = userId,
                     Text = text,
@@ -68,11 +66,9 @@ internal static class SendMessage
 
         if (telegramBotClient != null)
         {
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
             {
                 ChatId = chatId,
                 Text = text3,
@@ -107,11 +103,9 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-<<<<<<< HEAD
+
                 var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                 {
                     ChatId = userIdToSendTo,
                     Text = text,
@@ -148,11 +142,9 @@ internal static class SendMessage
 
         try
         {
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
             {
                 ChatId = chatId,
                 Text = text,
@@ -181,11 +173,9 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-<<<<<<< HEAD
+
         var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
         {
             documentInput = file,
             peer = peer,

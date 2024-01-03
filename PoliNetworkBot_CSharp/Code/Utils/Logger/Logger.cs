@@ -62,11 +62,9 @@ public static class Logger
                 });
                 if (messageToBeSent.Key.Value != null)
                 {
-<<<<<<< HEAD
+
                     var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                     {
                         ChatId = messageToBeSent.Key.Key,
                         Text = text,

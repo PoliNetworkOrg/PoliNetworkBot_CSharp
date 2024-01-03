@@ -204,13 +204,10 @@ internal static class InviteLinks
                                             ex4M
                                         }
                                     });
-<<<<<<< HEAD
+
                                 var messageOptions =
                                     new TelegramBotAbstract.MessageOptions
-=======
-                                TelegramBotAbstract.MessageOptions messageOptions =
-                                    new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                                     {
                                         ChatId = e.Message.From.Id,
                                         Text = language,
@@ -238,13 +235,10 @@ internal static class InviteLinks
                                 }
                             });
 
-<<<<<<< HEAD
+
                         var messageOptions2 =
                             new TelegramBotAbstract.MessageOptions
-=======
-                        TelegramBotAbstract.MessageOptions messageOptions2 =
-                            new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                             {
                                 ChatId = e.Message.From.Id,
                                 Text = language1,
@@ -261,13 +255,10 @@ internal static class InviteLinks
                             "text/plain", TextAsCaption.AFTER_FILE);
                         var peerAbstract = new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type);
 
-<<<<<<< HEAD
+
                         var messageOptions3 =
                             new TelegramBotAbstract.MessageOptions
-=======
-                        TelegramBotAbstract.MessageOptions messageOptions3 =
-                            new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                             {
                                 documentInput = tf,
                                 peer = peerAbstract,
@@ -343,11 +334,8 @@ internal static class InviteLinks
                                 });
 
 
-<<<<<<< HEAD
                             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                             {
                                 ChatId = e.Message.From?.Id,
                                 Text = language,
@@ -402,11 +390,9 @@ internal static class InviteLinks
                                     }
                                 });
 
-<<<<<<< HEAD
+
                             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                             {
                                 ChatId = e.Message.From?.Id,
                                 Text = language,
@@ -455,11 +441,9 @@ internal static class InviteLinks
                                         ex3M
                                     }
                                 });
-<<<<<<< HEAD
+
                             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
                             {
                                 ChatId = e.Message.From?.Id,
                                 Text = language,

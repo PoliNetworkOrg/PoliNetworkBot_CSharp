@@ -639,11 +639,9 @@ public static class ProgramUtil
         });
 
 
-<<<<<<< HEAD
+
         var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
         {
             ChatId = 768169879,
             Text = text,
