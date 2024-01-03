@@ -33,10 +33,8 @@ public static class GithubToken
         {
             var botInfoAbstracts = botConfig.bots;
             if (botInfoAbstracts != null)
-                foreach (BotInfoAbstract VARIABLE in botInfoAbstracts)
-                {
+                foreach (var VARIABLE in botInfoAbstracts)
                     ;
-                }
         }
 
         return CommandExecutionState.SUCCESSFUL;
