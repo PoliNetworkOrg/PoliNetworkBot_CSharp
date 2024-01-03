@@ -38,7 +38,6 @@ public class BotInfoAbstract
     public string? website;
 
 
-
     internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()
     {
         if (onMessages == BotStartMethods.Anon.Item1)
