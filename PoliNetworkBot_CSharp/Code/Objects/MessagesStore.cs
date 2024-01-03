@@ -252,7 +252,6 @@ public static class MessagesStore
             });
             if (sender != null)
             {
-
                 var messageOptions =
                     new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
 

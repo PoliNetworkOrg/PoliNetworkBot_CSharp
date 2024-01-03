@@ -160,7 +160,6 @@ internal static class CommandDispatcher
     {
         if (e != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
@@ -171,7 +170,6 @@ internal static class CommandDispatcher
                 Username = e.Message.From?.Username,
 
                 ReplyToMessageId = e.Message.MessageId
-
             };
             var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
             return sendTextMessageAsync;
@@ -196,7 +194,6 @@ internal static class CommandDispatcher
 
             if (sender != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -207,7 +204,6 @@ internal static class CommandDispatcher
                     Username = e.Message.From?.Username,
 
                     ReplyToMessageId = e.Message.MessageId
-
                 };
                 await sender.SendTextMessageAsync(messageOptions);
             }
@@ -416,7 +412,6 @@ internal static class CommandDispatcher
                 if (e.Message.From != null)
                     if (sender != null)
                     {
-
                         var messageOptions = new TelegramBotAbstract.MessageOptions
 
                         {
@@ -426,7 +421,6 @@ internal static class CommandDispatcher
                             Lang = e.Message.From?.LanguageCode,
 
                             Username = e.Message.From?.Username
-
                         };
                         await sender.SendTextMessageAsync(messageOptions);
                     }
@@ -573,7 +567,6 @@ internal static class CommandDispatcher
             if (e.Message.From == null) return null;
             if (sender != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -602,7 +595,6 @@ internal static class CommandDispatcher
                 });
                 if (e.Message.From != null)
                 {
-
                     var messageOptions = new TelegramBotAbstract.MessageOptions
 
                     {
@@ -891,7 +883,6 @@ internal static class CommandDispatcher
         });
         if (telegramBotClient != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {

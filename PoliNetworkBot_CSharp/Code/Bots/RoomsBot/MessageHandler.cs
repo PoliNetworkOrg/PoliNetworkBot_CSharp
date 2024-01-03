@@ -448,7 +448,6 @@ public static class MessageHandler
                     Lang = message.From?.LanguageCode,
 
                     ReplyMarkupObject = markupObject
-
                 };
                 return await botClient.SendTextMessageAsync(messageOptions2);
             }
@@ -477,7 +476,6 @@ public static class MessageHandler
                         Lang = message.From?.LanguageCode,
 
                         ReplyMarkupObject = markupObject
-
                     };
                     return await botClient.SendTextMessageAsync(messageOptions3);
                 }
@@ -548,7 +546,6 @@ public static class MessageHandler
             Lang = message.From?.LanguageCode,
 
             ReplyMarkupObject = markupObject
-
         };
         return await botClient.SendTextMessageAsync(messageOptions4);
     }
@@ -576,7 +573,6 @@ public static class MessageHandler
                 Lang = message.From?.LanguageCode,
 
                 ReplyMarkupObject = markupObject
-
             };
             return await botClient.SendTextMessageAsync(messageOptions4);
         }
@@ -605,7 +601,6 @@ public static class MessageHandler
 
         if (conversation.CallbackNextFunction is Data.Enums.Function.NULL_FUNCTION or Data.Enums.Function.SETTINGS)
         {
-
             var messageOptions4 = new TelegramBotAbstract.MessageOptions
 
             {
@@ -615,7 +610,6 @@ public static class MessageHandler
                 Lang = message.From?.LanguageCode,
 
                 ReplyMarkupObject = markupObject
-
             };
             var sendTextMessageAsync = await botClient.SendTextMessageAsync(messageOptions4);
             return sendTextMessageAsync;
@@ -646,7 +640,6 @@ public static class MessageHandler
             Lang = message.From?.LanguageCode,
 
             ReplyMarkupObject = markupObject
-
         };
         var sendTextMessageAsync = await botClient.SendTextMessageAsync(messageOptions4);
         return sendTextMessageAsync;

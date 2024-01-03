@@ -85,10 +85,8 @@ internal class MessageAnonToSendInQueue
 
             Lang = "en",
             Text = text
-
         };
         var m1 = await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
 
 
         return m1;

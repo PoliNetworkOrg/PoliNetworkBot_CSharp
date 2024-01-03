@@ -393,7 +393,6 @@ public static class MessageDb
         var text2 = new Language(dict);
         if (telegramBotAbstract != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
@@ -635,12 +634,8 @@ public static class MessageDb
             ChatType.Private, botClass);
 
         if (botClass != null)
-        {
             return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
                 caption, parseMode, typeOfChatSentInto.Value, null);
-
-            
-        }
 
         return null;
     }

@@ -33,7 +33,6 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -66,7 +65,6 @@ internal static class SendMessage
 
         if (telegramBotClient != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
@@ -103,7 +101,6 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -142,7 +139,6 @@ internal static class SendMessage
 
         try
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
@@ -173,7 +169,6 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-
         var messageOptions = new TelegramBotAbstract.MessageOptions
 
         {

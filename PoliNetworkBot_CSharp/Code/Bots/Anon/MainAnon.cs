@@ -124,7 +124,6 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
@@ -234,7 +233,6 @@ internal static class MainAnon
 
             if (telegramBotAbstract != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
@@ -246,7 +244,6 @@ internal static class MainAnon
                     Text = l2
                 };
                 await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
             }
         }
     }
@@ -331,7 +328,6 @@ internal static class MainAnon
                 });
                 if (telegramBotAbstract != null)
                 {
-
                     var messageOptions = new TelegramBotAbstract.MessageOptions
                     {
                         ChatId = m1.From?.Id,
@@ -344,7 +340,6 @@ internal static class MainAnon
                         Text = l3
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                 }
 
 
@@ -405,7 +400,6 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -419,7 +413,6 @@ internal static class MainAnon
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                     }
                 }
                 else
@@ -455,7 +448,6 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -469,7 +461,6 @@ internal static class MainAnon
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                     }
                 }
                 else
@@ -493,7 +484,6 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -507,7 +497,6 @@ internal static class MainAnon
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                     }
                 }
                 else
@@ -538,7 +527,6 @@ internal static class MainAnon
             : ConfigAnon.WhereToPublishAnonUncensored;
         var r = await telegramBotAbstract.ForwardMessageAnonAsync(
             whereToPublishAnonUncensored,
-
             r2, x.MessageIdReplyTo, null);
 
 
@@ -561,9 +549,7 @@ internal static class MainAnon
             {
                 if (telegramBotAbstract != null)
                     x = await telegramBotAbstract.ForwardMessageAnonAsync(ConfigAnon.ModAnonCheckGroup, e.GetMessage(),
-
                         null, null);
-
             }
             else
             {
@@ -583,7 +569,6 @@ internal static class MainAnon
 
                 if (telegramBotAbstract != null)
                 {
-
                     var messageOptions = new TelegramBotAbstract.MessageOptions
                     {
                         ChatId = e.GetFromUserId(),
@@ -595,7 +580,6 @@ internal static class MainAnon
                         Text = l6
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                 }
 
                 return false;
@@ -607,7 +591,6 @@ internal static class MainAnon
                     var m5 = e.GetMessage();
                     if (m5 != null)
                     {
-
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = e.GetFromUserId(),
@@ -619,7 +602,6 @@ internal static class MainAnon
                             Text = l4
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
                     }
                 }
         }
@@ -703,7 +685,6 @@ internal static class MainAnon
         if (telegramBotAbstract != null)
             if (m1 != null)
             {
-
                 var messageOptions = new TelegramBotAbstract.MessageOptions
                 {
                     ChatId = m1.From?.Id,
@@ -715,7 +696,6 @@ internal static class MainAnon
                     Text = text
                 };
                 await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
             }
     }
 
@@ -733,7 +713,6 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (sender != null)
         {
-
             var messageOptions = new TelegramBotAbstract.MessageOptions
             {
                 ChatId = m1?.From?.Id,
@@ -744,7 +723,6 @@ internal static class MainAnon
                 Text = text
             };
             await sender.SendTextMessageAsync(messageOptions);
-
         }
     }
 }

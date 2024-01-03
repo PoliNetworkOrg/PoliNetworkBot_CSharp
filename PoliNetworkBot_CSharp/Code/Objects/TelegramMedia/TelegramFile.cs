@@ -43,7 +43,6 @@ public class TelegramFile : GenericFile
 
 
         return null;
-
     }
 
     public override MessageType? GetMediaBotType()

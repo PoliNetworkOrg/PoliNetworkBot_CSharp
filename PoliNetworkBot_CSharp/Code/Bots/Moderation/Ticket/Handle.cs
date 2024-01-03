@@ -27,7 +27,6 @@ public static class Handle
 
         try
         {
-
             var messageReplyToMessage = e.Message.ReplyToMessage;
             if (messageReplyToMessage != null)
 
