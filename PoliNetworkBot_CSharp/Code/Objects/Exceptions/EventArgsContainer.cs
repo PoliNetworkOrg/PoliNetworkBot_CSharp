@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 
@@ -12,6 +13,7 @@ public class EventArgsContainer
     public CallbackGenericData? CallbackGenericData;
     public CallbackQueryEventArgs? CallbackQueryEventArgs;
     public MessageEventArgs? MessageEventArgs;
+    public JObject? Extra;
 
     public static EventArgsContainer Get(MessageEventArgs? messageEventArgs)
     {

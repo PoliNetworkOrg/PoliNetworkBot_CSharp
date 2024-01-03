@@ -186,8 +186,9 @@ public static class RestoreDbUtil
         if (xTablesDdl != null)
         {
             var backup = new DB_Backup();
-            DbBackup.FillTables(backup, GlobalVariables.DbConfig);
-            foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
+            DbBackup.FillTablesData(backup, GlobalVariables.DbConfig);
+            var actionDoneReports = xTablesDdl.Select(x => RestoreSingleTable(x, backup));
+            foreach (var y in actionDoneReports)
             {
                 if (y.Done)
                     done++;
