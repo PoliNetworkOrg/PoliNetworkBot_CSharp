@@ -32,29 +32,29 @@ public static class SwitchDispatcher
             Permission.USER,
             new L("en", "Initialize bot", "it", "Inizializza il bot"),
             null, null),
-        
+
         new Command("force_check_invite_links", CommandDispatcher.ForceCheckInviteLinksAsync,
             new List<ChatType> { ChatType.Private },
             Permission.CREATOR,
             new L("en", "Regenerates broken links for all groups", "it", "Rigenera tutti i link rotti dei gruppi"),
             null,
             null),
-        
+
         new Command("contact", CommandDispatcher.ContactUs, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "Show PoliNetwork contact's information", "it",
                 "Mostra le informazioni per contattare PoliNetwork"), null, null),
-        
+
         new Command("help", CommandDispatcher.HelpPrivate, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "This Menu @args: (optional) specific command to describe", "it",
                 "Questo menu @args: (optional) spiegazione per un comando"), null, null),
-        
+
         new Command("help_all", CommandDispatcher.HelpExtended, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "Extended help menu, with all commands", "it", "Menu Help esteso con tutti i comandi"), null,
             null),
-        
+
         new Command("mute_all", RestrictUser.MuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
@@ -63,7 +63,7 @@ public static class SwitchDispatcher
                 "Mute un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("unmute_all", RestrictUser.UnMuteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_MUTE_ALL,
             new L("en",
@@ -72,7 +72,7 @@ public static class SwitchDispatcher
                 "UNMute un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("ban_all", RestrictUser.BanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
@@ -81,7 +81,7 @@ public static class SwitchDispatcher
                 "Banna un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("unban_all", RestrictUser.UnbanAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
@@ -90,7 +90,7 @@ public static class SwitchDispatcher
                 "UNBanna un utente dal network. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("ban_delete_all", RestrictUser.BanDeleteAllAsync, new List<ChatType> { ChatType.Private },
             Permission.ALLOWED_BAN_ALL,
             new L("en",
@@ -99,77 +99,77 @@ public static class SwitchDispatcher
                 "Banna un utente dal network e cancella tutti i suoi messaggi. @args: &lt;id to ban&gt; &lt;optional - until time&gt; @condition: devi rispondere ad un messaggio di motivazione dell'azione"),
             null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("del", RestrictUser.DeleteMessageFromUser,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.ALLOWED_BAN_ALL,
             new L("en", "Delete a message in chat. @condition: you need to reply to the message to delete", "it",
                 "Cancella un messaggio in chat. @condition: devi rispondere al messaggio da cancellare"), null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("ban", RestrictUser.BanUserAsync,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER,
             new L("en", "Delete a message in chat. @condition: you need to reply to the message to delete", "it",
                 "Cancella un messaggio in chat. @condition: devi rispondere al messaggio da cancellare"), null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("test_spam", CommandDispatcher.TestSpamAsync, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "Test a message for spam. @condition: you need to reply to the message to test", "it",
                 "Testa un messaggio contro il filtro spam. @condition: devi rispondere al messaggio da testare"), null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("groups", CommandDispatcher.SendRecommendedGroupsAsync,
             new List<ChatType> { ChatType.Private }, Permission.USER,
-            new L("en", "Get suggested groups for you.", "it", "Ricevi i gruppi consigliati per te."), 
+            new L("en", "Get suggested groups for you.", "it", "Ricevi i gruppi consigliati per te."),
             null, null),
-        
+
         new Command("search", Groups.SendGroupsByTitle, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "Search for a group by title.", "it",
                 "Cerca gruppi per titolo. @condition: you need to reply to a message"), null, null),
-        
+
         new Command("search", Groups.SendGroupsByTitle,
             new List<ChatType> { ChatType.Group, ChatType.Supergroup, ChatType.Channel }, Permission.USER,
             new L("en", "Search for a group by title. @condition: you need to reply to a message", "it",
                 "Cerca gruppi per titolo. @condition: devi rispondere ad un messaggio"), null,
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command("reboot", RebootUtil.RebootWithLog, new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Reboot the bot system", "it", "Riavvia il sistema di bot"), null, null,
             false), // do not turn this on, use /kill and let kubernetes handle reboots
-        
+
         new Command("sendmessageinchannel", SendMessage.SendMessageInChannel2, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "Send message in channel", "it", "Invia messaggio in canale"),
             null, e => e.Message.ReplyToMessage != null),
-        
+
         new Command("get_config", BotConfig.GetConfigFromCommand, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot config"), null, null),
-        
+
         new Command("get_db_config", BotConfig.GetDbConfig, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot db config"), null, null),
-        
+
         new Command("getgroups", Groups.GetGroups, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Get bot groups"), null, null),
 
         new Command("qe", Database.QueryBotExec, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query execute"), null, null),
-        
+
         new Command("qs", Database.QueryBotSelect, new List<ChatType> { ChatType.Private },
             Permission.OWNER, new L("en", "Esegui una query select"), null, null),
 
         new Command("allow_message", CommandDispatcher.AllowMessageAsync,
             new List<ChatType> { ChatType.Private }, Permission.HEAD_ADMIN,
             new L("en", "allow a message"), null, null),
-        
+
         new Command("allow_message_owner", CommandDispatcher.AllowMessageOwnerAsync,
             new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "allow a message owner"), null, null),
-        
+
         new Command("allowed_messages", AllowedMessage.GetAllowedMessages, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "get allowed messages"), null, null),
-        
+
         new Command("unallow_message", AllowedMessage.UnAllowMessage, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "unallow a message"), null, null),
@@ -182,35 +182,35 @@ public static class SwitchDispatcher
                         "\n -dry Output to console" +
                         "\n -link-check Ask telegram if each link is working" +
                         "\n -fix-names Ask telegram if each db name is consistent with actual name"), null, null),
-        
+
         new Command("update_links_from_json", InviteLinks.UpdateLinksFromJsonAsync2,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "update links from json"), null, null),
 
         new Command("subscribe_log", Logger.SubscribeCommand, new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "subscribe log"), null, null),
-        
+
         new Command("unsubscribe_log", Logger.UnsubscribeCommand, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "unsubscribe log"), null, null),
-        
+
         new Command("getlog", Logger.GetLogCommand, new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "get log"), null, null),
 
         new Command("getrunningtime", TimeUtils.GetRunningTime, new List<ChatType> { ChatType.Private },
             Permission.OWNER,
             new L("en", "get running time"), null, null),
-        
+
         new Command("testtime", TimeUtils.TestTime, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "test time"), null, null),
-        
+
         new Command("time", TimeUtils.GetTime, new List<ChatType> { ChatType.Private }, Permission.USER,
             new L("en", "get time"), null, null),
 
         new Command("rules", CommandDispatcher.GetRules, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "get rules"), null, null),
-        
+
         new Command("rooms", CommandDispatcher.GetRooms, new List<ChatType> { ChatType.Private },
             Permission.USER,
             new L("en", "get rooms"), null, null),
@@ -241,7 +241,7 @@ public static class SwitchDispatcher
                 "Esempio: 2020-12-31 23:59\n" +
                 "Nota bene che c'è un solo spazio fra data e orario, e non ci sono spazi da altre parti. Siate molto precisi con il formato della data/ora"),
             e => e.Message.ReplyToMessage != null),
-        
+
         new Command(new List<string> { "assoc_write_dry" }, AssocCommands.AssocWriteDry,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Insert a message in queue - DRY RUN @condition: Reply to the message to send - DRY RUN", "it",

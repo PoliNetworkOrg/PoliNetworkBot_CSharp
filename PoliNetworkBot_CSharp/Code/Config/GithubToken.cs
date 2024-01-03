@@ -2,7 +2,6 @@
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Main;
 
 namespace PoliNetworkBot_CSharp.Code.Config;
 

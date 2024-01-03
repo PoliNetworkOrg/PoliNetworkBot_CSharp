@@ -27,7 +27,7 @@ public class BotConfig
 
         var messageFrom = e.Message.From;
         var chatType = e.Message.Chat.Type;
-        
+
         var config = ConfigUtil.GetConfig(
             messageFrom?.Id,
             messageFrom?.Username,
