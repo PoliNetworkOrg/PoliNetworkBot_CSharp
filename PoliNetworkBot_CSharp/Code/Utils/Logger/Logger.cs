@@ -122,18 +122,13 @@ public static class Logger
             }
 
             foreach (var subscriber in Subscribers.Where(subscriber => subscriber.Value != null))
-            {
                 if (log1 != null)
-                {
                     Buffer.Post(
                         new MessageQueue(subscriber,
                             log1,
                             ChatType.Group,
                             ParseMode.Html)
                     );
-                }
-                        
-            }
 
             try
             {
@@ -151,11 +146,10 @@ public static class Logger
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-            }            
-                
+            }
+
             _linesCount++;
             SendLogIfOversize();
-
         }
         catch (Exception e)
         {

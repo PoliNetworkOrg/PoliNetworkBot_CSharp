@@ -584,7 +584,6 @@ internal static class Groups
         var linkCheck = false;
         if (args != null)
             foreach (var arg in args)
-            {
                 switch (arg)
                 {
                     case "-dry":
@@ -597,7 +596,6 @@ internal static class Groups
                         fixGroupsNames = true;
                         break;
                 }
-            }
 
         var text = await CommandDispatcher.UpdateGroups(sender, dry, debug, fixGroupsNames, e, linkCheck);
 

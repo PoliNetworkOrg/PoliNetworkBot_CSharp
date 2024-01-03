@@ -125,7 +125,6 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-
                             var errorDescription = execState.ToString();
 
 
@@ -302,11 +301,9 @@ internal static class CommandDispatcher
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
             });
-
         }
 
 
-        
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
