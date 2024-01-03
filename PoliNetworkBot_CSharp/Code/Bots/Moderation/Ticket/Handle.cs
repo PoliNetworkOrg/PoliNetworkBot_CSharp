@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -12,8 +13,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private static readonly List<ChatIdTg>
-        AllowedGroups = new() { new ChatIdTg { Id = 2124790858, VaAggiuntoMeno100 = true } };
+    private static readonly List<ChatIdTgWith100>
+        AllowedGroups = new()
+        {
+            GroupsConstants.TestGroup,
+            GroupsConstants.PianoDiStudi,
+            GroupsConstants.Dsu
+        };
+
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -21,8 +28,9 @@ public static class Handle
             return;
 
 
-        var allowedGroupsContains = AllowedGroupsContains(e.Message.Chat.Id);
-        if (!allowedGroupsContains.Item1)
+        var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
+        if (!found || chatIdTgWith100 == null)
+
             return;
 
         try
@@ -39,7 +47,8 @@ public static class Handle
             var date = GetItalianDateTime(e);
 
 
-            var chatId = allowedGroupsContains.Item2?.Id;
+            var chatId = chatIdTgWith100?.Id;
+
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
 
@@ -59,7 +68,8 @@ public static class Handle
 
             const int maxLengthTitle = 25;
             var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
-            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t);
+
+            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
         }
         catch (Exception ex)
         {
@@ -75,21 +85,10 @@ public static class Handle
         return date;
     }
 
-    private static Tuple<bool, ChatIdTg?> AllowedGroupsContains(long chatId)
+    private static Tuple<bool, ChatIdTgWith100?> AllowedGroupsContains(long chatId)
     {
         var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
 
-        return b == null ? new Tuple<bool, ChatIdTg?>(false, null) : new Tuple<bool, ChatIdTg?>(true, b);
-    }
-}
-
-internal class ChatIdTg
-{
-    public long Id;
-    public bool VaAggiuntoMeno100;
-
-    public string GetString()
-    {
-        return VaAggiuntoMeno100 ? "-100" + Id : Id.ToString();
+        return b == null ? new Tuple<bool, ChatIdTgWith100?>(false, null) : new Tuple<bool, ChatIdTgWith100?>(true, b);
     }
 }

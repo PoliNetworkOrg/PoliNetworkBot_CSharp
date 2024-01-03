@@ -70,7 +70,8 @@ public class ExceptionNumbered : Exception
                 ["ExceptionToString"] = ToString(),
                 ["StackTrace"] = GetStackTrace(StackTrace),
                 ["MessageArgs"] = messageEventArgs == null ? null : JsonConvert.SerializeObject(messageEventArgs),
-                ["extraInfo"] = extraInfo == null ? null : JsonConvert.SerializeObject(extraInfo)
+                ["extraInfo1"] = extraInfo == null ? null : JsonConvert.SerializeObject(extraInfo),
+                ["extraInfo2"] = messageEventArgs?.Extra
             };
             var s2 = new StringJson(FileTypeJsonEnum.OBJECT, jObject);
             return new TelegramFileContent(s2, null);

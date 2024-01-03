@@ -106,7 +106,7 @@ public static class RestoreDbUtil
         var x = RestoreDb_FromFileContent(text);
 
         var r = "RestoreDbFromTelegram [" + x + "]";
-        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup.FullLong() };
         var extraValues = new JObject { ["done"] = x?.GetJObject() };
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
         Logger.Logger.WriteLine(r + " " + b);
@@ -132,7 +132,7 @@ public static class RestoreDbUtil
         var x = RestoreDb_ddl_FromFileContent(text);
 
         var r = "RestoreDb_Ddl_FromTelegram [" + (x?.Message ?? "[null]") + "]";
-        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup.FullLong() };
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, x?.Extra);
         Logger.Logger.WriteLine(r + " " + b);
 
@@ -186,8 +186,9 @@ public static class RestoreDbUtil
         if (xTablesDdl != null)
         {
             var backup = new DB_Backup();
-            DbBackup.FillTables(backup, GlobalVariables.DbConfig);
-            foreach (var y in xTablesDdl.Select(x => RestoreSingleTable(x, backup)))
+            DbBackup.FillTablesData(backup, GlobalVariables.DbConfig);
+            var actionDoneReports = xTablesDdl.Select(x => RestoreSingleTable(x, backup));
+            foreach (var y in actionDoneReports)
             {
                 if (y.Done)
                     done++;
@@ -318,7 +319,7 @@ public static class RestoreDbUtil
         var x = RestoreDb_full_FromFileContent(text);
 
         var r = "RestoreDb_Full_FromTelegram [" + x + "]";
-        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup };
+        var longs = new List<long?> { arg1?.Message.From?.Id, GroupsConstants.BackupGroup.FullLong() };
         var extraValues = new JObject { ["done"] = ActionDoneReport.GetObject(x) };
         var b = NotifyUtil.SendReportOfExecution(arg1, arg2, longs, r, extraValues);
         Logger.Logger.WriteLine(r + " " + b);
