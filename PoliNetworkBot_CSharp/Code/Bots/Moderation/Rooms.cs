@@ -603,9 +603,15 @@ internal static class Rooms
                 var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
                     message, TextAsCaption.AS_CAPTION, "text/html");
 
-                sender?.SendFileAsync(document,
-                    peer, e?.Message.From?.Username,
-                    e?.Message.From?.LanguageCode, null, true);
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    documentInput = document, 
+                    DisablePreviewLink = true,
+                    Username =  e?.Message?.From?.Username,
+                    peer = peer,
+                    Lang = e?.Message?.From?.LanguageCode
+                };
+                sender?.SendFileAsync(messageOptions);
             }
         }
     }

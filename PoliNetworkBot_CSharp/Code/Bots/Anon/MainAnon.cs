@@ -123,8 +123,18 @@ internal static class MainAnon
             { "en", "Ok. If you need any help, use /help" }
         });
         if (telegramBotAbstract != null)
-            await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l3, ChatType.Private,
-                e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
+        {
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+            {
+                ChatId = e?.Message.From?.Id,
+                ParseMode = ParseMode.Html,
+                Username = e?.Message.From?.Username,
+                ChatType = ChatType.Private,
+                Lang = e?.Message.From?.LanguageCode,
+                Text = l3
+            };
+            await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+        }
     }
 
     private static async Task AskIdentityForMessageToSend2(TelegramBotAbstract? telegramBotAbstract,
@@ -221,8 +231,19 @@ internal static class MainAnon
             });
 
             if (telegramBotAbstract != null)
-                await telegramBotAbstract.SendTextMessageAsync(e?.Message.From?.Id, l2, ChatType.Private,
-                    e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                {
+                    ChatId = e?.Message.From?.Id,
+                    ParseMode = ParseMode.Html,
+                    Username = e?.Message.From?.Username,
+                    ChatType = ChatType.Private,
+                    Lang = e?.Message.From?.LanguageCode,
+                    Text = l2
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                
+            }
         }
     }
 
@@ -305,9 +326,20 @@ internal static class MainAnon
                     { "it", "L'identità non è stata riconosciuta. Operazione annullata" }
                 });
                 if (telegramBotAbstract != null)
-                    await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, l3,
-                        ChatType.Private, m1.From?.LanguageCode,
-                        ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), m1.From?.Username);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                    {
+                        ChatId = m1.From?.Id,
+                        ParseMode = ParseMode.Html,
+                        Username =m1.From?.Username,
+                        ChatType = ChatType.Private,
+                        Lang = m1.From?.LanguageCode,
+                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        Text = l3
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                    
+                }
                 return;
             }
 
@@ -364,10 +396,25 @@ internal static class MainAnon
                         { "it", "Il tuo post è stato approvato! Congratulazioni! " + link }
                     });
                     if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.AuthorId.Value, t1, ChatType.Private,
-                            dataAnon.LangUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                            dataAnon.Username,
-                            dataAnon.MessageIdUser);
+                    {
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+                            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            Text = t1,
+                            ReplyToMessageId = dataAnon.MessageIdUser
+                        };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                        
+
+                        
+                        
+                    }
                 }
                 else
                 {
@@ -401,10 +448,27 @@ internal static class MainAnon
                         { "it", "Il tuo post è stato messo nella zona uncensored! " + link }
                     });
                     if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.AuthorId.Value, t1, ChatType.Private,
-                            dataAnon.LangUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                            dataAnon.Username,
-                            dataAnon.MessageIdUser);
+                    {
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+                            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            Text = t1,
+                            ReplyToMessageId = dataAnon.MessageIdUser
+                        };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+              
+                        
+                        
+                        
+                    }
                 }
                 else
                 {
@@ -426,10 +490,26 @@ internal static class MainAnon
                         { "it", "Il tuo post è stato rifiutato!" }
                     });
                     if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(dataAnon.AuthorId.Value, t1, ChatType.Private,
-                            dataAnon.LangUser, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                            dataAnon.Username,
-                            dataAnon.MessageIdUser);
+                    {
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+                            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            Text = t1,
+                            ReplyToMessageId = dataAnon.MessageIdUser
+                        };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+          
+                        
+                        
+                    }
                 }
                 else
                 {
@@ -454,11 +534,12 @@ internal static class MainAnon
 
         //var r = await telegramBotAbstract.ForwardMessageAsync((long)x.messageIdGroup.Value, ConfigAnon.ModAnonCheckGroup, x.resultQueueEnum == ResultQueueEnum.APPROVED_MAIN ? ConfigAnon.WhereToPublishAnonMain : ConfigAnon.WhereToPublishAnonUncensored);
         if (telegramBotAbstract == null) return null;
+        var whereToPublishAnonUncensored = x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
+            ? ConfigAnon.WhereToPublishAnonMain
+            : ConfigAnon.WhereToPublishAnonUncensored;
         var r = await telegramBotAbstract.ForwardMessageAnonAsync(
-            x.GetResultEnum() == ResultQueueEnum.APPROVED_MAIN
-                ? ConfigAnon.WhereToPublishAnonMain
-                : ConfigAnon.WhereToPublishAnonUncensored,
-            r2, x.MessageIdReplyTo);
+            whereToPublishAnonUncensored,
+            r2, x.MessageIdReplyTo,null);
 
         return r;
     }
@@ -479,7 +560,7 @@ internal static class MainAnon
             {
                 if (telegramBotAbstract != null)
                     x = await telegramBotAbstract.ForwardMessageAnonAsync(ConfigAnon.ModAnonCheckGroup, e.GetMessage(),
-                        null);
+                        null,null);
             }
             else
             {
@@ -498,9 +579,27 @@ internal static class MainAnon
                 });
 
                 if (telegramBotAbstract != null)
-                    await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l6, ChatType.Private,
-                        e.GetLanguageCode(), ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        e.GetUsername());
+                {
+                    
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                    {
+                        ChatId = e.GetFromUserId(),
+                        ParseMode = ParseMode.Html,
+                        Username =  e.GetUsername(),
+                        ChatType = ChatType.Private,
+                        Lang =  e.GetLanguageCode(),
+                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        Text = l6,
+
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+                    
+                    
+                    
+                }
 
                 return false;
             }
@@ -510,9 +609,26 @@ internal static class MainAnon
                 {
                     var m5 = e.GetMessage();
                     if (m5 != null)
-                        await telegramBotAbstract.SendTextMessageAsync(e.GetFromUserId(), l4,
-                            ChatType.Group, "it", ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), null,
-                            m5.MessageId);
+                    {
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = e.GetFromUserId(),
+                            ParseMode = ParseMode.Html,
+                            Username =  e.GetUsername(),
+                            ChatType = ChatType.Group,
+                            Lang =  "it",
+                            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            Text = l4,
+
+                        };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+                     
+                        
+                    }
                 }
         }
         catch (Exception e1)
@@ -594,9 +710,25 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (telegramBotAbstract != null)
             if (m1 != null)
-                await telegramBotAbstract.SendTextMessageAsync(m1.From?.Id, text, ChatType.Private,
-                    m1.From?.LanguageCode, ParseMode.Html, new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                    m1.From?.Username);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                {
+                    ChatId = m1.From?.Id,
+                    ParseMode = ParseMode.Html,
+                    Username =    m1.From?.Username,
+                    ChatType = ChatType.Private,
+                    Lang =   m1.From?.LanguageCode,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = text,
+
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+
+                
+            }
     }
 
     private static async Task StartMessageAsync(TelegramBotAbstract? sender, MessageEventArgs? e)
@@ -612,7 +744,21 @@ internal static class MainAnon
 
         var m1 = e?.Message;
         if (sender != null)
-            await sender.SendTextMessageAsync(m1?.From?.Id, text, ChatType.Private,
-                e?.Message.From?.LanguageCode, ParseMode.Html, null, e?.Message.From?.Username);
+        {
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+            {
+                ChatId = m1?.From?.Id,
+                ParseMode = ParseMode.Html,
+                Username =   e?.Message.From?.Username,
+                ChatType = ChatType.Private,
+                Lang =    e?.Message.From?.LanguageCode,
+                Text = text,
+
+            };
+            await sender.SendTextMessageAsync(messageOptions);
+            
+
+            
+        }
     }
 }
