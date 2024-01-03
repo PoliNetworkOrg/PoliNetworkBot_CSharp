@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,6 +21,11 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 internal static class BackupUtil
 {
+    public static List<string> excludedTablesBackupDb = new List<string>()
+    {
+        "LogTable"
+    };
+
     internal static void BackupBeforeReboot()
     {
         MessagesStore.BackupToFile();
@@ -27,20 +33,20 @@ internal static class BackupUtil
             CallbackUtils.CallbackUtils.CallBackDataFull.BackupToFile();
     }
 
+    const string applicationJson = "application/json";
+    const string path = "LocalJSONFile.JSON";
 
     public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
         if (botAbstract.DbConfig == null) return;
 
-        const string applicationJson = "application/json";
-        const string path = "LocalJSONFile.JSON";
-        await BackupDbData(sendTo, botAbstract, path, applicationJson);
-        await BackupDbDdl(sendTo, botAbstract, path, applicationJson);
+
+        await BackupDbData(sendTo, botAbstract);
+        await BackupDbDdl(sendTo, botAbstract);
     }
 
-    private static async Task BackupDbDdl(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
-        string applicationJson)
+    private static async Task BackupDbDdl(List<long?> sendTo, TelegramBotAbstract botAbstract)
     {
         if (botAbstract.DbConfig == null) return;
 
@@ -52,9 +58,12 @@ internal static class BackupUtil
 
             var serializedText = JsonConvert.SerializeObject(dbFullDdl);
             await SendBackup(
-                sendTo, botAbstract,
-                path, applicationJson,
-                serializedText, textToSendBefore,
+                sendTo,
+                botAbstract,
+                path,
+                applicationJson,
+                serializedText,
+                textToSendBefore,
                 dbFullDdlJson
             );
         }
@@ -64,8 +73,7 @@ internal static class BackupUtil
         }
     }
 
-    private static async Task BackupDbData(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
-        string applicationJson)
+    private static async Task BackupDbData(List<long?> sendTo, TelegramBotAbstract botAbstract)
     {
         if (botAbstract.DbConfig == null) return;
 
@@ -75,21 +83,10 @@ internal static class BackupUtil
 
             DbBackup.FillTableNames(db, botAbstract.DbConfig);
 
-            if (db.tableNames != null)
-                foreach (var tableName in db.tableNames)
-                    try
-                    {
-                        await BackupDbDataSingleTable(tableName, sendTo, botAbstract, path, applicationJson);
-                    }
-                    catch (Exception? ex)
-                    {
-                        var jObject = new JObject
-                        {
-                            ["tableName"] = tableName
-                        };
-                        var eventArgsContainer = new EventArgsContainer { Extra = jObject };
-                        await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, eventArgsContainer);
-                    }
+            var dbTableNames = db.tableNames?.Where(x => !excludedTablesBackupDb.Contains(x));
+            if (dbTableNames != null)
+                foreach (var tableName in dbTableNames)
+                    await BackupDbDataSingleTable(tableName, sendTo, botAbstract);
         }
         catch (Exception? ex)
         {
@@ -99,20 +96,34 @@ internal static class BackupUtil
 
 
     private static async Task BackupDbDataSingleTable(string tableName, List<long?> sendTo,
-        TelegramBotAbstract botAbstract,
-        string path, string applicationJson)
+        TelegramBotAbstract botAbstract)
     {
-        var data = DbBackup.GetDataTable(botAbstract.DbConfig, tableName);
-        var textToSendBefore = "Backup DB Data (table: " + tableName + ")";
-        var dbFullDataJson = "db_full_data_" + tableName + ".json";
+        try
+        {
+            var data = DbBackup.GetDataTable(botAbstract.DbConfig, tableName);
+            var textToSendBefore = "Backup DB Data (table: " + tableName + ")";
+            var dbFullDataJson = "db_full_data_" + tableName + ".json";
 
-        var serializedText = JsonConvert.SerializeObject(data);
-        await SendBackup(
-            sendTo, botAbstract,
-            path, applicationJson,
-            serializedText, textToSendBefore,
-            dbFullDataJson
-        );
+            var serializedText = JsonConvert.SerializeObject(data);
+            await SendBackup(
+                sendTo,
+                botAbstract,
+                path,
+                applicationJson,
+                serializedText,
+                textToSendBefore,
+                dbFullDataJson
+            );
+        }
+        catch (Exception? ex)
+        {
+            var jObject = new JObject
+            {
+                ["tableName"] = tableName
+            };
+            var eventArgsContainer = new EventArgsContainer { Extra = jObject };
+            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, eventArgsContainer);
+        }
     }
 
 
