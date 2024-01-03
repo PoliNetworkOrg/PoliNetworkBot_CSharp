@@ -306,7 +306,7 @@ internal static class CommandDispatcher
         }
 
 
-        }
+        
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
