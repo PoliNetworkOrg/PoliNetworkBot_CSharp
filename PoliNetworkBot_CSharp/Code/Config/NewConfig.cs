@@ -54,21 +54,23 @@ public static class NewConfig
     {
         try
         {
-            BotConfig t = new()
-            {
-                bots = new List<BotInfoAbstract>
-                {
-                    new()
-                }
-            };
-            t.bots[0].botTypeApi = b;
-            var j = JsonConvert.SerializeObject(t);
-            File.WriteAllText(configBotsInfo, j);
+            var botInfoAbstract = new BotInfoAbstract { botTypeApi = b };
+            var botInfoAbstracts = new List<BotInfoAbstract> { botInfoAbstract };
+
+            BotConfig t = new() { bots = botInfoAbstracts };
+
+            WriteConfig(configBotsInfo, t);
         }
         catch (Exception e)
         {
             Logger.WriteLine(e.Message);
         }
+    }
+
+    public static void WriteConfig(string path, BotConfig t)
+    {
+        var j = JsonConvert.SerializeObject(t);
+        File.WriteAllText(path, j);
     }
 
     private static void DestroyDB_And_Redo_it(bool alsoFillTablesFromJson)
