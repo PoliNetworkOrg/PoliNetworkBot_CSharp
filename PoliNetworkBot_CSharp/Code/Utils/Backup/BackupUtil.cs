@@ -30,21 +30,83 @@ internal static class BackupUtil
     public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
+        if (botAbstract.DbConfig == null)
+        {
+            return;
+        }
+
+        const string applicationJson = "application/json";
+        const string path = "LocalJSONFile.JSON";
+        await BackupDbData(sendTo, botAbstract, path, applicationJson);
+        await BackupDbDdl(sendTo, botAbstract, path, applicationJson);
+    }
+
+    private static async Task BackupDbDdl(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
+        string applicationJson)
+    {
+        if (botAbstract.DbConfig == null)
+        {
+            return;
+        }
+
         try
         {
-            if (botAbstract.DbConfig != null)
-            {
-                const string applicationJson = "application/json";
-                var dbFull = DbBackup.GetDb_Full(botAbstract.DbConfig);
-                var dbFullDdl = DbBackup.Get_DB_DDL_Full(botAbstract.DbConfig);
-                var backupFull = new BackupFull(dbFull, dbFullDdl);
-                const string path = "LocalJSONFile.JSON";
-                var serializedText = JsonConvert.SerializeObject(backupFull);
-                await File.WriteAllTextAsync(path, serializedText);
-                var stringOrStream = new StringOrStream { StringValue = serializedText };
-                LoggerSendFile.SendFiles(sendTo, stringOrStream, botAbstract,
-                    "Backup DB", applicationJson, "db_full.json");
-            }
+            var dbFullDdl = DbBackup.Get_DB_DDL_Full(botAbstract.DbConfig);
+            const string textToSendBefore = "Backup DB DDL";
+            const string dbFullDdlJson = "db_full_ddl.json";
+
+            var serializedText = JsonConvert.SerializeObject(dbFullDdl);
+            await SendBackup(
+                sendTo, botAbstract,
+                path, applicationJson,
+                serializedText, textToSendBefore,
+                dbFullDdlJson
+            );
+        }
+        catch (Exception? ex)
+        {
+            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, null);
+        }
+    }
+
+    private static async Task BackupDbData(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
+        string applicationJson)
+    {
+        if (botAbstract.DbConfig == null)
+        {
+            return;
+        }
+
+        try
+        {
+            var dbFull = DbBackup.GetDb_Full(botAbstract.DbConfig);
+            const string textToSendBefore = "Backup DB Data";
+            const string dbFullDataJson = "db_full_data.json";
+
+            var serializedText = JsonConvert.SerializeObject(dbFull);
+            await SendBackup(
+                sendTo, botAbstract,
+                path, applicationJson,
+                serializedText, textToSendBefore,
+                dbFullDataJson
+            );
+        }
+        catch (Exception? ex)
+        {
+            await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, null);
+        }
+    }
+
+    private static async Task SendBackup(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
+        string applicationJson,
+        string serializedText, string textToSendBefore, string dbFullDataJson)
+    {
+        try
+        {
+            await File.WriteAllTextAsync(path, serializedText);
+            var stringOrStream = new StringOrStream { StringValue = serializedText };
+            LoggerSendFile.SendFiles(sendTo, stringOrStream, botAbstract,
+                textToSendBefore, applicationJson, dbFullDataJson);
         }
         catch (Exception? ex)
         {
