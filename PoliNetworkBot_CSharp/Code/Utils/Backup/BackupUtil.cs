@@ -60,7 +60,8 @@ internal static class BackupUtil
             return CommandExecutionState.NOT_TRIGGERED;
 
         var fromId = e.Message.From.Id;
-        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup }, sender, e.Message.From.Username,
+        await BackupHandler(new List<long?> { fromId, GroupsConstants.BackupGroup.FullLong() }, sender,
+            e.Message.From.Username,
             e.Message.Chat.Type);
 
         return CommandExecutionState.SUCCESSFUL;

@@ -45,12 +45,13 @@ public static class RamSize
 
             var message = "#ramsize " + ramUsed;
             Logger.Logger.WriteLine(message);
+            var backupGroup = GroupsConstants.BackupGroup.FullLong();
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
                 new Language(
                     new Dictionary<string, string?>
                     {
                         { "en", message }
-                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                    }), null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
             var storeSizeMessage = "#messageStorageCount " + MessagesStore.GetStoreSize();
             Logger.Logger.WriteLine(storeSizeMessage);
             await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
@@ -58,7 +59,7 @@ public static class RamSize
                     new Dictionary<string, string?>
                     {
                         { "en", storeSizeMessage }
-                    }), null, GroupsConstants.BackupGroup, ChatType.Group, ParseMode.Html, null, true);
+                    }), null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
         }
         catch (Exception? ex)
         {
