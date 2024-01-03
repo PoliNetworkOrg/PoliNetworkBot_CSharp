@@ -332,7 +332,7 @@ public static class ProgramUtil
 
                     var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
                         bot.GetContactString(),
-                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S) { DbConfig = x1 };
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S, bot.GithubToken) { DbConfig = x1 };
 
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         telegramBotAbstract;

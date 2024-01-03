@@ -125,8 +125,7 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-
-                            string errorDescription = execState.ToString();
+                            var errorDescription = execState.ToString();
 
 
                             await NotifyUserCommandError(new L(
@@ -255,7 +254,7 @@ internal static class CommandDispatcher
 
             Groups.HandleListaGruppo(groups, () =>
             {
-                Variabili.L.GetGroups().ForEach(e => { e.LinkFunzionante = true;});
+                Variabili.L.GetGroups().ForEach(e => { e.LinkFunzionante = true; });
                 json =
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
@@ -266,19 +265,18 @@ internal static class CommandDispatcher
             var groups = Groups.GetAllGroups(sender, true);
             if (groups == null) throw new RuntimeException("Groups.GetAllGroups is null in UpdateGroups");
 
-        
+
             Groups.HandleListaGruppo(groups, () =>
             {
                 Groups.CheckIfLinkIsWorkingSlave(5, true, 10);
-            
+
 
                 json =
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
             });
-
-
         }
+
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);

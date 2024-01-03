@@ -25,6 +25,7 @@ public class BotInfoAbstract
     public string? contactString;
     public DbConfig? DbConfig;
     public bool? EnableSelfManagedLogger = false;
+    public string? GithubToken;
     public string? method;
     public string? NumberCountry;
     public string? NumberNumber;
