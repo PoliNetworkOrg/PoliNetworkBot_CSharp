@@ -25,11 +25,16 @@ public static class AllowedMessage
         {
             var message1 = e.Message;
 
-            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
-                ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null,
-                e.Message.From?.Username,
-                message1.MessageId);
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatType = ChatType.Private,
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = message1.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
         }
 
         var messages = MessagesStore.GetAllMessages(x =>
@@ -44,9 +49,15 @@ public static class AllowedMessage
             {
                 { "uni", m2 }
             });
-            await sender.SendTextMessageAsync(e?.Message?.From?.Id, text,
-                ChatType.Private,
-                "uni", ParseMode.Html, null, e?.Message?.From?.Username);
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatType = ChatType.Private,
+                ChatId = e?.Message?.From?.Id,
+                Text = text,
+                Lang = "uni",
+                Username = e?.Message?.From?.Username,
+            };
+            await sender.SendTextMessageAsync(messageOptions);
         }
 
 
@@ -71,11 +82,17 @@ public static class AllowedMessage
             if (sender == null)
                 return CommandExecutionState.UNMET_CONDITIONS;
             var o = e.Message;
-            await sender.SendTextMessageAsync(e.Message.From?.Id, text,
-                ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null,
-                e.Message.From?.Username,
-                o.MessageId);
+
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatType = ChatType.Private,
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = o.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return CommandExecutionState.UNMET_CONDITIONS;
         }
