@@ -25,7 +25,7 @@ public static class AutoReplyInGroups
             {
                 new() { "piano studi", "piano di studi", "piano degli studi" }
             }, Reply,
-            new List<long> { Groups.PianoDiStudi, Groups.AskPolimi },
+            new List<long> { Groups.PianoDiStudi.FullLong(), Groups.AskPolimi.FullLong() },
             "Ciao 👋 sembra tu stia facendo domande in merito al piano di studi. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
             "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>clicca qui</a>!"),
@@ -34,7 +34,7 @@ public static class AutoReplyInGroups
             {
                 new() { "study plan" }
             }, Reply,
-            new List<long> { Groups.PianoDiStudi, Groups.AskPolimi },
+            new List<long> { Groups.PianoDiStudi.FullLong(), Groups.AskPolimi.FullLong() },
             "Hi 👋 it seems you are asking questions about the study plan. " +
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/joinchat/aiAC6RgOjBRkYjhk'>click here</a>!"),
@@ -49,7 +49,7 @@ public static class AutoReplyInGroups
             "Se non avete fatto cose strane tipo: inserito esami autonomi senza essersi accertati preventivamente che fossero ok, " +
             "vincoli del regolamento non rispettati ecc, non vi preoccupate. Il piano prima o poi vi verrà approvato. " +
             "In caso abbiate presentato un piano personalizzato sarà la commissione stessa a contattarvi in caso di problemi",
-            e => e?.Message.Chat.Id == Groups.PianoDiStudi),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi.FullLong()),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -58,7 +58,7 @@ public static class AutoReplyInGroups
             }, Reply,
             new List<long>(),
             "Ciao, forse la risposta è <a href='https://faq.polinetwork.org/?id=2&cat=1'>qui</a>!",
-            e => e?.Message.Chat.Id == Groups.PianoDiStudi),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi.FullLong()),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -70,7 +70,7 @@ public static class AutoReplyInGroups
             "Per sapere se idoneo = beneficiario si dovrà attendere il CdA di novembre. " +
             "Finché non viene stabilita la graduatoria definitiva è difficile " +
             "sapere quanti soldi serviranno per attuare la manovra",
-            e => e?.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi.FullLong() && DateTime.Now <= DsuLimit),
 
         new AutomaticAnswerRestricted(new List<List<string>>
             {
@@ -82,13 +82,13 @@ public static class AutoReplyInGroups
             "To find out if eligible = beneficiary you will have to wait for the November Board of Directors. " +
             "Until the final ranking is established, it is difficult " +
             "to know how much money will be needed to implement the policy",
-            e => e?.Message.Chat.Id == Groups.PianoDiStudi && DateTime.Now <= DsuLimit),
+            e => e?.Message.Chat.Id == Groups.PianoDiStudi.FullLong() && DateTime.Now <= DsuLimit),
 
         new AutomaticAnswer(new List<List<string>>
             {
                 new() { "rappresentant", "rappresentanza" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "Ciao 👋 sembra tu stia facendo domande in merito alla Rappresentanza. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
             "<a href='https://t.me/askPolimi'>clicca qui</a>!"),
@@ -97,7 +97,7 @@ public static class AutoReplyInGroups
             {
                 new() { "representative" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "Hi 👋 it seems you are asking questions about Representatives. " +
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/askPolimi'>click here</a>!"),
@@ -106,7 +106,7 @@ public static class AutoReplyInGroups
             {
                 new() { "diritto studio universitario", "diritto allo studio", "dsu" }
             }, Reply,
-            new List<long> { Groups.DSU, Groups.AskPolimi },
+            new List<long> { Groups.Dsu.FullLong(), Groups.AskPolimi.FullLong() },
             "Ciao 👋 sembra tu stia facendo domande in merito al DSU. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!",
@@ -116,7 +116,7 @@ public static class AutoReplyInGroups
             {
                 new() { "scholarship", "dsu" }
             }, Reply,
-            new List<long> { Groups.DSU, Groups.AskPolimi },
+            new List<long> { Groups.Dsu.FullLong(), Groups.AskPolimi.FullLong() },
             "Hi 👋 it seems you are asking questions about 'DSU'. " +
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!",
@@ -128,7 +128,7 @@ public static class AutoReplyInGroups
                 new() { "maturità" },
                 new() { "esonero", "sconto", "tasse" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "No."),
 
         new AutomaticAnswer(new List<List<string>>
@@ -137,7 +137,7 @@ public static class AutoReplyInGroups
                 new() { "lezion" },
                 new() { "online", "registrazion", "streaming" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "Ciao, forse la risposta è <a href='https://faq.polinetwork.org/?id=1&lang=it&cat=3'>qui</a>!"),
 
         new AutomaticAnswerRestricted(new List<List<string>>
@@ -207,7 +207,7 @@ public static class AutoReplyInGroups
                 new() { "graduatori" },
                 new() { "qualcun", "puntegg" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "Ciao 👋 sembra tu stia facendo domande in merito alle graduatorie degli anni passati. " +
             "PoliNetwork ti consiglia di visitare la sezione del nostro sito dove vengono conservate tutte, " +
             "<a href='https://rankings.polinetwork.org/'>clicca qui</a>!"),
@@ -217,7 +217,7 @@ public static class AutoReplyInGroups
                 new() { "ranking" },
                 new() { "someone", "score" }
             }, Reply,
-            new List<long> { Groups.AskPolimi },
+            new List<long> { Groups.AskPolimi.FullLong() },
             "Hi 👋 it seems you are asking questions about the past years' rankings. " +
             "PoliNetwork advices you to visit the section of our website where we keep them all, " +
             "<a href='https://rankings.polinetwork.org/'>click here</a>!")

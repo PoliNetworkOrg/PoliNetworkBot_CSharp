@@ -188,7 +188,7 @@ public static class ThreadAsyncModeration
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
-                ChatId = GroupsConstants.BackupGroup,
+                ChatId = GroupsConstants.BackupGroup.FullLong(),
                 Text = text,
                 ChatType = ChatType.Supergroup
             };
@@ -231,7 +231,7 @@ public static class ThreadAsyncModeration
         {
             while (true)
             {
-                await BackupUtil.BackupHandler(new List<long?> { GroupsConstants.BackupGroup }, bot, null,
+                await BackupUtil.BackupHandler(new List<long?> { GroupsConstants.BackupGroup.FullLong() }, bot, null,
                     ChatType.Group);
                 Thread.Sleep(1000 * 3600 * 24 * 7);
                 _ = File.WriteAllTextAsync("", Paths.Data.MessageStore);

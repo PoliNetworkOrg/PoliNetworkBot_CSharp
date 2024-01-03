@@ -830,7 +830,7 @@ public static class Assoc
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
-                    ChatId = GroupsConstants.PermittedSpamGroup,
+                    ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
                     Text = language,
                     Lang = "en",
 
@@ -855,7 +855,7 @@ public static class Assoc
             permittedSpamMessage);
 
         await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
-            GroupsConstants.ConsiglioDegliAdminRiservato,
+            GroupsConstants.ConsiglioDegliAdminRiservato.FullLong(),
             councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
         _ = TimeUtils.ExecuteAtLaterTime(new TimeSpan(48, 0, 0), () => RemoveVetoButton(assocVetoData, sender));
