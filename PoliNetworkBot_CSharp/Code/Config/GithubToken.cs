@@ -28,14 +28,6 @@ public static class GithubToken
         arg2.BotInfoAbstract ??= new BotInfoAbstract();
         arg2.BotInfoAbstract.GithubToken = githubToken;
 
-        var botConfig = ProgramUtil.BotConfigAll.BotInfos;
-        if (botConfig != null)
-        {
-            var botInfoAbstracts = botConfig.bots;
-            if (botInfoAbstracts != null)
-                foreach (var VARIABLE in botInfoAbstracts)
-                    ;
-        }
 
         return CommandExecutionState.SUCCESSFUL;
     }
