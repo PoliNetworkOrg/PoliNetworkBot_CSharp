@@ -37,7 +37,7 @@ public class TelegramBotAbstract
     private readonly string? _mode;
 
     private readonly string? _website;
-    public readonly string? GithubToken;
+    public   string? GithubToken;
 
     public readonly TelegramClient? UserbotClient;
     private string? _username;

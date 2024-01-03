@@ -126,7 +126,7 @@ internal static class CommandDispatcher
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
 
-                            string errorDescription = execState.ToString();
+                            var errorDescription = execState.ToString();
 
 
                             await NotifyUserCommandError(new L(

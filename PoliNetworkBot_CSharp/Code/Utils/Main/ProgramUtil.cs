@@ -513,6 +513,8 @@ public static class ProgramUtil
 
                 var enumerable = updates.Select(update =>
                 {
+                    return new Thread(ThreadStart);
+
                     void ThreadStart()
                     {
                         try
@@ -524,8 +526,6 @@ public static class ProgramUtil
                             Logger.Logger.WriteLine(e, LogSeverityLevel.ALERT);
                         }
                     }
-
-                    return new Thread(ThreadStart);
                 });
 
                 foreach (var thread in enumerable)

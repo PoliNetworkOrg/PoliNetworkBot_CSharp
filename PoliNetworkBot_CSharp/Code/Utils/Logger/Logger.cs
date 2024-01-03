@@ -355,7 +355,7 @@ public static class Logger
         foreach (DataRow row in data.Rows)
         {
             sb.Append(GetDbLogRow(row));
-            sb.Append("\\n--------------------\\n");
+            sb.Append(@"\n--------------------\n");
         }
 
         return sb.ToString();

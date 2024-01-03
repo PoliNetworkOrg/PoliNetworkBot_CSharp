@@ -264,6 +264,16 @@ public static class SwitchDispatcher
         new Command("kill_yourself", RunningUtil.KillYourself,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("en", "Kill bot"), null,
-            null)
+            null),
+        
+        new Command("set_gh_token", GithubToken.Set, 
+            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("Set github token"), 
+            null,null),
+        
+        new Command("write_config_to_file", ConfigSet.WriteConfigToFile, 
+            new List<ChatType>() { ChatType.Private }, Permission.OWNER, 
+            new L("Scrivi la config attuale sui file di config"), 
+            null,null)
     };
 }

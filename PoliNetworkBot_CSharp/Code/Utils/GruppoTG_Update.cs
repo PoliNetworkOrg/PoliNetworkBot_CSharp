@@ -9,8 +9,8 @@ namespace PoliNetworkBot_CSharp.Code.Utils;
 
 public class GruppoTgUpdate
 {
-    public GruppoTg? GruppoTg;
-    public SuccessoGenerazioneLink SuccessoGenerazioneLink;
+    public readonly GruppoTg? GruppoTg;
+    public readonly SuccessoGenerazioneLink SuccessoGenerazioneLink;
 
     public GruppoTgUpdate(GruppoTg? p, SuccessoGenerazioneLink errore)
     {
