@@ -32,7 +32,11 @@ public static class ProgramUtil
 
     internal static Tuple<char, bool> MainGetMenuChoice2(IReadOnlyList<string>? args)
     {
-        if (args == null || args.Count == 0) return new Tuple<char, bool>(MainGetMenuChoice(), false);
+        if (args == null || args.Count == 0)
+        {
+            var mainGetMenuChoice = MainGetMenuChoice();
+            return new Tuple<char, bool>(mainGetMenuChoice, false);
+        }
 
         var i = 0;
         foreach (var arg in args)
@@ -42,9 +46,12 @@ public static class ProgramUtil
             i++;
         }
 
-        return string.IsNullOrEmpty(args[0])
-            ? new Tuple<char, bool>(MainGetMenuChoice(), false)
-            : new Tuple<char, bool>(args[0][0], true);
+        var value = args[0];
+        if (!string.IsNullOrEmpty(value))
+            return new Tuple<char, bool>(value[0], true);
+
+        var mainGetMenuChoice2 = MainGetMenuChoice();
+        return new Tuple<char, bool>(mainGetMenuChoice2, false);
     }
 
     internal static void MainBot(char readChoice, bool alwaysYes)
@@ -330,9 +337,23 @@ public static class ProgramUtil
                         x1 = new DbConfigConnection(x2);
                     x1 ??= GlobalVariables.DbConfig;
 
-                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
-                        bot.GetContactString(),
-                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S, bot.GithubToken) { DbConfig = x1 };
+                    var onMessageMethodObject = bot.GetOnMessage();
+                    var website = bot.GetWebsite();
+                    var contactString = bot.GetContactString();
+                    var botGithubToken = bot.GithubToken;
+                    var mode = onMessageMethodObject.S;
+                    var telegramBotAbstract = new TelegramBotAbstract(
+                        botClient,
+                        website,
+                        contactString,
+                        BotTypeApi.REAL_BOT,
+                        mode,
+                        botGithubToken,
+                        bot
+                    )
+                    {
+                        DbConfig = x1
+                    };
 
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         telegramBotAbstract;
@@ -341,7 +362,7 @@ public static class ProgramUtil
                     if (acceptMessages is null or false)
                         continue;
 
-                    var onmessageMethod2 = bot.GetOnMessage();
+                    var onmessageMethod2 = onMessageMethodObject;
                     if (onmessageMethod2.ActionMessageEvent == null)
                         continue;
 

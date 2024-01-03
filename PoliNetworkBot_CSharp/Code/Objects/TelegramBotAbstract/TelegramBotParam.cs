@@ -25,7 +25,7 @@ public class TelegramBotParam
                 return null;
 
             var botClient = new TelegramBotClient("");
-            return new TelegramBotAbstract(botClient);
+            return new TelegramBotAbstract(botClient, null);
         }
 
         var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);

@@ -26,7 +26,7 @@ internal static class UserbotConnect
                 {
                     TelegramBotClient telegramBotClient = new(userbot.token);
                     return new TelegramBotAbstract(telegramBotClient, userbot.website, userbot.contactString,
-                        userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
+                        userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
                 }
 
                 break;
@@ -56,7 +56,7 @@ internal static class UserbotConnect
 
                 if (telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
                 var numberToAuthenticate = userbot.NumberNumber;
                 var hash = await telegramClient.SendCodeRequestAsync(numberToAuthenticate);
@@ -86,7 +86,7 @@ internal static class UserbotConnect
 
                 if (user != null && telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
+                        userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
                 return null;
             }
@@ -103,13 +103,13 @@ internal static class UserbotConnect
 
                 if (t.IsUserAuthorized())
                     return new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-                        userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken);
+                        userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
                 var r = await t.AuthImportBotAuthorization(userbot.GetToken());
 
                 return r?.User != null
                     ? new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-                        userbot.botTypeApi, userbot.onMessages, userbot.GithubToken)
+                        userbot.botTypeApi, userbot.onMessages, userbot.GithubToken, userbot)
                     : null;
             }
         }
