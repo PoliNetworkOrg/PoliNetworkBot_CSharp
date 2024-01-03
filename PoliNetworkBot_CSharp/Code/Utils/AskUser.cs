@@ -24,7 +24,11 @@ internal static class AskUser
 
         UserAnswers.Reset(idUser, botId);
 
+<<<<<<< HEAD
         var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
         {
             ChatId = idUser,
             Text = question,
@@ -86,7 +90,11 @@ internal static class AskUser
                     list
                 )
             );
+<<<<<<< HEAD
             var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
             {
                 ChatId = idUser,
                 Text = question,

@@ -99,7 +99,11 @@ public static class Assoc
 
                 if (sender != null)
                 {
+<<<<<<< HEAD
                     var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                     {
                         ChatId = e.Message.From?.Id,
                         Text = languageList4,
@@ -161,7 +165,11 @@ public static class Assoc
                         });
                         if (sender != null)
                         {
+<<<<<<< HEAD
                             var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                             {
                                 ChatId = e.Message.From?.Id,
                                 Text = lang4,
@@ -228,7 +236,11 @@ public static class Assoc
             if (sender == null) return true;
             if (e?.Message != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = e.Message.From?.Id,
                     Text = lang3,
@@ -274,7 +286,11 @@ public static class Assoc
         if (sender != null)
             if (e?.Message != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = e.Message.From?.Id,
                     Text = lang2,
@@ -372,7 +388,11 @@ public static class Assoc
             if (e == null) return r;
 
 
+<<<<<<< HEAD
             var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
             {
                 ChatId = e.Message.From?.Id,
                 Text = text1,
@@ -395,7 +415,11 @@ public static class Assoc
 
             if (e?.Message != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text2,
@@ -470,7 +494,11 @@ public static class Assoc
         if (sender != null)
             if (e?.Message.From != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = e.Message.From?.Id,
                     Text = languageList3,
@@ -757,7 +785,11 @@ public static class Assoc
 
             if (sender != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = eventArgs?.Message.From?.Id,
                     Text = privateText,
@@ -818,12 +850,20 @@ public static class Assoc
                         { "en", message }
                     });
 
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                 {
                     ChatId = GroupsConstants.PermittedSpamGroup,
                     Text = language,
                     Lang = "en",
+<<<<<<< HEAD
                     ChatType = ChatType.Group
+=======
+                    ChatType = ChatType.Group,
+>>>>>>> dev
                 };
                 var m = await sender.SendTextMessageAsync(messageOptions);
                 replyTo = m?.GetMessageId();
@@ -913,7 +953,11 @@ public static class Assoc
 
                     if (callbackGenericData.Bot != null)
                     {
+<<<<<<< HEAD
                         var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                         {
                             ChatId = assocVetoData.MessageEventArgs?.Message.From?.Id,
                             Text = privateText,

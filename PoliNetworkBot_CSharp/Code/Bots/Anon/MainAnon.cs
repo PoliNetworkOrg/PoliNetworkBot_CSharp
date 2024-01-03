@@ -124,7 +124,11 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
         {
+<<<<<<< HEAD
             var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+>>>>>>> dev
             {
                 ChatId = e?.Message.From?.Id,
                 ParseMode = ParseMode.Html,
@@ -232,7 +236,11 @@ internal static class MainAnon
 
             if (telegramBotAbstract != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+>>>>>>> dev
                 {
                     ChatId = e?.Message.From?.Id,
                     ParseMode = ParseMode.Html,
@@ -242,6 +250,10 @@ internal static class MainAnon
                     Text = l2
                 };
                 await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+<<<<<<< HEAD
+=======
+                
+>>>>>>> dev
             }
         }
     }
@@ -326,19 +338,32 @@ internal static class MainAnon
                 });
                 if (telegramBotAbstract != null)
                 {
+<<<<<<< HEAD
                     var messageOptions = new TelegramBotAbstract.MessageOptions
                     {
                         ChatId = m1.From?.Id,
                         ParseMode = ParseMode.Html,
                         Username = m1.From?.Username,
+=======
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                    {
+                        ChatId = m1.From?.Id,
+                        ParseMode = ParseMode.Html,
+                        Username =m1.From?.Username,
+>>>>>>> dev
                         ChatType = ChatType.Private,
                         Lang = m1.From?.LanguageCode,
                         ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                         Text = l3
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+<<<<<<< HEAD
                 }
 
+=======
+                    
+                }
+>>>>>>> dev
                 return;
             }
 
@@ -396,6 +421,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
+<<<<<<< HEAD
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -403,11 +429,28 @@ internal static class MainAnon
                             Username = dataAnon.Username,
                             ChatType = ChatType.Private,
                             Lang = dataAnon.LangUser,
+=======
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+>>>>>>> dev
                             ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                             Text = t1,
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+<<<<<<< HEAD
+=======
+                        
+
+                        
+                        
+>>>>>>> dev
                     }
                 }
                 else
@@ -443,6 +486,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
+<<<<<<< HEAD
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -450,11 +494,30 @@ internal static class MainAnon
                             Username = dataAnon.Username,
                             ChatType = ChatType.Private,
                             Lang = dataAnon.LangUser,
+=======
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+>>>>>>> dev
                             ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                             Text = t1,
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+<<<<<<< HEAD
+=======
+
+
+              
+                        
+                        
+                        
+>>>>>>> dev
                     }
                 }
                 else
@@ -478,6 +541,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
+<<<<<<< HEAD
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
@@ -485,11 +549,29 @@ internal static class MainAnon
                             Username = dataAnon.Username,
                             ChatType = ChatType.Private,
                             Lang = dataAnon.LangUser,
+=======
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = dataAnon.AuthorId.Value,
+                            ParseMode = ParseMode.Html,
+                            Username =dataAnon.Username,
+                            ChatType = ChatType.Private,
+                            Lang =  dataAnon.LangUser,
+>>>>>>> dev
                             ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
                             Text = t1,
                             ReplyToMessageId = dataAnon.MessageIdUser
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+<<<<<<< HEAD
+=======
+
+
+          
+                        
+                        
+>>>>>>> dev
                     }
                 }
                 else
@@ -520,7 +602,11 @@ internal static class MainAnon
             : ConfigAnon.WhereToPublishAnonUncensored;
         var r = await telegramBotAbstract.ForwardMessageAnonAsync(
             whereToPublishAnonUncensored,
+<<<<<<< HEAD
             r2, x.MessageIdReplyTo, null);
+=======
+            r2, x.MessageIdReplyTo,null);
+>>>>>>> dev
 
         return r;
     }
@@ -541,7 +627,11 @@ internal static class MainAnon
             {
                 if (telegramBotAbstract != null)
                     x = await telegramBotAbstract.ForwardMessageAnonAsync(ConfigAnon.ModAnonCheckGroup, e.GetMessage(),
+<<<<<<< HEAD
                         null, null);
+=======
+                        null,null);
+>>>>>>> dev
             }
             else
             {
@@ -561,6 +651,7 @@ internal static class MainAnon
 
                 if (telegramBotAbstract != null)
                 {
+<<<<<<< HEAD
                     var messageOptions = new TelegramBotAbstract.MessageOptions
                     {
                         ChatId = e.GetFromUserId(),
@@ -572,6 +663,27 @@ internal static class MainAnon
                         Text = l6
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+=======
+                    
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                    {
+                        ChatId = e.GetFromUserId(),
+                        ParseMode = ParseMode.Html,
+                        Username =  e.GetUsername(),
+                        ChatType = ChatType.Private,
+                        Lang =  e.GetLanguageCode(),
+                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                        Text = l6,
+
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+                    
+                    
+                    
+>>>>>>> dev
                 }
 
                 return false;
@@ -583,6 +695,7 @@ internal static class MainAnon
                     var m5 = e.GetMessage();
                     if (m5 != null)
                     {
+<<<<<<< HEAD
                         var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = e.GetFromUserId(),
@@ -594,6 +707,26 @@ internal static class MainAnon
                             Text = l4
                         };
                         await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+=======
+                        
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                        {
+                            ChatId = e.GetFromUserId(),
+                            ParseMode = ParseMode.Html,
+                            Username =  e.GetUsername(),
+                            ChatType = ChatType.Group,
+                            Lang =  "it",
+                            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                            Text = l4,
+
+                        };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+                     
+                        
+>>>>>>> dev
                     }
                 }
         }
@@ -677,6 +810,7 @@ internal static class MainAnon
         if (telegramBotAbstract != null)
             if (m1 != null)
             {
+<<<<<<< HEAD
                 var messageOptions = new TelegramBotAbstract.MessageOptions
                 {
                     ChatId = m1.From?.Id,
@@ -688,6 +822,25 @@ internal static class MainAnon
                     Text = text
                 };
                 await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+=======
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+                {
+                    ChatId = m1.From?.Id,
+                    ParseMode = ParseMode.Html,
+                    Username =    m1.From?.Username,
+                    ChatType = ChatType.Private,
+                    Lang =   m1.From?.LanguageCode,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = text,
+
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
+
+
+
+                
+>>>>>>> dev
             }
     }
 
@@ -705,6 +858,7 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (sender != null)
         {
+<<<<<<< HEAD
             var messageOptions = new TelegramBotAbstract.MessageOptions
             {
                 ChatId = m1?.From?.Id,
@@ -715,6 +869,22 @@ internal static class MainAnon
                 Text = text
             };
             await sender.SendTextMessageAsync(messageOptions);
+=======
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
+            {
+                ChatId = m1?.From?.Id,
+                ParseMode = ParseMode.Html,
+                Username =   e?.Message.From?.Username,
+                ChatType = ChatType.Private,
+                Lang =    e?.Message.From?.LanguageCode,
+                Text = text,
+
+            };
+            await sender.SendTextMessageAsync(messageOptions);
+            
+
+            
+>>>>>>> dev
         }
     }
 }

@@ -252,8 +252,13 @@ public static class MessagesStore
             });
             if (sender != null)
             {
+<<<<<<< HEAD
                 var messageOptions =
                     new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.TelegramBotAbstract.MessageOptions messageOptions =
+                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                     {
                         ChatId = e.Message.From?.Id,
                         Text = language1,
@@ -288,8 +293,13 @@ public static class MessagesStore
                     TextAsCaption.AS_CAPTION);
                 PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
 
+<<<<<<< HEAD
                 var messageOptions2 =
                     new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
+=======
+                TelegramBotAbstract.TelegramBotAbstract.MessageOptions messageOptions2 =
+                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions()
+>>>>>>> dev
                     {
                         documentInput = tf,
                         peer = peer,

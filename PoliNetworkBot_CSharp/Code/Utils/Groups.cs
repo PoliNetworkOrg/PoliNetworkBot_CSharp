@@ -74,10 +74,15 @@ internal static class Groups
         if (chatId == null)
             return null;
 
+<<<<<<< HEAD
 
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
 
+=======
+        if (GlobalVariables.Creators != null &&
+            GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
+>>>>>>> dev
             return new SuccessWithException(true);
 
         if (telegramBotAbstract != null)
@@ -87,10 +92,15 @@ internal static class Groups
                 return s1;
         }
 
+<<<<<<< HEAD
 
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
 
+=======
+        if (GlobalVariables.Owners != null &&
+            GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
+>>>>>>> dev
             return new SuccessWithException(true);
 
         return null;
@@ -537,6 +547,10 @@ internal static class Groups
             isLinkWorking = Variabili.L.GetElem(0).LinkFunzionante ?? false;
         });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
         return isLinkWorking;
     }
 
@@ -544,7 +558,10 @@ internal static class Groups
     {
         Variabili.L = new ListaGruppo();
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
         lock (Variabili.L.GetGroups())
         {
             Variabili.L.HandleSerializedObject(groups);

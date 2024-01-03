@@ -45,7 +45,13 @@ public class TelegramBotAbstract
     public DbConfigConnection? DbConfig;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
+<<<<<<< HEAD
         string? website, string? contactString, long? id, string? githubToken)
+=======
+
+        string? website, string? contactString, long? id, string? githubToken)
+
+>>>>>>> dev
     {
         UserbotClient = userBotClient;
         _botClient = botClient;
@@ -53,20 +59,36 @@ public class TelegramBotAbstract
         _website = website;
         _contactString = contactString;
         _id = id;
+<<<<<<< HEAD
         GithubToken = githubToken;
+=======
+
+        this.GithubToken = githubToken;
+>>>>>>> dev
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
         BotTypeApi? botTypeApi, string? mode, string? githubToken) : this(botClient, null, botTypeApi, website,
         contactString,
         botClient?.BotId, githubToken)
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
+<<<<<<< HEAD
         BotTypeApi? botTypeApi, string? mode, string? githubToken) :
         this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
+=======
+
+        BotTypeApi? botTypeApi, string? mode, string? githubToken) :
+        this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
+
+>>>>>>> dev
     {
         _mode = mode;
     }
@@ -639,6 +661,23 @@ public class TelegramBotAbstract
         return _id;
     }
 
+    public class MessageOptions
+    {
+        public long? ChatId { get; set; }
+        public Language? Text { get; set; }
+        public ChatType? ChatType { get; set; }
+        public string? Lang { get; set; }
+        public ParseMode? ParseMode { get; set; }
+        public ReplyMarkupObject? ReplyMarkupObject { get; set; }
+        public string? Username { get; set; }
+        public long? ReplyToMessageId { get; set; }
+        public bool DisablePreviewLink { get; set; }
+        public bool SplitMessage { get; set; } = false;
+        public int? MessageThreadId { get; set; }
+        public TelegramFile? documentInput;
+        public PeerAbstract? peer;
+    }
+
     /// <summary>
     ///     Send text message
     /// </summary>
@@ -1206,7 +1245,11 @@ public class TelegramBotAbstract
                         if (inputOnlineFile == null) return true;
 
 
+<<<<<<< HEAD
                         _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null, null,
+=======
+                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null, thumbnail: null,
+>>>>>>> dev
                             textToSend, messageOptions.ParseMode, replyMarkup: reply).Result;
 
                         return true;
@@ -1225,7 +1268,11 @@ public class TelegramBotAbstract
 
                         if (inputOnlineFile != null)
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
+<<<<<<< HEAD
                                 messageOptions.MessageThreadId,
+=======
+                                messageThreadId: messageOptions.MessageThreadId,
+>>>>>>> dev
                                 parseMode: messageOptions.ParseMode).Result;
 
 
@@ -1237,14 +1284,22 @@ public class TelegramBotAbstract
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
+<<<<<<< HEAD
                                     messageOptions.MessageThreadId,
+=======
+                                    messageThreadId: messageOptions.MessageThreadId,
+>>>>>>> dev
                                     parseMode: messageOptions.ParseMode)
                                 .Result;
 
                         if (textToSend != null)
                             _ = _botClient
                                 .SendTextMessageAsync(userId, textToSend,
+<<<<<<< HEAD
                                     messageOptions.MessageThreadId, messageOptions.ParseMode,
+=======
+                                    messageThreadId: messageOptions.MessageThreadId, messageOptions.ParseMode,
+>>>>>>> dev
                                     replyMarkup: reply).Result;
 
 
@@ -1858,9 +1913,15 @@ public class TelegramBotAbstract
         {
             case BotTypeApi.REAL_BOT:
                 if (_botClient != null)
+<<<<<<< HEAD
                     await _botClient.ForwardMessageAsync(chatId, idChatMessageFrom,
                         idChatMessageTo,
                         null,
+=======
+                    await _botClient.ForwardMessageAsync(chatId: chatId, fromChatId: idChatMessageFrom,
+                        messageId: idChatMessageTo,
+                        messageThreadId: null,
+>>>>>>> dev
                         disableNotification,
                         protectContent, cancellationToken);
                 break;
