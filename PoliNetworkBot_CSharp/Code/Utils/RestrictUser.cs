@@ -46,7 +46,12 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = false,
                 CanChangeInfo = false,
                 CanPinMessages = false,
-                CanSendMediaMessages = false
+                CanSendAudios = false,
+                CanSendDocuments = false,
+                CanSendPhotos = false,
+                CanSendVideos = false,
+                CanSendVideoNotes = false,
+                CanSendVoiceNotes = false,
             },
             RestrictAction.UNMUTE => new ChatPermissions
             {
@@ -57,7 +62,12 @@ internal static class RestrictUser
                 CanAddWebPagePreviews = true,
                 CanChangeInfo = true,
                 CanPinMessages = true,
-                CanSendMediaMessages = true
+                CanSendAudios = true,
+                CanSendDocuments = true,
+                CanSendPhotos = true,
+                CanSendVideos = true,
+                CanSendVideoNotes = true,
+                CanSendVoiceNotes = true,
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
@@ -572,9 +582,18 @@ internal static class RestrictUser
                 { "it", "Non riusciamo a trovare il bersaglio" }
             });
             if (sender != null)
-                await sender.SendTextMessageAsync(e?.Message.From?.Id, lang2, ChatType.Private,
-                    lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatType = ChatType.Private,
+                    ChatId = e?.Message.From?.Id,
+                    Text = lang2,
+                    Lang = lang,
+                    Username = username,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
+                };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
 
             return;
         }
@@ -588,9 +607,19 @@ internal static class RestrictUser
             });
             if (e?.Message.From == null) return;
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, lang2, ChatType.Private,
-                    lang, ParseMode.Html, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE));
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatId = e.Message.From.Id,
+                    Text = lang2,
+                    Lang = lang,
+                    Username = username,
+                    ChatType = ChatType.Private,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
+                };
+
+                await sender.SendTextMessageAsync(messageOptions);
+            }
 
             return;
         }
