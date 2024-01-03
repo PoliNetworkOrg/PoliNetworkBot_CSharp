@@ -125,8 +125,7 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-
-                            string errorDescription = execState.ToString();
+                            var errorDescription = execState.ToString();
 
 
                             await NotifyUserCommandError(new L(
@@ -161,14 +160,14 @@ internal static class CommandDispatcher
     {
         if (e != null)
         {
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            var messageOptions = new TelegramBotAbstract.MessageOptions
             {
                 ChatId = e.Message.From?.Id,
                 Text = message,
                 ChatType = ChatType.Private,
                 Lang = e.Message.From?.LanguageCode,
                 Username = e.Message.From?.Username,
-                ReplyToMessageId = e.Message.MessageId,
+                ReplyToMessageId = e.Message.MessageId
             };
             var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
             return sendTextMessageAsync;
@@ -193,14 +192,14 @@ internal static class CommandDispatcher
 
             if (sender != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text,
                     ChatType = ChatType.Private,
                     Lang = e.Message.From?.LanguageCode,
                     Username = e.Message.From?.Username,
-                    ReplyToMessageId = e.Message.MessageId,
+                    ReplyToMessageId = e.Message.MessageId
                 };
                 await sender.SendTextMessageAsync(messageOptions);
             }
@@ -276,7 +275,7 @@ internal static class CommandDispatcher
 
             Groups.HandleListaGruppo(groups, () =>
             {
-                Variabili.L.GetGroups().ForEach(e => { e.LinkFunzionante = true;});
+                Variabili.L.GetGroups().ForEach(e => { e.LinkFunzionante = true; });
                 json =
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
@@ -287,19 +286,18 @@ internal static class CommandDispatcher
             var groups = Groups.GetAllGroups(sender, true);
             if (groups == null) throw new RuntimeException("Groups.GetAllGroups is null in UpdateGroups");
 
-        
+
             Groups.HandleListaGruppo(groups, () =>
             {
                 Groups.CheckIfLinkIsWorkingSlave(5, true, 10);
-            
+
 
                 json =
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
             });
-
-
         }
+
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);
@@ -410,13 +408,13 @@ internal static class CommandDispatcher
                 if (e.Message.From != null)
                     if (sender != null)
                     {
-                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                        var messageOptions = new TelegramBotAbstract.MessageOptions
                         {
                             ChatId = e.Message.From?.Id,
                             Text = text,
                             ChatType = ChatType.Private,
                             Lang = e.Message.From?.LanguageCode,
-                            Username = e.Message.From?.Username,
+                            Username = e.Message.From?.Username
                         };
                         await sender.SendTextMessageAsync(messageOptions);
                     }
@@ -563,7 +561,7 @@ internal static class CommandDispatcher
             if (e.Message.From == null) return null;
             if (sender != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text,
@@ -590,7 +588,7 @@ internal static class CommandDispatcher
                 });
                 if (e.Message.From != null)
                 {
-                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    var messageOptions = new TelegramBotAbstract.MessageOptions
                     {
                         ChatId = e.Message.From?.Id,
                         Text = text,
@@ -617,7 +615,7 @@ internal static class CommandDispatcher
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        TelegramBotAbstract.MessageOptions messageOptions2 = new TelegramBotAbstract.MessageOptions()
+        var messageOptions2 = new TelegramBotAbstract.MessageOptions
         {
             ChatId = peer.GetUserId(),
             peer = peer,
@@ -811,7 +809,7 @@ internal static class CommandDispatcher
             { "it", telegramBotClient.GetContactString() },
             { "en", telegramBotClient.GetContactString() }
         });
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        var messageOptions = new TelegramBotAbstract.MessageOptions
         {
             ChatId = e?.Message.Chat.Id,
             Text = lang2,
@@ -873,7 +871,7 @@ internal static class CommandDispatcher
         });
         if (telegramBotClient != null)
         {
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            var messageOptions = new TelegramBotAbstract.MessageOptions
             {
                 ChatId = e?.Message.Chat.Id,
                 Text = lang2,
