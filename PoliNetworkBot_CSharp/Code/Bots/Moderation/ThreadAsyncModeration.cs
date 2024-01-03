@@ -184,8 +184,13 @@ public static class ThreadAsyncModeration
             {
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
-            _ = telegramBotAbstract.SendTextMessageAsync(GroupsConstants.BackupGroup, text, ChatType.Supergroup, "en",
-                ParseMode.Html, null, null);
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = GroupsConstants.BackupGroup,
+                Text = text,
+                ChatType = ChatType.Supergroup
+            };
+            _ = telegramBotAbstract.SendTextMessageAsync(messageOptions);
         }
         catch (Exception? ex)
         {

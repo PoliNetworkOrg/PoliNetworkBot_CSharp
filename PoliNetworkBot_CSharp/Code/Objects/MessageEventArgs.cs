@@ -18,9 +18,11 @@ public class MessageEventArgs
     public readonly Message Message;
     public bool Edit = false;
 
+
     public MessageEventArgs(Message message, bool edit = false)
     {
         Message = message;
         this.Edit = edit;
+
     }
 }

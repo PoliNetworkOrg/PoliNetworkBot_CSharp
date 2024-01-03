@@ -38,9 +38,19 @@ public static class MassiveSendUtil
                 });
 
                 if (e?.Message != null)
-                    await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
-                        e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                        e.Message.MessageId);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.From?.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                        Username = e.Message.From?.Username,
+                        ReplyToMessageId = e.Message.MessageId
+                    };
+                    await sender.SendTextMessageAsync(messageOptions);
+                }
+
                 return false;
             }
 
@@ -74,9 +84,19 @@ public static class MassiveSendUtil
         {
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
             if (e?.Message.From != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, new Language(dict), ChatType.Private,
-                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                    e.Message.MessageId);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = new Language(dict),
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId
+                };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
+
             return false;
         }
 
@@ -118,9 +138,17 @@ public static class MassiveSendUtil
         if (e?.Message.From == null)
             return true;
 
-        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-            e.Message.From.LanguageCode,
-            ParseMode.Html, null, e.Message.From.Username, e.Message.MessageId);
+
+        TelegramBotAbstract.MessageOptions messageOptions2 = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = e.Message.From?.Id,
+            Text = text,
+            ChatType = ChatType.Private,
+            Lang = e.Message.From?.LanguageCode,
+            Username = e.Message.From?.Username,
+            ReplyToMessageId = e.Message.MessageId
+        };
+        await sender.SendTextMessageAsync(messageOptions2);
         return true;
     }
 

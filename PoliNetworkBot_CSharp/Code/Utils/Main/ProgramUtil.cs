@@ -13,13 +13,11 @@ using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
-using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -334,7 +332,7 @@ public static class ProgramUtil
 
                     var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
                         bot.GetContactString(),
-                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S) { DbConfig = x1 };
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S, bot.GithubToken) { DbConfig = x1 };
 
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         telegramBotAbstract;
@@ -592,7 +590,7 @@ public static class ProgramUtil
                     callback(botClientWhole.BotClient, new CallbackQueryEventArgs(update.CallbackQuery));
                 break;
             }
- 
+
 
             case UpdateType.ChannelPost:
                 break;
@@ -641,8 +639,15 @@ public static class ProgramUtil
         });
 
 
-        await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-            "", default, replyMarkupObject, "@polinetwork3bot");
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = 768169879,
+            Text = text,
+            ChatType = ChatType.Private,
+            ReplyMarkupObject = replyMarkupObject,
+            Username = "@polinetwork3bot"
+        };
+        await bot.SendTextMessageAsync(messageOptions);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",

@@ -195,16 +195,25 @@ internal static class InviteLinks
                             {
                                 Logger.Logger.WriteLine(ex);
                                 var ex4M = "4" + "\n\n" + ex.Message;
-                                await sender.SendTextMessageAsync(e.Message.From.Id,
-                                    new Language(
-                                        new Dictionary<string, string?>
+
+                                var language = new Language(
+                                    new Dictionary<string, string?>
+                                    {
                                         {
-                                            {
-                                                "it",
-                                                ex4M
-                                            }
-                                        }),
-                                    ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                            "it",
+                                            ex4M
+                                        }
+                                    });
+                                TelegramBotAbstract.MessageOptions messageOptions =
+                                    new TelegramBotAbstract.MessageOptions()
+                                    {
+                                        ChatId = e.Message.From.Id,
+                                        Text = language,
+                                        ChatType = ChatType.Private,
+                                        Lang = "it",
+                                        Username = e.Message.From.Username
+                                    };
+                                await sender.SendTextMessageAsync(messageOptions);
                                 return;
                             }
                         }
@@ -215,25 +224,47 @@ internal static class InviteLinks
                                  "Riciclati: " + l.GetCount_Filtered(SuccessoGenerazioneLink.RICICLATO) + "\n" +
                                  "Errori: " + l.GetCount_Filtered(SuccessoGenerazioneLink.ERRORE) + "\n";
 
-                        await sender.SendTextMessageAsync(e.Message.From.Id,
-                            new Language(
-                                new Dictionary<string, string?>
+                        var language1 = new Language(
+                            new Dictionary<string, string?>
+                            {
                                 {
-                                    {
-                                        "it",
-                                        s2
-                                    }
-                                }),
-                            ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                    "it",
+                                    s2
+                                }
+                            });
+
+                        TelegramBotAbstract.MessageOptions messageOptions2 =
+                            new TelegramBotAbstract.MessageOptions()
+                            {
+                                ChatId = e.Message.From.Id,
+                                Text = language1,
+                                ChatType = ChatType.Private,
+                                Lang = "it",
+                                Username = e.Message.From.Username
+                            };
+                        await sender.SendTextMessageAsync(messageOptions2);
 
                         var st = l.GetStringList();
 
                         var stream = UtilsFileText.GenerateStreamFromString(st);
                         var tf = new TelegramFile(stream, "groups.txt", new L("Gruppi con link rigenerati"),
                             "text/plain", TextAsCaption.AFTER_FILE);
-                        sender.SendFileAsync(tf, new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type),
-                            e.Message.From.Username, e.Message.From.LanguageCode, null,
-                            false);
+                        var peerAbstract = new PeerAbstract(e.Message.From.Id, e.Message.Chat.Type);
+
+                        TelegramBotAbstract.MessageOptions messageOptions3 =
+                            new TelegramBotAbstract.MessageOptions()
+                            {
+                                documentInput = tf,
+                                peer = peerAbstract,
+
+                                ChatId = peerAbstract.GetUserId(),
+
+                                ChatType = ChatType.Private,
+                                Lang = e.Message.From.LanguageCode,
+                                Username = e.Message.From.Username,
+                                DisablePreviewLink = false
+                            };
+                        sender.SendFileAsync(messageOptions3);
                     }
                 }
             }
@@ -286,16 +317,26 @@ internal static class InviteLinks
                                gruppoTg.Nome + "\n\n" + gruppoTg.NewLink + "\n\n" + gruppoTg.PermanentId;
                     if (sender != null)
                         if (e?.Message != null)
-                            await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex1M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                        "it",
+                                        ex1M
+                                    }
+                                });
+
+
+                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                            {
+                                ChatId = e.Message.From?.Id,
+                                Text = language,
+                                Lang = "it",
+                                Username = e.Message.From?.Username
+                            };
+                            await sender.SendTextMessageAsync(messageOptions);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -332,16 +373,25 @@ internal static class InviteLinks
                     var ex2M = "2" + "\n\n" + ex2.Message + "\n\n" + sql2 + "\n\n" + gruppoTg.Nome;
                     if (sender != null)
                         if (e?.Message != null)
-                            await sender.SendTextMessageAsync(e.Message.From?.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex2M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From?.Username);
+                                        "it",
+                                        ex2M
+                                    }
+                                });
+
+                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                            {
+                                ChatId = e.Message.From?.Id,
+                                Text = language,
+                                Lang = "it",
+                                Username = e.Message.From?.Username
+                            };
+                            await sender.SendTextMessageAsync(messageOptions);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;
@@ -373,16 +423,24 @@ internal static class InviteLinks
                     var ex3M = "3" + "\n\n" + ex3.Message;
                     if (sender != null)
                         if (e?.Message.From != null)
-                            await sender.SendTextMessageAsync(e.Message.From.Id,
-                                new Language(
-                                    new Dictionary<string, string?>
+                        {
+                            var language = new Language(
+                                new Dictionary<string, string?>
+                                {
                                     {
-                                        {
-                                            "it",
-                                            ex3M
-                                        }
-                                    }),
-                                ChatType.Private, "it", ParseMode.Html, null, e.Message.From.Username);
+                                        "it",
+                                        ex3M
+                                    }
+                                });
+                            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                            {
+                                ChatId = e.Message.From?.Id,
+                                Text = language,
+                                Lang = "it",
+                                Username = e.Message.From?.Username
+                            };
+                            await sender.SendTextMessageAsync(messageOptions);
+                        }
 
                     result.GruppoTg = gruppoTg;
                     result.SuccessoGenerazioneLink = SuccessoGenerazioneLink.ERRORE;

@@ -73,8 +73,10 @@ internal static class Groups
 
         if (chatId == null)
             return null;
+
         
         if (GlobalVariables.Creators != null && GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
+
             return new SuccessWithException(true);
 
         if (telegramBotAbstract != null)
@@ -84,7 +86,9 @@ internal static class Groups
                 return s1;
         }
 
+
         if (GlobalVariables.Owners != null && GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
+
             return new SuccessWithException(true);
 
         return null;
@@ -530,13 +534,14 @@ internal static class Groups
             CheckIfLinkIsWorkingSlave(5, true, 100);
             isLinkWorking = Variabili.L.GetElem(0).LinkFunzionante ?? false;
         });
-        
+
         return isLinkWorking;
     }
 
     public static void HandleListaGruppo(DataTable groups, Action action)
     {
         Variabili.L = new ListaGruppo();
+
         
         lock (Variabili.L.GetGroups())
         {
@@ -651,6 +656,7 @@ internal static class Groups
             }
             Database.Execute(queryUpdate, bot?.DbConfig, new Dictionary<string, object?> { { "@last_checked", DateTime.Now } });
             Thread.Sleep(waitingTimeBetweenGroups*1000);
+
             i++;
             if (i % 100 != 99) continue;
             allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);
