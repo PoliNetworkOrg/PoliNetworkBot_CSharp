@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+<<<<<<< HEAD
 using System.Threading;
+=======
+>>>>>>> dev
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -86,10 +89,14 @@ internal static class BackupUtil
             var dbTableNames = db.tableNames?.Where(x => !excludedTablesBackupDb.Contains(x));
             if (dbTableNames != null)
                 foreach (var tableName in dbTableNames)
+<<<<<<< HEAD
                 {
                     Thread.Sleep(1000);
                     await BackupDbDataSingleTable(tableName, sendTo, botAbstract);
                 }
+=======
+                    await BackupDbDataSingleTable(tableName, sendTo, botAbstract);
+>>>>>>> dev
         }
         catch (Exception? ex)
         {
