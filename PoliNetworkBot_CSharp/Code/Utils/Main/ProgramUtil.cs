@@ -364,11 +364,10 @@ public static class ProgramUtil
                     if (acceptMessages is null or false)
                         continue;
 
-                    var onmessageMethod2 = onMessageMethodObject;
-                    if (onmessageMethod2.ActionMessageEvent == null)
+                    if (onMessageMethodObject.ActionMessageEvent == null)
                         continue;
 
-                    BotClientWhole botClientWhole = new(botClient, bot, onmessageMethod2);
+                    BotClientWhole botClientWhole = new(botClient, bot, onMessageMethodObject);
                     Thread t = new(() =>
                     {
                         try
@@ -383,9 +382,9 @@ public static class ProgramUtil
                     });
                     t.Start();
 
-                    if (onmessageMethod2.S == BotStartMethods.Moderation.Item1)
+                    if (onMessageMethodObject.S == BotStartMethods.Moderation.Item1)
                         moderationBots++;
-                    else if (onmessageMethod2.S == BotStartMethods.Anon.Item1)
+                    else if (onMessageMethodObject.S == BotStartMethods.Anon.Item1)
                         anonBots++;
                 }
 

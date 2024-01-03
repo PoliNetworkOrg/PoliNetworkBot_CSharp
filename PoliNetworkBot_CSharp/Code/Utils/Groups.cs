@@ -521,7 +521,7 @@ internal static class Groups
             : CommandExecutionState.ERROR_DEFAULT;
     }
 
-    public static bool CheckIfLinkIsWorking(string link)
+    private static bool CheckIfLinkIsWorking(string link)
     {
         var dataTable = new DataTable();
         dataTable.Columns.Add("");
@@ -631,7 +631,7 @@ internal static class Groups
             $"Starting Progressive link check on {numberOfTotalGroups} with a waiting time between groups of {waitingTimeBetweenGroups}");
         const string allGroupsQuery =
             "SELECT id, valid, link, last_checked_link, link_check_times_failed from GroupsTelegram order by last_checked_link";
-        var allGroups = Database.ExecuteSelect(allGroupsQuery, bot?.DbConfig);
+        var allGroups = Database.ExecuteSelect(allGroupsQuery, bot.DbConfig);
         if (allGroups == null) throw new Exception("allGroups got from database is null!");
         var i = 0;
         while (true)
@@ -642,8 +642,7 @@ internal static class Groups
             var idString = allGroups.Rows[i][allGroups.Columns.IndexOf("id")].ToString();
             var foundId = long.TryParse(idString, out var id);
             if (!foundId) throw new RuntimeException($"ID of group is null at index {i}");
-            var queryUpdate = "";
-            var linkCheckedTimes = 0;
+            string queryUpdate;
             if (linkIsWorking)
             {
                 queryUpdate =
@@ -653,7 +652,7 @@ internal static class Groups
             {
                 var parse = int.TryParse(
                     allGroups.Rows[i][allGroups.Columns.IndexOf("link_check_times_failed")].ToString(),
-                    out linkCheckedTimes);
+                    out var linkCheckedTimes);
                 if (!parse) linkCheckedTimes = 0;
                 queryUpdate =
                     $"UPDATE `GroupsTelegram` SET `last_checked_link`=@last_checked, `link_working`=b'0', link_check_times_failed={linkCheckedTimes} WHERE  `id`={id};";

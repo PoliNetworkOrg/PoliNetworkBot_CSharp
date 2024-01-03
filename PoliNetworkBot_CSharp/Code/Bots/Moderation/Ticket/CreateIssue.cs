@@ -8,7 +8,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 public static class CreateIssue
 {
     public static Issue Create(string title, string body, long telegramChatId, long? fromId,
+
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
+
     {
         var githubClient = Data.GetGitHubClient(telegramBotAbstract);
         var newIssue = new NewIssue(title)
@@ -17,7 +19,9 @@ public static class CreateIssue
         };
         CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue, telegramBotAbstract);
         CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue, telegramBotAbstract);
+
         CreateAndAddLabel(chatIdTgWith100?.Category, newIssue, telegramBotAbstract);
+
         var task = githubClient.Issue.Create(Data.OwnerRepo, Data.NameRepo, newIssue);
         task.Wait();
         return task.Result;

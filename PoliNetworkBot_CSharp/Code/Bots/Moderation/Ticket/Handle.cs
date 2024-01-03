@@ -21,6 +21,7 @@ public static class Handle
             GroupsConstants.Dsu
         };
 
+
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
@@ -29,6 +30,7 @@ public static class Handle
 
         var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
         if (!found || chatIdTgWith100 == null)
+
             return;
 
         try
@@ -46,6 +48,7 @@ public static class Handle
 
 
             var chatId = chatIdTgWith100?.Id;
+
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
 
@@ -65,6 +68,7 @@ public static class Handle
 
             const int maxLengthTitle = 25;
             var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
+
             CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
         }
         catch (Exception ex)
