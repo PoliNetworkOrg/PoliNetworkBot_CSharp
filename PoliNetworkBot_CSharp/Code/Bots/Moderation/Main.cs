@@ -118,15 +118,11 @@ public static class Main
 
             if (e.Edit == false)
 
-            {
-
                 if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 {
                     var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                     return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
                 }
-
-            }
 
 
             Handle.HandleMethod(telegramBotClient, e);
