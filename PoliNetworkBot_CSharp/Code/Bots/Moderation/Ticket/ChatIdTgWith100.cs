@@ -7,6 +7,7 @@ public class ChatIdTgWith100
 {
     public long Id;
     public bool VaAggiuntoMeno100;
+    public string? Category;
 
     public string GetString()
     {

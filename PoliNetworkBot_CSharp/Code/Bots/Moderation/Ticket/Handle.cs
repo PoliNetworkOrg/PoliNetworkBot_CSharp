@@ -21,8 +21,8 @@ public static class Handle
             return;
 
 
-        var allowedGroupsContains = AllowedGroupsContains(e.Message.Chat.Id);
-        if (!allowedGroupsContains.Item1)
+        var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
+        if (!found)
             return;
 
         try
@@ -39,7 +39,7 @@ public static class Handle
             var date = GetItalianDateTime(e);
 
 
-            var chatId = allowedGroupsContains.Item2?.Id;
+            var chatId = chatIdTgWith100?.Id;
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
 
@@ -59,7 +59,7 @@ public static class Handle
 
             const int maxLengthTitle = 25;
             var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
-            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t);
+            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
         }
         catch (Exception ex)
         {

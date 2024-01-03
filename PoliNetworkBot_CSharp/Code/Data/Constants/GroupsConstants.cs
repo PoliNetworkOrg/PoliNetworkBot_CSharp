@@ -20,13 +20,13 @@ public static class GroupsConstants
         { Id = 1419772154, VaAggiuntoMeno100 = true };
 
     public static readonly ChatIdTgWith100 PianoDiStudi = new()
-        { Id = 1208900229, VaAggiuntoMeno100 = true };
+        { Id = 1208900229, VaAggiuntoMeno100 = true, Category = "Piano Studi" };
 
     public static readonly ChatIdTgWith100 AskPolimi = new()
         { Id = 1251460298, VaAggiuntoMeno100 = true };
 
     public static readonly ChatIdTgWith100 Dsu = new()
-        { Id = 1241129618, VaAggiuntoMeno100 = true };
+        { Id = 1241129618, VaAggiuntoMeno100 = true, Category = "Dsu" };
 
     public static ChatIdTgWith100 Testing = new()
         { Id = 1436937011, VaAggiuntoMeno100 = true };
