@@ -159,9 +159,20 @@ internal static class CommandDispatcher
         MessageEventArgs? e)
     {
         if (e != null)
-            return await sender.SendTextMessageAsync(e.Message.From?.Id, message, ChatType.Private,
-                e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                e.Message.MessageId);
+        {
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = e.Message.From?.Id,
+                Text = message,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = e.Message.MessageId,
+            };
+            var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
+            return sendTextMessageAsync;
+        }
+
         return null;
     }
 
@@ -180,9 +191,19 @@ internal static class CommandDispatcher
             });
 
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From?.Id, text, ChatType.Private,
-                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username,
-                    e.Message.MessageId);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId,
+                };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
+
             return CommandExecutionState.UNMET_CONDITIONS;
         }
 
@@ -386,9 +407,17 @@ internal static class CommandDispatcher
             {
                 if (e.Message.From != null)
                     if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private, "en",
-                            ParseMode.Html,
-                            null, null);
+                    {
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                        {
+                            ChatId = e.Message.From?.Id,
+                            Text = text,
+                            ChatType = ChatType.Private,
+                            Lang = e.Message.From?.LanguageCode,
+                            Username = e.Message.From?.Username,
+                        };
+                        await sender.SendTextMessageAsync(messageOptions);
+                    }
             }
             catch
             {
@@ -531,9 +560,19 @@ internal static class CommandDispatcher
             });
             if (e.Message.From == null) return null;
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                    e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                    e.Message.MessageId);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId
+                };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
+
             return null;
         }
 
@@ -548,9 +587,19 @@ internal static class CommandDispatcher
                     { "en", "Query execution. Result: " + i }
                 });
                 if (e.Message.From != null)
-                    await sender.SendTextMessageAsync(e.Message.From.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode, ParseMode.Html, null, e.Message.From.Username,
-                        e.Message.MessageId);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.From?.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                        Username = e.Message.From?.Username,
+                        ReplyToMessageId = e.Message.MessageId
+                    };
+                    await sender.SendTextMessageAsync(messageOptions);
+                }
+
                 return i;
             }
 
@@ -566,8 +615,17 @@ internal static class CommandDispatcher
             return -1;
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
-        var v = sender.SendFileAsync(documentInput, peer, e.Message.From.Username,
-            e.Message.From.LanguageCode, e.Message.MessageId, false);
+        TelegramBotAbstract.MessageOptions messageOptions2 = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = peer.GetUserId(),
+            peer = peer,
+            Lang = e.Message.From?.LanguageCode,
+            Username = e.Message.From?.Username,
+            ReplyToMessageId = e.Message.MessageId,
+            DisablePreviewLink = false,
+            documentInput = documentInput
+        };
+        var v = sender.SendFileAsync(messageOptions2);
         return v ? 1 : 0;
     }
 
@@ -751,11 +809,17 @@ internal static class CommandDispatcher
             { "it", telegramBotClient.GetContactString() },
             { "en", telegramBotClient.GetContactString() }
         });
-        await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
-            lang2, e?.Message.Chat.Type, e?.Message.From?.LanguageCode,
-            ParseMode.Html,
-            new ReplyMarkupObject(ReplyMarkupEnum.REMOVE), e?.Message.From?.Username
-        );
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = e?.Message.Chat.Id,
+            Text = lang2,
+            ChatType = e?.Message.Chat.Type,
+            Lang = e?.Message.From?.LanguageCode,
+            ParseMode = ParseMode.Html,
+            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+            Username = e?.Message.From?.Username
+        };
+        await telegramBotClient.SendTextMessageAsync(messageOptions);
         return CommandExecutionState.SUCCESSFUL;
     }
 
@@ -806,11 +870,19 @@ internal static class CommandDispatcher
             }
         });
         if (telegramBotClient != null)
-            await telegramBotClient.SendTextMessageAsync(e?.Message.Chat.Id,
-                lang2,
-                e?.Message.Chat.Type, replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                lang: e?.Message.From?.LanguageCode, username: e?.Message.From?.Username, parseMode: ParseMode.Html
-            );
+        {
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = e?.Message.Chat.Id,
+                Text = lang2,
+                ChatType = e?.Message.Chat.Type,
+                Lang = e?.Message.From?.LanguageCode,
+                ParseMode = ParseMode.Html,
+                ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                Username = e?.Message.From?.Username
+            };
+            await telegramBotClient.SendTextMessageAsync(messageOptions);
+        }
     }
 
     public static async Task<bool> BanMessageActions(TelegramBotAbstract? telegramBotClient, MessageEventArgs? e)
