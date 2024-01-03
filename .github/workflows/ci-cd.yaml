@@ -135,4 +135,5 @@ jobs:
           git config user.email ""
           git add */bot-deployment.yaml
           git commit -m "Update image version in K8s Deployment manifests file"
+          git pull
           git push origin
