@@ -38,7 +38,7 @@ public class TelegramBotAbstract
     private readonly string? _mode;
 
     private readonly string? _website;
- 
+
 
     public readonly TelegramClient? UserbotClient;
     private string? _username;
@@ -48,7 +48,6 @@ public class TelegramBotAbstract
     public string? GithubToken;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
-
         string? website, string? contactString, long? id, string? githubToken, BotInfoAbstract? botInfoAbstract)
 
 
@@ -66,7 +65,6 @@ public class TelegramBotAbstract
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
-
         BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract)
         : this(botClient, null, botTypeApi, website,
             contactString,
@@ -78,7 +76,6 @@ public class TelegramBotAbstract
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
-
         BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract) :
         this(null, userbotClient, botTypeApi, website, contactString, id, githubToken, botInfoAbstract)
 
