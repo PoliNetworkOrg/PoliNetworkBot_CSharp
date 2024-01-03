@@ -43,9 +43,19 @@ public static class CallbackUtils
 
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
         if (telegramBotAbstract == null) return null;
-        var messageSent = await telegramBotAbstract.SendTextMessageAsync(chatToSendTo, text, chatType, lang,
-            ParseMode.Html, replyMarkupObject, username, splitMessage: splitMessage,
-            replyToMessageId: replyToMessageId);
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = chatToSendTo,
+            Text = text,
+            ChatType = chatType,
+            Lang = lang,
+            ParseMode = ParseMode.Html,
+            ReplyMarkupObject = replyMarkupObject,
+            Username = username,
+            SplitMessage = splitMessage,
+            ReplyToMessageId = replyToMessageId
+        };
+        var messageSent = await telegramBotAbstract.SendTextMessageAsync(messageOptions);
         callbackGenericData.MessageSent = messageSent;
 
         return messageSent;

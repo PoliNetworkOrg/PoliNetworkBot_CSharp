@@ -11,7 +11,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
-internal class PeerAbstract
+public class PeerAbstract
 {
     public readonly long? Id;
     public readonly TLAbsInputPeer? Peer;

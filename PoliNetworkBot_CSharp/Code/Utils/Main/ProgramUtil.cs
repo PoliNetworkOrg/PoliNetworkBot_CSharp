@@ -639,8 +639,15 @@ public static class ProgramUtil
         });
 
 
-        await bot.SendTextMessageAsync(768169879, text, ChatType.Private,
-            "", default, replyMarkupObject, "@polinetwork3bot");
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = 768169879,
+            Text = text,
+            ChatType = ChatType.Private,
+            ReplyMarkupObject = replyMarkupObject,
+            Username = "@polinetwork3bot"
+        };
+        await bot.SendTextMessageAsync(messageOptions);
 
         /*
         done &= await bot.CreateGroup("Gruppo test by bot",
