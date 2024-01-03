@@ -6,7 +6,6 @@ using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using TeleSharp.TL;
 using TLSharp.Core;
 using TLSharp.Core.Utils;

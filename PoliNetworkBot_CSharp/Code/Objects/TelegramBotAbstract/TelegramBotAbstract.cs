@@ -650,7 +650,7 @@ public class TelegramBotAbstract
         public ReplyMarkupObject? ReplyMarkupObject { get; set; }
         public string? Username { get; set; }
         public long? ReplyToMessageId { get; set; }
-        public bool DisablePreviewLink { get; set; } = false;
+        public bool DisablePreviewLink { get; set; }
         public bool SplitMessage { get; set; } = false;
         public int? MessageThreadId { get; set; }
         public TelegramFile? documentInput;

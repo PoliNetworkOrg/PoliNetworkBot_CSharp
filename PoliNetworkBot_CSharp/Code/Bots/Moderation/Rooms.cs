@@ -605,11 +605,11 @@ internal static class Rooms
 
                 TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
                 {
-                    documentInput = document, 
+                    documentInput = document,
                     DisablePreviewLink = true,
-                    Username =  e?.Message?.From?.Username,
+                    Username = e?.Message.From?.Username,
                     peer = peer,
-                    Lang = e?.Message?.From?.LanguageCode
+                    Lang = e?.Message.From?.LanguageCode
                 };
                 sender?.SendFileAsync(messageOptions);
             }
