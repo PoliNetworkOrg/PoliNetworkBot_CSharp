@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -37,15 +38,18 @@ public class TelegramBotAbstract
     private readonly string? _mode;
 
     private readonly string? _website;
-    public readonly string? GithubToken;
+
 
     public readonly TelegramClient? UserbotClient;
     private string? _username;
+    public BotInfoAbstract? BotInfoAbstract;
 
     public DbConfigConnection? DbConfig;
+    public string? GithubToken;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
-        string? website, string? contactString, long? id, string? githubToken)
+        string? website, string? contactString, long? id, string? githubToken, BotInfoAbstract? botInfoAbstract)
+
 
     {
         UserbotClient = userBotClient;
@@ -55,28 +59,36 @@ public class TelegramBotAbstract
         _contactString = contactString;
         _id = id;
 
+        BotInfoAbstract = botInfoAbstract;
+
         GithubToken = githubToken;
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
-        BotTypeApi? botTypeApi, string? mode, string? githubToken) : this(botClient, null, botTypeApi, website,
-        contactString,
-        botClient?.BotId, githubToken)
+        BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract)
+        : this(botClient, null, botTypeApi, website,
+            contactString,
+            botClient?.BotId, githubToken, botInfoAbstract)
+
 
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
-        BotTypeApi? botTypeApi, string? mode, string? githubToken) :
-        this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
+        BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract) :
+        this(null, userbotClient, botTypeApi, website, contactString, id, githubToken, botInfoAbstract)
+
 
     {
         _mode = mode;
     }
 
-    public TelegramBotAbstract(TelegramBotClient? botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
-        null, null)
+
+    public TelegramBotAbstract(TelegramBotClient? botClient, BotInfoAbstract? botInfoAbstract)
+        : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
+            null, null, botInfoAbstract)
+
     {
     }
 

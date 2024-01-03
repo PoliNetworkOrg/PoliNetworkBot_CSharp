@@ -22,14 +22,25 @@ public class BotConfig
 
     public static CommandExecutionState GetConfig(MessageEventArgs? e, TelegramBotAbstract? sender)
     {
-        return e != null && ConfigUtil.GetConfig(e.Message.From?.Id, e.Message.From?.Username, sender,
-            e.Message.From?.LanguageCode,
-            e.Message.Chat.Type)
+        if (e == null)
+            return CommandExecutionState.UNMET_CONDITIONS;
+
+        var messageFrom = e.Message.From;
+        var chatType = e.Message.Chat.Type;
+
+        var config = ConfigUtil.GetConfig(
+            messageFrom?.Id,
+            messageFrom?.Username,
+            sender,
+            messageFrom?.LanguageCode,
+            chatType
+        );
+        return config
             ? CommandExecutionState.SUCCESSFUL
             : CommandExecutionState.UNMET_CONDITIONS;
     }
 
-    public static Task GetConfig2(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
+    public static Task GetConfigFromCommand(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
     {
         GetConfig(arg1, arg2);
         return Task.CompletedTask;

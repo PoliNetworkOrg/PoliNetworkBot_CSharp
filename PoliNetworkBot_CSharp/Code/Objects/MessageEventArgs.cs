@@ -16,8 +16,7 @@ namespace PoliNetworkBot_CSharp.Code.Objects;
 public class MessageEventArgs
 {
     public readonly Message Message;
-    public bool Edit = false;
-
+    public bool Edit;
 
 
     public MessageEventArgs(Message message, bool edit = false)
@@ -25,6 +24,5 @@ public class MessageEventArgs
         Message = message;
 
         Edit = edit;
-
     }
 }
