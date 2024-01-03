@@ -12,8 +12,8 @@ public class EventArgsContainer
 {
     public CallbackGenericData? CallbackGenericData;
     public CallbackQueryEventArgs? CallbackQueryEventArgs;
-    public MessageEventArgs? MessageEventArgs;
     public JObject? Extra;
+    public MessageEventArgs? MessageEventArgs;
 
     public static EventArgsContainer Get(MessageEventArgs? messageEventArgs)
     {

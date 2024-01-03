@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.BackupObj;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -32,10 +31,7 @@ internal static class BackupUtil
     public static async Task BackupHandler(List<long?> sendTo, TelegramBotAbstract botAbstract, string? username,
         ChatType chatType)
     {
-        if (botAbstract.DbConfig == null)
-        {
-            return;
-        }
+        if (botAbstract.DbConfig == null) return;
 
         const string applicationJson = "application/json";
         const string path = "LocalJSONFile.JSON";
@@ -46,10 +42,7 @@ internal static class BackupUtil
     private static async Task BackupDbDdl(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
         string applicationJson)
     {
-        if (botAbstract.DbConfig == null)
-        {
-            return;
-        }
+        if (botAbstract.DbConfig == null) return;
 
         try
         {
@@ -74,10 +67,7 @@ internal static class BackupUtil
     private static async Task BackupDbData(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
         string applicationJson)
     {
-        if (botAbstract.DbConfig == null)
-        {
-            return;
-        }
+        if (botAbstract.DbConfig == null) return;
 
         try
         {
@@ -87,7 +77,6 @@ internal static class BackupUtil
 
             if (db.tableNames != null)
                 foreach (var tableName in db.tableNames)
-                {
                     try
                     {
                         await BackupDbDataSingleTable(tableName, sendTo, botAbstract, path, applicationJson);
@@ -98,10 +87,9 @@ internal static class BackupUtil
                         {
                             ["tableName"] = tableName
                         };
-                        var eventArgsContainer = new EventArgsContainer() { Extra = jObject };
+                        var eventArgsContainer = new EventArgsContainer { Extra = jObject };
                         await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, eventArgsContainer);
                     }
-                }
         }
         catch (Exception? ex)
         {

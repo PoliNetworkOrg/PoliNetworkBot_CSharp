@@ -133,10 +133,7 @@ public static class DbBackup
         if (dbConfigConnection == null) return;
 
 
-        if (db.tableNames == null || db.tableNames.Count == 0)
-        {
-            FillTableNames(db, dbConfigConnection);
-        }
+        if (db.tableNames == null || db.tableNames.Count == 0) FillTableNames(db, dbConfigConnection);
 
 
         try
