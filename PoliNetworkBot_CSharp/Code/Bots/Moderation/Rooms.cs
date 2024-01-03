@@ -603,7 +603,7 @@ internal static class Rooms
                 var document = UtilsFileText.GenerateFileFromString(htmlResult, roomName + ".html",
                     message, TextAsCaption.AS_CAPTION, "text/html");
 
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
                 {
                     documentInput = document,
                     DisablePreviewLink = true,
