@@ -26,9 +26,7 @@ internal static class UserbotConnect
                 {
                     TelegramBotClient telegramBotClient = new(userbot.token);
                     return new TelegramBotAbstract(telegramBotClient, userbot.website, userbot.contactString,
-
                         userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
-
                 }
 
                 break;
@@ -58,7 +56,6 @@ internal static class UserbotConnect
 
                 if (telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-
                         userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
 
@@ -90,7 +87,6 @@ internal static class UserbotConnect
 
                 if (user != null && telegramClient.IsUserAuthorized())
                     return new TelegramBotAbstract(telegramClient, userbot.website, userbot.contactString,
-
                         userbot.userId, userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
 
@@ -109,7 +105,6 @@ internal static class UserbotConnect
 
                 if (t.IsUserAuthorized())
                     return new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-
                         userbot.botTypeApi.Value, userbot.onMessages, userbot.GithubToken, userbot);
 
 
@@ -117,9 +112,7 @@ internal static class UserbotConnect
 
                 return r?.User != null
                     ? new TelegramBotAbstract(t, userbot.website, userbot.contactString, userbot.userId,
-
                         userbot.botTypeApi, userbot.onMessages, userbot.GithubToken, userbot)
-
                     : null;
             }
         }

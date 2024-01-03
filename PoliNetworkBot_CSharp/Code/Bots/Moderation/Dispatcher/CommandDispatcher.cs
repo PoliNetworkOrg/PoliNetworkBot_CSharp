@@ -125,10 +125,7 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-
                             var errorDescription = execState.ToString();
-
-
 
 
                             await NotifyUserCommandError(new L(
@@ -305,7 +302,6 @@ internal static class CommandDispatcher
                         false);
             });
         }
-
 
 
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))

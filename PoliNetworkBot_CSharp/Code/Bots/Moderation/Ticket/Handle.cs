@@ -80,7 +80,6 @@ public static class Handle
         var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
 
         return b == null ? new Tuple<bool, ChatIdTg?>(false, null) : new Tuple<bool, ChatIdTg?>(true, b);
-
     }
 }
 

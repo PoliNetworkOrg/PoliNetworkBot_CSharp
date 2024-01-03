@@ -75,7 +75,6 @@ internal static class Groups
             return null;
 
 
-
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
 
@@ -90,10 +89,8 @@ internal static class Groups
         }
 
 
-
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
-
 
 
             return new SuccessWithException(true);

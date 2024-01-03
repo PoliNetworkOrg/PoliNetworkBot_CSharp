@@ -19,13 +19,10 @@ public class MessageEventArgs
     public bool Edit;
 
 
-
-
     public MessageEventArgs(Message message, bool edit = false)
     {
         Message = message;
 
         Edit = edit;
-
     }
 }
