@@ -40,13 +40,10 @@ public class TelegramFile : GenericFile
             var onlineFile = new InputFileStream(_stream, _fileName);
             return onlineFile;
         }
-<<<<<<< HEAD
+
 
         return null;
-=======
-        else
-            return null;
->>>>>>> dev
+
     }
 
     public override MessageType? GetMediaBotType()

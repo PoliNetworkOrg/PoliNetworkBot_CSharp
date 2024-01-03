@@ -25,11 +25,9 @@ public static class AllowedMessage
         {
             var message1 = e.Message;
 
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
->>>>>>> dev
+
             {
                 ChatType = ChatType.Private,
                 ChatId = e.Message.From?.Id,

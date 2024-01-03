@@ -124,11 +124,9 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
         {
-<<<<<<< HEAD
+
             var messageOptions = new TelegramBotAbstract.MessageOptions
-=======
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions
->>>>>>> dev
+
             {
                 ChatId = e?.Message.From?.Id,
                 ParseMode = ParseMode.Html,
