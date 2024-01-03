@@ -125,7 +125,8 @@ internal static class CommandDispatcher
                     case CommandExecutionState.ERROR_DEFAULT:
                         if (e.Message.Chat.Type == ChatType.Private)
                         {
-                            var errorDescription = execState.ToString();
+
+                            string errorDescription = execState.ToString();
 
 
                             await NotifyUserCommandError(new L(
@@ -269,6 +270,7 @@ internal static class CommandDispatcher
 
         var json = "";
 
+
         if (!linkCheck)
         {
             const string q1 = "SELECT * FROM GroupsTelegram WHERE link_working = 1";
@@ -300,8 +302,11 @@ internal static class CommandDispatcher
                     JsonBuilder.GetJson(new CheckGruppo(CheckGruppo.E.RICERCA_SITO_V3),
                         false);
             });
+
         }
 
+
+        }
         if (!Directory.Exists(Paths.Data.PoliNetworkWebsiteData))
         {
             Directory.CreateDirectory(Paths.Data.PoliNetworkWebsiteData);

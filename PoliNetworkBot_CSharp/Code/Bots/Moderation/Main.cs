@@ -124,6 +124,7 @@ public static class Main
                     return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
                 }
 
+
             Handle.HandleMethod(telegramBotClient, e);
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
             return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);

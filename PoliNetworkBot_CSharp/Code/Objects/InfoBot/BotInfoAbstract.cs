@@ -36,6 +36,7 @@ public class BotInfoAbstract
     public BotProgramTypeEnum TypeEnum; //todo
     public long? userId;
     public string? website;
+    public bool? EnableSelfManagedLogger = false;
 
 
     internal EventHandler<CallbackQueryEventArgs>? GetCallbackEvent()

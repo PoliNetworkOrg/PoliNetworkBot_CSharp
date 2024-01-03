@@ -75,8 +75,10 @@ internal static class Groups
             return null;
 
 
+
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
+
 
 
             return new SuccessWithException(true);
@@ -89,8 +91,10 @@ internal static class Groups
         }
 
 
+
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
+
 
 
             return new SuccessWithException(true);
@@ -540,6 +544,7 @@ internal static class Groups
         });
 
 
+
         return isLinkWorking;
     }
 
@@ -667,6 +672,7 @@ internal static class Groups
             Database.Execute(queryUpdate, bot?.DbConfig,
                 new Dictionary<string, object?> { { "@last_checked", DateTime.Now } });
             Thread.Sleep(waitingTimeBetweenGroups * 1000);
+
 
             i++;
             if (i % 100 != 99) continue;
