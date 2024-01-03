@@ -75,18 +75,11 @@ internal static class Groups
             return null;
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
             return new SuccessWithException(true);
 
         if (telegramBotAbstract != null)
@@ -97,18 +90,12 @@ internal static class Groups
         }
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
             return new SuccessWithException(true);
 
         return null;
@@ -556,10 +543,6 @@ internal static class Groups
         });
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
         return isLinkWorking;
     }
 

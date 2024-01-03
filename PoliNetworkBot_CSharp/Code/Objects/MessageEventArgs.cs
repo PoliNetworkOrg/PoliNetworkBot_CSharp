@@ -26,9 +26,6 @@ public class MessageEventArgs
         Message = message;
 
         Edit = edit;
-<<<<<<< HEAD
-=======
 
->>>>>>> master
     }
 }

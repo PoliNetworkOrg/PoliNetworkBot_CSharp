@@ -78,14 +78,9 @@ public static class Handle
     private static Tuple<bool, ChatIdTg?> AllowedGroupsContains(long chatId)
     {
         var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
-<<<<<<< HEAD
-        return b == null ? new Tuple<bool, ChatIdTg?>(false, null) : new Tuple<bool, ChatIdTg?>(true, b);
-=======
-        if (b == null)
-            return new Tuple<bool, ChatIdTg?>(false, null);
 
-        return new Tuple<bool, ChatIdTg?>(true, b);
->>>>>>> master
+        return b == null ? new Tuple<bool, ChatIdTg?>(false, null) : new Tuple<bool, ChatIdTg?>(true, b);
+
     }
 }
 
