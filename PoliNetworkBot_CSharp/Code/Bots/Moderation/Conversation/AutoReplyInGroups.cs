@@ -106,7 +106,7 @@ public static class AutoReplyInGroups
             {
                 new() { "diritto studio universitario", "diritto allo studio", "dsu" }
             }, Reply,
-            new List<long> { Groups.DSU, Groups.AskPolimi },
+            new List<long> { Groups.Dsu, Groups.AskPolimi },
             "Ciao 👋 sembra tu stia facendo domande in merito al DSU. " +
             "PoliNetwork ti consiglia di scrivere nel gruppo dedicato, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>clicca qui</a>!",
@@ -116,7 +116,7 @@ public static class AutoReplyInGroups
             {
                 new() { "scholarship", "dsu" }
             }, Reply,
-            new List<long> { Groups.DSU, Groups.AskPolimi },
+            new List<long> { Groups.Dsu, Groups.AskPolimi },
             "Hi 👋 it seems you are asking questions about 'DSU'. " +
             "PoliNetwork advices you to write in the dedicated group, " +
             "<a href='https://t.me/joinchat/4kO9DtAiTVM0NTU0'>click here</a>!",

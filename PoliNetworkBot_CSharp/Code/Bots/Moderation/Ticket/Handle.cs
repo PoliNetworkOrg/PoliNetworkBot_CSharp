@@ -12,8 +12,8 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private static readonly List<ChatIdTg>
-        AllowedGroups = new() { new ChatIdTg { Id = 2124790858, VaAggiuntoMeno100 = true } };
+    private static readonly List<ChatIdTgWith100>
+        AllowedGroups = new() { new ChatIdTgWith100 { Id = 2124790858, VaAggiuntoMeno100 = true } };
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -75,21 +75,10 @@ public static class Handle
         return date;
     }
 
-    private static Tuple<bool, ChatIdTg?> AllowedGroupsContains(long chatId)
+    private static Tuple<bool, ChatIdTgWith100?> AllowedGroupsContains(long chatId)
     {
         var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
 
-        return b == null ? new Tuple<bool, ChatIdTg?>(false, null) : new Tuple<bool, ChatIdTg?>(true, b);
-    }
-}
-
-internal class ChatIdTg
-{
-    public long Id;
-    public bool VaAggiuntoMeno100;
-
-    public string GetString()
-    {
-        return VaAggiuntoMeno100 ? "-100" + Id : Id.ToString();
+        return b == null ? new Tuple<bool, ChatIdTgWith100?>(false, null) : new Tuple<bool, ChatIdTgWith100?>(true, b);
     }
 }

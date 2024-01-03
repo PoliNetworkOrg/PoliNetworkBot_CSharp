@@ -1,14 +1,33 @@
-﻿namespace PoliNetworkBot_CSharp.Code.Data.Constants;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
+
+namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
 public static class GroupsConstants
 {
-    public const long BackupGroup = -653874197;
-    public const long GroupException = -1001456960264;
-    public const long PermittedSpamGroup = -1001685451643;
-    public const long BanNotificationGroup = -1001710276126;
-    public const long ConsiglioDegliAdminRiservato = -1001419772154;
-    public const long PianoDiStudi = -1001208900229;
-    public const long AskPolimi = -1001251460298;
-    public const long DSU = -1001241129618;
-    public const long Testing = -1001436937011;
+    public static readonly ChatIdTgWith100 BackupGroup = new()
+        { Id = -653874197, VaAggiuntoMeno100 = false };
+
+    public static readonly ChatIdTgWith100 GroupException = new()
+        { Id = 1456960264, VaAggiuntoMeno100 = true };
+
+    public static readonly ChatIdTgWith100 PermittedSpamGroup = new()
+        { Id = 1685451643, VaAggiuntoMeno100 = true };
+
+    public static readonly ChatIdTgWith100 BanNotificationGroup = new()
+        { Id = 1710276126, VaAggiuntoMeno100 = true };
+
+    public static ChatIdTgWith100 ConsiglioDegliAdminRiservato = new()
+        { Id = 1419772154, VaAggiuntoMeno100 = true };
+
+    public static readonly ChatIdTgWith100 PianoDiStudi = new()
+        { Id = 1208900229, VaAggiuntoMeno100 = true };
+
+    public static readonly ChatIdTgWith100 AskPolimi = new()
+        { Id = 1251460298, VaAggiuntoMeno100 = true };
+
+    public static readonly ChatIdTgWith100 Dsu = new()
+        { Id = 1241129618, VaAggiuntoMeno100 = true };
+
+    public static ChatIdTgWith100 Testing = new()
+        { Id = 1436937011, VaAggiuntoMeno100 = true };
 }
