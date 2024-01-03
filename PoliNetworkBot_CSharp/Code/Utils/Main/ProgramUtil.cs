@@ -337,6 +337,7 @@ public static class ProgramUtil
                         x1 = new DbConfigConnection(x2);
                     x1 ??= GlobalVariables.DbConfig;
 
+<<<<<<< HEAD
                     var onMessageMethodObject = bot.GetOnMessage();
                     var website = bot.GetWebsite();
                     var contactString = bot.GetContactString();
@@ -354,6 +355,11 @@ public static class ProgramUtil
                     {
                         DbConfig = x1
                     };
+=======
+                    var telegramBotAbstract = new TelegramBotAbstract(botClient, bot.GetWebsite(),
+                        bot.GetContactString(),
+                        BotTypeApi.REAL_BOT, bot.GetOnMessage().S, bot.GithubToken) { DbConfig = x1 };
+>>>>>>> master
 
                     GlobalVariables.Bots[botClient.BotId.Value] =
                         telegramBotAbstract;

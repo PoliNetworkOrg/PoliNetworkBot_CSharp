@@ -38,6 +38,7 @@ public class TelegramBotAbstract
     private readonly string? _mode;
 
     private readonly string? _website;
+    public readonly string? GithubToken;
 
     public readonly TelegramClient? UserbotClient;
     private string? _username;
@@ -47,7 +48,11 @@ public class TelegramBotAbstract
     public string? GithubToken;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
+<<<<<<< HEAD
         string? website, string? contactString, long? id, string? githubToken, BotInfoAbstract? botInfoAbstract)
+=======
+        string? website, string? contactString, long? id, string? githubToken)
+>>>>>>> master
 
     {
         UserbotClient = userBotClient;
@@ -56,31 +61,51 @@ public class TelegramBotAbstract
         _website = website;
         _contactString = contactString;
         _id = id;
+<<<<<<< HEAD
         BotInfoAbstract = botInfoAbstract;
+=======
+
+>>>>>>> master
         GithubToken = githubToken;
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
+<<<<<<< HEAD
         BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract)
         : this(botClient, null, botTypeApi, website,
             contactString,
             botClient?.BotId, githubToken, botInfoAbstract)
+=======
+        BotTypeApi? botTypeApi, string? mode, string? githubToken) : this(botClient, null, botTypeApi, website,
+        contactString,
+        botClient?.BotId, githubToken)
+>>>>>>> master
 
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
+<<<<<<< HEAD
         BotTypeApi? botTypeApi, string? mode, string? githubToken, BotInfoAbstract botInfoAbstract) :
         this(null, userbotClient, botTypeApi, website, contactString, id, githubToken, botInfoAbstract)
+=======
+        BotTypeApi? botTypeApi, string? mode, string? githubToken) :
+        this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
+>>>>>>> master
 
     {
         _mode = mode;
     }
 
+<<<<<<< HEAD
     public TelegramBotAbstract(TelegramBotClient? botClient, BotInfoAbstract? botInfoAbstract)
         : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
             null, null, botInfoAbstract)
+=======
+    public TelegramBotAbstract(TelegramBotClient? botClient) : this(botClient, null, BotTypeApi.REAL_BOT, null, null,
+        null, null)
+>>>>>>> master
     {
     }
 
