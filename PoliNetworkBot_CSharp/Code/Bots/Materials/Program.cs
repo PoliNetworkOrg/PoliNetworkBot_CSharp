@@ -305,13 +305,10 @@ public class Program
                     ChatId = LogGroup,
                     Text = text,
                     ChatType = ChatType.Group,
-                    Lang =  "uni",
+                    Lang = "uni",
                     ParseMode = ParseMode.Html
                 };
                 await sender.SendTextMessageAsync(messageOptions);
-
-                
-                
             }
         }
         catch (Exception ex)
@@ -428,20 +425,20 @@ public class Program
 
                                 var text = new Language(dict);
                                 var chatIdTo = ChannelsForApproval.GetChannel(GetChan(fileNameWithPath));
-                                
-                                
-                                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
-                                {
-                                    ChatId = chatIdTo,
-                                    Text = text,
-                                    ChatType = ChatType.Group,
-                                    Lang =  callbackQuery.Message?.From?.LanguageCode,
-                                    ParseMode = ParseMode.Html
-                                };
+
+
+                                TelegramBotAbstract.MessageOptions messageOptions =
+                                    new TelegramBotAbstract.MessageOptions()
+                                    {
+                                        ChatId = chatIdTo,
+                                        Text = text,
+                                        ChatType = ChatType.Group,
+                                        Lang = callbackQuery.Message?.From?.LanguageCode,
+                                        ParseMode = ParseMode.Html
+                                    };
                                 await sender.SendTextMessageAsync(messageOptions);
 
 
-                
                                 return;
                             }
 
@@ -478,18 +475,18 @@ public class Program
                                         { "it", "File salvato in " + fileOnlyRelativePath + "\n" }
                                     };
                                     var text = new Language(dict);
-                                    
-                                    
-                                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
-                                    {
-                                        ChatId = fromId,
-                                        Text = text,
-                                        ChatType = ChatType.Private,
-                                        Lang =     callbackQuery.From.LanguageCode,
-                                        ParseMode = ParseMode.Html
-                                    };
-                                    await sender.SendTextMessageAsync(messageOptions);
 
+
+                                    TelegramBotAbstract.MessageOptions messageOptions =
+                                        new TelegramBotAbstract.MessageOptions()
+                                        {
+                                            ChatId = fromId,
+                                            Text = text,
+                                            ChatType = ChatType.Private,
+                                            Lang = callbackQuery.From.LanguageCode,
+                                            ParseMode = ParseMode.Html
+                                        };
+                                    await sender.SendTextMessageAsync(messageOptions);
 
 
                                     var gitDir = GetGit(fileNameWithPath);
@@ -524,18 +521,17 @@ public class Program
                                         }
                                     };
                                     var text = new Language(dict);
-                                    
-                                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
-                                    {
-                                        ChatId = fromId,
-                                        Text = text,
-                                        ChatType = ChatType.Private,
-                                        Lang =     callbackQuery.From.LanguageCode,
-                                        ParseMode = ParseMode.Html
-                                    };
-                                    await sender.SendTextMessageAsync(messageOptions);
 
-    
+                                    TelegramBotAbstract.MessageOptions messageOptions =
+                                        new TelegramBotAbstract.MessageOptions()
+                                        {
+                                            ChatId = fromId,
+                                            Text = text,
+                                            ChatType = ChatType.Private,
+                                            Lang = callbackQuery.From.LanguageCode,
+                                            ParseMode = ParseMode.Html
+                                        };
+                                    await sender.SendTextMessageAsync(messageOptions);
                                 }
                             }
 
@@ -568,19 +564,17 @@ public class Program
                                     { "it", "Il file: " + fileOnlyName + " è stato rifiutato da un admin" }
                                 };
                                 var text = new Language(dict);
-                                
-                                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
-                                {
-                                    ChatId = fromId,
-                                    Text = text,
-                                    ChatType = ChatType.Private,
-                                    Lang =     callbackQuery.From.LanguageCode,
-                                    ParseMode = ParseMode.Html
-                                };
-                                await sender.SendTextMessageAsync(messageOptions);
 
-                                
-      
+                                TelegramBotAbstract.MessageOptions messageOptions =
+                                    new TelegramBotAbstract.MessageOptions()
+                                    {
+                                        ChatId = fromId,
+                                        Text = text,
+                                        ChatType = ChatType.Private,
+                                        Lang = callbackQuery.From.LanguageCode,
+                                        ParseMode = ParseMode.Html
+                                    };
+                                await sender.SendTextMessageAsync(messageOptions);
                             }
                         }
                         catch (Exception exception)
@@ -593,18 +587,18 @@ public class Program
                             var text = new Language(dict);
                             if (sender != null)
                             {
-                                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
-                                {
-                                    ChatId = fromId,
-                                    Text = text,
-                                    ChatType = ChatType.Private,
-                                    Lang =     callbackQuery.From.LanguageCode,
-                                    ParseMode = ParseMode.Html
-                                };
+                                TelegramBotAbstract.MessageOptions messageOptions =
+                                    new TelegramBotAbstract.MessageOptions()
+                                    {
+                                        ChatId = fromId,
+                                        Text = text,
+                                        ChatType = ChatType.Private,
+                                        Lang = callbackQuery.From.LanguageCode,
+                                        ParseMode = ParseMode.Html
+                                    };
                                 await sender.SendTextMessageAsync(messageOptions);
 
-                                
-            
+
                                 await NotifyUtil.NotifyOwnersWithLog(exception, sender, null,
                                     new EventArgsContainer { CallbackQueryEventArgs = callbackQueryEventArgs });
                             }
@@ -675,21 +669,17 @@ public class Program
             var text = new Language(dict);
             if (telegramBotAbstract != null)
             {
-                
                 TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
                 {
                     ChatId = e.Message.From?.Id,
                     Text = text,
                     ChatType = ChatType.Private,
-                    Lang =  e.Message.From?.LanguageCode,
+                    Lang = e.Message.From?.LanguageCode,
                     ParseMode = ParseMode.Html
                 };
                 await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-
-                
-
-                
             }
+
             return;
         }
 
@@ -702,17 +692,17 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            
+
             TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
             {
-                ChatId =e?.Message.From?.Id,
+                ChatId = e?.Message.From?.Id,
                 Text = text,
                 ChatType = ChatType.Private,
-                Lang =    e?.Message.From?.LanguageCode,
+                Lang = e?.Message.From?.LanguageCode,
                 ParseMode = ParseMode.Html
             };
             await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-            
+
 
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
@@ -757,17 +747,15 @@ public class Program
 
                 if (telegramBotAbstract != null)
                 {
-                             
                     TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
                     {
-                        ChatId =e.Message.Chat.Id,
+                        ChatId = e.Message.Chat.Id,
                         Text = text,
                         ChatType = ChatType.Private,
-                        Lang =   e.Message.From.LanguageCode,
+                        Lang = e.Message.From.LanguageCode,
                         ParseMode = ParseMode.Html
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                    
 
 
                     lock (SlowDownLock)
@@ -788,24 +776,23 @@ public class Program
                             }
                         };
                         var approveText = new Language(approveMessage);
-                        
-                        
+
+
                         var messageId = messageFw?.GetMessageId();
                         TelegramBotAbstract.MessageOptions messageOptions2 = new TelegramBotAbstract.MessageOptions()
                         {
-                            ChatId =idChatMessageTo,
+                            ChatId = idChatMessageTo,
                             Text = approveText,
                             ChatType = ChatType.Group,
-                            Lang =   e.Message.From.LanguageCode,
+                            Lang = e.Message.From.LanguageCode,
                             ParseMode = ParseMode.Html,
                             ReplyToMessageId = messageId,
-                            ReplyMarkupObject =     new ReplyMarkupObject(inlineKeyboardMarkup)   
+                            ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup)
                             //aggiunge sotto la InlineKeyboard per la selezione del what to do
-
                         };
-                        _ =  telegramBotAbstract.SendTextMessageAsync(messageOptions2);
-          
-   
+                        _ = telegramBotAbstract.SendTextMessageAsync(messageOptions2);
+
+
                         Thread.Sleep(100);
                     }
                 }
@@ -857,9 +844,15 @@ public class Program
             var text = new Language(dict);
 
             if (sender == null) return;
-            await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                e.Message.From?.LanguageCode,
-                ParseMode.Html, null, null);
+
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = e.Message.Chat.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             if (e.Message.From != null) UsersConversations[e.Message.From.Id].SetState(UserState.WAITING_FILE);
             await HandleFileAsync(e, sender);
@@ -884,9 +877,16 @@ public class Program
                 var text = new Language(dict);
 
                 if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode,
-                        ParseMode.Html, null, null);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode
+                    };
+                    await sender.SendTextMessageAsync(messageOptions);
+                }
             }
         }
         else if (e.Message.Text.StartsWith("🔙"))
@@ -910,9 +910,16 @@ public class Program
                 var text = new Language(dict);
 
                 if (sender != null)
-                    await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                        e.Message.From?.LanguageCode,
-                        ParseMode.Html, null, null);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode
+                    };
+                    await sender.SendTextMessageAsync(messageOptions);
+                }
             }
             else
             {
@@ -950,9 +957,16 @@ public class Program
             var text = new Language(dict);
 
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                    e.Message.From.LanguageCode,
-                    ParseMode.Html, null, null);
+            {
+                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                {
+                    ChatId = e.Message.Chat.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode
+                };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
         }
     }
 
@@ -978,9 +992,17 @@ public class Program
                     ), false
                 );
                 if (telegramBotAbstract != null)
-                    await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                        ReplyMarkupObject = replyMarkupObject
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                }
             }
         }
     }
@@ -1015,9 +1037,16 @@ public class Program
                         };
                     var text = new Language(dict);
                     if (sender != null)
-                        await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                            e.Message.From.LanguageCode,
-                            ParseMode.Html, null, null);
+                    {
+                        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                        {
+                            ChatId = e.Message.Chat.Id,
+                            Text = text,
+                            ChatType = ChatType.Private,
+                            Lang = e.Message.From?.LanguageCode,
+                        };
+                        await sender.SendTextMessageAsync(messageOptions);
+                    }
                 }
 
                 await HandleStartAsync(e, sender);
@@ -1041,9 +1070,16 @@ public class Program
                 var text = new Language(dict);
                 if (sender != null)
                 {
-                    await sender.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode,
-                        ParseMode.Html, null, null);
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                    };
+                    await sender.SendTextMessageAsync(messageOptions);
+
+
                     await NotifyUtil.NotifyOwnerWithLog2(ex, sender, EventArgsContainer.Get(e));
                 }
             }
@@ -1079,9 +1115,16 @@ public class Program
                     ), false
                 );
                 if (telegramBotAbstract != null)
-                    await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                        e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                }
             }
         }
     }
@@ -1102,9 +1145,16 @@ public class Program
             };
             var text = new Language(dict);
             if (telegramBotAbstract == null) return;
-            await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text, ChatType.Private,
-                e.Message.From.LanguageCode,
-                ParseMode.Html, null, null);
+
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = e.Message.Chat.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+            };
+            await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+
 
             await GenerateStartOnBackAndNull(e, telegramBotAbstract);
 
@@ -1130,9 +1180,17 @@ public class Program
                 };
                 var text1 = new Language(dict1);
                 if (telegramBotAbstract != null)
-                    await telegramBotAbstract.SendTextMessageAsync(e.Message.Chat.Id, text1, ChatType.Private,
-                        e.Message.From.LanguageCode,
-                        ParseMode.Html, replyMarkupObject, null);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.Chat.Id,
+                        Text = text1,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                        ReplyMarkupObject = replyMarkupObject
+                    };
+                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                }
             }
         }
     }
