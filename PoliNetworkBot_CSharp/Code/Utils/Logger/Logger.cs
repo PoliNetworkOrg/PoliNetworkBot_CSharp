@@ -61,9 +61,16 @@ public static class Logger
                     { "un", escaped }
                 });
                 if (messageToBeSent.Key.Value != null)
-                    await messageToBeSent.Key.Value.SendTextMessageAsync(messageToBeSent.Key.Key, text,
-                        messageToBeSent.ChatType, "un", ParseMode.Html,
-                        null, null, splitMessage: true);
+                {
+                    TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = messageToBeSent.Key.Key,
+                        Text = text,
+                        ChatType = messageToBeSent.ChatType,
+                        SplitMessage = true
+                    };
+                    await messageToBeSent.Key.Value.SendTextMessageAsync(messageOptions);
+                }
             }
             catch (Exception e)
             {
