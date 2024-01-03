@@ -251,8 +251,19 @@ public static class MessagesStore
                 }
             });
             if (sender != null)
-                await sender.SendTextMessageAsync(e.Message.From?.Id, language1, ChatType.Private,
-                    e.Message.From?.LanguageCode, ParseMode.Html, null, e.Message.From?.Username);
+            {
+                TelegramBotAbstract.TelegramBotAbstract.MessageOptions messageOptions =
+                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions()
+                    {
+                        ChatId = e.Message.From?.Id,
+                        Text = language1,
+                        ChatType = ChatType.Private,
+                        Lang = e.Message.From?.LanguageCode,
+                        Username = e.Message.From?.Username
+                    };
+                await sender.SendTextMessageAsync(messageOptions);
+            }
+
             return;
         }
 
@@ -276,8 +287,18 @@ public static class MessagesStore
                 var tf = new TelegramFile(stream, "messagesSent.json", language2, "text/plain",
                     TextAsCaption.AS_CAPTION);
                 PeerAbstract peer = new(e.Message.From?.Id, e.Message.Chat.Type);
-                sender?.SendFileAsync(tf, peer, e.Message.From?.Username,
-                    e.Message.From?.LanguageCode, null, true);
+
+                TelegramBotAbstract.TelegramBotAbstract.MessageOptions messageOptions2 =
+                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions()
+                    {
+                        documentInput = tf,
+                        peer = peer,
+                        ChatId = peer.GetUserId(),
+                        Username = e.Message.From?.Username,
+                        Lang = e.Message.From?.LanguageCode,
+                        DisablePreviewLink = true
+                    };
+                sender?.SendFileAsync(messageOptions2);
             }
         }
     }
