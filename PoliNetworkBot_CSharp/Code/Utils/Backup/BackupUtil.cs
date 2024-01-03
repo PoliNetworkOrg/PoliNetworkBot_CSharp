@@ -76,6 +76,7 @@ internal static class BackupUtil
     private static async Task BackupDbData(List<long?> sendTo, TelegramBotAbstract botAbstract)
     {
         if (botAbstract.DbConfig == null) return;
+<<<<<<< HEAD
 
         try
         {
@@ -94,12 +95,15 @@ internal static class BackupUtil
         }
     }
 
+=======
+>>>>>>> master
 
     private static async Task BackupDbDataSingleTable(string tableName, List<long?> sendTo,
         TelegramBotAbstract botAbstract)
     {
         try
         {
+<<<<<<< HEAD
             var data = DbBackup.GetDataTable(botAbstract.DbConfig, tableName);
             var textToSendBefore = "Backup DB Data (table: " + tableName + ")";
             var dbFullDataJson = "db_full_data_" + tableName + ".json";
@@ -114,6 +118,27 @@ internal static class BackupUtil
                 textToSendBefore,
                 dbFullDataJson
             );
+=======
+            DB_Backup db = new();
+
+            DbBackup.FillTableNames(db, botAbstract.DbConfig);
+
+            if (db.tableNames != null)
+                foreach (var tableName in db.tableNames)
+                    try
+                    {
+                        await BackupDbDataSingleTable(tableName, sendTo, botAbstract, path, applicationJson);
+                    }
+                    catch (Exception? ex)
+                    {
+                        var jObject = new JObject
+                        {
+                            ["tableName"] = tableName
+                        };
+                        var eventArgsContainer = new EventArgsContainer { Extra = jObject };
+                        await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, eventArgsContainer);
+                    }
+>>>>>>> master
         }
         catch (Exception? ex)
         {
@@ -127,6 +152,27 @@ internal static class BackupUtil
     }
 
 
+<<<<<<< HEAD
+=======
+    private static async Task BackupDbDataSingleTable(string tableName, List<long?> sendTo,
+        TelegramBotAbstract botAbstract,
+        string path, string applicationJson)
+    {
+        var data = DbBackup.GetDataTable(botAbstract.DbConfig, tableName);
+        var textToSendBefore = "Backup DB Data (table: " + tableName + ")";
+        var dbFullDataJson = "db_full_data_" + tableName + ".json";
+
+        var serializedText = JsonConvert.SerializeObject(data);
+        await SendBackup(
+            sendTo, botAbstract,
+            path, applicationJson,
+            serializedText, textToSendBefore,
+            dbFullDataJson
+        );
+    }
+
+
+>>>>>>> master
     private static async Task SendBackup(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
         string applicationJson,
         string serializedText, string textToSendBefore, string dbFullDataJson)
