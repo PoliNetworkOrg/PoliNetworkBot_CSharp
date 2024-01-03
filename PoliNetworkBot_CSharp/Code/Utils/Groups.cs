@@ -75,10 +75,8 @@ internal static class Groups
             return null;
 
 
-
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
-
 
 
             return new SuccessWithException(true);
@@ -91,10 +89,8 @@ internal static class Groups
         }
 
 
-
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
-
 
 
             return new SuccessWithException(true);
@@ -544,7 +540,6 @@ internal static class Groups
         });
 
 
-
         return isLinkWorking;
     }
 
@@ -589,14 +584,18 @@ internal static class Groups
         var linkCheck = false;
         if (args != null)
             foreach (var arg in args)
-            {
-                if (arg == "-dry")
-                    dry = true;
-                if (arg == "-link-check")
-                    linkCheck = true;
-                if (arg == "-fix-names")
-                    fixGroupsNames = true;
-            }
+                switch (arg)
+                {
+                    case "-dry":
+                        dry = true;
+                        break;
+                    case "-link-check":
+                        linkCheck = true;
+                        break;
+                    case "-fix-names":
+                        fixGroupsNames = true;
+                        break;
+                }
 
         var text = await CommandDispatcher.UpdateGroups(sender, dry, debug, fixGroupsNames, e, linkCheck);
 
@@ -625,15 +624,6 @@ internal static class Groups
         var count = Database.ExecuteSelect(countGroup, bot.DbConfig)?.Rows[0][0].ToString();
         var tryParse = int.TryParse(count, out var numberOfTotalGroups);
         if (!tryParse) return;
-
-        int CalculateWaitingTime(int x)
-        {
-            var waitingTimeBetweenGroups = 3600 * 24 * 7 / x;
-            waitingTimeBetweenGroups = waitingTimeBetweenGroups < 60
-                ? 60
-                : waitingTimeBetweenGroups;
-            return waitingTimeBetweenGroups;
-        }
 
         var waitingTimeBetweenGroups = CalculateWaitingTime(numberOfTotalGroups);
 
@@ -683,5 +673,14 @@ internal static class Groups
             waitingTimeBetweenGroups = CalculateWaitingTime(numberOfTotalGroups);
             i = 0;
         }
+    }
+
+    private static int CalculateWaitingTime(int x)
+    {
+        var timeBetweenGroups = 3600 * 24 * 7 / x;
+        timeBetweenGroups = timeBetweenGroups < 60
+            ? 60
+            : timeBetweenGroups;
+        return timeBetweenGroups;
     }
 }

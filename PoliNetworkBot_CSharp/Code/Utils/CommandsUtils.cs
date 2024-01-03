@@ -69,13 +69,3 @@ public static class CommandsUtils
         return new Language(languages);
     }
 }
-
-public enum CommandExecutionState
-{
-    SUCCESSFUL,
-    NOT_TRIGGERED,
-    UNMET_CONDITIONS,
-    INSUFFICIENT_PERMISSIONS,
-    ERROR_NOT_ENABLED,
-    ERROR_DEFAULT
-}
