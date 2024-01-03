@@ -45,7 +45,9 @@ public class TelegramBotAbstract
     public DbConfigConnection? DbConfig;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
+
         string? website, string? contactString, long? id, string? githubToken)
+
     {
         UserbotClient = userBotClient;
         _botClient = botClient;
@@ -53,6 +55,7 @@ public class TelegramBotAbstract
         _website = website;
         _contactString = contactString;
         _id = id;
+
         this.GithubToken = githubToken;
     }
 
@@ -60,13 +63,16 @@ public class TelegramBotAbstract
         BotTypeApi? botTypeApi, string? mode, string? githubToken) : this(botClient, null, botTypeApi, website,
         contactString,
         botClient?.BotId, githubToken)
+
     {
         _mode = mode;
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
+
         BotTypeApi? botTypeApi, string? mode, string? githubToken) :
         this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
+
     {
         _mode = mode;
     }
