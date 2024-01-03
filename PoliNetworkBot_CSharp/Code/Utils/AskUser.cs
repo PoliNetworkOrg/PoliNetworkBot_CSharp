@@ -24,8 +24,16 @@ internal static class AskUser
 
         UserAnswers.Reset(idUser, botId);
 
-        await sender.SendTextMessageAsync(idUser, question, ChatType.Private, parseMode: ParseMode.Html,
-            replyMarkupObject: new ReplyMarkupObject(ReplyMarkupEnum.FORCED), lang: lang, username: username);
+        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        {
+            ChatId = idUser,
+            Text = question,
+            ParseMode = ParseMode.Html,
+            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.FORCED),
+            Lang = lang,
+            Username = username
+        };
+        await sender.SendTextMessageAsync(messageOptions);
 
         var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
         UserAnswers.Delete(idUser, botId);
@@ -78,10 +86,18 @@ internal static class AskUser
                     list
                 )
             );
-
-            var m1 = await sender.SendTextMessageAsync(idUser, question, ChatType.Private,
-                parseMode: ParseMode.Html, replyMarkupObject: replyMarkupObject, lang: lang, username: username,
-                replyToMessageId: messageIdToReplyTo);
+            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            {
+                ChatId = idUser,
+                Text = question,
+                ChatType = ChatType.Private,
+                ParseMode = ParseMode.Html,
+                ReplyMarkupObject = replyMarkupObject,
+                Lang = lang,
+                Username = username,
+                ReplyToMessageId = messageIdToReplyTo
+            };
+            var m1 = await sender.SendTextMessageAsync(messageOptions);
         }
 
         var result = await WaitForAnswer(idUser, sendMessageConfirmationChoice, sender, lang, username);
