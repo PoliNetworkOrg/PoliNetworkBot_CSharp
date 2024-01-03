@@ -654,10 +654,10 @@ internal static class NotifyUtil
         var documentInput =
             TelegramFile.FromString(sTosend, "report_execution.json", language, TextAsCaption.AS_CAPTION);
         var peer = new PeerAbstract(toSendUser, ChatType.Private);
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        var messageOptions = new TelegramBotAbstract.MessageOptions
         {
             ChatId = peer.GetUserId(),
-            peer = peer, 
+            peer = peer,
             documentInput = documentInput,
             DisablePreviewLink = false
         };
