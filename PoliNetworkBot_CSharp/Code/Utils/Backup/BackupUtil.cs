@@ -81,7 +81,6 @@ internal static class BackupUtil
 
         try
         {
-<<<<<<< HEAD
             DB_Backup db = new();
 
             DbBackup.FillTableNames(db, botAbstract.DbConfig);
@@ -103,19 +102,6 @@ internal static class BackupUtil
                         await NotifyUtil.NotifyOwnerWithLog2(ex, botAbstract, eventArgsContainer);
                     }
                 }
-=======
-            var dbFull = DbBackup.GetDb_Full(botAbstract.DbConfig);
-            const string textToSendBefore = "Backup DB Data";
-            const string dbFullDataJson = "db_full_data.json";
-
-            var serializedText = JsonConvert.SerializeObject(dbFull);
-            await SendBackup(
-                sendTo, botAbstract,
-                path, applicationJson,
-                serializedText, textToSendBefore,
-                dbFullDataJson
-            );
->>>>>>> master
         }
         catch (Exception? ex)
         {
@@ -123,7 +109,7 @@ internal static class BackupUtil
         }
     }
 
-<<<<<<< HEAD
+
     private static async Task BackupDbDataSingleTable(string tableName, List<long?> sendTo,
         TelegramBotAbstract botAbstract,
         string path, string applicationJson)
@@ -141,8 +127,7 @@ internal static class BackupUtil
         );
     }
 
-=======
->>>>>>> master
+
     private static async Task SendBackup(List<long?> sendTo, TelegramBotAbstract botAbstract, string path,
         string applicationJson,
         string serializedText, string textToSendBefore, string dbFullDataJson)
