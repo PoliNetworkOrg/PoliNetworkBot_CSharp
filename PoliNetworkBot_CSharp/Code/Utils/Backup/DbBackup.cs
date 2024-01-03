@@ -10,23 +10,6 @@ namespace PoliNetworkBot_CSharp.Code.Utils.Backup;
 
 public static class DbBackup
 {
-    public static DB_Backup? GetDb_Full(DbConfigConnection dbConfig)
-    {
-        try
-        {
-            DB_Backup db = new();
-
-            FillTables(db, dbConfig);
-            return db;
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return null;
-    }
-
     public static DbBackupDdl? Get_DB_DDL_Full(DbConfigConnection dbConfig)
     {
         try
@@ -115,7 +98,7 @@ public static class DbBackup
         }
     }
 
-    public static void FillTables(DB_Backup db, DbConfigConnection? dbConfigConnection)
+    public static void FillTableNames(DB_Backup db, DbConfigConnection? dbConfigConnection)
     {
         if (dbConfigConnection == null) return;
 
@@ -136,24 +119,57 @@ public static class DbBackup
                 });
 
             db.AddTables(c1);
-
-            var tables = db.GetTableNames();
-            db.tables ??= new Dictionary<string, DataTable>();
-            foreach (var tableName in tables)
-                try
-                {
-                    var q2 = "SELECT * FROM " + tableName;
-                    var r2 = Database.ExecuteSelect(q2, dbConfigConnection);
-                    if (r2 != null) db.tables[tableName] = r2;
-                }
-                catch
-                {
-                    // ignored
-                }
         }
         catch
         {
             // ignored
         }
+
+        db.tables ??= new Dictionary<string, DataTable>();
+    }
+
+    public static void FillTablesData(DB_Backup db, DbConfigConnection? dbConfigConnection)
+    {
+        if (dbConfigConnection == null) return;
+
+
+        if (db.tableNames == null || db.tableNames.Count == 0) FillTableNames(db, dbConfigConnection);
+
+
+        try
+        {
+            var tables = db.GetTableNames();
+            db.tables ??= new Dictionary<string, DataTable>();
+            foreach (var tableName in tables) FillSingleDataTable(db, dbConfigConnection, tableName);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static void FillSingleDataTable(DB_Backup db, DbConfigConnection dbConfigConnection, string tableName)
+    {
+        try
+        {
+            var r2 = GetDataTable(dbConfigConnection, tableName);
+            if (r2 == null) return;
+            if (db.tables != null)
+                db.tables[tableName] = r2;
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    public static DataTable? GetDataTable(DbConfigConnection? dbConfigConnection, string tableName)
+    {
+        if (dbConfigConnection == null)
+            return null;
+
+        var q2 = "SELECT * FROM " + tableName;
+        var r2 = Database.ExecuteSelect(q2, dbConfigConnection);
+        return r2;
     }
 }

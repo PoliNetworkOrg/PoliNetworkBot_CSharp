@@ -5,9 +5,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 [Serializable]
 public class ChatIdTgWith100
 {
+    public string? Category;
     public long Id;
     public bool VaAggiuntoMeno100;
-    public string? Category;
 
     public string GetString()
     {
